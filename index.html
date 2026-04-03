@@ -1,200 +1,190 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <title>NeTubeX · Social Rewards</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{background:#0a0c12;font-family:'Inter',system-ui,'Segoe UI',sans-serif;color:#eef2ff;min-height:100vh;background-attachment:fixed;overflow-x:hidden;}
-    .header{position:sticky;top:0;z-index:100;background:#0a0c12;border-bottom:1px solid #1e2432;padding:0.75rem 1rem;padding-top:max(0.75rem,env(safe-area-inset-top));display:flex;justify-content:space-between;align-items:center;width:100%;}
-    .logo h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,#b9f6e0,#00e68a);-webkit-background-clip:text;background-clip:text;color:transparent;}
-    .connexion-btn{background:#00a884;border:none;padding:8px 20px;border-radius:40px;font-weight:600;color:#0a0c12;cursor:pointer;font-size:0.9rem;transition:0.2s;}
-    .connexion-btn:hover{background:#00e68a;transform:scale(1.02);}
-    .popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:visibility 0.2s,opacity 0.2s;}
-    .popup-overlay.active{visibility:visible;opacity:1;}
-    .popup-card{background:#11141d;max-width:340px;width:85%;border-radius:40px;padding:28px 20px;text-align:center;border:0.5px solid #2e3548;transform:scale(0.95);transition:transform 0.2s cubic-bezier(0.2,0.9,0.4,1.1);}
-    .popup-overlay.active .popup-card{transform:scale(1);}
-    .popup-card h2{margin-bottom:1rem;font-size:1.6rem;}
-    .input-group{margin:12px 0;}
-    .input-group input{width:100%;padding:12px 16px;border-radius:40px;border:none;background:#1a1e2c;color:white;font-size:0.9rem;outline:none;}
-    .popup-btn{background:#00a884;border:none;padding:12px 24px;border-radius:40px;font-weight:bold;margin-top:16px;cursor:pointer;width:100%;font-size:1rem;}
-    .close-popup{background:#1f2a3a;margin-top:10px;color:white;}
-    .error-msg{color:#ff8080;font-size:0.8rem;margin-top:8px;}
-    .dashboard-container{display:none;}
-    .dashboard-container.active{display:block;}
-    .stats-mini{display:flex;gap:16px;}
-    .stat-mini{font-size:0.75rem;font-weight:500;background:#13161f;padding:4px 12px;border-radius:40px;border:0.5px solid #252b3a;}
-    .stat-mini i{color:#00e68a;margin-right:6px;}
-    .icon-btn{background:#13161f;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:0.2s;border:0.5px solid #252b3a;}
-    .feed-container{max-width:680px;margin:1rem auto 90px auto;padding:0 1rem;display:flex;flex-direction:column;gap:1rem;}
-    .post-card{background:#11141d;border-radius:24px;overflow:hidden;border:0.5px solid #232835;transition:0.2s;}
-    .post-header{display:flex;align-items:center;gap:12px;padding:14px 16px;}
-    .avatar{width:44px;height:44px;background:linear-gradient(135deg,#2a5a4a,#00a884);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
-    .post-meta h4{font-size:1rem;font-weight:600;}
-    .post-meta span{font-size:0.7rem;color:#8e98b3;}
-    .post-image{width:100%;height:200px;object-fit:cover;background:#1a1e2a;}
-    .gain-btn{margin:14px 16px 18px 16px;background:#1f2a3a;border:none;padding:12px;border-radius:60px;font-weight:600;color:#eef2ff;cursor:pointer;width:calc(100% - 32px);transition:0.2s;}
-    .gain-btn.ready{background:#00a884;color:#0a0c12;}
-    .gain-btn.ready:hover{background:#00e68a;}
-    .floating-group{position:fixed;bottom:20px;right:16px;display:flex;flex-direction:column;gap:12px;z-index:200;}
-    .float-item{background:#13161f;backdrop-filter:blur(12px);width:52px;height:52px;border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.4);border:0.5px solid #2e3548;transition:0.2s;}
-    .float-item:hover{background:#1e2538;transform:scale(1.05);}
-    .slide-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;transition:visibility 0.2s,opacity 0.2s;opacity:0;}
-    .slide-popup.active{visibility:visible;opacity:1;}
-    .popup-left{background:#11141d;max-width:340px;width:85%;border-radius:40px;padding:28px 20px;text-align:center;border:0.5px solid #2e3548;transform:translateX(-40px);transition:transform 0.3s cubic-bezier(0.2,0.9,0.4,1.1);}
-    .slide-popup.active .popup-left{transform:translateX(0);}
-    .popup-bottom{background:#11141d;max-width:340px;width:85%;border-radius:40px;padding:28px 20px;text-align:center;border:0.5px solid #2e3548;transform:translateY(60px);transition:transform 0.3s cubic-bezier(0.2,0.9,0.4,1.1);}
-    .slide-popup.active .popup-bottom{transform:translateY(0);}
-    .popup-btn-gold{background:#00a884;border:none;padding:10px 24px;border-radius:40px;font-weight:bold;margin-top:20px;cursor:pointer;}
-    .close-popup-btn{background:#1f2a3a;margin-top:12px;border:none;padding:8px 20px;border-radius:40px;color:white;cursor:pointer;}
-    .input-group-sm input{width:100%;padding:12px;border-radius:40px;border:none;background:#1a1e2c;color:white;margin:8px 0;}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>NeTubeX | Rémunération digitale</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#18191a;color:#e4e6eb;scroll-behavior:smooth}
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+
+/* mode sombre type Facebook */
+.container{max-width:1300px;margin:0 auto;padding:0 28px}
+
+/* header */
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:24px 0 20px;flex-wrap:wrap;gap:20px;border-bottom:1px solid #3e4042}
+.logo-text{font-size:3.2rem;font-weight:800;background:linear-gradient(135deg,#b8f2e2,#4fd1c5);background-clip:text;-webkit-background-clip:text;color:transparent;letter-spacing:-0.8px;transition:transform 0.2s}
+.logo-text:hover{transform:scale(1.01)}
+.btn-group{display:flex;gap:18px}
+.btn-outline{background:transparent;border:1.5px solid #4fd1c5;padding:10px 30px;border-radius:40px;font-weight:600;color:#b8f2e2;text-decoration:none;transition:all 0.25s;font-size:0.95rem}
+.btn-outline:hover{background:#4fd1c520;border-color:#7ae2d2;transform:translateY(-2px)}
+.btn-solid{background:#4fd1c5;border:none;padding:10px 32px;border-radius:40px;font-weight:700;color:#18191a;text-decoration:none;transition:all 0.25s;font-size:0.95rem}
+.btn-solid:hover{background:#7ae2d2;transform:translateY(-2px);box-shadow:0 6px 14px rgba(0,0,0,0.3)}
+
+/* hero - photo membre pleine largeur, sans texte commentaire en dessous, mise en avant */
+.hero-photo-section{margin:32px 0 20px}
+.hero-text-block{margin-bottom:32px}
+.hero-text-block h1{font-size:3rem;font-weight:800;background:linear-gradient(125deg,#e0fef7,#4fd1c5);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:20px;line-height:1.2;animation:softGlow 3s ease-in-out infinite}
+@keyframes softGlow{0%{opacity:0.95;text-shadow:0 0 0px #4fd1c5}50%{opacity:1;text-shadow:0 0 10px rgba(79,209,197,0.3)}100%{opacity:0.95;text-shadow:0 0 0px #4fd1c5}}
+.hero-text-block p{font-size:1.18rem;color:#b0b3b8;margin-bottom:16px;border-left:3px solid #4fd1c5;padding-left:20px;line-height:1.5}
+/* photo pleine largeur, sans carte, sans commentaire direct - uniquement l'image qui s'anime */
+.fullwidth-member{width:100%;margin:16px 0 28px;border-radius:28px;overflow:hidden;box-shadow:0 20px 35px -10px rgba(0,0,0,0.5);transition:box-shadow 0.3s}
+.fullwidth-member:hover{box-shadow:0 28px 42px -12px rgba(79,209,197,0.2)}
+.member-hero-img{width:100%;max-height:580px;object-fit:cover;display:block;transition:transform 0.5s cubic-bezier(0.2,0.9,0.4,1.1),filter 0.4s;filter:brightness(1) contrast(1.02)}
+.fullwidth-member:hover .member-hero-img{transform:scale(1.01);filter:brightness(1.05) contrast(1.03)}
+
+/* section activités - design épuré gris sombre */
+.activities-wrapper{background:#242526;border-radius:32px;padding:32px 32px 48px;margin:48px 0 32px;border:1px solid #3a3b3c}
+.section-title{font-size:2rem;font-weight:700;margin-bottom:24px;color:#e4e6eb;display:inline-block;letter-spacing:-0.3px}
+.section-title:after{content:'';display:block;width:65px;height:3px;background:#4fd1c5;margin-top:8px;border-radius:3px}
+.activities-grid{display:flex;flex-wrap:wrap;gap:28px;margin:36px 0 16px;justify-content:center}
+.activity-card{background:#3a3b3c;border-radius:28px;padding:32px 24px;flex:1;min-width:240px;transition:all 0.3s ease;border:1px solid #4e4f50;text-align:center}
+.activity-card:hover{transform:translateY(-6px) scale(1.01);background:#4a4b4d;border-color:#4fd1c5;box-shadow:0 20px 30px -12px rgba(0,0,0,0.4)}
+.card-icon{font-size:3rem;color:#4fd1c5;margin-bottom:20px;transition:transform 0.2s}
+.activity-card:hover .card-icon{transform:scale(1.08);color:#9ef0e2}
+.activity-card h3{font-size:1.6rem;font-weight:700;margin-bottom:12px;color:#e4e6eb}
+.activity-card p{color:#b0b3b8;font-size:0.92rem;line-height:1.45}
+
+/* footer revisité - simple mais élégant, sans nombre, mention à propos */
+footer{background:#1c1d1f;margin-top:50px;padding:40px 20px 32px;border-top:1px solid #3a3b3c}
+.footer-inner{max-width:1300px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:32px;padding:0 20px}
+.footer-brand{flex:1}
+.footer-brand h3{font-size:1.7rem;font-weight:700;background:linear-gradient(135deg,#b8f2e2,#4fd1c5);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:6px}
+.footer-brand p{color:#9aa0a6;font-size:0.85rem}
+.footer-links{display:flex;gap:32px}
+.footer-links a{color:#c2c6cc;text-decoration:none;font-size:0.85rem;transition:color 0.2s}
+.footer-links a:hover{color:#4fd1c5}
+.footer-copyright p{color:#7e848c;font-size:0.8rem;text-align:right}
+@media (max-width:860px){
+    .hero-text-block h1{font-size:2.3rem}
+    .navbar{flex-direction:column;align-items:center}
+    .logo-text{font-size:2.6rem}
+    .footer-inner{flex-direction:column;text-align:center;gap:18px}
+    .footer-links{justify-content:center}
+    .footer-copyright p{text-align:center}
+    .activities-wrapper{padding:24px 20px}
+}
+@media (max-width:560px){
+    .container{padding:0 20px}
+    .member-hero-img{max-height:380px}
+    .activity-card{padding:24px 16px}
+    .hero-text-block h1{font-size:2rem}
+}
+/* fade-in sections */
+.fade-section{opacity:0;transform:translateY(28px);transition:opacity 0.75s cubic-bezier(0.2,0.9,0.3,1.1),transform 0.7s ease}
+.fade-section.visible{opacity:1;transform:translateY(0)}
+/* suppression des stats membres */
+.hero-stats{display:none}
+</style>
 </head>
 <body>
-<header class="header">
-  <div class="logo"><h1>NeTubeX</h1></div>
-  <button class="connexion-btn" id="openLoginBtn">Connexion</button>
-</header>
-
-<div id="loginPopup" class="popup-overlay">
-  <div class="popup-card">
-    <h2>Connexion</h2>
-    <div class="input-group"><input type="text" id="loginEmail" placeholder="Email"></div>
-    <div class="input-group"><input type="password" id="loginPassword" placeholder="Mot de passe"></div>
-    <div id="loginError" class="error-msg"></div>
-    <button class="popup-btn" id="submitLoginBtn">Se connecter</button>
-    <button class="popup-btn close-popup" id="closeLoginBtn">Fermer</button>
-    <p style="margin-top:12px; font-size:0.75rem;">Pas encore membre ? <a href="https://wa.me/243808359598" target="_blank" style="color:#00e68a;">Postulez maintenant</a></p>
-  </div>
-</div>
-
-<div class="dashboard-container" id="dashboardContainer">
-  <header class="header">
-    <div class="logo"><h1>NeTubeX</h1></div>
-    <div class="stats-mini">
-      <div class="stat-mini"><i class="fas fa-flag-checkered"></i> <span id="totalObjHeader">0</span> obj</div>
-      <div class="stat-mini"><i class="fas fa-calendar-week"></i> <span id="weekPoints">0</span> X</div>
+<div class="container">
+    <!-- header avec NeTubeX et boutons -->
+    <div class="navbar fade-section">
+        <div class="logo-text">NeTubeX</div>
+        <div class="btn-group">
+            <a href="#" class="btn-outline" id="connectBtn"><i class="fas fa-user-circle"></i> Me connecter</a>
+            <a href="#" class="btn-solid" id="postulerBtn"><i class="fas fa-arrow-right"></i> Postuler</a>
+        </div>
     </div>
-    <div class="icon-btn" id="settingsBtn"><i class="fas fa-cog"></i></div>
-  </header>
-  <div class="feed-container" id="feedContainer"></div>
-  <div class="floating-group">
-    <div class="float-item" id="topUserBtn"><i class="fas fa-crown"></i></div>
-    <div class="float-item" id="bonusBtn"><i class="fas fa-gift"></i></div>
-  </div>
-  <div id="topUserPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-trophy" style="font-size: 3rem; color: #ffcc44;"></i><h3 style="margin: 12px 0;">🏆 Meilleur NeTuber</h3><div id="topUserContent"><p><strong>ElenaX</strong></p><p>⭐ 12 450 X aujourd'hui</p><img src="https://randomuser.me/api/portraits/women/68.jpg" style="width: 80px; height: 80px; border-radius: 50%; margin: 12px 0;"></div><button class="popup-btn-gold close-top">Fermer</button></div></div>
-  <div id="bonusPopup" class="slide-popup"><div class="popup-bottom"><i class="fas fa-gift" style="font-size: 2.5rem; color: #ffaa44;"></i><h3 style="margin: 12px 0;">Bonus quotidien</h3><p>🎁 +250 X offerts aujourd'hui !</p><button class="popup-btn-gold" id="claimBonusBtn">Réclamer</button><button class="close-popup-btn close-bonus">Plus tard</button></div></div>
-  <div id="settingsPopup" class="slide-popup"><div class="popup-left"><h3>Espace Pilote</h3><div class="input-group-sm"><input type="text" id="pilotName" placeholder="Nom du pilote"></div><div class="input-group-sm"><input type="password" id="pilotPass" placeholder="Mot de passe"></div><button class="popup-btn-gold" id="loginRedirect">Accéder dashboard</button><button class="close-popup-btn" id="closeSettingsBtn">Fermer</button></div></div>
+
+    <!-- zone hero : texte + photo membre en pleine largeur, sans commentaire superflu, photo animée -->
+    <div class="hero-photo-section fade-section">
+        <div class="hero-text-block">
+            <h1>Transformez votre temps<br>en revenu concret</h1>
+            <p>NeTubeX est un espace de rémunération digitale qui transforme le temps passé en ligne en revenu concret. Chaque minute, chaque interaction devient une opportunité réelle.</p>
+        </div>
+        <!-- photo membre sans commentaire, en largeur maximale, animation au survol -->
+        <div class="fullwidth-member">
+            <img src="https://i.postimg.cc/CKtrLPtY/e3ee76ac-9224-4d38-bdd3-d4b29da56116.jpg" alt="Membre NeTubeX - rémunération digitale" class="member-hero-img" onerror="this.src='https://placehold.co/1300x580/2c3e35/4fd1c5?text=NeTubeX'">
+        </div>
+    </div>
+
+    <!-- Section Nos Activités (fond gris sombre élégant) -->
+    <div class="activities-wrapper fade-section">
+        <h2 class="section-title">Nos Activités</h2>
+        <div class="activities-grid">
+            <div class="activity-card">
+                <div class="card-icon"><i class="fas fa-tasks"></i></div>
+                <h3>Missions guidées</h3>
+                <p>Parcours simplifiés, objectifs clairs et récompenses immédiates pour valoriser chaque action.</p>
+            </div>
+            <div class="activity-card">
+                <div class="card-icon"><i class="fas fa-gamepad"></i></div>
+                <h3>Jeux rémunérateurs</h3>
+                <p>Défis quotidiens et classements. Jouez et générez des revenus tout en vous divertissant.</p>
+            </div>
+            <div class="activity-card">
+                <div class="card-icon"><i class="fas fa-brain"></i></div>
+                <h3>Quiz entreprises</h3>
+                <p>Testez vos connaissances, chaque bonne réponse rapporte des points convertibles en cash.</p>
+            </div>
+        </div>
+    </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- footer repensé, mention à propos de NeTubeX -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <h3>NeTubeX</h3>
+            <p>Espace de rémunération digitale</p>
+        </div>
+        <div class="footer-links">
+            <a href="#"><i class="fas fa-info-circle"></i> À propos</a>
+            <a href="#"><i class="fas fa-envelope"></i> Contact</a>
+            <a href="#"><i class="fas fa-shield-alt"></i> Confidentialité</a>
+        </div>
+        <div class="footer-copyright">
+            <p>© 2026 NeTubeX — Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>
+
 <script>
-const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-const games = [
-  { id:1, name:"Cyber Rush", avatar:"🎮", img:"https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&auto=format", rewardX:18500, claimed:false },
-  { id:2, name:"Neon Drifter", avatar:"🏎️", img:"https://images.unsplash.com/photo-1611996575748-3f697d1b7a0e?w=600&auto=format", rewardX:24750, claimed:false },
-  { id:3, name:"Pixel Arena", avatar:"🎯", img:"https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=600&auto=format", rewardX:19200, claimed:false },
-  { id:4, name:"Mystic Kingdom", avatar:"🧙", img:"https://images.unsplash.com/photo-1614294148960-4aa973632f5d?w=600&auto=format", rewardX:31000, claimed:false },
-  { id:5, name:"Rocket Clash", avatar:"🚀", img:"https://images.unsplash.com/photo-1627856013091-8e5b5b9c6e1a?w=600&auto=format", rewardX:22800, claimed:false },
-  { id:6, name:"Shadow Hunter", avatar:"🗡️", img:"https://images.unsplash.com/photo-1590608897129-79e0c4ed36a4?w=600&auto=format", rewardX:45000, claimed:false },
-  { id:7, name:"Speed Circuit", avatar:"🏁", img:"https://images.unsplash.com/photo-1618090648761-11bdbffdd2a3?w=600&auto=format", rewardX:15900, claimed:false },
-  { id:8, name:"Galactic Wars", avatar:"🌌", img:"https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=600&auto=format", rewardX:37250, claimed:false }
-];
-let totalObj = 0, weekPoints = 0, bonusClaimedToday = false, currentUserEmail = null;
-
-function loadData() {
-  const saved = localStorage.getItem(`netubex_${currentUserEmail}`);
-  if(saved) {
-    const data = JSON.parse(saved);
-    totalObj = data.totalObj || 0;
-    weekPoints = data.weekPoints || 0;
-    bonusClaimedToday = data.bonusClaimedToday || false;
-    if(data.games) {
-      data.games.forEach(g => { const game = games.find(x => x.id === g.id); if(game) game.claimed = g.claimed; });
+(function() {
+    // animations fade-in au scroll
+    const fadeElements = document.querySelectorAll('.fade-section');
+    function checkFadeIn() {
+        const winH = window.innerHeight;
+        fadeElements.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if(rect.top < winH - 70 && rect.bottom > 20) {
+                el.classList.add('visible');
+            }
+        });
     }
-  } else { resetGameClaims(); }
-  updateStats(); renderFeed();
-}
-function saveAll() {
-  if(!currentUserEmail) return;
-  const toSave = { totalObj, weekPoints, bonusClaimedToday, games: games.map(g => ({ id:g.id, claimed:g.claimed })) };
-  localStorage.setItem(`netubex_${currentUserEmail}`, JSON.stringify(toSave));
-}
-function resetGameClaims(){ games.forEach(g=>g.claimed=false); totalObj=0; weekPoints=0; bonusClaimedToday=false; }
-function updateStats(){ document.getElementById('totalObjHeader').innerText = totalObj; document.getElementById('weekPoints').innerText = weekPoints.toLocaleString(); }
-function claimGame(game) {
-  if(game.claimed) { alert("✅ Déjà récompensé !"); return; }
-  game.claimed = true; totalObj++; weekPoints += game.rewardX; updateStats(); saveAll(); renderFeed();
-  alert(`🎉 +${game.rewardX.toLocaleString()} X gagnés !`);
-}
-function renderFeed() {
-  const container = document.getElementById('feedContainer'); if(!container) return;
-  container.innerHTML = '';
-  games.forEach(game => {
-    const card = document.createElement('div'); card.className = 'post-card';
-    card.innerHTML = `<div class="post-header"><div class="avatar">${game.avatar}</div><div class="post-meta"><h4>${game.name} <span style="color:#00e68a;">• ${game.rewardX.toLocaleString()} X</span></h4><span>${game.claimed ? '✓ Récompensé' : 'Disponible'}</span></div></div><img class="post-image" src="${game.img}" alt="${game.name}"><button class="gain-btn ${!game.claimed ? 'ready' : ''}" data-id="${game.id}">${game.claimed ? 'Terminé' : 'Gagner ' + game.rewardX.toLocaleString() + ' X'}</button>`;
-    container.appendChild(card);
-    const btn = card.querySelector('.gain-btn');
-    if(btn && !game.claimed) btn.addEventListener('click', () => claimGame(game));
-  });
-}
-function openPopup(popupId){ const popup=document.getElementById(popupId); if(popup) popup.classList.add('active'); }
-function closePopup(popupId){ const popup=document.getElementById(popupId); if(popup) popup.classList.remove('active'); }
-function showDashboard() {
-  document.getElementById('dashboardContainer').classList.add('active');
-  loadData();
-}
-function logoutAndReset() {
-  document.getElementById('dashboardContainer').classList.remove('active');
-  currentUserEmail = null;
-  resetGameClaims();
-  document.getElementById('loginEmail').value = '';
-  document.getElementById('loginPassword').value = '';
-}
+    window.addEventListener('scroll', checkFadeIn);
+    window.addEventListener('resize', checkFadeIn);
+    setTimeout(checkFadeIn, 80);
+    checkFadeIn();
 
-document.getElementById('openLoginBtn').onclick = () => openPopup('loginPopup');
-document.getElementById('closeLoginBtn').onclick = () => closePopup('loginPopup');
-document.getElementById('submitLoginBtn').onclick = async () => {
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value.trim();
-  const errorDiv = document.getElementById('loginError');
-  if(!email || !password){ errorDiv.textContent = "Remplissez tous les champs"; return; }
-  try {
-    const query = await db.collection('users').where('email','==',email).where('password','==',password).get();
-    if(query.empty){ errorDiv.textContent = "Email ou mot de passe incorrect."; return; }
-    const user = query.docs[0].data();
-    currentUserEmail = email;
-    closePopup('loginPopup');
-    showDashboard();
-  } catch(err){ console.error(err); errorDiv.textContent = "Erreur lors de la connexion."; }
-};
+    // boutons
+    const connectBtn = document.getElementById('connectBtn');
+    const postulerBtn = document.getElementById('postulerBtn');
+    if(connectBtn) {
+        connectBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert("🔐 Connexion à l'espace membre NeTubeX — Accédez à votre tableau de rémunération.");
+        });
+    }
+    if(postulerBtn) {
+        postulerBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert("📝 Merci pour votre intérêt ! Un accompagnement vous sera proposé pour postuler et débuter.");
+        });
+    }
 
-document.getElementById('settingsBtn')?.addEventListener('click', () => openPopup('settingsPopup'));
-document.getElementById('closeSettingsBtn')?.addEventListener('click', () => closePopup('settingsPopup'));
-document.getElementById('loginRedirect')?.addEventListener('click', () => {
-  const name = document.getElementById('pilotName').value.trim();
-  const pass = document.getElementById('pilotPass').value.trim();
-  if(name && pass) { alert(`Bienvenue Pilote ${name}, redirection...`); window.open('https://www.netubex.com/dashboard', '_blank'); closePopup('settingsPopup'); }
-  else alert("Nom et mot de passe requis");
-});
-document.getElementById('topUserBtn')?.addEventListener('click', () => openPopup('topUserPopup'));
-document.querySelectorAll('.close-top').forEach(btn => btn.addEventListener('click', () => closePopup('topUserPopup')));
-document.getElementById('bonusBtn')?.addEventListener('click', () => {
-  if(bonusClaimedToday) { alert("Bonus déjà réclamé aujourd'hui ! Reviens demain."); return; }
-  openPopup('bonusPopup');
-});
-document.getElementById('claimBonusBtn')?.addEventListener('click', () => {
-  if(!bonusClaimedToday) { weekPoints += 250; bonusClaimedToday = true; updateStats(); saveAll(); alert("🎁 +250 X bonus quotidien !"); closePopup('bonusPopup'); }
-});
-document.querySelectorAll('.close-bonus').forEach(btn => btn.addEventListener('click', () => closePopup('bonusPopup')));
-document.querySelectorAll('.slide-popup').forEach(pop => { pop.addEventListener('click', (e) => { if(e.target === pop) pop.classList.remove('active'); }); });
-window.addEventListener('load', () => { if(currentUserEmail) showDashboard(); });
+    // animation supplémentaire sur la photo : effet d'entrée subtile
+    const memberImg = document.querySelector('.member-hero-img');
+    if(memberImg && memberImg.complete && memberImg.naturalWidth === 0) {
+        memberImg.onerror = function() {
+            this.src = "https://placehold.co/1300x580/2c3e35/4fd1c5?text=NeTubeX+Mode+Sombre";
+        };
+    }
+})();
 </script>
 </body>
 </html>
