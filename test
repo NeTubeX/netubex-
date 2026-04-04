@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>NeTubeX - Accès TimeWall</title>
+  <style>
+    body { text-align: center; font-family: Arial, sans-serif; margin: 30px; background: #f0f0f0; }
+    .container { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+    button { padding: 12px 25px; font-size: 16px; margin: 10px; cursor: pointer; border: none; border-radius: 5px; }
+    input { padding: 12px; margin: 8px; width: 90%; display: block; margin-left: auto; margin-right: auto; border: 1px solid #ccc; border-radius: 5px; }
+    .login-form { text-align: left; margin-top: 20px; }
+    #timewallBtn button { background-color: #4CAF50; color: white; }
+    #timewallBtn button:hover { background-color: #45a049; }
+    .error { color: red; margin-top: 10px; }
+    .success { color: green; }
+    h2 { color: #333; }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+<div class="container">
+  <h2>🚀 NeTubeX - Accès TimeWall</h2>
+
+  <!-- Zone de connexion -->
+  <div id="loginForm" class="login-form">
+    <h3>Connexion à votre compte</h3>
+    <input type="email" id="email" placeholder="Email Firebase" />
+    <input type="password" id="password" placeholder="Mot de passe" />
+    <button id="loginBtn">Se connecter</button>
+    <p id="errorMessage" class="error"></p>
+  </div>
+
+  <!-- Zone TimeWall (cachée au départ) -->
+  <div id="timewallZone" style="display:none;">
+    <p class="success">✅ Connecté avec succès !</p>
+    <div id="timewallBtn">
+      <a href="#" target="_blank">
+        <button>🎯 Accéder à TimeWall</button>
+      </a>
+    </div>
+    <button id="logoutBtn" style="background-color:#f44336; color:white;">Se déconnecter</button>
+  </div>
+</div>
+
+<script>
+  // Configuration Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
+    authDomain: "netubexmoney.firebaseapp.com",
+    projectId: "netubexmoney",
+    storageBucket: "netubexmoney.firebasestorage.app",
+    messagingSenderId: "856592608176",
+    appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
+  };
+
+  // Initialisation
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // Éléments DOM
+  const loginForm = document.getElementById('loginForm');
+  const timewallZone = document.getElementById('timewallZone');
+  const timewallLink = document.querySelector('#timewallBtn a');
+  const errorMessage = document.getElementById('errorMessage');
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  // Vérifier si l'utilisateur est déjà connecté
+  auth.onAuthStateChanged((user) => {
+    if (user && user.uid) {
+      // ✅ INJECTION DE L'UID DANS TIMEWALL
+      const userID = user.uid;
+      const timewallURL = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${userID}`;
+      timewallLink.href = timewallURL;
+
+      loginForm.style.display = 'none';
+      timewallZone.style.display = 'block';
+      errorMessage.textContent = '';
+      console.log(`🔑 UID injecté : ${userID}`);
+    } else {
+      loginForm.style.display = 'block';
+      timewallZone.style.display = 'none';
+    }
+  });
+
+  // Connexion Firebase
+  loginBtn.onclick = () => {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    if (!email || !password) {
+      errorMessage.textContent = "Veuillez entrer email et mot de passe";
+      return;
+    }
+
+    errorMessage.textContent = "Connexion en cours...";
+    errorMessage.style.color = "blue";
+
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        errorMessage.textContent = "";
+      })
+      .catch((error) => {
+        console.error("Erreur :", error.code);
+        if (error.code === 'auth/unauthorized-domain') {
+          errorMessage.innerHTML = "❌ Domaine non autorisé ! Ajoutez netubex.github.io dans Firebase Console → Authentication → Authorized domains";
+        } else if (error.code === 'auth/invalid-credential') {
+          errorMessage.textContent = "❌ Email ou mot de passe incorrect";
+        } else {
+          errorMessage.textContent = `❌ ${error.message}`;
+        }
+        errorMessage.style.color = "red";
+      });
+  };
+
+  // Déconnexion
+  logoutBtn.onclick = () => {
+    auth.signOut();
+    document.getElementById('email').value = '';
+    document.getElementById('password').value = '';
+  };
+</script>
+
+</body>
+</html>
