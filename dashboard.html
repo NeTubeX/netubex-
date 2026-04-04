@@ -1,60 +1,400 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>NeTubeX Dashboard</title>
-<style>
-  body { font-family: Arial, sans-serif; background:#f0f2f5; margin:0; }
-  header { background:#4CAF50; color:white; padding:20px; text-align:center; }
-  header img { height:50px; vertical-align: middle; margin-right: 10px; }
-  .container { max-width:900px; margin: 30px auto; background:white; padding:30px; border-radius:10px; box-shadow:0 0 20px rgba(0,0,0,0.1); }
-  .section { margin-bottom: 30px; }
-  h2 { color:#333; }
-  button { padding:12px 25px; font-size:16px; border:none; border-radius:5px; cursor:pointer; margin-top:10px; }
-  #timewallBtn { background:#4CAF50; color:white; }
-  #timewallBtn:hover { background:#45a049; }
-  #logoutBtn { background:#f44336; color:white; }
-  .info { background:#f9f9f9; padding:15px; border-radius:5px; margin-top:10px; }
-  input { padding:10px; margin:5px 0; width:95%; border-radius:5px; border:1px solid #ccc; display:block; }
-  .error { color:red; }
-</style>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>NeTubeX | TimeWall Access Portal</title>
+  <!-- Google Fonts pour une typographie premium -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 (gratuit, icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0B1120 0%, #111827 100%);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+    }
+
+    /* Effet de grille subtil en arrière-plan */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .glass-card {
+      max-width: 520px;
+      width: 100%;
+      background: rgba(18, 25, 45, 0.85);
+      backdrop-filter: blur(12px);
+      border-radius: 48px;
+      padding: 40px 36px;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .glass-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 30px 55px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.15);
+    }
+
+    /* Logo & identité */
+    .logo-section {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .logo-marquee {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: linear-gradient(145deg, #1A2A47, #0F172A);
+      padding: 16px 28px;
+      border-radius: 100px;
+      border: 1px solid rgba(0, 255, 255, 0.25);
+      box-shadow: 0 10px 20px -5px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .logo-icon {
+      font-size: 44px;
+      filter: drop-shadow(0 0 6px #00e0ff);
+      color: #3b82f6;
+      background: linear-gradient(135deg, #60a5fa, #3b82f6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .logo-icon i {
+      background: linear-gradient(135deg, #38bdf8, #2dd4bf);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .logo-text {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(120deg, #FFFFFF, #94a3b8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .logo-badge {
+      background: rgba(59,130,246,0.2);
+      padding: 5px 10px;
+      border-radius: 40px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #a5f3fc;
+      border: 1px solid rgba(59,130,246,0.5);
+      letter-spacing: 0.3px;
+    }
+
+    .title-tag {
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .title-tag h2 {
+      font-size: 24px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #E2E8F0, #9CA3AF);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.2px;
+    }
+
+    .title-tag p {
+      color: #8ba0bc;
+      font-size: 14px;
+      margin-top: 8px;
+      font-weight: 400;
+    }
+
+    /* Formulaire */
+    .login-form {
+      margin-top: 28px;
+    }
+
+    .input-group {
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .input-group i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #5b6e8c;
+      font-size: 18px;
+      transition: color 0.2s;
+    }
+
+    .input-group input {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid #2d3a5e;
+      padding: 16px 16px 16px 48px;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      border-radius: 28px;
+      color: #f1f5f9;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .input-group input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.3);
+      background: #0f172a;
+    }
+
+    .input-group input::placeholder {
+      color: #5b6e8c;
+      font-weight: 400;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(95deg, #2563eb, #1e40af);
+      border: none;
+      padding: 14px;
+      border-radius: 40px;
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-primary i {
+      font-size: 18px;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(95deg, #3b82f6, #2563eb);
+      transform: scale(0.98);
+      box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+    }
+
+    /* TimeWall zone */
+    .timewall-panel {
+      text-align: center;
+      animation: fadeInUp 0.5s ease;
+    }
+
+    .success-card {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 56px;
+      padding: 14px 18px;
+      margin-bottom: 32px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      backdrop-filter: blur(4px);
+    }
+
+    .success-card i {
+      font-size: 26px;
+      color: #10b981;
+      filter: drop-shadow(0 0 5px #10b981);
+    }
+
+    .success-card span {
+      font-weight: 600;
+      color: #bef264;
+      font-size: 16px;
+    }
+
+    .timewall-btn-wrapper {
+      margin: 32px 0 28px;
+    }
+
+    .timewall-btn {
+      background: linear-gradient(105deg, #0f2b3d, #0a1a2f);
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      border-radius: 60px;
+      padding: 16px 28px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #caf0ff;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 10px 20px -8px rgba(0,0,0,0.5);
+      text-decoration: none;
+    }
+
+    .timewall-btn i {
+      font-size: 28px;
+      color: #2dd4bf;
+    }
+
+    .timewall-btn:hover {
+      background: linear-gradient(105deg, #1a3f58, #0f233f);
+      border-color: #2dd4bf;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 20px 30px -10px rgba(0,0,0,0.6);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #4b5563;
+      padding: 12px 20px;
+      border-radius: 40px;
+      color: #cbd5e1;
+      font-weight: 500;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 15px;
+    }
+
+    .btn-outline:hover {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: #f97316;
+      color: #facc15;
+    }
+
+    .error-msg {
+      background: rgba(220, 38, 38, 0.15);
+      border-left: 4px solid #ef4444;
+      padding: 12px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      margin-top: 18px;
+      color: #fecaca;
+      font-weight: 500;
+      text-align: left;
+    }
+
+    .info-note {
+      font-size: 11px;
+      text-align: center;
+      margin-top: 24px;
+      color: #4c6a8f;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    hr {
+      margin: 22px 0;
+      border-color: #1e2a44;
+    }
+  </style>
+  <!-- Firebase compat v9 -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
 <body>
-
-<header>
-  <img src="https://i.postimg.cc/7PCDVjD9/IMG-3349.jpg" alt="NeTubeX Logo">
-  <span>NeTubeX Dashboard</span>
-</header>
-
-<div class="container">
-  <!-- Zone Connexion -->
-  <div id="loginSection" class="section">
-    <h2>Connexion à votre compte</h2>
-    <input type="email" id="email" placeholder="Email Firebase">
-    <input type="password" id="password" placeholder="Mot de passe">
-    <button id="loginBtn">Se connecter</button>
-    <p id="errorMessage" class="error"></p>
+<div class="glass-card">
+  <!-- Logo / Marque professionnelle -->
+  <div class="logo-section">
+    <div class="logo-marquee">
+      <div class="logo-icon">
+        <i class="fas fa-crown"></i>
+      </div>
+      <div class="logo-text">NeTubeX</div>
+      <div class="logo-badge">PREMIUM</div>
+    </div>
+    <div class="title-tag">
+      <h2>TimeWall Access Portal</h2>
+      <p><i class="fas fa-shield-alt"></i> Sécurisé · Connexion unique</p>
+    </div>
   </div>
 
-  <!-- Zone Dashboard -->
-  <div id="dashboardSection" class="section" style="display:none;">
-    <h2>Bienvenue, <span id="userEmail"></span> !</h2>
-    <div class="info">
-      <p><strong>UID :</strong> <span id="userUID"></span></p>
-      <p><strong>Email :</strong> <span id="userEmail2"></span></p>
+  <!-- Zone de connexion -->
+  <div id="loginForm" class="login-form">
+    <div class="input-group">
+      <i class="fas fa-envelope"></i>
+      <input type="email" id="email" placeholder="Adresse email Firebase" autocomplete="email">
     </div>
-    <a id="timewallLink" href="#" target="_blank">
-      <button id="timewallBtn">Accéder à TimeWall 🎯</button>
-    </a>
-    <br>
-    <button id="logoutBtn">Se déconnecter</button>
+    <div class="input-group">
+      <i class="fas fa-lock"></i>
+      <input type="password" id="password" placeholder="Mot de passe" autocomplete="current-password">
+    </div>
+    <button id="loginBtn" class="btn-primary">
+      <i class="fas fa-arrow-right-to-bracket"></i> Se connecter
+    </button>
+    <div id="errorMessage" class="error-msg" style="display: none;"></div>
+    <div class="info-note">
+      <i class="fas fa-database"></i> Accès privé TimeWall · UID dynamique
+    </div>
+  </div>
+
+  <!-- Zone TimeWall après authentification -->
+  <div id="timewallZone" style="display:none;">
+    <div class="timewall-panel">
+      <div class="success-card">
+        <i class="fas fa-check-circle"></i>
+        <span>Connexion établie · Accès TimeWall activé</span>
+      </div>
+      <div class="timewall-btn-wrapper" id="timewallBtn">
+        <a href="#" target="_blank" rel="noopener noreferrer" class="timewall-btn">
+          <i class="fas fa-rocket"></i> Lancer TimeWall
+          <i class="fas fa-external-link-alt" style="font-size: 14px;"></i>
+        </a>
+      </div>
+      <button id="logoutBtn" class="btn-outline">
+        <i class="fas fa-sign-out-alt"></i> Déconnexion sécurisée
+      </button>
+      <div class="info-note" style="margin-top: 20px;">
+        <i class="fas fa-id-card"></i> Votre identifiant unique est injecté automatiquement
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
-  // Configuration Firebase
+  // Configuration Firebase (inchangée mais documentée)
   const firebaseConfig = {
     apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
     authDomain: "netubexmoney.firebaseapp.com",
@@ -64,65 +404,147 @@
     appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
   };
 
+  // Initialisation Firebase
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
 
-  const loginSection = document.getElementById('loginSection');
-  const dashboardSection = document.getElementById('dashboardSection');
+  // Éléments DOM
+  const loginFormDiv = document.getElementById('loginForm');
+  const timewallZoneDiv = document.getElementById('timewallZone');
+  const timewallLinkAnchor = document.querySelector('#timewallBtn a');
+  const errorMsgDiv = document.getElementById('errorMessage');
   const loginBtn = document.getElementById('loginBtn');
   const logoutBtn = document.getElementById('logoutBtn');
-  const errorMessage = document.getElementById('errorMessage');
-  const userEmail = document.getElementById('userEmail');
-  const userEmail2 = document.getElementById('userEmail2');
-  const userUID = document.getElementById('userUID');
-  const timewallLink = document.getElementById('timewallLink');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
 
-  // Vérifie si l'utilisateur est connecté
-  auth.onAuthStateChanged((user) => {
-    if(user && user.uid){
-      loginSection.style.display = 'none';
-      dashboardSection.style.display = 'block';
-      userEmail.textContent = user.email;
-      userEmail2.textContent = user.email;
-      userUID.textContent = user.uid;
-
-      // Inject UID dans TimeWall
-      timewallLink.href = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${user.uid}`;
+  // Helper pour afficher les erreurs de manière élégante
+  function setError(message, isError = true) {
+    if (!message) {
+      errorMsgDiv.style.display = 'none';
+      errorMsgDiv.textContent = '';
+      return;
+    }
+    errorMsgDiv.style.display = 'block';
+    errorMsgDiv.innerHTML = `<i class="fas fa-circle-exclamation" style="margin-right: 8px;"></i> ${message}`;
+    if (isError) {
+      errorMsgDiv.style.borderLeftColor = '#ef4444';
+      errorMsgDiv.style.color = '#fecaca';
     } else {
-      loginSection.style.display = 'block';
-      dashboardSection.style.display = 'none';
+      errorMsgDiv.style.borderLeftColor = '#3b82f6';
+      errorMsgDiv.style.color = '#b9e0ff';
+    }
+  }
+
+  // Gestionnaire d'état d'authentification (coeur)
+  auth.onAuthStateChanged((user) => {
+    if (user && user.uid) {
+      // INJECTION DE L'UID DANS L'URL TIMEWALL (paramètre uid)
+      const userID = user.uid;
+      const timewallURL = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${userID}`;
+      if (timewallLinkAnchor) {
+        timewallLinkAnchor.href = timewallURL;
+        // Optionnel : ajouter attribut target blank et sécurité
+        timewallLinkAnchor.setAttribute('target', '_blank');
+        timewallLinkAnchor.setAttribute('rel', 'noopener noreferrer');
+      }
+      // Transition UI
+      loginFormDiv.style.display = 'none';
+      timewallZoneDiv.style.display = 'block';
+      setError('');
+      console.log(`🔐 TimeWall UID injecté : ${userID} | URL prête`);
+    } else {
+      loginFormDiv.style.display = 'block';
+      timewallZoneDiv.style.display = 'none';
+      // Nettoyer les champs pour plus de sécurité
+      if (emailInput) emailInput.value = '';
+      if (passwordInput) passwordInput.value = '';
+      setError('');
     }
   });
 
-  loginBtn.onclick = () => {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+  // Connexion avec gestion des erreurs avancée
+  loginBtn.onclick = async () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
 
-    if(!email || !password){
-      errorMessage.textContent = "Veuillez remplir tous les champs";
+    if (!email || !password) {
+      setError("Veuillez renseigner l'email et le mot de passe", true);
       return;
     }
 
-    errorMessage.textContent = "Connexion en cours...";
-    errorMessage.style.color = "blue";
+    // Message de chargement
+    setError("Authentification en cours... <i class='fas fa-spinner fa-pulse'></i>", false);
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = `<i class="fas fa-spinner fa-pulse"></i> Connexion...`;
 
-    auth.signInWithEmailAndPassword(email, password)
-      .then(() => { errorMessage.textContent = ""; })
-      .catch((err) => {
-        console.error(err);
-        errorMessage.style.color = "red";
-        if(err.code === 'auth/unauthorized-domain'){
-          errorMessage.textContent = "Domaine non autorisé ! Ajoutez netubex.github.io dans Firebase Console → Authentication → Authorized domains";
-        } else {
-          errorMessage.textContent = `Erreur : ${err.message}`;
-        }
-      });
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+      setError(""); // succès, UI changée par onAuthStateChanged
+    } catch (error) {
+      console.error("Firebase Auth Error:", error.code, error.message);
+      let userFriendlyMsg = "";
+      switch (error.code) {
+        case 'auth/unauthorized-domain':
+          userFriendlyMsg = "Domaine non autorisé. Ajoutez netubex.github.io dans Firebase Console → Authentication → Authorized domains.";
+          break;
+        case 'auth/invalid-credential':
+          userFriendlyMsg = "Email ou mot de passe incorrect. Vérifiez vos identifiants.";
+          break;
+        case 'auth/user-not-found':
+          userFriendlyMsg = "Aucun compte associé à cet email.";
+          break;
+        case 'auth/wrong-password':
+          userFriendlyMsg = "Mot de passe invalide.";
+          break;
+        case 'auth/too-many-requests':
+          userFriendlyMsg = "Trop de tentatives. Réessayez plus tard.";
+          break;
+        default:
+          userFriendlyMsg = `Erreur : ${error.message}`;
+      }
+      setError(userFriendlyMsg, true);
+    } finally {
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = `<i class="fas fa-arrow-right-to-bracket"></i> Se connecter`;
+    }
   };
 
-  logoutBtn.onclick = () => {
-    auth.signOut();
+  // Déconnexion propre avec retour interface
+  logoutBtn.onclick = async () => {
+    try {
+      await auth.signOut();
+      // Le onAuthStateChanged remet automatiquement l'affichage login
+      // Remise à zéro des champs pour éviter toute fuite visuelle
+      if (emailInput) emailInput.value = '';
+      if (passwordInput) passwordInput.value = '';
+      setError("Déconnexion réussie. À bientôt !", false);
+      setTimeout(() => setError(''), 2000);
+    } catch (err) {
+      console.warn(err);
+      setError("Erreur lors de la déconnexion", true);
+    }
   };
+
+  // Gestion du bouton "Enter" pour plus de fluidité
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && loginFormDiv.style.display !== 'none') {
+      loginBtn.click();
+    }
+  };
+  emailInput.addEventListener('keypress', handleKeyPress);
+  passwordInput.addEventListener('keypress', handleKeyPress);
+
+  // Petit effet visuel pour moderniser l'expérience (focus lumineux)
+  const inputs = document.querySelectorAll('.input-group input');
+  inputs.forEach(inp => {
+    inp.addEventListener('focus', () => {
+      inp.parentElement.style.transform = 'scale(1.01)';
+    });
+    inp.addEventListener('blur', () => {
+      inp.parentElement.style.transform = 'scale(1)';
+    });
+  });
 </script>
-
 </body>
 </html>
