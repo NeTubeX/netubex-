@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-<title>NeTubeX · TimeWall Dashboard</title>
+<title>NeTubeX · Tableau de bord</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <style>
@@ -17,23 +18,26 @@
 
 body {
   background: #0a0c12;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, 'Segoe UI', sans-serif;
   color: #eef2ff;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* Header */
+/* Header premium */
 .header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(10, 12, 18, 0.95);
+  background: rgba(10, 12, 18, 0.92);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(0, 230, 138, 0.25);
+  border-bottom: 1px solid rgba(0, 230, 138, 0.2);
   padding: 0.75rem 1.25rem;
+  padding-top: max(0.75rem, env(safe-area-inset-top));
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
 }
 
 .logo h1 {
@@ -43,6 +47,7 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  letter-spacing: -0.3px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -51,7 +56,9 @@ body {
 .logo h1 i {
   background: none;
   -webkit-background-clip: unset;
+  background-clip: unset;
   color: #2dd4bf;
+  font-size: 1.4rem;
 }
 
 .user-code {
@@ -62,6 +69,8 @@ body {
   font-size: 0.75rem;
   font-weight: 600;
   font-family: monospace;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(4px);
 }
 
 .user-code i {
@@ -80,14 +89,17 @@ body {
   cursor: pointer;
   transition: 0.2s;
   border: 0.5px solid rgba(0, 230, 138, 0.3);
+  color: #cbd5e6;
 }
 
 .icon-btn:hover {
   background: #1e2538;
   transform: scale(1.05);
+  border-color: #00e68a;
+  color: white;
 }
 
-/* Dashboard container */
+/* feed / dashboard */
 .feed-container {
   max-width: 720px;
   margin: 1.5rem auto 100px auto;
@@ -104,9 +116,12 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  display: inline-block;
+  letter-spacing: -0.3px;
+  margin-bottom: 0.25rem;
 }
 
-/* Cartes jeu */
+/* cartes jeux */
 .post-card {
   background: rgba(17, 20, 29, 0.8);
   backdrop-filter: blur(4px);
@@ -114,6 +129,7 @@ body {
   overflow: hidden;
   border: 0.5px solid rgba(45, 212, 191, 0.2);
   transition: all 0.25s ease;
+  box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.5);
 }
 
 .post-card:hover {
@@ -143,6 +159,7 @@ body {
 .post-meta h4 {
   font-size: 1.2rem;
   font-weight: 700;
+  letter-spacing: -0.2px;
 }
 
 .post-meta span {
@@ -155,6 +172,7 @@ body {
   height: 210px;
   object-fit: cover;
   background: #11141d;
+  transition: transform 0.3s ease;
 }
 
 .gain-btn {
@@ -164,7 +182,8 @@ body {
   padding: 14px;
   border-radius: 60px;
   font-weight: 700;
-  color: white;
+  font-size: 0.95rem;
+  color: #ffffff;
   cursor: pointer;
   width: calc(100% - 36px);
   transition: 0.2s;
@@ -172,35 +191,18 @@ body {
   align-items: center;
   justify-content: center;
   gap: 10px;
+  letter-spacing: 0.3px;
+  box-shadow: 0 5px 12px rgba(0, 168, 132, 0.3);
 }
 
 .gain-btn:hover {
   background: linear-gradient(95deg, #00e68a, #00a884);
   transform: scale(1.01);
   color: #0a0c12;
+  box-shadow: 0 8px 18px rgba(0, 230, 138, 0.4);
 }
 
-/* Carte TimeWall spéciale */
-.timewall-card {
-  background: linear-gradient(135deg, rgba(0, 40, 35, 0.8), rgba(0, 20, 25, 0.95));
-  border: 1px solid rgba(255, 193, 7, 0.5);
-}
-
-.timewall-btn-special {
-  background: radial-gradient(circle at 30% 10%, #fbbf24, #d97706);
-  color: #0a0c12;
-  font-weight: 800;
-}
-
-.timewall-btn-special i {
-  color: #0a0c12;
-}
-
-.timewall-btn-special:hover {
-  background: radial-gradient(circle at 30% 10%, #ffd966, #f59e0b);
-}
-
-/* Floating elements */
+/* Floating & popups */
 .floating-group {
   position: fixed;
   bottom: 24px;
@@ -225,6 +227,7 @@ body {
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
   border: 0.5px solid #2e3548;
   transition: 0.2s;
+  color: #cbd5e6;
 }
 
 .float-item:hover {
@@ -239,9 +242,9 @@ body {
 
 .float-item.x-button i {
   color: #0a0c12;
+  font-weight: 900;
 }
 
-/* Popups */
 .slide-popup {
   position: fixed;
   top: 0;
@@ -288,6 +291,7 @@ body {
   font-weight: bold;
   margin-top: 20px;
   cursor: pointer;
+  font-size: 1rem;
 }
 
 .close-popup-btn {
@@ -308,6 +312,7 @@ body {
   background: #1a1e2c;
   color: white;
   margin: 12px 0;
+  font-size: 0.9rem;
   outline: none;
   text-align: center;
 }
@@ -327,6 +332,11 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 0.85rem;
+}
+
+.game-stats .label {
+  color: #9aa3c2;
 }
 
 .game-stats .value {
@@ -369,69 +379,74 @@ body {
   z-index: 2001;
   border: none;
   font-size: 1.6rem;
-  font-weight: bold;
   color: #0a0c12;
+  font-weight: bold;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.iframe-close:hover {
+  background: #ffed4e;
+  transform: scale(1.05);
 }
 
 .fullscreen-iframe iframe {
   width: 100%;
   height: 100%;
   border: none;
+  background: white;
 }
 
-/* Overlay de connexion SIMPLE et FONCTIONNEL */
-.login-overlay {
+/* login overlay élégant (remplace formulaire par défaut) */
+.auth-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #0a0c12 0%, #111827 100%);
+  background: rgba(5, 7, 12, 0.96);
+  backdrop-filter: blur(16px);
   z-index: 3000;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: all 0.3s;
+  visibility: visible;
+  opacity: 1;
 }
 
-.login-overlay.hidden {
-  display: none;
+.auth-overlay.hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
-.login-card {
-  background: rgba(17, 20, 29, 0.95);
-  backdrop-filter: blur(8px);
+.auth-card {
+  background: #11141d;
   border-radius: 56px;
-  padding: 48px 36px;
+  padding: 42px 32px;
   width: 90%;
   max-width: 420px;
   text-align: center;
-  border: 1px solid rgba(0, 230, 138, 0.3);
+  border: 1px solid rgba(0, 230, 138, 0.25);
   box-shadow: 0 25px 45px rgba(0, 0, 0, 0.6);
 }
 
-.login-logo {
-  font-size: 3.5rem;
-  margin-bottom: 12px;
+.auth-logo {
+  font-size: 3rem;
+  margin-bottom: 8px;
+  color: #2dd4bf;
 }
 
-.login-logo i {
-  background: linear-gradient(135deg, #2dd4bf, #00e68a);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.login-card h2 {
-  font-size: 1.8rem;
+.auth-card h2 {
+  font-size: 1.9rem;
   background: linear-gradient(135deg, #e0f2fe, #00e68a);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
-.login-card input {
+.auth-card input {
   width: 100%;
   padding: 16px 20px;
   margin: 10px 0;
@@ -444,12 +459,12 @@ body {
   transition: 0.2s;
 }
 
-.login-card input:focus {
+.auth-card input:focus {
   border-color: #00e68a;
-  box-shadow: 0 0 0 2px rgba(0, 230, 138, 0.2);
+  box-shadow: 0 0 0 2px rgba(0, 230, 138, 0.3);
 }
 
-.login-btn {
+.auth-btn {
   background: linear-gradient(95deg, #00a884, #1e6b5e);
   width: 100%;
   padding: 14px;
@@ -458,99 +473,72 @@ body {
   font-size: 1rem;
   border: none;
   color: white;
-  margin-top: 20px;
+  margin-top: 16px;
   cursor: pointer;
-  transition: 0.2s;
 }
 
-.login-btn:hover {
-  background: linear-gradient(95deg, #00e68a, #00a884);
-  color: #0a0c12;
-}
-
-.login-error {
+.auth-error {
   color: #f87171;
   margin-top: 16px;
   font-size: 0.8rem;
 }
 
 .dashboard-wrapper {
-  display: none;
-}
-
-.logout-text {
-  cursor: pointer;
   transition: 0.2s;
 }
 
-.logout-text:hover {
+.logout-action {
+  cursor: pointer;
   color: #f97316;
+  margin-left: 12px;
 }
 </style>
 </head>
 <body>
 
-<!-- OVERLAY DE CONNEXION FONCTIONNEL -->
-<div id="loginOverlay" class="login-overlay">
-  <div class="login-card">
-    <div class="login-logo">
-      <i class="fas fa-crown"></i>
-    </div>
-    <h2>NeTubeX <span style="font-size: 1rem;">| TimeWall</span></h2>
+<!-- Overlay de connexion Firebase (élégant, professionnel) -->
+<div id="authOverlay" class="auth-overlay">
+  <div class="auth-card">
+    <div class="auth-logo"><i class="fas fa-crown"></i></div>
+    <h2>NeTubeX <span style="font-size: 1rem;">| Accès Premium</span></h2>
     <input type="email" id="loginEmail" placeholder="Email Firebase" autocomplete="email">
     <input type="password" id="loginPassword" placeholder="Mot de passe" autocomplete="current-password">
-    <button id="doLoginBtn" class="login-btn"><i class="fas fa-arrow-right-to-bracket"></i> Se connecter</button>
-    <div id="loginErrorMsg" class="login-error"></div>
-    <p style="margin-top: 20px; font-size: 0.7rem; color: #5f6c8a;">Accès sécurisé · UID dynamique TimeWall</p>
+    <button id="firebaseLoginBtn" class="auth-btn"><i class="fas fa-arrow-right-to-bracket"></i> Se connecter</button>
+    <div id="authErrorMsg" class="auth-error"></div>
+    <p style="margin-top: 18px; font-size: 0.7rem; color:#5f6c8a;">Accès sécurisé · Plateforme exclusive</p>
   </div>
 </div>
 
-<!-- DASHBOARD (caché jusqu'à connexion) -->
-<div id="dashboardWrapper" class="dashboard-wrapper">
+<!-- DASHBOARD principal (caché tant que non connecté) -->
+<div id="dashboardApp" style="display: none;">
   <header class="header">
     <div class="logo"><h1><i class="fas fa-bolt"></i> NeTubeX</h1></div>
-    <div class="user-code" id="userDisplay"><i class="fas fa-id-card"></i> Chargement...</div>
+    <div class="user-code" id="userUidDisplay"><i class="fas fa-id-card"></i> Connexion...</div>
     <div class="icon-btn" id="settingsBtn"><i class="fas fa-cog"></i></div>
   </header>
-
   <div class="feed-container">
     <div class="section-title">🎮 Jeux Rémunérateurs</div>
     <div id="gamesContainer"></div>
-
-    <!-- CARTE TIMEWALL - BOUTON LANCER TIMEWALL -->
-    <div class="post-card timewall-card">
-      <div class="post-header">
-        <div class="avatar" style="background: linear-gradient(145deg,#b45309,#f59e0b);"><i class="fas fa-hourglass-half" style="color:#ffd966;"></i></div>
-        <div class="post-meta">
-          <h4>TimeWall <span style="color:#fbbf24;">● Premium Access</span></h4>
-          <span>Portail rémunérateur · injection UID automatique</span>
-        </div>
-      </div>
-      <img class="post-image" src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&auto=format" alt="TimeWall" style="opacity:0.9;">
-      <button id="launchTimewallButton" class="gain-btn timewall-btn-special">
-        <i class="fas fa-rocket"></i> Lancer TimeWall <i class="fas fa-external-link-alt"></i>
-      </button>
-    </div>
   </div>
 
   <div class="floating-group">
     <div class="float-item x-button" id="xButton"><i class="fas fa-times"></i> X</div>
   </div>
 
-  <!-- Popup paramètres gain.gg -->
+  <!-- Popup Paramètres (connexion gain.gg) -->
   <div id="settingsPopup" class="slide-popup">
     <div class="popup-left">
       <i class="fas fa-user-astronaut" style="font-size:2.5rem;color:#00e68a;"></i>
       <h3 style="margin:12px 0;">Connexion Pilote</h3>
       <div class="input-group"><input type="password" id="pilotPassword" placeholder="Mot de passe" autocomplete="off"></div>
-      <button class="popup-btn" id="loginGainBtn">Se connecter</button>
+      <button class="popup-btn" id="loginBtn">Se connecter</button>
       <button class="close-popup-btn" id="closeSettingsBtn">Fermer</button>
     </div>
   </div>
 
-  <!-- Popup détails jeu -->
+  <!-- Popup Détails jeu -->
   <div id="gamePopup" class="slide-popup">
-    <div class="popup-left">
+    <div class="popup-left" id="gamePopupContent">
       <i class="fas fa-fish" style="font-size:2.5rem;color:#00e68a;"></i>
       <h3 style="margin:12px 0;" id="gamePopupTitle">Wild Fish</h3>
       <div class="game-stats" id="gamePopupStats"></div>
@@ -558,10 +546,10 @@ body {
     </div>
   </div>
 
-  <!-- Iframe fullscreen -->
+  <!-- Fullscreen iframe - Portail Premium -->
   <div id="fullscreenIframe" class="fullscreen-iframe">
     <button class="iframe-close" id="closeIframeBtn">✕</button>
-    <iframe src="https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Accueil_principal" title="Wikipedia"></iframe>
+    <iframe id="portalIframe" src="about:blank" title="Portail Premium"></iframe>
   </div>
 </div>
 
@@ -575,24 +563,72 @@ body {
     messagingSenderId: "856592608176",
     appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
   };
-
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
 
-  // DOM elements
-  const loginOverlay = document.getElementById('loginOverlay');
-  const dashboardWrapper = document.getElementById('dashboardWrapper');
+  // DOM elements dashboard / login
+  const authOverlay = document.getElementById('authOverlay');
+  const dashboardDiv = document.getElementById('dashboardApp');
   const loginEmail = document.getElementById('loginEmail');
   const loginPassword = document.getElementById('loginPassword');
-  const doLoginBtn = document.getElementById('doLoginBtn');
-  const loginErrorMsg = document.getElementById('loginErrorMsg');
-  const userDisplaySpan = document.getElementById('userDisplay');
-  const launchTimewallBtn = document.getElementById('launchTimewallButton');
+  const firebaseLoginBtn = document.getElementById('firebaseLoginBtn');
+  const authErrorMsg = document.getElementById('authErrorMsg');
+  const userUidSpan = document.getElementById('userUidDisplay');
+  
+  // Variables pour URL dynamique (userId injecté mais invisible visuellement)
+  let currentUserId = null;
+  let portalDynamicLink = "#";
 
-  let currentUserUid = null;
-  let timewallUrl = "#";
+  // Gestion de l'état de connexion Firebase
+  auth.onAuthStateChanged((user) => {
+    if (user && user.uid) {
+      currentUserId = user.uid;
+      // L'UID est stocké mais invisible visuellement (texte neutre)
+      userUidSpan.innerHTML = `<i class="fas fa-id-card"></i> Membre Premium`;
+      // Cacher overlay login et afficher dashboard
+      authOverlay.classList.add('hidden');
+      dashboardDiv.style.display = 'block';
+      
+      // Construction du lien dynamique avec injection UID (invisible pour l'utilisateur)
+      portalDynamicLink = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${user.uid}`;
+      
+      // Injection silencieuse dans la console (professionnel)
+      console.log(`🔐 Session sécurisée établie`);
+      renderGames(); // render les jeux après connexion
+    } else {
+      // Aucun utilisateur -> afficher login
+      authOverlay.classList.remove('hidden');
+      dashboardDiv.style.display = 'none';
+      currentUserId = null;
+    }
+  });
 
-  // ----- DONNÉES JEUX (inchangées) -----
+  // Fonction connexion Firebase
+  firebaseLoginBtn.onclick = async () => {
+    const email = loginEmail.value.trim();
+    const pwd = loginPassword.value;
+    if (!email || !pwd) {
+      authErrorMsg.innerText = "Veuillez entrer email et mot de passe";
+      return;
+    }
+    authErrorMsg.innerText = "Connexion sécurisée...";
+    firebaseLoginBtn.disabled = true;
+    try {
+      await auth.signInWithEmailAndPassword(email, pwd);
+      authErrorMsg.innerText = "";
+    } catch (err) {
+      console.error(err);
+      let friendly = "Erreur d'authentification";
+      if (err.code === 'auth/invalid-credential') friendly = "Email ou mot de passe incorrect";
+      else if (err.code === 'auth/unauthorized-domain') friendly = "Domaine non autorisé (Firebase Console)";
+      else friendly = err.message;
+      authErrorMsg.innerText = `❌ ${friendly}`;
+    } finally {
+      firebaseLoginBtn.disabled = false;
+    }
+  };
+
+  // ----- DONNEES JEUX (inchangées) -----
   const games = [
     {id:1,name:"Wild Fish",avatar:"🐟",img:"https://i.postimg.cc/CLL76wDt/IMG-3445.jpg",totalPoints:177846,objectives:[{name:"Reach 100 meter",points:10},{name:"Reach 200 meter",points:34},{name:"Reach 400 meter",points:473},{name:"Reach 700 meter",points:2644},{name:"Reach 1200 meter",points:9443},{name:"Reach 2000 meter",points:47212},{name:"Reach 5000 meter",points:118030}]},
     {id:2,name:"Cyber Rush",avatar:"🎮",img:"https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&auto=format",totalPoints:1000000,objectives:[{name:"Niveau 1",points:125000},{name:"Niveau 2",points:125000},{name:"Niveau 3",points:125000},{name:"Niveau 4",points:125000},{name:"Niveau 5",points:125000},{name:"Niveau 6",points:125000},{name:"Niveau 7",points:125000},{name:"Niveau 8",points:125000}]},
@@ -609,13 +645,7 @@ body {
       const card = document.createElement('div');
       card.className = 'post-card';
       card.innerHTML = `
-        <div class="post-header">
-          <div class="avatar">${game.avatar}</div>
-          <div class="post-meta">
-            <h4>${game.name} <span style="color:#00e68a;">• ${game.totalPoints.toLocaleString()} points</span></h4>
-            <span>${game.objectives.length} objectifs</span>
-          </div>
-        </div>
+        <div class="post-header"><div class="avatar">${game.avatar}</div><div class="post-meta"><h4>${game.name} <span style="color:#00e68a;">• ${game.totalPoints.toLocaleString()} points</span></h4><span>${game.objectives.length} objectifs</span></div></div>
         <img class="post-image" src="${game.img}" alt="${game.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format'">
         <button class="gain-btn" data-id="${game.id}">🎮 Gagner ${game.totalPoints.toLocaleString()} points</button>
       `;
@@ -630,7 +660,7 @@ body {
     statsContainer.innerHTML = '';
     game.objectives.forEach(obj => {
       const p = document.createElement('p');
-      p.innerHTML = `<span style="color:#9aa3c2;">🎯 ${obj.name}</span><span class="value">${obj.points.toLocaleString()} pts</span>`;
+      p.innerHTML = `<span class="label">🎯 ${obj.name}</span><span class="value">${obj.points.toLocaleString()} pts</span>`;
       statsContainer.appendChild(p);
     });
     document.getElementById('gamePopupTitle').innerText = game.name;
@@ -644,117 +674,54 @@ body {
     document.getElementById(popupId).classList.remove('active');
   }
 
-  // Gestion de l'état de connexion Firebase
-  auth.onAuthStateChanged((user) => {
-    if (user && user.uid) {
-      currentUserUid = user.uid;
-      // Afficher UID dans le header
-      const shortUid = currentUserUid.substring(0, 12) + "…";
-      userDisplaySpan.innerHTML = `<i class="fas fa-code"></i> UID: ${shortUid}`;
-      
-      // Cacher login, afficher dashboard
-      loginOverlay.classList.add('hidden');
-      dashboardWrapper.style.display = 'block';
-      
-      // Générer l'URL TimeWall avec UID
-      timewallUrl = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUserUid}`;
-      
-      // Configurer le bouton TimeWall
-      if (launchTimewallBtn) {
-        launchTimewallBtn.onclick = (e) => {
-          e.preventDefault();
-          if (timewallUrl && timewallUrl !== "#") {
-            window.open(timewallUrl, '_blank', 'noopener,noreferrer');
-          } else {
-            alert("URL TimeWall non disponible");
-          }
-        };
-      }
-      
-      // Afficher les jeux
-      renderGames();
-    } else {
-      // Aucun utilisateur -> afficher login
-      loginOverlay.classList.remove('hidden');
-      dashboardWrapper.style.display = 'none';
-      currentUserUid = null;
-      if (launchTimewallBtn) launchTimewallBtn.onclick = null;
-    }
-  });
-
-  // Connexion Firebase
-  doLoginBtn.onclick = async () => {
-    const email = loginEmail.value.trim();
-    const password = loginPassword.value;
-    
-    if (!email || !password) {
-      loginErrorMsg.innerText = "Veuillez entrer email et mot de passe";
-      return;
-    }
-    
-    loginErrorMsg.innerText = "Connexion en cours...";
-    loginErrorMsg.style.color = "#60a5fa";
-    doLoginBtn.disabled = true;
-    
-    try {
-      await auth.signInWithEmailAndPassword(email, password);
-      loginErrorMsg.innerText = "";
-    } catch (error) {
-      console.error(error);
-      let errorText = "";
-      if (error.code === 'auth/invalid-credential') {
-        errorText = "Email ou mot de passe incorrect";
-      } else if (error.code === 'auth/unauthorized-domain') {
-        errorText = "Domaine non autorisé. Ajoutez ce domaine dans Firebase Console → Authentication → Authorized domains";
-      } else if (error.code === 'auth/user-not-found') {
-        errorText = "Aucun compte associé à cet email";
-      } else {
-        errorText = error.message;
-      }
-      loginErrorMsg.innerText = "❌ " + errorText;
-      loginErrorMsg.style.color = "#f87171";
-    } finally {
-      doLoginBtn.disabled = false;
-    }
-  };
-
-  // Gestion des popups et éléments existants (inchangés)
+  // Evenements popups existants (inchangés)
   document.getElementById('closeGamePopup')?.addEventListener('click', () => closePopup('gamePopup'));
+  const settingsPopup = document.getElementById('settingsPopup');
   document.getElementById('settingsBtn')?.addEventListener('click', () => {
-    const pwdInput = document.getElementById('pilotPassword');
-    if (pwdInput) pwdInput.value = '';
+    if (document.getElementById('pilotPassword')) document.getElementById('pilotPassword').value = '';
     openPopup('settingsPopup');
   });
   document.getElementById('closeSettingsBtn')?.addEventListener('click', () => closePopup('settingsPopup'));
-  document.getElementById('loginGainBtn')?.addEventListener('click', () => {
+  document.getElementById('loginBtn')?.addEventListener('click', () => {
     const password = document.getElementById('pilotPassword')?.value || '';
     if (password === "Chancelle12") {
       window.open('https://gain.gg/earn', '_blank');
       closePopup('settingsPopup');
     } else {
       alert("❌ Mot de passe incorrect");
-      const pwdInput = document.getElementById('pilotPassword');
-      if (pwdInput) pwdInput.value = '';
+      if (document.getElementById('pilotPassword')) document.getElementById('pilotPassword').value = '';
     }
   });
   document.querySelectorAll('.slide-popup').forEach(pop => {
     pop.addEventListener('click', (e) => { if (e.target === pop) pop.classList.remove('active'); });
   });
+  
+  // Bouton X - Ouvre le portail premium avec UID injecté
   document.getElementById('xButton')?.addEventListener('click', () => {
-    document.getElementById('fullscreenIframe')?.classList.add('active');
+    const iframe = document.getElementById('portalIframe');
+    if (iframe && portalDynamicLink && portalDynamicLink !== "#") {
+      iframe.src = portalDynamicLink;
+      document.getElementById('fullscreenIframe')?.classList.add('active');
+    } else if (iframe && currentUserId) {
+      // Fallback si le lien n'a pas été généré
+      iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUserId}`;
+      document.getElementById('fullscreenIframe')?.classList.add('active');
+    } else {
+      alert("Portail temporairement indisponible");
+    }
   });
+  
   document.getElementById('closeIframeBtn')?.addEventListener('click', () => {
+    const iframe = document.getElementById('portalIframe');
+    if (iframe) iframe.src = 'about:blank';
     document.getElementById('fullscreenIframe')?.classList.remove('active');
   });
   
-  // Support Enter key
-  const handleLoginEnter = (e) => {
-    if (e.key === 'Enter') {
-      doLoginBtn.click();
-    }
-  };
-  loginEmail.addEventListener('keypress', handleLoginEnter);
-  loginPassword.addEventListener('keypress', handleLoginEnter);
+  // On évite d'appeler renderGames avant que le dashboard soit visible, on le fera à l'état connecté.
+  // S'assurer que si déjà connecté, renderGames est appelé.
+  if (auth.currentUser) {
+    renderGames();
+  }
 </script>
 </body>
 </html>
