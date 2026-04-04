@@ -3,109 +3,386 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>NeTubeX | Rémunération digitale</title>
+<title>NeTubeX | Espace de rémunération digitale</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#18191a;color:#e4e6eb;scroll-behavior:smooth}
+body{
+    font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    background:linear-gradient(135deg, #0a0e1a 0%, #0f1629 50%, #0a0f1f 100%);
+    color:#e4e6eb;
+    scroll-behavior:smooth;
+    min-height:100vh;
+}
 @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
 
-/* mode sombre type Facebook */
-.container{max-width:1300px;margin:0 auto;padding:0 28px}
+.container{max-width:1400px;margin:0 auto;padding:0 28px}
 
 /* header */
-.navbar{display:flex;justify-content:space-between;align-items:center;padding:24px 0 20px;flex-wrap:wrap;gap:20px;border-bottom:1px solid #3e4042}
-.logo-text{font-size:3.2rem;font-weight:800;background:linear-gradient(135deg,#b8f2e2,#4fd1c5);background-clip:text;-webkit-background-clip:text;color:transparent;letter-spacing:-0.8px;transition:transform 0.2s}
-.logo-text:hover{transform:scale(1.01)}
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:28px 0 24px;
+    flex-wrap:wrap;
+    gap:20px;
+    border-bottom:1px solid rgba(79,209,197,0.15);
+    backdrop-filter:blur(10px);
+    background:rgba(10,14,26,0.3);
+}
+.logo-text{
+    font-size:3.2rem;
+    font-weight:800;
+    background:linear-gradient(135deg,#6ee7ff,#3b82f6,#1e40af);
+    background-clip:text;
+    -webkit-background-clip:text;
+    color:transparent;
+    letter-spacing:-0.8px;
+    animation:logoGlow 3s ease-in-out infinite;
+}
+@keyframes logoGlow{
+    0%,100%{filter:drop-shadow(0 0 5px rgba(59,130,246,0.3));}
+    50%{filter:drop-shadow(0 0 15px rgba(59,130,246,0.6));}
+}
 .btn-group{display:flex;gap:18px}
-.btn-outline{background:transparent;border:1.5px solid #4fd1c5;padding:10px 30px;border-radius:40px;font-weight:600;color:#b8f2e2;text-decoration:none;transition:all 0.25s;font-size:0.95rem}
-.btn-outline:hover{background:#4fd1c520;border-color:#7ae2d2;transform:translateY(-2px)}
-.btn-solid{background:#4fd1c5;border:none;padding:10px 32px;border-radius:40px;font-weight:700;color:#18191a;text-decoration:none;transition:all 0.25s;font-size:0.95rem}
-.btn-solid:hover{background:#7ae2d2;transform:translateY(-2px);box-shadow:0 6px 14px rgba(0,0,0,0.3)}
+.btn-solid{
+    background:linear-gradient(135deg,#3b82f6,#1e40af);
+    border:none;
+    padding:12px 40px;
+    border-radius:40px;
+    font-weight:700;
+    color:#fff;
+    text-decoration:none;
+    transition:all 0.3s ease;
+    font-size:1rem;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    box-shadow:0 4px 15px rgba(59,130,246,0.3);
+}
+.btn-solid:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 25px rgba(59,130,246,0.5);
+    background:linear-gradient(135deg,#2563eb,#1e3a8a);
+}
 
-/* hero - photo membre pleine largeur, sans texte commentaire en dessous, mise en avant */
-.hero-photo-section{margin:32px 0 20px}
-.hero-text-block{margin-bottom:32px}
-.hero-text-block h1{font-size:3rem;font-weight:800;background:linear-gradient(125deg,#e0fef7,#4fd1c5);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:20px;line-height:1.2;animation:softGlow 3s ease-in-out infinite}
-@keyframes softGlow{0%{opacity:0.95;text-shadow:0 0 0px #4fd1c5}50%{opacity:1;text-shadow:0 0 10px rgba(79,209,197,0.3)}100%{opacity:0.95;text-shadow:0 0 0px #4fd1c5}}
-.hero-text-block p{font-size:1.18rem;color:#b0b3b8;margin-bottom:16px;border-left:3px solid #4fd1c5;padding-left:20px;line-height:1.5}
-/* photo pleine largeur, sans carte, sans commentaire direct - uniquement l'image qui s'anime */
-.fullwidth-member{width:100%;margin:16px 0 28px;border-radius:28px;overflow:hidden;box-shadow:0 20px 35px -10px rgba(0,0,0,0.5);transition:box-shadow 0.3s}
-.fullwidth-member:hover{box-shadow:0 28px 42px -12px rgba(79,209,197,0.2)}
-.member-hero-img{width:100%;max-height:580px;object-fit:cover;display:block;transition:transform 0.5s cubic-bezier(0.2,0.9,0.4,1.1),filter 0.4s;filter:brightness(1) contrast(1.02)}
-.fullwidth-member:hover .member-hero-img{transform:scale(1.01);filter:brightness(1.05) contrast(1.03)}
+/* hero */
+.hero-section{margin:60px 0 30px}
+.hero-text-block{text-align:center;margin-bottom:50px}
+.hero-text-block h1{
+    font-size:3.8rem;
+    font-weight:800;
+    background:linear-gradient(125deg,#a5f3fc,#3b82f6,#1e40af);
+    background-clip:text;
+    -webkit-background-clip:text;
+    color:transparent;
+    margin-bottom:24px;
+    line-height:1.2;
+    animation:textPulse 3s ease-in-out infinite;
+}
+@keyframes textPulse{
+    0%,100%{opacity:0.95;letter-spacing:-0.5px;}
+    50%{opacity:1;letter-spacing:0.5px;}
+}
+.hero-text-block p{
+    font-size:1.2rem;
+    color:#cbd5e1;
+    max-width:700px;
+    margin:0 auto;
+    line-height:1.6;
+    background:rgba(59,130,246,0.1);
+    padding:20px 30px;
+    border-radius:60px;
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(59,130,246,0.2);
+}
 
-/* section activités - design épuré gris sombre */
-.activities-wrapper{background:#242526;border-radius:32px;padding:32px 32px 48px;margin:48px 0 32px;border:1px solid #3a3b3c}
-.section-title{font-size:2rem;font-weight:700;margin-bottom:24px;color:#e4e6eb;display:inline-block;letter-spacing:-0.3px}
-.section-title:after{content:'';display:block;width:65px;height:3px;background:#4fd1c5;margin-top:8px;border-radius:3px}
-.activities-grid{display:flex;flex-wrap:wrap;gap:28px;margin:36px 0 16px;justify-content:center}
-.activity-card{background:#3a3b3c;border-radius:28px;padding:32px 24px;flex:1;min-width:240px;transition:all 0.3s ease;border:1px solid #4e4f50;text-align:center}
-.activity-card:hover{transform:translateY(-6px) scale(1.01);background:#4a4b4d;border-color:#4fd1c5;box-shadow:0 20px 30px -12px rgba(0,0,0,0.4)}
-.card-icon{font-size:3rem;color:#4fd1c5;margin-bottom:20px;transition:transform 0.2s}
-.activity-card:hover .card-icon{transform:scale(1.08);color:#9ef0e2}
-.activity-card h3{font-size:1.6rem;font-weight:700;margin-bottom:12px;color:#e4e6eb}
-.activity-card p{color:#b0b3b8;font-size:0.92rem;line-height:1.45}
+/* photo pleine largeur sans carte - effet fade in/out permanent */
+.photo-wall{
+    width:100vw;
+    position:relative;
+    left:50%;
+    right:50%;
+    margin-left:-50vw;
+    margin-right:-50vw;
+    margin-top:40px;
+    margin-bottom:60px;
+    overflow:hidden;
+    background:linear-gradient(135deg,#0a0e1a,#0f1629);
+}
+.member-photo-frame{
+    width:100%;
+    position:relative;
+    background:#000;
+}
+.member-full-img{
+    width:100%;
+    height:auto;
+    max-height:75vh;
+    object-fit:cover;
+    display:block;
+    opacity:0;
+    animation:fadeBreathing 8s ease-in-out infinite;
+    filter:brightness(0.95) contrast(1.05) saturate(1.1);
+    transition:filter 0.5s ease;
+}
+.member-full-img:hover{
+    filter:brightness(1.05) contrast(1.08) saturate(1.15);
+}
+@keyframes fadeBreathing{
+    0%,100%{
+        opacity:0.75;
+        transform:scale(1);
+    }
+    25%{
+        opacity:1;
+        transform:scale(1.01);
+    }
+    50%{
+        opacity:0.85;
+        transform:scale(1);
+    }
+    75%{
+        opacity:1;
+        transform:scale(1.01);
+    }
+}
+/* overlay dégradé sur la photo */
+.photo-overlay{
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    height:40%;
+    background:linear-gradient(to top, rgba(10,14,26,0.9), transparent);
+    pointer-events:none;
+}
 
-/* footer revisité - simple mais élégant, sans nombre, mention à propos */
-footer{background:#1c1d1f;margin-top:50px;padding:40px 20px 32px;border-top:1px solid #3a3b3c}
-.footer-inner{max-width:1300px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:32px;padding:0 20px}
-.footer-brand{flex:1}
-.footer-brand h3{font-size:1.7rem;font-weight:700;background:linear-gradient(135deg,#b8f2e2,#4fd1c5);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:6px}
-.footer-brand p{color:#9aa0a6;font-size:0.85rem}
-.footer-links{display:flex;gap:32px}
-.footer-links a{color:#c2c6cc;text-decoration:none;font-size:0.85rem;transition:color 0.2s}
-.footer-links a:hover{color:#4fd1c5}
-.footer-copyright p{color:#7e848c;font-size:0.8rem;text-align:right}
+/* section activités avec gris élégant #D0D6E5 */
+.activities-wrapper{
+    background:#D0D6E5;
+    border-radius:32px;
+    padding:50px 32px 60px;
+    margin:50px 0 40px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.1);
+}
+.section-title{
+    font-size:2.2rem;
+    font-weight:700;
+    margin-bottom:30px;
+    color:#0f172a;
+    text-align:center;
+    position:relative;
+}
+.section-title:after{
+    content:'';
+    display:block;
+    width:80px;
+    height:3px;
+    background:linear-gradient(90deg,#3b82f6,#1e40af);
+    margin:15px auto 0;
+    border-radius:3px;
+    animation:lineExpand 2s ease-in-out infinite;
+}
+@keyframes lineExpand{
+    0%,100%{width:80px;}
+    50%{width:120px;}
+}
+.activities-grid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:30px;
+    margin:40px 0 20px;
+    justify-content:center;
+}
+.activity-card{
+    background:white;
+    border-radius:28px;
+    padding:35px 28px;
+    flex:1;
+    min-width:250px;
+    transition:all 0.5s cubic-bezier(0.2,0.9,0.4,1.1);
+    border:1px solid rgba(59,130,246,0.2);
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    cursor:pointer;
+    box-shadow:0 4px 15px rgba(0,0,0,0.05);
+}
+.activity-card::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:100%;
+    height:100%;
+    background:linear-gradient(90deg,transparent,rgba(59,130,246,0.1),transparent);
+    transition:left 0.5s;
+}
+.activity-card:hover::before{
+    left:100%;
+}
+.activity-card:hover{
+    transform:translateY(-10px);
+    border-color:#3b82f6;
+    box-shadow:0 20px 35px rgba(59,130,246,0.2);
+}
+.card-icon{
+    font-size:3.2rem;
+    background:linear-gradient(135deg,#3b82f6,#1e40af);
+    background-clip:text;
+    -webkit-background-clip:text;
+    color:transparent;
+    margin-bottom:20px;
+    transition:transform 0.3s;
+}
+.activity-card:hover .card-icon{
+    transform:scale(1.1);
+}
+.activity-card h3{
+    font-size:1.5rem;
+    font-weight:700;
+    margin-bottom:15px;
+    color:#0f172a;
+}
+.activity-card p{
+    color:#475569;
+    font-size:0.95rem;
+    line-height:1.5;
+}
+
+/* footer professionnel */
+footer{
+    background:#0f172a;
+    margin-top:60px;
+    padding:50px 20px 40px;
+    border-top:1px solid rgba(59,130,246,0.2);
+}
+.footer-inner{
+    max-width:1300px;
+    margin:0 auto;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:center;
+    gap:32px;
+    padding:0 20px;
+}
+.footer-brand h3{
+    font-size:1.8rem;
+    font-weight:700;
+    background:linear-gradient(135deg,#6ee7ff,#3b82f6);
+    background-clip:text;
+    -webkit-background-clip:text;
+    color:transparent;
+    margin-bottom:8px;
+}
+.footer-brand p{
+    color:#94a3b8;
+    font-size:0.85rem;
+}
+.footer-links{
+    display:flex;
+    gap:40px;
+}
+.footer-links a{
+    color:#cbd5e1;
+    text-decoration:none;
+    font-size:0.9rem;
+    transition:color 0.3s;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+}
+.footer-links a:hover{
+    color:#3b82f6;
+}
+.footer-copyright p{
+    color:#64748b;
+    font-size:0.85rem;
+}
+
+/* fade-in sections - apparition au scroll */
+.fade-section{
+    opacity:0;
+    transform:translateY(40px);
+    transition:opacity 0.9s cubic-bezier(0.2,0.9,0.3,1.1),transform 0.8s ease;
+}
+.fade-section.visible{
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* animation pour les cartes activités */
+.activity-card {
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity 0.6s ease, transform 0.5s ease, all 0.3s ease;
+}
+.activity-card.visible-card {
+    opacity:1;
+    transform:translateY(0);
+}
+
 @media (max-width:860px){
     .hero-text-block h1{font-size:2.3rem}
     .navbar{flex-direction:column;align-items:center}
-    .logo-text{font-size:2.6rem}
-    .footer-inner{flex-direction:column;text-align:center;gap:18px}
-    .footer-links{justify-content:center}
+    .logo-text{font-size:2.5rem}
+    .member-full-img{max-height:50vh}
+    .footer-inner{flex-direction:column;text-align:center}
     .footer-copyright p{text-align:center}
-    .activities-wrapper{padding:24px 20px}
+    .hero-text-block p{font-size:1rem;margin:0 15px}
+    .footer-links{justify-content:center}
 }
+
 @media (max-width:560px){
     .container{padding:0 20px}
-    .member-hero-img{max-height:380px}
-    .activity-card{padding:24px 16px}
-    .hero-text-block h1{font-size:2rem}
+    .hero-text-block h1{font-size:1.8rem}
+    .activity-card{padding:25px 18px}
+    .btn-solid{padding:10px 28px;font-size:0.9rem}
+    .hero-text-block p{padding:15px 20px}
+    .footer-links{gap:25px}
 }
-/* fade-in sections */
-.fade-section{opacity:0;transform:translateY(28px);transition:opacity 0.75s cubic-bezier(0.2,0.9,0.3,1.1),transform 0.7s ease}
-.fade-section.visible{opacity:1;transform:translateY(0)}
-/* suppression des stats membres */
-.hero-stats{display:none}
 </style>
 </head>
 <body>
 <div class="container">
-    <!-- header avec NeTubeX et boutons -->
+    <!-- header avec logo et bouton postuler -->
     <div class="navbar fade-section">
         <div class="logo-text">NeTubeX</div>
         <div class="btn-group">
-            <a href="#" class="btn-outline" id="connectBtn"><i class="fas fa-user-circle"></i> Me connecter</a>
-            <a href="#" class="btn-solid" id="postulerBtn"><i class="fas fa-arrow-right"></i> Postuler</a>
+            <a href="#" class="btn-solid" id="postulerBtn">
+                <i class="fab fa-whatsapp"></i> Postuler
+            </a>
         </div>
     </div>
 
-    <!-- zone hero : texte + photo membre en pleine largeur, sans commentaire superflu, photo animée -->
-    <div class="hero-photo-section fade-section">
+    <!-- hero section -->
+    <div class="hero-section fade-section">
         <div class="hero-text-block">
             <h1>Transformez votre temps<br>en revenu concret</h1>
-            <p>NeTubeX est un espace de rémunération digitale qui transforme le temps passé en ligne en revenu concret. Chaque minute, chaque interaction devient une opportunité réelle.</p>
-        </div>
-        <!-- photo membre sans commentaire, en largeur maximale, animation au survol -->
-        <div class="fullwidth-member">
-            <img src="https://i.postimg.cc/CKtrLPtY/e3ee76ac-9224-4d38-bdd3-d4b29da56116.jpg" alt="Membre NeTubeX - rémunération digitale" class="member-hero-img" onerror="this.src='https://placehold.co/1300x580/2c3e35/4fd1c5?text=NeTubeX'">
+            <p>NeTubeX est un espace de rémunération digitale qui transforme chaque minute en opportunité réelle. Rejoignez une communauté innovante.</p>
         </div>
     </div>
+</div>
 
-    <!-- Section Nos Activités (fond gris sombre élégant) -->
-    <div class="activities-wrapper fade-section">
-        <h2 class="section-title">Nos Activités</h2>
-        <div class="activities-grid">
+<!-- photo pleine largeur sans carte - fade in/out permanent -->
+<div class="photo-wall">
+    <div class="member-photo-frame">
+        <img src="https://i.postimg.cc/CKtrLPtY/e3ee76ac-9224-4d38-bdd3-d4b29da56116.jpg" 
+             alt="Membre NeTubeX - Espace de rémunération" 
+             class="member-full-img"
+             onerror="this.src='https://placehold.co/1920x900/0f172a/3b82f6?text=NeTubeX+Night+Mode'">
+        <div class="photo-overlay"></div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- section Nos Activités avec apparition au scroll -->
+    <div class="activities-wrapper fade-section" id="activitiesSection">
+        <h2 class="section-title">Espace de rémunération</h2>
+        <div class="activities-grid" id="activitiesGrid">
             <div class="activity-card">
                 <div class="card-icon"><i class="fas fa-tasks"></i></div>
                 <h3>Missions guidées</h3>
@@ -125,7 +402,7 @@ footer{background:#1c1d1f;margin-top:50px;padding:40px 20px 32px;border-top:1px 
     </div>
 </div>
 
-<!-- footer repensé, mention à propos de NeTubeX -->
+<!-- footer professionnel -->
 <footer>
     <div class="footer-inner">
         <div class="footer-brand">
@@ -133,9 +410,8 @@ footer{background:#1c1d1f;margin-top:50px;padding:40px 20px 32px;border-top:1px 
             <p>Espace de rémunération digitale</p>
         </div>
         <div class="footer-links">
-            <a href="#"><i class="fas fa-info-circle"></i> À propos</a>
-            <a href="#"><i class="fas fa-envelope"></i> Contact</a>
-            <a href="#"><i class="fas fa-shield-alt"></i> Confidentialité</a>
+            <a href="#" id="aboutLink"><i class="fas fa-info-circle"></i> À propos</a>
+            <a href="#" id="privacyLink"><i class="fas fa-shield-alt"></i> Privacy</a>
         </div>
         <div class="footer-copyright">
             <p>© 2026 NeTubeX — Tous droits réservés.</p>
@@ -145,8 +421,9 @@ footer{background:#1c1d1f;margin-top:50px;padding:40px 20px 32px;border-top:1px 
 
 <script>
 (function() {
-    // animations fade-in au scroll
+    // Fade-in au scroll pour les sections principales
     const fadeElements = document.querySelectorAll('.fade-section');
+    
     function checkFadeIn() {
         const winH = window.innerHeight;
         fadeElements.forEach(el => {
@@ -156,34 +433,106 @@ footer{background:#1c1d1f;margin-top:50px;padding:40px 20px 32px;border-top:1px 
             }
         });
     }
-    window.addEventListener('scroll', checkFadeIn);
-    window.addEventListener('resize', checkFadeIn);
-    setTimeout(checkFadeIn, 80);
-    checkFadeIn();
-
-    // boutons
-    const connectBtn = document.getElementById('connectBtn');
-    const postulerBtn = document.getElementById('postulerBtn');
-    if(connectBtn) {
-        connectBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            alert("🔐 Connexion à l'espace membre NeTubeX — Accédez à votre tableau de rémunération.");
+    
+    // Animation des cartes activités une par une au scroll
+    const activityCards = document.querySelectorAll('.activity-card');
+    
+    function checkCardsVisibility() {
+        const winH = window.innerHeight;
+        activityCards.forEach((card, index) => {
+            const rect = card.getBoundingClientRect();
+            if(rect.top < winH - 50 && rect.bottom > 20) {
+                setTimeout(() => {
+                    card.classList.add('visible-card');
+                }, index * 150);
+            }
         });
     }
+    
+    window.addEventListener('scroll', () => {
+        checkFadeIn();
+        checkCardsVisibility();
+    });
+    window.addEventListener('resize', () => {
+        checkFadeIn();
+        checkCardsVisibility();
+    });
+    
+    setTimeout(() => {
+        checkFadeIn();
+        checkCardsVisibility();
+    }, 100);
+    
+    // Bouton postuler - redirection WhatsApp
+    const postulerBtn = document.getElementById('postulerBtn');
     if(postulerBtn) {
         postulerBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            alert("📝 Merci pour votre intérêt ! Un accompagnement vous sera proposé pour postuler et débuter.");
+            window.location.href = 'https://wa.me/243808359598';
         });
     }
-
-    // animation supplémentaire sur la photo : effet d'entrée subtile
-    const memberImg = document.querySelector('.member-hero-img');
-    if(memberImg && memberImg.complete && memberImg.naturalWidth === 0) {
-        memberImg.onerror = function() {
-            this.src = "https://placehold.co/1300x580/2c3e35/4fd1c5?text=NeTubeX+Mode+Sombre";
-        };
+    
+    // Liens footer vers #
+    const aboutLink = document.getElementById('aboutLink');
+    const privacyLink = document.getElementById('privacyLink');
+    
+    if(aboutLink) {
+        aboutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = '#';
+        });
     }
+    
+    if(privacyLink) {
+        privacyLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = '#';
+        });
+    }
+    
+    // Animation subtile sur l'image au scroll (parallaxe léger)
+    const memberImg = document.querySelector('.member-full-img');
+    if(memberImg) {
+        let lastScrollY = window.scrollY;
+        let ticking = false;
+        
+        window.addEventListener('scroll', () => {
+            if(!ticking) {
+                requestAnimationFrame(() => {
+                    const scrollY = window.scrollY;
+                    const imgRect = memberImg.getBoundingClientRect();
+                    const viewportHeight = window.innerHeight;
+                    
+                    if(imgRect.top < viewportHeight && imgRect.bottom > 0) {
+                        const speed = 0.2;
+                        const yPos = -(scrollY * speed);
+                        memberImg.style.transform = `translateY(${yPos}px)`;
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+    }
+    
+    // Animation 3D légère sur les cartes au survol
+    const cards = document.querySelectorAll('.activity-card');
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 25;
+            const rotateY = (centerX - x) / 25;
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+        });
+    });
 })();
 </script>
 </body>
