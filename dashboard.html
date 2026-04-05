@@ -125,7 +125,24 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <p><i class="fas fa-copyright"></i> NeTubeX 2026 — Tous droits réservés</p>
 </footer>
 </div>
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
+    authDomain: "netubexmoney.firebaseapp.com",
+    projectId: "netubexmoney",
+    storageBucket: "netubexmoney.firebasestorage.app",
+    messagingSenderId: "856592608176",
+    appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
 const games = [
     {id:1, name:"Dragon Down", avatar:"🐉", img:"https://i.postimg.cc/T2JyHT7x/IMG-3466.jpg", duration:"7 jours", totalPoints:14048,
      objectives:[{name:"Open and play the game",points:9},{name:"Collect 150 gems",points:17},{name:"Collect 1000 gems",points:123},{name:"Collect 4000 gems",points:436},{name:"Collect 10000 gems",points:871},{name:"Collect 40000 gems",points:3348},{name:"Collect 100000 gems",points:10044}]},
@@ -143,10 +160,8 @@ const games = [
      objectives:[{name:"Reach 100 meters",points:100},{name:"Reach 200 meters",points:340},{name:"Reach 400 meters",points:4730},{name:"Reach 700 meters",points:26440},{name:"Reach 1200 meters",points:94430},{name:"Reach 2000 meters",points:472120},{name:"Reach 5000 meters",points:1180300}]}
 ];
 
-// 🔹 Récupérer et afficher le code Netuber injecté à la place de USER_JDDH30
-const userCode = sessionStorage.getItem('userCode') || "NETUBER_2026";
-const userCodeDisplay = document.getElementById('userCodeDisplay');
-if(userCodeDisplay) userCodeDisplay.textContent = userCode;
+let currentUserId = null;
+let userCode = null;
 
 function closePopupWithAnimation(popupId) {
     const popup = document.getElementById(popupId);
@@ -194,6 +209,68 @@ function showGamePopup(game) {
     document.getElementById('gamePopupTitle').innerHTML = `${game.name}<span style="font-size:0.75rem;display:block;color:#475569;margin-top:6px;">🏆 ${game.objectives.length} objectifs • ⏱️ ${game.duration}</span>`;
     openPopup('gamePopup');
 }
+
+// Injection du User ID Firebase dans l'iframe
+function injectUserIdToIframe(userId) {
+    const iframe = document.getElementById('portalIframe');
+    if(iframe && iframe.contentWindow) {
+        try {
+            iframe.contentWindow.postMessage({
+                type: 'FIREBASE_USER_ID',
+                userId: userId,
+                userCode: userCode
+            }, '*');
+        } catch(e) { console.log("Cannot post message to iframe"); }
+    }
+}
+
+// Modification du bouton portalBtn pour injecter l'ID utilisateur
+document.getElementById('portalBtn')?.addEventListener('click', () => {
+    const iframe = document.getElementById('portalIframe');
+    if(iframe){ 
+        iframe.src = 'https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0'; 
+        document.getElementById('fullscreenIframe')?.classList.add('active');
+        
+        // Attendre que l'iframe charge et injecter l'ID utilisateur
+        iframe.onload = () => {
+            if(currentUserId) {
+                setTimeout(() => injectUserIdToIframe(currentUserId), 1000);
+            }
+        };
+    }
+});
+
+document.getElementById('closeIframeBtn')?.addEventListener('click', () => {
+    const iframe = document.getElementById('portalIframe');
+    if(iframe) iframe.src = 'about:blank';
+    document.getElementById('fullscreenIframe')?.classList.remove('active');
+});
+
+// Vérifier l'état d'authentification Firebase
+onAuthStateChanged(auth, async (user) => {
+    if(user) {
+        currentUserId = user.uid;
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+        
+        if(docSnap.exists()) {
+            userCode = docSnap.data().code || "NETUBER_2026";
+        } else {
+            userCode = "NETUBER_2026";
+        }
+        
+        const userCodeDisplay = document.getElementById('userCodeDisplay');
+        if(userCodeDisplay) userCodeDisplay.textContent = userCode;
+        
+        sessionStorage.setItem('userCode', userCode);
+        sessionStorage.setItem('firebaseUserId', currentUserId);
+        
+        renderGames();
+    } else {
+        window.location.href = 'login.html';
+    }
+});
+
 document.getElementById('closeGamePopup')?.addEventListener('click', () => { closePopupWithAnimation('gamePopup'); });
 document.getElementById('settingsFloatBtn')?.addEventListener('click', () => {
     const pwdInput = document.getElementById('pilotPassword');
@@ -208,27 +285,21 @@ document.getElementById('loginPilotBtn')?.addEventListener('click', () => {
     else { alert("www.netubex.com\nCode d'accès invalide"); const pwdInput = document.getElementById('pilotPassword'); if(pwdInput) pwdInput.value = ''; }
 });
 document.getElementById('logoutBtn')?.addEventListener('click', () => { openPopup('confirmPopup'); });
-document.getElementById('confirmYes')?.addEventListener('click', () => {
+document.getElementById('confirmYes')?.addEventListener('click', async () => {
     closePopupWithAnimation('confirmPopup');
+    await signOut(auth);
+    sessionStorage.removeItem('userCode');
+    sessionStorage.removeItem('firebaseUserId');
     setTimeout(() => { window.location.href = 'login.html'; }, 350);
 });
 document.getElementById('confirmNo')?.addEventListener('click', () => { closePopupWithAnimation('confirmPopup'); });
 document.querySelectorAll('.slide-popup').forEach(pop => {
     pop.addEventListener('click', (e) => { if(e.target === pop) closePopupWithAnimation(pop.id); });
 });
-document.getElementById('portalBtn')?.addEventListener('click', () => {
-    const iframe = document.getElementById('portalIframe');
-    if(iframe){ iframe.src = 'https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0'; document.getElementById('fullscreenIframe')?.classList.add('active'); }
-});
-document.getElementById('closeIframeBtn')?.addEventListener('click', () => {
-    const iframe = document.getElementById('portalIframe');
-    if(iframe) iframe.src = 'about:blank';
-    document.getElementById('fullscreenIframe')?.classList.remove('active');
-});
+
 document.addEventListener('contextmenu', (e) => { if(!e.target.closest('iframe')) e.preventDefault(); });
 document.addEventListener('dragstart', (e) => { if(!e.target.closest('iframe')) e.preventDefault(); });
 document.addEventListener('touchstart', (e) => { if(e.touches.length > 1) e.preventDefault(); }, { passive: false });
-renderGames();
 </script>
 </body>
 </html>
