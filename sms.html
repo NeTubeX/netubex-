@@ -25,14 +25,18 @@
       })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
-        statusEl.textContent = "SMS envoyé ! Vérifie ton téléphone.";
+        console.log(data)
+        if (data.success) {
+          statusEl.textContent = "SMS envoyé ! Vérifie ton téléphone."
+        } else {
+          statusEl.textContent = "Erreur : " + (data.error || JSON.stringify(data.data))
+        }
       })
       .catch(err => {
-        console.error(err);
-        statusEl.textContent = "Erreur lors de l'envoi du SMS.";
-      });
-    });
+        console.error(err)
+        statusEl.textContent = "Erreur lors de l'envoi du SMS : " + err.message
+      })
+    })
   </script>
 </body>
 </html>
