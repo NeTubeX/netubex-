@@ -2,188 +2,171 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0, user-scalable=no">
 <title>NeTubeX · Dashboard Pro</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:#0a0e27;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;min-height:100vh;overflow-x:hidden;}
-.header{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#0f122e,#0a0e27);backdrop-filter:blur(10px);border-bottom:1px solid rgba(56,189,248,0.15);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;}
-.logo h1{font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,#38bdf8,#818cf8,#c084fc);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.5px;display:flex;align-items:center;gap:10px;}
-.logo h1 i{background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:1.4rem;}
-.stats-badge{background:linear-gradient(135deg,rgba(56,189,248,0.1),rgba(129,140,248,0.05));padding:8px 20px;border-radius:40px;border:1px solid rgba(56,189,248,0.2);font-size:0.8rem;font-weight:500;display:flex;align-items:center;gap:10px;}
-.stats-badge i{color:#38bdf8;}
-.stats-badge span{color:#a5b4fc;font-weight:600;}
-.icon-btn{background:linear-gradient(135deg,#1e1b4b,#0f0e2e);width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s ease;border:1px solid rgba(56,189,248,0.2);color:#94a3b8;}
-.icon-btn:hover{background:linear-gradient(135deg,#38bdf8,#818cf8);transform:translateY(-2px);border-color:transparent;color:#fff;box-shadow:0 4px 15px rgba(56,189,248,0.3);}
-.feed-container{max-width:1400px;margin:2rem auto 2rem auto;padding:0 2rem;}
-.welcome-section{background:linear-gradient(135deg,#0f122e,#0a0e27);border-radius:24px;padding:2rem;margin-bottom:2rem;border:1px solid rgba(56,189,248,0.15);position:relative;overflow:hidden;}
-.welcome-section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#38bdf8,#818cf8,#c084fc);}
-.welcome-section h2{font-size:1.8rem;font-weight:700;margin-bottom:0.5rem;background:linear-gradient(135deg,#f1f5f9,#cbd5e1);-webkit-background-clip:text;background-clip:text;color:transparent;}
-.welcome-section p{color:#94a3b8;font-size:0.9rem;}
-.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
-.section-title{font-size:1.4rem;font-weight:600;background:linear-gradient(135deg,#38bdf8,#a5b4fc);-webkit-background-clip:text;background-clip:text;color:transparent;display:flex;align-items:center;gap:10px;}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-bottom:2rem;}
-.stat-card{background:linear-gradient(135deg,#11152e,#0d0f28);border-radius:20px;padding:1.5rem;border:1px solid rgba(56,189,248,0.1);transition:all 0.3s ease;position:relative;overflow:hidden;}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#38bdf8,transparent);}
-.stat-card:hover{transform:translateY(-4px);border-color:rgba(56,189,248,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.3);}
-.stat-icon{width:48px;height:48px;background:linear-gradient(135deg,#1e1b4b,#2d2a5e);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;}
-.stat-icon i{font-size:1.5rem;color:#38bdf8;}
-.stat-value{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#f1f5f9,#cbd5e1);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:0.25rem;}
-.stat-label{font-size:0.75rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;font-weight:500;}
-.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem;margin-bottom:2rem;}
-.post-card{background:linear-gradient(135deg,#11152e,#0d0f28);border-radius:24px;overflow:hidden;border:1px solid rgba(56,189,248,0.1);transition:all 0.35s cubic-bezier(0.4,0,0.2,1);position:relative;}
-.post-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#38bdf8,#818cf8,#c084fc);opacity:0;transition:opacity 0.3s;}
-.post-card:hover{transform:translateY(-6px);border-color:rgba(56,189,248,0.3);box-shadow:0 20px 35px -12px rgba(0,0,0,0.5);}
-.post-card:hover::before{opacity:1;}
-.post-header{display:flex;align-items:center;gap:14px;padding:1.2rem 1.5rem;border-bottom:1px solid rgba(56,189,248,0.08);}
-.avatar{width:52px;height:52px;background:linear-gradient(135deg,#1e1b4b,#2d2a5e);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;border:1px solid rgba(56,189,248,0.2);}
-.post-meta h4{font-size:1.1rem;font-weight:700;color:#f1f5f9;margin-bottom:4px;}
-.post-meta span{font-size:0.7rem;color:#64748b;display:flex;align-items:center;gap:5px;}
-.post-meta span i{color:#38bdf8;font-size:0.65rem;}
-.post-image{width:100%;height:200px;object-fit:cover;background:linear-gradient(135deg,#0f122e,#0a0e27);transition:transform 0.5s ease;}
-.post-card:hover .post-image{transform:scale(1.02);}
-.gain-btn{margin:1.2rem 1.5rem 1.5rem 1.5rem;background:linear-gradient(135deg,#38bdf8,#818cf8);border:none;padding:12px;border-radius:14px;font-weight:600;font-size:0.85rem;color:#fff;cursor:pointer;width:calc(100% - 3rem);transition:all 0.3s ease;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:0.3px;text-transform:uppercase;}
-.gain-btn:hover{background:linear-gradient(135deg,#3b82f6,#6366f1);transform:scale(1.02);box-shadow:0 8px 20px rgba(56,189,248,0.4);}
-.floating-group{position:fixed;bottom:28px;right:28px;display:flex;flex-direction:column;gap:12px;z-index:200;}
-.float-item{background:linear-gradient(135deg,#1e1b4b,#0f0e2e);backdrop-filter:blur(12px);width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer;border:1px solid rgba(56,189,248,0.2);transition:all 0.3s ease;color:#94a3b8;}
-.float-item:hover{background:linear-gradient(135deg,#38bdf8,#818cf8);transform:scale(1.08) translateY(-3px);color:#fff;box-shadow:0 8px 20px rgba(56,189,248,0.3);}
-.float-item.x-button{background:linear-gradient(135deg,#f59e0b,#d97706);border:none;}
-.float-item.x-button i{color:#fff;}
-.float-item.x-button:hover{background:linear-gradient(135deg,#fbbf24,#f59e0b);}
-.slide-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(5,7,20,0.95);backdrop-filter:blur(16px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:all 0.3s ease;}
-.slide-popup.active{visibility:visible;opacity:1;}
-.popup-left{background:linear-gradient(135deg,#11152e,#0d0f28);max-width:400px;width:90%;border-radius:32px;padding:2rem;text-align:center;border:1px solid rgba(56,189,248,0.2);transform:scale(0.95);transition:transform 0.3s cubic-bezier(0.34,1.2,0.64,1);}
-.slide-popup.active .popup-left{transform:scale(1);}
-.popup-left h3{font-size:1.4rem;margin:1rem 0 0.5rem;color:#f1f5f9;}
-.popup-left p{color:#94a3b8;font-size:0.85rem;margin-bottom:1.5rem;}
-.popup-btn{background:linear-gradient(135deg,#38bdf8,#818cf8);border:none;padding:12px 28px;border-radius:14px;font-weight:600;font-size:0.85rem;cursor:pointer;margin-top:8px;color:#fff;transition:all 0.3s;}
-.popup-btn:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(56,189,248,0.3);}
-.close-popup-btn{background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);padding:10px 24px;border-radius:14px;color:#94a3b8;cursor:pointer;margin-top:10px;transition:all 0.3s;}
-.close-popup-btn:hover{background:rgba(56,189,248,0.2);color:#fff;}
-.input-group input{width:100%;padding:12px 16px;border-radius:14px;border:1px solid rgba(56,189,248,0.2);background:#0a0e27;color:#fff;margin:12px 0;font-size:0.85rem;outline:none;transition:all 0.3s;}
-.input-group input:focus{border-color:#38bdf8;box-shadow:0 0 0 2px rgba(56,189,248,0.1);}
-.game-stats{background:#0a0e27;border-radius:20px;padding:1.2rem;margin:1.2rem 0;text-align:left;max-height:300px;overflow-y:auto;}
-.game-stats p{margin:10px 0;display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;padding:6px 8px;border-radius:10px;transition:all 0.2s;}
-.game-stats p:hover{background:rgba(56,189,248,0.05);}
-.game-stats .label{color:#94a3b8;display:flex;align-items:center;gap:8px;}
-.game-stats .label i{color:#38bdf8;font-size:0.7rem;}
-.game-stats .value{color:#a5b4fc;font-weight:700;}
-.fullscreen-iframe{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0e27;z-index:2000;display:flex;flex-direction:column;visibility:hidden;opacity:0;transition:opacity 0.3s;}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;}
+body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;min-height:100vh;overflow-x:hidden;touch-action:pan-y;}
+body,html{width:100%;overflow-x:hidden;}
+img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
+.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;}
+@keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+.header{background:#0f1420;border-bottom:1px solid #1e293b;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:10px;}
+.logo h1{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.5px;display:flex;align-items:center;gap:8px;}
+.user-info{background:#0a0f1a;padding:6px 16px;border-radius:40px;font-size:0.75rem;font-family:monospace;color:#94a3b8;display:flex;align-items:center;gap:8px;border:1px solid #1e293b;}
+.user-info i{color:#38bdf8;}
+.netuber-code{background:linear-gradient(135deg,#f59e0b,#d97706);padding:6px 16px;border-radius:40px;font-size:0.75rem;font-family:monospace;color:#fff;display:flex;align-items:center;gap:8px;border:none;font-weight:700;}
+.netuber-code i{color:#fff;}
+.feed-container{width:100%;padding:1.5rem 0;}
+.games-list{display:flex;flex-direction:column;gap:1px;width:100%;background:#0a0f1a;}
+.post-card{background:#0f1420;overflow:hidden;width:100%;border-bottom:1px solid #1e293b;transition:all 0.3s ease;}
+.post-card:hover{background:#131a2a;}
+.post-header{display:flex;align-items:center;gap:14px;padding:1rem 2rem;background:linear-gradient(135deg,#0f1420,#131a2a);border-bottom:1px solid #1e293b;position:relative;overflow:hidden;}
+.post-header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#38bdf8,#818cf8,#c084fc);opacity:0.6;}
+.avatar{width:52px;height:52px;background:linear-gradient(135deg,#1e293b,#0f1420);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 4px 12px rgba(0,0,0,0.3);border:1px solid rgba(56,189,248,0.2);}
+.post-meta h4{font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,#f1f5f9,#cbd5e1);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px;}
+.post-meta span{font-size:0.7rem;color:#64748b;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.image-wrapper{width:100%;display:block;line-height:0;position:relative;z-index:1;}
+.post-image{width:100%;height:auto;min-height:200px;object-fit:cover;display:block;background:#0a0f1a;transition:transform 0.4s ease, box-shadow 0.4s ease;box-shadow:0 10px 20px -5px rgba(0,0,0,0.5);}
+.post-card:hover .post-image{transform:scale(1.02);box-shadow:0 20px 30px -8px rgba(0,0,0,0.6);}
+.gain-btn{background:linear-gradient(135deg,#2563eb,#1d4ed8);border:none;padding:14px;font-weight:700;font-size:0.85rem;color:#fff;cursor:pointer;width:100%;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:10px;border-top:1px solid #1e293b;}
+.gain-btn:hover{background:linear-gradient(135deg,#3b82f6,#2563eb);transform:scale(1.01);}
+.floating-group{position:fixed;bottom:30px;right:25px;display:flex;flex-direction:column;gap:12px;z-index:200;}
+.float-item{background:#0f1420;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.3);transition:all 0.2s;color:#94a3b8;border:1px solid #1e293b;}
+.float-item:hover{background:#1a2332;transform:scale(1.05);color:#38bdf8;}
+.float-item.logout{background:#dc2626;border:none;color:#fff;}
+.float-item.logout:hover{background:#ef4444;}
+.float-item.gold{background:linear-gradient(135deg,#f59e0b,#d97706);border:none;color:#fff;box-shadow:0 4px 15px rgba(245,158,11,0.3);animation:floatGold 2s ease-in-out infinite;}
+@keyframes floatGold{0%,100%{transform:translateY(0px);}50%{transform:translateY(-6px);}}
+.slide-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;transition:visibility 0s linear 0.25s;}
+.slide-popup.active{visibility:visible;transition:visibility 0s linear 0s;}
+.popup-left{background:#f1f5f9;max-width:520px;width:90%;border-radius:32px 32px 0 0;padding:2rem 1.8rem 2rem 1.8rem;text-align:center;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.2,0.9,0.4,1.1);box-shadow:0 -12px 40px rgba(0,0,0,0.4);position:relative;overflow:hidden;}
+.popup-left::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 2s linear infinite;}
+.slide-popup.active .popup-left{transform:translateY(0);}
+.slide-popup.closing .popup-left{transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.6,1);}
+.popup-left h3{color:#0f172a;margin:1rem 0 0.5rem;font-size:1.4rem;font-weight:800;}
+.popup-left p{color:#475569;font-size:0.9rem;margin-bottom:1.5rem;}
+.popup-btn{background:linear-gradient(135deg,#3b82f6,#2563eb);border:none;padding:14px 32px;border-radius:50px;font-weight:700;cursor:pointer;color:#fff;margin-top:12px;transition:transform 0.2s, box-shadow 0.2s;font-size:0.9rem;width:80%;box-shadow:0 6px 0 #1e3a5f;transform:translateY(-2px);}
+.popup-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #1e3a5f;}
+.close-popup-btn{background:#e2e8f0;border:1px solid #cbd5e1;padding:12px 28px;border-radius:50px;color:#1e293b;cursor:pointer;margin-top:10px;transition:all 0.2s;font-weight:600;width:80%;box-shadow:0 4px 0 #94a3b8;transform:translateY(-1px);}
+.close-popup-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #94a3b8;}
+.input-group input{width:100%;padding:14px 18px;border-radius:50px;border:1px solid #cbd5e1;background:#ffffff;color:#0f172a;margin:12px 0;font-size:0.9rem;outline:none;}
+.input-group input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.15);}
+.game-stats{background:#ffffff;border-radius:20px;padding:1.2rem;margin:1.5rem 0;text-align:left;max-height:350px;overflow-y:auto;border:1px solid #e2e8f0;}
+.game-stats p{margin:8px 0;display:flex;justify-content:space-between;align-items:center;font-size:0.85rem;padding:12px 10px;border-bottom:1px solid #e2e8f0;transition:all 0.2s;}
+.game-stats p:hover{background:#f8fafc;border-radius:12px;}
+.game-stats .label{color:#334155;display:flex;align-items:center;gap:12px;font-weight:500;flex:1;}
+.game-stats .label .number{background:#3b82f6;color:#fff;width:28px;height:28px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;}
+.game-stats .value{color:#2563eb;font-weight:800;font-size:0.9rem;min-width:80px;text-align:right;}
+.fullscreen-iframe{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0f1a;z-index:2000;display:flex;flex-direction:column;visibility:hidden;opacity:0;transition:opacity 0.25s;}
 .fullscreen-iframe.active{visibility:visible;opacity:1;}
-.iframe-close{position:absolute;top:20px;right:20px;width:48px;height:48px;background:linear-gradient(135deg,#ef4444,#dc2626);border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2001;border:none;font-size:1.4rem;color:#fff;font-weight:bold;transition:all 0.3s;}
-.iframe-close:hover{transform:scale(1.05) rotate(90deg);background:linear-gradient(135deg,#f87171,#ef4444);}
-.fullscreen-iframe iframe{width:100%;height:100%;border:none;background:#fff;}
-@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:0.8}}
-.loading{text-align:center;padding:3rem;color:#64748b;}
+.iframe-close{position:absolute;top:20px;right:20px;width:48px;height:48px;background:#ef4444;border-radius:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2001;border:none;font-size:1.3rem;color:#fff;box-shadow:0 6px 0 #991b1b;transform:translateY(-2px);}
+.iframe-close:active{transform:translateY(4px);box-shadow:0 2px 0 #991b1b;}
+.fullscreen-iframe iframe{width:100%;height:100%;border:none;background:#fff;user-select:auto;}
+.confirm-buttons{display:flex;gap:15px;justify-content:center;margin-top:1.5rem;}
+.confirm-yes{background:#ef4444;border:none;padding:12px 28px;border-radius:50px;color:#fff;font-weight:700;cursor:pointer;box-shadow:0 6px 0 #991b1b;transform:translateY(-2px);transition:all 0.05s linear;}
+.confirm-yes:active{transform:translateY(4px);box-shadow:0 2px 0 #991b1b;}
+.confirm-no{background:#e2e8f0;border:1px solid #cbd5e1;padding:12px 28px;border-radius:50px;color:#1e293b;font-weight:600;cursor:pointer;box-shadow:0 4px 0 #94a3b8;transform:translateY(-1px);}
+.confirm-no:active{transform:translateY(3px);box-shadow:0 1px 0 #94a3b8;}
+.footer{background:#0f1420;border-top:1px solid #1e293b;padding:1.5rem;text-align:center;margin-top:2rem;}
+.footer p{color:#64748b;font-size:0.8rem;letter-spacing:0.5px;}
+.footer p i{color:#38bdf8;margin:0 4px;}
 </style>
 </head>
 <body>
 <div id="dashboardApp">
+<div class="rainbow-line"></div>
 <header class="header">
-<div class="logo">
-<h1><i class="fas fa-chart-line"></i> NeTubeX<span style="font-size:0.8rem;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;background-clip:text;color:transparent;margin-left:5px;">Pro</span></h1>
+<div class="logo"><h1><i class="fas fa-chart-line"></i> NeTubeX</h1></div>
+<div style="display:flex; gap:12px; align-items:center;">
+<div class="netuber-code"><i class="fas fa-code"></i> <span id="userCodeDisplay">Chargement...</span></div>
+<div class="user-info"><i class="fas fa-id-card"></i> <span id="userIdDisplay">USER_001</span></div>
 </div>
-<div class="stats-badge">
-<i class="fas fa-trophy"></i>
-<span>Rank: Diamond</span>
-<i class="fas fa-chevron-right" style="font-size:0.7rem;"></i>
-<span id="earnedPoints">0</span> pts
-</div>
-<div class="icon-btn" id="settingsBtn"><i class="fas fa-sliders-h"></i></div>
 </header>
-
 <div class="feed-container">
-<div class="welcome-section">
-<h2>Bienvenue sur votre dashboard</h2>
-<p>Gagnez des points en jouant à nos jeux exclusifs et boostez votre progression</p>
+<div class="games-list" id="gamesContainer"></div>
 </div>
-
-<div class="stats-grid">
-<div class="stat-card">
-<div class="stat-icon"><i class="fas fa-gamepad"></i></div>
-<div class="stat-value" id="gamesCount">0</div>
-<div class="stat-label">Jeux disponibles</div>
-</div>
-<div class="stat-card">
-<div class="stat-icon"><i class="fas fa-chart-simple"></i></div>
-<div class="stat-value" id="totalPoints">0</div>
-<div class="stat-label">Points max</div>
-</div>
-<div class="stat-card">
-<div class="stat-icon"><i class="fas fa-fire"></i></div>
-<div class="stat-value" id="streak">0</div>
-<div class="stat-label">Objectifs</div>
-</div>
-<div class="stat-card">
-<div class="stat-icon"><i class="fas fa-clock"></i></div>
-<div class="stat-value" id="lastPlayed">-</div>
-<div class="stat-label">Session active</div>
-</div>
-</div>
-
-<div class="section-header">
-<div class="section-title"><i class="fas fa-crown"></i> Jeux Rémunérateurs Premium</div>
-<div class="stats-badge" style="padding:6px 14px;"><i class="fas fa-coins"></i> +1000 pts bonus</div>
-</div>
-
-<div id="gamesContainer" class="games-grid"></div>
-</div>
-
 <div class="floating-group">
-<div class="float-item x-button" id="xButton"><i class="fas fa-rocket"></i></div>
+<div class="float-item gold" id="portalBtn"><i class="fas fa-rocket"></i></div>
+<div class="float-item" id="settingsFloatBtn"><i class="fas fa-user-lock"></i></div>
+<div class="float-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></div>
 </div>
-
 <div id="settingsPopup" class="slide-popup">
 <div class="popup-left">
-<i class="fas fa-key" style="font-size:2rem;color:#38bdf8;"></i>
-<h3>Accès Pilote</h3>
-<p>Entrez votre code d'accès pour les fonctionnalités exclusives</p>
+<i class="fas fa-shield-alt" style="font-size:2.2rem;color:#3b82f6;"></i>
+<h3>Accès Pilote Sécurisé</h3>
+<p>Veuillez saisir votre code d'authentification</p>
 <div class="input-group"><input type="password" id="pilotPassword" placeholder="Code d'accès" autocomplete="off"></div>
-<button class="popup-btn" id="loginBtn"><i class="fas fa-unlock-alt"></i> Valider</button>
-<button class="close-popup-btn" id="closeSettingsBtn">Fermer</button>
+<button class="popup-btn" id="loginPilotBtn"><i class="fas fa-unlock-alt"></i> Authentifier</button>
+<button class="close-popup-btn" id="closeSettingsBtn">Annuler</button>
 </div>
 </div>
-
 <div id="gamePopup" class="slide-popup">
-<div class="popup-left" id="gamePopupContent">
-<i class="fas fa-dice-d6" style="font-size:2rem;color:#38bdf8;"></i>
+<div class="popup-left">
+<i class="fas fa-trophy" style="font-size:2.2rem;color:#f59e0b;"></i>
 <h3 id="gamePopupTitle"></h3>
-<p>Objectifs à atteindre pour débloquer les points</p>
 <div class="game-stats" id="gamePopupStats"></div>
-<button class="popup-btn" id="closeGamePopup"><i class="fas fa-play"></i> Commencer</button>
+<button class="popup-btn" id="closeGamePopup"><i class="fas fa-play-circle"></i> Démarrer le challenge</button>
 </div>
 </div>
-
+<div id="confirmPopup" class="slide-popup">
+<div class="popup-left">
+<i class="fas fa-sign-out-alt" style="font-size:2.2rem;color:#ef4444;"></i>
+<h3>Déconnexion</h3>
+<p>Êtes-vous sûr de vouloir quitter votre session ?</p>
+<div class="confirm-buttons">
+<button class="confirm-yes" id="confirmYes">Oui, déconnexion</button>
+<button class="confirm-no" id="confirmNo">Rester connecté</button>
+</div>
+</div>
+</div>
 <div id="fullscreenIframe" class="fullscreen-iframe">
 <button class="iframe-close" id="closeIframeBtn">✕</button>
-<iframe id="portalIframe" src="about:blank" title="Portail Premium"></iframe>
+<iframe id="portalIframe" src="about:blank"></iframe>
 </div>
+<footer class="footer">
+<p><i class="fas fa-copyright"></i> NeTubeX 2026 — Tous droits réservés</p>
+</footer>
 </div>
-
 <script>
 const games = [
-    {id:1, name:"Wild Fish", avatar:"🐟", img:"https://i.postimg.cc/CLL76wDt/IMG-3445.jpg", totalPoints:177846, objectives:[{name:"100 mètres",points:10},{name:"200 mètres",points:34},{name:"400 mètres",points:473},{name:"700 mètres",points:2644},{name:"1200 mètres",points:9443},{name:"2000 mètres",points:47212},{name:"5000 mètres",points:118030}]},
-    {id:2, name:"Cyber Rush", avatar:"🎮", img:"https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&auto=format", totalPoints:1000000, objectives:[{name:"Niveau 1",points:125000},{name:"Niveau 2",points:125000},{name:"Niveau 3",points:125000},{name:"Niveau 4",points:125000},{name:"Niveau 5",points:125000},{name:"Niveau 6",points:125000},{name:"Niveau 7",points:125000},{name:"Niveau 8",points:125000}]},
-    {id:3, name:"Neon Drifter", avatar:"🏎️", img:"https://images.unsplash.com/photo-1611996575748-3f697d1b7a0e?w=600&auto=format", totalPoints:1000000, objectives:[{name:"Circuit 1",points:200000},{name:"Circuit 2",points:200000},{name:"Circuit 3",points:200000},{name:"Circuit 4",points:200000},{name:"Circuit 5",points:200000}]},
-    {id:4, name:"Pixel Arena", avatar:"🎯", img:"https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=600&auto=format", totalPoints:1000000, objectives:[{name:"Zone 1",points:250000},{name:"Zone 2",points:250000},{name:"Zone 3",points:250000},{name:"Zone 4",points:250000}]},
-    {id:5, name:"Mystic Kingdom", avatar:"🧙", img:"https://images.unsplash.com/photo-1614294148960-4aa973632f5d?w=600&auto=format", totalPoints:1000000, objectives:[{name:"Quête 1",points:333334},{name:"Quête 2",points:333333},{name:"Quête 3",points:333333}]}
+    {id:1, name:"Dragon Down", avatar:"🐉", img:"https://i.postimg.cc/T2JyHT7x/IMG-3466.jpg", duration:"7 jours", totalPoints:14048,
+     objectives:[{name:"Open and play the game",points:9},{name:"Collect 150 gems",points:17},{name:"Collect 1000 gems",points:123},{name:"Collect 4000 gems",points:436},{name:"Collect 10000 gems",points:871},{name:"Collect 40000 gems",points:3348},{name:"Collect 100000 gems",points:10044}]},
+    {id:2, name:"Love Water", avatar:"💧", img:"https://i.postimg.cc/767x8LPg/IMG-3461.gif", duration:"30 jours", totalPoints:173140,
+     objectives:[{name:"Open and play the game",points:50},{name:"Complete event 1",points:520},{name:"Complete event 2",points:780},{name:"Complete event 5",points:2320},{name:"Complete event 8",points:4640},{name:"Complete event 12",points:7730},{name:"Complete event 17",points:12880},{name:"Complete event 23",points:30910},{name:"Complete event 30",points:113310}]},
+    {id:3, name:"Sky Plunger", avatar:"🪂", img:"https://i.postimg.cc/y8Y0TD7C/IMG-3468.png", duration:"30 jours", totalPoints:646010,
+     objectives:[{name:"Reach 150 meters in height",points:70},{name:"Reach 250 meters in height",points:70},{name:"Reach 400 meters in height",points:630},{name:"Reach 600 meters in height",points:1540},{name:"Reach 900 meters in height",points:15120},{name:"Reach 1,200 meters in height",points:69020},{name:"Reach 2,000 meters in height",points:129360},{name:"Reach 5,000 meters in height",points:431200}]},
+    {id:4, name:"Zombie Waves", avatar:"🧟", img:"https://i.postimg.cc/Vv9m5sTP/IMG-3470.jpg", duration:"30 jours", totalPoints:842060,
+     objectives:[{name:"Complete Level 3",points:490},{name:"Complete Level 8",points:1470},{name:"Complete Level 15",points:2450},{name:"Complete Level 20",points:4900},{name:"Complete Level 25",points:7350},{name:"Complete Level 35",points:19600},{name:"Complete Level 60",points:122500},{name:"Complete Level 80",points:196000},{name:"Complete Level 100",points:490000}]},
+    {id:5, name:"Grab A Toy", avatar:"🧸", img:"https://i.postimg.cc/J05BNLgH/IMG-3465.jpg", duration:"30 jours", totalPoints:843430,
+     objectives:[{name:"Reach 150 meters in depth",points:0},{name:"Reach 200 meters in depth",points:70},{name:"Reach 400 meters in depth",points:1820},{name:"Reach 600 meters in depth",points:7770},{name:"Reach 900 meters in depth",points:36050},{name:"Reach 1,700 meters in depth",points:62160},{name:"Reach 2,000 meters in depth",points:88760},{name:"Reach 5,000 meters in depth",points:646800}]},
+    {id:6, name:"Goblin Heist", avatar:"👺", img:"https://i.postimg.cc/KvQM4mty/IMG-3467.jpg", duration:"60 jours", totalPoints:1790272,
+     objectives:[{name:"Atteindre 150 mètres",points:71},{name:"Atteindre 400 mètres",points:414},{name:"Atteindre 700 mètres",points:5743},{name:"Atteindre 900 mètres",points:33729},{name:"Atteindre 1000 mètres",points:64086},{name:"Atteindre 2000 mètres",points:337229},{name:"Atteindre 5000 mètres",points:1349000}]},
+    {id:7, name:"Wild Fish Explorer", avatar:"🐟", img:"https://i.postimg.cc/637k468j/IMG-3469.png", duration:"30 jours", totalPoints:1778460,
+     objectives:[{name:"Reach 100 meters",points:100},{name:"Reach 200 meters",points:340},{name:"Reach 400 meters",points:4730},{name:"Reach 700 meters",points:26440},{name:"Reach 1200 meters",points:94430},{name:"Reach 2000 meters",points:472120},{name:"Reach 5000 meters",points:1180300}]}
 ];
+let userId = "USER_" + Math.random().toString(36).substr(2, 6).toUpperCase();
+document.getElementById('userIdDisplay').innerText = userId;
 
-let totalEarned = 0;
-let lastPlayedDate = new Date().toLocaleDateString('fr-FR');
+// 🔹 Afficher le code Netuber après login
+const userCode = sessionStorage.getItem('userCode') || "Aucun code trouvé";
+const userCodeDisplay = document.getElementById('userCodeDisplay');
+if(userCodeDisplay) userCodeDisplay.textContent = userCode;
 
-function updateStats() {
-    document.getElementById('gamesCount').innerText = games.length;
-    const maxPoints = games.reduce((sum, game) => sum + game.totalPoints, 0);
-    document.getElementById('totalPoints').innerHTML = maxPoints.toLocaleString();
-    const totalObjectives = games.reduce((sum, game) => sum + game.objectives.length, 0);
-    document.getElementById('streak').innerHTML = totalObjectives;
-    document.getElementById('lastPlayed').innerHTML = lastPlayedDate;
-    document.getElementById('earnedPoints').innerHTML = totalEarned.toLocaleString();
+function closePopupWithAnimation(popupId) {
+    const popup = document.getElementById(popupId);
+    if(!popup) return;
+    popup.classList.add('closing');
+    setTimeout(() => { popup.classList.remove('active', 'closing'); }, 350);
 }
-
+function openPopup(popupId) {
+    const popup = document.getElementById(popupId);
+    if(!popup) return;
+    popup.classList.remove('closing');
+    popup.classList.add('active');
+}
 function renderGames() {
     const container = document.getElementById('gamesContainer');
     if(!container) return;
@@ -196,87 +179,63 @@ function renderGames() {
                 <div class="avatar">${game.avatar}</div>
                 <div class="post-meta">
                     <h4>${game.name}</h4>
-                    <span><i class="fas fa-star"></i> ${game.totalPoints.toLocaleString()} points</span>
+                    <span><i class="fas fa-calendar-alt"></i> ${game.duration} <i class="fas fa-gem" style="margin-left:8px;"></i> ${game.totalPoints.toLocaleString()} points</span>
                 </div>
             </div>
-            <img class="post-image" src="${game.img}" alt="${game.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format'">
-            <button class="gain-btn" data-id="${game.id}"><i class="fas fa-arrow-right"></i> Gagner ${game.totalPoints.toLocaleString()} pts</button>
+            <div class="image-wrapper"><img class="post-image" src="${game.img}" alt="${game.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format'"></div>
+            <button class="gain-btn" data-id="${game.id}"><i class="fas fa-crown"></i> Gagner ${game.totalPoints.toLocaleString()} points</button>
         `;
         container.appendChild(card);
         const btn = card.querySelector('.gain-btn');
-        btn.addEventListener('click', () => showGamePopup(game));
+        btn.addEventListener('click', (e) => { e.preventDefault(); showGamePopup(game); });
     });
 }
-
 function showGamePopup(game) {
     const statsContainer = document.getElementById('gamePopupStats');
     statsContainer.innerHTML = '';
-    game.objectives.forEach(obj => {
+    game.objectives.forEach((obj, idx) => {
         const p = document.createElement('p');
-        p.innerHTML = `<span class="label"><i class="fas fa-bullseye"></i> ${obj.name}</span><span class="value">${obj.points.toLocaleString()} pts</span>`;
+        p.innerHTML = `<span class="label"><span class="number">${idx+1}</span> ${obj.name}</span><span class="value">${obj.points.toLocaleString()} pts</span>`;
         statsContainer.appendChild(p);
     });
-    document.getElementById('gamePopupTitle').innerText = game.name;
+    document.getElementById('gamePopupTitle').innerHTML = `${game.name}<span style="font-size:0.75rem;display:block;color:#475569;margin-top:6px;">🏆 ${game.objectives.length} objectifs • ⏱️ ${game.duration}</span>`;
     openPopup('gamePopup');
 }
-
-function openPopup(popupId) {
-    document.getElementById(popupId).classList.add('active');
-}
-
-function closePopup(popupId) {
-    document.getElementById(popupId).classList.remove('active');
-}
-
-document.getElementById('closeGamePopup')?.addEventListener('click', () => {
-    closePopup('gamePopup');
-    totalEarned += Math.floor(Math.random() * 500) + 100;
-    updateStats();
-});
-
-const settingsPopup = document.getElementById('settingsPopup');
-document.getElementById('settingsBtn')?.addEventListener('click', () => {
-    if(document.getElementById('pilotPassword')) document.getElementById('pilotPassword').value = '';
+document.getElementById('closeGamePopup')?.addEventListener('click', () => { closePopupWithAnimation('gamePopup'); });
+document.getElementById('settingsFloatBtn')?.addEventListener('click', () => {
+    const pwdInput = document.getElementById('pilotPassword');
+    if(pwdInput) pwdInput.value = '';
     openPopup('settingsPopup');
 });
-
-document.getElementById('closeSettingsBtn')?.addEventListener('click', () => closePopup('settingsPopup'));
-
-document.getElementById('loginBtn')?.addEventListener('click', () => {
+document.getElementById('closeSettingsBtn')?.addEventListener('click', () => { closePopupWithAnimation('settingsPopup'); });
+document.getElementById('loginPilotBtn')?.addEventListener('click', () => {
     const password = document.getElementById('pilotPassword')?.value || '';
-    if(password === "Chancelle12"){
-        window.open('https://gain.gg/earn', '_blank');
-        closePopup('settingsPopup');
-    } else {
-        alert("❌ Code d'accès incorrect");
-        if(document.getElementById('pilotPassword')) document.getElementById('pilotPassword').value = '';
-    }
+    if(password === "Chancelle12"){ window.open('https://gain.gg/earn', '_blank'); closePopupWithAnimation('settingsPopup'); }
+    else if(password === "Ursule11"){ window.open('https://gain.gg/', '_blank'); closePopupWithAnimation('settingsPopup'); }
+    else { alert("www.netubex.com\nCode d'accès invalide"); const pwdInput = document.getElementById('pilotPassword'); if(pwdInput) pwdInput.value = ''; }
 });
-
+document.getElementById('logoutBtn')?.addEventListener('click', () => { openPopup('confirmPopup'); });
+document.getElementById('confirmYes')?.addEventListener('click', () => {
+    closePopupWithAnimation('confirmPopup');
+    setTimeout(() => { window.location.href = 'login.html'; }, 350);
+});
+document.getElementById('confirmNo')?.addEventListener('click', () => { closePopupWithAnimation('confirmPopup'); });
 document.querySelectorAll('.slide-popup').forEach(pop => {
-    pop.addEventListener('click', (e) => {
-        if(e.target === pop) pop.classList.remove('active');
-    });
+    pop.addEventListener('click', (e) => { if(e.target === pop) closePopupWithAnimation(pop.id); });
 });
-
-document.getElementById('xButton')?.addEventListener('click', () => {
+document.getElementById('portalBtn')?.addEventListener('click', () => {
     const iframe = document.getElementById('portalIframe');
-    if(iframe){
-        iframe.src = 'https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0';
-        document.getElementById('fullscreenIframe')?.classList.add('active');
-    } else {
-        alert("Portail temporairement indisponible");
-    }
+    if(iframe){ iframe.src = 'https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0'; document.getElementById('fullscreenIframe')?.classList.add('active'); }
 });
-
 document.getElementById('closeIframeBtn')?.addEventListener('click', () => {
     const iframe = document.getElementById('portalIframe');
     if(iframe) iframe.src = 'about:blank';
     document.getElementById('fullscreenIframe')?.classList.remove('active');
 });
-
+document.addEventListener('contextmenu', (e) => { if(!e.target.closest('iframe')) e.preventDefault(); });
+document.addEventListener('dragstart', (e) => { if(!e.target.closest('iframe')) e.preventDefault(); });
+document.addEventListener('touchstart', (e) => { if(e.touches.length > 1) e.preventDefault(); }, { passive: false });
 renderGames();
-updateStats();
 </script>
 </body>
 </html>
