@@ -6,491 +6,359 @@
 <title>NeTubeX | Espace de rémunération digitale</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    background:linear-gradient(135deg, #0a0e1a 0%, #0f1629 50%, #0a0f1f 100%);
+    color:#e4e6eb;
+    scroll-behavior:smooth;
+    min-height:100vh;
 }
-
-body {
-    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    background: radial-gradient(circle at 10% 20%, #0a0e1a, #070b14);
-    color: #eef2ff;
-    scroll-behavior: smooth;
-    min-height: 100vh;
-    overflow-x: hidden;
-}
-
-/* Import Google Fonts plus robuste */
 @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
 
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 28px;
-    position: relative;
-    z-index: 2;
+.container{max-width:1400px;margin:0 auto;padding:0 28px}
+
+/* header */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:28px 0 24px;
+    flex-wrap:wrap;
+    gap:20px;
+    border-bottom:1px solid rgba(79,209,197,0.15);
+    backdrop-filter:blur(10px);
+    background:rgba(10,14,26,0.3);
+}
+.logo-text{
+    font-size:3.2rem;
+    font-weight:800;
+    background:linear-gradient(135deg,#6ee7ff,#3b82f6,#1e40af);
+    background-clip:text;
+    -webkit-background-clip:text;
+    color:transparent;
+    letter-spacing:-0.8px;
+    animation:logoGlow 3s ease-in-out infinite;
+}
+@keyframes logoGlow{
+    0%,100%{filter:drop-shadow(0 0 5px rgba(59,130,246,0.3));}
+    50%{filter:drop-shadow(0 0 15px rgba(59,130,246,0.6));}
+}
+.btn-group{display:flex;gap:18px}
+.btn-solid{
+    background:linear-gradient(135deg,#3b82f6,#1e40af);
+    border:none;
+    padding:12px 40px;
+    border-radius:40px;
+    font-weight:700;
+    color:#fff;
+    text-decoration:none;
+    transition:all 0.3s ease;
+    font-size:1rem;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    box-shadow:0 4px 15px rgba(59,130,246,0.3);
+}
+.btn-solid:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 25px rgba(59,130,246,0.5);
+    background:linear-gradient(135deg,#2563eb,#1e3a8a);
 }
 
-/* Glassmorphism navbar raffinée */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 24px 0 24px;
-    flex-wrap: wrap;
-    gap: 20px;
-    border-bottom: 1px solid rgba(110, 231, 255, 0.2);
-    background: rgba(7, 11, 20, 0.65);
-    backdrop-filter: blur(16px);
-    border-radius: 0 0 28px 28px;
-    margin-bottom: 20px;
-    transition: all 0.4s ease;
+/* hero */
+.hero-section{margin:60px 0 30px}
+.hero-text-block{text-align:center;margin-bottom:50px}
+.hero-text-block h1{
+    font-size:3.8rem;
+    font-weight:800;
+    background:linear-gradient(125deg,#a5f3fc,#3b82f6,#1e40af);
+    background-clip:text;
+    -webkit-background-clip:text;
+    color:transparent;
+    margin-bottom:24px;
+    line-height:1.2;
+    animation:textPulse 3s ease-in-out infinite;
+}
+@keyframes textPulse{
+    0%,100%{opacity:0.95;letter-spacing:-0.5px;}
+    50%{opacity:1;letter-spacing:0.5px;}
+}
+.hero-text-block p{
+    font-size:1.2rem;
+    color:#cbd5e1;
+    max-width:700px;
+    margin:0 auto;
+    line-height:1.6;
+    background:rgba(59,130,246,0.1);
+    padding:20px 30px;
+    border-radius:60px;
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(59,130,246,0.2);
 }
 
-.logo-text {
-    font-size: 3rem;
-    font-weight: 800;
-    background: linear-gradient(145deg, #a5f3fc, #3b82f6, #2563eb);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    letter-spacing: -0.5px;
-    filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.4));
-    transition: transform 0.3s ease;
+/* photo pleine largeur sans carte - effet fade in/out permanent */
+.photo-wall{
+    width:100vw;
+    position:relative;
+    left:50%;
+    right:50%;
+    margin-left:-50vw;
+    margin-right:-50vw;
+    margin-top:40px;
+    margin-bottom:60px;
+    overflow:hidden;
+    background:linear-gradient(135deg,#0a0e1a,#0f1629);
 }
-
-.logo-text:hover {
-    transform: scale(1.02);
+.member-photo-frame{
+    width:100%;
+    position:relative;
+    background:#000;
 }
-
-.btn-group {
-    display: flex;
-    gap: 20px;
+.member-full-img{
+    width:100%;
+    height:auto;
+    max-height:75vh;
+    object-fit:cover;
+    display:block;
+    opacity:0;
+    animation:fadeBreathing 8s ease-in-out infinite;
+    filter:brightness(0.95) contrast(1.05) saturate(1.1);
+    transition:filter 0.5s ease;
 }
-
-.btn-solid {
-    background: linear-gradient(105deg, #3b82f6, #1e40af);
-    border: none;
-    padding: 12px 36px;
-    border-radius: 60px;
-    font-weight: 700;
-    color: white;
-    text-decoration: none;
-    transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-    font-size: 1rem;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
-    letter-spacing: 0.3px;
+.member-full-img:hover{
+    filter:brightness(1.05) contrast(1.08) saturate(1.15);
 }
-
-.btn-solid i {
-    font-size: 1.2rem;
-}
-
-.btn-solid:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 15px 30px rgba(59, 130, 246, 0.5);
-    background: linear-gradient(105deg, #2563eb, #1e3a8a);
-}
-
-/* Hero section élégante */
-.hero-section {
-    margin: 50px 0 40px;
-}
-
-.hero-text-block {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.hero-text-block h1 {
-    font-size: 4rem;
-    font-weight: 800;
-    background: linear-gradient(125deg, #b9f3ff, #3b82f6, #1e3a8a);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    margin-bottom: 24px;
-    line-height: 1.2;
-    letter-spacing: -1px;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.hero-text-block p {
-    font-size: 1.25rem;
-    color: #cbd5f0;
-    max-width: 750px;
-    margin: 0 auto;
-    line-height: 1.6;
-    background: rgba(59, 130, 246, 0.08);
-    padding: 18px 32px;
-    border-radius: 80px;
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(59, 130, 246, 0.25);
-    font-weight: 500;
-}
-
-/* ========== PHOTO PLEINE LARGEUR PROFESSIONNELLE ========== */
-.photo-wall {
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    margin: 30px 0 70px 0;
-    overflow: hidden;
-    box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.6);
-}
-
-.member-photo-frame {
-    width: 100%;
-    position: relative;
-    background: #03060c;
-    transform-style: preserve-3d;
-}
-
-.member-full-img {
-    width: 100%;
-    height: auto;
-    max-height: 78vh;
-    object-fit: cover;
-    display: block;
-    will-change: transform, opacity;
-    filter: brightness(1.02) contrast(1.08) saturate(1.12);
-    transition: filter 0.6s ease, transform 0.4s ease-out;
-    transform-origin: center;
-}
-
-/* Animation fluide et discrète (breathing + subtle scale) */
-@keyframes cinematicBreathing {
-    0% {
-        opacity: 0.9;
-        transform: scale(1);
-        filter: brightness(1) contrast(1.08);
+@keyframes fadeBreathing{
+    0%,100%{
+        opacity:0.75;
+        transform:scale(1);
     }
-    50% {
-        opacity: 1;
-        transform: scale(1.008);
-        filter: brightness(1.04) contrast(1.1);
+    25%{
+        opacity:1;
+        transform:scale(1.01);
     }
-    100% {
-        opacity: 0.9;
-        transform: scale(1);
-        filter: brightness(1) contrast(1.08);
+    50%{
+        opacity:0.85;
+        transform:scale(1);
+    }
+    75%{
+        opacity:1;
+        transform:scale(1.01);
     }
 }
-
-.member-full-img {
-    animation: cinematicBreathing 9s ease-in-out infinite;
+/* overlay dégradé sur la photo */
+.photo-overlay{
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    height:40%;
+    background:linear-gradient(to top, rgba(10,14,26,0.9), transparent);
+    pointer-events:none;
 }
 
-.member-full-img:hover {
-    animation-play-state: paused;
-    filter: brightness(1.08) contrast(1.12) saturate(1.2);
-    transform: scale(1.01);
+/* section activités avec gris élégant #D0D6E5 */
+.activities-wrapper{
+    background:#D0D6E5;
+    border-radius:32px;
+    padding:50px 32px 60px;
+    margin:50px 0 40px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.1);
+}
+.section-title{
+    font-size:2.2rem;
+    font-weight:700;
+    margin-bottom:30px;
+    color:#0f172a;
+    text-align:center;
+    position:relative;
+}
+.section-title:after{
+    content:'';
+    display:block;
+    width:80px;
+    height:3px;
+    background:linear-gradient(90deg,#3b82f6,#1e40af);
+    margin:15px auto 0;
+    border-radius:3px;
+    animation:lineExpand 2s ease-in-out infinite;
+}
+@keyframes lineExpand{
+    0%,100%{width:80px;}
+    50%{width:120px;}
+}
+.activities-grid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:30px;
+    margin:40px 0 20px;
+    justify-content:center;
+}
+.activity-card{
+    background:white;
+    border-radius:28px;
+    padding:35px 28px;
+    flex:1;
+    min-width:250px;
+    transition:all 0.5s cubic-bezier(0.2,0.9,0.4,1.1);
+    border:1px solid rgba(59,130,246,0.2);
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    cursor:pointer;
+    box-shadow:0 4px 15px rgba(0,0,0,0.05);
+}
+.activity-card::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:100%;
+    height:100%;
+    background:linear-gradient(90deg,transparent,rgba(59,130,246,0.1),transparent);
+    transition:left 0.5s;
+}
+.activity-card:hover::before{
+    left:100%;
+}
+.activity-card:hover{
+    transform:translateY(-10px);
+    border-color:#3b82f6;
+    box-shadow:0 20px 35px rgba(59,130,246,0.2);
+}
+.card-icon{
+    font-size:3.2rem;
+    background:linear-gradient(135deg,#3b82f6,#1e40af);
+    background-clip:text;
+    -webkit-background-clip:text;
+    color:transparent;
+    margin-bottom:20px;
+    transition:transform 0.3s;
+}
+.activity-card:hover .card-icon{
+    transform:scale(1.1);
+}
+.activity-card h3{
+    font-size:1.5rem;
+    font-weight:700;
+    margin-bottom:15px;
+    color:#0f172a;
+}
+.activity-card p{
+    color:#475569;
+    font-size:0.95rem;
+    line-height:1.5;
 }
 
-/* Dégradé élégant au bas de la photo */
-.photo-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 45%;
-    background: linear-gradient(to top, rgba(7, 11, 20, 0.95), rgba(7, 11, 20, 0.2), transparent);
-    pointer-events: none;
+/* footer professionnel */
+footer{
+    background:#0f172a;
+    margin-top:60px;
+    padding:50px 20px 40px;
+    border-top:1px solid rgba(59,130,246,0.2);
+}
+.footer-inner{
+    max-width:1300px;
+    margin:0 auto;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:center;
+    gap:32px;
+    padding:0 20px;
+}
+.footer-brand h3{
+    font-size:1.8rem;
+    font-weight:700;
+    background:linear-gradient(135deg,#6ee7ff,#3b82f6);
+    background-clip:text;
+    -webkit-background-clip:text;
+    color:transparent;
+    margin-bottom:8px;
+}
+.footer-brand p{
+    color:#94a3b8;
+    font-size:0.85rem;
+}
+.footer-links{
+    display:flex;
+    gap:40px;
+}
+.footer-links a{
+    color:#cbd5e1;
+    text-decoration:none;
+    font-size:0.9rem;
+    transition:color 0.3s;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+}
+.footer-links a:hover{
+    color:#3b82f6;
+}
+.footer-copyright p{
+    color:#64748b;
+    font-size:0.85rem;
 }
 
-/* Section Activités refonte pro avec fond nuit premium */
-.activities-wrapper {
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(10px);
-    border-radius: 56px;
-    padding: 60px 36px 70px;
-    margin: 60px 0 50px;
-    box-shadow: 0 30px 50px -20px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(59, 130, 246, 0.2);
-    transition: all 0.3s;
+/* fade-in sections - apparition au scroll */
+.fade-section{
+    opacity:0;
+    transform:translateY(40px);
+    transition:opacity 0.9s cubic-bezier(0.2,0.9,0.3,1.1),transform 0.8s ease;
+}
+.fade-section.visible{
+    opacity:1;
+    transform:translateY(0);
 }
 
-.section-title {
-    font-size: 2.6rem;
-    font-weight: 700;
-    margin-bottom: 45px;
-    color: #f0f4ff;
-    text-align: center;
-    position: relative;
-    letter-spacing: -0.3px;
-}
-
-.section-title:after {
-    content: '';
-    display: block;
-    width: 100px;
-    height: 4px;
-    background: linear-gradient(90deg, #3b82f6, #60a5fa, #3b82f6);
-    margin: 18px auto 0;
-    border-radius: 4px;
-    animation: shimmer 2.5s infinite;
-}
-
-@keyframes shimmer {
-    0% { width: 80px; opacity: 0.6; }
-    50% { width: 140px; opacity: 1; background-position: right; }
-    100% { width: 80px; opacity: 0.6; }
-}
-
-.activities-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 36px;
-    margin: 30px 0 20px;
-    justify-content: center;
-}
-
-/* CARTES MODERNES (apparition scroll + effet 3D et glow) */
+/* animation pour les cartes activités */
 .activity-card {
-    background: rgba(18, 25, 45, 0.9);
-    backdrop-filter: blur(12px);
-    border-radius: 40px;
-    padding: 42px 28px 38px;
-    flex: 1;
-    min-width: 270px;
-    transition: all 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.2);
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    box-shadow: 0 20px 35px -15px rgba(0, 0, 0, 0.4);
-    opacity: 0;
-    transform: translateY(45px) scale(0.96);
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity 0.6s ease, transform 0.5s ease, all 0.3s ease;
 }
-
-/* Animation élégante quand la carte devient visible */
 .activity-card.visible-card {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.2), transform 0.6s cubic-bezier(0.2, 0.8, 0.4, 1.1);
+    opacity:1;
+    transform:translateY(0);
 }
 
-.activity-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(120deg, transparent, rgba(59, 130, 246, 0.2), transparent);
-    transition: left 0.6s ease;
+@media (max-width:860px){
+    .hero-text-block h1{font-size:2.3rem}
+    .navbar{flex-direction:column;align-items:center}
+    .logo-text{font-size:2.5rem}
+    .member-full-img{max-height:50vh}
+    .footer-inner{flex-direction:column;text-align:center}
+    .footer-copyright p{text-align:center}
+    .hero-text-block p{font-size:1rem;margin:0 15px}
+    .footer-links{justify-content:center}
 }
 
-.activity-card:hover::before {
-    left: 100%;
-}
-
-.activity-card:hover {
-    transform: translateY(-12px) scale(1.02);
-    border-color: #3b82f6;
-    box-shadow: 0 35px 45px -15px rgba(59, 130, 246, 0.4);
-    background: rgba(20, 30, 55, 0.95);
-}
-
-.card-icon {
-    font-size: 3.5rem;
-    background: linear-gradient(145deg, #8ab3ff, #3b82f6);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    margin-bottom: 25px;
-    transition: all 0.3s;
-    display: inline-block;
-}
-
-.activity-card:hover .card-icon {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 6px #3b82f6);
-}
-
-.activity-card h3 {
-    font-size: 1.7rem;
-    font-weight: 700;
-    margin-bottom: 18px;
-    background: linear-gradient(135deg, #ffffff, #cbd5ff);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-}
-
-.activity-card p {
-    color: #b9c7e6;
-    font-size: 1rem;
-    line-height: 1.55;
-    font-weight: 400;
-}
-
-/* Footer professionnel sombre */
-footer {
-    background: #030712;
-    margin-top: 80px;
-    padding: 55px 20px 45px;
-    border-top: 1px solid rgba(59, 130, 246, 0.3);
-    backdrop-filter: blur(4px);
-}
-
-.footer-inner {
-    max-width: 1300px;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 30px;
-    padding: 0 20px;
-}
-
-.footer-brand h3 {
-    font-size: 2rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #7ad0ff, #3b82f6);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    margin-bottom: 6px;
-}
-
-.footer-brand p {
-    color: #8da3cf;
-    font-size: 0.9rem;
-}
-
-.footer-links {
-    display: flex;
-    gap: 45px;
-}
-
-.footer-links a {
-    color: #b9c7e6;
-    text-decoration: none;
-    font-size: 0.95rem;
-    transition: all 0.25s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 500;
-}
-
-.footer-links a:hover {
-    color: #60a5fa;
-    transform: translateY(-2px);
-    text-shadow: 0 0 5px rgba(96, 165, 250, 0.3);
-}
-
-.footer-copyright p {
-    color: #6c7aa3;
-    font-size: 0.85rem;
-}
-
-/* Sections fade-in globales */
-.fade-section {
-    opacity: 0;
-    transform: translateY(35px);
-    transition: opacity 0.9s cubic-bezier(0.2, 0.9, 0.3, 1.2), transform 0.8s ease-out;
-}
-
-.fade-section.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Responsive refinements */
-@media (max-width: 860px) {
-    .hero-text-block h1 {
-        font-size: 2.5rem;
-    }
-    .navbar {
-        flex-direction: column;
-        align-items: center;
-        border-radius: 32px;
-        padding: 20px 0;
-    }
-    .logo-text {
-        font-size: 2.5rem;
-    }
-    .member-full-img {
-        max-height: 55vh;
-    }
-    .footer-inner {
-        flex-direction: column;
-        text-align: center;
-    }
-    .section-title {
-        font-size: 2rem;
-    }
-    .activities-wrapper {
-        padding: 45px 24px;
-    }
-}
-
-@media (max-width: 560px) {
-    .container {
-        padding: 0 18px;
-    }
-    .hero-text-block h1 {
-        font-size: 1.9rem;
-    }
-    .hero-text-block p {
-        font-size: 1rem;
-        padding: 16px 20px;
-    }
-    .activity-card {
-        padding: 32px 18px;
-        min-width: 240px;
-    }
-    .btn-solid {
-        padding: 10px 24px;
-        font-size: 0.9rem;
-    }
-    .footer-links {
-        gap: 28px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .section-title:after {
-        width: 70px;
-    }
-}
-
-/* Animation plus fluide pour le défilement + micro parallaxe */
-html {
-    scroll-behavior: smooth;
-}
-
-/* Masque subtil pour le contenu */
-::selection {
-    background: #3b82f6;
-    color: white;
+@media (max-width:560px){
+    .container{padding:0 20px}
+    .hero-text-block h1{font-size:1.8rem}
+    .activity-card{padding:25px 18px}
+    .btn-solid{padding:10px 28px;font-size:0.9rem}
+    .hero-text-block p{padding:15px 20px}
+    .footer-links{gap:25px}
 }
 </style>
 </head>
 <body>
 <div class="container">
-    <!-- Navbar améliorée avec effet glass -->
+    <!-- header avec logo et bouton postuler -->
     <div class="navbar fade-section">
         <div class="logo-text">NeTubeX</div>
         <div class="btn-group">
             <a href="#" class="btn-solid" id="postulerBtn">
-                <i class="fab fa-whatsapp"></i> Rejoindre
+                <i class="fab fa-whatsapp"></i> Postuler
             </a>
         </div>
     </div>
 
-    <!-- Hero section -->
+    <!-- hero section -->
     <div class="hero-section fade-section">
         <div class="hero-text-block">
             <h1>Transformez votre temps<br>en revenu concret</h1>
@@ -499,36 +367,34 @@ html {
     </div>
 </div>
 
-<!-- PHOTO PLEINE LARGEUR PROFESSIONNELLE (anim breathing + qualité) -->
+<!-- photo pleine largeur sans carte - fade in/out permanent -->
 <div class="photo-wall">
     <div class="member-photo-frame">
-        <!-- Image haute qualité professionnelle (lien robuste) -->
         <img src="https://i.postimg.cc/CKtrLPtY/e3ee76ac-9224-4d38-bdd3-d4b29da56116.jpg" 
-             alt="Membre NeTubeX - Espace de rémunération digitale premium" 
+             alt="Membre NeTubeX - Espace de rémunération" 
              class="member-full-img"
-             loading="eager"
-             onerror="this.src='https://placehold.co/1920x1000/0a0f1f/3b82f6?text=NeTubeX+Innovation+Hub'">
+             onerror="this.src='https://placehold.co/1920x900/0f172a/3b82f6?text=NeTubeX+Night+Mode'">
         <div class="photo-overlay"></div>
     </div>
 </div>
 
 <div class="container">
-    <!-- Section activités avec cartes animées au scroll -->
+    <!-- section Nos Activités avec apparition au scroll -->
     <div class="activities-wrapper fade-section" id="activitiesSection">
-        <h2 class="section-title">Nos pôles de rémunération</h2>
+        <h2 class="section-title">Espace de rémunération</h2>
         <div class="activities-grid" id="activitiesGrid">
             <div class="activity-card">
-                <div class="card-icon"><i class="fas fa-chalkboard-user"></i></div>
+                <div class="card-icon"><i class="fas fa-tasks"></i></div>
                 <h3>Missions guidées</h3>
                 <p>Parcours simplifiés, objectifs clairs et récompenses immédiates pour valoriser chaque action.</p>
             </div>
             <div class="activity-card">
-                <div class="card-icon"><i class="fas fa-dice-d6"></i></div>
+                <div class="card-icon"><i class="fas fa-gamepad"></i></div>
                 <h3>Jeux rémunérateurs</h3>
                 <p>Défis quotidiens et classements. Jouez et générez des revenus tout en vous divertissant.</p>
             </div>
             <div class="activity-card">
-                <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="card-icon"><i class="fas fa-brain"></i></div>
                 <h3>Quiz entreprises</h3>
                 <p>Testez vos connaissances, chaque bonne réponse rapporte des points convertibles en cash.</p>
             </div>
@@ -536,7 +402,7 @@ html {
     </div>
 </div>
 
-<!-- Footer professionnel sombre -->
+<!-- footer professionnel -->
 <footer>
     <div class="footer-inner">
         <div class="footer-brand">
@@ -544,9 +410,8 @@ html {
             <p>Espace de rémunération digitale</p>
         </div>
         <div class="footer-links">
-            <a href="#" id="aboutLink"><i class="fas fa-compass"></i> À propos</a>
-            <a href="#" id="privacyLink"><i class="fas fa-lock"></i> Confidentialité</a>
-            <a href="#" id="contactSupport"><i class="fas fa-headset"></i> Support</a>
+            <a href="#" id="aboutLink"><i class="fas fa-info-circle"></i> À propos</a>
+            <a href="#" id="privacyLink"><i class="fas fa-shield-alt"></i> Privacy</a>
         </div>
         <div class="footer-copyright">
             <p>© 2026 NeTubeX — Tous droits réservés.</p>
@@ -556,97 +421,93 @@ html {
 
 <script>
 (function() {
-    // ---------- INTERSECTION OBSERVER PROFESSIONNEL POUR FADE SECTIONS + CARTES ----------
+    // Fade-in au scroll pour les sections principales
     const fadeElements = document.querySelectorAll('.fade-section');
-    const activityCards = document.querySelectorAll('.activity-card');
     
-    // Observer pour les sections fade classiques
-    const fadeObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                fadeObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.2, rootMargin: "0px 0px -20px 0px" });
-    
-    fadeElements.forEach(el => fadeObserver.observe(el));
-    
-    // Observer spécifique pour les cartes activités (apparition en cascade)
-    const cardObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry, idx) => {
-            if (entry.isIntersecting) {
-                // Ajouter un délai progressif pour effet "cascade" amélioré
-                const cards = document.querySelectorAll('.activity-card');
-                const index = Array.from(cards).indexOf(entry.target);
-                setTimeout(() => {
-                    entry.target.classList.add('visible-card');
-                }, index * 130);
-                cardObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.25, rootMargin: "0px 0px -15px 0px" });
-    
-    activityCards.forEach(card => cardObserver.observe(card));
-    
-    // Support additionnel : forcer le check initial pour éviter tout délai
-    window.addEventListener('load', () => {
-        // Si certaines cartes sont déjà visibles, les activer
-        activityCards.forEach(card => {
-            const rect = card.getBoundingClientRect();
-            if (rect.top < window.innerHeight - 80) {
-                const index = Array.from(activityCards).indexOf(card);
-                setTimeout(() => card.classList.add('visible-card'), index * 100);
-            }
-        });
+    function checkFadeIn() {
+        const winH = window.innerHeight;
         fadeElements.forEach(el => {
             const rect = el.getBoundingClientRect();
-            if (rect.top < window.innerHeight - 70) el.classList.add('visible');
+            if(rect.top < winH - 70 && rect.bottom > 20) {
+                el.classList.add('visible');
+            }
         });
+    }
+    
+    // Animation des cartes activités une par une au scroll
+    const activityCards = document.querySelectorAll('.activity-card');
+    
+    function checkCardsVisibility() {
+        const winH = window.innerHeight;
+        activityCards.forEach((card, index) => {
+            const rect = card.getBoundingClientRect();
+            if(rect.top < winH - 50 && rect.bottom > 20) {
+                setTimeout(() => {
+                    card.classList.add('visible-card');
+                }, index * 150);
+            }
+        });
+    }
+    
+    window.addEventListener('scroll', () => {
+        checkFadeIn();
+        checkCardsVisibility();
+    });
+    window.addEventListener('resize', () => {
+        checkFadeIn();
+        checkCardsVisibility();
     });
     
-    // ---------- BOUTON POSTULER : WhatsApp ----------
+    setTimeout(() => {
+        checkFadeIn();
+        checkCardsVisibility();
+    }, 100);
+    
+    // Bouton postuler - redirection WhatsApp
     const postulerBtn = document.getElementById('postulerBtn');
-    if (postulerBtn) {
+    if(postulerBtn) {
         postulerBtn.addEventListener('click', (e) => {
             e.preventDefault();
             window.location.href = 'https://wa.me/243808359598';
         });
     }
     
-    // Liens footer avec micro-interactions (scroll en douceur pour ancres fictives)
+    // Liens footer vers #
     const aboutLink = document.getElementById('aboutLink');
     const privacyLink = document.getElementById('privacyLink');
-    const contactLink = document.getElementById('contactSupport');
     
-    const footerActions = (e) => {
-        e.preventDefault();
-        // Simuler alerte élégante pour la démo, mais sans changer les infos
-        if (e.currentTarget.id === 'aboutLink') {
-            alert("✨ NeTubeX - Écosystème de rémunération digitale innovant. Rejoignez-nous et valorisez chaque instant.");
-        } else if (e.currentTarget.id === 'privacyLink') {
-            alert("🔒 Confidentialité et sécurité : vos données sont protégées selon les standards GDPR.");
-        } else if (e.currentTarget.id === 'contactSupport') {
-            alert("📞 Support dédié 7j/7 : contact@netubex.com ou via WhatsApp direct.");
-        }
-    };
+    if(aboutLink) {
+        aboutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = '#';
+        });
+    }
     
-    if (aboutLink) aboutLink.addEventListener('click', footerActions);
-    if (privacyLink) privacyLink.addEventListener('click', footerActions);
-    if (contactLink) contactLink.addEventListener('click', footerActions);
+    if(privacyLink) {
+        privacyLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = '#';
+        });
+    }
     
-    // ---------- PARALLAX LÉGER ET DYNAMIQUE SUR LA PHOTO MEMBRE ----------
-    const memberImage = document.querySelector('.member-full-img');
-    if (memberImage) {
+    // Animation subtile sur l'image au scroll (parallaxe léger)
+    const memberImg = document.querySelector('.member-full-img');
+    if(memberImg) {
+        let lastScrollY = window.scrollY;
         let ticking = false;
-        let initialOffset = 0;
+        
         window.addEventListener('scroll', () => {
-            if (!ticking) {
+            if(!ticking) {
                 requestAnimationFrame(() => {
                     const scrollY = window.scrollY;
-                    const limit = 150;
-                    const yOffset = Math.min(limit, Math.max(-limit, scrollY * 0.08));
-                    memberImage.style.transform = `translateY(${yOffset * 0.4}px) scale(1.01)`;
+                    const imgRect = memberImg.getBoundingClientRect();
+                    const viewportHeight = window.innerHeight;
+                    
+                    if(imgRect.top < viewportHeight && imgRect.bottom > 0) {
+                        const speed = 0.2;
+                        const yPos = -(scrollY * speed);
+                        memberImg.style.transform = `translateY(${yPos}px)`;
+                    }
                     ticking = false;
                 });
                 ticking = true;
@@ -654,42 +515,24 @@ html {
         });
     }
     
-    // ---------- ANIMATION CARTES 3D AU SURVOL (PRO, LIMPIDE) ----------
-    const cards3d = document.querySelectorAll('.activity-card');
-    cards3d.forEach(card => {
+    // Animation 3D légère sur les cartes au survol
+    const cards = document.querySelectorAll('.activity-card');
+    cards.forEach(card => {
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            const rotateX = (mouseY - centerY) / 22;
-            const rotateY = (centerX - mouseX) / 22;
-            card.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px) scale(1.01)`;
-            card.style.transition = 'transform 0.1s ease-out';
+            const rotateX = (y - centerY) / 25;
+            const rotateY = (centerX - x) / 25;
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
         });
         
         card.addEventListener('mouseleave', () => {
-            card.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)';
-            card.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.2)';
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
         });
     });
-    
-    // Détection supplémentaire pour les cartes au cas où elles n'auraient pas été déclenchées par scroll (sécurité)
-    setTimeout(() => {
-        activityCards.forEach((card, idx) => {
-            const rect = card.getBoundingClientRect();
-            if (rect.top < window.innerHeight - 60 && !card.classList.contains('visible-card')) {
-                setTimeout(() => card.classList.add('visible-card'), idx * 80);
-            }
-        });
-        fadeElements.forEach(el => {
-            const rect = el.getBoundingClientRect();
-            if (rect.top < window.innerHeight - 60 && !el.classList.contains('visible')) {
-                el.classList.add('visible');
-            }
-        });
-    }, 300);
 })();
 </script>
 </body>
