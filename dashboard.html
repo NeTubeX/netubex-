@@ -13,12 +13,12 @@ body,html{width:100%;overflow-x:hidden;}
 img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;}
 @keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
-.header{background:#0f1420;border-bottom:1px solid #1e293b;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
-.logo{display:flex;align-items:center;gap:12px;pointer-events:none;}
-.logo img{height:75px;width:auto;object-fit:contain;pointer-events:none;}
-.logo h1{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.5px;pointer-events:none;}
-.user-code-header{background:transparent;padding:6px 12px;border-radius:40px;font-size:0.85rem;font-family:'Inter',monospace;color:#cbd5e6;display:flex;align-items:center;gap:8px;border:1px solid rgba(56,189,248,0.25);backdrop-filter:blur(4px);font-weight:500;letter-spacing:0.3px;}
-.user-code-header i{color:#38bdf8;font-size:0.9rem;}
+.header{background:#0f1420;border-bottom:1px solid #1e293b;padding:0.5rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:8px;}
+.logo img{height:32px;width:auto;object-fit:contain;pointer-events:auto;}
+.logo h1{font-size:1.1rem;font-weight:600;color:#e2e8f0;letter-spacing:-0.3px;margin:0;background:none;-webkit-background-clip:unset;background-clip:unset;color:#e2e8f0;}
+.user-info{background:linear-gradient(135deg,#f59e0b,#d97706);padding:4px 16px;border-radius:40px;font-size:0.75rem;font-family:monospace;color:#fff;display:flex;align-items:center;gap:8px;border:none;font-weight:700;box-shadow:0 2px 8px rgba(245,158,11,0.3);}
+.user-info i{color:#fff;font-size:0.8rem;}
 .feed-container{width:100%;padding:1.5rem 0;}
 .games-list{display:flex;flex-direction:column;gap:1px;width:100%;background:#0a0f1a;}
 .post-card{background:#0f1420;overflow:hidden;width:100%;border-bottom:1px solid #1e293b;transition:all 0.3s ease;}
@@ -29,7 +29,7 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .post-meta h4{font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,#f1f5f9,#cbd5e1);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px;}
 .post-meta span{font-size:0.7rem;color:#64748b;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
 .image-wrapper{width:100%;display:block;line-height:0;position:relative;z-index:1;background:#0a0f1a;}
-.post-image{width:100%;height:auto;min-height:220px;object-fit:cover;display:block;transition:transform 0.4s ease, box-shadow 0.4s ease;box-shadow:0 10px 20px -5px rgba(0,0,0,0.5);aspect-ratio:16/9;object-position:top;}
+.post-image{width:100%;height:auto;min-height:200px;object-fit:cover;display:block;transition:transform 0.4s ease, box-shadow 0.4s ease;box-shadow:0 10px 20px -5px rgba(0,0,0,0.5);}
 .post-card:hover .post-image{transform:scale(1.02);box-shadow:0 20px 30px -8px rgba(0,0,0,0.6);}
 .gain-btn{background:linear-gradient(135deg,#2563eb,#1d4ed8);border:none;padding:14px;font-weight:700;font-size:0.85rem;color:#fff;cursor:pointer;width:100%;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:10px;border-top:1px solid #1e293b;}
 .gain-btn:hover{background:linear-gradient(135deg,#3b82f6,#2563eb);transform:scale(1.01);}
@@ -81,11 +81,18 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .pilot-error-toast .error-message{font-size:0.75rem;opacity:0.9;}
 .pilot-error-toast .error-close{background:rgba(255,255,255,0.2);border:none;color:#fff;cursor:pointer;padding:6px;border-radius:10px;transition:all 0.2s;width:28px;height:28px;display:flex;align-items:center;justify-content:center;}
 .pilot-error-toast .error-close:hover{background:rgba(255,255,255,0.3);transform:scale(1.05);}
+
+/* Peaufinage design : micro-ajustements de cohérence */
+.post-card:first-child{border-top-left-radius:0;border-top-right-radius:0;}
+.image-wrapper{background:#05080f;}
+.games-list .post-card:last-child .image-wrapper .post-image{object-fit:cover;width:100%;height:auto;min-height:200px;}
+
+/* Optimisation responsive pour l'image finale */
 @media (max-width:640px){
     .post-image{min-height:180px;}
-    .header{padding:0.8rem 1rem;}
-    .logo h1{font-size:1.4rem;}
-    .user-code-header{font-size:0.7rem;padding:4px 10px;}
+    .header{padding:0.5rem 1rem;}
+    .logo h1{font-size:1rem;}
+    .logo img{height:28px;}
 }
 </style>
 </head>
@@ -97,7 +104,7 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <img src="https://i.postimg.cc/8cwNrBDP/IMG-3484.png" alt="NeTubeX Logo">
 <h1>NeTubeX</h1>
 </div>
-<div class="user-code-header"><i class="fas fa-id-card"></i> <span id="userCodeDisplay">Chargement...</span></div>
+<div class="user-info"><i class="fas fa-code"></i> <span id="userCodeDisplay">Chargement...</span></div>
 </header>
 <div class="feed-container">
 <div class="games-list" id="gamesContainer"></div>
@@ -245,10 +252,10 @@ function renderGames() {
     const container = document.getElementById('gamesContainer');
     if(!container) return;
     container.innerHTML = '';
-    games.forEach((game) => {
+    games.forEach((game, idx) => {
         const card = document.createElement('div');
         card.className = 'post-card';
-        // Application d'un style unifié pour toutes les images : aspect-ratio fixe + object-fit cover
+        const imageUrl = game.img;
         card.innerHTML = `
             <div class="post-header">
                 <div class="avatar">${game.avatar}</div>
@@ -257,22 +264,20 @@ function renderGames() {
                     <span><i class="fas fa-calendar-alt"></i> ${game.duration} <i class="fas fa-gem" style="margin-left:8px;"></i> ${game.totalPoints.toLocaleString()} points</span>
                 </div>
             </div>
-            <div class="image-wrapper"><img class="post-image" src="${game.img}" alt="${game.name}" loading="lazy" decoding="async" style="width:100%; height:auto; min-height:220px; object-fit:cover; aspect-ratio:16/9;"></div>
+            <div class="image-wrapper"><img class="post-image" src="${imageUrl}" alt="${game.name}" loading="lazy" decoding="async" style="width:100%; height:auto; min-height:200px; object-fit:cover;"></div>
             <button class="gain-btn" data-id="${game.id}"><i class="fas fa-crown"></i> Gagner ${game.totalPoints.toLocaleString()} points</button>
         `;
         container.appendChild(card);
         const btn = card.querySelector('.gain-btn');
         btn.addEventListener('click', (e) => { e.preventDefault(); showGamePopup(game); });
     });
-    // Correction spécifique : forcer l'image du dernier jeu (The Grand Mafia) à respecter exactement les mêmes proportions
-    const allPostImages = document.querySelectorAll('.post-image');
-    allPostImages.forEach(img => {
-        img.style.maxWidth = '100%';
-        img.style.height = 'auto';
-        img.style.minHeight = '220px';
-        img.style.objectFit = 'cover';
-        img.style.aspectRatio = '16/9';
-    });
+    const allImages = document.querySelectorAll('.post-image');
+    if(allImages.length > 0) {
+        allImages.forEach(img => {
+            img.style.maxWidth = '100%';
+            img.style.display = 'block';
+        });
+    }
 }
 function showGamePopup(game) {
     const statsContainer = document.getElementById('gamePopupStats');
