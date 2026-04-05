@@ -1,126 +1,939 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>NeTubeX - Accès TimeWall</title>
-  <style>
-    body { text-align: center; font-family: Arial, sans-serif; margin: 30px; background: #f0f0f0; }
-    .container { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
-    button { padding: 12px 25px; font-size: 16px; margin: 10px; cursor: pointer; border: none; border-radius: 5px; }
-    input { padding: 12px; margin: 8px; width: 90%; display: block; margin-left: auto; margin-right: auto; border: 1px solid #ccc; border-radius: 5px; }
-    .login-form { text-align: left; margin-top: 20px; }
-    #timewallBtn button { background-color: #4CAF50; color: white; }
-    #timewallBtn button:hover { background-color: #45a049; }
-    .error { color: red; margin-top: 10px; }
-    .success { color: green; }
-    h2 { color: #333; }
-  </style>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>NeTubeX - Générateur de Rapports</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 10px;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .upload-section {
+            background: #1e1a2f;
+            border-radius: 24px;
+            padding: 14px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(255, 105, 180, 0.3);
+        }
+
+        .upload-section h2 {
+            color: #ffb7d2;
+            font-size: 1.1rem;
+            margin-bottom: 14px;
+            padding-left: 10px;
+            border-left: 3px solid #ff69b4;
+        }
+
+        .poles-upload {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .pole-upload-card {
+            background: #15102a;
+            border-radius: 18px;
+            padding: 12px;
+            border: 1px solid rgba(255, 105, 180, 0.25);
+        }
+
+        .pole-upload-card h3 {
+            color: #ff99cc;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-align: center;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 105, 180, 0.3);
+        }
+
+        .image-input-group {
+            margin-bottom: 10px;
+        }
+
+        .image-input-group label {
+            display: block;
+            font-size: 0.65rem;
+            color: #ffb7d2;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .image-input-group input {
+            width: 100%;
+            padding: 8px 10px;
+            background: #0f0b1a;
+            border: 1px solid #3a2a55;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            color: #fff;
+        }
+
+        .preview-thumb {
+            margin-top: 6px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .thumb {
+            position: relative;
+        }
+
+        .thumb img {
+            width: 55px;
+            height: 55px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #ff69b4;
+        }
+
+        .thumb button {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #ff3b7f;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .section-title {
+            color: #ff99cc;
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin: 10px 0 6px 0;
+            text-transform: uppercase;
+        }
+
+        .form-row {
+            background: #0f0b1a;
+            border-radius: 10px;
+            padding: 6px 8px;
+            margin-bottom: 6px;
+            border: 1px solid #3a2a55;
+        }
+
+        .form-row label {
+            display: block;
+            font-size: 0.65rem;
+            color: #ff99cc;
+            margin-bottom: 4px;
+        }
+
+        .form-row input, .form-row select {
+            width: 100%;
+            padding: 6px 8px;
+            background: #1e1830;
+            border: 1px solid #4a3a6a;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .form-row select option {
+            background: #1e1830;
+            color: #fff;
+        }
+
+        .double-input {
+            display: flex;
+            gap: 6px;
+        }
+
+        .double-input .form-row {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        .triple-input {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        
+        .triple-input .form-row {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        .triple-input .form-row:first-child {
+            flex: 2;
+        }
+        
+        .triple-input .form-row select {
+            width: 100%;
+        }
+
+        .controls {
+            background: #1e1a2f;
+            border-radius: 40px;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 105, 180, 0.3);
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .btn-pgco { background: linear-gradient(135deg, #c084fc, #a855f7); }
+        .btn-pets { background: linear-gradient(135deg, #f472b6, #ec489a); }
+        .btn-psi { background: linear-gradient(135deg, #fb923c, #f97316); }
+        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.5; }
+
+        .status {
+            text-align: center;
+            padding: 6px;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            display: none;
+        }
+        .status.show { display: block; }
+        .status.success { background: #1f3a2f; color: #b4f0c4; }
+        .status.error { background: #3a1f2a; color: #ffb8cf; }
+        .status.info { background: #1f2a3a; color: #b8d4ff; }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .popup-container {
+            background: #2a1f3a;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 280px;
+            text-align: center;
+            border: 1px solid #ff69b4;
+        }
+        .popup-container h3 { color: #ffb7d2; font-size: 1rem; margin-bottom: 8px; }
+        .popup-container p { color: #e0c8ff; font-size: 0.75rem; margin-bottom: 16px; }
+        .popup-container button {
+            background: #ff69b4;
+            border: none;
+            padding: 6px 20px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        @media print { .upload-section, .controls { display: none; } }
+    </style>
 </head>
 <body>
-<div class="container">
-  <h2>🚀 NeTubeX - Accès TimeWall</h2>
 
-  <!-- Zone de connexion -->
-  <div id="loginForm" class="login-form">
-    <h3>Connexion à votre compte</h3>
-    <input type="email" id="email" placeholder="Email Firebase" />
-    <input type="password" id="password" placeholder="Mot de passe" />
-    <button id="loginBtn">Se connecter</button>
-    <p id="errorMessage" class="error"></p>
-  </div>
+<div class="main-container">
+    <div class="upload-section">
+        <h2>✨ MES RAPPORTS EN CAPTURE ✨</h2>
+        <div class="poles-upload">
+            
+            <!-- Pôle PGCO -->
+            <div class="pole-upload-card" id="pole-pgco">
+                <h3>🌸 Mme BLANDINE - PGCO</h3>
+                <div class="image-input-group">
+                    <label>📸 Capture écran (obligatoire)</label>
+                    <input type="file" accept="image/*" id="pgco-img">
+                    <div id="pgco-preview" class="preview-thumb"></div>
+                </div>
+                <div class="section-title">📊 POINTS PAR STAGIAIRE</div>
+                <div class="form-row">
+                    <label>👤 MA-NX-S1-ZA-1 - Points approuvés précédemment</label>
+                    <input type="text" id="pgco-prev1" placeholder="Ex: 150">
+                </div>
+                <div class="form-row">
+                    <label>👤 MA-NX-S1-ZA-1 - Points approuvés aujourd'hui</label>
+                    <input type="text" id="pgco-today1" placeholder="Ex: 45">
+                </div>
+                <div class="form-row">
+                    <label>👤 MA-NX-S1-ZA-2 - Points approuvés précédemment</label>
+                    <input type="text" id="pgco-prev2" placeholder="Ex: 200">
+                </div>
+                <div class="form-row">
+                    <label>👤 MA-NX-S1-ZA-2 - Points approuvés aujourd'hui</label>
+                    <input type="text" id="pgco-today2" placeholder="Ex: 60">
+                </div>
+            </div>
 
-  <!-- Zone TimeWall (cachée au départ) -->
-  <div id="timewallZone" style="display:none;">
-    <p class="success">✅ Connecté avec succès !</p>
-    <div id="timewallBtn">
-      <a href="#" target="_blank">
-        <button>🎯 Accéder à TimeWall</button>
-      </a>
+            <!-- Pôle PETS -->
+            <div class="pole-upload-card" id="pole-pets">
+                <h3>💜 M. DIEU MERCI - PETS</h3>
+                <div class="image-input-group">
+                    <label>📸 Capture écran (obligatoire)</label>
+                    <input type="file" accept="image/*" id="pets-img">
+                    <div id="pets-preview" class="preview-thumb"></div>
+                </div>
+                <div class="section-title">⚠️ ANOMALIES DÉTECTÉES</div>
+                <div class="form-row">
+                    <label>👤 MA-NX-S1-ZA-1 - Anomalie</label>
+                    <select id="pets-anom1">
+                        <option value="">Sélectionner une anomalie</option>
+                        <option>Problème de connexion</option>
+                        <option>Terminal qui surchauffe</option>
+                        <option>Terminal qui s'éteint</option>
+                        <option>Batterie faible</option>
+                        <option>Problème de charge</option>
+                        <option>Batterie se décharge rapidement</option>
+                        <option>Terminal lent</option>
+                        <option>Stockage insuffisant</option>
+                        <option>Carte SIM non reconnue</option>
+                        <option>Aucune anomalie</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>👤 MA-NX-S1-ZA-2 - Anomalie</label>
+                    <select id="pets-anom2">
+                        <option value="">Sélectionner une anomalie</option>
+                        <option>Problème de connexion</option>
+                        <option>Terminal qui surchauffe</option>
+                        <option>Terminal qui s'éteint</option>
+                        <option>Batterie faible</option>
+                        <option>Problème de charge</option>
+                        <option>Batterie se décharge rapidement</option>
+                        <option>Terminal lent</option>
+                        <option>Stockage insuffisant</option>
+                        <option>Carte SIM non reconnue</option>
+                        <option>Aucune anomalie</option>
+                    </select>
+                </div>
+                <div class="section-title">📶 FORFAIT INTERNET RESTANT</div>
+                <div class="form-row">
+                    <label>👤 MA-NX-S1-ZA-1 - Forfait restant</label>
+                    <select id="pets-data1">
+                        <option value="">Sélectionner Go restant</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>👤 MA-NX-S1-ZA-2 - Forfait restant</label>
+                    <select id="pets-data2">
+                        <option value="">Sélectionner Go restant</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Pôle PSI -->
+            <div class="pole-upload-card" id="pole-psi">
+                <h3>🧡 Mme GINOLA - PSI</h3>
+                <div class="image-input-group">
+                    <label>📸 Preuve capture 1/3 (obligatoire)</label>
+                    <input type="file" accept="image/*" id="psi-img1">
+                    <div id="psi-preview1" class="preview-thumb"></div>
+                </div>
+                <div class="image-input-group">
+                    <label>📸 Preuve capture 2/3 (obligatoire)</label>
+                    <input type="file" accept="image/*" id="psi-img2">
+                    <div id="psi-preview2" class="preview-thumb"></div>
+                </div>
+                <div class="image-input-group">
+                    <label>📸 Preuve capture 3/3 (obligatoire)</label>
+                    <input type="file" accept="image/*" id="psi-img3">
+                    <div id="psi-preview3" class="preview-thumb"></div>
+                </div>
+                
+                <div class="section-title">📞 APPEL STRATÉGIQUE</div>
+                <div class="form-row">
+                    <label>👤 M. Dieu Merci</label>
+                    <div class="triple-input">
+                        <div class="form-row" style="margin-bottom:0;">
+                            <select id="call-dieu-count">
+                                <option value="">Nombre d’appels</option>
+                                <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+                                <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                                <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                                <option value="9">9</option><option value="10">10</option>
+                            </select>
+                        </div>
+                        <div class="form-row" style="margin-bottom:0;">
+                            <select id="call-dieu-h"><option value="">Heure</option></select>
+                        </div>
+                        <div class="form-row" style="margin-bottom:0;">
+                            <select id="call-dieu-m"><option value="">Minute</option></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>👤 Mme Blandine</label>
+                    <div class="triple-input">
+                        <div class="form-row" style="margin-bottom:0;">
+                            <select id="call-blandine-count">
+                                <option value="">Nombre d’appels</option>
+                                <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+                                <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                                <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                                <option value="9">9</option><option value="10">10</option>
+                            </select>
+                        </div>
+                        <div class="form-row" style="margin-bottom:0;">
+                            <select id="call-blandine-h"><option value="">Heure</option></select>
+                        </div>
+                        <div class="form-row" style="margin-bottom:0;">
+                            <select id="call-blandine-m"><option value="">Minute</option></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>👤 Mme Ginola</label>
+                    <div class="triple-input">
+                        <div class="form-row" style="margin-bottom:0;">
+                            <select id="call-ginola-count">
+                                <option value="">Nombre d’appels</option>
+                                <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+                                <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                                <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                                <option value="9">9</option><option value="10">10</option>
+                            </select>
+                        </div>
+                        <div class="form-row" style="margin-bottom:0;">
+                            <select id="call-ginola-h"><option value="">Heure</option></select>
+                        </div>
+                        <div class="form-row" style="margin-bottom:0;">
+                            <select id="call-ginola-m"><option value="">Minute</option></select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-title">🎯 RAPPORT D'AVANCEMENT DU JEU</div>
+                <div class="form-row">
+                    <label>👤 MA-NX-S1-ZA-1 - Objectifs du jeu (0 à 24)</label>
+                    <select id="game-objectifs-za1">
+                        <option value="">Sélectionner objectif</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>👤 MA-NX-S1-ZA-1 - Objectifs atteints (0 à 24)</label>
+                    <select id="game-atteints-za1">
+                        <option value="">Sélectionner</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>👤 MA-NX-S1-ZA-2 - Objectifs du jeu (0 à 24)</label>
+                    <select id="game-objectifs-za2">
+                        <option value="">Sélectionner objectif</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>👤 MA-NX-S1-ZA-2 - Objectifs atteints (0 à 24)</label>
+                    <select id="game-atteints-za2">
+                        <option value="">Sélectionner</option>
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
-    <button id="logoutBtn" style="background-color:#f44336; color:white;">Se déconnecter</button>
-  </div>
+
+    <div class="controls">
+        <button class="btn btn-pgco" onclick="generatePDF('pgco')">📄 PGCO</button>
+        <button class="btn btn-pets" onclick="generatePDF('pets')">📄 PETS</button>
+        <button class="btn btn-psi" onclick="generatePDF('psi')">📄 PSI</button>
+        <div id="status" class="status"></div>
+    </div>
 </div>
 
 <script>
-  // Configuration Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
-    authDomain: "netubexmoney.firebaseapp.com",
-    projectId: "netubexmoney",
-    storageBucket: "netubexmoney.firebasestorage.app",
-    messagingSenderId: "856592608176",
-    appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
-  };
+// Stockage des images
+const store = { pgco: null, pets: null, psi: [null, null, null] };
+const PILOTE = "CHANCELLE MUKOBE";
 
-  // Initialisation
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
+// Configuration uploads
+function setupUpload(inputId, previewId, pole, idx = null) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    input.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        const preview = document.getElementById(previewId);
+        preview.innerHTML = '';
+        if (!file) { if (idx !== null) store[pole][idx] = null; else store[pole] = null; return; }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const data = ev.target.result;
+            if (idx !== null) store[pole][idx] = data;
+            else store[pole] = data;
+            const div = document.createElement('div'); div.className = 'thumb';
+            const img = document.createElement('img'); img.src = data;
+            const btn = document.createElement('button'); btn.textContent = '×';
+            btn.onclick = () => { input.value = ''; preview.innerHTML = ''; if (idx !== null) store[pole][idx] = null; else store[pole] = null; };
+            div.appendChild(img); div.appendChild(btn); preview.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+    });
+}
 
-  // Éléments DOM
-  const loginForm = document.getElementById('loginForm');
-  const timewallZone = document.getElementById('timewallZone');
-  const timewallLink = document.querySelector('#timewallBtn a');
-  const errorMessage = document.getElementById('errorMessage');
-  const loginBtn = document.getElementById('loginBtn');
-  const logoutBtn = document.getElementById('logoutBtn');
-
-  // Vérifier si l'utilisateur est déjà connecté
-  auth.onAuthStateChanged((user) => {
-    if (user && user.uid) {
-      // ✅ INJECTION DE L'UID DANS TIMEWALL
-      const userID = user.uid;
-      const timewallURL = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${userID}`;
-      timewallLink.href = timewallURL;
-
-      loginForm.style.display = 'none';
-      timewallZone.style.display = 'block';
-      errorMessage.textContent = '';
-      console.log(`🔑 UID injecté : ${userID}`);
-    } else {
-      loginForm.style.display = 'block';
-      timewallZone.style.display = 'none';
-    }
-  });
-
-  // Connexion Firebase
-  loginBtn.onclick = () => {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    if (!email || !password) {
-      errorMessage.textContent = "Veuillez entrer email et mot de passe";
-      return;
-    }
-
-    errorMessage.textContent = "Connexion en cours...";
-    errorMessage.style.color = "blue";
-
-    auth.signInWithEmailAndPassword(email, password)
-      .then(() => {
-        errorMessage.textContent = "";
-      })
-      .catch((error) => {
-        console.error("Erreur :", error.code);
-        if (error.code === 'auth/unauthorized-domain') {
-          errorMessage.innerHTML = "❌ Domaine non autorisé ! Ajoutez netubex.github.io dans Firebase Console → Authentication → Authorized domains";
-        } else if (error.code === 'auth/invalid-credential') {
-          errorMessage.textContent = "❌ Email ou mot de passe incorrect";
-        } else {
-          errorMessage.textContent = `❌ ${error.message}`;
+// Initialisation de toutes les listes déroulantes
+function initAllSelects() {
+    const dataSelects = ['pets-data1', 'pets-data2'];
+    dataSelects.forEach(id => {
+        const sel = document.getElementById(id);
+        if (sel) {
+            sel.innerHTML = '<option value="">Sélectionner Go restant</option>';
+            for(let i = 0; i <= 20; i++) sel.innerHTML += `<option value="${i} Go">${i} Go</option>`;
         }
-        errorMessage.style.color = "red";
-      });
-  };
+    });
+    
+    const hourSelects = ['call-dieu-h', 'call-blandine-h', 'call-ginola-h'];
+    hourSelects.forEach(id => {
+        const sel = document.getElementById(id);
+        if (sel) {
+            sel.innerHTML = '<option value="">Heure</option>';
+            for(let i = 0; i <= 23; i++) sel.innerHTML += `<option value="${String(i).padStart(2,'0')}h">${String(i).padStart(2,'0')}h</option>`;
+        }
+    });
+    
+    const minSelects = ['call-dieu-m', 'call-blandine-m', 'call-ginola-m'];
+    minSelects.forEach(id => {
+        const sel = document.getElementById(id);
+        if (sel) {
+            sel.innerHTML = '<option value="">Minute</option>';
+            for(let i = 0; i <= 59; i++) sel.innerHTML += `<option value="${String(i).padStart(2,'0')}min">${String(i).padStart(2,'0')}min</option>`;
+        }
+    });
+    
+    const gameSelects = ['game-objectifs-za1', 'game-atteints-za1', 'game-objectifs-za2', 'game-atteints-za2'];
+    gameSelects.forEach(id => {
+        const sel = document.getElementById(id);
+        if (sel) {
+            sel.innerHTML = '<option value="">Sélectionner</option>';
+            for(let i = 0; i <= 24; i++) sel.innerHTML += `<option value="${i}">${i}</option>`;
+        }
+    });
+}
 
-  // Déconnexion
-  logoutBtn.onclick = () => {
-    auth.signOut();
-    document.getElementById('email').value = '';
-    document.getElementById('password').value = '';
-  };
+function showPopup(msg) {
+    const popup = document.createElement('div');
+    popup.className = 'popup-overlay';
+    popup.innerHTML = `<div class="popup-container"><h3>⚠️ Validation requise</h3><p>${msg}</p><button onclick="this.closest('.popup-overlay').remove()">✅ Compris</button></div>`;
+    document.body.appendChild(popup);
+}
+
+function showStatus(msg, type) {
+    const st = document.getElementById('status');
+    st.textContent = msg;
+    st.className = `status show ${type}`;
+    setTimeout(() => st.className = 'status', 3000);
+}
+
+function getDateTime() {
+    const d = new Date();
+    return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} à ${String(d.getHours()).padStart(2,'0')}h${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+function calculateDuration() {
+    const getMinutes = (hSelect, mSelect) => {
+        const hVal = document.getElementById(hSelect)?.value || '';
+        const mVal = document.getElementById(mSelect)?.value || '';
+        let hours = 0, mins = 0;
+        if (hVal) hours = parseInt(hVal.replace('h', '')) || 0;
+        if (mVal) mins = parseInt(mVal.replace('min', '')) || 0;
+        return hours * 60 + mins;
+    };
+    const t1 = getMinutes('call-dieu-h', 'call-dieu-m');
+    const t2 = getMinutes('call-blandine-h', 'call-blandine-m');
+    const t3 = getMinutes('call-ginola-h', 'call-ginola-m');
+    const totalMin = t1 + t2 + t3;
+    const hours = Math.floor(totalMin / 60);
+    const mins = totalMin % 60;
+    return `${String(hours).padStart(2,'0')}h ${String(mins).padStart(2,'0')}min`;
+}
+
+function validatePGCO() {
+    if (!store.pgco) { showPopup("Désolé Madame Chancelle, l'image du pôle PGCO est obligatoire."); return false; }
+    const fields = ['pgco-prev1', 'pgco-today1', 'pgco-prev2', 'pgco-today2'];
+    for (let f of fields) {
+        const val = document.getElementById(f)?.value.trim();
+        if (!val) { showPopup("Désolé Madame Chancelle, tous les champs du pôle PGCO doivent être renseignés."); return false; }
+    }
+    return true;
+}
+
+function validatePETS() {
+    if (!store.pets) { showPopup("Désolé Madame Chancelle, l'image du pôle PETS est obligatoire."); return false; }
+    const fields = ['pets-anom1', 'pets-anom2', 'pets-data1', 'pets-data2'];
+    for (let f of fields) {
+        const val = document.getElementById(f)?.value;
+        if (!val) { showPopup("Désolé Madame Chancelle, tous les champs du pôle PETS doivent être renseignés."); return false; }
+    }
+    return true;
+}
+
+function validatePSI() {
+    if (!store.psi[0] || !store.psi[1] || !store.psi[2]) { showPopup("Désolé Madame Chancelle, les trois images du pôle PSI sont obligatoires."); return false; }
+    const fields = ['call-dieu-count','call-dieu-h','call-dieu-m','call-blandine-count','call-blandine-h','call-blandine-m','call-ginola-count','call-ginola-h','call-ginola-m','game-objectifs-za1','game-atteints-za1','game-objectifs-za2','game-atteints-za2'];
+    for (let f of fields) {
+        const val = document.getElementById(f)?.value;
+        if (!val) { showPopup("Désolé Madame Chancelle, tous les champs du pôle PSI doivent être renseignés."); return false; }
+    }
+    return true;
+}
+
+async function generateMultiPagePDF(pages, filename) {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const w = pdf.internal.pageSize.getWidth();
+    
+    for (let i = 0; i < pages.length; i++) {
+        const container = document.createElement('div');
+        container.style.width = '100%';
+        container.style.maxWidth = '450px';
+        container.style.backgroundColor = 'white';
+        container.style.fontFamily = "'Segoe UI', 'Roboto', sans-serif";
+        container.style.padding = '14px';
+        container.innerHTML = pages[i];
+        document.body.appendChild(container);
+        
+        const images = container.querySelectorAll('img');
+        await Promise.all(Array.from(images).map(img => {
+            if (img.complete) return Promise.resolve();
+            return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
+        }));
+        
+        const canvas = await html2canvas(container, { scale: 1.5, backgroundColor: '#fff', logging: false });
+        document.body.removeChild(container);
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = w;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        if (i > 0) pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+    }
+    pdf.save(filename);
+}
+
+async function generatePGCO() {
+    if (!validatePGCO()) return;
+    const prev1 = document.getElementById('pgco-prev1').value;
+    const today1 = document.getElementById('pgco-today1').value;
+    const prev2 = document.getElementById('pgco-prev2').value;
+    const today2 = document.getElementById('pgco-today2').value;
+    const date = getDateTime();
+    const total1 = parseInt(prev1) + parseInt(today1);
+    const total2 = parseInt(prev2) + parseInt(today2);
+    
+    const pages = [];
+    
+    // Page 1 - Rapport principal
+    pages.push(`
+        <div style="text-align:center; padding:15px; border-bottom:3px solid #a855f7; background:#faf5ff;">
+            <h1 style="color:#a855f7; font-size:1.4rem; margin-bottom:8px;">📋 RAPPORT PGCO</h1>
+            <div style="font-size:0.9rem; color:#555;">Pôle Gouvernance et Coordination Opérationnelle</div>
+            <div style="font-size:0.8rem; color:#888; margin-top:6px;">Madame Blandine</div>
+            <div style="font-size:0.75rem; color:#999; margin-top:4px;">${date}</div>
+        </div>
+        <div style="margin:15px 0; text-align:center;">
+            <img src="${store.pgco}" style="width:100%; max-width:100%; height:auto; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+        </div>
+        <div style="margin-top:15px;">
+            <h2 style="color:#a855f7; font-size:1rem; margin-bottom:12px; border-left:4px solid #a855f7; padding-left:10px;">📊 ÉTAT DES POINTS</h2>
+            <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                <thead><tr style="background:#a855f7; color:white;">
+                    <th style="padding:10px; text-align:left;">Stagiaire</th>
+                    <th style="padding:10px; text-align:center;">Points antérieurs</th>
+                    <th style="padding:10px; text-align:center;">Points du jour</th>
+                    <th style="padding:10px; text-align:center;">Total cumulé</th>
+                 </tr></thead>
+                <tbody>
+                    <tr><td style="padding:10px; border:1px solid #e0d0f0;">MA-NX-S1-ZA-1</td>
+                    <td style="padding:10px; border:1px solid #e0d0f0; text-align:center;">${prev1}</td>
+                    <td style="padding:10px; border:1px solid #e0d0f0; text-align:center;">${today1}</td>
+                    <td style="padding:10px; border:1px solid #e0d0f0; text-align:center; font-weight:bold;">${total1}</td></tr>
+                    <tr style="background:#f9f5ff;"><td style="padding:10px; border:1px solid #e0d0f0;">MA-NX-S1-ZA-2</td>
+                    <td style="padding:10px; border:1px solid #e0d0f0; text-align:center;">${prev2}</td>
+                    <td style="padding:10px; border:1px solid #e0d0f0; text-align:center;">${today2}</td>
+                    <td style="padding:10px; border:1px solid #e0d0f0; text-align:center; font-weight:bold;">${total2}</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="margin-top:15px; padding:12px; background:#f0e6ff; border-radius:10px;">
+            <div style="font-size:0.85rem;"><strong>📈 Synthèse hebdomadaire</strong></div>
+            <div style="font-size:0.8rem; margin-top:5px;">Total des points validés : ${total1 + total2} points</div>
+            <div style="font-size:0.75rem; color:#666;">Rapport validé par le Pilote Opérationnel</div>
+        </div>
+        <div style="text-align:center; font-size:0.7rem; color:#888; margin-top:18px; padding-top:10px; border-top:1px solid #e0d0f0;">
+            NeTubeX · Organisation de rémunération digitale<br>Pilote: ${PILOTE}
+        </div>
+    `);
+    
+    // Page 2 - Détail des performances
+    pages.push(`
+        <div style="text-align:center; padding:15px; border-bottom:3px solid #a855f7; background:#faf5ff;">
+            <h1 style="color:#a855f7; font-size:1.3rem;">📈 DÉTAIL DES PERFORMANCES</h1>
+            <div style="font-size:0.75rem; color:#999;">${date}</div>
+        </div>
+        <div style="margin:20px 0;">
+            <div style="background:#f0e6ff; border-radius:12px; padding:15px; margin-bottom:15px;">
+                <h2 style="color:#a855f7; font-size:1rem; margin-bottom:10px;">👤 Stagiaire MA-NX-S1-ZA-1</h2>
+                <div style="font-size:0.9rem; margin-bottom:5px;">📌 Points antérieurs : <strong>${prev1}</strong></div>
+                <div style="font-size:0.9rem; margin-bottom:5px;">🎯 Points validés aujourd'hui : <strong>${today1}</strong></div>
+                <div style="font-size:1rem; font-weight:bold; margin-top:10px;">🏆 Total cumulé : ${total1} points</div>
+            </div>
+            <div style="background:#f9f0ff; border-radius:12px; padding:15px;">
+                <h2 style="color:#a855f7; font-size:1rem; margin-bottom:10px;">👤 Stagiaire MA-NX-S1-ZA-2</h2>
+                <div style="font-size:0.9rem; margin-bottom:5px;">📌 Points antérieurs : <strong>${prev2}</strong></div>
+                <div style="font-size:0.9rem; margin-bottom:5px;">🎯 Points validés aujourd'hui : <strong>${today2}</strong></div>
+                <div style="font-size:1rem; font-weight:bold; margin-top:10px;">🏆 Total cumulé : ${total2} points</div>
+            </div>
+        </div>
+        <div style="text-align:center; font-size:0.75rem; margin-top:20px; padding-top:10px; border-top:1px solid #e0d0f0;">
+            Rapport certifié conforme par le Pilote ${PILOTE}
+        </div>
+    `);
+    
+    await generateMultiPagePDF(pages, `Rapport_PGCO_${Date.now()}.pdf`);
+    showStatus('✅ Rapport PGCO généré avec succès', 'success');
+}
+
+async function generatePETS() {
+    if (!validatePETS()) return;
+    const anom1 = document.getElementById('pets-anom1').value;
+    const anom2 = document.getElementById('pets-anom2').value;
+    const data1 = document.getElementById('pets-data1').value;
+    const data2 = document.getElementById('pets-data2').value;
+    const date = getDateTime();
+    
+    const pages = [];
+    
+    // Page 1 - Rapport principal
+    pages.push(`
+        <div style="text-align:center; padding:15px; border-bottom:3px solid #ec489a; background:#fff5f8;">
+            <h1 style="color:#ec489a; font-size:1.4rem; margin-bottom:8px;">🔧 RAPPORT PETS</h1>
+            <div style="font-size:0.9rem; color:#555;">Pôle Excellence Technique et Support</div>
+            <div style="font-size:0.8rem; color:#888; margin-top:6px;">Monsieur Dieu Merci</div>
+            <div style="font-size:0.75rem; color:#999; margin-top:4px;">${date}</div>
+        </div>
+        <div style="margin:15px 0; text-align:center;">
+            <img src="${store.pets}" style="width:100%; max-width:100%; height:auto; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+        </div>
+        <div style="margin-top:15px;">
+            <h2 style="color:#ec489a; font-size:1rem; margin-bottom:12px; border-left:4px solid #ec489a; padding-left:10px;">⚠️ DIAGNOSTIC TECHNIQUE</h2>
+            <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                <thead><tr style="background:#ec489a; color:white;">
+                    <th style="padding:10px; text-align:left;">Stagiaire</th>
+                    <th style="padding:10px; text-align:left;">Anomalie détectée</th>
+                    <th style="padding:10px; text-align:center;">Forfait restant</th>
+                 </tr></thead>
+                <tbody>
+                    <tr><td style="padding:10px; border:1px solid #f0d5e6;">MA-NX-S1-ZA-1</td>
+                    <td style="padding:10px; border:1px solid #f0d5e6;">${anom1}</td>
+                    <td style="padding:10px; border:1px solid #f0d5e6; text-align:center;">${data1}</td>
+                  </tr>
+                 <tr style="background:#fff5f8;"><td style="padding:10px; border:1px solid #f0d5e6;">MA-NX-S1-ZA-2</td>
+                    <td style="padding:10px; border:1px solid #f0d5e6;">${anom2}</td>
+                    <td style="padding:10px; border:1px solid #f0d5e6; text-align:center;">${data2}</td>
+                  </tr>
+                </tbody>
+             </table>
+        </div>
+        <div style="margin-top:15px; padding:12px; background:#ffe6f0; border-radius:10px;">
+            <div style="font-size:0.85rem;"><strong>📋 Rapport technique</strong></div>
+            <div style="font-size:0.8rem; margin-top:5px;">Diagnostic réalisé et anomalies enregistrées</div>
+            <div style="font-size:0.75rem; color:#666;">Support technique disponible en cas de besoin</div>
+        </div>
+        <div style="text-align:center; font-size:0.7rem; color:#888; margin-top:18px; padding-top:10px; border-top:1px solid #f0d5e6;">
+            NeTubeX · Organisation de rémunération digitale<br>Pilote: ${PILOTE}
+        </div>
+    `);
+    
+    // Page 2 - Détail des anomalies
+    pages.push(`
+        <div style="text-align:center; padding:15px; border-bottom:3px solid #ec489a; background:#fff5f8;">
+            <h1 style="color:#ec489a; font-size:1.3rem;">🔍 RAPPORT D'ANOMALIES</h1>
+            <div style="font-size:0.75rem; color:#999;">${date}</div>
+        </div>
+        <div style="margin:20px 0;">
+            <div style="background:#ffe6f0; border-radius:12px; padding:15px; margin-bottom:15px;">
+                <h2 style="color:#ec489a; font-size:1rem; margin-bottom:10px;">👤 MA-NX-S1-ZA-1</h2>
+                <div style="font-size:0.9rem; margin-bottom:8px;">⚠️ Anomalie constatée : <strong style="color:#ec489a;">${anom1}</strong></div>
+                <div style="font-size:0.85rem;">📶 Forfait internet restant : ${data1}</div>
+                <div style="font-size:0.8rem; color:#666; margin-top:8px;">Statut : Diagnostic enregistré</div>
+            </div>
+            <div style="background:#fff0f5; border-radius:12px; padding:15px;">
+                <h2 style="color:#ec489a; font-size:1rem; margin-bottom:10px;">👤 MA-NX-S1-ZA-2</h2>
+                <div style="font-size:0.9rem; margin-bottom:8px;">⚠️ Anomalie constatée : <strong style="color:#ec489a;">${anom2}</strong></div>
+                <div style="font-size:0.85rem;">📶 Forfait internet restant : ${data2}</div>
+                <div style="font-size:0.8rem; color:#666; margin-top:8px;">Statut : Diagnostic enregistré</div>
+            </div>
+        </div>
+        <div style="margin-top:15px; padding:12px; background:#f0f0f5; border-radius:10px; text-align:center;">
+            <div style="font-size:0.85rem;">📊 Synthèse des forfaits : ${data1} / ${data2}</div>
+        </div>
+        <div style="text-align:center; font-size:0.75rem; margin-top:20px; padding-top:10px; border-top:1px solid #f0d5e6;">
+            Rapport certifié conforme par le Pilote ${PILOTE}
+        </div>
+    `);
+    
+    await generateMultiPagePDF(pages, `Rapport_PETS_${Date.now()}.pdf`);
+    showStatus('✅ Rapport PETS généré avec succès', 'success');
+}
+
+async function generatePSI() {
+    if (!validatePSI()) return;
+    const dieuCount = document.getElementById('call-dieu-count').value;
+    const dieu = `${document.getElementById('call-dieu-h').value} ${document.getElementById('call-dieu-m').value}`;
+    const blandineCount = document.getElementById('call-blandine-count').value;
+    const blandine = `${document.getElementById('call-blandine-h').value} ${document.getElementById('call-blandine-m').value}`;
+    const ginolaCount = document.getElementById('call-ginola-count').value;
+    const ginola = `${document.getElementById('call-ginola-h').value} ${document.getElementById('call-ginola-m').value}`;
+    const duree = calculateDuration();
+    const objZa1 = document.getElementById('game-objectifs-za1').value;
+    const attZa1 = document.getElementById('game-atteints-za1').value;
+    const objZa2 = document.getElementById('game-objectifs-za2').value;
+    const attZa2 = document.getElementById('game-atteints-za2').value;
+    const date = getDateTime();
+    
+    const pages = [];
+    
+    // Page 1 - Rapport des appels stratégiques avec colonne nombre d'appels
+    pages.push(`
+        <div style="text-align:center; padding:15px; border-bottom:3px solid #f97316; background:#fff8f0;">
+            <h1 style="color:#f97316; font-size:1.3rem;">📞 RAPPORT DES APPELS STRATÉGIQUES</h1>
+            <div style="font-size:0.85rem;">Pôle Stratégie et Innovation - Madame Ginola</div>
+            <div style="font-size:0.75rem; color:#999;">${date}</div>
+        </div>
+        <table style="width:100%; margin-top:15px; border-collapse:collapse; font-size:0.85rem;">
+            <thead>
+                <tr style="background:#f97316; color:white;">
+                    <th style="padding:10px; text-align:left;">Membre</th>
+                    <th style="padding:10px; text-align:center;">Nombre d'appels</th>
+                    <th style="padding:10px; text-align:center;">Première appel à</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding:10px; border:1px solid #f0e0d0;">M. Dieu Merci</td>
+                    <td style="padding:10px; border:1px solid #f0e0d0; text-align:center;"><strong>${dieuCount}</strong> appel${dieuCount != 1 ? 's' : ''}</td>
+                    <td style="padding:10px; border:1px solid #f0e0d0; text-align:center;">${dieu}</td>
+                </tr>
+                <tr>
+                    <td style="padding:10px; border:1px solid #f0e0d0;">Mme Blandine</td>
+                    <td style="padding:10px; border:1px solid #f0e0d0; text-align:center;"><strong>${blandineCount}</strong> appel${blandineCount != 1 ? 's' : ''}</td>
+                    <td style="padding:10px; border:1px solid #f0e0d0; text-align:center;">${blandine}</td>
+                </tr>
+                <tr>
+                    <td style="padding:10px; border:1px solid #f0e0d0;">Mme Ginola</td>
+                    <td style="padding:10px; border:1px solid #f0e0d0; text-align:center;"><strong>${ginolaCount}</strong> appel${ginolaCount != 1 ? 's' : ''}</td>
+                    <td style="padding:10px; border:1px solid #f0e0d0; text-align:center;">${ginola}</td>
+                </tr>
+                <tr style="background:#fff0e6;">
+                    <td style="padding:10px;"><strong>Durée totale cumulée</strong></td>
+                    <td style="padding:10px; text-align:center;">-</td>
+                    <td style="padding:10px; text-align:center;"><strong>${duree}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+        <div style="text-align:center; font-size:0.7rem; margin-top:12px;">Pilote: ${PILOTE}</div>
+    `);
+    
+    // Page 2 - Avancement du jeu
+    pages.push(`
+        <div style="text-align:center; padding:15px; border-bottom:3px solid #f97316; background:#fff8f0;">
+            <h1 style="color:#f97316; font-size:1.3rem;">🎯 AVANCEMENT DU JEU</h1>
+            <div style="font-size:0.85rem;">Rapport stratégique - Objectifs atteints</div>
+            <div style="font-size:0.75rem; color:#999;">${date}</div>
+        </div>
+        <table style="width:100%; margin-top:15px; border-collapse:collapse; font-size:0.85rem;">
+            <thead>
+                <tr style="background:#f97316; color:white;">
+                    <th style="padding:10px;">Stagiaire</th>
+                    <th style="padding:10px;">Objectifs fixés</th>
+                    <th style="padding:10px;">Objectifs atteints</th>
+                    <th style="padding:10px;">Progression</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding:10px; border:1px solid #f0e0d0;">MA-NX-S1-ZA-1</td>
+                    <td style="padding:10px; text-align:center;">${objZa1}</td>
+                    <td style="padding:10px; text-align:center;">${attZa1}</td>
+                    <td style="padding:10px; text-align:center;">${Math.round((attZa1/objZa1)*100)}%</td>
+                </tr>
+                <tr>
+                    <td style="padding:10px; border:1px solid #f0e0d0;">MA-NX-S1-ZA-2</td>
+                    <td style="padding:10px; text-align:center;">${objZa2}</td>
+                    <td style="padding:10px; text-align:center;">${attZa2}</td>
+                    <td style="padding:10px; text-align:center;">${Math.round((attZa2/objZa2)*100)}%</td>
+                </tr>
+            </tbody>
+        </table>
+        <div style="text-align:center; font-size:0.7rem; margin-top:12px;">Pilote: ${PILOTE}</div>
+    `);
+    
+    // Pages des captures d'écran
+    for (let i = 0; i < 3; i++) {
+        pages.push(`
+            <div style="text-align:center; padding:12px; border-bottom:3px solid #f97316; background:#fff8f0;">
+                <h2 style="color:#f97316; font-size:1.1rem;">📸 PREUVE CAPTURE ${i+1}/3</h2>
+                <div style="font-size:0.7rem;">${date}</div>
+            </div>
+            <div style="margin:12px 0;"><img src="${store.psi[i]}" style="width:100%; border-radius:10px;"></div>
+            <div style="text-align:center;">Pilote: ${PILOTE}</div>
+        `);
+    }
+    
+    await generateMultiPagePDF(pages, `Rapport_PSI_${Date.now()}.pdf`);
+    showStatus('✅ Rapport PSI généré avec succès', 'success');
+}
+
+async function generatePDF(pole) {
+    const btns = document.querySelectorAll('.btn');
+    btns.forEach(b => b.disabled = true);
+    try {
+        if (pole === 'pgco') await generatePGCO();
+        else if (pole === 'pets') await generatePETS();
+        else if (pole === 'psi') await generatePSI();
+    } catch (e) { console.error(e); showStatus('Erreur technique', 'error'); }
+    finally { btns.forEach(b => b.disabled = false); }
+}
+
+setupUpload('pgco-img', 'pgco-preview', 'pgco');
+setupUpload('pets-img', 'pets-preview', 'pets');
+setupUpload('psi-img1', 'psi-preview1', 'psi', 0);
+setupUpload('psi-img2', 'psi-preview2', 'psi', 1);
+setupUpload('psi-img3', 'psi-preview3', 'psi', 2);
+initAllSelects();
+showStatus('✨ Prêt - Tous les champs sont obligatoires', 'info');
 </script>
-
 </body>
 </html>
