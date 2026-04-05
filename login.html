@@ -79,85 +79,123 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 </div>
 </div>
 <div id="errorToast" class="error-toast"><i class="fas fa-exclamation-circle"></i><span id="errorText">Erreur</span></div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-const firebaseConfig={apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getFirestore(app);
-const loginForm=document.getElementById("loginForm");
-const loginBtn=document.getElementById("loginBtn");
-const errorToast=document.getElementById("errorToast");
-const errorText=document.getElementById("errorText");
-const togglePassword=document.getElementById("togglePassword");
-const passwordInput=document.getElementById("password");
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
+  authDomain: "netubexmoney.firebaseapp.com",
+  projectId: "netubexmoney",
+  storageBucket: "netubexmoney.firebasestorage.app",
+  messagingSenderId: "856592608176",
+  appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+await setPersistence(auth, browserLocalPersistence);
+
+const loginForm = document.getElementById("loginForm");
+const loginBtn = document.getElementById("loginBtn");
+const errorToast = document.getElementById("errorToast");
+const errorText = document.getElementById("errorText");
+const togglePassword = document.getElementById("togglePassword");
+const passwordInput = document.getElementById("password");
 let toastTimeout;
-function showError(message){
-errorText.textContent=message;
-errorToast.classList.add("show");
-if(toastTimeout)clearTimeout(toastTimeout);
-toastTimeout=setTimeout(()=>{errorToast.classList.remove("show");},5000);
+
+function showError(message) {
+  errorText.textContent = message;
+  errorToast.classList.add("show");
+  if(toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => { errorToast.classList.remove("show"); }, 5000);
 }
-function hideError(){errorToast.classList.remove("show");}
-togglePassword.addEventListener("click",function(e){
-e.preventDefault();
-const type=passwordInput.getAttribute("type")==="password"?"text":"password";
-passwordInput.setAttribute("type",type);
-const icon=this.querySelector('i');
-if(icon){
-if(type==="password"){
-icon.classList.remove("fa-eye-slash");
-icon.classList.add("fa-eye");
-}else{
-icon.classList.remove("fa-eye");
-icon.classList.add("fa-eye-slash");
-}
-}
+
+function hideError() { errorToast.classList.remove("show"); }
+
+togglePassword.addEventListener("click", function(e) {
+  e.preventDefault();
+  const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+  passwordInput.setAttribute("type", type);
+  const icon = this.querySelector('i');
+  if(icon) {
+    if(type === "password") {
+      icon.classList.remove("fa-eye-slash");
+      icon.classList.add("fa-eye");
+    } else {
+      icon.classList.remove("fa-eye");
+      icon.classList.add("fa-eye-slash");
+    }
+  }
 });
-loginForm.addEventListener("submit",async(e)=>{
-e.preventDefault();
-hideError();
-const email=document.getElementById("email").value.trim();
-const password=passwordInput.value;
-if(!email||!password){showError("Veuillez renseigner tous les champs");return;}
-if(!email.includes('@')||!email.includes('.')){showError("Adresse email invalide");return;}
-loginBtn.classList.add("loading");
-loginBtn.innerHTML='<i class="fas fa-spinner"></i><span>Connexion...</span>';
-try{
-const userCredential=await signInWithEmailAndPassword(auth,email,password);
-const user=userCredential.user;
-const docRef=doc(db,"users",user.uid);
-const docSnap=await getDoc(docRef);
-let role="netuber";
-let code=null;
-if(docSnap.exists()){role=docSnap.data().role||"netuber";code=docSnap.data().code||null;}
-if(code){sessionStorage.setItem('userCode',code);}
-setTimeout(()=>{
-if(role==="pets")window.location.href="pets.html";
-else if(role==="pgc")window.location.href="pgc.html";
-else if(role==="pilote")window.location.href="pilote.html";
-else window.location.href="dashboard.html";
-},300);
-}catch(error){
-let msg="Identifiants incorrects";
-switch(error.code){
-case'auth/invalid-email':msg="Format d'email invalide";break;
-case'auth/user-disabled':msg="Compte désactivé. Contactez le support";break;
-case'auth/user-not-found':msg="Aucun compte associé à cet email";break;
-case'auth/wrong-password':msg="Mot de passe incorrect";break;
-case'auth/too-many-requests':msg="Trop de tentatives. Réessayez dans quelques minutes";break;
-case'auth/network-request-failed':msg="Problème réseau. Vérifiez votre connexion";break;
-default:msg="Échec de connexion. Vérifiez vos identifiants";
-}
-showError(msg);
-loginBtn.classList.remove("loading");
-loginBtn.innerHTML='<i class="fas fa-arrow-right-to-bracket"></i><span>Se connecter</span>';
-}
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  hideError();
+  
+  const email = document.getElementById("email").value.trim();
+  const password = passwordInput.value;
+  
+  if(!email || !password) {
+    showError("Veuillez renseigner tous les champs");
+    return;
+  }
+  if(!email.includes('@') || !email.includes('.')) {
+    showError("Adresse email invalide");
+    return;
+  }
+  
+  loginBtn.classList.add("loading");
+  loginBtn.innerHTML = '<i class="fas fa-spinner"></i><span>Connexion...</span>';
+  
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
+    
+    let role = "netuber";
+    let code = null;
+    
+    if(docSnap.exists()) {
+      role = docSnap.data().role || "netuber";
+      code = docSnap.data().code || null;
+    }
+    
+    sessionStorage.setItem('firebaseUserId', user.uid);
+    if(code) sessionStorage.setItem('userCode', code);
+    
+    setTimeout(() => {
+      if(role === "pets") window.location.href = "pets.html";
+      else if(role === "pgc") window.location.href = "pgc.html";
+      else if(role === "pilote") window.location.href = "pilote.html";
+      else window.location.href = "dashboard.html";
+    }, 300);
+    
+  } catch(error) {
+    let msg = "Identifiants incorrects";
+    switch(error.code) {
+      case 'auth/invalid-email': msg = "Format d'email invalide"; break;
+      case 'auth/user-disabled': msg = "Compte désactivé. Contactez le support"; break;
+      case 'auth/user-not-found': msg = "Aucun compte associé à cet email"; break;
+      case 'auth/wrong-password': msg = "Mot de passe incorrect"; break;
+      case 'auth/too-many-requests': msg = "Trop de tentatives. Réessayez dans quelques minutes"; break;
+      case 'auth/network-request-failed': msg = "Problème réseau. Vérifiez votre connexion"; break;
+      default: msg = "Échec de connexion. Vérifiez vos identifiants";
+    }
+    showError(msg);
+    loginBtn.classList.remove("loading");
+    loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i><span>Se connecter</span>';
+  }
 });
-document.getElementById("email").addEventListener("focus",hideError);
-passwordInput.addEventListener("focus",hideError);
+
+document.getElementById("email").addEventListener("focus", hideError);
+passwordInput.addEventListener("focus", hideError);
 </script>
 </body>
 </html>
