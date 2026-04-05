@@ -14,7 +14,9 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;}
 @keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
 .header{background:#0f1420;border-bottom:1px solid #1e293b;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
-.logo h1{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.5px;display:flex;align-items:center;gap:8px;}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo img{height:45px;width:auto;object-fit:contain;pointer-events:auto;}
+.logo h1{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.5px;}
 .user-info{background:linear-gradient(135deg,#f59e0b,#d97706);padding:6px 20px;border-radius:40px;font-size:0.85rem;font-family:monospace;color:#fff;display:flex;align-items:center;gap:10px;border:none;font-weight:700;box-shadow:0 2px 8px rgba(245,158,11,0.3);}
 .user-info i{color:#fff;font-size:1rem;}
 .feed-container{width:100%;padding:1.5rem 0;}
@@ -26,7 +28,9 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .avatar{width:52px;height:52px;background:linear-gradient(135deg,#1e293b,#0f1420);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 4px 12px rgba(0,0,0,0.3);border:1px solid rgba(56,189,248,0.2);}
 .post-meta h4{font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,#f1f5f9,#cbd5e1);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px;}
 .post-meta span{font-size:0.7rem;color:#64748b;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
-.image-wrapper{width:100%;display:block;line-height:0;position:relative;z-index:1;background:#0a0f1a;}
+.image-wrapper{width:100%;display:block;line-height:0;position:relative;z-index:1;background:#0a0f1a;min-height:200px;background:linear-gradient(135deg,#131a2a,#0f1420);display:flex;align-items:center;justify-content:center;}
+.image-placeholder{width:100%;height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#64748b;font-size:0.85rem;background:linear-gradient(135deg,#131a2a,#0f1420);}
+.image-placeholder i{font-size:3rem;color:#38bdf8;opacity:0.5;}
 .post-image{width:100%;height:auto;min-height:200px;object-fit:cover;display:block;transition:transform 0.4s ease, box-shadow 0.4s ease;box-shadow:0 10px 20px -5px rgba(0,0,0,0.5);}
 .post-card:hover .post-image{transform:scale(1.02);box-shadow:0 20px 30px -8px rgba(0,0,0,0.6);}
 .gain-btn{background:linear-gradient(135deg,#2563eb,#1d4ed8);border:none;padding:14px;font-weight:700;font-size:0.85rem;color:#fff;cursor:pointer;width:100%;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:10px;border-top:1px solid #1e293b;}
@@ -71,8 +75,6 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .footer{background:#0f1420;border-top:1px solid #1e293b;padding:1.5rem;text-align:center;margin-top:2rem;}
 .footer p{color:#64748b;font-size:0.8rem;letter-spacing:0.5px;}
 .footer p i{color:#38bdf8;margin:0 4px;}
-
-/* Popup d'erreur pilote personnalisé */
 .pilot-error-toast{position:fixed;top:20px;right:20px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;padding:14px 20px;border-radius:16px;font-size:0.85rem;font-weight:500;display:flex;align-items:center;gap:14px;box-shadow:0 10px 25px -5px rgba(220,38,38,0.4),0 0 0 1px rgba(255,255,255,0.1);z-index:3000;transform:translateX(450px);transition:transform 0.3s cubic-bezier(0.2,0.9,0.4,1.1);max-width:380px;backdrop-filter:blur(10px);}
 .pilot-error-toast.show{transform:translateX(0);}
 .pilot-error-toast i{font-size:1.3rem;color:#fff;background:rgba(255,255,255,0.2);padding:8px;border-radius:50%;}
@@ -87,7 +89,10 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <div id="dashboardApp">
 <div class="rainbow-line"></div>
 <header class="header">
-<div class="logo"><h1><i class="fas fa-chart-line"></i> NeTubeX</h1></div>
+<div class="logo">
+<img src="https://i.postimg.cc/W3BTGHLZ/FE68749C-F349-4956-8F09-B16E79A05FD9.png" alt="NeTubeX Logo">
+<h1>NeTubeX</h1>
+</div>
 <div class="user-info"><i class="fas fa-code"></i> <span id="userCodeDisplay">Chargement...</span></div>
 </header>
 <div class="feed-container">
@@ -135,8 +140,6 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <p><i class="fas fa-copyright"></i> NeTubeX 2026 — Tous droits réservés</p>
 </footer>
 </div>
-
-<!-- Popup erreur pilote personnalisé -->
 <div id="pilotErrorToast" class="pilot-error-toast">
 <i class="fas fa-lock"></i>
 <div class="error-content">
@@ -146,7 +149,6 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <button class="error-close" id="closePilotError"><i class="fas fa-times"></i></button>
 </div>
 
-<!-- VÉRIFICATION CONNEXION FIREBASE - S'EXÉCUTE EN PREMIER -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -163,17 +165,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Vérifie la connexion immédiatement au chargement du dashboard
 onAuthStateChanged(auth, (user) => {
   if (!user) {
-    // Si non connecté, redirige vers login.html
     window.location.href = "login.html";
   }
-  // Sinon, continue à charger la page
 });
 </script>
 
-<!-- SCRIPT PRINCIPAL DU DASHBOARD -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -206,10 +204,11 @@ const games = [
     {id:6, name:"Goblin Heist", avatar:"👺", img:"https://i.postimg.cc/KvQM4mty/IMG-3467.jpg", duration:"60 jours", totalPoints:1790272,
      objectives:[{name:"Atteindre 150 mètres",points:71},{name:"Atteindre 400 mètres",points:414},{name:"Atteindre 700 mètres",points:5743},{name:"Atteindre 900 mètres",points:33729},{name:"Atteindre 1000 mètres",points:64086},{name:"Atteindre 2000 mètres",points:337229},{name:"Atteindre 5000 mètres",points:1349000}]},
     {id:7, name:"Wild Fish Explorer", avatar:"🐟", img:"https://i.postimg.cc/637k468j/IMG-3469.png", duration:"30 jours", totalPoints:1778460,
-     objectives:[{name:"Reach 100 meters",points:100},{name:"Reach 200 meters",points:340},{name:"Reach 400 meters",points:4730},{name:"Reach 700 meters",points:26440},{name:"Reach 1200 meters",points:94430},{name:"Reach 2000 meters",points:472120},{name:"Reach 5000 meters",points:1180300}]}
+     objectives:[{name:"Reach 100 meters",points:100},{name:"Reach 200 meters",points:340},{name:"Reach 400 meters",points:4730},{name:"Reach 700 meters",points:26440},{name:"Reach 1200 meters",points:94430},{name:"Reach 2000 meters",points:472120},{name:"Reach 5000 meters",points:1180300}]},
+    {id:8, name:"Legend Quest", avatar:"⚔️", img:"https://i.postimg.cc/1zWzqB34/IMG-3483.jpg", duration:"3 jours", totalPoints:1000000,
+     objectives:[{name:"Terminer le tutoriel",points:12500},{name:"Atteindre le niveau 5",points:31250},{name:"Débloquer le premier équipement légendaire",points:62500},{name:"Terminer 10 quêtes quotidiennes",points:125000},{name:"Atteindre le niveau 15",points:187500},{name:"Débloquer 3 personnages",points:250000},{name:"Terminer le chapitre 1",points:156250},{name:"Atteindre le niveau 25",points:175000}]}
 ];
 
-// Éviter la double exécution
 let dashboardInitialized = false;
 
 onAuthStateChanged(auth, async (user) => {
@@ -245,6 +244,9 @@ function renderGames() {
     games.forEach(game => {
         const card = document.createElement('div');
         card.className = 'post-card';
+        const imageHtml = game.img && game.img !== '' && game.img !== '#' 
+            ? `<img class="post-image" src="${game.img}" alt="${game.name}" loading="lazy" decoding="async" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'image-placeholder\'><i class=\'fas fa-gamepad\'></i><span>Image bientôt disponible</span></div>';">`
+            : `<div class="image-placeholder"><i class="fas fa-gamepad"></i><span>Image bientôt disponible</span></div>`;
         card.innerHTML = `
             <div class="post-header">
                 <div class="avatar">${game.avatar}</div>
@@ -253,7 +255,7 @@ function renderGames() {
                     <span><i class="fas fa-calendar-alt"></i> ${game.duration} <i class="fas fa-gem" style="margin-left:8px;"></i> ${game.totalPoints.toLocaleString()} points</span>
                 </div>
             </div>
-            <div class="image-wrapper"><img class="post-image" src="${game.img}" alt="${game.name}" loading="lazy" decoding="async"></div>
+            <div class="image-wrapper">${imageHtml}</div>
             <button class="gain-btn" data-id="${game.id}"><i class="fas fa-crown"></i> Gagner ${game.totalPoints.toLocaleString()} points</button>
         `;
         container.appendChild(card);
@@ -269,7 +271,8 @@ function showGamePopup(game) {
         p.innerHTML = `<span class="label"><span class="number">${idx+1}</span> ${obj.name}</span><span class="value">${obj.points.toLocaleString()} pts</span>`;
         statsContainer.appendChild(p);
     });
-    document.getElementById('gamePopupTitle').innerHTML = `${game.name}<span style="font-size:0.75rem;display:block;color:#475569;margin-top:6px;">🏆 ${game.objectives.length} objectifs • ⏱️ ${game.duration}</span>`;
+    const durationText = game.duration === "3 jours" ? "⏱️ Chaque objectif à atteindre dans 3 jours" : `🏆 ${game.objectives.length} objectifs • ⏱️ ${game.duration}`;
+    document.getElementById('gamePopupTitle').innerHTML = `${game.name}<span style="font-size:0.75rem;display:block;color:#475569;margin-top:6px;">${durationText}</span>`;
     openPopup('gamePopup');
 }
 document.getElementById('closeGamePopup')?.addEventListener('click', () => { closePopupWithAnimation('gamePopup'); });
@@ -280,7 +283,6 @@ document.getElementById('settingsFloatBtn')?.addEventListener('click', () => {
 });
 document.getElementById('closeSettingsBtn')?.addEventListener('click', () => { closePopupWithAnimation('settingsPopup'); });
 
-// Fonction pour afficher l'erreur pilote personnalisée
 function showPilotError() {
     const errorToast = document.getElementById('pilotErrorToast');
     errorToast.classList.add('show');
@@ -343,7 +345,4 @@ document.getElementById('closeIframeBtn')?.addEventListener('click', () => {
 });
 document.addEventListener('contextmenu', (e) => { if(!e.target.closest('iframe')) e.preventDefault(); });
 document.addEventListener('dragstart', (e) => { if(!e.target.closest('iframe')) e.preventDefault(); });
-document.addEventListener('touchstart', (e) => { if(e.touches.length > 1) e.preventDefault(); }, { passive: false });
-</script>
-</body>
-</html>
+document.addEventListener('touchstart', (e) => { if(e.touches.length > 1) e.preventDefault(); }, { passive:
