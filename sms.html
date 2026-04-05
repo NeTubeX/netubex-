@@ -1,1 +1,16 @@
-
+<button id="sendSMS">Envoyer SMS</button>
+<script>
+document.getElementById("sendSMS").addEventListener("click", () => {
+  fetch("https://send-sms.netube-a97.workers.dev/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      to: "+243XXXXXXXXX", // remplace par ton numéro
+      message: "Salut depuis Cloudflare Worker !"
+    })
+  })
+  .then(res => res.json())
+  .then(console.log)
+  .catch(console.error);
+});
+</script>
