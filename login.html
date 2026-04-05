@@ -20,18 +20,22 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 .card-header h1{font-size:1.7rem;font-weight:800;background:linear-gradient(135deg,#f1f5f9,#94a3b8);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:0.3rem;}
 .card-header p{color:#64748b;font-size:0.8rem;font-weight:500;}
 .input-group{margin-bottom:1.3rem;position:relative;}
-.input-group i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#475569;font-size:1rem;pointer-events:none;}
+.input-group i:first-child{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#475569;font-size:1rem;pointer-events:none;}
 .input-group input{width:100%;padding:12px 14px 12px 44px;background:#0a0f1a;border:1.5px solid #1e293b;border-radius:12px;font-size:0.9rem;color:#e2e8f0;font-family:'Inter',sans-serif;transition:all 0.2s;outline:none;}
 .input-group input:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,0.1);}
-.input-group input:focus+i{color:#38bdf8;}
+.input-group input:focus ~ i:first-child{color:#38bdf8;}
 .input-group input::placeholder{color:#475569;}
+.password-wrapper{position:relative;}
+.password-wrapper input{padding-right:44px;}
+.toggle-password{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#64748b;font-size:1rem;cursor:pointer;transition:color 0.2s;z-index:2;background:transparent;border:none;display:flex;align-items:center;justify-content:center;}
+.toggle-password:hover{color:#38bdf8;}
 .login-btn{width:100%;padding:12px;background:linear-gradient(135deg,#2563eb,#1d4ed8);border:none;border-radius:12px;font-size:0.95rem;font-weight:700;color:#fff;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Inter',sans-serif;margin-top:0.3rem;position:relative;box-shadow:0 6px 0 #1e3a5f;transform:translateY(-2px);}
 .login-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #1e3a5f;}
 .login-btn:hover{background:linear-gradient(135deg,#3b82f6,#2563eb);}
-.error-toast{position:fixed;top:20px;right:20px;background:#dc2626;color:#fff;padding:10px 16px;border-radius:10px;font-size:0.8rem;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:0 4px 12px rgba(220,38,38,0.3);z-index:1000;transform:translateX(400px);transition:transform 0.3s ease;max-width:320px;backdrop-filter:blur(10px);background:rgba(220,38,38,0.95);}
+.error-toast{position:fixed;top:20px;right:20px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);color:#1e293b;padding:12px 18px;border-radius:12px;font-size:0.85rem;font-weight:500;display:flex;align-items:center;gap:12px;box-shadow:0 8px 20px rgba(0,0,0,0.12),0 0 0 1px rgba(0,0,0,0.02);z-index:1000;transform:translateX(400px);transition:transform 0.3s cubic-bezier(0.2,0.9,0.4,1.1);max-width:340px;border:1px solid rgba(203,213,225,0.5);}
 .error-toast.show{transform:translateX(0);}
-.error-toast i{font-size:1rem;color:#fff;}
-.error-toast span{flex:1;}
+.error-toast i{font-size:1.1rem;color:#dc2626;}
+.error-toast span{flex:1;line-height:1.4;}
 .card-footer{text-align:center;margin-top:1.8rem;padding-top:1.2rem;border-top:1px solid #1e293b;}
 .card-footer p{color:#475569;font-size:0.7rem;display:flex;align-items:center;justify-content:center;gap:6px;}
 .card-footer i{color:#38bdf8;}
@@ -57,7 +61,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 </div>
 <div class="input-group">
 <i class="fas fa-lock"></i>
+<div class="password-wrapper">
 <input type="password" id="password" placeholder="Mot de passe" required autocomplete="current-password">
+<button type="button" class="toggle-password" id="togglePassword">
+<i class="fas fa-eye"></i>
+</button>
+</div>
 </div>
 <button type="submit" class="login-btn" id="loginBtn">
 <i class="fas fa-arrow-right-to-bracket"></i>
@@ -82,21 +91,28 @@ const loginForm=document.getElementById("loginForm");
 const loginBtn=document.getElementById("loginBtn");
 const errorToast=document.getElementById("errorToast");
 const errorText=document.getElementById("errorText");
+const togglePassword=document.getElementById("togglePassword");
+const passwordInput=document.getElementById("password");
 let toastTimeout;
 function showError(message){
 errorText.textContent=message;
 errorToast.classList.add("show");
 if(toastTimeout)clearTimeout(toastTimeout);
-toastTimeout=setTimeout(()=>{errorToast.classList.remove("show");},4000);
+toastTimeout=setTimeout(()=>{errorToast.classList.remove("show");},5000);
 }
 function hideError(){errorToast.classList.remove("show");}
+togglePassword.addEventListener("click",function(){
+const type=passwordInput.getAttribute("type")==="password"?"text":"password";
+passwordInput.setAttribute("type",type);
+this.innerHTML=type==="password"?'<i class="fas fa-eye"></i>':'<i class="fas fa-eye-slash"></i>';
+});
 loginForm.addEventListener("submit",async(e)=>{
 e.preventDefault();
 hideError();
 const email=document.getElementById("email").value.trim();
-const password=document.getElementById("password").value;
-if(!email||!password){showError("Tous les champs sont requis");return;}
-if(!email.includes('@')||!email.includes('.')){showError("Email invalide");return;}
+const password=passwordInput.value;
+if(!email||!password){showError("Veuillez renseigner tous les champs");return;}
+if(!email.includes('@')||!email.includes('.')){showError("Adresse email invalide");return;}
 loginBtn.classList.add("loading");
 loginBtn.innerHTML='<i class="fas fa-spinner"></i><span>Connexion...</span>';
 try{
@@ -115,15 +131,15 @@ else if(role==="pilote")window.location.href="pilote.html";
 else window.location.href="dashboard.html";
 },300);
 }catch(error){
-let msg="Erreur de connexion";
+let msg="Identifiants incorrects";
 switch(error.code){
-case'auth/invalid-email':msg="Email invalide";break;
-case'auth/user-disabled':msg="Compte désactivé";break;
-case'auth/user-not-found':msg="Aucun compte associé";break;
+case'auth/invalid-email':msg="Format d'email invalide";break;
+case'auth/user-disabled':msg="Compte désactivé. Contactez le support";break;
+case'auth/user-not-found':msg="Aucun compte associé à cet email";break;
 case'auth/wrong-password':msg="Mot de passe incorrect";break;
-case'auth/too-many-requests':msg="Trop de tentatives, réessayez plus tard";break;
-case'auth/network-request-failed':msg="Erreur réseau";break;
-default:msg=error.message||"Échec connexion";
+case'auth/too-many-requests':msg="Trop de tentatives. Réessayez dans quelques minutes";break;
+case'auth/network-request-failed':msg="Problème réseau. Vérifiez votre connexion";break;
+default:msg="Échec de connexion. Vérifiez vos identifiants";
 }
 showError(msg);
 loginBtn.classList.remove("loading");
@@ -131,7 +147,7 @@ loginBtn.innerHTML='<i class="fas fa-arrow-right-to-bracket"></i><span>Se connec
 }
 });
 document.getElementById("email").addEventListener("focus",hideError);
-document.getElementById("password").addEventListener("focus",hideError);
+passwordInput.addEventListener("focus",hideError);
 </script>
 </body>
 </html>
