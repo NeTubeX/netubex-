@@ -15,10 +15,8 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 @keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
 .header{background:#0f1420;border-bottom:1px solid #1e293b;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:10px;}
 .logo h1{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.5px;display:flex;align-items:center;gap:8px;}
-.user-info{background:#0a0f1a;padding:6px 16px;border-radius:40px;font-size:0.75rem;font-family:monospace;color:#94a3b8;display:flex;align-items:center;gap:8px;border:1px solid #1e293b;}
-.user-info i{color:#38bdf8;}
-.netuber-code{background:linear-gradient(135deg,#f59e0b,#d97706);padding:6px 16px;border-radius:40px;font-size:0.75rem;font-family:monospace;color:#fff;display:flex;align-items:center;gap:8px;border:none;font-weight:700;}
-.netuber-code i{color:#fff;}
+.user-info{background:linear-gradient(135deg,#f59e0b,#d97706);padding:6px 20px;border-radius:40px;font-size:0.85rem;font-family:monospace;color:#fff;display:flex;align-items:center;gap:10px;border:none;font-weight:700;box-shadow:0 2px 8px rgba(245,158,11,0.3);}
+.user-info i{color:#fff;font-size:1rem;}
 .feed-container{width:100%;padding:1.5rem 0;}
 .games-list{display:flex;flex-direction:column;gap:1px;width:100%;background:#0a0f1a;}
 .post-card{background:#0f1420;overflow:hidden;width:100%;border-bottom:1px solid #1e293b;transition:all 0.3s ease;}
@@ -80,10 +78,7 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <div class="rainbow-line"></div>
 <header class="header">
 <div class="logo"><h1><i class="fas fa-chart-line"></i> NeTubeX</h1></div>
-<div style="display:flex; gap:12px; align-items:center;">
-<div class="netuber-code"><i class="fas fa-code"></i> <span id="userCodeDisplay">Chargement...</span></div>
-<div class="user-info"><i class="fas fa-id-card"></i> <span id="userIdDisplay">USER_001</span></div>
-</div>
+<div class="user-info"><i class="fas fa-code"></i> <span id="userCodeDisplay">Chargement...</span></div>
 </header>
 <div class="feed-container">
 <div class="games-list" id="gamesContainer"></div>
@@ -147,11 +142,9 @@ const games = [
     {id:7, name:"Wild Fish Explorer", avatar:"🐟", img:"https://i.postimg.cc/637k468j/IMG-3469.png", duration:"30 jours", totalPoints:1778460,
      objectives:[{name:"Reach 100 meters",points:100},{name:"Reach 200 meters",points:340},{name:"Reach 400 meters",points:4730},{name:"Reach 700 meters",points:26440},{name:"Reach 1200 meters",points:94430},{name:"Reach 2000 meters",points:472120},{name:"Reach 5000 meters",points:1180300}]}
 ];
-let userId = "USER_" + Math.random().toString(36).substr(2, 6).toUpperCase();
-document.getElementById('userIdDisplay').innerText = userId;
 
-// 🔹 Afficher le code Netuber après login
-const userCode = sessionStorage.getItem('userCode') || "Aucun code trouvé";
+// 🔹 Récupérer et afficher le code Netuber injecté à la place de USER_JDDH30
+const userCode = sessionStorage.getItem('userCode') || "NETUBER_2026";
 const userCodeDisplay = document.getElementById('userCodeDisplay');
 if(userCodeDisplay) userCodeDisplay.textContent = userCode;
 
