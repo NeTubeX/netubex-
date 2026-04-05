@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeTubeX · Révolution Créateurs · 26 Oct 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --deep-blue: #0b0f1c;
+            --violet-intense: #5b43c6;
+            --violet-doux: #7c6cf0;
+            --accent-glow: #a58eff;
+            --blanc-pur: #ffffff;
+            --gris-clair: #f2f4fc;
+            --text-dark: #151e2f;
+            --text-soft: #2e3a59;
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --shadow-lift: 0 20px 35px -10px rgba(91, 67, 198, 0.25);
+            --border-radius-card: 32px;
+            --border-radius-element: 24px;
+            --transition-smooth: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: radial-gradient(circle at 10% 30%, #eef2ff, #d9e2fc);
+            color: var(--text-dark);
+            line-height: 1.5;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* conteneur principal plus respirant */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Article principal – carte géante avec verre dépoli */
+        article {
+            background: var(--glass-bg);
+            backdrop-filter: blur(18px) saturate(180%);
+            -webkit-backdrop-filter: blur(18px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-card);
+            box-shadow: var(--shadow-xl), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+        }
+
+        article:hover {
+            box-shadow: var(--shadow-lift), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+        }
+
+        /* ===== HERO CINÉMA ===== */
+        .hero-section {
+            position: relative;
+            height: min(70vh, 620px);
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 1.2s ease;
+        }
+
+        .hero-section:hover .hero-image {
+            transform: scale(1.03);
+        }
+
+        /* overlay moderne — plus de transparence et de lumière */
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, 
+                rgba(7, 5, 28, 0.95) 0%, 
+                rgba(18, 14, 48, 0.65) 30%,
+                rgba(30, 20, 70, 0.2) 70%,
+                transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 3rem 3.5rem;
+            color: white;
+            pointer-events: none;
+        }
+
+        .hero-overlay h1 {
+            font-size: clamp(2.4rem, 8vw, 4.8rem);
+            font-weight: 800;
+            line-height: 1.1;
+            max-width: 12ch;
+            text-shadow: 0 4px 25px rgba(0, 0, 0, 0.7);
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+        }
+
+        /* meta-info design "puce lumineuse" */
+        .meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            pointer-events: auto;
+        }
+
+        .meta-item {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.6rem 1.4rem;
+            border-radius: 60px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+            transition: var(--transition-smooth);
+        }
+
+        .meta-item strong {
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .meta-item:hover {
+            background: rgba(255, 255, 255, 0.35);
+            border-color: white;
+            transform: translateY(-3px);
+        }
+
+        /* ===== CONTENU AÉRÉ ===== */
+        .content-wrapper {
+            padding: 4rem 3.5rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        /* typographie fine */
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--deep-blue);
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            background: linear-gradient(145deg, #1c1f4a, #342b7c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            border-bottom: 4px solid transparent;
+            border-image: linear-gradient(90deg, var(--violet-intense), var(--accent-glow)) 1;
+            border-image-slice: 1;
+            padding-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 1.18rem;
+            color: var(--text-soft);
+            margin-bottom: 1.8rem;
+            max-width: 75ch;
+        }
+
+        .lead {
+            font-size: 1.5rem;
+            font-weight: 450;
+            color: #1d2b4b;
+            line-height: 1.5;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 1.8rem 2rem;
+            border-radius: var(--border-radius-element);
+            border-left: 10px solid var(--violet-intense);
+            box-shadow: 0 10px 25px -15px rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px);
+        }
+
+        /* grille fonctionnalités : style premium */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3.5rem 0 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 28px;
+            padding: 2.5rem 1.8rem 1.8rem;
+            box-shadow: 0 20px 35px -20px rgba(78, 56, 156, 0.25);
+            transition: var(--transition-smooth);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(6px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--violet-intense), #b79eff);
+            border-radius: 8px 0 0 8px;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 30px 45px -18px #4535a0;
+            border-color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1f1946, #4d3db8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.8rem;
+        }
+
+        .feature-card p {
+            font-size: 1.05rem;
+            color: #2e3440;
+            margin-bottom: 0;
+        }
+
+        /* highlight box raffiné */
+        .highlight-box {
+            background: linear-gradient(105deg, rgba(107, 91, 221, 0.08), rgba(255, 255, 255, 0.7));
+            border-left: 8px solid var(--violet-intense);
+            border-radius: 0 30px 30px 0;
+            padding: 2rem 2.8rem;
+            margin: 3rem 0 3rem 0;
+            box-shadow: 0 20px 30px -20px #9080d0;
+            backdrop-filter: blur(4px);
+        }
+
+        .highlight-box p {
+            font-size: 1.25rem;
+            font-style: italic;
+            color: #22223b;
+            margin-bottom: 0;
+            font-weight: 460;
+        }
+
+        /* image de contenu */
+        .content-image {
+            border-radius: 30px;
+            box-shadow: 0 25px 40px -18px black;
+            transition: var(--transition-smooth);
+            border: 2px solid white;
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .content-image:hover {
+            transform: scale(1.01);
+            box-shadow: 0 30px 50px -15px #2b1e60;
+        }
+
+        figcaption {
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 450;
+            color: #3f3c5c;
+            letter-spacing: 0.3px;
+            font-size: 0.98rem;
+        }
+
+        ul {
+            list-style: none;
+            margin: 2rem 0 2rem 0;
+        }
+
+        li {
+            font-size: 1.15rem;
+            margin-bottom: 1rem;
+            padding-left: 2.3rem;
+            position: relative;
+            color: #192237;
+        }
+
+        li:before {
+            content: "✦";
+            color: var(--violet-intense);
+            font-weight: 700;
+            font-size: 1.6rem;
+            position: absolute;
+            left: 0;
+            top: -6px;
+        }
+
+        /* CTA final – ultra moderne */
+        .cta-section {
+            background: linear-gradient(145deg, #0a0d26, #26216b);
+            color: white;
+            padding: 5rem 3rem;
+            text-align: center;
+            border-radius: 40px 40px 30px 30px;
+            margin: 2rem 0 0;
+            box-shadow: 0 30px 40px -15px #190e46;
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+        }
+
+        .cta-section::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 70% 30%, rgba(255, 215, 255, 0.25), transparent 70%);
+            z-index: -1;
+        }
+
+        .cta-section h2 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            color: white;
+            -webkit-text-fill-color: white;
+            background: none;
+            border-bottom: none;
+            text-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.4rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #1b1245;
+            font-weight: 700;
+            font-size: 1.3rem;
+            padding: 1.2rem 3.5rem;
+            border-radius: 80px;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            margin-top: 2rem;
+            border: 2px solid transparent;
+            box-shadow: 0 30px 35px -15px #08041f;
+        }
+
+        .cta-button:hover {
+            background: #eceaff;
+            border-color: white;
+            transform: scale(1.05) translateY(-6px);
+            box-shadow: 0 45px 50px -18px #b5a2ff;
+        }
+
+        /* Responsive parfait */
+        @media (max-width: 800px) {
+            body { padding: 1rem 0.8rem; }
+            .hero-section { height: 480px; }
+            .hero-overlay { padding: 2rem 1.5rem; }
+            .content-wrapper { padding: 2rem 1.5rem; }
+            h2 { font-size: 2rem; }
+            .lead { font-size: 1.25rem; padding: 1.2rem; }
+            .cta-section h2 { font-size: 2.2rem; }
+            .cta-button { font-size: 1.1rem; padding: 1rem 2.2rem; }
+        }
+
+        @media (max-width: 480px) {
+            .meta-item { width: 100%; justify-content: center; }
+            .feature-grid { gap: 1.2rem; }
+        }
+
+        /* petit plus: séparation subtile */
+        hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--violet-doux), transparent);
+            margin: 3rem 0;
+        }
+    </style>
+    <!-- Importation discrète Inter (Google Font) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <article itemscope itemtype="https://schema.org/BlogPosting">
+        <!-- Hero cinématique avec effet glass -->
+        <div class="hero-section">
+            <img src="https://i.postimg.cc/wxFQMn14/0D2D24A1-39B5-4983-BB4A-8E61C1FA1AF7.jpg" 
+                 alt="Créateurs NeTubeX réunis pour le lancement" 
+                 class="hero-image" itemprop="image">
+            <div class="hero-overlay">
+                <h1 itemprop="headline">NeTubeX Lancement Officiel – 26 Octobre 2025</h1>
+                <div class="meta-info">
+                    <span class="meta-item" itemprop="datePublished"><strong>Parution</strong> 26 oct. 2025</span>
+                    <span class="meta-item" itemprop="author"><strong>Équipe</strong> NeTubeX</span>
+                    <span class="meta-item" itemprop="articleSection"><strong>Rubrique</strong> Programme Institutionnel</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <!-- accroche large -->
+            <section>
+                <p class="lead" itemprop="description">
+                    ✦ Le 26 octobre 2025, NeTubeX dévoile son programme institutionnel : une nouvelle ère pour les Netubers. Missions rémunératrices, suivi avancé et communauté sécurisée.
+                </p>
+            </section>
+
+            <!-- contenu structuré -->
+            <section itemprop="articleBody">
+                <h2>Programme institutionnel : l’ADN NeTubeX</h2>
+                <p>Les <strong>Netubers membres</strong> accèdent à des missions exclusives, pensées pour valoriser leur influence et leur engagement. Interface ultra‑intuitive, tableau de bord personnel et accompagnement prioritaire.</p>
+                
+                <div class="highlight-box">
+                    <p>“Ne plus se contenter de poster, mais participer à une économie créative encadrée — c’est la promesse tenue du programme institutionnel.”</p>
+                </div>
+
+                <h2>Fonctionnalités phares du lancement</h2>
+                <div class="feature-grid">
+                    <div class="feature-card"><h3>Espace Netuber</h3><p>Profil certifié, gestion des missions en un clic, notifications personnalisées.</p></div>
+                    <div class="feature-card"><h3>Revenus & tracking</h3><p>Visualisez vos gains instantanés et l’impact de chaque mission en temps réel.</p></div>
+                    <div class="feature-card"><h3>Sécurité renforcée</h3><p>Données chiffrées, double authentification, conformité RGPD et confidentialité.</p></div>
+                    <div class="feature-card"><h3>Missions premium</h3><p>Accès aux campagnes de marques et institutions, avec rémunération claire.</p></div>
+                </div>
+
+                <h2>Une communauté en mouvement</h2>
+                <p>Les premiers Netubers ont déjà adopté l'outil. Retours unanimes : clarté, fluidité, et esprit de groupe. Les inscriptions publiques ouvriront dans les prochaines semaines.</p>
+
+                <figure>
+                    <img src="https://i.postimg.cc/wxFQMn14/0D2D24A1-39B5-4983-BB4A-8E61C1FA1AF7.jpg" 
+                         alt="Netubers célébrant le lancement" 
+                         class="content-image">
+                    <figcaption>Ambiance électrique lors de la présentation privée du 26 octobre 2025.</figcaption>
+                </figure>
+
+                <!-- mini-liste stylée -->
+                <h2>Pourquoi rejoindre dès maintenant ?</h2>
+                <ul>
+                    <li><strong>Anticipation :</strong> soyez parmi les premiers à profiter des missions à forte valeur.</li>
+                    <li><strong>Visibilité :</strong> les membres fondateurs bénéficient d’un badge “Pionnier”.</li>
+                    <li><strong>Évolution :</strong> accès aux futures fonctionnalités en avant‑première.</li>
+                </ul>
+            </section>
+
+            <!-- petite séparation visuelle (élégante) -->
+            <hr>
+
+            <!-- avant dernière section -->
+            <section>
+                <h2>Démarrage imminent</h2>
+                <p>Les inscriptions publiques au Programme Institutionnel seront ouvertes dans quelques jours. NeTubeX prépare une vague de nouvelles missions pour les Netubers validés. L’attente sera récompensée.</p>
+            </section>
+        </div>
+
+        <!-- CTA dynamique avec fond profond -->
+        <section class="cta-section">
+            <h2>Prêt à devenir Netuber ?</h2>
+            <p>Le programme institutionnel change la donne. Rejoignez la liste d’attente prioritaire.</p>
+            <a href="#" class="cta-button">Activer mon accès →</a>
+        </section>
+    </article>
+
+    <!-- JSON-LD inchangé mais fonctionnel -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "NeTubeX Lancement Officiel – 26 Octobre 2025",
+        "description": "Le 26 octobre 2025 marque le lancement officiel du Programme Institutionnel NeTubeX, dédié aux Netubers et aux missions rémunératrices.",
+        "author": {"@type": "Organization","name": "Équipe NeTubeX"},
+        "datePublished": "2025-10-26",
+        "image": "https://i.postimg.cc/wxFQMn14/0D2D24A1-39B5-4983-BB4A-8E61C1FA1AF7.jpg",
+        "articleSection": "Actualités",
+        "mainEntityOfPage": {"@type": "WebPage","@id": "https://www.netubex.com/blog/lancement"}
+    }
+    </script>
+</div>
+</body>
+</html>
