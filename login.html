@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -14,12 +13,10 @@
   </form>
 
   <script type="module">
-    // 🔹 Import Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // 🔹 Config Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
       authDomain: "netubexmoney.firebaseapp.com",
@@ -33,7 +30,6 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // 🔹 Gestion login
     const loginForm = document.getElementById("loginForm");
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -44,18 +40,16 @@
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // 🔹 Récupérer rôle depuis Firestore
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const role = docSnap.data().role;
 
-          // 🔹 Redirection selon rôle
           if (role === "pets") window.location.href = "pets.html";
-          else if (role === "pgco") window.location.href = "pgco.html";
+          else if (role === "pgc") window.location.href = "pgc.html";
           else if (role === "pilote") window.location.href = "pilote.html";
-          else window.location.href = "login.html"; // fallback
+          else window.location.href = "login.html";
         } else {
           alert("Rôle non trouvé !");
         }
