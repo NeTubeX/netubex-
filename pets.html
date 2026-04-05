@@ -1,1 +1,606 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>NeTubeX · Rapport Journalier Terminaux & Internet</title>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a121f;
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      padding: 30px 24px 50px;
+    }
+    /* Conteneur principal plus large pour ordinateur */
+    .rapport-card {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: #0f1a2b;
+      border-radius: 32px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      padding: 28px 32px;
+      border: 1px solid #2a405c;
+    }
+    .entete {
+      margin-bottom: 28px;
+      border-bottom: 2px solid #2c5a7a;
+      padding-bottom: 20px;
+    }
+    .entete h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #7bb3d9;
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+    }
+    .entete h2 {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #f5bc70;
+      margin-top: 6px;
+    }
+    .sous-titre {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .badge-org { background: #1f3a52; padding: 6px 20px; border-radius: 40px; font-size: 0.8rem; font-weight: 700; color: #9bc2e6; border: 1px solid #3a6e96; }
+    .ref-site { background: #1e2e42; padding: 6px 20px; border-radius: 40px; font-family: monospace; font-weight: 700; font-size: 0.85rem; color: #f5bc70; border: 1px solid #b87c3a; }
+    .section {
+      background: #112233;
+      border-radius: 28px;
+      margin-bottom: 28px;
+      padding: 22px 26px;
+      border: 1px solid #2a4b6e;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+      transition: all 0.2s;
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: #f5bc70;
+      border-left: 6px solid #f5a623;
+      padding-left: 16px;
+      margin-bottom: 22px;
+    }
+    .ligne-info {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      background: #0e1a28;
+      padding: 14px 20px;
+      border-radius: 24px;
+      margin-bottom: 14px;
+      border: 1px solid #264a6a;
+    }
+    .label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #9ab3d0;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .valeur {
+      font-weight: 700;
+      color: #eef4ff;
+      font-size: 1rem;
+      background: #0c1828;
+      padding: 6px 16px;
+      border-radius: 30px;
+      border: 1px solid #2a6088;
+    }
+    select, input, textarea {
+      background: #0e1a2a;
+      border: 1px solid #2a6088;
+      border-radius: 32px;
+      padding: 10px 16px;
+      color: #f0f4fa;
+      font-size: 0.9rem;
+      font-family: inherit;
+      width: 100%;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+    select:focus, input:focus, textarea:focus {
+      border-color: #f5a623;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(245,166,35,0.2);
+    }
+    textarea {
+      border-radius: 24px;
+      resize: vertical;
+      min-height: 100px;
+    }
+    /* Agrandissement spécifique du champ PLAN D'ACTION */
+    #planAction {
+      min-height: 180px;
+      max-height: 300px;
+      overflow-y: auto;
+      resize: vertical;
+    }
+    /* Grille adaptable pour ordinateur */
+    .row-2cols {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+    .row-2cols > div {
+      flex: 1;
+      min-width: 220px;
+    }
+    /* Grille 3 colonnes pour certains blocs (tickets, etc) */
+    .row-3cols {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+    .row-3cols > div {
+      flex: 1;
+      min-width: 180px;
+    }
+    .taux-barre {
+      height: 12px;
+      background: #1e3a4f;
+      border-radius: 20px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+    .taux-fill {
+      height: 100%;
+      width: 0%;
+      background: #3bc9b0;
+      border-radius: 20px;
+      transition: width 0.2s;
+    }
+    .btn-pdf {
+      background: linear-gradient(95deg, #2b6c94, #144a6e);
+      width: 100%;
+      border: none;
+      padding: 18px;
+      border-radius: 60px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-top: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 0 #06253b;
+      cursor: pointer;
+      transition: 0.1s linear;
+    }
+    .btn-pdf:active {
+      transform: translateY(3px);
+      box-shadow: 0 4px 0 #06253b;
+    }
+    .footer-note {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #5f7f9e;
+      margin-top: 20px;
+      border-top: 1px solid #2a4f6e;
+      padding-top: 18px;
+    }
+    /* Adaptation grands écrans (ordinateur) */
+    @media (min-width: 1200px) {
+      .rapport-card {
+        padding: 36px 42px;
+      }
+      .section {
+        padding: 28px 32px;
+      }
+      .row-2cols, .row-3cols {
+        gap: 32px;
+      }
+      .ligne-info {
+        padding: 16px 24px;
+      }
+      .label {
+        font-size: 0.85rem;
+      }
+      .valeur {
+        font-size: 1rem;
+      }
+      select, input, textarea {
+        font-size: 0.95rem;
+        padding: 12px 18px;
+      }
+    }
+    /* Responsive tablette / mobile reste propre */
+    @media (max-width: 768px) {
+      .rapport-card {
+        padding: 18px;
+      }
+      .section {
+        padding: 18px;
+      }
+      .entete h1 {
+        font-size: 1.5rem;
+      }
+    }
+    /* Style des graphiques dans le PDF (pour affichage intermédiaire) */
+    .graph-placeholder {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
 
+<div class="rapport-card" id="rapportContainer">
+  
+  <div class="entete">
+    <h1>📡 RAPPORT JOURNALIER<br>TERMINAUX & INTERNET</h1>
+    <h2>🏢 NeTubeX · Organisation de Rémunération Digitale</h2>
+    <div class="sous-titre">
+      <span class="badge-org">NeTubeX · PETS</span>
+      <span class="ref-site">REF: ORG-NX-S1-2026</span>
+    </div>
+    <div class="ligne-info" style="margin-top: 16px;">
+      <span class="label">📅 DATE & HEURE</span>
+      <span class="valeur" id="horodatageLive">--/--/---- --:--:--</span>
+    </div>
+    <div class="ligne-info">
+      <span class="label">👤 RESPONSABLE</span>
+      <span class="valeur">Sirius Makangila</span>
+    </div>
+    <div class="ligne-info">
+      <span class="label">📄 RAPPORT N°</span>
+      <input type="text" id="numRapport" value="RPT-J-2026-0" style="width: auto; max-width: 280px;">
+    </div>
+  </div>
+
+  <!-- DESIGN PDF : liste déroulante 10 styles -->
+  <div class="section">
+    <div class="section-title"><span>🎨</span> PERSONNALISATION PDF</div>
+    <div class="row-2cols">
+      <div>
+        <span class="label">🎨 DESIGN DU RAPPORT PDF</span>
+        <select id="designPdf">
+          <option value="classic">1. Classique Bleu & Or</option>
+          <option value="modern">2. Moderne Vert Émeraude</option>
+          <option value="corporate">3. Corporate Gris Acier</option>
+          <option value="darkpremium">4. Dark Premium Carbone</option>
+          <option value="lightelegant">5. Light Élégant Beige</option>
+          <option value="tech">6. Tech Violet Dynamique</option>
+          <option value="ocean">7. Océan Turquoise</option>
+          <option value="solar">8. Solaire Orange/Corail</option>
+          <option value="monochrome">9. Monochrome Noir & Blanc</option>
+          <option value="forest">10. Forêt Émeraude</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÉTAT TERMINAUX -->
+  <div class="section">
+    <div class="section-title"><span>🖥️</span> ÉTAT DES TERMINAUX</div>
+    <div class="row-2cols">
+      <div><span class="label">🟢 TERMINAUX OK</span><input type="number" id="nbOk" value="2" min="0" max="2" step="1"></div>
+      <div><span class="label">⚠️ TERMINAUX À RISQUE</span><input type="number" id="nbRisque" value="0" min="0" max="2" step="1"></div>
+    </div>
+    <div class="ligne-info"><span class="label">📊 TOTAL</span><span class="valeur">2 terminaux</span></div>
+    <div class="ligne-info"><span class="label">📈 TAUX STABILITÉ</span><span class="valeur" id="tauxStabilite">100%</span></div>
+    <div class="taux-barre"><div class="taux-fill" id="barreTaux" style="width: 100%;"></div></div>
+    <div class="row-2cols">
+      <div><span class="label">NIVEAU STABILITÉ</span><select id="stabiliteGlobale"><option>Stable</option><option selected>Légèrement instable</option><option>Instable</option><option>Critique</option></select></div>
+      <div><span class="label">URGENCE</span><select id="urgenceNiveau"><option>Faible</option><option>Modéré</option><option>Élevé</option><option>Critique</option></select></div>
+    </div>
+    <div class="row-2cols">
+      <div><span class="label">📉 RISQUE PRÉCÉDENT (jour avant)</span><input type="number" id="risquePrecedent" value="1" min="0" max="2" step="1"></div>
+      <div><span class="label">📊 ÉCART RISQUE (%)</span><span class="valeur" id="ecartRisquePct">--</span></div>
+    </div>
+  </div>
+
+  <!-- INCIDENTS DU JOUR -->
+  <div class="section">
+    <div class="section-title"><span>⚠️</span> ANOMALIES DU JOUR</div>
+    <textarea id="incidentsJour" rows="2" placeholder="Description des incidents (pannes, coupures...)">Supprimez tout ce que vous voyez ici et indiquez les anomalies qui ont eu lieu pendant les activités d’aujourd’hui.</textarea>
+    <div class="row-2cols" style="margin-top: 16px;">
+      <div><span class="label">🔁 NB INCIDENTS (30j)</span><select id="nbIncidents30"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>12</option><option>15</option><option>20</option><option>25</option><option>30</option><option>40</option><option>50</option></select></div>
+      <div><span class="label">📆 DERNIER INCIDENT</span><input type="date" id="dernierIncidentDate" value="2026-03-28"></div>
+    </div>
+  </div>
+
+  <!-- ACTIONS EFFECTUÉES -->
+  <div class="section">
+    <div class="section-title"><span>🛠️</span> ACTIONS EFFECTUÉES</div>
+    <textarea id="actionsEffectuees" rows="2" placeholder="Supprimez tout ce que vous voyez ici et écrivez les tickets que vous avez résolu d’aujourd’hui.">Supprimez tout ce que vous voyez ici et écrivez les tickets que vous avez résolu d’aujourd’hui.</textarea>
+  </div>
+
+  <!-- RISQUES IDENTIFIÉS -->
+  <div class="section">
+    <div class="section-title"><span>⚠️</span> RISQUES IDENTIFIÉS</div>
+    <div class="row-2cols"><div><select id="risque1"><option>Présence d’applications suspectes</option><option>Terminal lent</option><option selected>Terminal surchauffé</option><option>Batterie faible</option><option>Batterie en décharge rapide</option><option>Terminal en charge en continu</option><option>Mémoire (RAM) saturée</option><option>Stockage presque plein</option><option>Applications en arrière-plan trop actives</option><option>Redémarrages fréquents du terminal</option><option>Connexion instable (Wi-Fi / données mobiles)</option><option>Forfait internet épuisé</option><option>Plus de 75% du forfait consommé</option></select></div><div><select id="priorite1"><option>Faible</option><option>Moyen</option><option selected>Élevé</option><option>Critique</option></select></div></div>
+    <div class="row-2cols"><div><select id="risque2"><option>Présence d’applications suspectes</option><option>Terminal lent</option><option>Terminal surchauffé</option><option>Batterie faible</option><option>Batterie en décharge rapide</option><option>Terminal en charge en continu</option><option selected>Mémoire (RAM) saturée</option><option>Stockage presque plein</option><option>Applications en arrière-plan trop actives</option><option>Redémarrages fréquents du terminal</option><option>Connexion instable (Wi-Fi / données mobiles)</option><option>Forfait internet épuisé</option><option>Plus de 75% du forfait consommé</option></select></div><div><select id="priorite2"><option>Faible</option><option>Moyen</option><option selected>Élevé</option><option>Critique</option></select></div></div>
+    <div class="row-2cols"><div><select id="risque3"><option>Présence d’applications suspectes</option><option>Terminal lent</option><option>Terminal surchauffé</option><option>Batterie faible</option><option>Batterie en décharge rapide</option><option>Terminal en charge en continu</option><option>Mémoire (RAM) saturée</option><option>Stockage presque plein</option><option>Applications en arrière-plan trop actives</option><option>Redémarrages fréquents du terminal</option><option selected>Connexion instable (Wi-Fi / données mobiles)</option><option>Forfait internet épuisé</option><option>Plus de 75% du forfait consommé</option></select></div><div><select id="priorite3"><option>Faible</option><option>Moyen</option><option>Élevé</option><option selected>Critique</option></select></div></div>
+  </div>
+
+  <!-- PLAN D'ACTION agrandi -->
+  <div class="section">
+    <div class="section-title"><span>📋</span> PLAN D'ACTION</div>
+    <textarea id="planAction" rows="6" style="min-height: 180px; max-height: 300px;">Veuillez supprimer tout ce que vous voyez Ici. Puis faites soit une recommandation soit poser une question pertinente au DEO par rapport à la réalité observée.</textarea>
+  </div>
+
+  <!-- FORFAIT INTERNET -->
+  <div class="section">
+    <div class="section-title"><span>🌐</span> FORFAIT INTERNET</div>
+    <div class="row-2cols">
+      <div><span class="label">📡 FORFAIT TOTAL</span><input type="text" id="forfaitTotal" value="14 Go" readonly style="background:#1a2c40; font-weight:bold;"></div>
+      <div><span class="label">⚡ FORFAIT RESTANT (Go)</span>
+        <select id="forfaitRestant">
+          <option>0 Go</option><option>1 Go</option><option>2 Go</option><option>3 Go</option><option>4 Go</option><option>5 Go</option><option>6 Go</option><option>7 Go</option><option>8 Go</option><option>9 Go</option><option>10 Go</option><option>11 Go</option><option>12 Go</option><option>13 Go</option><option selected>14 Go</option><option>15 Go</option><option>16 Go</option><option>17 Go</option><option>18 Go</option><option>19 Go</option><option>20 Go</option>
+        </select>
+      </div>
+    </div>
+    <div class="ligne-info"><span class="label">👥 MEMBRES STAGIAIRES</span><select id="membresActifs"><option>0</option><option>1</option><option selected>2</option></select></div>
+    <div class="row-2cols">
+      <div><span class="label">📱 FORFAIT CONSOMMÉ PAR MA-S1-ZA-01</span><input type="text" id="consoMembre1" value="5 Go"></div>
+      <div><span class="label">📱 FORFAIT CONSOMMÉ PAR MA-S1-ZA-02</span><input type="text" id="consoMembre2" value="9 Go"></div>
+    </div>
+    <div class="ligne-info"><span class="label">💾 CONSOMMATION TOTALE</span><span class="valeur" id="totalConsomme">14 Go</span></div>
+  </div>
+
+  <!-- TICKETS OUVERTS : amélioré avec grille 3 colonnes -->
+  <div class="section">
+    <div class="section-title"><span>🎫</span> TICKETS OUVERTS</div>
+    <div class="row-3cols">
+      <div><span class="label">📌 TICKETS AUJOURD'HUI</span>
+        <select id="ticketsAujourdhui">
+          <option>0</option><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option>
+        </select>
+      </div>
+      <div><span class="label">⏳ TICKETS EN COURS</span>
+        <select id="ticketsEncours">
+          <option>0</option><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+        </select>
+      </div>
+      <div><span class="label">✅ RÉSOLUS (24h)</span>
+        <select id="ticketsResolus">
+          <option>0</option><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+        </select>
+      </div>
+    </div>
+    <div class="row-2cols">
+      <div><span class="label">🔖 PRIORITÉ MAX</span><select id="prioriteTicketMax"><option>Basse</option><option selected>Moyenne</option><option>Haute</option><option>Critique</option></select></div>
+    </div>
+  </div>
+
+  <button class="btn-pdf" id="btnGenererPDF">📄 GÉNÉRER MON RAPPORT PDF (FORMAT ORDINATEUR)</button>
+  <div class="footer-note">NeTubeX · Organisation de Rémunération Digitale · Supervision réseau & terminaux</div>
+</div>
+
+<script>
+  function updateDateTime() {
+    const now = new Date();
+    document.getElementById('horodatageLive').innerText = now.toLocaleString('fr-FR', {year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).replace(',', ' ·');
+  }
+  updateDateTime(); setInterval(updateDateTime,1000);
+
+  const nbOkInput = document.getElementById('nbOk');
+  const nbRisqueInput = document.getElementById('nbRisque');
+  const risquePrecedentInput = document.getElementById('risquePrecedent');
+  const ecartSpan = document.getElementById('ecartRisquePct');
+
+  function updateEcartRisque() {
+    let risqueActuel = parseInt(nbRisqueInput.value) || 0;
+    let risquePrev = parseInt(risquePrecedentInput.value) || 0;
+    if(risquePrev === 0 && risqueActuel === 0) ecartSpan.innerText = "0 %";
+    else if(risquePrev === 0) ecartSpan.innerText = "+∞ %";
+    else {
+      let variation = ((risqueActuel - risquePrev) / risquePrev) * 100;
+      let signe = variation >= 0 ? '+' : '';
+      ecartSpan.innerText = `${signe}${variation.toFixed(1)} %`;
+    }
+  }
+  
+  function majTerminaux() {
+    let ok = parseInt(nbOkInput.value) || 0;
+    let risque = parseInt(nbRisqueInput.value) || 0;
+    if(ok+risque > 2) { if(ok>risque) ok=2-risque; else risque=2-ok; nbOkInput.value=ok; nbRisqueInput.value=risque; }
+    if(risque === 0 && ok !==2) { nbOkInput.value = 2; ok=2; }
+    if(ok===2 && risque!==0) { nbRisqueInput.value=0; risque=0; }
+    let taux = Math.round((ok/2)*100);
+    document.getElementById('tauxStabilite').innerText = taux+'%';
+    const barre = document.getElementById('barreTaux');
+    barre.style.width = taux+'%';
+    if(taux>=80) barre.style.backgroundColor='#3bc9b0';
+    else if(taux>=50) barre.style.backgroundColor='#f5bc70';
+    else barre.style.backgroundColor='#e26d5c';
+    updateEcartRisque();
+  }
+  nbOkInput.addEventListener('input', majTerminaux);
+  nbRisqueInput.addEventListener('input', majTerminaux);
+  risquePrecedentInput.addEventListener('input', updateEcartRisque);
+  
+  function calcConso() {
+    let c1 = parseFloat(document.getElementById('consoMembre1').value.match(/\d+(\.\d+)?/)?.[0]||0);
+    let c2 = parseFloat(document.getElementById('consoMembre2').value.match(/\d+(\.\d+)?/)?.[0]||0);
+    let total = c1+c2;
+    document.getElementById('totalConsomme').innerText = total + ' Go';
+  }
+  document.getElementById('consoMembre1').addEventListener('input', calcConso);
+  document.getElementById('consoMembre2').addEventListener('input', calcConso);
+  calcConso();
+  majTerminaux();
+
+  function getDesignStyles(design) {
+    const styles = {
+      classic: { primary: '#1e5f7e', secondary: '#f5a623', accent: '#144e6b', bgLight: '#f0f6fe', headerBg: '#1e5f7e', cardBg: '#ffffff', textDark: '#144e6b', tableHeader: '#eef3fc' },
+      modern: { primary: '#2c7a4d', secondary: '#27ae60', accent: '#1e6b3e', bgLight: '#eafaf1', headerBg: '#2c7a4d', cardBg: '#ffffff', textDark: '#1e5a3a', tableHeader: '#e8f8f0' },
+      corporate: { primary: '#4a5568', secondary: '#718096', accent: '#2d3748', bgLight: '#edf2f7', headerBg: '#4a5568', cardBg: '#ffffff', textDark: '#2d3748', tableHeader: '#e2e8f0' },
+      darkpremium: { primary: '#1a2634', secondary: '#d4af37', accent: '#0f1a24', bgLight: '#2d3e4f', headerBg: '#1a2634', cardBg: '#f5f5f5', textDark: '#c9a03d', tableHeader: '#e0cda9' },
+      lightelegant: { primary: '#d4c4a8', secondary: '#b89a6e', accent: '#a67c45', bgLight: '#fef9e6', headerBg: '#d4c4a8', cardBg: '#ffffff', textDark: '#6b4c2a', tableHeader: '#fcf3e0' },
+      tech: { primary: '#6c3483', secondary: '#af7ac5', accent: '#512e5f', bgLight: '#f4ecf7', headerBg: '#6c3483', cardBg: '#ffffff', textDark: '#4a235a', tableHeader: '#f0e6f5' },
+      ocean: { primary: '#0e7c7c', secondary: '#20b2aa', accent: '#0b5e5e', bgLight: '#e0f7fa', headerBg: '#0e7c7c', cardBg: '#ffffff', textDark: '#0a4b4b', tableHeader: '#d9f0f0' },
+      solar: { primary: '#e67e22', secondary: '#f39c12', accent: '#d35400', bgLight: '#fef5e7', headerBg: '#e67e22', cardBg: '#ffffff', textDark: '#a04000', tableHeader: '#fdebd0' },
+      monochrome: { primary: '#2c3e50', secondary: '#7f8c8d', accent: '#1c2833', bgLight: '#ecf0f1', headerBg: '#2c3e50', cardBg: '#ffffff', textDark: '#1b2631', tableHeader: '#d5dbdb' },
+      forest: { primary: '#1e6f5c', secondary: '#289672', accent: '#145c4a', bgLight: '#e6f4ea', headerBg: '#1e6f5c', cardBg: '#ffffff', textDark: '#0e4d3e', tableHeader: '#d9f0e6' }
+    };
+    return styles[design] || styles.classic;
+  }
+
+  async function genererRapport() {
+    const btn = document.getElementById('btnGenererPDF');
+    const original = btn.innerText;
+    btn.innerText = '⏳ GÉNÉRATION PDF HAUTE DÉFINITION...';
+    btn.disabled = true;
+    try {
+      const selectedDesign = document.getElementById('designPdf').value;
+      const styleVars = getDesignStyles(selectedDesign);
+      
+      const numRapport = document.getElementById('numRapport').value;
+      const dateHeure = document.getElementById('horodatageLive').innerText;
+      const nbOk = nbOkInput.value;
+      const nbRisque = nbRisqueInput.value;
+      const taux = document.getElementById('tauxStabilite').innerText;
+      const stabiliteNiveau = document.getElementById('stabiliteGlobale').value;
+      const urgence = document.getElementById('urgenceNiveau').value;
+      const incidents = document.getElementById('incidentsJour').value;
+      const nbIncidents30 = document.getElementById('nbIncidents30').value;
+      const dernierIncident = document.getElementById('dernierIncidentDate').value;
+      const actions = document.getElementById('actionsEffectuees').value;
+      const risque1 = document.getElementById('risque1').value; const p1 = document.getElementById('priorite1').value;
+      const risque2 = document.getElementById('risque2').value; const p2 = document.getElementById('priorite2').value;
+      const risque3 = document.getElementById('risque3').value; const p3 = document.getElementById('priorite3').value;
+      const planAction = document.getElementById('planAction').value;
+      const forfaitTotal = "14 Go";
+      const forfaitRestant = document.getElementById('forfaitRestant').value;
+      const membresActifs = document.getElementById('membresActifs').value;
+      const consoM1 = document.getElementById('consoMembre1').value;
+      const consoM2 = document.getElementById('consoMembre2').value;
+      const totalConso = document.getElementById('totalConsomme').innerText;
+      const ticketsAuj = document.getElementById('ticketsAujourdhui').value;
+      const ticketsEncours = document.getElementById('ticketsEncours').value;
+      const ticketsResolus = document.getElementById('ticketsResolus').value;
+      const prioriteTicket = document.getElementById('prioriteTicketMax').value;
+      const risquePrev = document.getElementById('risquePrecedent').value;
+      const ecartRisque = document.getElementById('ecartRisquePct').innerText;
+      
+      const resumeOps = `Synthèse terrain : ${nbOk}/2 terminaux stables (taux ${taux}). Écart risque : ${ecartRisque} vs J-1. Incidents 30j: ${nbIncidents30}. Forfait restant: ${forfaitRestant}. Tickets en cours: ${ticketsEncours}. Actions: ${actions.substring(0,120)}. Priorité: ${prioriteTicket}.`;
+      
+      // Création de graphiques en haute résolution (grands)
+      const canvasDiv = document.createElement('div');
+      canvasDiv.style.position = 'absolute'; canvasDiv.style.top = '-9999px'; canvasDiv.style.left = '-9999px';
+      canvasDiv.style.width = '1000px'; canvasDiv.style.height = '700px';
+      document.body.appendChild(canvasDiv);
+      
+      const c1 = document.createElement('canvas'); c1.width = 900; c1.height = 520; canvasDiv.appendChild(c1);
+      new Chart(c1.getContext('2d'), { type: 'doughnut', data: { labels: ['Terminaux OK', 'À risque'], datasets: [{ data: [parseInt(nbOk), parseInt(nbRisque)], backgroundColor: ['#3bc9b0', '#e26d5c'] }] }, options: { responsive: false, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 16 } } } } } });
+      
+      const c2 = document.createElement('canvas'); c2.width = 900; c2.height = 520; canvasDiv.appendChild(c2);
+      new Chart(c2.getContext('2d'), { type: 'bar', data: { labels: ['Aujourd\'hui', 'En cours', 'Résolus'], datasets: [{ label: 'Tickets', data: [parseInt(ticketsAuj), parseInt(ticketsEncours), parseInt(ticketsResolus)], backgroundColor: '#4a9fd8' }] }, options: { responsive: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { display: true, text: 'Nombre de tickets' } } } } });
+      
+      const c3 = document.createElement('canvas'); c3.width = 900; c3.height = 520; canvasDiv.appendChild(c3);
+      let restGo = parseFloat(forfaitRestant.match(/\d+(\.\d+)?/)?.[0] || 14);
+      let consomme = 14 - restGo;
+      new Chart(c3.getContext('2d'), { type: 'line', data: { labels: ['Semaine 1', 'Semaine 2', 'Semaine 3', 'Semaine 4'], datasets: [{ label: 'Consommation (Go)', data: [3.2, 6.1, 9.5, consomme], borderColor: '#f5a623', backgroundColor: 'rgba(245,166,35,0.15)', tension: 0.3, fill: true, pointRadius: 6 }] }, options: { responsive: false, plugins: { legend: { position: 'top' } } } });
+      
+      const c4 = document.createElement('canvas'); c4.width = 900; c4.height = 520; canvasDiv.appendChild(c4);
+      let stabScore = Math.min(100, parseInt(nbOk)*50);
+      let incidentScore = Math.max(0, 100 - (parseInt(nbIncidents30)||0)*1.6);
+      new Chart(c4.getContext('2d'), { type: 'radar', data: { labels: ['Stabilité', 'Gestion incidents', 'Couverture réseau', 'Réactivité', 'SLA'], datasets: [{ label: 'Indice (0-100)', data: [stabScore, incidentScore, 78, 70, 82], backgroundColor: 'rgba(59,201,176,0.3)', borderColor: '#2c9e7c', pointRadius: 6 }] }, options: { responsive: false, scales: { r: { beginAtZero: true, max: 100, ticks: { stepSize: 20 } } } } });
+      
+      const c5 = document.createElement('canvas'); c5.width = 900; c5.height = 520; canvasDiv.appendChild(c5);
+      let prevRisk = parseInt(risquePrev);
+      let currRisk = parseInt(nbRisque);
+      new Chart(c5.getContext('2d'), { type: 'bar', data: { labels: ['Risque J-1', 'Risque Aujourd\'hui'], datasets: [{ label: 'Niveau de risque (nb terminaux)', data: [prevRisk, currRisk], backgroundColor: ['#f5bc70', '#e26d5c'], borderRadius: 10 }] }, options: { responsive: false, scales: { y: { beginAtZero: true, max: 2.5, title: { display: true, text: 'Nb terminaux à risque' } } } } });
+      
+      await new Promise(r => setTimeout(r, 400));
+      const imgTerm = c1.toDataURL('image/png');
+      const imgTickets = c2.toDataURL('image/png');
+      const imgTendance = c3.toDataURL('image/png');
+      const imgRadar = c4.toDataURL('image/png');
+      const imgEcart = c5.toDataURL('image/png');
+      document.body.removeChild(canvasDiv);
+      
+      const htmlContent = `
+      <div style="font-family: 'Segoe UI', 'Roboto', Arial, sans-serif; background: white; padding: 12mm 12mm; max-width: 100%;">
+        <div style="border-bottom: 4px solid ${styleVars.primary}; margin-bottom: 10mm; padding-bottom: 8px;">
+          <h1 style="color: ${styleVars.textDark}; font-size: 28pt; margin:0;">RAPPORT JOURNALIER</h1>
+          <h2 style="color: ${styleVars.secondary}; font-size: 16pt; margin:4px 0 0;">Infrastructure & Connectivité</h2>
+          <p style="font-size: 11pt; color:#4a627a; margin-top: 5px;">NeTubeX · Organisation de Rémunération Digitale</p>
+        </div>
+        <div style="display: flex; justify-content: space-between; background: ${styleVars.bgLight}; padding: 8mm; border-radius: 16px; margin-bottom: 10mm; flex-wrap:wrap; gap:12px;">
+          <div><strong>N° Rapport</strong> ${numRapport}</div><div><strong>Date/Heure</strong> ${dateHeure}</div><div><strong>Responsable</strong> Sirius Makangila</div>
+        </div>
+        <div style="background: #eef2fa; border-left: 8px solid ${styleVars.secondary}; padding: 14px 20px; border-radius: 24px; margin-bottom: 12mm;">
+          <h3 style="margin: 0 0 8px; color: ${styleVars.primary};">📌 RÉSUMÉ OPÉRATIONNEL</h3>
+          <p style="font-size: 12pt; line-height: 1.5;">${resumeOps}</p>
+        </div>
+        <h3 style="background: ${styleVars.headerBg}; color: white; padding: 10px 20px; border-radius: 40px; font-size: 14pt; margin-bottom: 8mm;">📊 INDICATEURS CLÉS</h3>
+        <table style="width:100%; border-collapse: collapse; border:1px solid #cbdbe2; margin-bottom: 12mm;">
+          <tr style="background:${styleVars.tableHeader};"><th style="padding: 12px; text-align:left;">Métrique</th><th style="padding:12px;">Valeur</th></tr>
+          <tr><td style="padding:10px;">✅ Terminaux OK</td><td style="text-align:center;">${nbOk}/2</td></tr>
+          <tr><td style="padding:10px;">⚠️ Terminaux à risque</td><td style="text-align:center;">${nbRisque}</td></tr>
+          <tr><td style="padding:10px;">📈 Taux stabilité</td><td style="text-align:center;"><strong>${taux}</strong><div style="background:#e2e8f0; height:12px; width:100%; border-radius:20px; margin-top:8px;"><div style="background:#3bc9b0; width:${taux}; height:12px; border-radius:20px;"></div></div></td></tr>
+          <tr><td style="padding:10px;">🎚️ Niveau stabilité</td><td style="text-align:center;">${stabiliteNiveau}</td></tr>
+          <tr><td style="padding:10px;">⚠️ Urgence</td><td style="text-align:center;">${urgence}</td></tr>
+          <tr><td style="padding:10px;">📉 Écart risque (%)</td><td style="text-align:center; font-weight:bold;">${ecartRisque}</td></tr>
+        </table>
+        <div style="display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; margin-bottom: 20mm;">
+          <div style="flex:1; min-width:300px; text-align:center;"><img src="${imgTerm}" style="width:100%; max-width: 380px; border-radius: 20px; box-shadow: 0 6px 14px rgba(0,0,0,0.1);"/><p style="font-size:11pt; font-weight:600;">État des terminaux</p></div>
+          <div style="flex:1; min-width:300px; text-align:center;"><img src="${imgTickets}" style="width:100%; max-width: 380px; border-radius: 20px;"/><p style="font-size:11pt; font-weight:600;">Flux de tickets</p></div>
+          <div style="flex:1; min-width:300px; text-align:center;"><img src="${imgTendance}" style="width:100%; max-width: 380px; border-radius: 20px;"/><p style="font-size:11pt; font-weight:600;">Tendance consommation (Go)</p></div>
+          <div style="flex:1; min-width:300px; text-align:center;"><img src="${imgRadar}" style="width:100%; max-width: 380px; border-radius: 20px;"/><p style="font-size:11pt; font-weight:600;">Indices KPIs</p></div>
+          <div style="flex:1; min-width:300px; text-align:center;"><img src="${imgEcart}" style="width:100%; max-width: 380px; border-radius: 20px;"/><p style="font-size:11pt; font-weight:600;">Évolution du risque</p></div>
+        </div>
+        <h3 style="background: ${styleVars.headerBg}; color: white; padding: 8px 16px; border-radius: 40px;">⚠️ INCIDENTS & ACTIONS</h3>
+        <table style="width:100%; margin-bottom: 8mm;"><tr><td style="padding:10px; background:#fafcfd;"><strong>Incidents du jour</strong></td><td>${incidents.replace(/\n/g,'<br>')}</td></tr>
+        <tr><td style="padding:10px;"><strong>Nb incidents (30j)</strong></td><td>${nbIncidents30} · Dernier: ${dernierIncident}</td></tr>
+        <tr><td style="padding:10px;"><strong>Actions effectuées</strong></td><td>${actions.replace(/\n/g,'<br>')}</td></tr></table>
+        <h3 style="background: ${styleVars.headerBg}; color: white; padding: 8px 16px; border-radius: 40px;">⚠️ RISQUES IDENTIFIÉS</h3>
+        <table style="width:100%; margin-bottom: 8mm;"><tr style="background:${styleVars.tableHeader};"><th>Priorité</th><th>Description</th></tr>
+        <tr><td style="padding:6px;">${p1}</td><td>${risque1}</td></tr>
+        <tr><td style="padding:6px;">${p2}</td><td>${risque2}</td></tr>
+        <tr><td style="padding:6px;">${p3}</td><td>${risque3}</td></tr></table>
+        <h3 style="background: ${styleVars.headerBg}; color: white; padding: 8px 16px; border-radius: 40px;">🌐 FORFAIT INTERNET</h3>
+        <p><strong>Total:</strong> ${forfaitTotal} | <strong>Restant:</strong> ${forfaitRestant} | <strong>Membres actifs:</strong> ${membresActifs}/2<br>Consommations: ${consoM1} + ${consoM2} = ${totalConso}</p>
+        <h3 style="background: ${styleVars.headerBg}; color: white; padding: 8px 16px; border-radius: 40px;">🎫 TICKETS</h3>
+        <p>Aujourd'hui: ${ticketsAuj} | En cours: ${ticketsEncours} | Résolus: ${ticketsResolus} | Priorité max: ${prioriteTicket}</p>
+        <h3 style="background: ${styleVars.headerBg}; color: white; padding: 8px 16px; border-radius: 40px;">📋 PLAN D'ACTION</h3>
+        <div style="background:#fef9e6; padding: 8mm; border-radius: 20px;">${planAction.replace(/\n/g,'<br>')}</div>
+        <div style="border-top: 2px solid ${styleVars.primary}; text-align:center; font-size:9pt; color:#6b8cae; margin-top: 12mm; padding-top:6mm;">NeTubeX · Rapport certifié</div>
+      </div>`;
+      
+      const tempDiv = document.createElement('div');
+      tempDiv.style.position = 'absolute'; tempDiv.style.top = '-9999px'; tempDiv.style.left = '-9999px';
+      tempDiv.style.width = '1000px'; tempDiv.style.background = 'white';
+      tempDiv.innerHTML = htmlContent;
+      document.body.appendChild(tempDiv);
+      const canvasFinal = await html2canvas(tempDiv, { scale: 2.4, backgroundColor: '#ffffff', logging: false });
+      const imgFinal = canvasFinal.toDataURL('image/jpeg', 0.95);
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const imgW = 210;
+      const imgH = (canvasFinal.height * 210) / canvasFinal.width;
+      let posY = 0;
+      pdf.addImage(imgFinal, 'JPEG', 0, posY, imgW, imgH);
+      let heightLeft = imgH - 297;
+      while(heightLeft > 0) { posY = heightLeft - imgH; pdf.addPage(); pdf.addImage(imgFinal, 'JPEG', 0, posY, imgW, imgH); heightLeft -= 297; }
+      pdf.save(`Rapport_NeTubeX_${selectedDesign}_${numRapport.replace(/[^a-z0-9]/gi,'_')}.pdf`);
+      document.body.removeChild(tempDiv);
+    } catch(e) { console.error(e); alert("Erreur génération PDF : " + e.message); }
+    finally { btn.innerText = original; btn.disabled = false; }
+  }
+  document.getElementById('btnGenererPDF').addEventListener('click', genererRapport);
+</script>
+</body>
+</html>
