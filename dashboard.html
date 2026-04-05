@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
 <title>NeTubeX · Dashboard Pro</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -81,6 +81,18 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .pilot-error-toast .error-message{font-size:0.75rem;opacity:0.9;}
 .pilot-error-toast .error-close{background:rgba(255,255,255,0.2);border:none;color:#fff;cursor:pointer;padding:6px;border-radius:10px;transition:all 0.2s;width:28px;height:28px;display:flex;align-items:center;justify-content:center;}
 .pilot-error-toast .error-close:hover{background:rgba(255,255,255,0.3);transform:scale(1.05);}
+
+/* Peaufinage design : micro-ajustements de cohérence */
+.post-card:first-child{border-top-left-radius:0;border-top-right-radius:0;}
+.image-wrapper{background:#05080f;}
+.games-list .post-card:last-child .image-wrapper .post-image{object-fit:cover;width:100%;height:auto;min-height:200px;}
+
+/* Optimisation responsive pour l'image finale */
+@media (max-width:640px){
+    .post-image{min-height:180px;}
+    .header{padding:0.8rem 1rem;}
+    .logo h1{font-size:1.4rem;}
+}
 </style>
 </head>
 <body>
@@ -239,9 +251,12 @@ function renderGames() {
     const container = document.getElementById('gamesContainer');
     if(!container) return;
     container.innerHTML = '';
-    games.forEach(game => {
+    games.forEach((game, idx) => {
         const card = document.createElement('div');
         card.className = 'post-card';
+        // Pour le dernier jeu (The Grand Mafia) on s'assure que l'image est bien affichée avec les mêmes dimensions naturelles
+        // Aucune modification de source mais on force le style pour correspondre exactement aux autres jeux
+        const imageUrl = game.img;
         card.innerHTML = `
             <div class="post-header">
                 <div class="avatar">${game.avatar}</div>
@@ -250,13 +265,21 @@ function renderGames() {
                     <span><i class="fas fa-calendar-alt"></i> ${game.duration} <i class="fas fa-gem" style="margin-left:8px;"></i> ${game.totalPoints.toLocaleString()} points</span>
                 </div>
             </div>
-            <div class="image-wrapper"><img class="post-image" src="${game.img}" alt="${game.name}" loading="lazy" decoding="async"></div>
+            <div class="image-wrapper"><img class="post-image" src="${imageUrl}" alt="${game.name}" loading="lazy" decoding="async" style="width:100%; height:auto; min-height:200px; object-fit:cover;"></div>
             <button class="gain-btn" data-id="${game.id}"><i class="fas fa-crown"></i> Gagner ${game.totalPoints.toLocaleString()} points</button>
         `;
         container.appendChild(card);
         const btn = card.querySelector('.gain-btn');
         btn.addEventListener('click', (e) => { e.preventDefault(); showGamePopup(game); });
     });
+    // Ajustement spécifique pour forcer le dernier jeu à avoir exactement la même taille d'affichage que les autres
+    const allImages = document.querySelectorAll('.post-image');
+    if(allImages.length > 0) {
+        allImages.forEach(img => {
+            img.style.maxWidth = '100%';
+            img.style.display = 'block';
+        });
+    }
 }
 function showGamePopup(game) {
     const statsContainer = document.getElementById('gamePopupStats');
