@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+<title>NETUBER | SUIVI JOURNALIER - PGCO</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #0a1a2f;
+  color: #e0f2fe;
+  line-height: 1.4;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-container {
+  max-width: 100%;
+  padding: 12px 12px 30px;
+  margin: 0 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: auto;
+  min-height: 100vh;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #0d2740;
+  padding: 12px 16px;
+  border-radius: 40px;
+  margin-bottom: 16px;
+  border: 1px solid #2d5980;
+}
+
+.header-logo div {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #bbdefb;
+  line-height: 1.2;
+}
+
+h1 {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 500;
+  margin: 8px 0 16px;
+  background: linear-gradient(135deg, #60a5fa, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.info-section {
+  background: #112b42;
+  padding: 18px 16px;
+  border-radius: 28px;
+  margin-bottom: 20px;
+  border: 1px solid #2d4e73;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.info-item {
+  width: 100%;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: #b8d8f0;
+  letter-spacing: 0.2px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: #1e3a5f;
+  border: 1.5px solid #2d5780;
+  border-radius: 24px;
+  font-size: 0.95rem;
+  color: #f0f9ff !important;
+  transition: all 0.2s ease;
+  -webkit-appearance: none;
+}
+
+input[type=number] {
+  text-align: center;
+  padding: 14px 8px;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 24px 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 3px solid #3b82f6;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: #d9f0ff;
+}
+
+.section-title span {
+  background: #2563eb;
+  color: white;
+  font-size: 0.7rem;
+  padding: 4px 12px;
+  border-radius: 40px;
+  font-weight: 500;
+}
+
+.objectif-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #0e2e47;
+  padding: 18px 16px;
+  border-radius: 32px;
+  margin-bottom: 20px;
+}
+
+.objectif-card {
+  background: #1a3d5c;
+  padding: 12px 18px;
+  border-radius: 40px;
+  border: 1px solid #2d6a9c;
+  text-align: center;
+}
+
+.objectif-card label {
+  margin-bottom: 0;
+  font-size: 0.8rem;
+  color: #facc15;
+  text-transform: uppercase;
+}
+
+.objectif-card input {
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  background: transparent;
+  border: none;
+  padding: 6px 0;
+  color: #facc15 !important;
+  width: 100%;
+}
+
+.color-selector {
+  background: #0e2e47;
+  border-radius: 32px;
+  padding: 16px;
+  margin-bottom: 20px;
+  border: 1px solid #3b82f6;
+}
+
+.color-selector label {
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+  color: #facc15;
+}
+
+.color-selector select {
+  background: #1a3d5c;
+  border: 1px solid #3b82f6;
+  cursor: pointer;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  margin: 12px 0 20px;
+  border-radius: 24px;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #0b263b;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid #2a557a;
+  min-width: 1000px;
+}
+
+th {
+  background: #143750;
+  color: #b9e2fe;
+  font-weight: 600;
+  font-size: 0.7rem;
+  padding: 12px 4px;
+  text-align: center;
+  border-bottom: 2px solid #2e6991;
+}
+
+td {
+  padding: 12px 4px;
+  text-align: center;
+  border-bottom: 1px solid #1f4a6e;
+  background: #0f2d45;
+  color: #e2f0fd;
+}
+
+td input, td select {
+  width: 80px;
+  padding: 10px 4px;
+  text-align: center;
+  margin: 0 auto;
+  font-size: 0.85rem;
+}
+
+td select {
+  width: 90px;
+}
+
+.total-row td {
+  background: #1a3d5c;
+  font-weight: 800;
+  border-top: 2px solid #3b82f6;
+  color: #facc15;
+}
+
+.top-performer-card {
+  background: #0e2e47;
+  border-radius: 28px;
+  padding: 16px;
+  margin: 20px 0;
+  text-align: center;
+  border: 1px solid #3b82f6;
+}
+
+.top-performer-card h3 {
+  font-size: 0.8rem;
+  color: #b8d8f0;
+  margin-bottom: 8px;
+}
+
+#topNetuberDisplay {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #7dd3fc;
+}
+
+button {
+  background: linear-gradient(145deg, #2563eb, #1d4ed8);
+  color: white;
+  border: none;
+  padding: 18px 24px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 60px;
+  cursor: pointer;
+  width: 100%;
+  margin: 20px 0 10px;
+  transition: 0.2s;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button:disabled {
+  opacity: 0.7;
+}
+
+footer {
+  text-align: center;
+  font-size: 0.65rem;
+  color: #5f748d;
+  margin-top: 16px;
+}
+
+.tendance-up {
+  color: #4ade80;
+  font-weight: bold;
+}
+
+.tendance-down {
+  color: #fb923c;
+  font-weight: bold;
+}
+
+.tendance-stable {
+  color: #60a5fa;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+<div class="mobile-container">
+  <div class="header-logo">
+    <div>⚡ NETUBER · SUIVI JOURNALIER<br>PGCO</div>
+  </div>
+  
+  <h1>BULLETIN JOURNALIER<br>PERFORMANCE & RENDEMENT</h1>
+  
+  <div class="info-section">
+    <div class="info-row">
+      <div class="info-item">
+        <label>Responsable de zone</label>
+        <input id="responsable" value="Blandine Kazembe" readonly>
+      </div>
+      <div class="info-item">
+        <label>Zone / Site</label>
+        <input id="zone" value="ORG-NX-S1-ZA" readonly>
+      </div>
+      <div class="info-item">
+        <label>Référence rapport</label>
+        <input id="reference" value="RPT-JRNL-2026-" placeholder="RPT-JRNL-2026-001">
+      </div>
+    </div>
+  </div>
+  
+  <div class="objectif-row">
+    <div class="objectif-card">
+      <label>🎯 OBJECTIF JOURNALIER (points)</label>
+      <input type="number" id="dailyObj" value="3500" step="100">
+    </div>
+    <div class="objectif-card">
+      <label>📆 OBJECTIF HEBDOMADAIRE (points)</label>
+      <input type="number" id="weeklyObj" value="17500" step="500">
+    </div>
+  </div>
+  
+  <!-- Liste déroulante des couleurs -->
+  <div class="color-selector">
+    <label>🎨 COULEUR DE FOND DU RAPPORT PDF</label>
+    <select id="pdfColor">
+      <option value="#ffffff">⚪ Blanc (par défaut)</option>
+      <option value="#f8f9fa">⚪ Gris clair</option>
+      <option value="#e3f2fd">🔵 Bleu très clair</option>
+      <option value="#e8f5e9">🟢 Vert très clair</option>
+      <option value="#fff3e0">🟠 Orange très clair</option>
+      <option value="#fce4ec">🌸 Rose clair</option>
+      <option value="#f3e5f5">🟣 Violet clair</option>
+      <option value="#e0f2fe">💙 Bleu ciel</option>
+      <option value="#fff9c4">🟡 Jaune clair</option>
+      <option value="#ffebee">❤️ Rouge clair</option>
+      <option value="#e0f7fa">🩵 Turquoise clair</option>
+    </select>
+  </div>
+  
+  <div class="section-title">
+    NETUBERS · FICHE DE PERFORMANCE <span>2 membres actifs</span>
+  </div>
+  
+  <div class="table-wrapper">
+    <table id="performanceTable">
+      <thead>
+        <tr>
+          <th>Code Netuber</th>
+          <th>Présence</th>
+          <th>Points précédents</th>
+          <th>Points du jour</th>
+          <th>Écart</th>
+          <th>Tendance</th>
+          <th>Temps travaillé (min)</th>
+          <th>Rendement (pts/min)</th>
+          <th>Jours prestés</th>
+          </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+      <tfoot id="tableFoot"></tfoot>
+      </table>
+  </div>
+  
+  <div class="top-performer-card">
+    <h3>🏆 NETUBER LE PLUS ACTIF (points du jour)</h3>
+    <div id="topNetuberDisplay">—</div>
+    <div id="topNetuberPoints" style="font-size:0.7rem; margin-top:4px;">0 pts</div>
+  </div>
+  
+  <button id="generatePdfBtn">📄 GÉNÉRER LE RAPPORT PDF</button>
+  
+  <footer>PGCO · NeTubeX · Rapport journalier · données certifiées</footer>
+</div>
+
+<script>
+  const NETUBERS = [
+    { code: "MA-NX-S1-ZA-01", idx: 0 },
+    { code: "MA-NX-S1-ZA-02", idx: 1 }
+  ];
+  
+  const tableBody = document.getElementById('tableBody');
+  const tableFoot = document.getElementById('tableFoot');
+  const dailyObjInput = document.getElementById('dailyObj');
+  const weeklyObjInput = document.getElementById('weeklyObj');
+  const pdfColorSelect = document.getElementById('pdfColor');
+  
+  function getTendance(ecart) {
+    if (ecart > 0) return { text: "↑ En hausse", class: "tendance-up", icon: "📈" };
+    if (ecart < 0) return { text: "↓ En baisse", class: "tendance-down", icon: "📉" };
+    return { text: "→ Stable", class: "tendance-stable", icon: "➡️" };
+  }
+  
+  function renderTable() {
+    tableBody.innerHTML = '';
+    for (let i = 0; i < NETUBERS.length; i++) {
+      const net = NETUBERS[i];
+      const row = document.createElement('tr');
+      
+      const tdCode = document.createElement('td');
+      tdCode.innerText = net.code;
+      tdCode.style.fontWeight = 'bold';
+      tdCode.style.color = '#60a5fa';
+      row.appendChild(tdCode);
+      
+      const tdPresence = document.createElement('td');
+      const selectPresence = document.createElement('select');
+      selectPresence.id = `presence-${i}`;
+      selectPresence.innerHTML = `
+        <option value="Présent">✅ Présent</option>
+        <option value="Absent">❌ Absent</option>
+      `;
+      selectPresence.value = "Présent";
+      tdPresence.appendChild(selectPresence);
+      row.appendChild(tdPresence);
+      
+      const tdPrecedents = document.createElement('td');
+      const inputPrecedents = document.createElement('input');
+      inputPrecedents.type = 'number';
+      inputPrecedents.min = '0';
+      inputPrecedents.value = '0';
+      inputPrecedents.id = `points_precedents-${i}`;
+      tdPrecedents.appendChild(inputPrecedents);
+      row.appendChild(tdPrecedents);
+      
+      const tdJour = document.createElement('td');
+      const inputJour = document.createElement('input');
+      inputJour.type = 'number';
+      inputJour.min = '0';
+      inputJour.value = '0';
+      inputJour.id = `points_jour-${i}`;
+      tdJour.appendChild(inputJour);
+      row.appendChild(tdJour);
+      
+      const tdEcart = document.createElement('td');
+      const ecartSpan = document.createElement('span');
+      ecartSpan.id = `ecart-${i}`;
+      ecartSpan.innerText = '0';
+      ecartSpan.style.fontWeight = 'bold';
+      tdEcart.appendChild(ecartSpan);
+      row.appendChild(tdEcart);
+      
+      const tdTendance = document.createElement('td');
+      const tendanceSpan = document.createElement('span');
+      tendanceSpan.id = `tendance-${i}`;
+      tendanceSpan.innerText = '→ Stable';
+      tdTendance.appendChild(tendanceSpan);
+      row.appendChild(tdTendance);
+      
+      const tdTemps = document.createElement('td');
+      const inputTemps = document.createElement('input');
+      inputTemps.type = 'number';
+      inputTemps.min = '0';
+      inputTemps.value = '0';
+      inputTemps.id = `temps-${i}`;
+      tdTemps.appendChild(inputTemps);
+      row.appendChild(tdTemps);
+      
+      const tdRendement = document.createElement('td');
+      const rendSpan = document.createElement('span');
+      rendSpan.id = `rendement-${i}`;
+      rendSpan.innerText = '0.00';
+      rendSpan.style.fontWeight = 'bold';
+      rendSpan.style.color = '#4ade80';
+      tdRendement.appendChild(rendSpan);
+      row.appendChild(tdRendement);
+      
+      const tdJours = document.createElement('td');
+      const inputJours = document.createElement('input');
+      inputJours.type = 'number';
+      inputJours.min = '0';
+      inputJours.max = '7';
+      inputJours.value = '1';
+      inputJours.id = `jours-${i}`;
+      tdJours.appendChild(inputJours);
+      row.appendChild(tdJours);
+      
+      tableBody.appendChild(row);
+      
+      const updateAll = () => {
+        const ptsPrecedents = parseFloat(document.getElementById(`points_precedents-${i}`).value) || 0;
+        const ptsJour = parseFloat(document.getElementById(`points_jour-${i}`).value) || 0;
+        const temps = parseFloat(document.getElementById(`temps-${i}`).value) || 0;
+        
+        const ecart = ptsJour - ptsPrecedents;
+        document.getElementById(`ecart-${i}`).innerText = ecart > 0 ? `+${ecart}` : ecart.toString();
+        
+        const tendance = getTendance(ecart);
+        const tendanceSpan = document.getElementById(`tendance-${i}`);
+        tendanceSpan.innerText = tendance.text;
+        tendanceSpan.className = tendance.class;
+        
+        const rend = temps > 0 ? (ptsJour / temps).toFixed(2) : (ptsJour === 0 ? "0.00" : "∞");
+        document.getElementById(`rendement-${i}`).innerText = rend;
+        
+        updateTotalsAndTop();
+      };
+      
+      inputPrecedents.addEventListener('input', updateAll);
+      inputJour.addEventListener('input', updateAll);
+      inputTemps.addEventListener('input', updateAll);
+      selectPresence.addEventListener('change', updateTotalsAndTop);
+      inputJours.addEventListener('input', updateTotalsAndTop);
+      updateAll();
+    }
+    updateTotalsAndTop();
+  }
+  
+  function updateTotalsAndTop() {
+    let totalPointsJour = 0;
+    let totalPointsPrecedents = 0;
+    let totalTemps = 0;
+    let maxPoints = -1;
+    let bestCode = '';
+    let bestPoints = 0;
+    
+    for (let i = 0; i < NETUBERS.length; i++) {
+      const ptsJour = parseFloat(document.getElementById(`points_jour-${i}`)?.value) || 0;
+      const ptsPrecedents = parseFloat(document.getElementById(`points_precedents-${i}`)?.value) || 0;
+      const temps = parseFloat(document.getElementById(`temps-${i}`)?.value) || 0;
+      const presence = document.getElementById(`presence-${i}`)?.value;
+      
+      totalPointsJour += ptsJour;
+      totalPointsPrecedents += ptsPrecedents;
+      totalTemps += temps;
+      
+      if (presence === 'Présent' && ptsJour > maxPoints) {
+        maxPoints = ptsJour;
+        bestCode = NETUBERS[i].code;
+        bestPoints = ptsJour;
+      }
+    }
+    
+    const totalEcart = totalPointsJour - totalPointsPrecedents;
+    const totalTendance = getTendance(totalEcart);
+    
+    if (bestCode && maxPoints > 0) {
+      document.getElementById('topNetuberDisplay').innerHTML = bestCode;
+      document.getElementById('topNetuberPoints').innerHTML = `${maxPoints.toLocaleString()} pts du jour`;
+    } else {
+      document.getElementById('topNetuberDisplay').innerHTML = '—';
+      document.getElementById('topNetuberPoints').innerHTML = '0 pt';
+    }
+    
+    const rendGlobal = totalTemps > 0 ? (totalPointsJour / totalTemps).toFixed(2) : "0.00";
+    tableFoot.innerHTML = `
+      <tr class="total-row">
+        <td colspan="2" style="font-weight:800;">TOTAUX GÉNÉRAUX</td>
+        <td style="font-weight:800;">${totalPointsPrecedents}</td>
+        <td style="font-weight:800; color:#facc15;">${totalPointsJour}</td>
+        <td style="font-weight:800;">${totalEcart > 0 ? `+${totalEcart}` : totalEcart}</td>
+        <td style="font-weight:800;" class="${totalTendance.class}">${totalTendance.text}</td>
+        <td style="font-weight:800;">${totalTemps} min</td>
+        <td style="font-weight:800;">${rendGlobal}</td>
+        <td style="font-weight:800;">—</td>
+      </tr>
+    `;
+  }
+  
+  function createPDFContent() {
+    const responsable = document.getElementById('responsable').value;
+    const zone = document.getElementById('zone').value;
+    const reference = document.getElementById('reference').value || "RPT-JRNL-2026";
+    const dailyObj = parseFloat(dailyObjInput.value) || 0;
+    const weeklyObj = parseFloat(weeklyObjInput.value) || 0;
+    const todayDate = new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+    const nowTime = new Date().toLocaleString('fr-FR');
+    const selectedColor = pdfColorSelect.value;
+    
+    const netubersData = [];
+    let totalPointsJour = 0;
+    let totalPointsPrecedents = 0;
+    let totalTemps = 0;
+    let membresActifs = 0;
+    
+    for (let i = 0; i < NETUBERS.length; i++) {
+      const code = NETUBERS[i].code;
+      const presence = document.getElementById(`presence-${i}`).value;
+      const pointsPrecedents = parseFloat(document.getElementById(`points_precedents-${i}`).value) || 0;
+      const pointsJour = parseFloat(document.getElementById(`points_jour-${i}`).value) || 0;
+      const temps = parseFloat(document.getElementById(`temps-${i}`).value) || 0;
+      const joursPrestes = parseInt(document.getElementById(`jours-${i}`).value) || 0;
+      const ecart = pointsJour - pointsPrecedents;
+      const tendance = getTendance(ecart);
+      const rendement = temps > 0 ? (pointsJour / temps).toFixed(2) : (pointsJour === 0 ? "0.00" : "∞");
+      
+      totalPointsJour += pointsJour;
+      totalPointsPrecedents += pointsPrecedents;
+      totalTemps += temps;
+      if (presence === 'Présent') membresActifs++;
+      
+      netubersData.push({ code, presence, pointsPrecedents, pointsJour, ecart, tendance, temps, rendement, joursPrestes });
+    }
+    
+    const rendementGlobal = totalTemps > 0 ? (totalPointsJour / totalTemps).toFixed(2) : "0.00";
+    const totalEcart = totalPointsJour - totalPointsPrecedents;
+    const totalTendance = getTendance(totalEcart);
+    const tauxJournalier = dailyObj > 0 ? ((totalPointsJour / dailyObj) * 100).toFixed(1) : "0";
+    const tauxHebdo = weeklyObj > 0 ? ((totalPointsJour / weeklyObj) * 100).toFixed(1) : "0";
+    
+    let best = null;
+    let maxPts = -1;
+    netubersData.forEach(n => {
+      if (n.presence === "Présent" && n.pointsJour > maxPts) {
+        maxPts = n.pointsJour;
+        best = n;
+      }
+    });
+    
+    const performanceMoyenne = totalPointsJour / (membresActifs || 1);
+    const tauxPresence = (membresActifs / NETUBERS.length) * 100;
+    const productiviteMoyenne = totalTemps > 0 ? (totalPointsJour / totalTemps).toFixed(2) : "0.00";
+    
+    let tableRows = '';
+    netubersData.forEach((n, idx) => {
+      const presenceIcon = n.presence === "Présent" ? "✓" : "✗";
+      const bgColor = idx % 2 === 0 ? '#ffffff' : '#f8f9fa';
+      const tendanceColor = n.tendance.text === "↑ En hausse" ? "#27ae60" : (n.tendance.text === "↓ En baisse" ? "#e67e22" : "#3498db");
+      tableRows += `
+        <tr style="background: ${bgColor};">
+          <td style="border: 1px solid #dee2e6; padding: 5px 3px; font-weight: 600;">${n.code}</td>
+          <td style="border: 1px solid #dee2e6; padding: 5px 3px; text-align: center;">${presenceIcon} ${n.presence}</td>
+          <td style="border: 1px solid #dee2e6; padding: 5px 3px; text-align: center;">${n.pointsPrecedents}</td>
+          <td style="border: 1px solid #dee2e6; padding: 5px 3px; text-align: center; font-weight: bold; color: #27ae60;">${n.pointsJour}</td>
+          <td style="border: 1px solid #dee2e6; padding: 5px 3px; text-align: center; font-weight: bold;">${n.ecart > 0 ? `+${n.ecart}` : n.ecart}</td>
+          <td style="border: 1px solid #dee2e6; padding: 5px 3px; text-align: center; font-weight: bold; color: ${tendanceColor};">${n.tendance.text}</td>
+          <td style="border: 1px solid #dee2e6; padding: 5px 3px; text-align: center;">${n.temps}</td>
+          <td style="border: 1px solid #dee2e6; padding: 5px 3px; text-align: center; font-weight: bold;">${n.rendement}</td>
+          <td style="border: 1px solid #dee2e6; padding: 5px 3px; text-align: center;">${n.joursPrestes}</td>
+        </tr>
+      `;
+    });
+    
+    return `
+    <div style="background: ${selectedColor}; color: #000; font-family: 'Segoe UI', Arial, sans-serif; padding: 5mm; max-width: 100%; overflow: hidden; height: auto;">
+      
+      <!-- EN-TÊTE AVEC LOGO ET INFORMATIONS DU PÔLE -->
+      <div style="text-align: center; margin-bottom: 6mm; padding-bottom: 4mm; border-bottom: 2px solid #2c3e50;">
+        <div style="font-size: 24pt; font-weight: 300; color: #1e4663; letter-spacing: -0.5px;">⚡ NeTubeX</div>
+        <div style="font-size: 10pt; color: #4a627a; margin-top: 2px;">Organisation de Rémunération Digitale</div>
+        <div style="font-size: 9pt; color: #e67e22; font-weight: 500; margin-top: 4px;">Rapport dressé par le Pôle Gouvernance et Coordination Opérationnelle (PGCO)</div>
+        <div style="font-size: 20pt; font-weight: 300; color: #2c3e50; margin-top: 6mm;">BULLETIN JOURNALIER NETUBER</div>
+        <div style="font-size: 9pt; color: #7f8c8d;">Suivi quotidien des performances · Rapport certifié</div>
+      </div>
+      
+      <!-- BANDEAU INFORMATIONS -->
+      <div style="display: flex; justify-content: space-between; background: rgba(52, 73, 94, 0.1); padding: 3mm; border-radius: 4px; margin-bottom: 6mm; border: 1px solid #dee2e6; font-size: 9pt;">
+        <div style="flex: 1; text-align: center;"><strong>RESPONSABLE</strong><br>${responsable}</div>
+        <div style="flex: 1; text-align: center; border-left: 1px solid #dee2e6;"><strong>ZONE</strong><br>${zone}</div>
+        <div style="flex: 1; text-align: center; border-left: 1px solid #dee2e6;"><strong>RÉFÉRENCE</strong><br>${reference}</div>
+        <div style="flex: 1; text-align: center; border-left: 1px solid #dee2e6;"><strong>DATE</strong><br>${todayDate}</div>
+      </div>
+      
+      <!-- CARTES OBJECTIFS -->
+      <div style="display: flex; gap: 4mm; margin-bottom: 6mm;">
+        <div style="flex: 1; background: rgba(52, 73, 94, 0.1); padding: 3mm; border: 1px solid #dee2e6; border-radius: 4px; text-align: center;">
+          <div style="font-size: 9pt; color: #7f8c8d;">🎯 OBJECTIF JOURNALIER</div>
+          <div style="font-size: 18pt; font-weight: 700; color: #27ae60;">${dailyObj.toLocaleString()} pts</div>
+          <div style="font-size: 8pt;">Atteint: ${totalPointsJour} pts (${tauxJournalier}%)</div>
+          <div style="margin-top: 2mm; background: #ecf0f1; border-radius: 4px; height: 4px; width: 100%;">
+            <div style="background: #27ae60; width: ${Math.min(100, tauxJournalier)}%; height: 4px; border-radius: 4px;"></div>
+          </div>
+        </div>
+        <div style="flex: 1; background: rgba(52, 73, 94, 0.1); padding: 3mm; border: 1px solid #dee2e6; border-radius: 4px; text-align: center;">
+          <div style="font-size: 9pt; color: #7f8c8d;">📆 OBJECTIF HEBDOMADAIRE</div>
+          <div style="font-size: 18pt; font-weight: 700; color: #27ae60;">${weeklyObj.toLocaleString()} pts</div>
+          <div style="font-size: 8pt;">Progression: ${tauxHebdo}%</div>
+          <div style="margin-top: 2mm; background: #ecf0f1; border-radius: 4px; height: 4px; width: 100%;">
+            <div style="background: #f39c12; width: ${Math.min(100, tauxHebdo)}%; height: 4px; border-radius: 4px;"></div>
+          </div>
+        </div>
+        <div style="flex: 1; background: rgba(52, 73, 94, 0.1); padding: 3mm; border: 1px solid #dee2e6; border-radius: 4px; text-align: center;">
+          <div style="font-size: 9pt; color: #7f8c8d;">⭐ TOTAL POINTS DU JOUR</div>
+          <div style="font-size: 18pt; font-weight: 700; color: #f39c12;">${totalPointsJour}</div>
+          <div style="font-size: 8pt;">Rendement: ${rendementGlobal}/min</div>
+        </div>
+      </div>
+      
+      <!-- TABLEAU PRINCIPAL DES PERFORMANCES -->
+      <div style="margin-bottom: 6mm;">
+        <div style="font-size: 11pt; font-weight: 600; color: #2c3e50; margin-bottom: 3mm; border-bottom: 2px solid #f39c12; padding-bottom: 1mm;">
+          📊 DÉTAIL DES PERFORMANCES INDIVIDUELLES
+          <span style="background: #f39c12; color: white; padding: 1mm 3mm; border-radius: 20px; font-size: 7pt; float: right;">2 MEMBRES</span>
+        </div>
+        
+        <table style="width: 100%; border-collapse: collapse; font-size: 7pt;">
+          <thead>
+            <tr style="background: #34495e; color: white;">
+              <th style="padding: 4px; border: 1px solid #2c3e50;">Code Netuber</th>
+              <th style="padding: 4px; border: 1px solid #2c3e50;">Présence</th>
+              <th style="padding: 4px; border: 1px solid #2c3e50;">Pts préc.</th>
+              <th style="padding: 4px; border: 1px solid #2c3e50;">Pts jour</th>
+              <th style="padding: 4px; border: 1px solid #2c3e50;">Écart</th>
+              <th style="padding: 4px; border: 1px solid #2c3e50;">Tendance</th>
+              <th style="padding: 4px; border: 1px solid #2c3e50;">Temps</th>
+              <th style="padding: 4px; border: 1px solid #2c3e50;">Rendement</th>
+              <th style="padding: 4px; border: 1px solid #2c3e50;">Jours</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRows}
+          </tbody>
+          <tfoot>
+            <tr style="background: #ecf0f1; font-weight: 800;">
+              <td colspan="2" style="padding: 4px; border: 1px solid #bdc3c7;">TOTAUX</td>
+              <td style="padding: 4px; border: 1px solid #bdc3c7; text-align: center;">${totalPointsPrecedents}</td>
+              <td style="padding: 4px; border: 1px solid #bdc3c7; text-align: center; color: #27ae60;">${totalPointsJour}</td>
+              <td style="padding: 4px; border: 1px solid #bdc3c7; text-align: center;">${totalEcart > 0 ? `+${totalEcart}` : totalEcart}</td>
+              <td style="padding: 4px; border: 1px solid #bdc3c7; text-align: center; color: ${totalTendance.text === "↑ En hausse" ? "#27ae60" : (totalTendance.text === "↓ En baisse" ? "#e67e22" : "#3498db")};">${totalTendance.text}</td>
+              <td style="padding: 4px; border: 1px solid #bdc3c7; text-align: center;">${totalTemps} min</td>
+              <td style="padding: 4px; border: 1px solid #bdc3c7; text-align: center;">${rendementGlobal}</td>
+              <td style="padding: 4px; border: 1px solid #bdc3c7;">—</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      
+      <!-- TABLEAU DE SYNTHÈSE GLOBALE AVEC GRAPHIQUES -->
+      <div style="margin-bottom: 6mm; page-break-inside: avoid;">
+        <div style="font-size: 11pt; font-weight: 600; color: #2c3e50; margin-bottom: 3mm; border-bottom: 2px solid #27ae60; padding-bottom: 1mm;">
+          📈 SYNTHÈSE GLOBALE & INDICATEURS CLÉS
+          <span style="background: #27ae60; color: white; padding: 1mm 3mm; border-radius: 20px; font-size: 7pt; float: right;">ANALYSE</span>
+        </div>
+        
+        <div style="display: flex; gap: 3mm; margin-bottom: 5mm; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 4mm; border-radius: 8px; text-align: center; color: white;">
+            <div style="font-size: 8pt; opacity: 0.9;">👥 MEMBRES ACTIFS</div>
+            <div style="font-size: 20pt; font-weight: 700;">${membresActifs}/${NETUBERS.length}</div>
+            <div style="font-size: 7pt;">Taux présence: ${tauxPresence.toFixed(0)}%</div>
+            <div style="margin-top: 2mm; background: rgba(255,255,255,0.3); border-radius: 4px; height: 3px;">
+              <div style="background: white; width: ${tauxPresence}%; height: 3px; border-radius: 4px;"></div>
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 60px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 4mm; border-radius: 8px; text-align: center; color: white;">
+            <div style="font-size: 8pt; opacity: 0.9;">📊 PERFORMANCE MOYENNE</div>
+            <div style="font-size: 20pt; font-weight: 700;">${Math.round(performanceMoyenne)}</div>
+            <div style="font-size: 7pt;">pts / membre actif</div>
+          </div>
+          <div style="flex: 1; min-width: 60px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 4mm; border-radius: 8px; text-align: center; color: white;">
+            <div style="font-size: 8pt; opacity: 0.9;">⚡ PRODUCTIVITÉ</div>
+            <div style="font-size: 20pt; font-weight: 700;">${productiviteMoyenne}</div>
+            <div style="font-size: 7pt;">pts / minute</div>
+          </div>
+          <div style="flex: 1; min-width: 60px; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); padding: 4mm; border-radius: 8px; text-align: center; color: #2c3e50;">
+            <div style="font-size: 8pt; opacity: 0.8;">📈 VARIATION TOTALE</div>
+            <div style="font-size: 20pt; font-weight: 700;">${totalEcart > 0 ? `+${totalEcart}` : totalEcart}</div>
+            <div style="font-size: 7pt;">${totalTendance.text}</div>
+          </div>
+        </div>
+        
+        <div style="background: rgba(52, 73, 94, 0.1); border: 1px solid #dee2e6; border-radius: 8px; padding: 4mm; margin-bottom: 4mm;">
+          <div style="font-size: 9pt; font-weight: 600; color: #2c3e50; margin-bottom: 3mm;">🏆 RÉPARTITION DES PERFORMANCES PAR MEMBRE</div>
+          ${netubersData.map((n, idx) => {
+            const pourcentage = totalPointsJour > 0 ? (n.pointsJour / totalPointsJour * 100).toFixed(1) : 0;
+            const barColor = n.pointsJour > 0 ? '#27ae60' : '#95a5a6';
+            return `
+            <div style="margin-bottom: 3mm;">
+              <div style="display: flex; justify-content: space-between; font-size: 7pt; margin-bottom: 1mm;">
+                <span style="font-weight: 600;">${n.code}</span>
+                <span>${n.pointsJour} pts (${pourcentage}%)</span>
+              </div>
+              <div style="background: #e0e0e0; border-radius: 4px; height: 6px; overflow: hidden;">
+                <div style="background: ${barColor}; width: ${pourcentage}%; height: 6px; border-radius: 4px;"></div>
+              </div>
+            </div>
+            `;
+          }).join('')}
+        </div>
+        
+        <div style="background: rgba(52, 73, 94, 0.1); border: 1px solid #dee2e6; border-radius: 8px; padding: 4mm;">
+          <div style="font-size: 9pt; font-weight: 600; color: #2c3e50; margin-bottom: 3mm;">📊 ÉVOLUTION DES POINTS (Précédent vs Actuel)</div>
+          <div style="display: flex; gap: 4mm; align-items: flex-end; justify-content: center; min-height: 40px;">
+            <div style="flex: 1; text-align: center;">
+              <div style="background: #3498db; width: 100%; height: ${Math.max(10, (totalPointsPrecedents / Math.max(totalPointsJour, totalPointsPrecedents, 1)) * 40)}px; min-height: 10px; border-radius: 4px 4px 0 0;"></div>
+              <div style="font-size: 7pt; margin-top: 2mm;">Points précédents</div>
+              <div style="font-size: 10pt; font-weight: bold;">${totalPointsPrecedents}</div>
+            </div>
+            <div style="flex: 1; text-align: center;">
+              <div style="background: #27ae60; width: 100%; height: ${Math.max(10, (totalPointsJour / Math.max(totalPointsJour, totalPointsPrecedents, 1)) * 40)}px; min-height: 10px; border-radius: 4px 4px 0 0;"></div>
+              <div style="font-size: 7pt; margin-top: 2mm;">Points du jour</div>
+              <div style="font-size: 10pt; font-weight: bold; color: #27ae60;">${totalPointsJour}</div>
+            </div>
+          </div>
+          <div style="text-align: center; margin-top: 3mm; padding-top: 2mm; border-top: 1px dashed #dee2e6;">
+            <span style="font-size: 8pt; color: ${totalEcart > 0 ? '#27ae60' : (totalEcart < 0 ? '#e67e22' : '#3498db')}">
+              ${totalEcart > 0 ? `📈 Progression de ${totalEcart} pts (+${((totalEcart / totalPointsPrecedents) * 100).toFixed(1)}%)` : 
+                (totalEcart < 0 ? `📉 Baisse de ${Math.abs(totalEcart)} pts (${((totalEcart / totalPointsPrecedents) * 100).toFixed(1)}%)` : 
+                `➡️ Stabilité par rapport à la période précédente`)}
+            </span>
+          </div>
+        </div>
+        
+        <div style="margin-top: 4mm; background: #e8f4f8; border-radius: 8px; padding: 3mm; text-align: center;">
+          <div style="font-size: 7pt; color: #2c3e50;">
+            <strong>📌 RAPPORT SYNTHÉTIQUE</strong><br>
+            ${membresActifs}/${NETUBERS.length} membres actifs · ${totalTemps} minutes travaillées · 
+            Rendement moyen: ${rendementGlobal} pts/min · Objectif journalier: ${tauxJournalier}% atteint
+          </div>
+        </div>
+      </div>
+      
+      <!-- TOP PERFORMER -->
+      <div style="background: rgba(52, 73, 94, 0.1); border-radius: 8px; padding: 4mm; margin-top: 4mm; border: 1px solid #dee2e6;">
+        <div style="font-weight: 600; font-size: 9pt; color: #2c3e50;">🏆 NETUBER LE PLUS ACTIF</div>
+        <div style="font-size: 11pt; font-weight: 700; color: #27ae60;">${best ? best.code : 'Aucun'} — ${best ? best.pointsJour + ' pts du jour' : '0 pt'}</div>
+        <div style="font-size: 7pt; color: #7f8c8d;">Rendement: ${best ? (best.rendement === "∞" ? "temps nul" : best.rendement + ' pts/min') : '-'}</div>
+      </div>
+      
+      <!-- PIED DE PAGE -->
+      <div style="margin-top: 5mm; padding-top: 2mm; border-top: 1px solid #bdc3c7; font-size: 7pt; color: #7f8c8d; text-align: center;">
+        PGCO · Pôle Gouvernance et Coordination Opérationnelle · NeTubeX<br>
+        Rapport généré le ${nowTime} · Document certifié · Page 1/1
+      </div>
+    </div>
+    `;
+  }
+  
+  function generatePDF() {
+    const btn = document.getElementById('generatePdfBtn');
+    const txt = btn.textContent;
+    btn.textContent = '⏳ GÉNÉRATION...';
+    btn.disabled = true;
+    
+    const el = document.createElement('div');
+    el.innerHTML = createPDFContent();
+    
+    html2pdf().set({
+      margin: [3, 5, 3, 5],
+      filename: `Bulletin_Journalier_${document.getElementById('reference').value || 'sans_reference'}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { 
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#FFFFFF',
+        windowWidth: 1123,
+        windowHeight: 794,
+        scrollY: 0
+      },
+      jsPDF: { 
+        unit: 'mm', 
+        format: 'a4', 
+        orientation: 'landscape',
+        compress: true
+      }
+    }).from(el).save().then(() => {
+      btn.textContent = txt;
+      btn.disabled = false;
+    }).catch(err => {
+      console.error(err);
+      btn.textContent = txt;
+      btn.disabled = false;
+      alert('Erreur lors de la génération du PDF');
+    });
+  }
+  
+  renderTable();
+  document.getElementById('generatePdfBtn').addEventListener('click', generatePDF);
+</script>
+</body>
+</html>
