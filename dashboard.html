@@ -71,6 +71,16 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .footer{background:#0f1420;border-top:1px solid #1e293b;padding:1.5rem;text-align:center;margin-top:2rem;}
 .footer p{color:#64748b;font-size:0.8rem;letter-spacing:0.5px;}
 .footer p i{color:#38bdf8;margin:0 4px;}
+
+/* Popup d'erreur pilote personnalisé */
+.pilot-error-toast{position:fixed;top:20px;right:20px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;padding:14px 20px;border-radius:16px;font-size:0.85rem;font-weight:500;display:flex;align-items:center;gap:14px;box-shadow:0 10px 25px -5px rgba(220,38,38,0.4),0 0 0 1px rgba(255,255,255,0.1);z-index:3000;transform:translateX(450px);transition:transform 0.3s cubic-bezier(0.2,0.9,0.4,1.1);max-width:380px;backdrop-filter:blur(10px);}
+.pilot-error-toast.show{transform:translateX(0);}
+.pilot-error-toast i{font-size:1.3rem;color:#fff;background:rgba(255,255,255,0.2);padding:8px;border-radius:50%;}
+.pilot-error-toast .error-content{flex:1;}
+.pilot-error-toast .error-title{font-weight:800;margin-bottom:4px;font-size:0.9rem;}
+.pilot-error-toast .error-message{font-size:0.75rem;opacity:0.9;}
+.pilot-error-toast .error-close{background:rgba(255,255,255,0.2);border:none;color:#fff;cursor:pointer;padding:6px;border-radius:10px;transition:all 0.2s;width:28px;height:28px;display:flex;align-items:center;justify-content:center;}
+.pilot-error-toast .error-close:hover{background:rgba(255,255,255,0.3);transform:scale(1.05);}
 </style>
 </head>
 <body>
@@ -124,6 +134,16 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <footer class="footer">
 <p><i class="fas fa-copyright"></i> NeTubeX 2026 — Tous droits réservés</p>
 </footer>
+</div>
+
+<!-- Popup erreur pilote personnalisé -->
+<div id="pilotErrorToast" class="pilot-error-toast">
+<i class="fas fa-lock"></i>
+<div class="error-content">
+<div class="error-title">Accès refusé</div>
+<div class="error-message">Code d'accès invalide. Veuillez réessayer.</div>
+</div>
+<button class="error-close" id="closePilotError"><i class="fas fa-times"></i></button>
 </div>
 
 <script type="module">
@@ -227,12 +247,37 @@ document.getElementById('settingsFloatBtn')?.addEventListener('click', () => {
     openPopup('settingsPopup');
 });
 document.getElementById('closeSettingsBtn')?.addEventListener('click', () => { closePopupWithAnimation('settingsPopup'); });
+
+// Fonction pour afficher l'erreur pilote personnalisée
+function showPilotError() {
+    const errorToast = document.getElementById('pilotErrorToast');
+    errorToast.classList.add('show');
+    setTimeout(() => {
+        errorToast.classList.remove('show');
+    }, 4000);
+}
+
 document.getElementById('loginPilotBtn')?.addEventListener('click', () => {
     const password = document.getElementById('pilotPassword')?.value || '';
-    if(password === "Chancelle12"){ window.open('https://gain.gg/earn', '_blank'); closePopupWithAnimation('settingsPopup'); }
-    else if(password === "Ursule11"){ window.open('https://gain.gg/', '_blank'); closePopupWithAnimation('settingsPopup'); }
-    else { alert("www.netubex.com\nCode d'accès invalide"); const pwdInput = document.getElementById('pilotPassword'); if(pwdInput) pwdInput.value = ''; }
+    if(password === "Chancelle12"){ 
+        window.open('https://gain.gg/earn', '_blank'); 
+        closePopupWithAnimation('settingsPopup'); 
+    }
+    else if(password === "Ursule11"){ 
+        window.open('https://gain.gg/', '_blank'); 
+        closePopupWithAnimation('settingsPopup'); 
+    }
+    else { 
+        showPilotError();
+        const pwdInput = document.getElementById('pilotPassword'); 
+        if(pwdInput) pwdInput.value = ''; 
+    }
 });
+
+document.getElementById('closePilotError')?.addEventListener('click', () => {
+    document.getElementById('pilotErrorToast').classList.remove('show');
+});
+
 document.getElementById('logoutBtn')?.addEventListener('click', () => { openPopup('confirmPopup'); });
 document.getElementById('confirmYes')?.addEventListener('click', async () => {
     closePopupWithAnimation('confirmPopup');
