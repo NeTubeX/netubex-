@@ -15,8 +15,8 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 @keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
 .header{background:#0f1420;border-bottom:1px solid #1e293b;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
 .logo h1{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.5px;display:flex;align-items:center;gap:8px;}
-.user-info{background:#0a0f1a;padding:6px 16px;border-radius:40px;font-size:0.75rem;font-family:monospace;color:#94a3b8;display:flex;align-items:center;gap:8px;border:1px solid #1e293b;}
-.user-info i{color:#38bdf8;}
+.user-info{background:linear-gradient(135deg,#f59e0b,#d97706);padding:6px 20px;border-radius:40px;font-size:0.85rem;font-family:monospace;color:#fff;display:flex;align-items:center;gap:10px;border:none;font-weight:700;box-shadow:0 2px 8px rgba(245,158,11,0.3);}
+.user-info i{color:#fff;font-size:1rem;}
 .feed-container{width:100%;padding:1.5rem 0;}
 .games-list{display:flex;flex-direction:column;gap:1px;width:100%;background:#0a0f1a;}
 .post-card{background:#0f1420;overflow:hidden;width:100%;border-bottom:1px solid #1e293b;transition:all 0.3s ease;}
@@ -26,8 +26,8 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .avatar{width:52px;height:52px;background:linear-gradient(135deg,#1e293b,#0f1420);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 4px 12px rgba(0,0,0,0.3);border:1px solid rgba(56,189,248,0.2);}
 .post-meta h4{font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,#f1f5f9,#cbd5e1);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px;}
 .post-meta span{font-size:0.7rem;color:#64748b;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
-.image-wrapper{width:100%;display:block;line-height:0;position:relative;z-index:1;}
-.post-image{width:100%;height:auto;min-height:200px;object-fit:cover;display:block;background:#0a0f1a;transition:transform 0.4s ease, box-shadow 0.4s ease;box-shadow:0 10px 20px -5px rgba(0,0,0,0.5);}
+.image-wrapper{width:100%;display:block;line-height:0;position:relative;z-index:1;background:#0a0f1a;}
+.post-image{width:100%;height:auto;min-height:200px;object-fit:cover;display:block;transition:transform 0.4s ease, box-shadow 0.4s ease;box-shadow:0 10px 20px -5px rgba(0,0,0,0.5);}
 .post-card:hover .post-image{transform:scale(1.02);box-shadow:0 20px 30px -8px rgba(0,0,0,0.6);}
 .gain-btn{background:linear-gradient(135deg,#2563eb,#1d4ed8);border:none;padding:14px;font-weight:700;font-size:0.85rem;color:#fff;cursor:pointer;width:100%;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:10px;border-top:1px solid #1e293b;}
 .gain-btn:hover{background:linear-gradient(135deg,#3b82f6,#2563eb);transform:scale(1.01);}
@@ -78,7 +78,7 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <div class="rainbow-line"></div>
 <header class="header">
 <div class="logo"><h1><i class="fas fa-chart-line"></i> NeTubeX</h1></div>
-<div class="user-info"><i class="fas fa-id-card"></i> <span id="userIdDisplay">Chargement...</span></div>
+<div class="user-info"><i class="fas fa-code"></i> <span id="userCodeDisplay">Chargement...</span></div>
 </header>
 <div class="feed-container">
 <div class="games-list" id="gamesContainer"></div>
@@ -145,19 +145,19 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const games = [
-    {id:1, name:"Dragon Down", avatar:"🐉", img:"https://i.postimg.cc/T2JyHT7x/IMG-3466.jpg", duration:"7 jours", totalPoints:14048,
+    {id:1, name:"Dragon Down", avatar:"🐉", img:"images/dragon-down.jpg", duration:"7 jours", totalPoints:14048,
      objectives:[{name:"Open and play the game",points:9},{name:"Collect 150 gems",points:17},{name:"Collect 1000 gems",points:123},{name:"Collect 4000 gems",points:436},{name:"Collect 10000 gems",points:871},{name:"Collect 40000 gems",points:3348},{name:"Collect 100000 gems",points:10044}]},
-    {id:2, name:"Love Water", avatar:"💧", img:"https://i.postimg.cc/767x8LPg/IMG-3461.gif", duration:"30 jours", totalPoints:173140,
+    {id:2, name:"Love Water", avatar:"💧", img:"images/love-water.gif", duration:"30 jours", totalPoints:173140,
      objectives:[{name:"Open and play the game",points:50},{name:"Complete event 1",points:520},{name:"Complete event 2",points:780},{name:"Complete event 5",points:2320},{name:"Complete event 8",points:4640},{name:"Complete event 12",points:7730},{name:"Complete event 17",points:12880},{name:"Complete event 23",points:30910},{name:"Complete event 30",points:113310}]},
-    {id:3, name:"Sky Plunger", avatar:"🪂", img:"https://i.postimg.cc/y8Y0TD7C/IMG-3468.png", duration:"30 jours", totalPoints:646010,
+    {id:3, name:"Sky Plunger", avatar:"🪂", img:"images/sky-plunger.png", duration:"30 jours", totalPoints:646010,
      objectives:[{name:"Reach 150 meters in height",points:70},{name:"Reach 250 meters in height",points:70},{name:"Reach 400 meters in height",points:630},{name:"Reach 600 meters in height",points:1540},{name:"Reach 900 meters in height",points:15120},{name:"Reach 1,200 meters in height",points:69020},{name:"Reach 2,000 meters in height",points:129360},{name:"Reach 5,000 meters in height",points:431200}]},
-    {id:4, name:"Zombie Waves", avatar:"🧟", img:"https://i.postimg.cc/Vv9m5sTP/IMG-3470.jpg", duration:"30 jours", totalPoints:842060,
+    {id:4, name:"Zombie Waves", avatar:"🧟", img:"images/zombie-waves.jpg", duration:"30 jours", totalPoints:842060,
      objectives:[{name:"Complete Level 3",points:490},{name:"Complete Level 8",points:1470},{name:"Complete Level 15",points:2450},{name:"Complete Level 20",points:4900},{name:"Complete Level 25",points:7350},{name:"Complete Level 35",points:19600},{name:"Complete Level 60",points:122500},{name:"Complete Level 80",points:196000},{name:"Complete Level 100",points:490000}]},
-    {id:5, name:"Grab A Toy", avatar:"🧸", img:"https://i.postimg.cc/J05BNLgH/IMG-3465.jpg", duration:"30 jours", totalPoints:843430,
+    {id:5, name:"Grab A Toy", avatar:"🧸", img:"images/grab-a-toy.jpg", duration:"30 jours", totalPoints:843430,
      objectives:[{name:"Reach 150 meters in depth",points:0},{name:"Reach 200 meters in depth",points:70},{name:"Reach 400 meters in depth",points:1820},{name:"Reach 600 meters in depth",points:7770},{name:"Reach 900 meters in depth",points:36050},{name:"Reach 1,700 meters in depth",points:62160},{name:"Reach 2,000 meters in depth",points:88760},{name:"Reach 5,000 meters in depth",points:646800}]},
-    {id:6, name:"Goblin Heist", avatar:"👺", img:"https://i.postimg.cc/KvQM4mty/IMG-3467.jpg", duration:"60 jours", totalPoints:1790272,
+    {id:6, name:"Goblin Heist", avatar:"👺", img:"images/goblin-heist.jpg", duration:"60 jours", totalPoints:1790272,
      objectives:[{name:"Atteindre 150 mètres",points:71},{name:"Atteindre 400 mètres",points:414},{name:"Atteindre 700 mètres",points:5743},{name:"Atteindre 900 mètres",points:33729},{name:"Atteindre 1000 mètres",points:64086},{name:"Atteindre 2000 mètres",points:337229},{name:"Atteindre 5000 mètres",points:1349000}]},
-    {id:7, name:"Wild Fish Explorer", avatar:"🐟", img:"https://i.postimg.cc/637k468j/IMG-3469.png", duration:"30 jours", totalPoints:1778460,
+    {id:7, name:"Wild Fish Explorer", avatar:"🐟", img:"images/wild-fish.png", duration:"30 jours", totalPoints:1778460,
      objectives:[{name:"Reach 100 meters",points:100},{name:"Reach 200 meters",points:340},{name:"Reach 400 meters",points:4730},{name:"Reach 700 meters",points:26440},{name:"Reach 1200 meters",points:94430},{name:"Reach 2000 meters",points:472120},{name:"Reach 5000 meters",points:1180300}]}
 ];
 
@@ -165,8 +165,8 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
-    let userCode = docSnap.exists() ? (docSnap.data().code || user.uid.substring(0,8)) : user.uid.substring(0,8);
-    document.getElementById('userIdDisplay').innerText = userCode;
+    let userCode = docSnap.exists() ? (docSnap.data().code || "NETUBER") : "NETUBER";
+    document.getElementById("userCodeDisplay").textContent = userCode;
     sessionStorage.setItem('firebaseUserId', user.uid);
     renderGames();
   } else {
@@ -201,7 +201,7 @@ function renderGames() {
                     <span><i class="fas fa-calendar-alt"></i> ${game.duration} <i class="fas fa-gem" style="margin-left:8px;"></i> ${game.totalPoints.toLocaleString()} points</span>
                 </div>
             </div>
-            <div class="image-wrapper"><img class="post-image" src="${game.img}" alt="${game.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format'"></div>
+            <div class="image-wrapper"><img class="post-image" src="${game.img}" alt="${game.name}" loading="lazy" decoding="async"></div>
             <button class="gain-btn" data-id="${game.id}"><i class="fas fa-crown"></i> Gagner ${game.totalPoints.toLocaleString()} points</button>
         `;
         container.appendChild(card);
@@ -245,7 +245,6 @@ document.querySelectorAll('.slide-popup').forEach(pop => {
     pop.addEventListener('click', (e) => { if(e.target === pop) closePopupWithAnimation(pop.id); });
 });
 
-// BOUTON TIMEWALL AVEC INJECTION DE L'UID FIREBASE
 document.getElementById('portalBtn')?.addEventListener('click', () => {
     const user = auth.currentUser;
     if (!user) {
