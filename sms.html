@@ -1,42 +1,16 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Envoyer SMS NeTubeX</title>
-</head>
-<body>
-  <h1>Envoyer un SMS test via Cloudflare Worker</h1>
-
-  <button id="sendSMS">Envoyer SMS à +243976809131</button>
-  <p id="status"></p>
-
-  <script>
-    document.getElementById("sendSMS").addEventListener("click", () => {
-      const to = "+243976809131"; // numéro fixe
-      const message = "Salut depuis Cloudflare Worker !"; // message fixe
-      const statusEl = document.getElementById("status");
-      statusEl.textContent = "Envoi en cours…";
-
-      fetch("https://send-sms.netube-a97.workers.dev/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ to, message })
-      })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data)
-        if (data.success) {
-          statusEl.textContent = "SMS envoyé ! Vérifie ton téléphone."
-        } else {
-          statusEl.textContent = "Erreur : " + (data.error || JSON.stringify(data.data))
-        }
-      })
-      .catch(err => {
-        console.error(err)
-        statusEl.textContent = "Erreur lors de l'envoi du SMS : " + err.message
-      })
+<button id="sendSMS">Envoyer SMS</button>
+<script>
+document.getElementById("sendSMS").addEventListener("click", () => {
+  fetch("https://send-sms.netube-a97.workers.dev/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      to: "+243976809131",
+      message: "Salut depuis Cloudflare Worker !"
     })
-  </script>
-</body>
-</html>
+  })
+  .then(res => res.json())
+  .then(data => console.log(data))
+  .catch(err => console.error(err))
+});
+</script>
