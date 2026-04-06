@@ -12,7 +12,7 @@ body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;ba
 .container{max-width:1400px;margin:0 auto;padding:0 28px}
 .navbar{display:flex;justify-content:space-between;align-items:center;padding:28px 0 24px;flex-wrap:wrap;gap:20px;border-bottom:1px solid rgba(79,209,197,0.15);backdrop-filter:blur(10px);background:rgba(10,14,26,0.3)}
 .logo-wrapper{display:flex;flex-direction:column;align-items:center;gap:8px}
-.logo-img-large{max-width:180px;height:auto;display:block;filter:drop-shadow(0 0 12px rgba(59,130,246,0.4));transition:filter 0.4s ease,transform 0.3s ease;pointer-events:none}
+.logo-img-large{max-width:180px;height:auto;display:block;filter:drop-shadow(0 0 12px rgba(59,130,246,0.4));transition:filter 0.4s ease,transform 0.3s ease}
 .logo-img-large:hover{filter:drop-shadow(0 0 20px rgba(59,130,246,0.7));transform:scale(1.02)}
 .logo-text{font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#6ee7ff,#3b82f6,#1e40af);background-clip:text;-webkit-background-clip:text;color:transparent;letter-spacing:-0.5px;margin-top:4px}
 .btn-group{display:flex;gap:18px}
@@ -24,7 +24,7 @@ body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;ba
 .hero-text-block p{font-size:1.2rem;color:#cbd5e1;max-width:700px;margin:0 auto;line-height:1.6;background:rgba(59,130,246,0.1);padding:20px 30px;border-radius:60px;backdrop-filter:blur(10px);border:1px solid rgba(59,130,246,0.2)}
 .photo-wall{width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;margin-top:40px;margin-bottom:60px;overflow:hidden;background:linear-gradient(135deg,#0a0e1a,#0f1629)}
 .member-photo-frame{width:100%;position:relative;background:#000}
-.member-full-img{width:100%;height:auto;max-height:75vh;object-fit:cover;display:block;opacity:0;animation:fadeBreathing 8s ease-in-out infinite;filter:brightness(0.95) contrast(1.05) saturate(1.1);transition:filter 0.5s ease;pointer-events:none}
+.member-full-img{width:100%;height:auto;max-height:75vh;object-fit:cover;display:block;opacity:0;animation:fadeBreathing 8s ease-in-out infinite;filter:brightness(0.95) contrast(1.05) saturate(1.1);transition:filter 0.5s ease}
 .member-full-img:hover{filter:brightness(1.05) contrast(1.08) saturate(1.15)}
 @keyframes fadeBreathing{0%,100%{opacity:0.75;transform:scale(1)}25%{opacity:1;transform:scale(1.01)}50%{opacity:0.85;transform:scale(1)}75%{opacity:1;transform:scale(1.01)}}
 .photo-overlay{position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(to top,rgba(10,14,26,0.9),transparent);pointer-events:none}
@@ -60,7 +60,7 @@ footer{background:#0f172a;margin-top:60px;padding:50px 20px 40px;border-top:1px 
 <div class="container">
     <div class="navbar fade-section">
         <div class="logo-wrapper">
-            <img src="https://i.postimg.cc/J4m41GqP/IMG-3484.png" alt="NeTubeX Logo" class="logo-img-large" onerror="this.style.display='none'">
+            <img src="https://i.postimg.cc/J4m41GqP/IMG-3484.png" alt="NeTubeX Logo" class="logo-img-large" style="background:transparent" onerror="this.style.display='none'">
             <div class="logo-text">NeTubeX</div>
         </div>
         <div class="btn-group">
@@ -99,34 +99,27 @@ footer{background:#0f172a;margin-top:60px;padding:50px 20px 40px;border-top:1px 
 </footer>
 <script>
 (function(){
-    // Blocage clic droit sur toute la page
+    // Blocage clic droit
     document.addEventListener('contextmenu', function(e){
         e.preventDefault();
         return false;
     });
-    // Blocage sélection texte (déjà fait en CSS, mais renforcement JS)
+    // Blocage sélection texte
     document.addEventListener('selectstart', function(e){
         e.preventDefault();
         return false;
     });
-    // Blocage clic prolongé / appui long sur images et liens (menu contextuel mobile)
+    // Blocage sur images
     document.querySelectorAll('img, a, .btn-solid, .activity-card').forEach(el => {
         el.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
         el.addEventListener('dragstart', (e) => { e.preventDefault(); return false; });
     });
-    // Désactiver les outils de développement (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
+    // Désactiver F12 et Ctrl+U
     document.addEventListener('keydown', function(e){
-        if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 'U')){
+        if(e.key === 'F12' || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 'U')){
             e.preventDefault();
             return false;
         }
-    });
-    // Désactiver clic droit sur les images via aussi le listener global renforcé
-    const allImgs = document.querySelectorAll('img');
-    allImgs.forEach(img => {
-        img.addEventListener('dragstart', (e) => e.preventDefault());
-        img.addEventListener('mousedown', (e) => { if(e.button === 2) e.preventDefault(); });
-        img.style.pointerEvents = 'none'; // bloque toute interaction prolongée type "enregistrer sous"
     });
     // Animation fade-in au scroll
     const fadeElements = document.querySelectorAll('.fade-section');
@@ -193,13 +186,6 @@ footer{background:#0f172a;margin-top:60px;padding:50px 20px 40px;border-top:1px 
             card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
         });
     });
-    // Supprimer les console.log et autres protections additionnelles contre inspection
-    setInterval(() => {
-        // Désactiver devtools via détection (simple mais renforce)
-        if(window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160){
-            document.body.innerHTML = '<div style="color:white;text-align:center;margin-top:20%">Accès non autorisé</div>';
-        }
-    }, 1000);
 })();
 </script>
 </body>
