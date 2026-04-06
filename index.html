@@ -7,358 +7,66 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{
-    font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-    background:linear-gradient(135deg, #0a0e1a 0%, #0f1629 50%, #0a0f1f 100%);
-    color:#e4e6eb;
-    scroll-behavior:smooth;
-    min-height:100vh;
-}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#0a0e1a 0%,#0f1629 50%,#0a0f1f 100%);color:#e4e6eb;scroll-behavior:smooth;min-height:100vh;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none}
 @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
-
 .container{max-width:1400px;margin:0 auto;padding:0 28px}
-
-/* header */
-.navbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:28px 0 24px;
-    flex-wrap:wrap;
-    gap:20px;
-    border-bottom:1px solid rgba(79,209,197,0.15);
-    backdrop-filter:blur(10px);
-    background:rgba(10,14,26,0.3);
-}
-.logo-text{
-    font-size:3.2rem;
-    font-weight:800;
-    background:linear-gradient(135deg,#6ee7ff,#3b82f6,#1e40af);
-    background-clip:text;
-    -webkit-background-clip:text;
-    color:transparent;
-    letter-spacing:-0.8px;
-    animation:logoGlow 3s ease-in-out infinite;
-}
-@keyframes logoGlow{
-    0%,100%{filter:drop-shadow(0 0 5px rgba(59,130,246,0.3));}
-    50%{filter:drop-shadow(0 0 15px rgba(59,130,246,0.6));}
-}
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:28px 0 24px;flex-wrap:wrap;gap:20px;border-bottom:1px solid rgba(79,209,197,0.15);backdrop-filter:blur(10px);background:rgba(10,14,26,0.3)}
+.logo-wrapper{display:flex;flex-direction:column;align-items:center;gap:8px}
+.logo-img-large{max-width:180px;height:auto;display:block;filter:drop-shadow(0 0 12px rgba(59,130,246,0.4));transition:filter 0.4s ease,transform 0.3s ease;pointer-events:none}
+.logo-img-large:hover{filter:drop-shadow(0 0 20px rgba(59,130,246,0.7));transform:scale(1.02)}
+.logo-text{font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#6ee7ff,#3b82f6,#1e40af);background-clip:text;-webkit-background-clip:text;color:transparent;letter-spacing:-0.5px;margin-top:4px}
 .btn-group{display:flex;gap:18px}
-.btn-solid{
-    background:linear-gradient(135deg,#3b82f6,#1e40af);
-    border:none;
-    padding:12px 40px;
-    border-radius:40px;
-    font-weight:700;
-    color:#fff;
-    text-decoration:none;
-    transition:all 0.3s ease;
-    font-size:1rem;
-    cursor:pointer;
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    box-shadow:0 4px 15px rgba(59,130,246,0.3);
-}
-.btn-solid:hover{
-    transform:translateY(-2px);
-    box-shadow:0 8px 25px rgba(59,130,246,0.5);
-    background:linear-gradient(135deg,#2563eb,#1e3a8a);
-}
-
-/* hero */
+.btn-solid{background:linear-gradient(135deg,#3b82f6,#1e40af);border:none;padding:12px 40px;border-radius:40px;font-weight:700;color:#fff;text-decoration:none;transition:all 0.3s ease;font-size:1rem;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 15px rgba(59,130,246,0.3)}
+.btn-solid:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(59,130,246,0.5);background:linear-gradient(135deg,#2563eb,#1e3a8a)}
 .hero-section{margin:60px 0 30px}
 .hero-text-block{text-align:center;margin-bottom:50px}
-.hero-text-block h1{
-    font-size:3.8rem;
-    font-weight:800;
-    background:linear-gradient(125deg,#a5f3fc,#3b82f6,#1e40af);
-    background-clip:text;
-    -webkit-background-clip:text;
-    color:transparent;
-    margin-bottom:24px;
-    line-height:1.2;
-    animation:textPulse 3s ease-in-out infinite;
-}
-@keyframes textPulse{
-    0%,100%{opacity:0.95;letter-spacing:-0.5px;}
-    50%{opacity:1;letter-spacing:0.5px;}
-}
-.hero-text-block p{
-    font-size:1.2rem;
-    color:#cbd5e1;
-    max-width:700px;
-    margin:0 auto;
-    line-height:1.6;
-    background:rgba(59,130,246,0.1);
-    padding:20px 30px;
-    border-radius:60px;
-    backdrop-filter:blur(10px);
-    border:1px solid rgba(59,130,246,0.2);
-}
-
-/* photo pleine largeur sans carte - effet fade in/out permanent */
-.photo-wall{
-    width:100vw;
-    position:relative;
-    left:50%;
-    right:50%;
-    margin-left:-50vw;
-    margin-right:-50vw;
-    margin-top:40px;
-    margin-bottom:60px;
-    overflow:hidden;
-    background:linear-gradient(135deg,#0a0e1a,#0f1629);
-}
-.member-photo-frame{
-    width:100%;
-    position:relative;
-    background:#000;
-}
-.member-full-img{
-    width:100%;
-    height:auto;
-    max-height:75vh;
-    object-fit:cover;
-    display:block;
-    opacity:0;
-    animation:fadeBreathing 8s ease-in-out infinite;
-    filter:brightness(0.95) contrast(1.05) saturate(1.1);
-    transition:filter 0.5s ease;
-}
-.member-full-img:hover{
-    filter:brightness(1.05) contrast(1.08) saturate(1.15);
-}
-@keyframes fadeBreathing{
-    0%,100%{
-        opacity:0.75;
-        transform:scale(1);
-    }
-    25%{
-        opacity:1;
-        transform:scale(1.01);
-    }
-    50%{
-        opacity:0.85;
-        transform:scale(1);
-    }
-    75%{
-        opacity:1;
-        transform:scale(1.01);
-    }
-}
-/* overlay dégradé sur la photo */
-.photo-overlay{
-    position:absolute;
-    bottom:0;
-    left:0;
-    right:0;
-    height:40%;
-    background:linear-gradient(to top, rgba(10,14,26,0.9), transparent);
-    pointer-events:none;
-}
-
-/* section activités avec gris élégant #D0D6E5 */
-.activities-wrapper{
-    background:#D0D6E5;
-    border-radius:32px;
-    padding:50px 32px 60px;
-    margin:50px 0 40px;
-    box-shadow:0 20px 40px rgba(0,0,0,0.1);
-}
-.section-title{
-    font-size:2.2rem;
-    font-weight:700;
-    margin-bottom:30px;
-    color:#0f172a;
-    text-align:center;
-    position:relative;
-}
-.section-title:after{
-    content:'';
-    display:block;
-    width:80px;
-    height:3px;
-    background:linear-gradient(90deg,#3b82f6,#1e40af);
-    margin:15px auto 0;
-    border-radius:3px;
-    animation:lineExpand 2s ease-in-out infinite;
-}
-@keyframes lineExpand{
-    0%,100%{width:80px;}
-    50%{width:120px;}
-}
-.activities-grid{
-    display:flex;
-    flex-wrap:wrap;
-    gap:30px;
-    margin:40px 0 20px;
-    justify-content:center;
-}
-.activity-card{
-    background:white;
-    border-radius:28px;
-    padding:35px 28px;
-    flex:1;
-    min-width:250px;
-    transition:all 0.5s cubic-bezier(0.2,0.9,0.4,1.1);
-    border:1px solid rgba(59,130,246,0.2);
-    text-align:center;
-    position:relative;
-    overflow:hidden;
-    cursor:pointer;
-    box-shadow:0 4px 15px rgba(0,0,0,0.05);
-}
-.activity-card::before{
-    content:'';
-    position:absolute;
-    top:0;
-    left:-100%;
-    width:100%;
-    height:100%;
-    background:linear-gradient(90deg,transparent,rgba(59,130,246,0.1),transparent);
-    transition:left 0.5s;
-}
-.activity-card:hover::before{
-    left:100%;
-}
-.activity-card:hover{
-    transform:translateY(-10px);
-    border-color:#3b82f6;
-    box-shadow:0 20px 35px rgba(59,130,246,0.2);
-}
-.card-icon{
-    font-size:3.2rem;
-    background:linear-gradient(135deg,#3b82f6,#1e40af);
-    background-clip:text;
-    -webkit-background-clip:text;
-    color:transparent;
-    margin-bottom:20px;
-    transition:transform 0.3s;
-}
-.activity-card:hover .card-icon{
-    transform:scale(1.1);
-}
-.activity-card h3{
-    font-size:1.5rem;
-    font-weight:700;
-    margin-bottom:15px;
-    color:#0f172a;
-}
-.activity-card p{
-    color:#475569;
-    font-size:0.95rem;
-    line-height:1.5;
-}
-
-/* footer professionnel */
-footer{
-    background:#0f172a;
-    margin-top:60px;
-    padding:50px 20px 40px;
-    border-top:1px solid rgba(59,130,246,0.2);
-}
-.footer-inner{
-    max-width:1300px;
-    margin:0 auto;
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:space-between;
-    align-items:center;
-    gap:32px;
-    padding:0 20px;
-}
-.footer-brand h3{
-    font-size:1.8rem;
-    font-weight:700;
-    background:linear-gradient(135deg,#6ee7ff,#3b82f6);
-    background-clip:text;
-    -webkit-background-clip:text;
-    color:transparent;
-    margin-bottom:8px;
-}
-.footer-brand p{
-    color:#94a3b8;
-    font-size:0.85rem;
-}
-.footer-links{
-    display:flex;
-    gap:40px;
-}
-.footer-links a{
-    color:#cbd5e1;
-    text-decoration:none;
-    font-size:0.9rem;
-    transition:color 0.3s;
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-}
-.footer-links a:hover{
-    color:#3b82f6;
-}
-.footer-copyright p{
-    color:#64748b;
-    font-size:0.85rem;
-}
-
-/* fade-in sections - apparition au scroll */
-.fade-section{
-    opacity:0;
-    transform:translateY(40px);
-    transition:opacity 0.9s cubic-bezier(0.2,0.9,0.3,1.1),transform 0.8s ease;
-}
-.fade-section.visible{
-    opacity:1;
-    transform:translateY(0);
-}
-
-/* animation pour les cartes activités */
-.activity-card {
-    opacity:0;
-    transform:translateY(30px);
-    transition:opacity 0.6s ease, transform 0.5s ease, all 0.3s ease;
-}
-.activity-card.visible-card {
-    opacity:1;
-    transform:translateY(0);
-}
-
-@media (max-width:860px){
-    .hero-text-block h1{font-size:2.3rem}
-    .navbar{flex-direction:column;align-items:center}
-    .logo-text{font-size:2.5rem}
-    .member-full-img{max-height:50vh}
-    .footer-inner{flex-direction:column;text-align:center}
-    .footer-copyright p{text-align:center}
-    .hero-text-block p{font-size:1rem;margin:0 15px}
-    .footer-links{justify-content:center}
-}
-
-@media (max-width:560px){
-    .container{padding:0 20px}
-    .hero-text-block h1{font-size:1.8rem}
-    .activity-card{padding:25px 18px}
-    .btn-solid{padding:10px 28px;font-size:0.9rem}
-    .hero-text-block p{padding:15px 20px}
-    .footer-links{gap:25px}
-}
+.hero-text-block h1{font-size:3.8rem;font-weight:800;background:linear-gradient(125deg,#a5f3fc,#3b82f6,#1e40af);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:24px;line-height:1.2}
+.hero-text-block p{font-size:1.2rem;color:#cbd5e1;max-width:700px;margin:0 auto;line-height:1.6;background:rgba(59,130,246,0.1);padding:20px 30px;border-radius:60px;backdrop-filter:blur(10px);border:1px solid rgba(59,130,246,0.2)}
+.photo-wall{width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;margin-top:40px;margin-bottom:60px;overflow:hidden;background:linear-gradient(135deg,#0a0e1a,#0f1629)}
+.member-photo-frame{width:100%;position:relative;background:#000}
+.member-full-img{width:100%;height:auto;max-height:75vh;object-fit:cover;display:block;opacity:0;animation:fadeBreathing 8s ease-in-out infinite;filter:brightness(0.95) contrast(1.05) saturate(1.1);transition:filter 0.5s ease;pointer-events:none}
+.member-full-img:hover{filter:brightness(1.05) contrast(1.08) saturate(1.15)}
+@keyframes fadeBreathing{0%,100%{opacity:0.75;transform:scale(1)}25%{opacity:1;transform:scale(1.01)}50%{opacity:0.85;transform:scale(1)}75%{opacity:1;transform:scale(1.01)}}
+.photo-overlay{position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(to top,rgba(10,14,26,0.9),transparent);pointer-events:none}
+.activities-wrapper{background:#D0D6E5;border-radius:32px;padding:50px 32px 60px;margin:50px 0 40px;box-shadow:0 20px 40px rgba(0,0,0,0.1)}
+.section-title{font-size:2.2rem;font-weight:700;margin-bottom:30px;color:#0f172a;text-align:center;position:relative}
+.section-title:after{content:'';display:block;width:80px;height:3px;background:linear-gradient(90deg,#3b82f6,#1e40af);margin:15px auto 0;border-radius:3px}
+.activities-grid{display:flex;flex-wrap:wrap;gap:30px;margin:40px 0 20px;justify-content:center}
+.activity-card{background:white;border-radius:28px;padding:35px 28px;flex:1;min-width:250px;transition:all 0.5s cubic-bezier(0.2,0.9,0.4,1.1);border:1px solid rgba(59,130,246,0.2);text-align:center;position:relative;overflow:hidden;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.05)}
+.activity-card::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(59,130,246,0.1),transparent);transition:left 0.5s}
+.activity-card:hover::before{left:100%}
+.activity-card:hover{transform:translateY(-10px);border-color:#3b82f6;box-shadow:0 20px 35px rgba(59,130,246,0.2)}
+.card-icon{font-size:3.2rem;background:linear-gradient(135deg,#3b82f6,#1e40af);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:20px;transition:transform 0.3s}
+.activity-card:hover .card-icon{transform:scale(1.1)}
+.activity-card h3{font-size:1.5rem;font-weight:700;margin-bottom:15px;color:#0f172a}
+.activity-card p{color:#475569;font-size:0.95rem;line-height:1.5}
+footer{background:#0f172a;margin-top:60px;padding:50px 20px 40px;border-top:1px solid rgba(59,130,246,0.2)}
+.footer-inner{max-width:1300px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:32px;padding:0 20px}
+.footer-brand h3{font-size:1.8rem;font-weight:700;background:linear-gradient(135deg,#6ee7ff,#3b82f6);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:8px}
+.footer-brand p{color:#94a3b8;font-size:0.85rem}
+.footer-links{display:flex;gap:40px}
+.footer-links a{color:#cbd5e1;text-decoration:none;font-size:0.9rem;transition:color 0.3s;display:inline-flex;align-items:center;gap:6px}
+.footer-links a:hover{color:#3b82f6}
+.footer-copyright p{color:#64748b;font-size:0.85rem}
+.fade-section{opacity:0;transform:translateY(40px);transition:opacity 0.9s cubic-bezier(0.2,0.9,0.3,1.1),transform 0.8s ease}
+.fade-section.visible{opacity:1;transform:translateY(0)}
+.activity-card{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.5s ease}
+.activity-card.visible-card{opacity:1;transform:translateY(0)}
+@media (max-width:860px){.hero-text-block h1{font-size:2.3rem}.navbar{flex-direction:column;align-items:center}.logo-text{font-size:1.8rem}.member-full-img{max-height:50vh}.footer-inner{flex-direction:column;text-align:center}.footer-copyright p{text-align:center}.hero-text-block p{font-size:1rem;margin:0 15px}.footer-links{justify-content:center}.logo-img-large{max-width:130px}}
+@media (max-width:560px){.container{padding:0 20px}.hero-text-block h1{font-size:1.8rem}.activity-card{padding:25px 18px}.btn-solid{padding:10px 28px;font-size:0.9rem}.hero-text-block p{padding:15px 20px}.footer-links{gap:25px}.logo-img-large{max-width:100px}.logo-text{font-size:1.4rem}}
 </style>
 </head>
 <body>
 <div class="container">
-    <!-- header avec logo et bouton postuler -->
     <div class="navbar fade-section">
-        <div class="logo-text">NeTubeX</div>
+        <div class="logo-wrapper">
+            <img src="https://i.postimg.cc/J4m41GqP/IMG-3484.png" alt="NeTubeX Logo" class="logo-img-large" onerror="this.style.display='none'">
+            <div class="logo-text">NeTubeX</div>
+        </div>
         <div class="btn-group">
-            <a href="#" class="btn-solid" id="postulerBtn">
-                <i class="fab fa-whatsapp"></i> Postuler
-            </a>
+            <a href="#" class="btn-solid" id="postulerBtn"><i class="fab fa-whatsapp"></i> Postuler</a>
         </div>
     </div>
-
-    <!-- hero section -->
     <div class="hero-section fade-section">
         <div class="hero-text-block">
             <h1>Transformez votre temps<br>en revenu concret</h1>
@@ -366,147 +74,101 @@ footer{
         </div>
     </div>
 </div>
-
-<!-- photo pleine largeur sans carte - fade in/out permanent -->
 <div class="photo-wall">
     <div class="member-photo-frame">
-        <img src="https://i.postimg.cc/CKtrLPtY/e3ee76ac-9224-4d38-bdd3-d4b29da56116.jpg" 
-             alt="Membre NeTubeX - Espace de rémunération" 
-             class="member-full-img"
-             onerror="this.src='https://placehold.co/1920x900/0f172a/3b82f6?text=NeTubeX+Night+Mode'">
+        <img src="https://i.postimg.cc/CKtrLPtY/e3ee76ac-9224-4d38-bdd3-d4b29da56116.jpg" alt="Membre NeTubeX" class="member-full-img" onerror="this.src='https://placehold.co/1920x900/0f172a/3b82f6?text=NeTubeX'">
         <div class="photo-overlay"></div>
     </div>
 </div>
-
 <div class="container">
-    <!-- section Nos Activités avec apparition au scroll -->
     <div class="activities-wrapper fade-section" id="activitiesSection">
         <h2 class="section-title">Espace de rémunération</h2>
         <div class="activities-grid" id="activitiesGrid">
-            <div class="activity-card">
-                <div class="card-icon"><i class="fas fa-tasks"></i></div>
-                <h3>Missions guidées</h3>
-                <p>Parcours simplifiés, objectifs clairs et récompenses immédiates pour valoriser chaque action.</p>
-            </div>
-            <div class="activity-card">
-                <div class="card-icon"><i class="fas fa-gamepad"></i></div>
-                <h3>Jeux rémunérateurs</h3>
-                <p>Défis quotidiens et classements. Jouez et générez des revenus tout en vous divertissant.</p>
-            </div>
-            <div class="activity-card">
-                <div class="card-icon"><i class="fas fa-brain"></i></div>
-                <h3>Quiz entreprises</h3>
-                <p>Testez vos connaissances, chaque bonne réponse rapporte des points convertibles en cash.</p>
-            </div>
+            <div class="activity-card"><div class="card-icon"><i class="fas fa-tasks"></i></div><h3>Missions guidées</h3><p>Parcours simplifiés, objectifs clairs et récompenses immédiates pour valoriser chaque action.</p></div>
+            <div class="activity-card"><div class="card-icon"><i class="fas fa-gamepad"></i></div><h3>Jeux rémunérateurs</h3><p>Défis quotidiens et classements. Jouez et générez des revenus tout en vous divertissant.</p></div>
+            <div class="activity-card"><div class="card-icon"><i class="fas fa-brain"></i></div><h3>Quiz entreprises</h3><p>Testez vos connaissances, chaque bonne réponse rapporte des points convertibles en cash.</p></div>
         </div>
     </div>
 </div>
-
-<!-- footer professionnel -->
 <footer>
     <div class="footer-inner">
-        <div class="footer-brand">
-            <h3>NeTubeX</h3>
-            <p>Espace de rémunération digitale</p>
-        </div>
-        <div class="footer-links">
-            <a href="#" id="aboutLink"><i class="fas fa-info-circle"></i> À propos</a>
-            <a href="#" id="privacyLink"><i class="fas fa-shield-alt"></i> Privacy</a>
-        </div>
-        <div class="footer-copyright">
-            <p>© 2026 NeTubeX — Tous droits réservés.</p>
-        </div>
+        <div class="footer-brand"><h3>NeTubeX</h3><p>Espace de rémunération digitale</p></div>
+        <div class="footer-links"><a href="#" id="aboutLink"><i class="fas fa-info-circle"></i> À propos</a><a href="#" id="privacyLink"><i class="fas fa-shield-alt"></i> Privacy</a></div>
+        <div class="footer-copyright"><p>© 2026 NeTubeX — Tous droits réservés.</p></div>
     </div>
 </footer>
-
 <script>
-(function() {
-    // Fade-in au scroll pour les sections principales
+(function(){
+    // Blocage clic droit sur toute la page
+    document.addEventListener('contextmenu', function(e){
+        e.preventDefault();
+        return false;
+    });
+    // Blocage sélection texte (déjà fait en CSS, mais renforcement JS)
+    document.addEventListener('selectstart', function(e){
+        e.preventDefault();
+        return false;
+    });
+    // Blocage clic prolongé / appui long sur images et liens (menu contextuel mobile)
+    document.querySelectorAll('img, a, .btn-solid, .activity-card').forEach(el => {
+        el.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
+        el.addEventListener('dragstart', (e) => { e.preventDefault(); return false; });
+    });
+    // Désactiver les outils de développement (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
+    document.addEventListener('keydown', function(e){
+        if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 'U')){
+            e.preventDefault();
+            return false;
+        }
+    });
+    // Désactiver clic droit sur les images via aussi le listener global renforcé
+    const allImgs = document.querySelectorAll('img');
+    allImgs.forEach(img => {
+        img.addEventListener('dragstart', (e) => e.preventDefault());
+        img.addEventListener('mousedown', (e) => { if(e.button === 2) e.preventDefault(); });
+        img.style.pointerEvents = 'none'; // bloque toute interaction prolongée type "enregistrer sous"
+    });
+    // Animation fade-in au scroll
     const fadeElements = document.querySelectorAll('.fade-section');
-    
-    function checkFadeIn() {
+    function checkFadeIn(){
         const winH = window.innerHeight;
         fadeElements.forEach(el => {
             const rect = el.getBoundingClientRect();
-            if(rect.top < winH - 70 && rect.bottom > 20) {
-                el.classList.add('visible');
-            }
+            if(rect.top < winH - 70 && rect.bottom > 20) el.classList.add('visible');
         });
     }
-    
-    // Animation des cartes activités une par une au scroll
     const activityCards = document.querySelectorAll('.activity-card');
-    
-    function checkCardsVisibility() {
+    function checkCardsVisibility(){
         const winH = window.innerHeight;
-        activityCards.forEach((card, index) => {
+        activityCards.forEach((card, idx) => {
             const rect = card.getBoundingClientRect();
-            if(rect.top < winH - 50 && rect.bottom > 20) {
-                setTimeout(() => {
-                    card.classList.add('visible-card');
-                }, index * 150);
+            if(rect.top < winH - 50 && rect.bottom > 20){
+                setTimeout(() => card.classList.add('visible-card'), idx * 150);
             }
         });
     }
-    
-    window.addEventListener('scroll', () => {
-        checkFadeIn();
-        checkCardsVisibility();
-    });
-    window.addEventListener('resize', () => {
-        checkFadeIn();
-        checkCardsVisibility();
-    });
-    
-    setTimeout(() => {
-        checkFadeIn();
-        checkCardsVisibility();
-    }, 100);
-    
-    // Bouton postuler - redirection WhatsApp
+    window.addEventListener('scroll', () => { checkFadeIn(); checkCardsVisibility(); });
+    window.addEventListener('resize', () => { checkFadeIn(); checkCardsVisibility(); });
+    setTimeout(() => { checkFadeIn(); checkCardsVisibility(); }, 100);
+    // Redirection WhatsApp
     const postulerBtn = document.getElementById('postulerBtn');
-    if(postulerBtn) {
-        postulerBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = 'https://wa.me/243808359598';
-        });
-    }
-    
-    // Liens footer vers #
+    if(postulerBtn) postulerBtn.addEventListener('click', (e) => { e.preventDefault(); window.location.href = 'https://wa.me/243808359598'; });
+    // Redirection A propos vers apropos.html
     const aboutLink = document.getElementById('aboutLink');
+    if(aboutLink) aboutLink.addEventListener('click', (e) => { e.preventDefault(); window.location.href = 'apropos.html'; });
     const privacyLink = document.getElementById('privacyLink');
-    
-    if(aboutLink) {
-        aboutLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = '#';
-        });
-    }
-    
-    if(privacyLink) {
-        privacyLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = '#';
-        });
-    }
-    
-    // Animation subtile sur l'image au scroll (parallaxe léger)
+    if(privacyLink) privacyLink.addEventListener('click', (e) => { e.preventDefault(); window.location.href = '#'; });
+    // Effet parallaxe léger sur l'image
     const memberImg = document.querySelector('.member-full-img');
-    if(memberImg) {
-        let lastScrollY = window.scrollY;
+    if(memberImg){
         let ticking = false;
-        
         window.addEventListener('scroll', () => {
-            if(!ticking) {
+            if(!ticking){
                 requestAnimationFrame(() => {
                     const scrollY = window.scrollY;
                     const imgRect = memberImg.getBoundingClientRect();
-                    const viewportHeight = window.innerHeight;
-                    
-                    if(imgRect.top < viewportHeight && imgRect.bottom > 0) {
-                        const speed = 0.2;
-                        const yPos = -(scrollY * speed);
-                        memberImg.style.transform = `translateY(${yPos}px)`;
+                    if(imgRect.top < window.innerHeight && imgRect.bottom > 0){
+                        memberImg.style.transform = `translateY(${-(scrollY * 0.2)}px)`;
                     }
                     ticking = false;
                 });
@@ -514,8 +176,7 @@ footer{
             }
         });
     }
-    
-    // Animation 3D légère sur les cartes au survol
+    // Animation 3D cartes au survol
     const cards = document.querySelectorAll('.activity-card');
     cards.forEach(card => {
         card.addEventListener('mousemove', (e) => {
@@ -528,11 +189,17 @@ footer{
             const rotateY = (centerX - x) / 25;
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
         });
-        
         card.addEventListener('mouseleave', () => {
             card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
         });
     });
+    // Supprimer les console.log et autres protections additionnelles contre inspection
+    setInterval(() => {
+        // Désactiver devtools via détection (simple mais renforce)
+        if(window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160){
+            document.body.innerHTML = '<div style="color:white;text-align:center;margin-top:20%">Accès non autorisé</div>';
+        }
+    }, 1000);
 })();
 </script>
 </body>
