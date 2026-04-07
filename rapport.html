@@ -1,122 +1,82 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>NeTubeX - Envoi Rapport</title>
-
-<!-- Firebase (VERSION COMPAT) -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-<!-- jsPDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<style>
-body{
-  font-family: Arial;
-  background:#0a1a2f;
-  color:white;
-  text-align:center;
-  padding:40px;
-}
-input{
-  padding:12px;
-  border-radius:30px;
-  border:none;
-  width:250px;
-  margin-top:20px;
-}
-button{
-  margin-top:20px;
-  padding:14px 25px;
-  border:none;
-  border-radius:30px;
-  background:#facc15;
-  font-weight:bold;
-  cursor:pointer;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Test PDF Firebase</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
-
 <body>
+  <h1>Test PDF Firebase</h1>
+  <label for="name">Nom du pilote :</label>
+  <input type="text" id="name" placeholder="Ex: Flori Ngenda"><br><br>
+  <button onclick="sendPDF()">Début envoi</button>
 
-<h2>📡 NeTubeX - Envoi Rapport</h2>
+  <script>
+    // 🔹 Config Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
+      authDomain: "netubexmoney.firebaseapp.com",
+      projectId: "netubexmoney",
+      storageBucket: "netubexmoney.appspot.com",
+      messagingSenderId: "856592608176",
+      appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
+    };
 
-<input type="text" id="name" placeholder="Nom du pilote">
-<br>
+    firebase.initializeApp(firebaseConfig);
+    const storage = firebase.storage();
+    const db = firebase.firestore();
 
-<button onclick="sendPDF()">📤 Générer & Envoyer</button>
+    // 🔹 Fonction pour envoyer le PDF
+    async function sendPDF() {
+      alert("🚀 Début envoi...");
 
-<script>
-// 🔥 CONFIG FIREBASE (CORRIGÉE)
-const firebaseConfig = {
-  apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
-  authDomain: "netubexmoney.firebaseapp.com",
-  projectId: "netubexmoney",
-  storageBucket: "netubexmoney.appspot.com", // ✅ CORRIGÉ ICI
-  messagingSenderId: "856592608176",
-  appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
-};
+      try {
+        console.log("1. Fonction lancée");
 
-// Initialisation
-firebase.initializeApp(firebaseConfig);
-const storage = firebase.storage();
-const db = firebase.firestore();
+        const name = document.getElementById("name").value || "Test";
 
-// 🚀 FONCTION PRINCIPALE
-async function sendPDF(){
-  alert("🚀 Début envoi...");
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
 
-  try{
-    console.log("Début");
+        doc.text(`Rapport pilote : ${name}`, 20, 20);
+        doc.text("Ceci est un test PDF", 20, 30);
 
-    const name = document.getElementById("name").value || "Pilote Test";
+        console.log("2. PDF créé");
 
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+        const pdfBlob = doc.output("blob");
 
-    // 📄 CONTENU PDF
-    doc.setFontSize(18);
-    doc.text("RAPPORT NETUBEX", 20, 20);
+        console.log("3. Blob OK");
 
-    doc.setFontSize(12);
-    doc.text("Pilote : " + name, 20, 40);
-    doc.text("Date : " + new Date().toLocaleString(), 20, 50);
+        const storageRef = storage.ref(`rapports/${name}_test.pdf`);
 
-    console.log("PDF créé");
+        console.log("4. Avant upload");
 
-    // 🔥 CONVERSION BLOB
-    const pdfBlob = doc.output("blob");
+        await storageRef.put(pdfBlob);
 
-    const fileName = "rapport_" + Date.now() + ".pdf";
+        console.log("5. Upload OK");
 
-    // 🔥 UPLOAD
-    const storageRef = storage.ref("rapports/" + fileName);
-    await storageRef.put(pdfBlob);
+        const url = await storageRef.getDownloadURL();
 
-    console.log("Upload OK");
+        console.log("6. URL OK", url);
 
-    // 🔥 URL
-    const url = await storageRef.getDownloadURL();
+        await db.collection("rapports").add({
+          pilote: name,
+          url: url,
+          date: new Date()
+        });
 
-    console.log("URL:", url);
+        console.log("7. Firestore OK");
 
-    // 🔥 FIRESTORE
-    await db.collection("rapports").add({
-      pilote: name,
-      url: url,
-      date: new Date()
-    });
+        alert("✅ Terminé. PDF disponible ici : " + url);
 
-    alert("✅ Rapport envoyé avec succès !");
-
-  }catch(e){
-    console.error(e);
-    alert("❌ Erreur : " + e.message);
-  }
-}
-</script>
-
+      } catch (e) {
+        console.error("ERREUR:", e);
+        alert("❌ Erreur: " + e.message);
+      }
+    }
+  </script>
 </body>
 </html>
