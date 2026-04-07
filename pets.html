@@ -1,31 +1,29 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeTubeX · Test PDF + Dashboard</title>
-    <style>
-        body{font-family:'Courier New',monospace;background:#f0f2f5;padding:20px;}
-        .container{max-width:800px;margin:0 auto;}
-        h2{text-align:center;margin-bottom:20px;}
-        input, button{padding:12px;margin-bottom:12px;width:100%;border-radius:8px;}
-        button{cursor:pointer;background:#facc15;border:none;font-weight:bold;}
-        .status{padding:10px;margin-bottom:12px;border-radius:6px;text-align:center;}
-        .status.success{background:#27ae60;color:white;}
-        .status.error{background:#c0392b;color:white;}
-        .status.loading{background:#facc15;color:#0a1a2f;}
-        .report{padding:12px;border:1px solid #ccc;border-radius:8px;margin-bottom:12px;}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Firebase · NeTubeX</title>
+<style>
+    body { font-family: 'Courier New', monospace; background:#0a1a2f; color:white; padding:20px; }
+    .card { background:#0f2d45; padding:20px; border-radius:20px; max-width:500px; margin:auto; }
+    input, button { width:100%; padding:12px; margin:6px 0; border-radius:30px; border:none; font-size:1rem; }
+    input { background:white; color:black; }
+    button { background: #facc15; color:#0a1a2f; font-weight:bold; cursor:pointer; }
+    button:active { transform:scale(0.97); }
+    .status { margin-top:12px; padding:10px; border-radius:12px; }
+    .loading { background:#facc15; color:#0a1a2f; }
+    .success { background:#27ae60; color:white; }
+    .error { background:#c0392b; color:white; }
+</style>
 </head>
 <body>
-<div class="container">
-    <h2>📤 Formulaire Test PDF</h2>
-    <input type="text" id="piloteName" placeholder="Nom du pilote">
-    <button id="sendBtn">Générer PDF & Envoyer</button>
-    <div id="status" class="status" style="display:none;"></div>
-
-    <h2>📄 Dashboard des rapports</h2>
-    <div id="reportsContainer">Chargement des rapports...</div>
+<div class="card">
+    <h2>📡 NeTubeX · Test Firebase</h2>
+    <label>🔹 Nom du pilote :</label>
+    <input type="text" id="piloteName" placeholder="Ex: Madame Ursule">
+    <button id="sendBtn">📤 Envoyer à Firebase</button>
+    <div id="status" class="status"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -34,108 +32,71 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
 <script>
-    // ⚡ Configuration Firebase
-    const firebaseConfig = {
-        apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
-        authDomain: "netubexmoney.firebaseapp.com",
-        projectId: "netubexmoney",
-        storageBucket: "netubexmoney.firebasestorage.app",
-        messagingSenderId: "856592608176",
-        appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
-    };
+const firebaseConfig = {
+    apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
+    authDomain: "netubexmoney.firebaseapp.com",
+    projectId: "netubexmoney",
+    storageBucket: "netubexmoney.appspot.com",
+    messagingSenderId: "856592608176",
+    appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
+};
 
-    firebase.initializeApp(firebaseConfig);
-    const storage = firebase.storage();
-    const db = firebase.firestore();
+firebase.initializeApp(firebaseConfig);
+const storage = firebase.storage();
+const db = firebase.firestore();
 
-    const sendBtn = document.getElementById('sendBtn');
-    const piloteInput = document.getElementById('piloteName');
-    const statusDiv = document.getElementById('status');
-    const reportsContainer = document.getElementById('reportsContainer');
+const sendBtn = document.getElementById('sendBtn');
+const piloteInput = document.getElementById('piloteName');
+const statusDiv = document.getElementById('status');
 
-    function showStatus(message, type){
-        statusDiv.textContent = message;
-        statusDiv.className = `status ${type}`;
-        statusDiv.style.display = 'block';
-        setTimeout(()=>{ statusDiv.style.display='none'; },5000);
-    }
+function showStatus(msg, type) {
+    statusDiv.textContent = msg;
+    statusDiv.className = `status ${type}`;
+}
 
-    async function generatePDF(piloteName){
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const now = new Date();
-        doc.text(`Rapport Test NeTubeX`,20,20);
-        doc.text(`Pilote: ${piloteName}`,20,30);
-        doc.text(`Date: ${now.toLocaleString('fr-FR')}`,20,40);
-        doc.text(`Ceci est un rapport de test généré depuis le formulaire.`,20,50);
-        return doc.output('blob');
-    }
+async function generatePDF(pilote) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const now = new Date();
+    doc.text(`Test rapport NeTubeX`, 10, 20);
+    doc.text(`Pilote : ${pilote}`, 10, 30);
+    doc.text(`Date : ${now.toLocaleString('fr-FR')}`, 10, 40);
+    doc.text(`Ceci est un rapport de test.`, 10, 50);
+    return doc.output('blob');
+}
 
-    async function uploadToFirebase(piloteName){
-        if(!piloteName.trim()){
-            showStatus("❌ Veuillez entrer un nom", "error");
-            return;
-        }
+async function sendToFirebase() {
+    const pilote = piloteInput.value.trim();
+    if(!pilote){ showStatus("❌ Veuillez entrer un nom de pilote", "error"); return; }
 
+    try {
         showStatus("⏳ Génération du PDF...", "loading");
-        try{
-            const pdfBlob = await generatePDF(piloteName);
-            showStatus("⏳ Envoi à Firebase...", "loading");
+        const pdfBlob = await generatePDF(pilote);
 
-            const fileName = `test_rapports/${piloteName.replace(/\s/g,'_')}_${Date.now()}.pdf`;
-            const storageRef = storage.ref(fileName);
-            await storageRef.put(pdfBlob);
-            const downloadURL = await storageRef.getDownloadURL();
+        showStatus("⏳ Envoi vers Firebase Storage...", "loading");
+        const fileName = `test_rapports/${pilote.replace(/\s/g,'_')}_${Date.now()}.pdf`;
+        const storageRef = storage.ref(fileName);
+        await storageRef.put(pdfBlob);
 
-            await db.collection("test_rapports").add({
-                pilote: piloteName,
-                date: firebase.firestore.FieldValue.serverTimestamp(),
-                pdfUrl: downloadURL,
-                fileName: fileName,
-                taille: pdfBlob.size
-            });
+        showStatus("⏳ Enregistrement dans Firestore...", "loading");
+        const url = await storageRef.getDownloadURL();
+        await db.collection("test_rapports").add({
+            pilote: pilote,
+            date: firebase.firestore.FieldValue.serverTimestamp(),
+            pdfUrl: url,
+            fileName: fileName,
+        });
 
-            showStatus("✅ PDF envoyé à Firebase !", "success");
-            piloteInput.value = '';
-            loadReports();
-
-        }catch(err){
-            console.error(err);
-            showStatus(`❌ Erreur: ${err.message || err}`, "error");
-        }
+        showStatus("✅ Succès ! PDF envoyé à Firebase.", "success");
+        piloteInput.value = '';
+    } catch(err) {
+        console.error(err);
+        showStatus(`❌ Erreur : ${err.message || err}`, "error");
     }
+}
 
-    async function loadReports(){
-        reportsContainer.innerHTML = "⏳ Chargement des rapports...";
-        try{
-            const snapshot = await db.collection("test_rapports").orderBy("date","desc").get();
-            if(snapshot.empty){
-                reportsContainer.innerHTML = "📭 Aucun rapport trouvé.";
-                return;
-            }
-            reportsContainer.innerHTML = "";
-            snapshot.forEach(doc=>{
-                const data = doc.data();
-                const div = document.createElement("div");
-                div.className = "report";
-                div.innerHTML = `
-                    <strong>Pilote:</strong> ${data.pilote} <br>
-                    <strong>Date:</strong> ${data.date?.toDate().toLocaleString() || "—"} <br>
-                    <a href="${data.pdfUrl}" target="_blank">📄 Voir le PDF</a>
-                `;
-                reportsContainer.appendChild(div);
-            });
-        }catch(err){
-            console.error(err);
-            reportsContainer.innerHTML = "❌ Impossible de charger les rapports.";
-        }
-    }
-
-    sendBtn.onclick = ()=> uploadToFirebase(piloteInput.value);
-    piloteInput.addEventListener('keypress', e=>{ if(e.key==='Enter') sendBtn.click(); });
-
-    // Charger les rapports au démarrage
-    loadReports();
+sendBtn.onclick = sendToFirebase;
+piloteInput.addEventListener('keypress', e => { if(e.key === 'Enter') sendToFirebase(); });
 </script>
 </body>
 </html>
