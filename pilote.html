@@ -1,939 +1,552 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>NeTubeX - Générateur de Rapports</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+<title>NeTubeX · Rapport Journalier PGCO & PETS</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Inter','Courier New',monospace;background:#0a1a2f;height:100vh;display:flex;flex-direction:column;}
 
-        body {
-            font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            padding: 10px;
-            min-height: 100vh;
-        }
+.app-container{max-width:950px;margin:0 auto;width:100%;height:100vh;display:flex;flex-direction:column;padding:10px 16px 10px 16px;overflow:hidden;}
 
-        .main-container {
-            max-width: 500px;
-            margin: 0 auto;
-            width: 100%;
-        }
+/* HEADER */
+.header{text-align:center;border-radius:20px;padding:8px;margin-bottom:6px;transition:all 0.3s;flex-shrink:0;}
+.header h1{font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,#facc15,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.header p{font-size:0.6rem;margin-top:2px;opacity:0.8;}
 
-        .upload-section {
-            background: #1e1a2f;
-            border-radius: 24px;
-            padding: 14px;
-            margin-bottom: 14px;
-            border: 1px solid rgba(255, 105, 180, 0.3);
-        }
+/* Couleurs header */
+body.header-gray .header{background:#e8e8e8;}
+body.header-gray .datetime-container{background:#d0d0d0;color:#1a1a2e;}
+body.header-blue .header{background:#d4e6f1;}
+body.header-blue .datetime-container{background:#b8d4e8;color:#1a3a5c;}
+body.header-green .header{background:#e8f5e9;}
+body.header-green .datetime-container{background:#d0e8d0;color:#2a5c2a;}
+body.header-beige .header{background:#f5f0e0;}
+body.header-beige .datetime-container{background:#e8dcc8;color:#5c4a2a;}
 
-        .upload-section h2 {
-            color: #ffb7d2;
-            font-size: 1.1rem;
-            margin-bottom: 14px;
-            padding-left: 10px;
-            border-left: 3px solid #ff69b4;
-        }
+.datetime-container{display:flex;justify-content:center;gap:12px;padding:5px 12px;border-radius:50px;margin-top:4px;font-family:'Courier New',monospace;font-weight:700;flex-wrap:wrap;}
+.datetime-item{display:flex;align-items:center;gap:4px;font-size:0.65rem;}
+.datetime-item span:last-child{background:rgba(0,0,0,0.15);padding:2px 8px;border-radius:30px;}
 
-        .poles-upload {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
+.pilot-name{font-size:0.7rem;font-weight:700;margin-top:4px;padding:2px 10px;background:rgba(250,204,21,0.2);border-radius:40px;display:inline-block;}
+.theme-selector{display:flex;gap:6px;justify-content:center;margin-top:5px;flex-wrap:wrap;}
+.theme-btn{background:rgba(0,0,0,0.15);border:none;padding:3px 10px;border-radius:40px;font-size:0.55rem;font-weight:600;cursor:pointer;font-family:inherit;color:white;}
+.theme-btn.active{background:#facc15;color:#0a1a2f;}
 
-        .pole-upload-card {
-            background: #15102a;
-            border-radius: 18px;
-            padding: 12px;
-            border: 1px solid rgba(255, 105, 180, 0.25);
-        }
+/* Carte question */
+.question-card{
+    border-radius:24px;
+    padding:16px 20px;
+    margin-bottom:6px;
+    background:linear-gradient(145deg,#0f2d45,#0a2538);
+    box-shadow:20px 20px 40px rgba(0,0,0,0.6), -8px -8px 16px rgba(255,255,255,0.03);
+    border:1px solid rgba(250,204,21,0.2);
+    flex-shrink:0;
+}
+.question-text{font-size:1rem;font-weight:600;line-height:1.35;margin-bottom:14px;color:#f1f5f9;}
+.question-meta{border-left:3px solid #facc15;padding:3px 8px;border-radius:6px;margin-bottom:8px;font-size:0.55rem;font-weight:700;color:#f1f5f9;}
+.question-num{display:inline-block;background:#facc15;color:#0a1a2f;border-radius:30px;padding:1px 6px;font-size:0.55rem;font-weight:800;margin-right:6px;}
+.input-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.input-row select{flex:2;min-width:120px;padding:8px 12px;font-size:0.75rem;border-radius:60px;background:white;border:1px solid rgba(255,255,255,0.3);}
+.input-row input{flex:2;min-width:120px;padding:8px 12px;font-size:0.75rem;border-radius:60px;background:white;border:1px solid rgba(255,255,255,0.3);}
+button{background:linear-gradient(145deg,#facc15,#e5b800);border:none;padding:7px 16px;border-radius:60px;font-weight:700;font-size:0.7rem;color:#0a1a2f;cursor:pointer;}
+.choice-row{display:flex;gap:10px;}
+.choice-btn{flex:1;text-align:center;padding:8px 0;border-radius:60px;font-weight:700;font-size:0.75rem;cursor:pointer;border:none;}
+.choice-btn.yes{background:#27ae60;color:white;}
+.choice-btn.no{background:#c0392b;color:white;}
+.progress-bar{background:rgba(255,255,255,0.15);border-radius:40px;height:3px;margin:10px 0 5px;}
+.progress-fill{background:#facc15;width:0%;height:3px;border-radius:40px;}
+.step-info{display:flex;justify-content:space-between;font-size:0.55rem;color:#ccc;}
+.action-buttons{display:flex;gap:8px;margin-top:8px;}
+.nav-btn{background:rgba(255,255,255,0.12);color:white;padding:5px 12px;font-size:0.6rem;}
+.reset-btn{background:linear-gradient(145deg,#e74c3c,#c0392b);color:white;}
 
-        .pole-upload-card h3 {
-            color: #ff99cc;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            text-align: center;
-            padding-bottom: 6px;
-            border-bottom: 1px solid rgba(255, 105, 180, 0.3);
-        }
+/* Bandeau temps restant */
+.time-remaining-bar{
+    background:rgba(0,0,0,0.5);
+    border-radius:50px;
+    padding:5px 12px;
+    margin-top:6px;
+    margin-bottom:4px;
+    text-align:center;
+    font-weight:700;
+    font-size:0.65rem;
+    border:1px solid rgba(250,204,21,0.3);
+    flex-shrink:0;
+}
+.time-remaining-bar.on-time{background:rgba(39,174,96,0.3);border-color:#27ae60;color:#27ae60;}
+.time-remaining-bar.late{background:rgba(192,57,43,0.3);border-color:#c0392b;color:#e74c3c;}
 
-        .image-input-group {
-            margin-bottom: 10px;
-        }
+/* Résumé - remplace formulaire */
+.summary-panel{
+    background:rgba(255,255,255,0.95);
+    border-radius:20px;
+    padding:14px;
+    border:1px solid #facc15;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    overflow-y:auto;
+    min-height:0;
+}
+.summary-title{font-size:0.8rem;font-weight:800;color:#facc15;margin-bottom:10px;padding-bottom:4px;border-bottom:2px solid #facc15;flex-shrink:0;}
+.summary-table{width:100%;border-collapse:collapse;font-size:0.55rem;}
+.summary-table th{text-align:left;padding:5px 4px;background:#f1f5f9;color:#1e293b;font-weight:700;}
+.summary-table td{padding:5px 4px;border-bottom:1px solid #e2e8f0;}
+.edit-btn{background:rgba(250,204,21,0.2);padding:2px 6px;border-radius:30px;font-size:0.5rem;border:none;cursor:pointer;}
+.report-buttons{display:flex;gap:8px;margin-top:10px;flex-shrink:0;}
+.report-btn{flex:1;padding:8px 0;border-radius:60px;font-weight:700;font-size:0.65rem;border:none;background:#1e4a6e;color:white;cursor:pointer;}
+.report-btn.pets{background:#2d5a3b;}
+.rapport-num-input{background:#f1f5f9;border-radius:50px;padding:6px 10px;margin-bottom:10px;display:flex;gap:6px;align-items:center;flex-shrink:0;}
+.rapport-num-input label{font-weight:600;font-size:0.6rem;}
+.rapport-num-input input{flex:1;background:white;border:1px solid #ddd;padding:4px 10px;border-radius:40px;font-size:0.6rem;}
+.hidden{display:none;}
 
-        .image-input-group label {
-            display: block;
-            font-size: 0.65rem;
-            color: #ffb7d2;
-            margin-bottom: 4px;
-            font-weight: 500;
-        }
+/* Popups animés */
+.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;}
+.popup-overlay.active{visibility:visible;}
+.popup-card{background:white;border-radius:24px;width:90%;max-width:300px;padding:18px;text-align:center;border-top:4px solid #facc15;transform:translateX(-40px);opacity:0;transition:all 0.25s ease-out;}
+.popup-overlay.active .popup-card{transform:translateX(0);opacity:1;}
+.popup-overlay.right-animation .popup-card{transform:translateX(40px);}
+.popup-overlay.right-animation.active .popup-card{transform:translateX(0);}
+.popup-title{font-size:1rem;font-weight:800;color:#facc15;margin-bottom:6px;}
+.popup-message{font-size:0.75rem;margin-bottom:14px;color:#334155;}
+.popup-buttons{display:flex;gap:8px;justify-content:center;}
+.popup-btn{padding:6px 16px;border-radius:60px;font-weight:700;font-size:0.7rem;border:none;cursor:pointer;}
+.popup-btn.secondary{background:#e2e8f0;color:#1e293b;}
+.popup-btn.primary{background:#27ae60;color:white;}
+.typewriter-cursor::after{content:'▊';animation:blink 0.9s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
 
-        .image-input-group input {
-            width: 100%;
-            padding: 8px 10px;
-            background: #0f0b1a;
-            border: 1px solid #3a2a55;
-            border-radius: 10px;
-            font-size: 0.75rem;
-            color: #fff;
-        }
-
-        .preview-thumb {
-            margin-top: 6px;
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .thumb {
-            position: relative;
-        }
-
-        .thumb img {
-            width: 55px;
-            height: 55px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid #ff69b4;
-        }
-
-        .thumb button {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            background: #ff3b7f;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 10px;
-            cursor: pointer;
-        }
-
-        .section-title {
-            color: #ff99cc;
-            font-size: 0.65rem;
-            font-weight: 600;
-            margin: 10px 0 6px 0;
-            text-transform: uppercase;
-        }
-
-        .form-row {
-            background: #0f0b1a;
-            border-radius: 10px;
-            padding: 6px 8px;
-            margin-bottom: 6px;
-            border: 1px solid #3a2a55;
-        }
-
-        .form-row label {
-            display: block;
-            font-size: 0.65rem;
-            color: #ff99cc;
-            margin-bottom: 4px;
-        }
-
-        .form-row input, .form-row select {
-            width: 100%;
-            padding: 6px 8px;
-            background: #1e1830;
-            border: 1px solid #4a3a6a;
-            border-radius: 8px;
-            font-size: 0.7rem;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        .form-row select option {
-            background: #1e1830;
-            color: #fff;
-        }
-
-        .double-input {
-            display: flex;
-            gap: 6px;
-        }
-
-        .double-input .form-row {
-            flex: 1;
-            margin-bottom: 0;
-        }
-        
-        .triple-input {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-        
-        .triple-input .form-row {
-            flex: 1;
-            margin-bottom: 0;
-        }
-        
-        .triple-input .form-row:first-child {
-            flex: 2;
-        }
-        
-        .triple-input .form-row select {
-            width: 100%;
-        }
-
-        .controls {
-            background: #1e1a2f;
-            border-radius: 40px;
-            padding: 10px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 6px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(255, 105, 180, 0.3);
-        }
-
-        .btn {
-            padding: 8px 14px;
-            border: none;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            flex: 1;
-            min-width: 80px;
-        }
-
-        .btn-pgco { background: linear-gradient(135deg, #c084fc, #a855f7); }
-        .btn-pets { background: linear-gradient(135deg, #f472b6, #ec489a); }
-        .btn-psi { background: linear-gradient(135deg, #fb923c, #f97316); }
-        .btn:active { transform: scale(0.97); }
-        .btn:disabled { opacity: 0.5; }
-
-        .status {
-            text-align: center;
-            padding: 6px;
-            border-radius: 40px;
-            font-size: 0.65rem;
-            display: none;
-        }
-        .status.show { display: block; }
-        .status.success { background: #1f3a2f; color: #b4f0c4; }
-        .status.error { background: #3a1f2a; color: #ffb8cf; }
-        .status.info { background: #1f2a3a; color: #b8d4ff; }
-
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        .popup-container {
-            background: #2a1f3a;
-            border-radius: 20px;
-            padding: 20px;
-            max-width: 280px;
-            text-align: center;
-            border: 1px solid #ff69b4;
-        }
-        .popup-container h3 { color: #ffb7d2; font-size: 1rem; margin-bottom: 8px; }
-        .popup-container p { color: #e0c8ff; font-size: 0.75rem; margin-bottom: 16px; }
-        .popup-container button {
-            background: #ff69b4;
-            border: none;
-            padding: 6px 20px;
-            border-radius: 40px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        @media print { .upload-section, .controls { display: none; } }
-    </style>
+.form-container{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
+</style>
 </head>
-<body>
-
-<div class="main-container">
-    <div class="upload-section">
-        <h2>✨ MES RAPPORTS EN CAPTURE ✨</h2>
-        <div class="poles-upload">
-            
-            <!-- Pôle PGCO -->
-            <div class="pole-upload-card" id="pole-pgco">
-                <h3>🌸 Mme BLANDINE - PGCO</h3>
-                <div class="image-input-group">
-                    <label>📸 Capture écran (obligatoire)</label>
-                    <input type="file" accept="image/*" id="pgco-img">
-                    <div id="pgco-preview" class="preview-thumb"></div>
-                </div>
-                <div class="section-title">📊 POINTS PAR STAGIAIRE</div>
-                <div class="form-row">
-                    <label>👤 MA-NX-S1-ZA-1 - Points approuvés précédemment</label>
-                    <input type="text" id="pgco-prev1" placeholder="Ex: 150">
-                </div>
-                <div class="form-row">
-                    <label>👤 MA-NX-S1-ZA-1 - Points approuvés aujourd'hui</label>
-                    <input type="text" id="pgco-today1" placeholder="Ex: 45">
-                </div>
-                <div class="form-row">
-                    <label>👤 MA-NX-S1-ZA-2 - Points approuvés précédemment</label>
-                    <input type="text" id="pgco-prev2" placeholder="Ex: 200">
-                </div>
-                <div class="form-row">
-                    <label>👤 MA-NX-S1-ZA-2 - Points approuvés aujourd'hui</label>
-                    <input type="text" id="pgco-today2" placeholder="Ex: 60">
-                </div>
-            </div>
-
-            <!-- Pôle PETS -->
-            <div class="pole-upload-card" id="pole-pets">
-                <h3>💜 M. DIEU MERCI - PETS</h3>
-                <div class="image-input-group">
-                    <label>📸 Capture écran (obligatoire)</label>
-                    <input type="file" accept="image/*" id="pets-img">
-                    <div id="pets-preview" class="preview-thumb"></div>
-                </div>
-                <div class="section-title">⚠️ ANOMALIES DÉTECTÉES</div>
-                <div class="form-row">
-                    <label>👤 MA-NX-S1-ZA-1 - Anomalie</label>
-                    <select id="pets-anom1">
-                        <option value="">Sélectionner une anomalie</option>
-                        <option>Problème de connexion</option>
-                        <option>Terminal qui surchauffe</option>
-                        <option>Terminal qui s'éteint</option>
-                        <option>Batterie faible</option>
-                        <option>Problème de charge</option>
-                        <option>Batterie se décharge rapidement</option>
-                        <option>Terminal lent</option>
-                        <option>Stockage insuffisant</option>
-                        <option>Carte SIM non reconnue</option>
-                        <option>Aucune anomalie</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <label>👤 MA-NX-S1-ZA-2 - Anomalie</label>
-                    <select id="pets-anom2">
-                        <option value="">Sélectionner une anomalie</option>
-                        <option>Problème de connexion</option>
-                        <option>Terminal qui surchauffe</option>
-                        <option>Terminal qui s'éteint</option>
-                        <option>Batterie faible</option>
-                        <option>Problème de charge</option>
-                        <option>Batterie se décharge rapidement</option>
-                        <option>Terminal lent</option>
-                        <option>Stockage insuffisant</option>
-                        <option>Carte SIM non reconnue</option>
-                        <option>Aucune anomalie</option>
-                    </select>
-                </div>
-                <div class="section-title">📶 FORFAIT INTERNET RESTANT</div>
-                <div class="form-row">
-                    <label>👤 MA-NX-S1-ZA-1 - Forfait restant</label>
-                    <select id="pets-data1">
-                        <option value="">Sélectionner Go restant</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <label>👤 MA-NX-S1-ZA-2 - Forfait restant</label>
-                    <select id="pets-data2">
-                        <option value="">Sélectionner Go restant</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Pôle PSI -->
-            <div class="pole-upload-card" id="pole-psi">
-                <h3>🧡 Mme GINOLA - PSI</h3>
-                <div class="image-input-group">
-                    <label>📸 Preuve capture 1/3 (obligatoire)</label>
-                    <input type="file" accept="image/*" id="psi-img1">
-                    <div id="psi-preview1" class="preview-thumb"></div>
-                </div>
-                <div class="image-input-group">
-                    <label>📸 Preuve capture 2/3 (obligatoire)</label>
-                    <input type="file" accept="image/*" id="psi-img2">
-                    <div id="psi-preview2" class="preview-thumb"></div>
-                </div>
-                <div class="image-input-group">
-                    <label>📸 Preuve capture 3/3 (obligatoire)</label>
-                    <input type="file" accept="image/*" id="psi-img3">
-                    <div id="psi-preview3" class="preview-thumb"></div>
-                </div>
-                
-                <div class="section-title">📞 APPEL STRATÉGIQUE</div>
-                <div class="form-row">
-                    <label>👤 M. Dieu Merci</label>
-                    <div class="triple-input">
-                        <div class="form-row" style="margin-bottom:0;">
-                            <select id="call-dieu-count">
-                                <option value="">Nombre d’appels</option>
-                                <option value="0">0</option><option value="1">1</option><option value="2">2</option>
-                                <option value="3">3</option><option value="4">4</option><option value="5">5</option>
-                                <option value="6">6</option><option value="7">7</option><option value="8">8</option>
-                                <option value="9">9</option><option value="10">10</option>
-                            </select>
-                        </div>
-                        <div class="form-row" style="margin-bottom:0;">
-                            <select id="call-dieu-h"><option value="">Heure</option></select>
-                        </div>
-                        <div class="form-row" style="margin-bottom:0;">
-                            <select id="call-dieu-m"><option value="">Minute</option></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <label>👤 Mme Blandine</label>
-                    <div class="triple-input">
-                        <div class="form-row" style="margin-bottom:0;">
-                            <select id="call-blandine-count">
-                                <option value="">Nombre d’appels</option>
-                                <option value="0">0</option><option value="1">1</option><option value="2">2</option>
-                                <option value="3">3</option><option value="4">4</option><option value="5">5</option>
-                                <option value="6">6</option><option value="7">7</option><option value="8">8</option>
-                                <option value="9">9</option><option value="10">10</option>
-                            </select>
-                        </div>
-                        <div class="form-row" style="margin-bottom:0;">
-                            <select id="call-blandine-h"><option value="">Heure</option></select>
-                        </div>
-                        <div class="form-row" style="margin-bottom:0;">
-                            <select id="call-blandine-m"><option value="">Minute</option></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <label>👤 Mme Ginola</label>
-                    <div class="triple-input">
-                        <div class="form-row" style="margin-bottom:0;">
-                            <select id="call-ginola-count">
-                                <option value="">Nombre d’appels</option>
-                                <option value="0">0</option><option value="1">1</option><option value="2">2</option>
-                                <option value="3">3</option><option value="4">4</option><option value="5">5</option>
-                                <option value="6">6</option><option value="7">7</option><option value="8">8</option>
-                                <option value="9">9</option><option value="10">10</option>
-                            </select>
-                        </div>
-                        <div class="form-row" style="margin-bottom:0;">
-                            <select id="call-ginola-h"><option value="">Heure</option></select>
-                        </div>
-                        <div class="form-row" style="margin-bottom:0;">
-                            <select id="call-ginola-m"><option value="">Minute</option></select>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="section-title">🎯 RAPPORT D'AVANCEMENT DU JEU</div>
-                <div class="form-row">
-                    <label>👤 MA-NX-S1-ZA-1 - Objectifs du jeu (0 à 24)</label>
-                    <select id="game-objectifs-za1">
-                        <option value="">Sélectionner objectif</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <label>👤 MA-NX-S1-ZA-1 - Objectifs atteints (0 à 24)</label>
-                    <select id="game-atteints-za1">
-                        <option value="">Sélectionner</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <label>👤 MA-NX-S1-ZA-2 - Objectifs du jeu (0 à 24)</label>
-                    <select id="game-objectifs-za2">
-                        <option value="">Sélectionner objectif</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <label>👤 MA-NX-S1-ZA-2 - Objectifs atteints (0 à 24)</label>
-                    <select id="game-atteints-za2">
-                        <option value="">Sélectionner</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="controls">
-        <button class="btn btn-pgco" onclick="generatePDF('pgco')">📄 PGCO</button>
-        <button class="btn btn-pets" onclick="generatePDF('pets')">📄 PETS</button>
-        <button class="btn btn-psi" onclick="generatePDF('psi')">📄 PSI</button>
-        <div id="status" class="status"></div>
-    </div>
+<body class="header-gray">
+<div class="app-container">
+<div class="header">
+<h1>📡 NeTubeX</h1>
+<p>Espace de Rémunération Digitale</p>
+<div class="datetime-container">
+<div class="datetime-item">📅 <span id="currentDate">--/--/----</span></div>
+<div class="datetime-item">⏰ <span id="currentTime">--:--:--</span></div>
+<div class="datetime-item">⚡ <span id="currentMs">---</span> ms</div>
+</div>
+<div id="pilotNameDisplay" class="pilot-name">👤 Pilote : Non défini</div>
+<div class="theme-selector">
+<button class="theme-btn active" data-theme="gray">◻️ Gris</button>
+<button class="theme-btn" data-theme="blue">💙 Bleu</button>
+<button class="theme-btn" data-theme="green">🍃 Vert</button>
+<button class="theme-btn" data-theme="beige">🧸 Beige</button>
+</div>
 </div>
 
+<div id="formContainer" class="form-container">
+<div class="question-card" id="questionCard">
+<div id="questionMeta" class="question-meta hidden"></div>
+<div class="question-text" id="questionText"></div>
+<div class="answer-area" id="answerArea">
+<div class="input-row" id="inputRow">
+<select id="answerSelect" style="display:none;"></select>
+<input type="text" id="answerText" placeholder="Saisir..." value="">
+<button id="submitBtn">✓ Valider</button>
+</div>
+<div class="choice-row hidden" id="choiceRow">
+<button class="choice-btn yes" id="yesBtn">✔ Oui</button>
+<button class="choice-btn no" id="noBtn">✘ Non</button>
+</div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="step-info"><span id="stepCounter">0 / 0</span><span id="saveStatus">💾 Auto</span></div>
+<div class="action-buttons">
+<button id="prevBtn" class="nav-btn hidden">◀ Reculer</button>
+<button id="resetBtn" class="reset-btn">🔄 Nouveau</button>
+</div>
+</div>
+<div id="timeRemaining" class="time-remaining-bar">⏳ Chargement...</div>
+</div>
+
+<div id="summaryPanel" class="summary-panel hidden">
+<div class="rapport-num-input"><label>📄 N° RAPPORT :</label><input type="text" id="rapportNumber" value="RPT-2026-001"></div>
+<div class="summary-title">📋 RÉSUMÉ DES RÉPONSES</div>
+<table class="summary-table"><thead><tr><th>Question</th><th>Réponse</th><th></th></tr></thead><tbody id="summaryList"></tbody></table>
+<div class="report-buttons"><button class="report-btn" id="genPgcoBtn">📊 PGCO</button><button class="report-btn pets" id="genPetsBtn">🐾 PETS</button></div>
+</div>
+</div>
+
+<div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
+
 <script>
-// Stockage des images
-const store = { pgco: null, pets: null, psi: [null, null, null] };
-const PILOTE = "CHANCELLE MUKOBE";
+const URSULLE={name:"Madame Ursule"};
+const CHANCELLE={name:"Madame Chancelle"};
 
-// Configuration uploads
-function setupUpload(inputId, previewId, pole, idx = null) {
-    const input = document.getElementById(inputId);
-    if (!input) return;
-    input.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        const preview = document.getElementById(previewId);
-        preview.innerHTML = '';
-        if (!file) { if (idx !== null) store[pole][idx] = null; else store[pole] = null; return; }
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            const data = ev.target.result;
-            if (idx !== null) store[pole][idx] = data;
-            else store[pole] = data;
-            const div = document.createElement('div'); div.className = 'thumb';
-            const img = document.createElement('img'); img.src = data;
-            const btn = document.createElement('button'); btn.textContent = '×';
-            btn.onclick = () => { input.value = ''; preview.innerHTML = ''; if (idx !== null) store[pole][idx] = null; else store[pole] = null; };
-            div.appendChild(img); div.appendChild(btn); preview.appendChild(div);
+let currentConfig=null,questions=[],currentStep=0,responses={},waitingYesNo=false;
+let editMode=false,editReturnToSummary=false,typewriterTimeout=null;
+let fieldToQuestionText={};
+
+// DOM
+const questionText=document.getElementById('questionText'),questionMeta=document.getElementById('questionMeta'),inputRow=document.getElementById('inputRow'),choiceRow=document.getElementById('choiceRow'),answerSelect=document.getElementById('answerSelect'),answerText=document.getElementById('answerText'),submitBtn=document.getElementById('submitBtn'),yesBtn=document.getElementById('yesBtn'),noBtn=document.getElementById('noBtn'),progressFill=document.getElementById('progressFill'),stepCounterSpan=document.getElementById('stepCounter'),prevBtn=document.getElementById('prevBtn'),resetBtn=document.getElementById('resetBtn'),summaryPanel=document.getElementById('summaryPanel'),summaryList=document.getElementById('summaryList'),saveStatus=document.getElementById('saveStatus'),pilotNameDisplay=document.getElementById('pilotNameDisplay'),formContainer=document.getElementById('formContainer'),timeRemainingDiv=document.getElementById('timeRemaining');
+const popupOverlay=document.getElementById('popupOverlay'),popupTitle=document.getElementById('popupTitle'),popupMessage=document.getElementById('popupMessage'),popupBtnLeft=document.getElementById('popupBtnLeft'),popupBtnRight=document.getElementById('popupBtnRight');
+
+// Horloge + temps restant
+function updateClock(){
+    const n=new Date();
+    document.getElementById('currentDate').textContent=n.toLocaleDateString('fr-FR');
+    document.getElementById('currentTime').textContent=n.toLocaleTimeString('fr-FR');
+    document.getElementById('currentMs').textContent=n.getMilliseconds().toString().padStart(3,'0');
+    
+    // Calcul temps restant pour envoyer rapport (entre 14h30 et 16h30)
+    const now = new Date();
+    const heures = now.getHours();
+    const minutes = now.getMinutes();
+    const totalMinutes = heures * 60 + minutes;
+    const debut = 14 * 60 + 30; // 14h30
+    const fin = 16 * 60 + 30;   // 16h30
+    
+    if(totalMinutes < debut){
+        const reste = debut - totalMinutes;
+        const h = Math.floor(reste / 60);
+        const m = reste % 60;
+        timeRemainingDiv.innerHTML = `⏳ Il vous reste ${h}h${m.toString().padStart(2,'0')} pour envoyer le rapport`;
+        timeRemainingDiv.className = "time-remaining-bar on-time";
+    }else if(totalMinutes >= debut && totalMinutes <= fin){
+        const reste = fin - totalMinutes;
+        const h = Math.floor(reste / 60);
+        const m = reste % 60;
+        timeRemainingDiv.innerHTML = `⏳ Il vous reste ${h}h${m.toString().padStart(2,'0')} pour envoyer le rapport`;
+        timeRemainingDiv.className = "time-remaining-bar on-time";
+    }else{
+        const retard = totalMinutes - fin;
+        const h = Math.floor(retard / 60);
+        const m = retard % 60;
+        timeRemainingDiv.innerHTML = `⚠️ Vous êtes en retard de ${h}h${m.toString().padStart(2,'0')} pour envoyer votre rapport`;
+        timeRemainingDiv.className = "time-remaining-bar late";
+    }
+}
+setInterval(updateClock,1000); updateClock();
+
+function typewriterEffect(el,text,speed=30,cb){
+    if(typewriterTimeout) clearTimeout(typewriterTimeout);
+    el.innerHTML=''; el.classList.remove('typewriter-cursor');
+    let i=0;
+    function type(){
+        if(i<text.length){ el.innerHTML+=text.charAt(i); i++; typewriterTimeout=setTimeout(type,speed); }
+        else{ el.classList.add('typewriter-cursor'); if(cb)cb(); }
+    }
+    type();
+}
+
+function saveLocal(){ localStorage.setItem('netubex_rapport',JSON.stringify({configName:currentConfig?.name,responses,currentStep})); saveStatus.innerHTML='💾 OK'; setTimeout(()=>saveStatus.innerHTML='💾 Auto',1200); }
+function autoSave(){ saveLocal(); }
+function updateProgress(){ if(questions.length){ progressFill.style.width=`${(currentStep/questions.length)*100}%`; stepCounterSpan.innerText=`${currentStep}/${questions.length}`; } }
+function showPopup(title,msg,leftT,rightT,onConfirm,onCancel,animRight=false){
+    popupTitle.textContent=title; popupMessage.innerHTML=msg; popupBtnLeft.textContent=leftT; popupBtnRight.textContent=rightT;
+    if(animRight) popupOverlay.classList.add('right-animation');
+    else popupOverlay.classList.remove('right-animation');
+    popupOverlay.classList.add('active');
+    popupBtnRight.onclick=()=>{ popupOverlay.classList.remove('active'); popupOverlay.classList.remove('right-animation'); if(onConfirm)onConfirm(); };
+    popupBtnLeft.onclick=()=>{ popupOverlay.classList.remove('active'); popupOverlay.classList.remove('right-animation'); if(onCancel)onCancel(); };
+}
+function showSummary(){ formContainer.classList.add('hidden'); summaryPanel.classList.remove('hidden'); updateSummaryTable(); }
+function hideSummary(){ summaryPanel.classList.add('hidden'); formContainer.classList.remove('hidden'); }
+
+function displayCurrent(){
+    if(currentStep>=questions.length){
+        typewriterEffect(questionText,"✅ Terminé",25);
+        inputRow.classList.add('hidden'); choiceRow.classList.add('hidden');
+        showSummary(); return;
+    }
+    const q=questions[currentStep];
+    waitingYesNo=false;
+    inputRow.classList.add('hidden'); choiceRow.classList.add('hidden');
+    answerSelect.style.display='none'; answerText.style.display='block';
+    questionMeta.classList.remove('hidden');
+    questionMeta.innerHTML=`<span class="question-num">#${q.num}</span> ${q.meta||''}`;
+    
+    if(q.type==="yesno"){
+        choiceRow.classList.remove('hidden');
+        waitingYesNo=true;
+    }else{
+        inputRow.classList.remove('hidden');
+        if(q.useSelect && q.options){
+            answerSelect.style.display='block'; answerText.style.display='none';
+            answerSelect.innerHTML='';
+            q.options.forEach(opt=>{ let o=document.createElement('option'); o.value=opt; o.textContent=opt; answerSelect.appendChild(o); });
+            if(responses[q.field]) answerSelect.value=responses[q.field];
+        }else{
+            answerSelect.style.display='none'; answerText.style.display='block';
+            answerText.value=responses[q.field]||'';
+            answerText.placeholder=q.placeholder||"Saisir...";
+        }
+    }
+    typewriterEffect(questionText,q.text,30);
+    updateProgress();
+    prevBtn.classList.toggle('hidden',currentStep===0);
+}
+
+function nextQ(){ if(currentStep<questions.length){ currentStep++; if(currentStep<questions.length) displayCurrent(); else displayCurrent(); autoSave(); } else displayCurrent(); }
+function prevQ(){ if(currentStep>0){ currentStep--; displayCurrent(); autoSave(); } }
+
+function handleResponse(val){
+    if(currentStep>=questions.length) return;
+    const q=questions[currentStep];
+    responses[q.field]=val;
+    fieldToQuestionText[q.field]=q.text;
+    if(editMode && editReturnToSummary){ editMode=false; editReturnToSummary=false; showSummary(); autoSave(); return; }
+    nextQ(); autoSave();
+}
+
+function updateSummaryTable(){
+    summaryList.innerHTML='';
+    Object.entries(responses).forEach(([key,val])=>{
+        const row=document.createElement('tr');
+        row.innerHTML=`<td style="max-width:260px;">${fieldToQuestionText[key]||key}</td><td style="font-weight:bold;">${val}<\/td><td><button class="edit-btn" data-key="${key}">✏️<\/button><\/td>`;
+        summaryList.appendChild(row);
+    });
+    document.querySelectorAll('.edit-btn').forEach(btn=>{
+        btn.onclick=()=>{
+            const key=btn.dataset.key;
+            const idx=questions.findIndex(q=>q.field===key);
+            if(idx!==-1){ hideSummary(); editMode=true; editReturnToSummary=true; currentStep=idx; displayCurrent(); }
         };
-        reader.readAsDataURL(file);
     });
 }
 
-// Initialisation de toutes les listes déroulantes
-function initAllSelects() {
-    const dataSelects = ['pets-data1', 'pets-data2'];
-    dataSelects.forEach(id => {
-        const sel = document.getElementById(id);
-        if (sel) {
-            sel.innerHTML = '<option value="">Sélectionner Go restant</option>';
-            for(let i = 0; i <= 20; i++) sel.innerHTML += `<option value="${i} Go">${i} Go</option>`;
-        }
-    });
+// Construction des questions SANS doublon (Q0 et Q1 sont gérées séparément)
+function buildQuestionsApresPilote(){
+    const qList=[];
+    let num=2; // On commence à 2 car Q0 et Q1 déjà traitées
     
-    const hourSelects = ['call-dieu-h', 'call-blandine-h', 'call-ginola-h'];
-    hourSelects.forEach(id => {
-        const sel = document.getElementById(id);
-        if (sel) {
-            sel.innerHTML = '<option value="">Heure</option>';
-            for(let i = 0; i <= 23; i++) sel.innerHTML += `<option value="${String(i).padStart(2,'0')}h">${String(i).padStart(2,'0')}h</option>`;
-        }
-    });
+    const netubers=["MA-S1-ZA-01","MA-S1-ZB-02","MA-S1-ZC-03"];
+    const opts0_15=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
     
-    const minSelects = ['call-dieu-m', 'call-blandine-m', 'call-ginola-m'];
-    minSelects.forEach(id => {
-        const sel = document.getElementById(id);
-        if (sel) {
-            sel.innerHTML = '<option value="">Minute</option>';
-            for(let i = 0; i <= 59; i++) sel.innerHTML += `<option value="${String(i).padStart(2,'0')}min">${String(i).padStart(2,'0')}min</option>`;
-        }
-    });
+    for(let code of netubers){
+        qList.push({num:num++, text:`Quels sont les objectifs mensuels totaux pour ${code} ?`, type:"number", field:`${code}_objMensuels`, meta:`PGCO · ${code}`, useSelect:true, options:opts0_15});
+        qList.push({num:num++, text:`Combien d'objectifs ont été atteints aujourd'hui pour ${code} ?`, type:"number", field:`${code}_objAtteints`, meta:`PGCO · ${code}`, useSelect:true, options:opts0_15});
+        qList.push({num:num++, text:`Quel est le total de points générés aujourd'hui pour ${code} ?`, type:"number", field:`${code}_pointsJour`, meta:`PGCO · ${code}`});
+        qList.push({num:num++, text:`Quel est le total de points cumulés précédemment pour ${code} ?`, type:"number", field:`${code}_pointsPrec`, meta:`PGCO · ${code}`});
+        qList.push({num:num++, text:`Quel est le total de temps passé précédemment pour ${code} ?`, type:"number", field:`${code}_tempsPrec`, meta:`PGCO · ${code}`});
+        qList.push({num:num++, text:`Quel est le total de temps passé aujourd'hui pour ${code} ?`, type:"number", field:`${code}_tempsJour`, meta:`PGCO · ${code}`});
+        qList.push({num:num++, text:`Dans le jeu du terminal N1 de ${code}, quantième objectif/niveau ? (0=Non,1=Oui)`, type:"number", field:`${code}_N1_quantieme`, meta:`PGCO · ${code} · N1`, useSelect:true, options:[0,1]});
+        qList.push({num:num++, text:`Dans le jeu du terminal N2 de ${code}, quantième objectif/niveau ? (0=Non,1=Oui)`, type:"number", field:`${code}_N2_quantieme`, meta:`PGCO · ${code} · N2`, useSelect:true, options:[0,1]});
+        
+        qList.push({num:num++, text:`Combien d'anomalies détectées pour ${code} ?`, type:"number", field:`${code}_anomalies`, meta:`PETS · ${code}`, useSelect:true, options:opts0_15});
+        qList.push({num:num++, text:`Missions rejetées aujourd'hui pour ${code} ?`, type:"number", field:`${code}_missionsRejet`, meta:`PETS · ${code}`, useSelect:true, options:opts0_15});
+        qList.push({num:num++, text:`Jeux rémunérateurs bloqués pour ${code} ?`, type:"yesno", field:`${code}_jeuxBloques`, meta:`PETS · ${code}`});
+        qList.push({num:num++, text:`Le Netuber ${code} était-il présent ?`, type:"yesno", field:`${code}_present`, meta:`PETS · ${code}`});
+        qList.push({num:num++, text:`Heure d'arrivée pour ${code} ?`, type:"text", field:`${code}_heureArrivee`, meta:`PETS · ${code}`, placeholder:"HH:MM"});
+        qList.push({num:num++, text:`Heure de sortie pour ${code} ?`, type:"text", field:`${code}_heureSortie`, meta:`PETS · ${code}`, placeholder:"HH:MM"});
+        qList.push({num:num++, text:`Forfait internet restant pour ${code} (Go) ?`, type:"number", field:`${code}_forfaitGo`, meta:`PETS · ${code}`, useSelect:true, options:opts0_15});
+        qList.push({num:num++, text:`Bouton Retirer cliqué aujourd'hui pour ${code} ?`, type:"yesno", field:`${code}_btnRetirer`, meta:`PETS · ${code}`});
+        qList.push({num:num++, text:`Dans le jeu N1 de ${code}, quantième objectif/niveau PETS ? (0=Non,1=Oui)`, type:"number", field:`${code}_N1_quantieme_pets`, meta:`PETS · ${code} · N1`, useSelect:true, options:[0,1]});
+        qList.push({num:num++, text:`Dans le jeu N2 de ${code}, quantième objectif/niveau PETS ? (0=Non,1=Oui)`, type:"number", field:`${code}_N2_quantieme_pets`, meta:`PETS · ${code} · N2`, useSelect:true, options:[0,1]});
+    }
+    // Ajout du champ recommandation à la fin
+    qList.push({num:num++, text:`Recommandation pour amélioration (PETS) :`, type:"text", field:"recommandation", meta:"PETS · Recommandation", placeholder:"Votre recommandation..."});
+    return qList;
+}
+
+function resetAll(){
+    showPopup("Confirmation","Tout recommencer ?","Annuler","Confirmer",()=>{
+        responses={}; fieldToQuestionText={}; currentStep=0; currentConfig=null; editMode=false; editReturnToSummary=false;
+        localStorage.removeItem('netubex_rapport'); hideSummary();
+        startFresh();
+        showPopup("Succès","Nouveau rapport initialisé","OK","",()=>{},()=>{},false);
+    },()=>{},false);
+}
+
+function startFresh(){
+    currentStep=0;
+    currentConfig=null;
+    responses={};
+    fieldToQuestionText={};
+    hideSummary();
     
-    const gameSelects = ['game-objectifs-za1', 'game-atteints-za1', 'game-objectifs-za2', 'game-atteints-za2'];
-    gameSelects.forEach(id => {
-        const sel = document.getElementById(id);
-        if (sel) {
-            sel.innerHTML = '<option value="">Sélectionner</option>';
-            for(let i = 0; i <= 24; i++) sel.innerHTML += `<option value="${i}">${i}</option>`;
-        }
-    });
-}
-
-function showPopup(msg) {
-    const popup = document.createElement('div');
-    popup.className = 'popup-overlay';
-    popup.innerHTML = `<div class="popup-container"><h3>⚠️ Validation requise</h3><p>${msg}</p><button onclick="this.closest('.popup-overlay').remove()">✅ Compris</button></div>`;
-    document.body.appendChild(popup);
-}
-
-function showStatus(msg, type) {
-    const st = document.getElementById('status');
-    st.textContent = msg;
-    st.className = `status show ${type}`;
-    setTimeout(() => st.className = 'status', 3000);
-}
-
-function getDateTime() {
-    const d = new Date();
-    return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} à ${String(d.getHours()).padStart(2,'0')}h${String(d.getMinutes()).padStart(2,'0')}`;
-}
-
-function calculateDuration() {
-    const getMinutes = (hSelect, mSelect) => {
-        const hVal = document.getElementById(hSelect)?.value || '';
-        const mVal = document.getElementById(mSelect)?.value || '';
-        let hours = 0, mins = 0;
-        if (hVal) hours = parseInt(hVal.replace('h', '')) || 0;
-        if (mVal) mins = parseInt(mVal.replace('min', '')) || 0;
-        return hours * 60 + mins;
+    // Q0 : choix du pilote
+    questions = [{num:0, text:"Qui remplit le rapport aujourd'hui ?", type:"yesno", field:"responsable", meta:"Identification"}];
+    waitingYesNo=true;
+    inputRow.classList.add('hidden');
+    choiceRow.classList.remove('hidden');
+    questionMeta.classList.remove('hidden');
+    questionMeta.innerHTML='<span class="question-num">#0</span> Identification';
+    yesBtn.textContent="👩‍💼 Madame Ursule";
+    noBtn.textContent="👩‍💻 Madame Chancelle";
+    pilotNameDisplay.innerHTML=`👤 Pilote : Non défini`;
+    prevBtn.classList.add('hidden');
+    
+    const handleUrsule = () => {
+        currentConfig=URSULLE;
+        responses.responsable="Ursule";
+        fieldToQuestionText.responsable="Qui remplit le rapport ?";
+        pilotNameDisplay.innerHTML=`👤 Pilote : ${currentConfig.name}`;
+        
+        // Q1 : comment allez-vous ?
+        questions = [{num:1, text:`Oh ${currentConfig.name}, est-ce que vous allez bien ?`, type:"yesno", field:"bienEtre", meta:"Bien-être"}];
+        currentStep=0;
+        waitingYesNo=true;
+        choiceRow.classList.remove('hidden');
+        inputRow.classList.add('hidden');
+        yesBtn.textContent="✔ Oui";
+        noBtn.textContent="✘ Non";
+        
+        const handleBienOui = () => {
+            responses.bienEtre="OUI";
+            fieldToQuestionText.bienEtre=`Oh ${currentConfig.name}, allez-vous bien ?`;
+            // Passer aux vraies questions
+            questions = buildQuestionsApresPilote();
+            currentStep=0;
+            waitingYesNo=false;
+            choiceRow.classList.add('hidden');
+            inputRow.classList.remove('hidden');
+            yesBtn.onclick=defaultYes;
+            noBtn.onclick=defaultNo;
+            displayCurrent();
+            autoSave();
+        };
+        
+        const handleBienNon = () => {
+            responses.bienEtre="NON";
+            fieldToQuestionText.bienEtre=`Oh ${currentConfig.name}, allez-vous bien ?`;
+            questions = buildQuestionsApresPilote();
+            currentStep=0;
+            waitingYesNo=false;
+            choiceRow.classList.add('hidden');
+            inputRow.classList.remove('hidden');
+            yesBtn.onclick=defaultYes;
+            noBtn.onclick=defaultNo;
+            displayCurrent();
+            autoSave();
+        };
+        
+        yesBtn.onclick=handleBienOui;
+        noBtn.onclick=handleBienNon;
+        typewriterEffect(questionText,questions[0].text,30);
+        updateProgress();
     };
-    const t1 = getMinutes('call-dieu-h', 'call-dieu-m');
-    const t2 = getMinutes('call-blandine-h', 'call-blandine-m');
-    const t3 = getMinutes('call-ginola-h', 'call-ginola-m');
-    const totalMin = t1 + t2 + t3;
-    const hours = Math.floor(totalMin / 60);
-    const mins = totalMin % 60;
-    return `${String(hours).padStart(2,'0')}h ${String(mins).padStart(2,'0')}min`;
-}
-
-function validatePGCO() {
-    if (!store.pgco) { showPopup("Désolé Madame Chancelle, l'image du pôle PGCO est obligatoire."); return false; }
-    const fields = ['pgco-prev1', 'pgco-today1', 'pgco-prev2', 'pgco-today2'];
-    for (let f of fields) {
-        const val = document.getElementById(f)?.value.trim();
-        if (!val) { showPopup("Désolé Madame Chancelle, tous les champs du pôle PGCO doivent être renseignés."); return false; }
-    }
-    return true;
-}
-
-function validatePETS() {
-    if (!store.pets) { showPopup("Désolé Madame Chancelle, l'image du pôle PETS est obligatoire."); return false; }
-    const fields = ['pets-anom1', 'pets-anom2', 'pets-data1', 'pets-data2'];
-    for (let f of fields) {
-        const val = document.getElementById(f)?.value;
-        if (!val) { showPopup("Désolé Madame Chancelle, tous les champs du pôle PETS doivent être renseignés."); return false; }
-    }
-    return true;
-}
-
-function validatePSI() {
-    if (!store.psi[0] || !store.psi[1] || !store.psi[2]) { showPopup("Désolé Madame Chancelle, les trois images du pôle PSI sont obligatoires."); return false; }
-    const fields = ['call-dieu-count','call-dieu-h','call-dieu-m','call-blandine-count','call-blandine-h','call-blandine-m','call-ginola-count','call-ginola-h','call-ginola-m','game-objectifs-za1','game-atteints-za1','game-objectifs-za2','game-atteints-za2'];
-    for (let f of fields) {
-        const val = document.getElementById(f)?.value;
-        if (!val) { showPopup("Désolé Madame Chancelle, tous les champs du pôle PSI doivent être renseignés."); return false; }
-    }
-    return true;
-}
-
-async function generateMultiPagePDF(pages, filename) {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const w = pdf.internal.pageSize.getWidth();
     
-    for (let i = 0; i < pages.length; i++) {
-        const container = document.createElement('div');
-        container.style.width = '100%';
-        container.style.maxWidth = '450px';
-        container.style.backgroundColor = 'white';
-        container.style.fontFamily = "'Segoe UI', 'Roboto', sans-serif";
-        container.style.padding = '14px';
-        container.innerHTML = pages[i];
-        document.body.appendChild(container);
+    const handleChancelle = () => {
+        currentConfig=CHANCELLE;
+        responses.responsable="Chancelle";
+        fieldToQuestionText.responsable="Qui remplit le rapport ?";
+        pilotNameDisplay.innerHTML=`👤 Pilote : ${currentConfig.name}`;
         
-        const images = container.querySelectorAll('img');
-        await Promise.all(Array.from(images).map(img => {
-            if (img.complete) return Promise.resolve();
-            return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
-        }));
+        questions = [{num:1, text:`Oh ${currentConfig.name}, est-ce que vous allez bien ?`, type:"yesno", field:"bienEtre", meta:"Bien-être"}];
+        currentStep=0;
+        waitingYesNo=true;
+        choiceRow.classList.remove('hidden');
+        inputRow.classList.add('hidden');
+        yesBtn.textContent="✔ Oui";
+        noBtn.textContent="✘ Non";
         
-        const canvas = await html2canvas(container, { scale: 1.5, backgroundColor: '#fff', logging: false });
-        document.body.removeChild(container);
-        const imgData = canvas.toDataURL('image/png');
-        const imgWidth = w;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const handleBienOui = () => {
+            responses.bienEtre="OUI";
+            fieldToQuestionText.bienEtre=`Oh ${currentConfig.name}, allez-vous bien ?`;
+            questions = buildQuestionsApresPilote();
+            currentStep=0;
+            waitingYesNo=false;
+            choiceRow.classList.add('hidden');
+            inputRow.classList.remove('hidden');
+            yesBtn.onclick=defaultYes;
+            noBtn.onclick=defaultNo;
+            displayCurrent();
+            autoSave();
+        };
         
-        if (i > 0) pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
-    }
-    pdf.save(filename);
+        const handleBienNon = () => {
+            responses.bienEtre="NON";
+            fieldToQuestionText.bienEtre=`Oh ${currentConfig.name}, allez-vous bien ?`;
+            questions = buildQuestionsApresPilote();
+            currentStep=0;
+            waitingYesNo=false;
+            choiceRow.classList.add('hidden');
+            inputRow.classList.remove('hidden');
+            yesBtn.onclick=defaultYes;
+            noBtn.onclick=defaultNo;
+            displayCurrent();
+            autoSave();
+        };
+        
+        yesBtn.onclick=handleBienOui;
+        noBtn.onclick=handleBienNon;
+        typewriterEffect(questionText,questions[0].text,30);
+        updateProgress();
+    };
+    
+    yesBtn.onclick=handleUrsule;
+    noBtn.onclick=handleChancelle;
+    typewriterEffect(questionText,questions[0].text,30);
+    updateProgress();
 }
 
-async function generatePGCO() {
-    if (!validatePGCO()) return;
-    const prev1 = document.getElementById('pgco-prev1').value;
-    const today1 = document.getElementById('pgco-today1').value;
-    const prev2 = document.getElementById('pgco-prev2').value;
-    const today2 = document.getElementById('pgco-today2').value;
-    const date = getDateTime();
-    const total1 = parseInt(prev1) + parseInt(today1);
-    const total2 = parseInt(prev2) + parseInt(today2);
-    
-    const pages = [];
-    
-    // Page 1 - Rapport principal
-    pages.push(`
-        <div style="text-align:center; padding:15px; border-bottom:3px solid #a855f7; background:#faf5ff;">
-            <h1 style="color:#a855f7; font-size:1.4rem; margin-bottom:8px;">📋 RAPPORT PGCO</h1>
-            <div style="font-size:0.9rem; color:#555;">Pôle Gouvernance et Coordination Opérationnelle</div>
-            <div style="font-size:0.8rem; color:#888; margin-top:6px;">Madame Blandine</div>
-            <div style="font-size:0.75rem; color:#999; margin-top:4px;">${date}</div>
-        </div>
-        <div style="margin:15px 0; text-align:center;">
-            <img src="${store.pgco}" style="width:100%; max-width:100%; height:auto; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-        </div>
-        <div style="margin-top:15px;">
-            <h2 style="color:#a855f7; font-size:1rem; margin-bottom:12px; border-left:4px solid #a855f7; padding-left:10px;">📊 ÉTAT DES POINTS</h2>
-            <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
-                <thead><tr style="background:#a855f7; color:white;">
-                    <th style="padding:10px; text-align:left;">Stagiaire</th>
-                    <th style="padding:10px; text-align:center;">Points antérieurs</th>
-                    <th style="padding:10px; text-align:center;">Points du jour</th>
-                    <th style="padding:10px; text-align:center;">Total cumulé</th>
-                 </tr></thead>
-                <tbody>
-                    <tr><td style="padding:10px; border:1px solid #e0d0f0;">MA-NX-S1-ZA-1</td>
-                    <td style="padding:10px; border:1px solid #e0d0f0; text-align:center;">${prev1}</td>
-                    <td style="padding:10px; border:1px solid #e0d0f0; text-align:center;">${today1}</td>
-                    <td style="padding:10px; border:1px solid #e0d0f0; text-align:center; font-weight:bold;">${total1}</td></tr>
-                    <tr style="background:#f9f5ff;"><td style="padding:10px; border:1px solid #e0d0f0;">MA-NX-S1-ZA-2</td>
-                    <td style="padding:10px; border:1px solid #e0d0f0; text-align:center;">${prev2}</td>
-                    <td style="padding:10px; border:1px solid #e0d0f0; text-align:center;">${today2}</td>
-                    <td style="padding:10px; border:1px solid #e0d0f0; text-align:center; font-weight:bold;">${total2}</td></tr>
-                </tbody>
-            </table>
-        </div>
-        <div style="margin-top:15px; padding:12px; background:#f0e6ff; border-radius:10px;">
-            <div style="font-size:0.85rem;"><strong>📈 Synthèse hebdomadaire</strong></div>
-            <div style="font-size:0.8rem; margin-top:5px;">Total des points validés : ${total1 + total2} points</div>
-            <div style="font-size:0.75rem; color:#666;">Rapport validé par le Pilote Opérationnel</div>
-        </div>
-        <div style="text-align:center; font-size:0.7rem; color:#888; margin-top:18px; padding-top:10px; border-top:1px solid #e0d0f0;">
-            NeTubeX · Organisation de rémunération digitale<br>Pilote: ${PILOTE}
-        </div>
-    `);
-    
-    // Page 2 - Détail des performances
-    pages.push(`
-        <div style="text-align:center; padding:15px; border-bottom:3px solid #a855f7; background:#faf5ff;">
-            <h1 style="color:#a855f7; font-size:1.3rem;">📈 DÉTAIL DES PERFORMANCES</h1>
-            <div style="font-size:0.75rem; color:#999;">${date}</div>
-        </div>
-        <div style="margin:20px 0;">
-            <div style="background:#f0e6ff; border-radius:12px; padding:15px; margin-bottom:15px;">
-                <h2 style="color:#a855f7; font-size:1rem; margin-bottom:10px;">👤 Stagiaire MA-NX-S1-ZA-1</h2>
-                <div style="font-size:0.9rem; margin-bottom:5px;">📌 Points antérieurs : <strong>${prev1}</strong></div>
-                <div style="font-size:0.9rem; margin-bottom:5px;">🎯 Points validés aujourd'hui : <strong>${today1}</strong></div>
-                <div style="font-size:1rem; font-weight:bold; margin-top:10px;">🏆 Total cumulé : ${total1} points</div>
-            </div>
-            <div style="background:#f9f0ff; border-radius:12px; padding:15px;">
-                <h2 style="color:#a855f7; font-size:1rem; margin-bottom:10px;">👤 Stagiaire MA-NX-S1-ZA-2</h2>
-                <div style="font-size:0.9rem; margin-bottom:5px;">📌 Points antérieurs : <strong>${prev2}</strong></div>
-                <div style="font-size:0.9rem; margin-bottom:5px;">🎯 Points validés aujourd'hui : <strong>${today2}</strong></div>
-                <div style="font-size:1rem; font-weight:bold; margin-top:10px;">🏆 Total cumulé : ${total2} points</div>
-            </div>
-        </div>
-        <div style="text-align:center; font-size:0.75rem; margin-top:20px; padding-top:10px; border-top:1px solid #e0d0f0;">
-            Rapport certifié conforme par le Pilote ${PILOTE}
-        </div>
-    `);
-    
-    await generateMultiPagePDF(pages, `Rapport_PGCO_${Date.now()}.pdf`);
-    showStatus('✅ Rapport PGCO généré avec succès', 'success');
+function defaultYes(){ if(waitingYesNo && questions[currentStep]?.type==="yesno") handleResponse("OUI"); }
+function defaultNo(){ if(waitingYesNo && questions[currentStep]?.type==="yesno") handleResponse("NON"); }
+function validateCurrent(){
+    if(waitingYesNo || currentStep>=questions.length) return;
+    const q=questions[currentStep];
+    if(q.useSelect && q.options) handleResponse(answerSelect.value);
+    else{ const val=answerText.value; if(val!=='') handleResponse(val); else showPopup("Info","Saisir une valeur","OK","",()=>{},()=>{},false); }
+}
+document.addEventListener('keydown',(e)=>{ if(e.key==='Enter') validateCurrent(); });
+submitBtn.onclick=validateCurrent;
+prevBtn.onclick=prevQ;
+resetBtn.onclick=resetAll;
+
+function generatePGCO(){
+    try{
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({unit:'mm',format:'a4',orientation:'landscape'});
+        const now=new Date();
+        const rapportNum=document.getElementById('rapportNumber').value||'RPT-2026-001';
+        doc.setFillColor(26,74,110); doc.rect(0,0,297,45,'F');
+        doc.setTextColor(255,255,255); doc.setFontSize(16); doc.setFont('helvetica','bold');
+        doc.text("RAPPORT JOURNALIER PGCO",20,20);
+        doc.setFontSize(9); doc.text(`N° ${rapportNum}`,260,20,{align:'right'});
+        doc.text(`Rédigé par : ${currentConfig?.name||'ND'}`,20,28);
+        doc.text(`Date : ${now.toLocaleDateString('fr-FR')}`,20,34);
+        const body=[];
+        for(let code of ["MA-S1-ZA-01","MA-S1-ZB-02","MA-S1-ZC-03"]){
+            body.push([code, responses[`${code}_objMensuels`]||'—', responses[`${code}_objAtteints`]||'—', responses[`${code}_pointsJour`]||'—', responses[`${code}_pointsPrec`]||'—', responses[`${code}_tempsPrec`]||'—', responses[`${code}_tempsJour`]||'—']);
+        }
+        doc.autoTable({startY:50, head:[["Netuber","Obj.mensuels","Obj.atteints","Points jour","Points préc.","Temps préc.","Temps jour"]], body:body, theme:'grid', headStyles:{fillColor:[250,204,21],textColor:[10,26,47],fontStyle:'bold',fontSize:9}, bodyStyles:{fontSize:8,cellPadding:3}, margin:{left:10,right:10}});
+        doc.save(`RAPPORT_PGCO_${rapportNum}.pdf`);
+        showPopup("Succès","Rapport PGCO généré","OK","",()=>{},()=>{},false);
+    }catch(e){ showPopup("Erreur",e.message,"OK","",()=>{},()=>{},true); }
+}
+function generatePETS(){
+    try{
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({unit:'mm',format:'a4',orientation:'landscape'});
+        const now=new Date();
+        const rapportNum=document.getElementById('rapportNumber').value||'RPT-2026-001';
+        doc.setFillColor(45,90,59); doc.rect(0,0,297,45,'F');
+        doc.setTextColor(255,255,255); doc.setFontSize(16); doc.setFont('helvetica','bold');
+        doc.text("RAPPORT JOURNALIER PETS",20,20);
+        doc.setFontSize(9); doc.text(`N° ${rapportNum}`,260,20,{align:'right'});
+        doc.text(`Rédigé par : ${currentConfig?.name||'ND'}`,20,28);
+        doc.text(`Date : ${now.toLocaleDateString('fr-FR')}`,20,34);
+        const body=[];
+        for(let code of ["MA-S1-ZA-01","MA-S1-ZB-02","MA-S1-ZC-03"]){
+            body.push([code, responses[`${code}_anomalies`]||'—', responses[`${code}_missionsRejet`]||'—', responses[`${code}_jeuxBloques`]==='OUI'?'Oui':'Non', responses[`${code}_present`]==='OUI'?'Présent':'Absent', responses[`${code}_heureArrivee`]||'—', responses[`${code}_heureSortie`]||'—', responses[`${code}_forfaitGo`]?`${responses[`${code}_forfaitGo`]} Go`:'—', responses[`${code}_btnRetirer`]==='OUI'?'Oui':'Non']);
+        }
+        doc.autoTable({startY:50, head:[["Netuber","Anomalies","Missions","Jeux bloqués","Présence","Arrivée","Sortie","Forfait","Retirer"]], body:body, theme:'grid', headStyles:{fillColor:[74,222,128],textColor:[10,26,47],fontStyle:'bold',fontSize:8}, bodyStyles:{fontSize:7,cellPadding:2}, margin:{left:8,right:8}});
+        // Ajout recommandation en bas
+        const recommandation = responses.recommandation || "Aucune";
+        doc.setFontSize(9); doc.setTextColor(0,0,0);
+        doc.text(`Recommandation : ${recommandation}`, 20, doc.lastAutoTable.finalY + 10);
+        doc.save(`RAPPORT_PETS_${rapportNum}.pdf`);
+        showPopup("Succès","Rapport PETS généré","OK","",()=>{},()=>{},false);
+    }catch(e){ showPopup("Erreur",e.message,"OK","",()=>{},()=>{},true); }
 }
 
-async function generatePETS() {
-    if (!validatePETS()) return;
-    const anom1 = document.getElementById('pets-anom1').value;
-    const anom2 = document.getElementById('pets-anom2').value;
-    const data1 = document.getElementById('pets-data1').value;
-    const data2 = document.getElementById('pets-data2').value;
-    const date = getDateTime();
-    
-    const pages = [];
-    
-    // Page 1 - Rapport principal
-    pages.push(`
-        <div style="text-align:center; padding:15px; border-bottom:3px solid #ec489a; background:#fff5f8;">
-            <h1 style="color:#ec489a; font-size:1.4rem; margin-bottom:8px;">🔧 RAPPORT PETS</h1>
-            <div style="font-size:0.9rem; color:#555;">Pôle Excellence Technique et Support</div>
-            <div style="font-size:0.8rem; color:#888; margin-top:6px;">Monsieur Dieu Merci</div>
-            <div style="font-size:0.75rem; color:#999; margin-top:4px;">${date}</div>
-        </div>
-        <div style="margin:15px 0; text-align:center;">
-            <img src="${store.pets}" style="width:100%; max-width:100%; height:auto; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-        </div>
-        <div style="margin-top:15px;">
-            <h2 style="color:#ec489a; font-size:1rem; margin-bottom:12px; border-left:4px solid #ec489a; padding-left:10px;">⚠️ DIAGNOSTIC TECHNIQUE</h2>
-            <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
-                <thead><tr style="background:#ec489a; color:white;">
-                    <th style="padding:10px; text-align:left;">Stagiaire</th>
-                    <th style="padding:10px; text-align:left;">Anomalie détectée</th>
-                    <th style="padding:10px; text-align:center;">Forfait restant</th>
-                 </tr></thead>
-                <tbody>
-                    <tr><td style="padding:10px; border:1px solid #f0d5e6;">MA-NX-S1-ZA-1</td>
-                    <td style="padding:10px; border:1px solid #f0d5e6;">${anom1}</td>
-                    <td style="padding:10px; border:1px solid #f0d5e6; text-align:center;">${data1}</td>
-                  </tr>
-                 <tr style="background:#fff5f8;"><td style="padding:10px; border:1px solid #f0d5e6;">MA-NX-S1-ZA-2</td>
-                    <td style="padding:10px; border:1px solid #f0d5e6;">${anom2}</td>
-                    <td style="padding:10px; border:1px solid #f0d5e6; text-align:center;">${data2}</td>
-                  </tr>
-                </tbody>
-             </table>
-        </div>
-        <div style="margin-top:15px; padding:12px; background:#ffe6f0; border-radius:10px;">
-            <div style="font-size:0.85rem;"><strong>📋 Rapport technique</strong></div>
-            <div style="font-size:0.8rem; margin-top:5px;">Diagnostic réalisé et anomalies enregistrées</div>
-            <div style="font-size:0.75rem; color:#666;">Support technique disponible en cas de besoin</div>
-        </div>
-        <div style="text-align:center; font-size:0.7rem; color:#888; margin-top:18px; padding-top:10px; border-top:1px solid #f0d5e6;">
-            NeTubeX · Organisation de rémunération digitale<br>Pilote: ${PILOTE}
-        </div>
-    `);
-    
-    // Page 2 - Détail des anomalies
-    pages.push(`
-        <div style="text-align:center; padding:15px; border-bottom:3px solid #ec489a; background:#fff5f8;">
-            <h1 style="color:#ec489a; font-size:1.3rem;">🔍 RAPPORT D'ANOMALIES</h1>
-            <div style="font-size:0.75rem; color:#999;">${date}</div>
-        </div>
-        <div style="margin:20px 0;">
-            <div style="background:#ffe6f0; border-radius:12px; padding:15px; margin-bottom:15px;">
-                <h2 style="color:#ec489a; font-size:1rem; margin-bottom:10px;">👤 MA-NX-S1-ZA-1</h2>
-                <div style="font-size:0.9rem; margin-bottom:8px;">⚠️ Anomalie constatée : <strong style="color:#ec489a;">${anom1}</strong></div>
-                <div style="font-size:0.85rem;">📶 Forfait internet restant : ${data1}</div>
-                <div style="font-size:0.8rem; color:#666; margin-top:8px;">Statut : Diagnostic enregistré</div>
-            </div>
-            <div style="background:#fff0f5; border-radius:12px; padding:15px;">
-                <h2 style="color:#ec489a; font-size:1rem; margin-bottom:10px;">👤 MA-NX-S1-ZA-2</h2>
-                <div style="font-size:0.9rem; margin-bottom:8px;">⚠️ Anomalie constatée : <strong style="color:#ec489a;">${anom2}</strong></div>
-                <div style="font-size:0.85rem;">📶 Forfait internet restant : ${data2}</div>
-                <div style="font-size:0.8rem; color:#666; margin-top:8px;">Statut : Diagnostic enregistré</div>
-            </div>
-        </div>
-        <div style="margin-top:15px; padding:12px; background:#f0f0f5; border-radius:10px; text-align:center;">
-            <div style="font-size:0.85rem;">📊 Synthèse des forfaits : ${data1} / ${data2}</div>
-        </div>
-        <div style="text-align:center; font-size:0.75rem; margin-top:20px; padding-top:10px; border-top:1px solid #f0d5e6;">
-            Rapport certifié conforme par le Pilote ${PILOTE}
-        </div>
-    `);
-    
-    await generateMultiPagePDF(pages, `Rapport_PETS_${Date.now()}.pdf`);
-    showStatus('✅ Rapport PETS généré avec succès', 'success');
-}
+document.getElementById('genPgcoBtn').onclick=()=>{ if(Object.keys(responses).length>3 && currentConfig) generatePGCO(); else showPopup("Info","Remplissez d'abord","OK","",()=>{},()=>{},false); };
+document.getElementById('genPetsBtn').onclick=()=>{ if(Object.keys(responses).length>3 && currentConfig) generatePETS(); else showPopup("Info","Remplissez d'abord","OK","",()=>{},()=>{},false); };
+document.querySelectorAll('.theme-btn').forEach(btn=>{ btn.onclick=()=>{ document.body.className=`header-${btn.dataset.theme}`; document.querySelectorAll('.theme-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }; });
 
-async function generatePSI() {
-    if (!validatePSI()) return;
-    const dieuCount = document.getElementById('call-dieu-count').value;
-    const dieu = `${document.getElementById('call-dieu-h').value} ${document.getElementById('call-dieu-m').value}`;
-    const blandineCount = document.getElementById('call-blandine-count').value;
-    const blandine = `${document.getElementById('call-blandine-h').value} ${document.getElementById('call-blandine-m').value}`;
-    const ginolaCount = document.getElementById('call-ginola-count').value;
-    const ginola = `${document.getElementById('call-ginola-h').value} ${document.getElementById('call-ginola-m').value}`;
-    const duree = calculateDuration();
-    const objZa1 = document.getElementById('game-objectifs-za1').value;
-    const attZa1 = document.getElementById('game-atteints-za1').value;
-    const objZa2 = document.getElementById('game-objectifs-za2').value;
-    const attZa2 = document.getElementById('game-atteints-za2').value;
-    const date = getDateTime();
-    
-    const pages = [];
-    
-    // Page 1 - Rapport des appels stratégiques avec colonne nombre d'appels
-    pages.push(`
-        <div style="text-align:center; padding:15px; border-bottom:3px solid #f97316; background:#fff8f0;">
-            <h1 style="color:#f97316; font-size:1.3rem;">📞 RAPPORT DES APPELS STRATÉGIQUES</h1>
-            <div style="font-size:0.85rem;">Pôle Stratégie et Innovation - Madame Ginola</div>
-            <div style="font-size:0.75rem; color:#999;">${date}</div>
-        </div>
-        <table style="width:100%; margin-top:15px; border-collapse:collapse; font-size:0.85rem;">
-            <thead>
-                <tr style="background:#f97316; color:white;">
-                    <th style="padding:10px; text-align:left;">Membre</th>
-                    <th style="padding:10px; text-align:center;">Nombre d'appels</th>
-                    <th style="padding:10px; text-align:center;">Première appel à</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="padding:10px; border:1px solid #f0e0d0;">M. Dieu Merci</td>
-                    <td style="padding:10px; border:1px solid #f0e0d0; text-align:center;"><strong>${dieuCount}</strong> appel${dieuCount != 1 ? 's' : ''}</td>
-                    <td style="padding:10px; border:1px solid #f0e0d0; text-align:center;">${dieu}</td>
-                </tr>
-                <tr>
-                    <td style="padding:10px; border:1px solid #f0e0d0;">Mme Blandine</td>
-                    <td style="padding:10px; border:1px solid #f0e0d0; text-align:center;"><strong>${blandineCount}</strong> appel${blandineCount != 1 ? 's' : ''}</td>
-                    <td style="padding:10px; border:1px solid #f0e0d0; text-align:center;">${blandine}</td>
-                </tr>
-                <tr>
-                    <td style="padding:10px; border:1px solid #f0e0d0;">Mme Ginola</td>
-                    <td style="padding:10px; border:1px solid #f0e0d0; text-align:center;"><strong>${ginolaCount}</strong> appel${ginolaCount != 1 ? 's' : ''}</td>
-                    <td style="padding:10px; border:1px solid #f0e0d0; text-align:center;">${ginola}</td>
-                </tr>
-                <tr style="background:#fff0e6;">
-                    <td style="padding:10px;"><strong>Durée totale cumulée</strong></td>
-                    <td style="padding:10px; text-align:center;">-</td>
-                    <td style="padding:10px; text-align:center;"><strong>${duree}</strong></td>
-                </tr>
-            </tbody>
-        </table>
-        <div style="text-align:center; font-size:0.7rem; margin-top:12px;">Pilote: ${PILOTE}</div>
-    `);
-    
-    // Page 2 - Avancement du jeu
-    pages.push(`
-        <div style="text-align:center; padding:15px; border-bottom:3px solid #f97316; background:#fff8f0;">
-            <h1 style="color:#f97316; font-size:1.3rem;">🎯 AVANCEMENT DU JEU</h1>
-            <div style="font-size:0.85rem;">Rapport stratégique - Objectifs atteints</div>
-            <div style="font-size:0.75rem; color:#999;">${date}</div>
-        </div>
-        <table style="width:100%; margin-top:15px; border-collapse:collapse; font-size:0.85rem;">
-            <thead>
-                <tr style="background:#f97316; color:white;">
-                    <th style="padding:10px;">Stagiaire</th>
-                    <th style="padding:10px;">Objectifs fixés</th>
-                    <th style="padding:10px;">Objectifs atteints</th>
-                    <th style="padding:10px;">Progression</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="padding:10px; border:1px solid #f0e0d0;">MA-NX-S1-ZA-1</td>
-                    <td style="padding:10px; text-align:center;">${objZa1}</td>
-                    <td style="padding:10px; text-align:center;">${attZa1}</td>
-                    <td style="padding:10px; text-align:center;">${Math.round((attZa1/objZa1)*100)}%</td>
-                </tr>
-                <tr>
-                    <td style="padding:10px; border:1px solid #f0e0d0;">MA-NX-S1-ZA-2</td>
-                    <td style="padding:10px; text-align:center;">${objZa2}</td>
-                    <td style="padding:10px; text-align:center;">${attZa2}</td>
-                    <td style="padding:10px; text-align:center;">${Math.round((attZa2/objZa2)*100)}%</td>
-                </tr>
-            </tbody>
-        </table>
-        <div style="text-align:center; font-size:0.7rem; margin-top:12px;">Pilote: ${PILOTE}</div>
-    `);
-    
-    // Pages des captures d'écran
-    for (let i = 0; i < 3; i++) {
-        pages.push(`
-            <div style="text-align:center; padding:12px; border-bottom:3px solid #f97316; background:#fff8f0;">
-                <h2 style="color:#f97316; font-size:1.1rem;">📸 PREUVE CAPTURE ${i+1}/3</h2>
-                <div style="font-size:0.7rem;">${date}</div>
-            </div>
-            <div style="margin:12px 0;"><img src="${store.psi[i]}" style="width:100%; border-radius:10px;"></div>
-            <div style="text-align:center;">Pilote: ${PILOTE}</div>
-        `);
-    }
-    
-    await generateMultiPagePDF(pages, `Rapport_PSI_${Date.now()}.pdf`);
-    showStatus('✅ Rapport PSI généré avec succès', 'success');
-}
-
-async function generatePDF(pole) {
-    const btns = document.querySelectorAll('.btn');
-    btns.forEach(b => b.disabled = true);
-    try {
-        if (pole === 'pgco') await generatePGCO();
-        else if (pole === 'pets') await generatePETS();
-        else if (pole === 'psi') await generatePSI();
-    } catch (e) { console.error(e); showStatus('Erreur technique', 'error'); }
-    finally { btns.forEach(b => b.disabled = false); }
-}
-
-setupUpload('pgco-img', 'pgco-preview', 'pgco');
-setupUpload('pets-img', 'pets-preview', 'pets');
-setupUpload('psi-img1', 'psi-preview1', 'psi', 0);
-setupUpload('psi-img2', 'psi-preview2', 'psi', 1);
-setupUpload('psi-img3', 'psi-preview3', 'psi', 2);
-initAllSelects();
-showStatus('✨ Prêt - Tous les champs sont obligatoires', 'info');
+startFresh();
 </script>
 </body>
 </html>
