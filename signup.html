@@ -39,21 +39,21 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 .error-toast i{font-size:1.1rem;color:#fff;}
 .error-toast span{flex:1;line-height:1.4;}
 .card-footer{text-align:center;margin-top:1.8rem;padding-top:1.2rem;border-top:1px solid #2a3548;}
-.card-footer p{color:#64748b;font-size:0.7rem;display:flex;align-items:center;justify-content:center;gap:6px;}
+.card-footer p{color:#64748b;font-size:0.7rem;display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;}
 .card-footer i{color:#38bdf8;}
 .login-btn.loading{pointer-events:none;opacity:0.8;}
 .login-btn.loading i{animation:spin 0.8s linear infinite;}
-@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}
 
-/* ===== POPUP INSCRIPTION (MODAL) ===== */
+/* MODAL INSCRIPTION */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,7 +76,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
   box-shadow: 0 25px 45px rgba(0,0,0,0.5), 0 0 0 1px rgba(56,189,248,0.3);
   transform: scale(0.95);
   transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-  position: relative;
 }
 .modal-overlay.active .modal-container {
   transform: scale(1);
@@ -130,7 +129,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
   align-items: center;
   justify-content: center;
   gap: 10px;
-  font-family: 'Inter', sans-serif;
   margin-top: 0.5rem;
   box-shadow: 0 5px 0 #065f46;
   transform: translateY(-2px);
@@ -152,6 +150,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
   color: #38bdf8;
   text-decoration: none;
   font-weight: 500;
+  cursor: pointer;
 }
 #openSignupLink {
   cursor: pointer;
@@ -163,19 +162,27 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 }
 #openSignupLink:hover {
   text-decoration: underline;
-  color: #7dd3fc;
 }
-/* petit message sous formulaire login */
-.card-footer span.signup-suggestion {
-  color: #818cf8;
-  margin-left: 5px;
+select {
+  width: 100%;
+  padding: 12px 14px 12px 44px;
+  background: #0f1420;
+  border: 1.5px solid #2a3548;
+  border-radius: 12px;
+  color: #e2e8f0;
+  font-family: 'Inter', sans-serif;
+  outline: none;
   cursor: pointer;
-  font-weight: 500;
 }
-.card-footer span.signup-suggestion:hover {
-  text-decoration: underline;
+select:focus {
+  border-color: #38bdf8;
 }
-@media(max-width:480px){.login-card{padding:1.5rem;}.logo-icon{width:55px;height:55px;}.logo-icon i{font-size:1.8rem;}.card-header h1{font-size:1.4rem;}}
+@media(max-width:480px){
+  .login-card{padding:1.5rem;}
+  .logo-icon{width:55px;height:55px;}
+  .logo-icon i{font-size:1.8rem;}
+  .card-header h1{font-size:1.4rem;}
+}
 </style>
 </head>
 <body>
@@ -207,32 +214,30 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 </button>
 </form>
 <div class="card-footer">
-<p><i class="fas fa-shield-alt"></i> Connexion sécurisée · Espace Digital certifié 
-<span id="openSignupLink" style="margin-left:8px;">Créer un compte</span></p>
+<p><i class="fas fa-shield-alt"></i> Connexion sécurisée · <span id="openSignupLink">Créer un compte</span></p>
 </div>
 </div>
 </div>
 
-<!-- TOAST ERROR -->
 <div id="errorToast" class="error-toast"><i class="fas fa-exclamation-circle"></i><span id="errorText">Erreur</span></div>
 
-<!-- MODAL INSCRIPTION (POPUP) -->
+<!-- MODAL INSCRIPTION -->
 <div id="signupModal" class="modal-overlay">
 <div class="modal-container">
 <div class="modal-header">
-<h2><i class="fas fa-user-plus" style="font-size:1.3rem; margin-right:8px;"></i> Inscription</h2>
+<h2><i class="fas fa-user-plus"></i> Inscription</h2>
 <button class="close-modal" id="closeModalBtn"><i class="fas fa-times"></i></button>
 </div>
 <form id="signupForm">
 <div class="input-group">
 <i class="fas fa-envelope"></i>
-<input type="email" id="signupEmail" placeholder="Adresse email" required autocomplete="off">
+<input type="email" id="signupEmail" placeholder="Email" required>
 </div>
 <div class="input-group">
 <i class="fas fa-lock"></i>
 <div class="password-wrapper">
 <input type="password" id="signupPassword" placeholder="Mot de passe (min 6 caractères)" required>
-<button type="button" class="toggle-password toggle-signup-pwd" data-target="signupPassword">
+<button type="button" class="toggle-password" id="toggleSignupPwd">
 <i class="fas fa-eye"></i>
 </button>
 </div>
@@ -240,26 +245,26 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 <div class="input-group">
 <i class="fas fa-check-circle"></i>
 <div class="password-wrapper">
-<input type="password" id="confirmPassword" placeholder="Confirmer le mot de passe" required>
-<button type="button" class="toggle-password toggle-signup-pwd" data-target="confirmPassword">
+<input type="password" id="confirmPassword" placeholder="Confirmer mot de passe" required>
+<button type="button" class="toggle-password" id="toggleConfirmPwd">
 <i class="fas fa-eye"></i>
 </button>
 </div>
 </div>
 <div class="input-group">
 <i class="fas fa-user-tag"></i>
-<select id="signupRole" style="width:100%; padding:12px 14px 12px 44px; background:#0f1420; border:1.5px solid #2a3548; border-radius:12px; color:#e2e8f0; font-family:'Inter',sans-serif; outline:none; cursor:pointer;">
-<option value="netuber">Netuber (standard)</option>
+<select id="signupRole">
+<option value="netuber">Netuber (Standard)</option>
 <option value="pets">Pets</option>
 <option value="pgc">PGC</option>
 <option value="pilote">Pilote</option>
 </select>
 </div>
 <button type="submit" class="signup-btn-modal" id="signupBtn">
-<i class="fas fa-user-check"></i> <span>S'inscrire</span>
+<i class="fas fa-user-check"></i> S'inscrire
 </button>
 <div class="modal-footer-text">
-Déjà un compte ? <a href="#" id="switchToLoginLink">Connectez-vous</a>
+Déjà un compte ? <a id="switchToLoginLink">Se connecter</a>
 </div>
 </form>
 </div>
@@ -284,16 +289,15 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 await setPersistence(auth, browserLocalPersistence);
 
-// --- Éléments Login ---
+// Éléments DOM
 const loginForm = document.getElementById("loginForm");
 const loginBtn = document.getElementById("loginBtn");
 const errorToast = document.getElementById("errorToast");
 const errorText = document.getElementById("errorText");
 const togglePassword = document.getElementById("togglePassword");
 const passwordInput = document.getElementById("password");
-let toastTimeout;
 
-// --- MODAL Éléments ---
+// Modal éléments
 const modalOverlay = document.getElementById("signupModal");
 const closeModalBtn = document.getElementById("closeModalBtn");
 const openSignupLink = document.getElementById("openSignupLink");
@@ -304,103 +308,107 @@ const signupEmail = document.getElementById("signupEmail");
 const signupPassword = document.getElementById("signupPassword");
 const confirmPassword = document.getElementById("confirmPassword");
 const signupRole = document.getElementById("signupRole");
+const toggleSignupPwd = document.getElementById("toggleSignupPwd");
+const toggleConfirmPwd = document.getElementById("toggleConfirmPwd");
 
-// Helper fonctions UI
+let toastTimeout;
+
 function showError(message) {
   errorText.textContent = message;
   errorToast.classList.add("show");
   if(toastTimeout) clearTimeout(toastTimeout);
   toastTimeout = setTimeout(() => { errorToast.classList.remove("show"); }, 5000);
 }
+
 function hideError() { errorToast.classList.remove("show"); }
 
-// Afficher / masquer mot de passe pour les toggles (login + signup)
-function setupPasswordToggle(btn, inputField) {
-   btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      const type = inputField.getAttribute("type") === "password" ? "text" : "password";
-      inputField.setAttribute("type", type);
-      const icon = btn.querySelector('i');
-      if(icon) {
-        if(type === "password") icon.classList.remove("fa-eye-slash");
-        else icon.classList.add("fa-eye-slash");
-        if(type === "text") icon.classList.remove("fa-eye");
-        else icon.classList.add("fa-eye");
-        if(icon.classList.contains("fa-eye-slash") && type==="text") icon.classList.remove("fa-eye-slash");
-        if(icon.classList.contains("fa-eye") && type==="password") icon.classList.remove("fa-eye");
-        if(type === "text") icon.classList.add("fa-eye-slash");
-        else icon.classList.add("fa-eye");
-      }
-   });
-}
-setupPasswordToggle(togglePassword, passwordInput);
+// Toggle password pour login
+togglePassword.addEventListener("click", () => {
+  const type = passwordInput.type === "password" ? "text" : "password";
+  passwordInput.type = type;
+  togglePassword.querySelector('i').classList.toggle("fa-eye");
+  togglePassword.querySelector('i').classList.toggle("fa-eye-slash");
+});
 
-// Gestion modale inscription
+// Toggle pour mot de passe inscription
+toggleSignupPwd.addEventListener("click", () => {
+  const type = signupPassword.type === "password" ? "text" : "password";
+  signupPassword.type = type;
+  toggleSignupPwd.querySelector('i').classList.toggle("fa-eye");
+  toggleSignupPwd.querySelector('i').classList.toggle("fa-eye-slash");
+});
+
+toggleConfirmPwd.addEventListener("click", () => {
+  const type = confirmPassword.type === "password" ? "text" : "password";
+  confirmPassword.type = type;
+  toggleConfirmPwd.querySelector('i').classList.toggle("fa-eye");
+  toggleConfirmPwd.querySelector('i').classList.toggle("fa-eye-slash");
+});
+
+// Gestion modale
 function openModal() { modalOverlay.classList.add("active"); hideError(); }
 function closeModal() { modalOverlay.classList.remove("active"); }
 openSignupLink.addEventListener("click", (e) => { e.preventDefault(); openModal(); });
 closeModalBtn.addEventListener("click", closeModal);
 switchToLoginLink.addEventListener("click", (e) => { e.preventDefault(); closeModal(); });
-// Fermer si clic sur overlay
 modalOverlay.addEventListener("click", (e) => { if(e.target === modalOverlay) closeModal(); });
 
-// Gestion toggles dans la modale (deux champs pwd)
-document.querySelectorAll('.toggle-signup-pwd').forEach(toggle => {
-  const targetId = toggle.getAttribute('data-target');
-  if(targetId) {
-    const targetInput = document.getElementById(targetId);
-    if(targetInput) {
-      toggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        const type = targetInput.getAttribute("type") === "password" ? "text" : "password";
-        targetInput.setAttribute("type", type);
-        const icon = toggle.querySelector('i');
-        if(icon) {
-          if(type === "password") icon.classList.remove("fa-eye-slash");
-          else icon.classList.add("fa-eye-slash");
-          if(type === "text") icon.classList.remove("fa-eye");
-          else icon.classList.add("fa-eye");
-        }
-      });
-    }
-  }
-});
-
-// --- LOGIN (inchangé, fonctionne déjà) ---
+// ===== LOGIN (inchangé, méthode Timewall/iFrame) =====
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   hideError();
+  
   const email = document.getElementById("email").value.trim();
   const password = passwordInput.value;
-  if(!email || !password) { showError("Veuillez renseigner tous les champs"); return; }
-  if(!email.includes('@') || !email.includes('.')) { showError("Adresse email invalide"); return; }
+  
+  if(!email || !password) {
+    showError("Veuillez renseigner tous les champs");
+    return;
+  }
+  if(!email.includes('@') || !email.includes('.')) {
+    showError("Adresse email invalide");
+    return;
+  }
+  
   loginBtn.classList.add("loading");
   loginBtn.innerHTML = '<i class="fas fa-spinner"></i><span>Connexion...</span>';
+  
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
+    
     const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
+    
     let role = "netuber";
     let code = null;
-    if(docSnap.exists()) { role = docSnap.data().role || "netuber"; code = docSnap.data().code || null; }
+    
+    if(docSnap.exists()) {
+      role = docSnap.data().role || "netuber";
+      code = docSnap.data().code || null;
+    }
+    
+    // ✅ Injection Timewall/iFrame - méthode standard
     sessionStorage.setItem('firebaseUserId', user.uid);
     if(code) sessionStorage.setItem('userCode', code);
+    
+    // Redirection selon rôle
     setTimeout(() => {
       if(role === "pets") window.location.href = "pets.html";
       else if(role === "pgc") window.location.href = "pgc.html";
       else if(role === "pilote") window.location.href = "pilote.html";
       else window.location.href = "dashboard.html";
     }, 300);
+    
   } catch(error) {
     let msg = "Identifiants incorrects";
     switch(error.code) {
       case 'auth/invalid-email': msg = "Format d'email invalide"; break;
-      case 'auth/user-disabled': msg = "Compte désactivé. Contactez le support"; break;
-      case 'auth/user-not-found': msg = "Aucun compte associé à cet email"; break;
+      case 'auth/user-disabled': msg = "Compte désactivé"; break;
+      case 'auth/user-not-found': msg = "Aucun compte associé"; break;
       case 'auth/wrong-password': msg = "Mot de passe incorrect"; break;
-      case 'auth/too-many-requests': msg = "Trop de tentatives. Réessayez dans quelques minutes"; break;
-      default: msg = "Échec de connexion. Vérifiez vos identifiants";
+      case 'auth/too-many-requests': msg = "Trop de tentatives"; break;
+      default: msg = "Échec de connexion";
     }
     showError(msg);
     loginBtn.classList.remove("loading");
@@ -408,10 +416,11 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
-// --- INSCRIPTION avec Firebase (popup) ---
+// ===== INSCRIPTION avec la MÊME méthode d'injection Timewall/iFrame =====
 signupForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   hideError();
+  
   const email = signupEmail.value.trim();
   const password = signupPassword.value;
   const confirm = confirmPassword.value;
@@ -438,17 +447,17 @@ signupForm.addEventListener("submit", async (e) => {
   signupBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Inscription...</span>';
   
   try {
-    // Créer l'utilisateur Firebase Auth
+    // Création du compte Firebase
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     
-    // Mettre à jour le displayName (optionnel)
+    // Mise à jour du profil
     await updateProfile(user, { displayName: email.split('@')[0] });
     
-    // Générer un code simple pour l'utilisateur (optionnel)
+    // Génération du code unique (comme pour la connexion)
     const generatedCode = Math.random().toString(36).substring(2, 8).toUpperCase();
     
-    // Créer document Firestore dans collection "users"
+    // Création du document Firestore
     await setDoc(doc(db, "users", user.uid), {
       email: email,
       role: role,
@@ -458,51 +467,58 @@ signupForm.addEventListener("submit", async (e) => {
       isActive: true
     });
     
-    // Session storage pour redirection
+    // ⭐⭐⭐ INJECTION EXACTEMENT COMME LA CONNEXION (méthode Timewall/iFrame) ⭐⭐⭐
     sessionStorage.setItem('firebaseUserId', user.uid);
     sessionStorage.setItem('userCode', generatedCode);
     
-    // Afficher un petit toast succès puis rediriger selon role
-    showError = (msg) => { errorText.textContent = msg; errorToast.classList.add("show"); setTimeout(()=>errorToast.classList.remove("show"),2500); };
+    // Toast de succès
+    const oldToast = errorText.textContent;
     errorText.textContent = "✅ Inscription réussie ! Redirection...";
+    errorToast.style.background = "#10b981";
     errorToast.classList.add("show");
-    setTimeout(() => errorToast.classList.remove("show"), 2000);
+    setTimeout(() => {
+      errorToast.classList.remove("show");
+      errorToast.style.background = "#dc2626";
+      errorText.textContent = oldToast;
+    }, 1500);
     
-    // Redirection après inscription
+    // ⭐⭐⭐ REDIRECTION IDENTIQUE À LA CONNEXION ⭐⭐⭐
     setTimeout(() => {
       if(role === "pets") window.location.href = "pets.html";
       else if(role === "pgc") window.location.href = "pgc.html";
       else if(role === "pilote") window.location.href = "pilote.html";
       else window.location.href = "dashboard.html";
-    }, 1200);
+    }, 1600);
     
   } catch(error) {
-    console.error(error);
+    console.error("Erreur inscription:", error);
     let msg = "Erreur lors de l'inscription";
     switch(error.code) {
-      case 'auth/email-already-in-use': msg = "Cette adresse email est déjà utilisée."; break;
-      case 'auth/invalid-email': msg = "Adresse email invalide."; break;
-      case 'auth/weak-password': msg = "Mot de passe trop faible (minimum 6 caractères)."; break;
-      case 'auth/operation-not-allowed': msg = "Inscription désactivée temporairement."; break;
-      default: msg = "Échec inscription : " + error.message;
+      case 'auth/email-already-in-use': msg = "Cet email est déjà utilisé"; break;
+      case 'auth/invalid-email': msg = "Email invalide"; break;
+      case 'auth/weak-password': msg = "Mot de passe trop faible (6+ caractères)"; break;
+      default: msg = "Échec inscription: " + error.message;
     }
     showError(msg);
     signupBtn.classList.remove("loading");
-    signupBtn.innerHTML = '<i class="fas fa-user-check"></i><span>S\'inscrire</span>';
+    signupBtn.innerHTML = '<i class="fas fa-user-check"></i>S\'inscrire';
   }
 });
 
+// Focus pour cacher les erreurs
 document.getElementById("email").addEventListener("focus", hideError);
 passwordInput.addEventListener("focus", hideError);
+signupEmail.addEventListener("focus", hideError);
+signupPassword.addEventListener("focus", hideError);
+confirmPassword.addEventListener("focus", hideError);
 </script>
 
-<!-- Service Worker pour l'installation PWA -->
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
-      .then(reg => console.log('Service Worker enregistré :', reg.scope))
-      .catch(err => console.log('Erreur SW :', err));
+      .then(reg => console.log('Service Worker enregistré'))
+      .catch(err => console.log('Erreur SW:', err));
   });
 }
 </script>
