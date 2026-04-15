@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>NeTubeX · Espace de rémunération Digitale</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1e90ff">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,#1a1f2e 0%,#0f1420 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;padding:20px;}
+.login-container{width:100%;max-width:440px;position:relative;animation:fadeInUp 0.5s ease-out;}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.rainbow-border{position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3,#ff0000);background-size:200%100%;border-radius:28px;animation:rainbowMove 4s linear infinite;z-index:-1;opacity:0.8;}
+@keyframes rainbowMove{0%{background-position:0%50%;}100%{background-position:200%50%;}}
+.login-card{background:rgba(20,25,40,0.95);backdrop-filter:blur(10px);border-radius:24px;padding:2rem;box-shadow:0 20px 40px -12px rgba(0,0,0,0.5),0 0 0 1px rgba(56,189,248,0.15);position:relative;overflow:hidden;}
+.card-header{text-align:center;margin-bottom:1.8rem;}
+.logo-icon{width:65px;height:65px;background:linear-gradient(135deg,#1e293b,#0f1420);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;border:1px solid rgba(56,189,248,0.2);box-shadow:0 8px 16px rgba(0,0,0,0.3);}
+.logo-icon i{font-size:2.2rem;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.card-header h1{font-size:1.7rem;font-weight:800;background:linear-gradient(135deg,#f1f5f9,#94a3b8);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:0.3rem;}
+.card-header p{color:#94a3b8;font-size:0.8rem;font-weight:500;}
+.input-group{margin-bottom:1.3rem;position:relative;}
+.input-group i:first-child{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#64748b;font-size:1rem;pointer-events:none;z-index:1;}
+.input-group input{width:100%;padding:12px 14px 12px 44px;background:#0f1420;border:1.5px solid #2a3548;border-radius:12px;font-size:0.9rem;color:#e2e8f0;font-family:'Inter',sans-serif;transition:all 0.2s;outline:none;}
+.input-group input:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,0.1);}
+.input-group input:focus ~ i:first-child{color:#38bdf8;}
+.input-group input::placeholder{color:#5a6a85;}
+.password-wrapper{position:relative;display:flex;align-items:center;}
+.password-wrapper input{flex:1;padding-right:44px;}
+.toggle-password{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#64748b;font-size:1rem;cursor:pointer;transition:color 0.2s;z-index:2;background:transparent;border:none;display:flex;align-items:center;justify-content:center;padding:0;width:24px;height:24px;}
+.toggle-password:hover{color:#38bdf8;}
+.login-btn{width:100%;padding:12px;background:linear-gradient(135deg,#2563eb,#1d4ed8);border:none;border-radius:12px;font-size:0.95rem;font-weight:700;color:#fff;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Inter',sans-serif;margin-top:0.3rem;position:relative;box-shadow:0 6px 0 #1e3a5f;transform:translateY(-2px);}
+.login-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #1e3a5f;}
+.login-btn:hover{background:linear-gradient(135deg,#3b82f6,#2563eb);}
+.error-toast{position:fixed;top:20px;right:20px;background:#dc2626;color:#fff;padding:12px 18px;border-radius:12px;font-size:0.85rem;font-weight:500;display:flex;align-items:center;gap:12px;box-shadow:0 8px 20px rgba(220,38,38,0.3);z-index:1000;transform:translateX(400px);transition:transform 0.3s cubic-bezier(0.2,0.9,0.4,1.1);max-width:340px;border:1px solid rgba(255,255,255,0.2);}
+.error-toast.show{transform:translateX(0);}
+.error-toast i{font-size:1.1rem;color:#fff;}
+.error-toast span{flex:1;line-height:1.4;}
+.card-footer{text-align:center;margin-top:1.8rem;padding-top:1.2rem;border-top:1px solid #2a3548;}
+.card-footer p{color:#64748b;font-size:0.7rem;display:flex;align-items:center;justify-content:center;gap:6px;}
+.card-footer i{color:#38bdf8;}
+.login-btn.loading{pointer-events:none;opacity:0.8;}
+.login-btn.loading i{animation:spin 0.8s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+/* ===== POPUP INSCRIPTION (MODAL) ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.2s, opacity 0.2s ease;
+}
+.modal-overlay.active {
+  visibility: visible;
+  opacity: 1;
+}
+.modal-container {
+  background: rgba(20, 25, 40, 0.98);
+  backdrop-filter: blur(12px);
+  border-radius: 28px;
+  width: 90%;
+  max-width: 440px;
+  padding: 1.8rem;
+  box-shadow: 0 25px 45px rgba(0,0,0,0.5), 0 0 0 1px rgba(56,189,248,0.3);
+  transform: scale(0.95);
+  transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  position: relative;
+}
+.modal-overlay.active .modal-container {
+  transform: scale(1);
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #2a3548;
+  padding-bottom: 0.8rem;
+}
+.modal-header h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  background: linear-gradient(135deg,#f1f5f9,#a5b4fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.close-modal {
+  background: #2a3548;
+  border: none;
+  color: #cbd5e1;
+  font-size: 1.3rem;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.close-modal:hover {
+  background: #ef4444;
+  color: white;
+}
+.signup-btn-modal {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg,#10b981,#059669);
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'Inter', sans-serif;
+  margin-top: 0.5rem;
+  box-shadow: 0 5px 0 #065f46;
+  transform: translateY(-2px);
+}
+.signup-btn-modal:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #065f46;
+}
+.signup-btn-modal:hover {
+  background: linear-gradient(135deg,#14b8a6,#059669);
+}
+.modal-footer-text {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #5a6a85;
+}
+.modal-footer-text a {
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: 500;
+}
+#openSignupLink {
+  cursor: pointer;
+  font-weight: 600;
+  color: #38bdf8;
+  transition: 0.2s;
+  display: inline-block;
+  margin-left: 6px;
+}
+#openSignupLink:hover {
+  text-decoration: underline;
+  color: #7dd3fc;
+}
+/* petit message sous formulaire login */
+.card-footer span.signup-suggestion {
+  color: #818cf8;
+  margin-left: 5px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.card-footer span.signup-suggestion:hover {
+  text-decoration: underline;
+}
+@media(max-width:480px){.login-card{padding:1.5rem;}.logo-icon{width:55px;height:55px;}.logo-icon i{font-size:1.8rem;}.card-header h1{font-size:1.4rem;}}
+</style>
+</head>
+<body>
+<div class="login-container">
+<div class="rainbow-border"></div>
+<div class="login-card">
+<div class="card-header">
+<div class="logo-icon"><i class="fas fa-chart-line"></i></div>
+<h1>NeTubeX</h1>
+<p>Espace de rémunération Digitale</p>
+</div>
+<form id="loginForm">
+<div class="input-group">
+<i class="fas fa-envelope"></i>
+<input type="email" id="email" placeholder="Adresse email" required autocomplete="email">
+</div>
+<div class="input-group">
+<i class="fas fa-lock"></i>
+<div class="password-wrapper">
+<input type="password" id="password" placeholder="Mot de passe" required autocomplete="current-password">
+<button type="button" class="toggle-password" id="togglePassword">
+<i class="fas fa-eye"></i>
+</button>
+</div>
+</div>
+<button type="submit" class="login-btn" id="loginBtn">
+<i class="fas fa-arrow-right-to-bracket"></i>
+<span>Se connecter</span>
+</button>
+</form>
+<div class="card-footer">
+<p><i class="fas fa-shield-alt"></i> Connexion sécurisée · Espace Digital certifié 
+<span id="openSignupLink" style="margin-left:8px;">Créer un compte</span></p>
+</div>
+</div>
+</div>
+
+<!-- TOAST ERROR -->
+<div id="errorToast" class="error-toast"><i class="fas fa-exclamation-circle"></i><span id="errorText">Erreur</span></div>
+
+<!-- MODAL INSCRIPTION (POPUP) -->
+<div id="signupModal" class="modal-overlay">
+<div class="modal-container">
+<div class="modal-header">
+<h2><i class="fas fa-user-plus" style="font-size:1.3rem; margin-right:8px;"></i> Inscription</h2>
+<button class="close-modal" id="closeModalBtn"><i class="fas fa-times"></i></button>
+</div>
+<form id="signupForm">
+<div class="input-group">
+<i class="fas fa-envelope"></i>
+<input type="email" id="signupEmail" placeholder="Adresse email" required autocomplete="off">
+</div>
+<div class="input-group">
+<i class="fas fa-lock"></i>
+<div class="password-wrapper">
+<input type="password" id="signupPassword" placeholder="Mot de passe (min 6 caractères)" required>
+<button type="button" class="toggle-password toggle-signup-pwd" data-target="signupPassword">
+<i class="fas fa-eye"></i>
+</button>
+</div>
+</div>
+<div class="input-group">
+<i class="fas fa-check-circle"></i>
+<div class="password-wrapper">
+<input type="password" id="confirmPassword" placeholder="Confirmer le mot de passe" required>
+<button type="button" class="toggle-password toggle-signup-pwd" data-target="confirmPassword">
+<i class="fas fa-eye"></i>
+</button>
+</div>
+</div>
+<div class="input-group">
+<i class="fas fa-user-tag"></i>
+<select id="signupRole" style="width:100%; padding:12px 14px 12px 44px; background:#0f1420; border:1.5px solid #2a3548; border-radius:12px; color:#e2e8f0; font-family:'Inter',sans-serif; outline:none; cursor:pointer;">
+<option value="netuber">Netuber (standard)</option>
+<option value="pets">Pets</option>
+<option value="pgc">PGC</option>
+<option value="pilote">Pilote</option>
+</select>
+</div>
+<button type="submit" class="signup-btn-modal" id="signupBtn">
+<i class="fas fa-user-check"></i> <span>S'inscrire</span>
+</button>
+<div class="modal-footer-text">
+Déjà un compte ? <a href="#" id="switchToLoginLink">Connectez-vous</a>
+</div>
+</form>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
+  authDomain: "netubexmoney.firebaseapp.com",
+  projectId: "netubexmoney",
+  storageBucket: "netubexmoney.firebasestorage.app",
+  messagingSenderId: "856592608176",
+  appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+await setPersistence(auth, browserLocalPersistence);
+
+// --- Éléments Login ---
+const loginForm = document.getElementById("loginForm");
+const loginBtn = document.getElementById("loginBtn");
+const errorToast = document.getElementById("errorToast");
+const errorText = document.getElementById("errorText");
+const togglePassword = document.getElementById("togglePassword");
+const passwordInput = document.getElementById("password");
+let toastTimeout;
+
+// --- MODAL Éléments ---
+const modalOverlay = document.getElementById("signupModal");
+const closeModalBtn = document.getElementById("closeModalBtn");
+const openSignupLink = document.getElementById("openSignupLink");
+const switchToLoginLink = document.getElementById("switchToLoginLink");
+const signupForm = document.getElementById("signupForm");
+const signupBtn = document.getElementById("signupBtn");
+const signupEmail = document.getElementById("signupEmail");
+const signupPassword = document.getElementById("signupPassword");
+const confirmPassword = document.getElementById("confirmPassword");
+const signupRole = document.getElementById("signupRole");
+
+// Helper fonctions UI
+function showError(message) {
+  errorText.textContent = message;
+  errorToast.classList.add("show");
+  if(toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => { errorToast.classList.remove("show"); }, 5000);
+}
+function hideError() { errorToast.classList.remove("show"); }
+
+// Afficher / masquer mot de passe pour les toggles (login + signup)
+function setupPasswordToggle(btn, inputField) {
+   btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const type = inputField.getAttribute("type") === "password" ? "text" : "password";
+      inputField.setAttribute("type", type);
+      const icon = btn.querySelector('i');
+      if(icon) {
+        if(type === "password") icon.classList.remove("fa-eye-slash");
+        else icon.classList.add("fa-eye-slash");
+        if(type === "text") icon.classList.remove("fa-eye");
+        else icon.classList.add("fa-eye");
+        if(icon.classList.contains("fa-eye-slash") && type==="text") icon.classList.remove("fa-eye-slash");
+        if(icon.classList.contains("fa-eye") && type==="password") icon.classList.remove("fa-eye");
+        if(type === "text") icon.classList.add("fa-eye-slash");
+        else icon.classList.add("fa-eye");
+      }
+   });
+}
+setupPasswordToggle(togglePassword, passwordInput);
+
+// Gestion modale inscription
+function openModal() { modalOverlay.classList.add("active"); hideError(); }
+function closeModal() { modalOverlay.classList.remove("active"); }
+openSignupLink.addEventListener("click", (e) => { e.preventDefault(); openModal(); });
+closeModalBtn.addEventListener("click", closeModal);
+switchToLoginLink.addEventListener("click", (e) => { e.preventDefault(); closeModal(); });
+// Fermer si clic sur overlay
+modalOverlay.addEventListener("click", (e) => { if(e.target === modalOverlay) closeModal(); });
+
+// Gestion toggles dans la modale (deux champs pwd)
+document.querySelectorAll('.toggle-signup-pwd').forEach(toggle => {
+  const targetId = toggle.getAttribute('data-target');
+  if(targetId) {
+    const targetInput = document.getElementById(targetId);
+    if(targetInput) {
+      toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const type = targetInput.getAttribute("type") === "password" ? "text" : "password";
+        targetInput.setAttribute("type", type);
+        const icon = toggle.querySelector('i');
+        if(icon) {
+          if(type === "password") icon.classList.remove("fa-eye-slash");
+          else icon.classList.add("fa-eye-slash");
+          if(type === "text") icon.classList.remove("fa-eye");
+          else icon.classList.add("fa-eye");
+        }
+      });
+    }
+  }
+});
+
+// --- LOGIN (inchangé, fonctionne déjà) ---
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  hideError();
+  const email = document.getElementById("email").value.trim();
+  const password = passwordInput.value;
+  if(!email || !password) { showError("Veuillez renseigner tous les champs"); return; }
+  if(!email.includes('@') || !email.includes('.')) { showError("Adresse email invalide"); return; }
+  loginBtn.classList.add("loading");
+  loginBtn.innerHTML = '<i class="fas fa-spinner"></i><span>Connexion...</span>';
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
+    let role = "netuber";
+    let code = null;
+    if(docSnap.exists()) { role = docSnap.data().role || "netuber"; code = docSnap.data().code || null; }
+    sessionStorage.setItem('firebaseUserId', user.uid);
+    if(code) sessionStorage.setItem('userCode', code);
+    setTimeout(() => {
+      if(role === "pets") window.location.href = "pets.html";
+      else if(role === "pgc") window.location.href = "pgc.html";
+      else if(role === "pilote") window.location.href = "pilote.html";
+      else window.location.href = "dashboard.html";
+    }, 300);
+  } catch(error) {
+    let msg = "Identifiants incorrects";
+    switch(error.code) {
+      case 'auth/invalid-email': msg = "Format d'email invalide"; break;
+      case 'auth/user-disabled': msg = "Compte désactivé. Contactez le support"; break;
+      case 'auth/user-not-found': msg = "Aucun compte associé à cet email"; break;
+      case 'auth/wrong-password': msg = "Mot de passe incorrect"; break;
+      case 'auth/too-many-requests': msg = "Trop de tentatives. Réessayez dans quelques minutes"; break;
+      default: msg = "Échec de connexion. Vérifiez vos identifiants";
+    }
+    showError(msg);
+    loginBtn.classList.remove("loading");
+    loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i><span>Se connecter</span>';
+  }
+});
+
+// --- INSCRIPTION avec Firebase (popup) ---
+signupForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  hideError();
+  const email = signupEmail.value.trim();
+  const password = signupPassword.value;
+  const confirm = confirmPassword.value;
+  const role = signupRole.value;
+  
+  if(!email || !password || !confirm) {
+    showError("Tous les champs sont requis");
+    return;
+  }
+  if(password !== confirm) {
+    showError("Les mots de passe ne correspondent pas");
+    return;
+  }
+  if(password.length < 6) {
+    showError("Le mot de passe doit contenir au moins 6 caractères");
+    return;
+  }
+  if(!email.includes('@') || !email.includes('.')) {
+    showError("Email invalide");
+    return;
+  }
+  
+  signupBtn.classList.add("loading");
+  signupBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Inscription...</span>';
+  
+  try {
+    // Créer l'utilisateur Firebase Auth
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    
+    // Mettre à jour le displayName (optionnel)
+    await updateProfile(user, { displayName: email.split('@')[0] });
+    
+    // Générer un code simple pour l'utilisateur (optionnel)
+    const generatedCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    
+    // Créer document Firestore dans collection "users"
+    await setDoc(doc(db, "users", user.uid), {
+      email: email,
+      role: role,
+      code: generatedCode,
+      createdAt: new Date().toISOString(),
+      balance: 0,
+      isActive: true
+    });
+    
+    // Session storage pour redirection
+    sessionStorage.setItem('firebaseUserId', user.uid);
+    sessionStorage.setItem('userCode', generatedCode);
+    
+    // Afficher un petit toast succès puis rediriger selon role
+    showError = (msg) => { errorText.textContent = msg; errorToast.classList.add("show"); setTimeout(()=>errorToast.classList.remove("show"),2500); };
+    errorText.textContent = "✅ Inscription réussie ! Redirection...";
+    errorToast.classList.add("show");
+    setTimeout(() => errorToast.classList.remove("show"), 2000);
+    
+    // Redirection après inscription
+    setTimeout(() => {
+      if(role === "pets") window.location.href = "pets.html";
+      else if(role === "pgc") window.location.href = "pgc.html";
+      else if(role === "pilote") window.location.href = "pilote.html";
+      else window.location.href = "dashboard.html";
+    }, 1200);
+    
+  } catch(error) {
+    console.error(error);
+    let msg = "Erreur lors de l'inscription";
+    switch(error.code) {
+      case 'auth/email-already-in-use': msg = "Cette adresse email est déjà utilisée."; break;
+      case 'auth/invalid-email': msg = "Adresse email invalide."; break;
+      case 'auth/weak-password': msg = "Mot de passe trop faible (minimum 6 caractères)."; break;
+      case 'auth/operation-not-allowed': msg = "Inscription désactivée temporairement."; break;
+      default: msg = "Échec inscription : " + error.message;
+    }
+    showError(msg);
+    signupBtn.classList.remove("loading");
+    signupBtn.innerHTML = '<i class="fas fa-user-check"></i><span>S\'inscrire</span>';
+  }
+});
+
+document.getElementById("email").addEventListener("focus", hideError);
+passwordInput.addEventListener("focus", hideError);
+</script>
+
+<!-- Service Worker pour l'installation PWA -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(reg => console.log('Service Worker enregistré :', reg.scope))
+      .catch(err => console.log('Erreur SW :', err));
+  });
+}
+</script>
+</body>
+</html>
