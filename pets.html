@@ -18,18 +18,11 @@
     <thead>
       <tr>
         <th>Code Netuber</th>
+        <th>Email</th>
         <th>Rôle</th>
-        <th>Connexions</th>
-        <th>Déconnexions</th>
-        <th>Échecs</th>
-        <th>Dernière Connexion</th>
-        <th>Dernière Déconnexion</th>
-        <th>Temps total</th>
+        <th>Balance</th>
         <th>Statut</th>
-        <th>Localisation</th>
-        <th>Site</th>
-        <th>Zone</th>
-        <th>Terminal</th>
+        <th>Date création</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -58,66 +51,60 @@
     const historyContainer = document.getElementById("historyContainer");
 
     async function loadUsers() {
-      const querySnapshot = await getDocs(collection(db, "users"));
-      querySnapshot.forEach(doc => {
-        const user = doc.data();
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-          <td>${user.codeNetuber || ""}</td>
-          <td>${user.role || ""}</td>
-          <td>${user.nombreConnexions || ""}</td>
-          <td>${user.nombreDeconnexions || ""}</td>
-          <td>${user.nombreEchecsConnexion || ""}</td>
-          <td>${user.heureConnexion || ""}</td>
-          <td>${user.heureDeconnexion || ""}</td>
-          <td>${user.tempsTotalTerminal || ""}</td>
-          <td>${user.statut || ""}</td>
-          <td>${user.localisation || ""}</td>
-          <td>${user.site || ""}</td>
-          <td>${user.zone || ""}</td>
-          <td>${user.terminal || ""}</td>
-        `;
-
-        tr.addEventListener("click", () => showHistory(user));
-        usersTableBody.appendChild(tr);
-      });
-    }
-
-    function showHistory(user) {
-      historyContainer.innerHTML = `<h2>Historique : ${user.codeNetuber}</h2>`;
-      if (!user.historique || user.historique.length === 0) {
-        historyContainer.innerHTML += "<p>Aucune session enregistrée.</p>";
-        return;
+      try {
+        const querySnapshot = await getDocs(collection(db, "users"));
+        console.log("📊 Utilisateurs trouvés:", querySnapshot.size);
+        
+        if (querySnapshot.empty) {
+          usersTableBody.innerHTML = '<tr><td colspan="6">Aucun utilisateur trouvé</td></tr>';
+          return;
+        }
+        
+        usersTableBody.innerHTML = "";
+        
+        querySnapshot.forEach((doc) => {
+          const user = doc.data();
+          console.log("👤 Utilisateur:", user);
+          
+          const tr = document.createElement("tr");
+          
+          // Afficher les données réelles
+          tr.innerHTML = `
+            <td>${user.code || "-"}</td>
+            <td>${user.email || "-"}</td>
+            <td>${user.role || "-"}</td>
+            <td>${user.balance || "0"}</td>
+            <td>${user.isActive ? "✅ Actif" : "❌ Inactif"}</td>
+            <td>${user.createdAt ? new Date(user.createdAt).toLocaleString() : "-"}</td>
+          `;
+          
+          // Le clic affichera les infos disponibles (pas d'historique car inexistant)
+          tr.addEventListener("click", () => showUserInfo(user));
+          usersTableBody.appendChild(tr);
+        });
+        
+      } catch (error) {
+        console.error("Erreur:", error);
+        usersTableBody.innerHTML = `<td><td colspan="6">Erreur: ${error.message}</td></tr>`;
       }
-
-      const table = document.createElement("table");
-      table.classList.add("history");
-      table.innerHTML = `
-        <thead>
-          <tr>
-            <th>Heure Connexion</th>
-            <th>Heure Déconnexion</th>
-            <th>Durée</th>
-            <th>Localisation</th>
-            <th>Statut</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${user.historique.map(s => `
-            <tr>
-              <td>${s.heureConnexion || ""}</td>
-              <td>${s.heureDeconnexion || ""}</td>
-              <td>${s.duree || ""}</td>
-              <td>${s.localisation || ""}</td>
-              <td>${s.statut || ""}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      `;
-      historyContainer.appendChild(table);
     }
 
+    function showUserInfo(user) {
+      historyContainer.innerHTML = `
+        <h2>Informations : ${user.code || user.email}</h2>
+        <div style="border:1px solid #ccc; padding:10px; margin-top:10px;">
+          <p><strong>Code:</strong> ${user.code || "-"}</p>
+          <p><strong>Email:</strong> ${user.email || "-"}</p>
+          <p><strong>Rôle:</strong> ${user.role || "-"}</p>
+          <p><strong>Balance:</strong> ${user.balance || "0"} €</p>
+          <p><strong>Statut:</strong> ${user.isActive ? "Actif" : "Inactif"}</p>
+          <p><strong>Date création:</strong> ${user.createdAt ? new Date(user.createdAt).toLocaleString() : "-"}</p>
+        </div>
+        <p style="margin-top:20px; color:#999;">⚠️ Aucun historique de session disponible dans la base de données</p>
+      `;
+    }
+
+    // Charger les utilisateurs
     loadUsers();
   </script>
 </body>
