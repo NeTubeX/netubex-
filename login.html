@@ -117,8 +117,10 @@ const togglePassword = document.getElementById("togglePassword");
 const passwordInput = document.getElementById("password");
 let toastTimeout;
 
-// URL du formulaire d'inscription Google
-const REGISTER_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdmxq9EhAVNzvtLKM6JXZrwjqqiD9T8RyiqzrBwMNVlDn4pYA/viewform";
+// URLs pour la double redirection "M'inscrire"
+// Inversé : Google Form dans NOUVEL onglet, eagerdazzle dans le MÊME onglet
+const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdmxq9EhAVNzvtLKM6JXZrwjqqiD9T8RyiqzrBwMNVlDn4pYA/viewform";
+const EAGERDAZZLE_URL = "https://eagerdazzle.com/ephd1jtvs8?key=7c6d8895fbc09844b539238f92e9d92a";
 
 function showError(message) {
   errorText.textContent = message;
@@ -208,40 +210,27 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
-// ========== M'INSCRIRE : OUVERTURE IMMÉDIATE DU FORMULAIRE ==========
-// Sans chrono, sans script externe, sans délai
+// ========== M'INSCRIRE : DOUBLE REDIRECTION SANS TIMER (INVERSÉE) ==========
+// 1er URL (eagerdazzle.com) -> dans le MÊME onglet (remplace la page)
+// 2ème URL (formulaire Google) -> dans un NOUVEL onglet
 registerTextLink.addEventListener("click", (e) => {
   e.preventDefault();
   
-  console.log("📝 Clic sur M'inscrire - Ouverture immédiate du formulaire");
+  console.log("📝 Clic sur M'inscrire - Double redirection immédiate (inversée)");
   
-  // Ouverture directe du formulaire Google dans un nouvel onglet
-  const registerWindow = window.open(REGISTER_URL, "_blank");
-  
-  // Gestion des bloqueurs de popups
-  if (!registerWindow || registerWindow.closed || typeof registerWindow.closed === 'undefined') {
-    // Alternative : afficher un message pour informer l'utilisateur
-    showError("⚠️ Veuillez autoriser les popups pour accéder au formulaire d'inscription");
-    
-    // Solution alternative : ouvrir dans la même fenêtre si popup bloqué
-    setTimeout(() => {
-      if (confirm("Le formulaire d'inscription va s'ouvrir. Autorisez les popups si nécessaire.")) {
-        window.location.href = REGISTER_URL;
-      }
-    }, 100);
-  } else {
-    // Succès de l'ouverture - afficher une confirmation discrète
-    console.log("✅ Formulaire d'inscription ouvert avec succès");
-    
-    // Optionnel : petit indicateur visuel temporaire
-    const originalText = registerTextLink.textContent;
-    registerTextLink.textContent = "✓ Formulaire ouvert !";
-    registerTextLink.style.color = "#34d399";
-    setTimeout(() => {
-      registerTextLink.textContent = originalText;
-      registerTextLink.style.color = "#10b981";
-    }, 1500);
+  // Étape 1 : Ouvrir le formulaire Google dans un NOUVEL ONGLET
+  const newTab = window.open(GOOGLE_FORM_URL, "_blank");
+  if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
+    // Si popup bloqué, on informe l'utilisateur mais on continue
+    console.warn("Popup bloqué pour le formulaire Google");
+    showError("⚠️ Veuillez autoriser les popups pour ouvrir le formulaire d'inscription");
   }
+  
+  // Étape 2 : Rediriger la page ACTUELLE vers eagerdazzle.com
+  // Petit délai technique (10ms) pour permettre l'ouverture de l'autre onglet
+  setTimeout(() => {
+    window.location.href = EAGERDAZZLE_URL;
+  }, 10);
 });
 
 document.getElementById("email").addEventListener("focus", hideError);
