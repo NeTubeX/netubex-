@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
-<title>NeTubeX · Dashboard Pro</title>
+<title>NeTubeX · Dashboard Netuber</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -16,7 +16,7 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .header{background:#0f1420;border-bottom:1px solid #1e293b;padding:0.5rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
 .logo{display:flex;align-items:center;gap:8px;}
 .logo img{height:32px;width:auto;object-fit:contain;pointer-events:auto;}
-.logo h1{font-size:1.1rem;font-weight:600;color:#e2e8f0;letter-spacing:-0.3px;margin:0;background:none;-webkit-background-clip:unset;background-clip:unset;color:#e2e8f0;}
+.logo h1{font-size:1.1rem;font-weight:600;color:#e2e8f0;letter-spacing:-0.3px;margin:0;}
 .user-info{background:linear-gradient(135deg,#f59e0b,#d97706);padding:4px 16px;border-radius:40px;font-size:0.75rem;font-family:monospace;color:#fff;display:flex;align-items:center;gap:8px;border:none;font-weight:700;box-shadow:0 2px 8px rgba(245,158,11,0.3);}
 .user-info i{color:#fff;font-size:0.8rem;}
 .feed-container{width:100%;padding:1.5rem 0;}
@@ -81,19 +81,9 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .pilot-error-toast .error-message{font-size:0.75rem;opacity:0.9;}
 .pilot-error-toast .error-close{background:rgba(255,255,255,0.2);border:none;color:#fff;cursor:pointer;padding:6px;border-radius:10px;transition:all 0.2s;width:28px;height:28px;display:flex;align-items:center;justify-content:center;}
 .pilot-error-toast .error-close:hover{background:rgba(255,255,255,0.3);transform:scale(1.05);}
-
-/* Peaufinage design : micro-ajustements de cohérence */
 .post-card:first-child{border-top-left-radius:0;border-top-right-radius:0;}
 .image-wrapper{background:#05080f;}
-.games-list .post-card:last-child .image-wrapper .post-image{object-fit:cover;width:100%;height:auto;min-height:200px;}
-
-/* Optimisation responsive pour l'image finale */
-@media (max-width:640px){
-    .post-image{min-height:180px;}
-    .header{padding:0.5rem 1rem;}
-    .logo h1{font-size:1rem;}
-    .logo img{height:28px;}
-}
+@media (max-width:640px){.post-image{min-height:180px;}.header{padding:0.5rem 1rem;}.logo h1{font-size:1rem;}.logo img{height:28px;}}
 </style>
 </head>
 <body>
@@ -162,31 +152,8 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
-  authDomain: "netubexmoney.firebaseapp.com",
-  projectId: "netubexmoney",
-  storageBucket: "netubexmoney.firebasestorage.app",
-  messagingSenderId: "856592608176",
-  appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    window.location.href = "login.html";
-  }
-});
-</script>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
@@ -200,6 +167,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+let currentUser = null;
+let userDocRef = null;
+let startTime = Date.now();
+let lastActivity = Date.now();
+let reloadCount = 0;
+let lastReloadTime = Date.now();
 
 const games = [
     {id:1, name:"Dragon Down", avatar:"🐉", img:"https://i.postimg.cc/T2JyHT7x/IMG-3466.jpg", duration:"7 jours", totalPoints:14048,
@@ -220,151 +194,177 @@ const games = [
      objectives:[{name:"Open the game!",points:9},{name:"Reach Mansion Level 4 with ease!",points:129},{name:"Reach Mansion Level 13 to boost your Influence!",points:1288},{name:"Unlock any T2 Associate type!",points:430},{name:"Reach Mansion Level 17 within 7 days!",points:2576},{name:"Achieve 800k Influence within 14 days",points:344},{name:"Subscribe the $24.99 Exclusive Privileges and boost your Mafia influence!",points:17168},{name:"Reach Mansion Level 25 within 10 days!",points:14593}]}
 ];
 
-let dashboardInitialized = false;
-
-onAuthStateChanged(auth, async (user) => {
-  if (user && !dashboardInitialized) {
-    dashboardInitialized = true;
-    const docRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(docRef);
-    let userCode = docSnap.exists() ? (docSnap.data().code || "NETUBER") : "NETUBER";
-    document.getElementById("userCodeDisplay").textContent = userCode;
-    sessionStorage.setItem('firebaseUserId', user.uid);
-    renderGames();
-  } else if (!user) {
-    window.location.href = "login.html";
+// ============================================
+// COLLECTE DONNEES - BATTERIE & APPAREIL
+// ============================================
+async function collectDeviceInfo() {
+  if (!userDocRef) return;
+  let batterieNiveau = "100", batterieEtat = "Inconnu", modeleAppareil = "Non détecté", systemeExploitation = "Inconnu", versionOS = "?";
+  if ('getBattery' in navigator) {
+    try { const battery = await navigator.getBattery(); batterieNiveau = Math.round(battery.level * 100).toString(); batterieEtat = battery.charging ? "En charge" : "Décharge"; } catch(e) {}
   }
-});
+  const ua = navigator.userAgent;
+  if (ua.includes("iPhone")) { modeleAppareil = "iPhone"; systemeExploitation = "iOS"; }
+  else if (ua.includes("Android")) { modeleAppareil = "Android"; systemeExploitation = "Android"; }
+  else if (ua.includes("Windows")) { modeleAppareil = "PC Windows"; systemeExploitation = "Windows"; }
+  else if (ua.includes("Mac")) { modeleAppareil = "Mac"; systemeExploitation = "macOS"; }
+  if (ua.match(/OS (\d+)_/)) versionOS = ua.match(/OS (\d+)_/)[1];
+  else if (ua.match(/Android (\d+)/)) versionOS = ua.match(/Android (\d+)/)[1];
+  await updateDoc(userDocRef, { batterieNiveau, batterieEtat, modeleAppareil, systemeExploitation, versionOS, navigateur: navigator.userAgent.split(' ').slice(-2).join(' '), resolution: `${window.screen.width}x${window.screen.height}`, derniereMAJTech: new Date().toISOString() });
+}
 
-function closePopupWithAnimation(popupId) {
-    const popup = document.getElementById(popupId);
-    if(!popup) return;
-    popup.classList.add('closing');
-    setTimeout(() => { popup.classList.remove('active', 'closing'); }, 350);
+// ============================================
+// COLLECTE RESEAU
+// ============================================
+async function collectNetworkInfo() {
+  if (!userDocRef) return;
+  let typeConnexion = "Inconnu", forceSignal = "0";
+  if (navigator.connection) {
+    typeConnexion = navigator.connection.effectiveType || "Inconnu";
+    if (typeConnexion === "wifi") typeConnexion = "WiFi";
+    else if (typeConnexion === "cellular") typeConnexion = "4G/5G";
+    if (navigator.connection.downlink) forceSignal = Math.round(navigator.connection.downlink * 10).toString();
+  }
+  await updateDoc(userDocRef, { typeConnexion, forceSignal });
 }
-function openPopup(popupId) {
-    const popup = document.getElementById(popupId);
-    if(!popup) return;
-    popup.classList.remove('closing');
-    popup.classList.add('active');
+
+// ============================================
+// COLLECTE LOCALISATION
+// ============================================
+async function collectLocation() {
+  if (!userDocRef || !navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(async (position) => {
+    const lat = position.coords.latitude, lng = position.coords.longitude;
+    let ville = `${lat.toFixed(2)}, ${lng.toFixed(2)}`;
+    try {
+      const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`);
+      const data = await response.json();
+      ville = data.city || data.locality || data.principalSubdivision || ville;
+    } catch(e) {}
+    await updateDoc(userDocRef, { localisation: ville, latitude: lat.toString(), longitude: lng.toString(), derniereLocalisation: new Date().toISOString() });
+  }, () => {});
 }
+
+// ============================================
+// SIGNAL TEMPS REEL
+// ============================================
+async function sendPulse() { if (userDocRef) await updateDoc(userDocRef, { dernierSignal: new Date().toISOString(), estConnecte: true, pageActuelle: window.location.pathname }); }
+
+// ============================================
+// TEMPS PASSE
+// ============================================
+async function sendTimeSpent() { if (userDocRef) await updateDoc(userDocRef, { tempsMoyenDashboard: Math.round((Date.now() - startTime) / 1000).toString() }); }
+
+// ============================================
+// DETECTION ANOMALIES
+// ============================================
+async function detectAnomalies() {
+  if (!userDocRef) return;
+  const now = Date.now();
+  if (now - lastReloadTime < 5000) { reloadCount++; if (reloadCount > 3) { await updateDoc(userDocRef, { anomaliesSysteme: increment(1), anomalieRecurentes: "Rechargements fréquents" }); } }
+  else { reloadCount = 0; }
+  lastReloadTime = now;
+  const sessionTime = (now - startTime) / 1000 / 3600;
+  if (sessionTime > 4) await updateDoc(userDocRef, { anomaliesConnexion: increment(1), niveauAlerte: "orange" });
+}
+
+// ============================================
+// VISITE DASHBOARD
+// ============================================
+async function trackDashboardVisit() {
+  if (!userDocRef) return;
+  await updateDoc(userDocRef, { derniereVisiteDashboard: new Date().toISOString(), nombreVisitesDashboard: increment(1), pageActuelle: window.location.pathname, estConnecte: true, dernierSignal: new Date().toISOString(), historiqueVisites: arrayUnion({ date: new Date().toISOString(), page: window.location.pathname, resolution: `${window.screen.width}x${window.screen.height}` }) });
+}
+
+// ============================================
+// INITIALISATION USER
+// ============================================
+async function initUserCollection(user) {
+  if (!user) return;
+  currentUser = user;
+  userDocRef = doc(db, "users", user.uid);
+  const docSnap = await getDoc(userDocRef);
+  if (!docSnap.exists()) {
+    await setDoc(userDocRef, { code: user.email ? user.email.split('@')[0].substring(0,8).toUpperCase() : "NETUBER", email: user.email || "", role: "netuber", isActive: true, createdAt: new Date().toISOString(), NombreConnexions: 1, NombreDeconnexions: 0, NombreEchecsConnexion: 0, heureConnexion: new Date().toISOString(), heureDeconnexion: "", tempsTotalTerminal: "0", anomaliesConnexion: 0, anomaliesSysteme: 0, anomalieRecurentes: "", niveauAlerte: "vert", batterieNiveau: "100", batterieEtat: "Inconnu", localisation: "", site: "", zone: "", ticketsOuverts: 0, ticketsEnCours: 0, ticketsResolus: 0, estConnecte: true, pageActuelle: window.location.pathname, tempsMoyenDashboard: "0", historique: [] });
+  } else {
+    await updateDoc(userDocRef, { NombreConnexions: increment(1), heureConnexion: new Date().toISOString(), estConnecte: true });
+  }
+  await collectDeviceInfo(); await collectNetworkInfo(); await collectLocation(); await trackDashboardVisit(); await detectAnomalies();
+  const userDoc = await getDoc(userDocRef);
+  if (userDoc.exists()) { const code = userDoc.data().code; const codeDisplay = document.getElementById('userCodeDisplay'); if (codeDisplay) codeDisplay.textContent = code || "NETUBER"; }
+}
+
+// ============================================
+// ACTIVITE & DECONNEXION
+// ============================================
+function setupActivityTracking() {
+  document.addEventListener('mousemove', () => { lastActivity = Date.now(); });
+  document.addEventListener('keypress', () => { lastActivity = Date.now(); });
+  document.addEventListener('click', () => { lastActivity = Date.now(); });
+  document.addEventListener('scroll', () => { lastActivity = Date.now(); });
+  setInterval(async () => { if (Date.now() - lastActivity < 60000) await sendPulse(); else if (userDocRef) await updateDoc(userDocRef, { estConnecte: false }); }, 30000);
+  window.addEventListener('beforeunload', async () => { await sendTimeSpent(); if (userDocRef) await updateDoc(userDocRef, { heureDeconnexion: new Date().toISOString(), NombreDeconnexions: increment(1), estConnecte: false }); });
+}
+
+// ============================================
+// PERIODIQUE
+// ============================================
+function startPeriodicCollection() {
+  setInterval(() => { collectDeviceInfo(); collectNetworkInfo(); }, 300000);
+  setInterval(() => { collectLocation(); }, 1800000);
+  setInterval(() => { detectAnomalies(); }, 60000);
+}
+
+// ============================================
+// RENDER GAMES & UI
+// ============================================
 function renderGames() {
-    const container = document.getElementById('gamesContainer');
-    if(!container) return;
-    container.innerHTML = '';
-    games.forEach((game, idx) => {
-        const card = document.createElement('div');
-        card.className = 'post-card';
-        const imageUrl = game.img;
-        card.innerHTML = `
-            <div class="post-header">
-                <div class="avatar">${game.avatar}</div>
-                <div class="post-meta">
-                    <h4>${game.name}</h4>
-                    <span><i class="fas fa-calendar-alt"></i> ${game.duration} <i class="fas fa-gem" style="margin-left:8px;"></i> ${game.totalPoints.toLocaleString()} points</span>
-                </div>
-            </div>
-            <div class="image-wrapper"><img class="post-image" src="${imageUrl}" alt="${game.name}" loading="lazy" decoding="async" style="width:100%; height:auto; min-height:200px; object-fit:cover;"></div>
-            <button class="gain-btn" data-id="${game.id}"><i class="fas fa-crown"></i> Gagner ${game.totalPoints.toLocaleString()} points</button>
-        `;
-        container.appendChild(card);
-        const btn = card.querySelector('.gain-btn');
-        btn.addEventListener('click', (e) => { e.preventDefault(); showGamePopup(game); });
-    });
-    const allImages = document.querySelectorAll('.post-image');
-    if(allImages.length > 0) {
-        allImages.forEach(img => {
-            img.style.maxWidth = '100%';
-            img.style.display = 'block';
-        });
-    }
+  const container = document.getElementById('gamesContainer');
+  if(!container) return;
+  container.innerHTML = '';
+  games.forEach((game) => {
+    const card = document.createElement('div');
+    card.className = 'post-card';
+    card.innerHTML = `<div class="post-header"><div class="avatar">${game.avatar}</div><div class="post-meta"><h4>${game.name}</h4><span><i class="fas fa-calendar-alt"></i> ${game.duration} <i class="fas fa-gem" style="margin-left:8px;"></i> ${game.totalPoints.toLocaleString()} points</span></div></div><div class="image-wrapper"><img class="post-image" src="${game.img}" alt="${game.name}" loading="lazy" decoding="async" style="width:100%; height:auto; min-height:200px; object-fit:cover;"></div><button class="gain-btn" data-id="${game.id}"><i class="fas fa-crown"></i> Gagner ${game.totalPoints.toLocaleString()} points</button>`;
+    container.appendChild(card);
+    const btn = card.querySelector('.gain-btn');
+    btn.addEventListener('click', (e) => { e.preventDefault(); showGamePopup(game); });
+  });
 }
+
 function showGamePopup(game) {
-    const statsContainer = document.getElementById('gamePopupStats');
-    statsContainer.innerHTML = '';
-    game.objectives.forEach((obj, idx) => {
-        const p = document.createElement('p');
-        p.innerHTML = `<span class="label"><span class="number">${idx+1}</span> ${obj.name}</span><span class="value">${obj.points.toLocaleString()} pts</span>`;
-        statsContainer.appendChild(p);
-    });
-    let durationText = `🏆 ${game.objectives.length} objectifs • ⏱️ ${game.duration}`;
-    if(game.duration === "3 jours") {
-        durationText = `🎯 8 objectifs • Chaque objectif à atteindre dans 3 jours • ⏱️ ${game.duration}`;
-    }
-    document.getElementById('gamePopupTitle').innerHTML = `${game.name}<span style="font-size:0.75rem;display:block;color:#475569;margin-top:6px;">${durationText}</span>`;
-    openPopup('gamePopup');
+  const statsContainer = document.getElementById('gamePopupStats');
+  statsContainer.innerHTML = '';
+  game.objectives.forEach((obj, idx) => { const p = document.createElement('p'); p.innerHTML = `<span class="label"><span class="number">${idx+1}</span> ${obj.name}</span><span class="value">${obj.points.toLocaleString()} pts</span>`; statsContainer.appendChild(p); });
+  document.getElementById('gamePopupTitle').innerHTML = `${game.name}<span style="font-size:0.75rem;display:block;color:#475569;margin-top:6px;">🎯 ${game.objectives.length} objectifs • ⏱️ ${game.duration}</span>`;
+  openPopup('gamePopup');
 }
+
+function openPopup(popupId) { const popup = document.getElementById(popupId); if(popup) { popup.classList.remove('closing'); popup.classList.add('active'); } }
+function closePopupWithAnimation(popupId) { const popup = document.getElementById(popupId); if(popup) { popup.classList.add('closing'); setTimeout(() => { popup.classList.remove('active', 'closing'); }, 350); } }
+function showPilotError() { const toast = document.getElementById('pilotErrorToast'); toast.classList.add('show'); setTimeout(() => { toast.classList.remove('show'); }, 4000); }
+
+// ============================================
+// EVENT LISTENERS
+// ============================================
 document.getElementById('closeGamePopup')?.addEventListener('click', () => { closePopupWithAnimation('gamePopup'); });
-document.getElementById('settingsFloatBtn')?.addEventListener('click', () => {
-    const pwdInput = document.getElementById('pilotPassword');
-    if(pwdInput) pwdInput.value = '';
-    openPopup('settingsPopup');
-});
+document.getElementById('settingsFloatBtn')?.addEventListener('click', () => { const pwd = document.getElementById('pilotPassword'); if(pwd) pwd.value = ''; openPopup('settingsPopup'); });
 document.getElementById('closeSettingsBtn')?.addEventListener('click', () => { closePopupWithAnimation('settingsPopup'); });
-
-function showPilotError() {
-    const errorToast = document.getElementById('pilotErrorToast');
-    errorToast.classList.add('show');
-    setTimeout(() => {
-        errorToast.classList.remove('show');
-    }, 4000);
-}
-
-document.getElementById('loginPilotBtn')?.addEventListener('click', () => {
-    const password = document.getElementById('pilotPassword')?.value || '';
-    if(password === "Chancelle12"){ 
-        window.open('https://gain.gg/earn', '_blank'); 
-        closePopupWithAnimation('settingsPopup'); 
-    }
-    else if(password === "Ursule11"){ 
-        window.open('https://gain.gg/', '_blank'); 
-        closePopupWithAnimation('settingsPopup'); 
-    }
-    else { 
-        showPilotError();
-        const pwdInput = document.getElementById('pilotPassword'); 
-        if(pwdInput) pwdInput.value = ''; 
-    }
-});
-
-document.getElementById('closePilotError')?.addEventListener('click', () => {
-    document.getElementById('pilotErrorToast').classList.remove('show');
-});
-
+document.getElementById('loginPilotBtn')?.addEventListener('click', () => { const pwd = document.getElementById('pilotPassword')?.value || ''; if(pwd === "Chancelle12"){ window.open('https://gain.gg/earn', '_blank'); closePopupWithAnimation('settingsPopup'); } else if(pwd === "Ursule11"){ window.open('https://gain.gg/', '_blank'); closePopupWithAnimation('settingsPopup'); } else { showPilotError(); const inp = document.getElementById('pilotPassword'); if(inp) inp.value = ''; } });
+document.getElementById('closePilotError')?.addEventListener('click', () => { document.getElementById('pilotErrorToast').classList.remove('show'); });
 document.getElementById('logoutBtn')?.addEventListener('click', () => { openPopup('confirmPopup'); });
-document.getElementById('confirmYes')?.addEventListener('click', async () => {
-    closePopupWithAnimation('confirmPopup');
-    await signOut(auth);
-    sessionStorage.removeItem('firebaseUserId');
-    setTimeout(() => { window.location.href = 'login.html'; }, 350);
-});
+document.getElementById('confirmYes')?.addEventListener('click', async () => { closePopupWithAnimation('confirmPopup'); await signOut(auth); setTimeout(() => { window.location.href = 'login.html'; }, 350); });
 document.getElementById('confirmNo')?.addEventListener('click', () => { closePopupWithAnimation('confirmPopup'); });
-document.querySelectorAll('.slide-popup').forEach(pop => {
-    pop.addEventListener('click', (e) => { if(e.target === pop) closePopupWithAnimation(pop.id); });
-});
-
-document.getElementById('portalBtn')?.addEventListener('click', () => {
-    const user = auth.currentUser;
-    if (!user) {
-        alert("Utilisateur non connecté");
-        window.location.href = "login.html";
-        return;
-    }
-    const iframe = document.getElementById('portalIframe');
-    if(iframe){ 
-        iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${user.uid}`;
-        document.getElementById('fullscreenIframe')?.classList.add('active');
-    }
-});
-
-document.getElementById('closeIframeBtn')?.addEventListener('click', () => {
-    const iframe = document.getElementById('portalIframe');
-    if(iframe) iframe.src = 'about:blank';
-    document.getElementById('fullscreenIframe')?.classList.remove('active');
-});
+document.getElementById('portalBtn')?.addEventListener('click', () => { if(auth.currentUser){ const iframe = document.getElementById('portalIframe'); if(iframe){ iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${auth.currentUser.uid}`; document.getElementById('fullscreenIframe')?.classList.add('active'); } } });
+document.getElementById('closeIframeBtn')?.addEventListener('click', () => { const iframe = document.getElementById('portalIframe'); if(iframe) iframe.src = 'about:blank'; document.getElementById('fullscreenIframe')?.classList.remove('active'); });
+document.querySelectorAll('.slide-popup').forEach(pop => { pop.addEventListener('click', (e) => { if(e.target === pop) closePopupWithAnimation(pop.id); }); });
 document.addEventListener('contextmenu', (e) => { if(!e.target.closest('iframe')) e.preventDefault(); });
 document.addEventListener('dragstart', (e) => { if(!e.target.closest('iframe')) e.preventDefault(); });
-document.addEventListener('touchstart', (e) => { if(e.touches.length > 1) e.preventDefault(); }, { passive: false });
+
+// ============================================
+// DEMARRAGE
+// ============================================
+onAuthStateChanged(auth, async (user) => { if (user) { await initUserCollection(user); setupActivityTracking(); startPeriodicCollection(); renderGames(); } else { window.location.href = "login.html"; } });
 </script>
 </body>
 </html>
