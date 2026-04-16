@@ -103,8 +103,8 @@ tr:hover{background:#1a2332;}
 <div id="statsTab" class="tab-content">
 <div class="stats-grid">
 <div class="stat-card"><div class="value" id="successRate">0%</div><div class="label">Taux succès</div></div>
-<div class="stat-card"><div class="value" id="androidCount">0</div><div class="label">Android</div></div>
-<div class="stat-card"><div class="value" id="iosCount">0</div><div class="label">iOS</div></div>
+<div class="stat-card"><div class="value" id="avgBatteryStat">0%</div><div class="label">Batterie moyenne</div></div>
+<div class="stat-card"><div class="value" id="totalAnomaliesStat">0</div><div class="label">Total anomalies</div></div>
 </div>
 <div class="table-wrapper">
 <table><thead><tr><th>Indicateur</th><th>Valeur</th></tr></thead><tbody id="statsTableBody"></tbody></table>
@@ -157,32 +157,29 @@ tbody.innerHTML += `<tr onclick='showDetails("${user.code || user.email}")'>
 <td><span class="badge ${anomalieClass}">${anomalies}</span></td>
 <td><div class="battery"><div class="battery-icon"><div class="battery-level ${batterieClass}" style="width:${Math.min(batterie,100)}%"></div></div><span style="color:${batterieColor}">${batterie}%</span></div></td>
 <td><span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>${isOnline ? 'En ligne' : 'Hors ligne'}</td>
-</tr>`;
+`;
 });
 document.getElementById('totalConnexions').innerText=totalConnex;
 document.getElementById('avgBattery').innerText=usersData.length?Math.round(totalBatt/usersData.length)+'%':'0%';
 document.getElementById('onlineRate').innerText=usersData.length?Math.round((online/usersData.length)*100)+'%':'0%';
 }
 function updateStatsTab(){
-let android=0,ios=0,pc=0;
-usersData.forEach(user=>{
-const os=user.systemeExploitation||'';
-if(os.includes('Android')) android++;
-else if(os.includes('iOS')) ios++;
-else if(os.includes('Windows')||os.includes('macOS')) pc++;
-});
 const totalConnex=usersData.reduce((a,u)=>a+(parseInt(u.NombreConnexions)||0),0);
 const totalEchecs=usersData.reduce((a,u)=>a+(parseInt(u.NombreEchecsConnexion)||0),0);
 const successRate=totalConnex+totalEchecs>0?Math.round((totalConnex/(totalConnex+totalEchecs))*100):0;
+const totalBatt=usersData.reduce((a,u)=>a+(parseInt(u.batterieNiveau)||0),0);
+const avgBatt=usersData.length?Math.round(totalBatt/usersData.length):0;
+const totalAnomalies=usersData.reduce((a,u)=>a+(parseInt(u.anomaliesConnexion)||0)+(parseInt(u.anomaliesSysteme)||0),0);
 document.getElementById('successRate').innerText=successRate+'%';
-document.getElementById('androidCount').innerText=android;
-document.getElementById('iosCount').innerText=ios;
+document.getElementById('avgBatteryStat').innerText=avgBatt+'%';
+document.getElementById('totalAnomaliesStat').innerText=totalAnomalies;
 const tbody=document.getElementById('statsTableBody');
 tbody.innerHTML=`
-<tr><td>📱 Android</td><td>${android}</td></tr>
-<tr><td>🍎 iOS</td><td>${ios}</td></tr>
-<tr><td>💻 PC/Mac</td><td>${pc}</td></tr>
-<tr><td>🔋 Batterie moyenne</td><td>${document.getElementById('avgBattery').innerText}</td></tr>
+<tr><td>📊 Taux de succès</td><td>${successRate}%</td></tr>
+<tr><td>🔋 Batterie moyenne</td><td>${avgBatt}%</td></tr>
+<tr><td>⚠️ Total anomalies</td><td>${totalAnomalies}</td></tr>
+<tr><td>✅ Total connexions</td><td>${totalConnex}</td></tr>
+<tr><td>❌ Total échecs</td><td>${totalEchecs}</td></tr>
 `;
 }
 function updateTicketsTab(){
@@ -220,10 +217,7 @@ document.getElementById('totalTickets').innerText=totalTickets;
 }
 function formatDate(dateStr){
 if(!dateStr) return 'Jamais';
-try{
-const d=new Date(dateStr);
-return d.toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-}catch(e){return 'Invalide';}
+try{ const d=new Date(dateStr); return d.toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }catch(e){return 'Invalide';}
 }
 window.showDetails = (identifier) => {
 const user = usersData.find(u => u.code === identifier || u.email === identifier);
@@ -233,8 +227,7 @@ const batterie = parseInt(user.batterieNiveau) || 0;
 const batterieColor = batterie > 60 ? '#10b981' : batterie > 20 ? '#f59e0b' : '#ef4444';
 const heureConnexion = formatDate(user.heureConnexion);
 const heureDeconnexion = formatDate(user.heureDeconnexion);
-const modalBody = document.getElementById('modalBody');
-modalBody.innerHTML = `
+document.getElementById('modalBody').innerHTML = `
 <div class="info-row"><span class="info-label"><i class="fas fa-code"></i> Code</span><span class="info-value">${user.code || '-'}</span></div>
 <div class="info-row"><span class="info-label"><i class="fas fa-envelope"></i> Email</span><span class="info-value">${user.email || '-'}</span></div>
 <div class="info-row"><span class="info-label"><i class="fas fa-plug"></i> Statut</span><span class="info-value"><span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>${isOnline ? 'En ligne' : 'Hors ligne'}</span></div>
