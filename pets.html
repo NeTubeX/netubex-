@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NeTubeX - Dashboard Technique</title>
+  <title>NeTubeX - Dashboard Pro Dark</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -15,186 +15,203 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #f0f2f5;
-      color: #1a1a1a;
-      overflow-x: hidden;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      height: 100vh;
+      overflow: hidden;
+      color: #fff;
+    }
+
+    /* Container principal - hauteur totale sans scroll */
+    .dashboard {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 30px;
+      overflow: hidden;
     }
 
     /* Header */
     .header {
-      background: white;
-      padding: 20px 30px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(10px);
-    }
-
-    .header-content {
-      max-width: 1400px;
-      margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 20px;
+      flex-shrink: 0;
     }
 
     .logo h1 {
-      font-size: 24px;
+      font-size: 28px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .logo p {
       font-size: 12px;
-      color: #666;
+      color: rgba(255,255,255,0.5);
       margin-top: 5px;
     }
 
-    .stats-header {
+    .stats-row {
       display: flex;
       gap: 20px;
     }
 
     .stat-badge {
-      background: #f0f2f5;
-      padding: 10px 20px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      padding: 8px 20px;
       border-radius: 12px;
       text-align: center;
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
     .stat-badge .number {
       font-size: 24px;
       font-weight: 700;
-      color: #667eea;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .stat-badge .label {
-      font-size: 12px;
-      color: #666;
-      margin-top: 5px;
-    }
-
-    /* Container principal */
-    .container {
-      max-width: 1400px;
-      margin: 30px auto;
-      padding: 0 30px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
     }
 
     /* Onglets */
+    .tabs-container {
+      flex-shrink: 0;
+      margin-bottom: 20px;
+    }
+
     .tabs {
       display: flex;
-      gap: 10px;
-      margin-bottom: 30px;
-      background: white;
-      padding: 10px;
+      gap: 8px;
+      background: rgba(255,255,255,0.03);
+      padding: 8px;
       border-radius: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      backdrop-filter: blur(10px);
     }
 
     .tab {
       flex: 1;
-      padding: 12px 24px;
+      padding: 12px 20px;
       background: transparent;
       border: none;
       border-radius: 12px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.3s ease;
-      color: #666;
+      color: rgba(255,255,255,0.7);
       font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
     .tab i {
-      margin-right: 10px;
+      font-size: 16px;
     }
 
     .tab:hover {
-      background: #f0f2f5;
+      background: rgba(255,255,255,0.1);
+      color: white;
       transform: translateY(-2px);
     }
 
     .tab.active {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
       box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
     }
 
-    /* Contenu des onglets */
+    /* Contenu des onglets - zone qui ne scrolle pas individuellement */
     .tab-content {
       display: none;
-      animation: fadeIn 0.5s ease;
+      flex: 1;
+      overflow: hidden;
+      animation: fadeIn 0.4s ease;
     }
 
     .tab-content.active {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Cartes statistiques */
+    /* Grille stats */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      margin-bottom: 30px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-shrink: 0;
     }
 
     .stat-card {
-      background: white;
-      padding: 20px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
       border-radius: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      padding: 15px;
+      border: 1px solid rgba(255,255,255,0.1);
       transition: all 0.3s ease;
-      cursor: pointer;
     }
 
     .stat-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      transform: translateY(-3px);
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(102, 126, 234, 0.5);
     }
 
     .stat-card .icon {
-      font-size: 40px;
-      margin-bottom: 15px;
+      font-size: 28px;
+      margin-bottom: 10px;
     }
 
     .stat-card .value {
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 700;
       margin-bottom: 5px;
     }
 
     .stat-card .label {
-      color: #666;
-      font-size: 14px;
-    }
-
-    .stat-card .trend {
-      margin-top: 10px;
       font-size: 12px;
-      color: #4caf50;
+      color: rgba(255,255,255,0.6);
     }
 
-    /* Tableau utilisateurs */
-    .users-table-wrapper {
-      background: white;
+    /* Tableau utilisateurs - avec scroll interne */
+    .table-wrapper {
+      background: rgba(255,255,255,0.03);
       border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      overflow: auto;
+      flex: 1;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .table-wrapper::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 10px;
     }
 
     table {
@@ -203,183 +220,204 @@
     }
 
     th {
-      background: #f8f9fa;
-      padding: 15px;
       text-align: left;
+      padding: 15px;
+      font-size: 12px;
       font-weight: 600;
-      color: #555;
-      font-size: 13px;
+      color: rgba(255,255,255,0.7);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      background: rgba(0,0,0,0.2);
+      position: sticky;
+      top: 0;
     }
 
     td {
-      padding: 15px;
-      border-top: 1px solid #eef2f6;
-      font-size: 14px;
+      padding: 12px 15px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      font-size: 13px;
     }
 
     tr {
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
     }
 
     tr:hover {
-      background: #f8f9fa;
-      transform: scale(1.01);
+      background: rgba(255,255,255,0.05);
     }
 
+    /* Badges */
     .badge {
       padding: 4px 12px;
       border-radius: 20px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
       display: inline-block;
     }
 
     .badge-success {
-      background: #e8f5e9;
+      background: rgba(76, 175, 80, 0.2);
       color: #4caf50;
+      border: 1px solid rgba(76, 175, 80, 0.3);
     }
 
     .badge-danger {
-      background: #ffebee;
+      background: rgba(244, 67, 54, 0.2);
       color: #f44336;
+      border: 1px solid rgba(244, 67, 54, 0.3);
     }
 
     .badge-warning {
-      background: #fff3e0;
+      background: rgba(255, 152, 0, 0.2);
       color: #ff9800;
+      border: 1px solid rgba(255, 152, 0, 0.3);
     }
 
     .badge-info {
-      background: #e3f2fd;
+      background: rgba(33, 150, 243, 0.2);
       color: #2196f3;
+      border: 1px solid rgba(33, 150, 243, 0.3);
     }
 
-    /* Graphiques */
-    .chart-container {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .chart-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 20px;
+    /* Batterie */
+    .battery {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
-    /* Alertes */
+    .battery-icon {
+      width: 30px;
+      height: 14px;
+      border: 1.5px solid rgba(255,255,255,0.5);
+      border-radius: 3px;
+      position: relative;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .battery-icon::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 3px;
+      width: 3px;
+      height: 6px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 1px;
+    }
+
+    .battery-level {
+      height: 100%;
+      background: linear-gradient(90deg, #4caf50, #8bc34a);
+      border-radius: 2px;
+    }
+
+    /* Status dot */
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    .online {
+      background: #4caf50;
+      box-shadow: 0 0 5px #4caf50;
+      animation: pulse 2s infinite;
+    }
+
+    .offline {
+      background: #999;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Liste alertes */
     .alerts-list {
-      background: white;
+      background: rgba(255,255,255,0.03);
       border-radius: 16px;
-      padding: 20px;
+      padding: 15px;
+      height: 100%;
+      overflow: auto;
+      border: 1px solid rgba(255,255,255,0.05);
     }
 
     .alert-item {
-      padding: 15px;
-      border-left: 4px solid #ff9800;
-      background: #fffbf5;
+      padding: 12px;
+      border-left: 3px solid #ff9800;
+      background: rgba(255,152,0,0.1);
       margin-bottom: 10px;
       border-radius: 8px;
-      transition: all 0.3s ease;
-    }
-
-    .alert-item:hover {
-      transform: translateX(5px);
     }
 
     .alert-item.critical {
       border-left-color: #f44336;
-      background: #ffebee;
+      background: rgba(244,67,54,0.1);
     }
 
-    /* Loader */
-    .loader {
-      text-align: center;
-      padding: 50px;
-    }
-
-    .spinner {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #667eea;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    /* Section support */
+    .support-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
     }
 
     /* Responsive */
-    @media (max-width: 768px) {
-      .container {
-        padding: 0 15px;
-      }
-      
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .tabs {
-        flex-direction: column;
-      }
-      
-      .table-wrapper {
-        overflow-x: auto;
-      }
+    @media (max-width: 1200px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .support-stats { grid-template-columns: 1fr; }
+      .tabs { flex-wrap: wrap; }
     }
   </style>
 </head>
 <body>
-
-<div class="header">
-  <div class="header-content">
+<div class="dashboard">
+  <!-- Header -->
+  <div class="header">
     <div class="logo">
-      <h1><i class="fas fa-chart-line"></i> NeTubeX Dashboard</h1>
-      <p>Tableau de bord technique & support</p>
+      <h1><i class="fas fa-chart-line"></i> NeTubeX</h1>
+      <p>Dashboard Technique & Support</p>
     </div>
-    <div class="stats-header" id="headerStats">
+    <div class="stats-row">
       <div class="stat-badge">
         <div class="number" id="totalUsers">0</div>
         <div class="label">Utilisateurs</div>
       </div>
       <div class="stat-badge">
+        <div class="number" id="totalOnline">0</div>
+        <div class="label">En ligne</div>
+      </div>
+      <div class="stat-badge">
         <div class="number" id="totalAnomalies">0</div>
         <div class="label">Anomalies</div>
       </div>
-      <div class="stat-badge">
-        <div class="number" id="totalTickets">0</div>
-        <div class="label">Tickets</div>
-      </div>
     </div>
   </div>
-</div>
 
-<div class="container">
   <!-- Onglets -->
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('users')">
-      <i class="fas fa-users"></i> Utilisateurs
-    </button>
-    <button class="tab" onclick="switchTab('analytics')">
-      <i class="fas fa-chart-bar"></i> Analytics
-    </button>
-    <button class="tab" onclick="switchTab('alerts')">
-      <i class="fas fa-bell"></i> Alertes
-    </button>
-    <button class="tab" onclick="switchTab('support')">
-      <i class="fas fa-headset"></i> Support
-    </button>
+  <div class="tabs-container">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('users')">
+        <i class="fas fa-users"></i> Utilisateurs
+      </button>
+      <button class="tab" onclick="switchTab('analytics')">
+        <i class="fas fa-chart-line"></i> Analytics
+      </button>
+      <button class="tab" onclick="switchTab('alerts')">
+        <i class="fas fa-bell"></i> Alertes
+      </button>
+      <button class="tab" onclick="switchTab('support')">
+        <i class="fas fa-headset"></i> Support
+      </button>
+      <button class="tab" onclick="switchTab('devices')">
+        <i class="fas fa-mobile-alt"></i> Appareils
+      </button>
+    </div>
   </div>
 
   <!-- Onglet Utilisateurs -->
@@ -389,67 +427,46 @@
         <div class="icon"><i class="fas fa-sign-in-alt"></i></div>
         <div class="value" id="statConnexions">0</div>
         <div class="label">Total connexions</div>
-        <div class="trend"><i class="fas fa-arrow-up"></i> +12% cette semaine</div>
       </div>
       <div class="stat-card">
         <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
         <div class="value" id="statEchecs">0</div>
         <div class="label">Échecs connexion</div>
-        <div class="trend"><i class="fas fa-arrow-down"></i> -5% cette semaine</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon"><i class="fas fa-battery-full"></i></div>
+        <div class="value" id="avgBattery">0%</div>
+        <div class="label">Batterie moyenne</div>
       </div>
       <div class="stat-card">
         <div class="icon"><i class="fas fa-clock"></i></div>
-        <div class="value" id="statTempsMoyen">0h</div>
-        <div class="label">Temps moyen/session</div>
-        <div class="trend"><i class="fas fa-chart-line"></i> Stable</div>
+        <div class="value" id="avgTime">0h</div>
+        <div class="label">Temps moyen</div>
       </div>
     </div>
 
-    <div class="users-table-wrapper">
-      <div class="table-wrapper">
-        <table id="usersTable">
-          <thead>
-            <tr>
-              <th><i class="fas fa-user"></i> Code</th>
-              <th><i class="fas fa-envelope"></i> Email</th>
-              <th><i class="fas fa-tag"></i> Rôle</th>
-              <th><i class="fas fa-chart-simple"></i> Connexions</th>
-              <th><i class="fas fa-exclamation"></i> Anomalies</th>
-              <th><i class="fas fa-ticket"></i> Tickets</th>
-              <th><i class="fas fa-shield"></i> Statut</th>
-            </tr>
-          </thead>
-          <tbody id="usersTableBody">
-            <tr>
-              <td colspan="7" style="text-align: center;">
-                <div class="loader">
-                  <div class="spinner"></div>
-                  <p style="margin-top: 15px;">Chargement des données...</p>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th><i class="fas fa-user"></i> Code</th>
+            <th><i class="fas fa-envelope"></i> Email</th>
+            <th><i class="fas fa-chart-simple"></i> Connexions</th>
+            <th><i class="fas fa-exclamation"></i> Anomalies</th>
+            <th><i class="fas fa-battery-full"></i> Batterie</th>
+            <th><i class="fas fa-signal"></i> Statut</th>
+          </tr>
+        </thead>
+        <tbody id="usersTableBody">
+          <tr><td colspan="6" style="text-align:center"><div class="loader">Chargement...</div></td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
   <!-- Onglet Analytics -->
   <div id="analyticsTab" class="tab-content">
-    <div class="chart-container">
-      <div class="chart-title">
-        <i class="fas fa-chart-line" style="color: #667eea;"></i>
-        Évolution des connexions (30 jours)
-      </div>
-      <canvas id="connexionsChart" style="max-height: 400px;"></canvas>
-    </div>
-    
     <div class="stats-grid">
-      <div class="stat-card">
-        <div class="icon"><i class="fas fa-hourglass-half"></i></div>
-        <div class="value" id="avgSessionTime">0h</div>
-        <div class="label">Durée moyenne session</div>
-      </div>
       <div class="stat-card">
         <div class="icon"><i class="fas fa-percent"></i></div>
         <div class="value" id="successRate">0%</div>
@@ -460,48 +477,70 @@
         <div class="value" id="peakHour">-</div>
         <div class="label">Heure de pointe</div>
       </div>
+      <div class="stat-card">
+        <div class="icon"><i class="fas fa-chart-line"></i></div>
+        <div class="value" id="trendValue">0%</div>
+        <div class="label">Tendance +30j</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon"><i class="fas fa-ticket-alt"></i></div>
+        <div class="value" id="ticketsTotal">0</div>
+        <div class="label">Tickets totaux</div>
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Indicateur</th><th>Valeur</th><th>Statut</th></tr></thead>
+        <tbody id="analyticsTableBody"></tbody>
+      </table>
     </div>
   </div>
 
   <!-- Onglet Alertes -->
   <div id="alertsTab" class="tab-content">
-    <div class="alerts-list" id="alertsList">
-      <div class="loader">
-        <div class="spinner"></div>
-      </div>
-    </div>
+    <div class="alerts-list" id="alertsList"></div>
   </div>
 
   <!-- Onglet Support -->
   <div id="supportTab" class="tab-content">
-    <div class="stats-grid">
+    <div class="support-stats">
       <div class="stat-card">
         <div class="icon"><i class="fas fa-ticket-alt"></i></div>
-        <div class="value" id="ticketsOpen">0</div>
+        <div class="value" id="supportOpen">0</div>
         <div class="label">Tickets ouverts</div>
       </div>
       <div class="stat-card">
         <div class="icon"><i class="fas fa-spinner"></i></div>
-        <div class="value" id="ticketsProgress">0</div>
+        <div class="value" id="supportProgress">0</div>
         <div class="label">En cours</div>
       </div>
       <div class="stat-card">
         <div class="icon"><i class="fas fa-check-circle"></i></div>
-        <div class="value" id="ticketsResolved">0</div>
+        <div class="value" id="supportResolved">0</div>
         <div class="label">Résolus</div>
       </div>
     </div>
-    
-    <div class="chart-container">
-      <div class="chart-title">
-        <i class="fas fa-chart-pie"></i> Répartition des tickets
-      </div>
-      <canvas id="ticketsChart" style="max-height: 300px;"></canvas>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Utilisateur</th><th>Ouverts</th><th>En cours</th><th>Résolus</th><th>Statut</th></tr></thead>
+        <tbody id="supportTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Onglet Appareils -->
+  <div id="devicesTab" class="tab-content">
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Utilisateur</th><th>Appareil</th><th>OS</th><th>Batterie</th><th>Connexion</th><th>Signal</th></tr>
+        </thead>
+        <tbody id="devicesTableBody"></tbody>
+      </table>
     </div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
@@ -520,126 +559,89 @@
 
   let usersData = [];
 
-  // Switch onglets
   window.switchTab = (tab) => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    
     event.target.closest('.tab').classList.add('active');
     document.getElementById(`${tab}Tab`).classList.add('active');
-    
-    if (tab === 'analytics') updateAnalytics();
-    if (tab === 'alerts') updateAlerts();
-    if (tab === 'support') updateSupport();
   };
 
   async function loadData() {
     const snapshot = await getDocs(collection(db, "users"));
     usersData = [];
-    
-    snapshot.forEach(doc => {
-      usersData.push(doc.data());
-    });
-    
-    updateDashboard();
+    snapshot.forEach(doc => usersData.push(doc.data()));
+    updateAllTabs();
   }
 
-  function updateDashboard() {
+  function updateAllTabs() {
+    updateUsersTab();
+    updateAnalyticsTab();
+    updateAlertsTab();
+    updateSupportTab();
+    updateDevicesTab();
+    updateHeaderStats();
+  }
+
+  function updateUsersTab() {
     const tbody = document.getElementById('usersTableBody');
     tbody.innerHTML = '';
     
-    let totalConnexions = 0;
-    let totalEchecs = 0;
-    let totalAnomalies = 0;
-    let totalTickets = 0;
-    let ticketsOpen = 0;
-    let ticketsProgress = 0;
-    let ticketsResolved = 0;
+    let totalConnexions = 0, totalEchecs = 0, totalBatterie = 0;
     
     usersData.forEach(user => {
       const connexions = parseInt(user.NombreConnexions) || 0;
       const echecs = parseInt(user.NombreEchecsConnexion) || 0;
       const anomalies = (parseInt(user.anomaliesConnexion) || 0) + (parseInt(user.anomaliesSysteme) || 0);
-      const tickets = (parseInt(user.ticketsOuverts) || 0) + (parseInt(user.ticketsEnCours) || 0) + (parseInt(user.ticketsResolus) || 0);
+      const batterie = parseInt(user.batterieNiveau) || 0;
       
       totalConnexions += connexions;
       totalEchecs += echecs;
-      totalAnomalies += anomalies;
-      totalTickets += tickets;
-      ticketsOpen += parseInt(user.ticketsOuverts) || 0;
-      ticketsProgress += parseInt(user.ticketsEnCours) || 0;
-      ticketsResolved += parseInt(user.ticketsResolus) || 0;
+      totalBatterie += batterie;
       
-      const statusBadge = user.isActive ? 
-        '<span class="badge badge-success"><i class="fas fa-circle"></i> Actif</span>' : 
-        '<span class="badge badge-danger"><i class="fas fa-circle"></i> Inactif</span>';
+      const anomalieClass = anomalies > 5 ? 'badge-danger' : anomalies > 2 ? 'badge-warning' : 'badge-success';
+      const batterieClass = batterie < 20 ? 'badge-danger' : batterie < 50 ? 'badge-warning' : 'badge-success';
+      const isOnline = user.estConnecte === 'true' || user.estConnecte === true;
       
-      const row = `
-        <tr onclick="showUserDetails('${user.code}')" style="cursor: pointer;">
+      tbody.innerHTML += `
+        <tr onclick="showDetails('${user.code}')">
           <td><strong>${user.code || '-'}</strong></td>
           <td>${user.email || '-'}</td>
-          <td><span class="badge badge-info">${user.role || '-'}</span></td>
-          <td>✅ ${connexions}<br><small>❌ ${echecs} échecs</small></td>
-          <td><span class="badge ${anomalies > 5 ? 'badge-danger' : anomalies > 2 ? 'badge-warning' : 'badge-success'}">
-            ${anomalies} anomalie(s)
-          </span></td>
-          <td>${tickets}</td>
-          <td>${statusBadge}</td>
+          <td>✅ ${connexions}<br><small>❌ ${echecs}</small></td>
+          <td><span class="badge ${anomalieClass}">${anomalies}</span></td>
+          <td><span class="badge ${batterieClass}">${batterie}%</span></td>
+          <td><span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>${isOnline ? 'En ligne' : 'Hors ligne'}</td>
         </tr>
       `;
-      tbody.innerHTML += row;
     });
     
-    document.getElementById('totalUsers').innerText = usersData.length;
-    document.getElementById('totalAnomalies').innerText = totalAnomalies;
-    document.getElementById('totalTickets').innerText = totalTickets;
     document.getElementById('statConnexions').innerText = totalConnexions;
     document.getElementById('statEchecs').innerText = totalEchecs;
-    document.getElementById('ticketsOpen').innerText = ticketsOpen;
-    document.getElementById('ticketsProgress').innerText = ticketsProgress;
-    document.getElementById('ticketsResolved').innerText = ticketsResolved;
-    
-    const avgTime = usersData.reduce((acc, u) => acc + (parseInt(u.tempsTotalTerminal) || 0), 0) / (usersData.length || 1);
-    document.getElementById('statTempsMoyen').innerText = `${Math.round(avgTime)}h`;
-    
-    const successRate = totalConnexions + totalEchecs > 0 ? 
-      Math.round((totalConnexions / (totalConnexions + totalEchecs)) * 100) : 0;
-    document.getElementById('successRate').innerText = `${successRate}%`;
+    document.getElementById('avgBattery').innerText = usersData.length ? Math.round(totalBatterie / usersData.length) + '%' : '0%';
+    document.getElementById('avgTime').innerText = '2h';
   }
 
-  function updateAnalytics() {
-    // Graphique des connexions (simulé)
-    const ctx = document.getElementById('connexionsChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
-        datasets: [{
-          label: 'Connexions',
-          data: [65, 72, 88, 95],
-          borderColor: '#667eea',
-          backgroundColor: 'rgba(102, 126, 234, 0.1)',
-          tension: 0.4,
-          fill: true
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'top' }
-        }
-      }
-    });
+  function updateAnalyticsTab() {
+    const totalConnexions = usersData.reduce((a,u) => a + (parseInt(u.NombreConnexions)||0), 0);
+    const totalEchecs = usersData.reduce((a,u) => a + (parseInt(u.NombreEchecsConnexion)||0), 0);
+    const successRate = totalConnexions + totalEchecs > 0 ? Math.round((totalConnexions / (totalConnexions + totalEchecs)) * 100) : 0;
+    const totalTickets = usersData.reduce((a,u) => a + (parseInt(u.ticketsOuverts)||0) + (parseInt(u.ticketsEnCours)||0) + (parseInt(u.ticketsResolus)||0), 0);
     
-    document.getElementById('avgSessionTime').innerText = '2h 15min';
-    document.getElementById('peakHour').innerText = '14h-16h';
+    document.getElementById('successRate').innerHTML = successRate + '%';
+    document.getElementById('peakHour').innerHTML = '14h-16h';
+    document.getElementById('trendValue').innerHTML = '+12%';
+    document.getElementById('ticketsTotal').innerHTML = totalTickets;
+    
+    const tbody = document.getElementById('analyticsTableBody');
+    tbody.innerHTML = `
+      <tr><td>📊 Taux de connexion</td><td>${successRate}%</td><td><span class="badge badge-success">Excellent</span></td></tr>
+      <tr><td>⚠️ Taux d'anomalies</td><td>${Math.round(usersData.reduce((a,u)=>a+(parseInt(u.anomaliesConnexion)||0)+(parseInt(u.anomaliesSysteme)||0),0)/usersData.length||0)}/user</td><td><span class="badge badge-warning">Surveiller</span></td></tr>
+      <tr><td>🔋 Batterie moyenne</td><td>${Math.round(usersData.reduce((a,u)=>a+(parseInt(u.batterieNiveau)||0),0)/usersData.length||0)}%</td><td><span class="badge badge-info">Normal</span></td></tr>
+    `;
   }
 
-  function updateAlerts() {
+  function updateAlertsTab() {
     const alertsDiv = document.getElementById('alertsList');
-    const anomalies = usersData.filter(u => 
-      (parseInt(u.anomaliesConnexion) || 0) + (parseInt(u.anomaliesSysteme) || 0) > 3
-    );
+    const anomalies = usersData.filter(u => (parseInt(u.anomaliesConnexion)||0) + (parseInt(u.anomaliesSysteme)||0) > 3);
     
     if (anomalies.length === 0) {
       alertsDiv.innerHTML = '<div class="alert-item"><i class="fas fa-check-circle"></i> ✅ Aucune alerte active</div>';
@@ -647,53 +649,80 @@
     }
     
     alertsDiv.innerHTML = anomalies.map(user => `
-      <div class="alert-item ${(parseInt(user.anomaliesConnexion) || 0) > 5 ? 'critical' : ''}">
+      <div class="alert-item ${(parseInt(user.anomaliesConnexion)||0) > 5 ? 'critical' : ''}">
         <strong><i class="fas fa-exclamation-triangle"></i> ${user.code}</strong><br>
-        🔴 ${user.anomaliesConnexion || 0} anomalies connexion<br>
-        🖥️ ${user.anomaliesSysteme || 0} anomalies système<br>
-        <small>⚠️ Action recommandée: Vérifier les logs de connexion</small>
+        🔴 Anomalies connexion: ${user.anomaliesConnexion || 0}<br>
+        🖥️ Anomalies système: ${user.anomaliesSysteme || 0}<br>
+        ${(parseInt(user.batterieNiveau)||0) < 20 ? '🔋 Batterie critique: ' + user.batterieNiveau + '%<br>' : ''}
+        <small>⚠️ Action recommandée: Vérifier les logs</small>
       </div>
     `).join('');
   }
 
-  function updateSupport() {
-    const ctx = document.getElementById('ticketsChart').getContext('2d');
-    const open = usersData.reduce((acc, u) => acc + (parseInt(u.ticketsOuverts) || 0), 0);
-    const progress = usersData.reduce((acc, u) => acc + (parseInt(u.ticketsEnCours) || 0), 0);
-    const resolved = usersData.reduce((acc, u) => acc + (parseInt(u.ticketsResolus) || 0), 0);
+  function updateSupportTab() {
+    const tbody = document.getElementById('supportTableBody');
+    let open = 0, progress = 0, resolved = 0;
     
-    new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Ouverts', 'En cours', 'Résolus'],
-        datasets: [{
-          data: [open, progress, resolved],
-          backgroundColor: ['#ff9800', '#2196f3', '#4caf50'],
-          borderWidth: 0
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'bottom' }
-        }
-      }
+    tbody.innerHTML = '';
+    usersData.forEach(user => {
+      const o = parseInt(user.ticketsOuverts) || 0;
+      const p = parseInt(user.ticketsEnCours) || 0;
+      const r = parseInt(user.ticketsResolus) || 0;
+      open += o; progress += p; resolved += r;
+      
+      tbody.innerHTML += `
+        <tr>
+          <td>${user.code}</td>
+          <td><span class="badge badge-warning">${o}</span></td>
+          <td><span class="badge badge-info">${p}</span></td>
+          <td><span class="badge badge-success">${r}</span></td>
+          <td>${(o+p+r) > 5 ? '<span class="badge badge-danger">Prioritaire</span>' : '<span class="badge badge-success">Normal</span>'}</td>
+        </tr>
+      `;
+    });
+    
+    document.getElementById('supportOpen').innerText = open;
+    document.getElementById('supportProgress').innerText = progress;
+    document.getElementById('supportResolved').innerText = resolved;
+  }
+
+  function updateDevicesTab() {
+    const tbody = document.getElementById('devicesTableBody');
+    tbody.innerHTML = '';
+    
+    usersData.forEach(user => {
+      const batterie = parseInt(user.batterieNiveau) || 0;
+      const batterieClass = batterie < 20 ? 'danger' : batterie < 50 ? 'warning' : 'success';
+      const isOnline = user.estConnecte === 'true' || user.estConnecte === true;
+      
+      tbody.innerHTML += `
+        <tr>
+          <td>${user.code}</td>
+          <td><i class="fas fa-mobile-alt"></i> ${user.modeleAppareil || 'Non détecté'}</td>
+          <td>${user.systemeExploitation || '?'} ${user.versionOS || ''}</td>
+          <td><span class="badge badge-${batterieClass}">🔋 ${batterie}%</span><br><small>${user.batterieEtat || '-'}</small></td>
+          <td><i class="fas fa-${user.typeConnexion === 'WiFi' ? 'wifi' : 'signal'}"></i> ${user.typeConnexion || '-'}</td>
+          <td>📶 ${user.forceSignal || 0}%</td>
+        </tr>
+      `;
     });
   }
 
-  window.showUserDetails = (code) => {
+  function updateHeaderStats() {
+    document.getElementById('totalUsers').innerText = usersData.length;
+    document.getElementById('totalOnline').innerText = usersData.filter(u => u.estConnecte === 'true' || u.estConnecte === true).length;
+    document.getElementById('totalAnomalies').innerText = usersData.reduce((a,u) => a + (parseInt(u.anomaliesConnexion)||0) + (parseInt(u.anomaliesSysteme)||0), 0);
+  }
+
+  window.showDetails = (code) => {
     const user = usersData.find(u => u.code === code);
-    if (user) {
-      alert(`📊 Détails ${user.code}:\n\n` +
-        `✅ Connexions: ${user.NombreConnexions || 0}\n` +
-        `❌ Échecs: ${user.NombreEchecsConnexion || 0}\n` +
-        `⚠️ Anomalies: ${(parseInt(user.anomaliesConnexion) || 0) + (parseInt(user.anomaliesSysteme) || 0)}\n` +
-        `🎫 Tickets: ${(parseInt(user.ticketsOuverts) || 0) + (parseInt(user.ticketsEnCours) || 0) + (parseInt(user.ticketsResolus) || 0)}\n` +
-        `📍 Localisation: ${user.localisation || 'Non définie'}`);
+    if(user) {
+      alert(`📊 ${user.code}\n\n✅ Connexions: ${user.NombreConnexions || 0}\n❌ Échecs: ${user.NombreEchecsConnexion || 0}\n🔋 Batterie: ${user.batterieNiveau || 0}%\n📍 Localisation: ${user.localisation || 'Non définie'}\n🎫 Tickets: ${(parseInt(user.ticketsOuverts)||0)+(parseInt(user.ticketsEnCours)||0)+(parseInt(user.ticketsResolus)||0)}`);
     }
   };
 
   loadData();
+  setInterval(loadData, 30000);
 </script>
 </body>
 </html>
