@@ -55,41 +55,30 @@ tr:hover{background:#1a2332;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(8px);z-index:1000;justify-content:center;align-items:center;}
 .modal.active{display:flex;}
-.modal-content{background:#0f1420;border-radius:20px;max-width:750px;width:90%;border:1px solid #1e293b;max-height:85vh;overflow-y:auto;}
+.modal-content{background:#0f1420;border-radius:20px;max-width:550px;width:90%;border:1px solid #1e293b;max-height:85vh;overflow-y:auto;}
 .modal-header{padding:15px 20px;border-bottom:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#0f1420;}
 .modal-header h2{font-size:16px;display:flex;align-items:center;gap:8px;}
 .modal-close{background:#1e293b;border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;}
 .modal-body{padding:20px;}
 .modal-footer{padding:12px 20px;border-top:1px solid #1e293b;display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#0f1420;}
 .modal-footer button{padding:8px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:600;}
-.detail-card{background:#1a2332;border-radius:12px;padding:15px;margin-bottom:15px;border:1px solid #2d3748;}
+.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+.detail-card{background:#1a2332;border-radius:12px;padding:15px;border:1px solid #2d3748;}
 .detail-card h4{margin-bottom:10px;color:#f59e0b;font-size:13px;border-left:3px solid #f59e0b;padding-left:10px;}
 .detail-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #2d3748;font-size:12px;}
 .detail-label{color:#94a3b8;}
 .detail-value{font-weight:600;color:#e2e8f0;}
-.progress-bar-group{display:flex;gap:15px;margin-top:10px;flex-wrap:wrap;}
-.progress-item{flex:1;background:#0f1420;border-radius:12px;padding:12px;}
-.progress-label{font-size:11px;color:#94a3b8;margin-bottom:5px;}
-.progress-bar-bg{background:#2d3748;border-radius:10px;height:20px;overflow:hidden;}
-.progress-bar-fill{height:100%;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;color:#fff;}
 .input-group{margin-bottom:15px;}
 .input-group label{display:block;font-size:11px;color:#64748b;margin-bottom:5px;}
 .input-group input,.input-group select,.input-group textarea{width:100%;padding:10px 14px;border-radius:10px;border:1px solid #1e293b;background:#1a2332;color:#fff;outline:none;font-family:inherit;}
 .input-group textarea{resize:vertical;}
 .action-btn{padding:5px 10px;border-radius:6px;font-size:10px;cursor:pointer;border:none;transition:0.2s;margin:0 2px;}
-.action-btn.cap{background:#f59e0b;color:#fff;}
-.action-btn.cap:hover{background:#d97706;}
 .action-btn.view{background:#3b82f6;color:#fff;}
 .action-btn.view:hover{background:#2563eb;}
-.action-btn.block{background:#ef4444;color:#fff;}
-.action-btn.block:hover{background:#dc2626;}
-.action-btn.unblock{background:#10b981;color:#fff;}
+.action-btn.cap{background:#f59e0b;color:#fff;}
+.action-btn.cap:hover{background:#d97706;}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:40px;font-size:12px;z-index:10000;animation:slideUp 0.3s;}
 @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
-.netuber-table{width:100%;border-collapse:collapse;font-size:11px;}
-.netuber-table th{background:#0f1420;padding:8px;text-align:left;color:#64748b;font-weight:600;}
-.netuber-table td{padding:8px;border-bottom:1px solid #2d3748;}
-.netuber-table tr:hover{background:#1a2332;}
 @media (max-width:768px){.dashboard{padding:15px;}.header{padding:0.5rem 15px;}}
 </style>
 </head>
@@ -127,7 +116,7 @@ tr:hover{background:#1a2332;}
 </div>
 <div class="table-wrapper">
 <table id="netubersTable">
-<thead><tr><th>Code</th><th>Email</th><th>Connexions ✅</th><th>Déconnexions 🚪</th><th>Anomalies ⚠️</th><th>Localisation 📍</th><th>Dernière connexion</th><th>Statut</th><th>Blocage</th><th>Actions</th></tr></thead>
+<thead><tr><th>Code</th><th>Email</th><th>Connexions ✅</th><th>Déconnexions 🚪</th><th>Anomalies ⚠️</th><th>Localisation 📍</th><th>Dernière connexion</th><th>Statut</th><th>Actions</th></tr></thead>
 <tbody id="netubersTableBody"></tbody>
 </table>
 </div>
@@ -168,14 +157,13 @@ tr:hover{background:#1a2332;}
 <!-- Onglet Paramètres -->
 <div id="settingsTab" class="tab-content">
 <div class="stats-grid"><div class="stat-card"><div class="value" id="totalActions">0</div><div class="label">CAP envoyés</div></div></div>
-<div class="detail-card"><h4><i class="fas fa-chart-line"></i> CAP du jour - Derniers envois</h4><div class="table-wrapper" style="max-height:300px;"><table id="capHistoryTable"><thead><tr><th>Netuber</th><th>CAP</th><th>Date envoi</th><th>Expiration</th></tr></thead><tbody id="capHistoryBody"></tbody></table></div></div>
+<div class="detail-card" style="margin-bottom:20px;"><h4><i class="fas fa-chart-line"></i> CAP du jour - Derniers envois</h4><div class="table-wrapper" style="max-height:300px;"><table id="capHistoryTable"><thead><tr><th>Netuber</th><th>CAP</th><th>Date envoi</th><th>Expiration</th></tr></thead><tbody id="capHistoryBody"></tbody></table></div></div>
 <div class="detail-card"><h4><i class="fas fa-cog"></i> Administration</h4><table style="min-width:auto;"><thead><tr><th>Action</th><th>Description</th><th>Statut</th></tr></thead>
 <tbody>
 <tr><td><i class="fas fa-user-edit"></i> Modifier code Netuber</td><td>Changer le code unique d'un Netuber</td><td><button class="badge badge-info" onclick="openEditCodeModal()" style="cursor:pointer;">Modifier</button></td></tr>
 <tr><td><i class="fas fa-ban"></i> Bloquer/Débloquer Netuber</td><td>Bloquer l'accès au Dashboard utilisateur</td><td><button class="badge badge-warning" onclick="openBlockModal()" style="cursor:pointer;">Gérer</button></td></tr>
 <tr><td><i class="fas fa-trash"></i> Supprimer Netuber</td><td>Supprimer définitivement un Netuber</td><td><button class="badge badge-danger" onclick="openDeleteModal()" style="cursor:pointer;">Supprimer</button></td></tr>
-</tbody>
-</table></div>
+</tbody></table></div>
 </div>
 </div>
 
@@ -190,7 +178,7 @@ tr:hover{background:#1a2332;}
 
 <div id="capModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-chart-line"></i> Envoyer le CAP du jour</h2><button class="modal-close" onclick="closeModal('capModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber concerné</label><input type="text" id="capNetuberCode" readonly style="background:#1a2332; color:#f59e0b; font-weight:bold;"></div><div class="input-group"><label>CAP du jour <span style="color:#f59e0b;">*</span></label><textarea id="capMessage" rows="6" placeholder="Exemple: &#10;📊 CAP du jour - Objectif principal: Atteindre 100 points&#10;📌 Challenge spécial: Terminer 3 jeux&#10;⭐ Bonus: +50 points si objectif atteint"></textarea></div><div class="input-group"><label>Date d'expiration</label><input type="date" id="capExpiration"></div></div><div class="modal-footer"><button id="sendCapBtn" style="background:#f59e0b;"><i class="fas fa-paper-plane"></i> Envoyer</button><button onclick="closeModal('capModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
-<div id="rapportModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-file-alt"></i> Détail du rapport PGCO</h2><button class="modal-close" onclick="closeModal('rapportModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="rapportDetailBody"></div><div class="modal-footer"><button onclick="closeModal('rapportModal')" style="background:#64748b;">Fermer</button></div></div></div>
+<div id="rapportModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-file-alt"></i> Détail rapport PGCO</h2><button class="modal-close" onclick="closeModal('rapportModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="rapportDetailBody"></div><div class="modal-footer"><button onclick="closeModal('rapportModal')" style="background:#64748b;">Fermer</button></div></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -277,25 +265,7 @@ function updateNetubersTable() {
     const isOnline = u.estConnecte === true || u.estConnecte === 'true';
     const isBlocked = u.isBlocked === true;
     const anomalieClass = anomalies > 5 ? 'badge-danger' : (anomalies > 2 ? 'badge-warning' : 'badge-success');
-    
-    return `
-      <tr>
-        <td><strong>${u.code || '-'}</strong>${isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</td>
-        <td>${u.email || '-'}</td>
-        <td style="color:#10b981; font-weight:600;">${connexions}</td>
-        <td style="color:#f59e0b; font-weight:600;">${deconnexions}</td>
-        <td><span class="badge ${anomalieClass}">${anomalies}</span></td>
-        <td><i class="fas fa-map-marker-alt"></i> ${u.localisation || '-'}</td>
-        <td><small>${formatDateShort(u.heureConnexion)}</small></td>
-        <td><span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>${isOnline ? 'En ligne' : 'Hors ligne'}</td>
-        <td>${isBlocked ? '<span class="badge badge-danger">🔒 Bloqué</span>' : '<span class="badge badge-success">✅ Actif</span>'}</td>
-        <td>
-          <button class="action-btn cap" onclick="openCapModal('${u.code}')"><i class="fas fa-chart-line"></i> CAP</button>
-          <button class="action-btn view" onclick='showNetuberDetails("${u.code}")'><i class="fas fa-eye"></i></button>
-          <button class="action-btn ${isBlocked ? 'unblock' : 'block'}" onclick='toggleBlockStatus("${u.code}")'><i class="fas ${isBlocked ? 'fa-unlock' : 'fa-ban'}"></i> ${isBlocked ? 'Débloquer' : 'Bloquer'}</button>
-        </td>
-      </tr>
-    `;
+    return `<tr><td><strong>${u.code || '-'}</strong>${isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</td><td>${u.email || '-'}</td><td style="color:#10b981; font-weight:600;">${connexions}</td><td style="color:#f59e0b; font-weight:600;">${deconnexions}</td><td><span class="badge ${anomalieClass}">${anomalies}</span></td><td><i class="fas fa-map-marker-alt"></i> ${u.localisation || '-'}</td><td><small>${formatDateShort(u.heureConnexion)}</small></td><td><span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>${isOnline ? 'En ligne' : 'Hors ligne'}${isBlocked ? ' 🔒' : ''}</td><td><button class="action-btn cap" onclick="openCapModal('${u.code}')"><i class="fas fa-chart-line"></i> CAP</button><button class="action-btn view" onclick="showNetuberDetails('${u.code}')"><i class="fas fa-eye"></i></button></td></tr>`;
   }).join('');
 }
 
@@ -304,17 +274,7 @@ function updateRapportsTable() {
   const statut = document.getElementById('statutRapport')?.value || 'all';
   let filtered = rapportsData.filter(r => (r.reference || '').toLowerCase().includes(search) && (statut === 'all' || r.status === statut));
   const tbody = document.getElementById('rapportsTableBody');
-  tbody.innerHTML = filtered.map(r => `
-    <tr onclick='viewRapport("${r.id}")' style="cursor:pointer;">
-      <td><strong>${r.reference || '-'}</strong></td>
-      <td>${r.zone || '-'}</td>
-      <td>${r.responsable || '-'}</td>
-      <td style="color:#f59e0b; font-weight:bold;">${r.totalPointsJour || 0}</td>
-      <td><small>${formatDateShort(r.createdAt)}</small></td>
-      <td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></td>
-      <td><button class="action-btn view" onclick='event.stopPropagation();viewRapport("${r.id}")'><i class="fas fa-eye"></i> Voir</button></td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = filtered.map(r => `<tr onclick='viewRapport("${r.id}")'><td><strong>${r.reference || '-'}</strong></td><td>${r.zone || '-'}</td><td>${r.responsable || '-'}</td><td style="color:#f59e0b; font-weight:bold;">${r.totalPointsJour || 0}</td><td><small>${formatDateShort(r.createdAt)}</small></td><td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></td><td><button class="action-btn view" onclick='event.stopPropagation();viewRapport("${r.id}")'><i class="fas fa-eye"></i> Voir</button></td></tr>`).join('');
 }
 
 function updateTicketsTable() {
@@ -322,16 +282,7 @@ function updateTicketsTable() {
   usersData.forEach(u => { (u.ticketsList || []).forEach(t => { allTickets.push({ ...t, userCode: u.code }); }); });
   allTickets.sort((a,b) => new Date(b.date) - new Date(a.date));
   const tbody = document.getElementById('ticketsTableBody');
-  tbody.innerHTML = allTickets.slice(0,30).map(t => `
-    <tr>
-      <td><strong>${t.userCode}</strong></td>
-      <td>${t.category || t.subject}</td>
-      <td><span class="badge ${t.priority === 'haute' ? 'badge-danger' : 'badge-warning'}">${t.priority}</span></td>
-      <td><span class="badge ${t.status === 'resolu' ? 'badge-success' : 'badge-warning'}">${t.status}</span></td>
-      <td><small>${formatDateShort(t.date)}</small></td>
-      <td><button class="action-btn view" onclick='replyToTicket("${t.id}", "${t.userCode}")'><i class="fas fa-reply"></i> Répondre</button></td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = allTickets.slice(0,30).map(t => `<tr><td><strong>${t.userCode}</strong></td><td>${t.category || t.subject}</td><td><span class="badge ${t.priority === 'haute' ? 'badge-danger' : 'badge-warning'}">${t.priority}</span></td><td><span class="badge ${t.status === 'resolu' ? 'badge-success' : 'badge-warning'}">${t.status}</span></td><td><small>${formatDateShort(t.date)}</small></td><td><button class="action-btn view" onclick='replyToTicket("${t.id}", "${t.userCode}")'><i class="fas fa-reply"></i> Répondre</button></td></tr>`).join('');
   document.getElementById('ticketsOpen').innerText = allTickets.filter(t => t.status === 'ouvert').length;
   document.getElementById('ticketsProgress').innerText = allTickets.filter(t => t.status === 'en-cours').length;
   document.getElementById('ticketsResolved').innerText = allTickets.filter(t => t.status === 'resolu').length;
@@ -341,29 +292,14 @@ function updateAnomaliesTable() {
   const anomalies = [];
   usersData.forEach(u => { const count = (parseInt(u.anomaliesConnexion) || 0) + (parseInt(u.anomaliesSysteme) || 0); if(count >= 2) { anomalies.push({ code: u.code, type: 'Anomalies multiples', count: count, last: u.derniereMAJTech, id: u.id }); } });
   const tbody = document.getElementById('anomaliesTableBody');
-  tbody.innerHTML = anomalies.map(a => `
-    <tr>
-      <td><strong>${a.code}</strong></td>
-      <td>${a.type}</td>
-      <td><span class="badge badge-danger">${a.count} fois</span></td>
-      <td><small>${formatDateShort(a.last)}</small></td>
-      <td><button class="action-btn view" onclick='resetAnomalies("${a.id}")'><i class="fas fa-sync"></i> Réinitialiser</button></td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = anomalies.map(a => `<tr><td><strong>${a.code}</strong></td><td>${a.type}</td><td><span class="badge badge-danger">${a.count} fois</span></td><td><small>${formatDateShort(a.last)}</small></td><td><button class="action-btn view" onclick='resetAnomalies("${a.id}")'><i class="fas fa-sync"></i> Réinitialiser</button></td></tr>`).join('');
 }
 
 function updateCapHistory() {
   const history = [];
   usersData.forEach(user => { if(user.capDuJour) { history.push({ code: user.code, cap: user.capDuJour.substring(0, 60) + (user.capDuJour.length > 60 ? '...' : ''), envoyeLe: user.capEnvoyeLe, expiration: user.capExpiration }); } });
   const tbody = document.getElementById('capHistoryBody');
-  tbody.innerHTML = history.map(h => `
-    <tr>
-      <td><strong>${h.code}</strong></td>
-      <td>${h.cap}</td>
-      <td>${h.envoyeLe ? new Date(h.envoyeLe).toLocaleString() : '-'}</td>
-      <td>${h.expiration || '-'}</td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = history.map(h => `<tr><td><strong>${h.code}</strong></td><td>${h.cap}</td><td>${h.envoyeLe ? new Date(h.envoyeLe).toLocaleString() : '-'}</td><td>${h.expiration || '-'}</td></tr>`).join('');
   document.getElementById('totalActions').innerText = history.length;
 }
 
@@ -391,53 +327,18 @@ window.showNetuberDetails = (code) => {
   const user = usersData.find(u => u.code === code);
   if(!user) return;
   const modalBody = document.getElementById('rapportDetailBody');
-  modalBody.innerHTML = `
-    <div class="detail-card"><h4>Identité</h4><div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${user.code || '-'}</span></div><div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${user.email || '-'}</span></div></div>
-    <div class="detail-card"><h4>Statistiques</h4><div class="detail-row"><span class="detail-label">Connexions</span><span class="detail-value">${user.NombreConnexions || 0}</span></div><div class="detail-row"><span class="detail-label">Déconnexions</span><span class="detail-value">${user.NombreDeconnexions || 0}</span></div></div>
-    <div class="detail-card"><h4>Localisation</h4><div class="detail-row"><span class="detail-label">Localisation</span><span class="detail-value">${user.localisation || '-'}</span></div></div>
-  `;
+  modalBody.innerHTML = `<div class="detail-grid"><div class="detail-card"><h4>Identité</h4><div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${user.code || '-'}</span></div><div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${user.email || '-'}</span></div></div><div class="detail-card"><h4>Statistiques</h4><div class="detail-row"><span class="detail-label">Connexions</span><span class="detail-value">${user.NombreConnexions || 0}</span></div><div class="detail-row"><span class="detail-label">Déconnexions</span><span class="detail-value">${user.NombreDeconnexions || 0}</span></div></div></div>`;
   openModal('rapportModal');
 };
 
 window.viewRapport = (id) => {
   const rapport = rapportsData.find(r => r.id === id);
   if(!rapport) return;
-  
-  const objectifMensuel = 9;
-  const objectifAtteint = rapport.goalReached || 0;
-  const objectifRestant = Math.max(0, objectifMensuel - objectifAtteint);
-  
   const totalPoints = (rapport.totalPointsPrecedents || 0) + (rapport.totalPointsJour || 0);
   const pointsPrevPercent = totalPoints > 0 ? ((rapport.totalPointsPrecedents || 0) / totalPoints) * 100 : 0;
   const pointsJourPercent = totalPoints > 0 ? ((rapport.totalPointsJour || 0) / totalPoints) * 100 : 0;
-  const totalTemps = (rapport.totalTempsPrecedent || 0) + (rapport.totalTempsJour || 0);
-  const tempsPrevPercent = totalTemps > 0 ? ((rapport.totalTempsPrecedent || 0) / totalTemps) * 100 : 0;
-  const tempsJourPercent = totalTemps > 0 ? ((rapport.totalTempsJour || 0) / totalTemps) * 100 : 0;
-  
-  const netubersTableHtml = `
-    <table class="netuber-table">
-      <thead><tr><th>Code Netuber</th><th>Présence</th><th>Points préc.</th><th>Points jour</th><th>Écart</th><th>Tendance</th><th>Temps préc.</th><th>Temps jour</th><th>Rendement</th><th>Jours prestés</th></tr></thead>
-      <tbody>
-        ${(rapport.netubers || []).map(n => {
-          const ecart = (n.pointsJour || 0) - (n.pointsPrecedents || 0);
-          const tendance = ecart > 0 ? '↑ En hausse' : (ecart < 0 ? '↓ En baisse' : '→ Stable');
-          const tendanceColor = ecart > 0 ? '#10b981' : (ecart < 0 ? '#ef4444' : '#f59e0b');
-          const rendement = (n.tempsJour || 0) > 0 ? ((n.pointsJour || 0) / (n.tempsJour || 1)).toFixed(2) : '0.00';
-          return `<tr><td style="font-weight:600; color:#60a5fa;">${n.code || '-'}</td><td style="text-align:center;">${n.presence === 'Présent' ? '✅ Présent' : '❌ Absent'}</td><td style="text-align:center;">${n.pointsPrecedents || 0}</td><td style="text-align:center; color:#f59e0b; font-weight:600;">${n.pointsJour || 0}</td><td style="text-align:center; color:${tendanceColor};">${ecart > 0 ? `+${ecart}` : ecart}</td><td style="text-align:center; color:${tendanceColor};">${tendance}</td><td style="text-align:center;">${n.tempsPrecedent || 0} min</td><td style="text-align:center;">${n.tempsJour || 0} min</td><td style="text-align:center; font-weight:600; color:#10b981;">${rendement}/min</td><td style="text-align:center;">${n.joursPrestes || 0}</td></tr>`;
-        }).join('')}
-      </tbody>
-      <tfoot><tr style="background:#1a2332; font-weight:800;"><td>TOTAUX</td><td>-</td><td style="text-align:center;">${rapport.totalPointsPrecedents || 0}</td><td style="text-align:center; color:#f59e0b;">${rapport.totalPointsJour || 0}</td><td style="text-align:center;">${((rapport.totalPointsJour || 0) - (rapport.totalPointsPrecedents || 0)) > 0 ? '+' : ''}${(rapport.totalPointsJour || 0) - (rapport.totalPointsPrecedents || 0)}</td><td>-</td><td style="text-align:center;">${rapport.totalTempsPrecedent || 0} min</td><td style="text-align:center;">${rapport.totalTempsJour || 0} min</td><td style="text-align:center; font-weight:800;">${rapport.rendementGlobal || '0'}/min</td><td>-</td></tr></tfoot>
-    </table>
-  `;
-  
-  document.getElementById('rapportDetailBody').innerHTML = `
-    <div class="detail-card"><h4>📊 Informations générales</h4><div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${rapport.reference || '-'}</span></div><div class="detail-row"><span class="detail-label">Zone / Site</span><span class="detail-value">${rapport.zone || '-'}</span></div><div class="detail-row"><span class="detail-label">Responsable</span><span class="detail-value">${rapport.responsable || '-'}</span></div><div class="detail-row"><span class="detail-label">Date d'envoi</span><span class="detail-value">${new Date(rapport.createdAt).toLocaleString()}</span></div><div class="detail-row"><span class="detail-label">Appels pilote</span><span class="detail-value">${rapport.piloteCallCount || 0} fois</span></div></div>
-    <div class="detail-card"><h4>🎯 Objectifs</h4><div class="detail-row"><span class="detail-label">Objectif mensuel</span><span class="detail-value">${objectifMensuel}</span></div><div class="detail-row"><span class="detail-label">Objectif atteint</span><span class="detail-value" style="color:#10b981;">${objectifAtteint}</span></div><div class="detail-row"><span class="detail-label">Objectif restant</span><span class="detail-value" style="color:#f59e0b;">${objectifRestant}</span></div></div>
-    <div class="detail-card"><h4>📊 Progression des points</h4><div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Points précédents (${rapport.totalPointsPrecedents || 0} pts)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsPrevPercent}%; background:#3498db;">${Math.round(pointsPrevPercent)}%</div></div></div><div class="progress-item"><div class="progress-label">Points du jour (${rapport.totalPointsJour || 0} pts)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsJourPercent}%; background:#27ae60;">${Math.round(pointsJourPercent)}%</div></div></div></div></div>
-    <div class="detail-card"><h4>⏱️ Progression du temps</h4><div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Temps précédent (${rapport.totalTempsPrecedent || 0} min)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${tempsPrevPercent}%; background:#e67e22;">${Math.round(tempsPrevPercent)}%</div></div></div><div class="progress-item"><div class="progress-label">Temps du jour (${rapport.totalTempsJour || 0} min)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${tempsJourPercent}%; background:#f39c12;">${Math.round(tempsJourPercent)}%</div></div></div></div></div>
-    <div class="detail-card"><h4>👥 Détail des performances par Netuber</h4>${netubersTableHtml}</div>
-    <div class="detail-card"><h4>📝 Recommandation du pôle</h4><p style="margin-top:10px; line-height:1.5;">${rapport.recommendation || '-'}</p></div>
-  `;
+  const modalBody = document.getElementById('rapportDetailBody');
+  modalBody.innerHTML = `<div class="detail-card"><h4>📊 Progression des points</h4><div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Points précédents (${rapport.totalPointsPrecedents || 0} pts)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsPrevPercent}%; background:#3498db;">${Math.round(pointsPrevPercent)}%</div></div></div><div class="progress-item"><div class="progress-label">Points du jour (${rapport.totalPointsJour || 0} pts)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsJourPercent}%; background:#27ae60;">${Math.round(pointsJourPercent)}%</div></div></div></div></div><div class="detail-card"><h4>👥 Détail des Netubers</h4><table style="width:100%;"><thead><tr><th>Code</th><th>Présence</th><th>Points</th><th>Temps</th></tr></thead><tbody>${(rapport.netubers || []).map(n => `<tr><td>${n.code}</td><td>${n.presence}</td><td>${n.pointsJour}</td><td>${n.tempsJour} min</td></tr>`).join('')}</tbody>}</div><div class="detail-card"><h4>📝 Recommandation</h4><p>${rapport.recommendation || '-'}</p></div>`;
   openModal('rapportModal');
 };
 
@@ -451,17 +352,6 @@ window.resetAnomalies = async (userId) => {
 window.replyToTicket = (ticketId, userCode) => {
   const message = prompt("Votre réponse au ticket :");
   if(message) showToast(`✅ Réponse envoyée à ${userCode}`);
-};
-
-window.toggleBlockStatus = async (code) => {
-  const user = usersData.find(u => u.code === code);
-  if(user) {
-    const newBlocked = !user.isBlocked;
-    const userRef = doc(db, "users", user.id);
-    await updateDoc(userRef, { isBlocked: newBlocked });
-    showToast(newBlocked ? `🔒 ${code} bloqué` : `🔓 ${code} débloqué`);
-    loadAllData();
-  }
 };
 
 // ============ CAP DU JOUR ============
