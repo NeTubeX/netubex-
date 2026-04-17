@@ -109,6 +109,9 @@ tr:hover{background:#1a2332;}
 .feedback-item .feedback-message{font-size:12px;color:#e2e8f0;}
 .password-toggle{cursor:pointer;margin-left:8px;color:#64748b;}
 .password-toggle:hover{color:#f59e0b;}
+.netuber-detail-table{width:100%;border-collapse:collapse;font-size:11px;}
+.netuber-detail-table th{background:#1e293b;padding:8px;text-align:center;}
+.netuber-detail-table td{padding:8px;text-align:center;border-bottom:1px solid #2d3748;}
 </style>
 </head>
 <body oncontextmenu="return false" onkeydown="return (event.ctrlKey || event.metaKey) ? false : true">
@@ -131,7 +134,7 @@ tr:hover{background:#1a2332;}
 <button class="tab" onclick="switchTab('settings')"><i class="fas fa-cog"></i> Paramètres</button>
 </div>
 
-<!-- Onglet Netubers (public) -->
+<!-- Onglet Netubers -->
 <div id="netubersTab" class="tab-content active">
 <div class="stats-grid">
 <div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Total Netubers</div></div>
@@ -242,9 +245,9 @@ tr:hover{background:#1a2332;}
 
 <div id="rapportModal" class="modal"><div class="modal-content" style="max-width:1200px;"><div class="modal-header"><h2><i class="fas fa-file-alt"></i> Détail complet du rapport PGCO</h2><button class="modal-close" onclick="closeModal('rapportModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="rapportDetailBody"></div><div class="modal-footer"><button id="deleteRapportBtn" style="background:#ef4444;"><i class="fas fa-trash"></i> Supprimer le rapport</button><button onclick="closeModal('rapportModal')" style="background:#64748b;">Fermer</button></div></div></div>
 
-<div id="feedbackModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-comment-dots"></i> Envoyer un feedback</h2><button class="modal-close" onclick="closeModal('feedbackModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Rapport concerné</label><input type="text" id="feedbackRapportRef" readonly></div><div class="input-group"><label>Votre feedback</label><textarea id="feedbackMessage" rows="5" placeholder="Saisissez votre feedback pour le PGCO..."></textarea><small style="color:#64748b; font-size:10px;">Min 10 caractères - L'envoi marque le rapport comme traité</small></div></div><div class="modal-footer"><button onclick="sendFeedback()" style="background:#06b6d4;">Envoyer</button><button onclick="closeModal('feedbackModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="feedbackModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-comment-dots"></i> Envoyer un feedback</h2><button class="modal-close" onclick="closeModal('feedbackModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Rapport concerné</label><input type="text" id="feedbackRapportRef" readonly></div><div class="input-group"><label>Votre feedback</label><textarea id="feedbackMessage" rows="5" placeholder="Saisissez votre feedback pour le PGCO..."></textarea><small style="color:#64748b; font-size:10px;">Min 10 caractères - L'envoi marque le rapport comme traité</small></div></div><div class="modal-footer"><button id="sendFeedbackBtn" style="background:#06b6d4;">Envoyer</button><button onclick="closeModal('feedbackModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
-<div id="memoModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-envelope"></i> Mémorandum directif</h2><button class="modal-close" onclick="closeModal('memoModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Destinataire</label><select id="memoDestinataire"><option value="all">Tous les PGCO</option></select></div><div class="input-group"><label>Titre du mémorandum</label><input type="text" id="memoTitle" placeholder="Titre..."></div><div class="input-group"><label>Contenu du mémorandum</label><textarea id="memoContent" rows="6" placeholder="Instructions, directives, informations importantes..."></textarea><small style="color:#64748b; font-size:10px;">Min 20 caractères</small></div></div><div class="modal-footer"><button onclick="sendMemorandum()" style="background:#ec4899;">Envoyer</button><button onclick="closeModal('memoModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="memoModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-envelope"></i> Mémorandum directif</h2><button class="modal-close" onclick="closeModal('memoModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Destinataire</label><select id="memoDestinataire"><option value="all">Tous les PGCO</option></select></div><div class="input-group"><label>Titre du mémorandum</label><input type="text" id="memoTitle" placeholder="Titre..."></div><div class="input-group"><label>Contenu du mémorandum</label><textarea id="memoContent" rows="6" placeholder="Instructions, directives, informations importantes..."></textarea><small style="color:#64748b; font-size:10px;">Min 20 caractères</small></div></div><div class="modal-footer"><button id="sendMemoBtn" style="background:#ec4899;">Envoyer</button><button onclick="closeModal('memoModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
 <div id="replyTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-reply"></i> Répondre au ticket</h2><button class="modal-close" onclick="closeModal('replyTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="replyTicketId" readonly></div><div class="input-group"><label>Netuber</label><input type="text" id="replyNetuberCode" readonly></div><div class="input-group"><label>Message de réponse</label><textarea id="replyMessage" rows="4" placeholder="Votre réponse..."></textarea></div></div><div class="modal-footer"><button onclick="sendTicketReply()" style="background:#8b5cf6;">Envoyer</button><button onclick="closeModal('replyTicketModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
@@ -428,12 +431,13 @@ function updateRapportsTable() {
             <td style="color:#f59e0b; font-weight:bold;">${totalPointsJour}</td>
             <td class="${tendanceColor}">${ecart > 0 ? '+' : ''}${ecart}</td>
             <td class="${tendanceColor}">${tendance}</td>
-            <td>${totalTempsPrec} min</td>
-            <td>${totalTempsJour} min</td>
+            <td>${totalTempsPrec} min</td><td>${totalTempsJour} min</td>
             <td class="${tendanceColor}">${rendement} pts/min</td>
             <td><small>${formatDateShort(r.createdAt)}</small></td>
             <td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></td>
-            <td><button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i> Détail</button><button class="action-btn feedback" onclick='openFeedbackModal("${r.id}", "${r.reference}")'><i class="fas fa-comment-dots"></i> Feedback</button></td>
+            <td><button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i> Détail</button>
+                <button class="action-btn feedback" onclick='openFeedbackModal("${r.id}", "${r.reference}")'><i class="fas fa-comment-dots"></i> Feedback</button>
+             </td>
         </tr>`;
     }).join('');
 }
@@ -495,18 +499,12 @@ window.viewRapport = (id) => {
                 <tbody>${(rapport.netubers || []).map(n => {
                     const ecartNet = (n.pointsJour || 0) - (n.pointsPrecedents || 0);
                     const rendementNet = (n.tempsJour || 0) > 0 ? ((n.pointsJour || 0) / (n.tempsJour || 1)).toFixed(2) : '0';
-                    return `<tr>
-                        <td><strong>${n.code}</strong></td>
-                        <td>${n.presence === 'Présent' ? '✅' : '❌'}</td>
-                        <td>${n.objectifMensuel || 0}</td>
-                        <td style="color:#10b981;">${n.objectifAtteint || 0}</td>
-                        <td>${n.pointsPrecedents || 0}</td>
-                        <td style="color:#f59e0b;">${n.pointsJour || 0}</td>
+                    return `<tr><td><strong>${n.code}</strong></td><td>${n.presence === 'Présent' ? '✅' : '❌'}</td>
+                        <td>${n.objectifMensuel || 0}</td><td style="color:#10b981;">${n.objectifAtteint || 0}</td>
+                        <td>${n.pointsPrecedents || 0}</td><td style="color:#f59e0b;">${n.pointsJour || 0}</td>
                         <td class="${ecartNet > 0 ? 'tendance-up' : (ecartNet < 0 ? 'tendance-down' : 'tendance-stable')}">${ecartNet > 0 ? '+' : ''}${ecartNet}</td>
-                        <td>${n.tempsPrecedent || 0} min</td>
-                        <td>${n.tempsJour || 0} min</td>
-                        <td>${rendementNet} pts/min</td>
-                    </tr>`;
+                        <td>${n.tempsPrecedent || 0} min</td><td>${n.tempsJour || 0} min</td>
+                        <td>${rendementNet} pts/min</td></tr>`;
                 }).join('')}</tbody>
             </table></div>
         </div>
@@ -521,45 +519,86 @@ window.viewRapport = (id) => {
     openModal('rapportModal');
 };
 
-// FEEDBACK - Marque le rapport comme traité
+// FEEDBACK - CORRIGÉ
 window.openFeedbackModal = (rapportId, reference) => {
+    console.log("Ouverture modal feedback pour:", rapportId);
     selectedRapportForFeedback = { id: rapportId, reference };
     document.getElementById('feedbackRapportRef').value = reference;
     document.getElementById('feedbackMessage').value = '';
     openModal('feedbackModal');
 };
 
-async function sendFeedback() {
+window.sendFeedback = async function() {
+    console.log("sendFeedback appelé");
     const message = document.getElementById('feedbackMessage').value.trim();
-    if(!message || message.length < 10) { showToast('Message requis (10 caractères min)', true); return; }
+    if(!message || message.length < 10) { 
+        showToast('Message requis (10 caractères min)', true); 
+        return; 
+    }
+    if(!selectedRapportForFeedback) {
+        showToast('Erreur: aucun rapport sélectionné', true);
+        return;
+    }
     try {
         const rapportRef = doc(db, "reports", selectedRapportForFeedback.id);
         const rapportSnap = await getDoc(rapportRef);
         if(rapportSnap.exists()) {
             const existingFeedbacks = rapportSnap.data().feedbacks || [];
             await updateDoc(rapportRef, { 
-                feedbacks: [...existingFeedbacks, { id: `fb_${Date.now()}`, message, date: new Date().toISOString(), admin: true }],
-                status: "traite"  // Marque automatiquement comme traité
+                feedbacks: [...existingFeedbacks, { 
+                    id: `fb_${Date.now()}`, 
+                    message: message, 
+                    date: new Date().toISOString(), 
+                    admin: true 
+                }],
+                status: "traite"
             });
-            showToast('Feedback envoyé - Rapport marqué comme traité');
+            showToast('✅ Feedback envoyé - Rapport marqué comme traité');
             closeModal('feedbackModal');
             await loadAllData();
+        } else {
+            showToast('Rapport non trouvé', true);
         }
-    } catch(error) { showToast('Erreur: ' + error.message, true); }
-}
+    } catch(error) { 
+        console.error(error);
+        showToast('Erreur: ' + error.message, true); 
+    }
+};
 
-// MÉMORANDUM
-window.openMemoModal = () => { document.getElementById('memoTitle').value = ''; document.getElementById('memoContent').value = ''; openModal('memoModal'); };
-async function sendMemorandum() {
+// MÉMORANDUM - CORRIGÉ
+window.openMemoModal = () => { 
+    console.log("Ouverture modal mémorandum");
+    document.getElementById('memoTitle').value = ''; 
+    document.getElementById('memoContent').value = ''; 
+    openModal('memoModal'); 
+};
+
+window.sendMemorandum = async function() {
+    console.log("sendMemorandum appelé");
     const title = document.getElementById('memoTitle').value.trim();
     const content = document.getElementById('memoContent').value.trim();
-    if(!title || !content || content.length < 20) { showToast('Titre et contenu (20 caractères min) requis', true); return; }
+    const destinataire = document.getElementById('memoDestinataire').value;
+    
+    if(!title) { showToast('Veuillez saisir un titre', true); return; }
+    if(!content || content.length < 20) { 
+        showToast('Contenu (20 caractères min) requis', true); 
+        return; 
+    }
     try {
-        await addDoc(collection(db, "memorandums"), { title, content, destinataire: document.getElementById('memoDestinataire').value, date: new Date().toISOString(), type: 'memorandum' });
-        showToast('Mémorandum envoyé');
+        await addDoc(collection(db, "memorandums"), { 
+            title, 
+            content, 
+            destinataire: destinataire, 
+            date: new Date().toISOString(), 
+            type: 'memorandum' 
+        });
+        showToast('✅ Mémorandum envoyé avec succès');
         closeModal('memoModal');
-    } catch(error) { showToast('Erreur: ' + error.message, true); }
-}
+    } catch(error) { 
+        console.error(error);
+        showToast('Erreur: ' + error.message, true); 
+    }
+};
 
 // Netubers (public)
 function updateNetubersTable() {
@@ -578,18 +617,29 @@ function updateNetubersTable() {
         const objMensuel = parseInt(u.objectifMensuel) || 9;
         const objAtteint = parseInt(u.objectifAtteint) || 0;
         const isOnline = u.estConnecte === true || u.estConnecte === 'true';
-        const connectedSince = isOnline && u.connectedSince ? new Date(u.connectedSince).toLocaleString() : (u.lastSeen ? `Déconnecté depuis ${new Date(u.lastSeen).toLocaleString()}` : 'Jamais');
+        
+        // Affichage correct de "Connecté depuis"
+        let connectedSince = 'Jamais';
+        if (isOnline && u.connectedSince) {
+            connectedSince = new Date(u.connectedSince).toLocaleString();
+        } else if (u.lastSeen) {
+            connectedSince = `Dernière activité: ${new Date(u.lastSeen).toLocaleString()}`;
+        } else if (u.createdAt) {
+            connectedSince = `Compte créé: ${new Date(u.createdAt).toLocaleDateString()}`;
+        }
+        
         return `<tr>
             <td><strong>${u.code || '-'}</strong>${u.isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</td>
-            <td>${objMensuel}</td>
-            <td style="color:#10b981;">${objAtteint}</td>
+            <td>${objMensuel}</td><td style="color:#10b981;">${objAtteint}</td>
             <td style="color:#f59e0b;">${objMensuel - objAtteint}</td>
             <td>${u.NombreConnexions || 0}</td>
             <td><span class="badge ${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0) > 5 ? 'badge-danger' : ((u.anomaliesConnexion||0)+(u.anomaliesSysteme||0) > 2 ? 'badge-warning' : 'badge-success')}">${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)}</span></td>
             <td><span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>${isOnline ? 'En ligne' : 'Hors ligne'}${u.isBlocked ? ' 🔒' : ''}</td>
             <td><small>${connectedSince}</small></td>
-            <td><button class="action-btn cap" onclick='openCapModal("${u.code}")'><i class="fas fa-chart-line"></i> CAP</button><button class="action-btn view" onclick='showNetuberDetails("${u.code}")'><i class="fas fa-eye"></i></button></td>
-        </tr>`;
+            <td><button class="action-btn cap" onclick='openCapModal("${u.code}")'><i class="fas fa-chart-line"></i> CAP</button>
+                <button class="action-btn view" onclick='showNetuberDetails("${u.code}")'><i class="fas fa-eye"></i></button>
+             </td>
+        </td>`;
     }).join('');
 }
 
@@ -620,7 +670,9 @@ window.exportNetubersPublic = () => {
     usersData.forEach(u => { 
         const objRestant = (u.objectifMensuel || 9) - (u.objectifAtteint || 0);
         const isOnline = u.estConnecte === true || u.estConnecte === 'true';
-        const connectedSince = isOnline && u.connectedSince ? new Date(u.connectedSince).toLocaleString() : (u.lastSeen ? `Déconnecté depuis ${new Date(u.lastSeen).toLocaleString()}` : 'Jamais');
+        let connectedSince = 'Jamais';
+        if (isOnline && u.connectedSince) connectedSince = new Date(u.connectedSince).toLocaleString();
+        else if (u.lastSeen) connectedSince = `Dernière activité: ${new Date(u.lastSeen).toLocaleString()}`;
         csv += `${u.code},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},${isOnline?'En ligne':'Hors ligne'},"${connectedSince}"\n`; 
     });
     const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `netubers_public_${new Date().toISOString().split('T')[0]}.csv`; link.click();
@@ -723,7 +775,12 @@ window.createNetuber = async () => {
     if(password.length < 6) { showToast('Mot de passe (min 6 caractères)', true); return; }
     try {
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
-        await setDoc(doc(db, "users", userCred.user.uid), { code, email, role: "netuber", isActive: true, createdAt: new Date().toISOString(), NombreConnexions: 0, NombreDeconnexions: 0, anomaliesConnexion: 0, anomaliesSysteme: 0, ticketsList: [], ticketCountsByCategory: {}, estConnecte: false, isBlocked: false, objectifMensuel: 9, objectifAtteint: 0 });
+        await setDoc(doc(db, "users", userCred.user.uid), { 
+            code, email, role: "netuber", isActive: true, createdAt: new Date().toISOString(), 
+            NombreConnexions: 0, NombreDeconnexions: 0, anomaliesConnexion: 0, anomaliesSysteme: 0, 
+            ticketsList: [], ticketCountsByCategory: {}, estConnecte: false, isBlocked: false, 
+            objectifMensuel: 9, objectifAtteint: 0, connectedSince: null, lastSeen: new Date().toISOString() 
+        });
         closeModal('addNetuberModal');
         showToast('Netuber créé');
         await loadAllData();
@@ -800,8 +857,11 @@ window.exportRapports = () => {
     const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `rapports_${new Date().toISOString().split('T')[0]}.csv`; link.click();
 };
 
-// Initialisation
+// Initialisation - Attacher les événements aux boutons
 document.getElementById('sendCapBtn')?.addEventListener('click', () => window.sendCapToNetuber());
+document.getElementById('sendFeedbackBtn')?.addEventListener('click', () => window.sendFeedback());
+document.getElementById('sendMemoBtn')?.addEventListener('click', () => window.sendMemorandum());
+
 setInterval(loadAllData, 30000);
 loadAllData();
 </script>
