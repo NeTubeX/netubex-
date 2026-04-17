@@ -257,7 +257,7 @@ tr:hover{background:#1a2332;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, getDoc, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, getDoc, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, updatePassword as updateUserPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
@@ -273,6 +273,7 @@ let anomaliesChart = null;
 let selectedNetuberForCap = null;
 let currentSelectedRapportId = null;
 let selectedRapportForFeedback = null;
+let usersUnsubscribe = null;
 
 // Déconnexion
 window.logout = async () => {
@@ -319,7 +320,52 @@ function showConfirm(title, message, onConfirm) {
     confirmCancel.addEventListener('click', cancelHandler);
 }
 
-// Chargement des données
+// Écoute en temps réel des utilisateurs
+function startRealtimeUsersListener() {
+    if (usersUnsubscribe) usersUnsubscribe();
+    
+    const usersRef = collection(db, "users");
+    usersUnsubscribe = onSnapshot(usersRef, (snapshot) => {
+        let hasChanges = false;
+        
+        snapshot.docChanges().forEach((change) => {
+            const updatedUser = { id: change.doc.id, ...change.doc.data() };
+            
+            if (change.type === "modified" || change.type === "added") {
+                const index = usersData.findIndex(u => u.id === updatedUser.id);
+                if (index !== -1) {
+                    // Vérifier si le statut a changé
+                    const oldStatus = usersData[index].estConnecte;
+                    const newStatus = updatedUser.estConnecte;
+                    if (oldStatus !== newStatus) {
+                        console.log(`🔄 Statut de ${updatedUser.code || updatedUser.id} changé: ${oldStatus ? 'En ligne' : 'Hors ligne'} → ${newStatus ? 'En ligne' : 'Hors ligne'}`);
+                        hasChanges = true;
+                    }
+                    usersData[index] = updatedUser;
+                } else {
+                    usersData.push(updatedUser);
+                    hasChanges = true;
+                }
+            } else if (change.type === "removed") {
+                const index = usersData.findIndex(u => u.id === updatedUser.id);
+                if (index !== -1) {
+                    usersData.splice(index, 1);
+                    hasChanges = true;
+                }
+            }
+        });
+        
+        if (hasChanges) {
+            updateNetubersTable();
+            updateConfidentialiteTable();
+            updateStats();
+        }
+    }, (error) => {
+        console.error("Erreur d'écoute:", error);
+    });
+}
+
+// Chargement initial des données
 async function loadAllData() {
     const usersSnap = await getDocs(collection(db, "users"));
     usersData = [];
@@ -340,6 +386,9 @@ async function loadAllData() {
     updateCharts();
     updateSelects();
     updateCapHistory();
+    
+    // Démarrer l'écoute en temps réel après le chargement initial
+    startRealtimeUsersListener();
 }
 
 async function loadTickets() {
@@ -431,13 +480,13 @@ function updateRapportsTable() {
             <td style="color:#f59e0b; font-weight:bold;">${totalPointsJour}</td>
             <td class="${tendanceColor}">${ecart > 0 ? '+' : ''}${ecart}</td>
             <td class="${tendanceColor}">${tendance}</td>
-            <td>${totalTempsPrec} min</td><td>${totalTempsJour} min</td>
-            <td class="${tendanceColor}">${rendement} pts/min</td>
+            <td>${totalTempsPrec} min</div><td>${totalTempsJour} min</div>
+            <td class="${tendanceColor}">${rendement} pts/min</div>
             <td><small>${formatDateShort(r.createdAt)}</small></td>
             <td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></td>
             <td><button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i> Détail</button>
                 <button class="action-btn feedback" onclick='openFeedbackModal("${r.id}", "${r.reference}")'><i class="fas fa-comment-dots"></i> Feedback</button>
-             </td>
+              </div>
         </tr>`;
     }).join('');
 }
@@ -499,12 +548,18 @@ window.viewRapport = (id) => {
                 <tbody>${(rapport.netubers || []).map(n => {
                     const ecartNet = (n.pointsJour || 0) - (n.pointsPrecedents || 0);
                     const rendementNet = (n.tempsJour || 0) > 0 ? ((n.pointsJour || 0) / (n.tempsJour || 1)).toFixed(2) : '0';
-                    return `<tr><td><strong>${n.code}</strong></td><td>${n.presence === 'Présent' ? '✅' : '❌'}</td>
-                        <td>${n.objectifMensuel || 0}</td><td style="color:#10b981;">${n.objectifAtteint || 0}</td>
-                        <td>${n.pointsPrecedents || 0}</td><td style="color:#f59e0b;">${n.pointsJour || 0}</td>
-                        <td class="${ecartNet > 0 ? 'tendance-up' : (ecartNet < 0 ? 'tendance-down' : 'tendance-stable')}">${ecartNet > 0 ? '+' : ''}${ecartNet}</td>
-                        <td>${n.tempsPrecedent || 0} min</td><td>${n.tempsJour || 0} min</td>
-                        <td>${rendementNet} pts/min</td></tr>`;
+                    return `<tr>
+                        <td><strong>${n.code}</strong></td>
+                        <td>${n.presence === 'Présent' ? '✅' : '❌'}</div>
+                        <div class="detail-value">${n.objectifMensuel || 0}</div>
+                        <div class="detail-value" style="color:#10b981;">${n.objectifAtteint || 0}</div>
+                        <div class="detail-value">${n.pointsPrecedents || 0}</div>
+                        <div class="detail-value" style="color:#f59e0b;">${n.pointsJour || 0}</div>
+                        <td class="${ecartNet > 0 ? 'tendance-up' : (ecartNet < 0 ? 'tendance-down' : 'tendance-stable')}">${ecartNet > 0 ? '+' : ''}${ecartNet}</div>
+                        <div class="detail-value">${n.tempsPrecedent || 0} min</div>
+                        <div class="detail-value">${n.tempsJour || 0} min</div>
+                        <div class="detail-value">${rendementNet} pts/min</div>
+                    </tr>`;
                 }).join('')}</tbody>
             </table></div>
         </div>
@@ -519,7 +574,7 @@ window.viewRapport = (id) => {
     openModal('rapportModal');
 };
 
-// FEEDBACK - CORRIGÉ
+// FEEDBACK
 window.openFeedbackModal = (rapportId, reference) => {
     console.log("Ouverture modal feedback pour:", rapportId);
     selectedRapportForFeedback = { id: rapportId, reference };
@@ -565,7 +620,7 @@ window.sendFeedback = async function() {
     }
 };
 
-// MÉMORANDUM - CORRIGÉ
+// MÉMORANDUM
 window.openMemoModal = () => { 
     console.log("Ouverture modal mémorandum");
     document.getElementById('memoTitle').value = ''; 
@@ -600,7 +655,7 @@ window.sendMemorandum = async function() {
     }
 };
 
-// Netubers (public)
+// Netubers (public) - AFFICHAGE CORRIGÉ
 function updateNetubersTable() {
     const tbody = document.getElementById('netubersTableBody');
     if(!tbody) return;
@@ -618,10 +673,10 @@ function updateNetubersTable() {
         const objAtteint = parseInt(u.objectifAtteint) || 0;
         const isOnline = u.estConnecte === true || u.estConnecte === 'true';
         
-        // Affichage correct de "Connecté depuis"
+        // AFFICHAGE CORRIGÉ : "Connecté depuis" quand en ligne
         let connectedSince = 'Jamais';
         if (isOnline && u.connectedSince) {
-            connectedSince = new Date(u.connectedSince).toLocaleString();
+            connectedSince = `Connecté depuis ${new Date(u.connectedSince).toLocaleString()}`;
         } else if (u.lastSeen) {
             connectedSince = `Dernière activité: ${new Date(u.lastSeen).toLocaleString()}`;
         } else if (u.createdAt) {
@@ -630,17 +685,21 @@ function updateNetubersTable() {
         
         return `<tr>
             <td><strong>${u.code || '-'}</strong>${u.isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</td>
-            <td>${objMensuel}</td><td style="color:#10b981;">${objAtteint}</td>
-            <td style="color:#f59e0b;">${objMensuel - objAtteint}</td>
-            <td>${u.NombreConnexions || 0}</td>
-            <td><span class="badge ${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0) > 5 ? 'badge-danger' : ((u.anomaliesConnexion||0)+(u.anomaliesSysteme||0) > 2 ? 'badge-warning' : 'badge-success')}">${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)}</span></td>
-            <td><span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>${isOnline ? 'En ligne' : 'Hors ligne'}${u.isBlocked ? ' 🔒' : ''}</td>
-            <td><small>${connectedSince}</small></td>
+            <td>${objMensuel}</div><td style="color:#10b981;">${objAtteint}</div>
+            <td style="color:#f59e0b;">${objMensuel - objAtteint}</div>
+            <td>${u.NombreConnexions || 0}</div>
+            <td><span class="badge ${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0) > 5 ? 'badge-danger' : ((u.anomaliesConnexion||0)+(u.anomaliesSysteme||0) > 2 ? 'badge-warning' : 'badge-success')}">${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)}</span></div>
+            <td><span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>${isOnline ? 'En ligne' : 'Hors ligne'}${u.isBlocked ? ' 🔒' : ''}</div>
+            <td><small>${connectedSince}</small></div>
             <td><button class="action-btn cap" onclick='openCapModal("${u.code}")'><i class="fas fa-chart-line"></i> CAP</button>
                 <button class="action-btn view" onclick='showNetuberDetails("${u.code}")'><i class="fas fa-eye"></i></button>
-             </td>
-        </td>`;
+              </div>
+        </table>`;
     }).join('');
+    
+    // Mise à jour du compteur en ligne
+    const onlineCount = usersData.filter(u => u.estConnecte === true || u.estConnecte === 'true').length;
+    document.getElementById('totalOnline').innerText = onlineCount;
 }
 
 // Confidentialité
@@ -653,11 +712,11 @@ function updateConfidentialiteTable() {
     tbody.innerHTML = filtered.map(u => {
         const maskedPassword = '••••••••';
         return `<tr>
-            <td><strong>${u.code || '-'}</strong></td>
-            <td>${u.email || '-'}</td>
-            <td>${maskedPassword} <i class="fas fa-edit password-toggle" onclick='openPasswordModal("${u.code}")' style="cursor:pointer; color:#64748b;"></i></td>
-            <td><span class="badge ${u.isBlocked ? 'badge-danger' : 'badge-success'}">${u.isBlocked ? 'Bloqué' : 'Actif'}</span></td>
-            <td><button class="action-btn delete" onclick='openDeleteNetuberModal("${u.code}")'><i class="fas fa-trash"></i> Supprimer</button></td>
+            <td><strong>${u.code || '-'}</strong></div>
+            <td>${u.email || '-'}</div>
+            <td>${maskedPassword} <i class="fas fa-edit password-toggle" onclick='openPasswordModal("${u.code}")' style="cursor:pointer; color:#64748b;"></i></div>
+            <td><span class="badge ${u.isBlocked ? 'badge-danger' : 'badge-success'}">${u.isBlocked ? 'Bloqué' : 'Actif'}</span></div>
+            <td><button class="action-btn delete" onclick='openDeleteNetuberModal("${u.code}")'><i class="fas fa-trash"></i> Supprimer</button></div>
         </tr>`;
     }).join('');
     document.getElementById('totalNetubersConf').innerText = usersData.length;
@@ -671,7 +730,7 @@ window.exportNetubersPublic = () => {
         const objRestant = (u.objectifMensuel || 9) - (u.objectifAtteint || 0);
         const isOnline = u.estConnecte === true || u.estConnecte === 'true';
         let connectedSince = 'Jamais';
-        if (isOnline && u.connectedSince) connectedSince = new Date(u.connectedSince).toLocaleString();
+        if (isOnline && u.connectedSince) connectedSince = `Connecté depuis ${new Date(u.connectedSince).toLocaleString()}`;
         else if (u.lastSeen) connectedSince = `Dernière activité: ${new Date(u.lastSeen).toLocaleString()}`;
         csv += `${u.code},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},${isOnline?'En ligne':'Hors ligne'},"${connectedSince}"\n`; 
     });
@@ -690,7 +749,6 @@ function escapeHtml(text) {
 
 function updateStats() {
     document.getElementById('totalNetubers').innerText = usersData.length;
-    document.getElementById('totalOnline').innerText = usersData.filter(u => u.estConnecte === true || u.estConnecte === 'true').length;
     document.getElementById('totalAnomalies').innerText = usersData.reduce((a,u) => a + (parseInt(u.anomaliesConnexion)||0) + (parseInt(u.anomaliesSysteme)||0), 0);
     document.getElementById('blockedCount').innerText = usersData.filter(u => u.isBlocked === true).length;
     document.getElementById('totalRapports').innerText = rapportsData.length;
@@ -709,7 +767,13 @@ function updateAnomaliesTable() {
     });
     const tbody = document.getElementById('anomaliesTableBody');
     if(!tbody) return;
-    tbody.innerHTML = anomalies.map(a => `<tr><td><strong>${a.code}</strong></td><td>Anomalies système/connexion</td><td><span class="badge badge-danger">${a.count} fois</span></td><td><small>${formatDateShort(a.last)}</small></td><td><button class="action-btn view" onclick='resetAnomalies("${a.id}")'><i class="fas fa-sync"></i> Réinitialiser</button></td></tr>`).join('');
+    tbody.innerHTML = anomalies.map(a => `<tr>
+        <td><strong>${a.code}</strong></div>
+        <td>Anomalies système/connexion</div>
+        <td><span class="badge badge-danger">${a.count} fois</span></div>
+        <td><small>${formatDateShort(a.last)}</small></div>
+        <td><button class="action-btn view" onclick='resetAnomalies("${a.id}")'><i class="fas fa-sync"></i> Réinitialiser</button></div>
+      </table>`).join('');
 }
 
 function updateCapHistory() {
@@ -717,7 +781,12 @@ function updateCapHistory() {
     usersData.forEach(user => { if(user.capDuJour) history.push({ code: user.code, cap: user.capDuJour.substring(0, 60) + (user.capDuJour.length > 60 ? '...' : ''), envoyeLe: user.capEnvoyeLe, expiration: user.capExpiration }); });
     const tbody = document.getElementById('capHistoryBody');
     if(!tbody) return;
-    tbody.innerHTML = history.map(h => `<tr><td><strong>${h.code}</strong></td><td>${h.cap}</td><td>${h.envoyeLe ? new Date(h.envoyeLe).toLocaleString() : '-'}</td><td>${h.expiration || '-'}</td></tr>`).join('');
+    tbody.innerHTML = history.map(h => `<tr>
+        <td><strong>${h.code}</strong></div>
+        <td>${h.cap}</div>
+        <td>${h.envoyeLe ? new Date(h.envoyeLe).toLocaleString() : '-'}</div>
+        <td>${h.expiration || '-'}</div>
+      </tr>`).join('');
     document.getElementById('totalActions').innerText = history.length;
 }
 
@@ -775,11 +844,16 @@ window.createNetuber = async () => {
     if(password.length < 6) { showToast('Mot de passe (min 6 caractères)', true); return; }
     try {
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        const now = new Date().toISOString();
         await setDoc(doc(db, "users", userCred.user.uid), { 
-            code, email, role: "netuber", isActive: true, createdAt: new Date().toISOString(), 
-            NombreConnexions: 0, NombreDeconnexions: 0, anomaliesConnexion: 0, anomaliesSysteme: 0, 
-            ticketsList: [], ticketCountsByCategory: {}, estConnecte: false, isBlocked: false, 
-            objectifMensuel: 9, objectifAtteint: 0, connectedSince: null, lastSeen: new Date().toISOString() 
+            code, email, role: "netuber", isActive: true, createdAt: now,
+            connectedSince: now, lastSeen: now,
+            NombreConnexions: 1, NombreDeconnexions: 0, 
+            anomaliesConnexion: 0, anomaliesSysteme: 0, 
+            ticketsList: [], ticketCountsByCategory: {}, 
+            estConnecte: true, isBlocked: false, 
+            objectifMensuel: 9, objectifAtteint: 0,
+            heureConnexion: now, heureDeconnexion: ""
         });
         closeModal('addNetuberModal');
         showToast('Netuber créé');
@@ -857,12 +931,11 @@ window.exportRapports = () => {
     const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `rapports_${new Date().toISOString().split('T')[0]}.csv`; link.click();
 };
 
-// Initialisation - Attacher les événements aux boutons
+// Initialisation
 document.getElementById('sendCapBtn')?.addEventListener('click', () => window.sendCapToNetuber());
 document.getElementById('sendFeedbackBtn')?.addEventListener('click', () => window.sendFeedback());
 document.getElementById('sendMemoBtn')?.addEventListener('click', () => window.sendMemorandum());
 
-setInterval(loadAllData, 30000);
 loadAllData();
 </script>
 </body>
