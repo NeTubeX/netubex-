@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -112,6 +113,13 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .menu-item.danger i{color:#ef4444;}
 @keyframes fadeIn{from{opacity:0;transform:translate(-50%,-50%) scale(0.95);}to{opacity:1;transform:translate(-50%,-50%) scale(1);}}
 .cap-content-large{padding:20px;font-size:1.1rem;line-height:1.6;color:#0f172a;background:#fff;border-radius:16px;margin:10px 0;text-align:center;}
+.blocked-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);z-index:9999;display:flex;align-items:center;justify-content:center;visibility:hidden;}
+.blocked-overlay.active{visibility:visible;}
+.blocked-card{background:#0f1420;border-radius:28px;padding:2rem;max-width:450px;width:90%;text-align:center;border:1px solid #ef4444;box-shadow:0 0 40px rgba(239,68,68,0.2);}
+.blocked-card i{font-size:4rem;color:#ef4444;margin-bottom:1rem;}
+.blocked-card h2{color:#ef4444;margin-bottom:0.5rem;}
+.blocked-card p{color:#94a3b8;margin-bottom:1rem;line-height:1.5;}
+.blocked-card .logout-btn-blocked{background:#ef4444;border:none;padding:12px 24px;border-radius:40px;color:#fff;font-weight:700;cursor:pointer;margin-top:1rem;}
 @media (max-width:640px){.post-image{min-height:160px;}.header{padding:0.5rem 1rem;}}
 </style>
 </head>
@@ -145,6 +153,18 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <div id="confirmPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-sign-out-alt" style="font-size:2rem;color:#ef4444;"></i><h3>Déconnexion</h3><p>Quitter votre session ?</p><div class="confirm-buttons"><button class="confirm-yes" id="confirmYes">Oui</button><button class="confirm-no" id="confirmNo">Non</button></div></div></div>
 <div id="capPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-chart-line" style="font-size:2rem;color:#f59e0b;"></i><h3>CAP du jour</h3><div id="capContent" class="cap-content-large"><p>Chargement...</p></div><button class="close-popup-btn" id="closeCapBtn">Fermer</button></div></div>
 <div id="fullscreenIframe" class="fullscreen-iframe"><button class="iframe-close" id="closeIframeBtn">✕</button><iframe id="portalIframe" src="about:blank"></iframe></div>
+
+<!-- Overlay pour compte bloqué -->
+<div id="blockedOverlay" class="blocked-overlay">
+<div class="blocked-card">
+<i class="fas fa-ban"></i>
+<h2>⚠️ Accès bloqué</h2>
+<p>Votre session n'est pas encore activée par le<br><strong>Pôle Excellence Technique et Support</strong>.</p>
+<p>Veuillez signaler le pilote pour plus d'informations.</p>
+<button class="logout-btn-blocked" id="blockedLogoutBtn"><i class="fas fa-sign-out-alt"></i> Se déconnecter</button>
+</div>
+</div>
+
 <footer class="footer"><p><i class="fas fa-copyright"></i> Ne<span style="color:#f59e0b;">TubeX</span> 2026 — Tous droits réservés</p></footer>
 </div>
 <div id="pilotErrorToast" class="pilot-error-toast"><i class="fas fa-lock"></i><div>Code invalide</div><button class="error-close" id="closePilotError"><i class="fas fa-times"></i></button></div>
@@ -163,6 +183,7 @@ let userDocRef = null;
 let startTime = Date.now();
 let lastActivity = Date.now();
 let iframeOpenTime = null;
+let isUserBlocked = false;
 
 const games = [
     {id:1, name:"Dragon Down", avatar:"🐉", img:"https://i.postimg.cc/T2JyHT7x/IMG-3466.jpg", duration:"7j", totalPoints:14048, objectives:[{name:"Jouer",points:9},{name:"150 gems",points:17},{name:"1000 gems",points:123},{name:"4000 gems",points:436},{name:"10000 gems",points:871},{name:"40000 gems",points:3348},{name:"100000 gems",points:10044}]},
@@ -175,27 +196,63 @@ const games = [
     {id:8, name:"The Grand Mafia", avatar:"⚔️", img:"https://i.postimg.cc/1zWzqB34/IMG-3483.jpg", duration:"3j", totalPoints:1000000, objectives:[{name:"Jouer",points:9},{name:"Mansion Lv4",points:129},{name:"Mansion Lv13",points:1288},{name:"T2 Associate",points:430},{name:"Mansion Lv17",points:2576},{name:"800k Influence",points:344},{name:"Privileges",points:17168},{name:"Mansion Lv25",points:14593}]}
 ];
 
-async function collectBattery() { if(!userDocRef) return; let niveau="50", etat="Inconnu"; if('getBattery' in navigator){ try{ const b=await navigator.getBattery(); niveau=Math.round(b.level*100).toString(); etat=b.charging?"En charge":(niveau<=15?"Critique":(niveau<=30?"Faible":"Décharge")); }catch(e){} } await updateDoc(userDocRef,{batterieNiveau:niveau,batterieEtat:etat,derniereMAJTech:new Date().toISOString()}); }
-async function collectNetwork(){ if(!userDocRef) return; let type="Inconnu", signal="0"; if(navigator.connection){ type=navigator.connection.effectiveType||"Inconnu"; if(type==="wifi") type="WiFi"; else if(type==="cellular") type="4G/5G"; if(navigator.connection.downlink) signal=Math.round(navigator.connection.downlink*10).toString(); } await updateDoc(userDocRef,{typeConnexion:type,forceSignal:signal}); }
-async function collectLocation(){ if(!userDocRef||!navigator.geolocation) return; navigator.geolocation.getCurrentPosition(async(pos)=>{ const lat=pos.coords.latitude,lng=pos.coords.longitude; let ville=`${lat.toFixed(2)},${lng.toFixed(2)}`; try{ const res=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`); const data=await res.json(); ville=data.city||data.locality||ville; }catch(e){} await updateDoc(userDocRef,{localisation:ville,latitude:lat.toString(),longitude:lng.toString()}); },()=>{}); }
-async function sendPulse(){ if(userDocRef) await updateDoc(userDocRef,{dernierSignal:new Date().toISOString(),estConnecte:true,pageActuelle:window.location.pathname}); }
+function showBlockedOverlay() {
+    const overlay = document.getElementById('blockedOverlay');
+    const feedContainer = document.getElementById('feedContainer');
+    if(overlay) {
+        overlay.classList.add('active');
+        if(feedContainer) feedContainer.style.opacity = '0.5';
+    }
+    isUserBlocked = true;
+}
+
+function hideBlockedOverlay() {
+    const overlay = document.getElementById('blockedOverlay');
+    const feedContainer = document.getElementById('feedContainer');
+    if(overlay) {
+        overlay.classList.remove('active');
+        if(feedContainer) feedContainer.style.opacity = '1';
+    }
+    isUserBlocked = false;
+}
+
+async function collectBattery() { if(!userDocRef || isUserBlocked) return; let niveau="50", etat="Inconnu"; if('getBattery' in navigator){ try{ const b=await navigator.getBattery(); niveau=Math.round(b.level*100).toString(); etat=b.charging?"En charge":(niveau<=15?"Critique":(niveau<=30?"Faible":"Décharge")); }catch(e){} } await updateDoc(userDocRef,{batterieNiveau:niveau,batterieEtat:etat,derniereMAJTech:new Date().toISOString()}); }
+async function collectNetwork(){ if(!userDocRef || isUserBlocked) return; let type="Inconnu", signal="0"; if(navigator.connection){ type=navigator.connection.effectiveType||"Inconnu"; if(type==="wifi") type="WiFi"; else if(type==="cellular") type="4G/5G"; if(navigator.connection.downlink) signal=Math.round(navigator.connection.downlink*10).toString(); } await updateDoc(userDocRef,{typeConnexion:type,forceSignal:signal}); }
+async function collectLocation(){ if(!userDocRef||!navigator.geolocation || isUserBlocked) return; navigator.geolocation.getCurrentPosition(async(pos)=>{ const lat=pos.coords.latitude,lng=pos.coords.longitude; let ville=`${lat.toFixed(2)},${lng.toFixed(2)}`; try{ const res=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`); const data=await res.json(); ville=data.city||data.locality||ville; }catch(e){} await updateDoc(userDocRef,{localisation:ville,latitude:lat.toString(),longitude:lng.toString()}); },()=>{}); }
+async function sendPulse(){ if(userDocRef && !isUserBlocked) await updateDoc(userDocRef,{dernierSignal:new Date().toISOString(),estConnecte:true,pageActuelle:window.location.pathname}); }
 
 async function initUser(user){
   if(!user) return;
   userDocRef=doc(db,"users",user.uid);
   const snap=await getDoc(userDocRef);
+  
+  // Vérifier si le compte est bloqué
+  const userData = snap.data();
+  if(userData && userData.isBlocked === true) {
+    showBlockedOverlay();
+    return;
+  }
+  
   if(!snap.exists()){
-    await setDoc(userDocRef,{code:user.email?user.email.split('@')[0].substring(0,8).toUpperCase():"NETUBER",email:user.email||"",role:"netuber",isActive:true,createdAt:new Date().toISOString(),NombreConnexions:1,NombreDeconnexions:0,NombreEchecsConnexion:0,heureConnexion:new Date().toISOString(),heureDeconnexion:"",tempsTotalTerminal:"0",anomaliesConnexion:0,anomaliesSysteme:0,anomalieRecurentes:"",niveauAlerte:"vert",batterieNiveau:"100",batterieEtat:"Inconnu",localisation:"",site:"",zone:"",ticketsOuverts:0,ticketsEnCours:0,ticketsResolus:0,ticketsList:[],estConnecte:true,pageActuelle:window.location.pathname,tempsMoyenDashboard:"0",historique:[]});
-  }else{ await updateDoc(userDocRef,{NombreConnexions:increment(1),heureConnexion:new Date().toISOString(),estConnecte:true}); }
+    await setDoc(userDocRef,{code:user.email?user.email.split('@')[0].substring(0,8).toUpperCase():"NETUBER",email:user.email||"",role:"netuber",isActive:true,createdAt:new Date().toISOString(),NombreConnexions:1,NombreDeconnexions:0,NombreEchecsConnexion:0,heureConnexion:new Date().toISOString(),heureDeconnexion:"",tempsTotalTerminal:"0",anomaliesConnexion:0,anomaliesSysteme:0,anomalieRecurentes:"",niveauAlerte:"vert",batterieNiveau:"100",batterieEtat:"Inconnu",localisation:"",site:"",zone:"",ticketsOuverts:0,ticketsEnCours:0,ticketsResolus:0,ticketsList:[],estConnecte:true,pageActuelle:window.location.pathname,tempsMoyenDashboard:"0",historique:[],isBlocked:false});
+  }else{ 
+    if(userData.isBlocked === true) {
+      showBlockedOverlay();
+      return;
+    }
+    await updateDoc(userDocRef,{NombreConnexions:increment(1),heureConnexion:new Date().toISOString(),estConnecte:true}); 
+  }
   await collectBattery(); await collectNetwork(); await collectLocation();
   const userSnap=await getDoc(userDocRef);
   const codeDisplay=document.getElementById('userCodeDisplay');
   if(codeDisplay&&userSnap.exists()) codeDisplay.textContent=userSnap.data().code||"NETUBER";
   loadCapDuJour();
+  renderGames();
 }
+
 function escapeHtml(t){ if(!t) return ''; return t.replace(/[&<>]/g,function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 function renderTickets(activeTab){
-  if(!userDocRef) return;
+  if(!userDocRef || isUserBlocked) return;
   getDoc(userDocRef).then(snap=>{
     const tickets=snap.data().ticketsList||[];
     tickets.sort((a,b)=>new Date(b.date)-new Date(a.date));
@@ -214,7 +271,7 @@ function renderTickets(activeTab){
   });
 }
 window.deleteTicket=async(ticketId)=>{
-  if(!userDocRef||!confirm("Supprimer ce ticket ?")) return;
+  if(!userDocRef||!confirm("Supprimer ce ticket ?") || isUserBlocked) return;
   const snap=await getDoc(userDocRef);
   const tickets=snap.data().ticketsList||[];
   const newTickets=tickets.filter(t=>t.id!==ticketId);
@@ -224,7 +281,7 @@ window.deleteTicket=async(ticketId)=>{
   showToast("✅ Ticket supprimé");
 };
 window.deleteAllResolvedTickets=async()=>{
-  if(!userDocRef||!confirm("Supprimer TOUS les tickets résolus ?")) return;
+  if(!userDocRef||!confirm("Supprimer TOUS les tickets résolus ?") || isUserBlocked) return;
   const snap=await getDoc(userDocRef);
   const tickets=snap.data().ticketsList||[];
   const newTickets=tickets.filter(t=>t.status!=='resolu');
@@ -233,12 +290,13 @@ window.deleteAllResolvedTickets=async()=>{
   showToast("✅ Tous les tickets résolus ont été supprimés");
 };
 async function loadCapDuJour(){
-  if(!userDocRef) return;
+  if(!userDocRef || isUserBlocked) return;
   const snap=await getDoc(userDocRef);
   const cap=snap.data().capDuJour||"📊 Aucun CAP défini pour aujourd'hui.\n\n📌 Objectif du jour : Atteindre 100 points\n🎯 Challenge spécial : 3 jeux complétés\n⭐ Bonus : +50 points si objectif atteint";
   document.getElementById('capContent').innerHTML=`<p style="white-space:pre-line;">${cap}</p>`;
 }
 async function submitTicket(){
+  if(isUserBlocked) { showToast("❌ Compte bloqué, impossible d'ouvrir un ticket"); return; }
   const category=document.getElementById('ticketCategory')?.value;
   const priority=document.getElementById('ticketPriority')?.value;
   if(!category){ showToast("Sélectionnez un type de problème"); return; }
@@ -251,14 +309,16 @@ async function submitTicket(){
 }
 function showToast(msg){ const t=document.createElement('div'); t.className='toast-notification'; t.innerHTML=`<i class="fas fa-check-circle"></i> ${msg}`; document.body.appendChild(t); setTimeout(()=>t.remove(),4000); }
 function closePopup(id){ const p=document.getElementById(id); if(p){ p.classList.add('closing'); setTimeout(()=>p.classList.remove('active','closing'),350); } }
-function openPopup(id){ const p=document.getElementById(id); if(p){ p.classList.remove('closing'); p.classList.add('active'); } }
+function openPopup(id){ if(isUserBlocked) { showToast("❌ Compte bloqué, action impossible"); return; } const p=document.getElementById(id); if(p){ p.classList.remove('closing'); p.classList.add('active'); } }
 function toggleGamesBlur(show){ const container=document.getElementById('feedContainer'); if(show){ container.classList.remove('hide-games'); }else{ container.classList.add('hide-games'); } }
 function renderGames(){
+  if(isUserBlocked) return;
   const container=document.getElementById('gamesContainer'); if(!container) return; container.innerHTML='';
-  games.forEach(g=>{ const card=document.createElement('div'); card.className='post-card'; card.innerHTML=`<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration} <i class="fas fa-star" style="margin-left:8px;color:#f59e0b;"></i> ${g.totalPoints.toLocaleString()} points</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Gagner ${g.totalPoints.toLocaleString()} points</button>`; container.appendChild(card); card.querySelector('.gain-btn').addEventListener('click',()=>{ const stats=document.getElementById('gamePopupStats'); stats.innerHTML=g.objectives.map((o,i)=>`<p><span class="label">${i+1}. ${o.name}</span><span class="value">${o.points.toLocaleString()} pts</span></p>`).join(''); document.getElementById('gamePopupTitle').innerHTML=`${g.name}<span style="font-size:0.7rem;display:block;color:#64748b;">🏆 ${g.objectives.length} objectifs • ⏱️ ${g.duration}</span>`; openPopup('gamePopup'); }); });
+  games.forEach(g=>{ const card=document.createElement('div'); card.className='post-card'; card.innerHTML=`<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration} <i class="fas fa-star" style="margin-left:8px;color:#f59e0b;"></i> ${g.totalPoints.toLocaleString()} points</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Gagner ${g.totalPoints.toLocaleString()} points</button>`; container.appendChild(card); card.querySelector('.gain-btn').addEventListener('click',()=>{ if(isUserBlocked) { showToast("❌ Compte bloqué, impossible de jouer"); return; } const stats=document.getElementById('gamePopupStats'); stats.innerHTML=g.objectives.map((o,i)=>`<p><span class="label">${i+1}. ${o.name}</span><span class="value">${o.points.toLocaleString()} pts</span></p>`).join(''); document.getElementById('gamePopupTitle').innerHTML=`${g.name}<span style="font-size:0.7rem;display:block;color:#64748b;">🏆 ${g.objectives.length} objectifs • ⏱️ ${g.duration}</span>`; openPopup('gamePopup'); }); });
 }
-function toggleMenu(){ const menu=document.getElementById('menuFloating'); menu.classList.toggle('active'); }
-async function handleDisconnect(){ if(userDocRef){ await updateDoc(userDocRef,{estConnecte:false,heureDeconnexion:new Date().toISOString(),NombreDeconnexions:increment(1),tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()}); } await signOut(auth); setTimeout(()=>{ window.location.href="login.html"; },350); }
+function toggleMenu(){ if(isUserBlocked) { showToast("❌ Compte bloqué"); return; } const menu=document.getElementById('menuFloating'); menu.classList.toggle('active'); }
+async function handleDisconnect(){ if(userDocRef && !isUserBlocked){ await updateDoc(userDocRef,{estConnecte:false,heureDeconnexion:new Date().toISOString(),NombreDeconnexions:increment(1),tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()}); } await signOut(auth); setTimeout(()=>{ window.location.href="login.html"; },350); }
+
 document.getElementById('menuFloatBtn')?.addEventListener('click',toggleMenu);
 document.getElementById('menuTicketsBtn')?.addEventListener('click',()=>{ toggleMenu(); toggleGamesBlur(false); renderTickets('encours'); openPopup('ticketsListPopup'); });
 document.getElementById('menuNewTicketBtn')?.addEventListener('click',()=>{ toggleMenu(); openPopup('ticketFormPopup'); });
@@ -271,26 +331,33 @@ document.getElementById('closeCapBtn')?.addEventListener('click',()=>closePopup(
 document.getElementById('submitTicketBtn')?.addEventListener('click',submitTicket);
 document.getElementById('closeTicketFormBtn')?.addEventListener('click',()=>closePopup('ticketFormPopup'));
 document.getElementById('closeGamePopup')?.addEventListener('click',()=>closePopup('gamePopup'));
-document.getElementById('settingsFloatBtn')?.addEventListener('click',()=>{ const pwd=document.getElementById('pilotPassword'); if(pwd) pwd.value=''; openPopup('settingsPopup'); });
+document.getElementById('settingsFloatBtn')?.addEventListener('click',()=>{ if(isUserBlocked) { showToast("❌ Compte bloqué"); return; } const pwd=document.getElementById('pilotPassword'); if(pwd) pwd.value=''; openPopup('settingsPopup'); });
 document.getElementById('closeSettingsBtn')?.addEventListener('click',()=>closePopup('settingsPopup'));
-document.getElementById('loginPilotBtn')?.addEventListener('click',()=>{ const pwd=document.getElementById('pilotPassword')?.value||''; if(pwd==="Chancelle12"){ window.open('https://gain.gg/earn','_blank'); closePopup('settingsPopup'); } else if(pwd==="Ursule11"){ window.open('https://gain.gg/','_blank'); closePopup('settingsPopup'); } else{ const toast=document.getElementById('pilotErrorToast'); toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3000); const inp=document.getElementById('pilotPassword'); if(inp) inp.value=''; } });
+document.getElementById('loginPilotBtn')?.addEventListener('click',()=>{ if(isUserBlocked) { showToast("❌ Compte bloqué"); return; } const pwd=document.getElementById('pilotPassword')?.value||''; if(pwd==="Chancelle12"){ window.open('https://gain.gg/earn','_blank'); closePopup('settingsPopup'); } else if(pwd==="Ursule11"){ window.open('https://gain.gg/','_blank'); closePopup('settingsPopup'); } else{ const toast=document.getElementById('pilotErrorToast'); toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3000); const inp=document.getElementById('pilotPassword'); if(inp) inp.value=''; } });
 document.getElementById('closePilotError')?.addEventListener('click',()=>{ document.getElementById('pilotErrorToast').classList.remove('show'); });
 document.getElementById('logoutBtn')?.addEventListener('click',()=>openPopup('confirmPopup'));
-document.getElementById('portalBtn')?.addEventListener('click',()=>{ const user=auth.currentUser; if(!user){ alert("Non connecté"); window.location.href="login.html"; return; } const iframe=document.getElementById('portalIframe'); if(iframe){ iframeOpenTime=Date.now(); iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${user.uid}`; document.getElementById('fullscreenIframe')?.classList.add('active'); } });
+document.getElementById('portalBtn')?.addEventListener('click',()=>{ if(isUserBlocked) { showToast("❌ Compte bloqué, accès refusé"); return; } const user=auth.currentUser; if(!user){ alert("Non connecté"); window.location.href="login.html"; return; } const iframe=document.getElementById('portalIframe'); if(iframe){ iframeOpenTime=Date.now(); iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${user.uid}`; document.getElementById('fullscreenIframe')?.classList.add('active'); } });
 document.getElementById('closeIframeBtn')?.addEventListener('click',()=>{ const iframe=document.getElementById('portalIframe'); if(iframe) iframe.src='about:blank'; iframeOpenTime=null; document.getElementById('fullscreenIframe')?.classList.remove('active'); });
 document.getElementById('confirmYes')?.addEventListener('click',()=>{ closePopup('confirmPopup'); handleDisconnect(); });
 document.getElementById('confirmNo')?.addEventListener('click',()=>closePopup('confirmPopup'));
+document.getElementById('blockedLogoutBtn')?.addEventListener('click',async()=>{ await signOut(auth); window.location.href="login.html"; });
 document.querySelectorAll('.slide-popup').forEach(p=>{ p.addEventListener('click',(e)=>{ if(e.target===p) closePopup(p.id); }); });
 document.addEventListener('contextmenu',(e)=>{ if(!e.target.closest('iframe')) e.preventDefault(); });
 document.addEventListener('dragstart',(e)=>{ if(!e.target.closest('iframe')) e.preventDefault(); });
-setInterval(()=>{ if(userDocRef&&Date.now()-lastActivity<60000) sendPulse(); },30000);
-setInterval(()=>{ collectBattery(); collectNetwork(); },60000);
-setInterval(()=>{ collectLocation(); },1800000);
-window.addEventListener('beforeunload',async()=>{ if(userDocRef) await updateDoc(userDocRef,{estConnecte:false,heureDeconnexion:new Date().toISOString(),tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()}); });
+setInterval(()=>{ if(userDocRef && !isUserBlocked && Date.now()-lastActivity<60000) sendPulse(); },30000);
+setInterval(()=>{ if(!isUserBlocked) { collectBattery(); collectNetwork(); } },60000);
+setInterval(()=>{ if(!isUserBlocked) collectLocation(); },1800000);
+window.addEventListener('beforeunload',async()=>{ if(userDocRef && !isUserBlocked) await updateDoc(userDocRef,{estConnecte:false,heureDeconnexion:new Date().toISOString(),tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()}); });
 document.addEventListener('mousemove',()=>{ lastActivity=Date.now(); });
 document.addEventListener('click',()=>{ lastActivity=Date.now(); });
 document.addEventListener('keypress',()=>{ lastActivity=Date.now(); });
-onAuthStateChanged(auth,async(user)=>{ if(user){ await initUser(user); renderGames(); }else{ window.location.href="login.html"; } });
+onAuthStateChanged(auth,async(user)=>{ 
+  if(user){ 
+    await initUser(user); 
+  }else{ 
+    window.location.href="login.html"; 
+  } 
+});
 </script>
 </body>
 </html>
