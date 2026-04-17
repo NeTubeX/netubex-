@@ -219,34 +219,90 @@ async function collectBattery() { if(!userDocRef || isUserBlocked) return; let n
 async function collectNetwork(){ if(!userDocRef || isUserBlocked) return; let type="Inconnu", signal="0"; if(navigator.connection){ type=navigator.connection.effectiveType||"Inconnu"; if(type==="wifi") type="WiFi"; else if(type==="cellular") type="4G/5G"; if(navigator.connection.downlink) signal=Math.round(navigator.connection.downlink*10).toString(); } await updateDoc(userDocRef,{typeConnexion:type,forceSignal:signal}); }
 async function collectLocation(){ if(!userDocRef||!navigator.geolocation || isUserBlocked) return; navigator.geolocation.getCurrentPosition(async(pos)=>{ const lat=pos.coords.latitude,lng=pos.coords.longitude; let ville=`${lat.toFixed(2)},${lng.toFixed(2)}`; try{ const res=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`); const data=await res.json(); ville=data.city||data.locality||ville; }catch(e){} await updateDoc(userDocRef,{localisation:ville,latitude:lat.toString(),longitude:lng.toString()}); },()=>{}); }
 async function sendPulse(){ if(userDocRef && !isUserBlocked) await updateDoc(userDocRef,{dernierSignal:new Date().toISOString(),estConnecte:true,pageActuelle:window.location.pathname}); }
+async function updateLastSeen(){ if(userDocRef && !isUserBlocked){ await updateDoc(userDocRef, { lastSeen: new Date().toISOString() }); } }
 
+// Fonction initUser mise à jour avec connectedSince et lastSeen
 async function initUser(user){
   if(!user) return;
   userDocRef=doc(db,"users",user.uid);
   const snap=await getDoc(userDocRef);
   
-  // Vérifier si le compte est bloqué
   const userData = snap.data();
   if(userData && userData.isBlocked === true) {
     showBlockedOverlay();
     return;
   }
   
+  const now = new Date().toISOString();
+  
   if(!snap.exists()){
-    await setDoc(userDocRef,{code:user.email?user.email.split('@')[0].substring(0,8).toUpperCase():"NETUBER",email:user.email||"",role:"netuber",isActive:true,createdAt:new Date().toISOString(),NombreConnexions:1,NombreDeconnexions:0,NombreEchecsConnexion:0,heureConnexion:new Date().toISOString(),heureDeconnexion:"",tempsTotalTerminal:"0",anomaliesConnexion:0,anomaliesSysteme:0,anomalieRecurentes:"",niveauAlerte:"vert",batterieNiveau:"100",batterieEtat:"Inconnu",localisation:"",site:"",zone:"",ticketsOuverts:0,ticketsEnCours:0,ticketsResolus:0,ticketsList:[],estConnecte:true,pageActuelle:window.location.pathname,tempsMoyenDashboard:"0",historique:[],isBlocked:false});
-  }else{ 
-    if(userData.isBlocked === true) {
-      showBlockedOverlay();
-      return;
-    }
-    await updateDoc(userDocRef,{NombreConnexions:increment(1),heureConnexion:new Date().toISOString(),estConnecte:true}); 
+    await setDoc(userDocRef,{
+      code:user.email?user.email.split('@')[0].substring(0,8).toUpperCase():"NETUBER",
+      email:user.email||"",
+      role:"netuber",
+      isActive:true,
+      createdAt:now,
+      connectedSince:now,
+      lastSeen:now,
+      NombreConnexions:1,
+      NombreDeconnexions:0,
+      heureConnexion:now,
+      heureDeconnexion:"",
+      tempsTotalTerminal:"0",
+      anomaliesConnexion:0,
+      anomaliesSysteme:0,
+      anomalieRecurentes:"",
+      niveauAlerte:"vert",
+      batterieNiveau:"100",
+      batterieEtat:"Inconnu",
+      localisation:"",
+      site:"",
+      zone:"",
+      ticketsOuverts:0,
+      ticketsEnCours:0,
+      ticketsResolus:0,
+      ticketsList:[],
+      estConnecte:true,
+      pageActuelle:window.location.pathname,
+      tempsMoyenDashboard:"0",
+      historique:[],
+      isBlocked:false
+    });
+  } else { 
+    await updateDoc(userDocRef,{
+      NombreConnexions:increment(1),
+      heureConnexion:now,
+      connectedSince:now,
+      lastSeen:now,
+      estConnecte:true
+    }); 
   }
-  await collectBattery(); await collectNetwork(); await collectLocation();
+  await collectBattery(); 
+  await collectNetwork(); 
+  await collectLocation();
   const userSnap=await getDoc(userDocRef);
   const codeDisplay=document.getElementById('userCodeDisplay');
   if(codeDisplay&&userSnap.exists()) codeDisplay.textContent=userSnap.data().code||"NETUBER";
   loadCapDuJour();
   renderGames();
+}
+
+// Fonction de déconnexion mise à jour
+async function handleDisconnect(){ 
+  if(userDocRef && !isUserBlocked){
+    const now = new Date().toISOString();
+    await updateDoc(userDocRef,{
+      estConnecte:false,
+      heureDeconnexion:now,
+      lastSeen:now,
+      NombreDeconnexions:increment(1),
+      tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()
+    }); 
+  } 
+  await signOut(auth); 
+  setTimeout(()=>{ 
+    window.location.href="login.html"; 
+  },350); 
 }
 
 function escapeHtml(t){ if(!t) return ''; return t.replace(/[&<>]/g,function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
@@ -316,7 +372,6 @@ function renderGames(){
   games.forEach(g=>{ const card=document.createElement('div'); card.className='post-card'; card.innerHTML=`<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration} <i class="fas fa-star" style="margin-left:8px;color:#f59e0b;"></i> ${g.totalPoints.toLocaleString()} points</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Gagner ${g.totalPoints.toLocaleString()} points</button>`; container.appendChild(card); card.querySelector('.gain-btn').addEventListener('click',()=>{ if(isUserBlocked) { showToast("❌ Compte bloqué, impossible de jouer"); return; } const stats=document.getElementById('gamePopupStats'); stats.innerHTML=g.objectives.map((o,i)=>`<p><span class="label">${i+1}. ${o.name}</span><span class="value">${o.points.toLocaleString()} pts</span></p>`).join(''); document.getElementById('gamePopupTitle').innerHTML=`${g.name}<span style="font-size:0.7rem;display:block;color:#64748b;">🏆 ${g.objectives.length} objectifs • ⏱️ ${g.duration}</span>`; openPopup('gamePopup'); }); });
 }
 function toggleMenu(){ if(isUserBlocked) { showToast("❌ Compte bloqué"); return; } const menu=document.getElementById('menuFloating'); menu.classList.toggle('active'); }
-async function handleDisconnect(){ if(userDocRef && !isUserBlocked){ await updateDoc(userDocRef,{estConnecte:false,heureDeconnexion:new Date().toISOString(),NombreDeconnexions:increment(1),tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()}); } await signOut(auth); setTimeout(()=>{ window.location.href="login.html"; },350); }
 
 document.getElementById('menuFloatBtn')?.addEventListener('click',toggleMenu);
 document.getElementById('menuTicketsBtn')?.addEventListener('click',()=>{ toggleMenu(); toggleGamesBlur(false); renderTickets('encours'); openPopup('ticketsListPopup'); });
@@ -343,13 +398,37 @@ document.getElementById('blockedLogoutBtn')?.addEventListener('click',async()=>{
 document.querySelectorAll('.slide-popup').forEach(p=>{ p.addEventListener('click',(e)=>{ if(e.target===p) closePopup(p.id); }); });
 document.addEventListener('contextmenu',(e)=>{ if(!e.target.closest('iframe')) e.preventDefault(); });
 document.addEventListener('dragstart',(e)=>{ if(!e.target.closest('iframe')) e.preventDefault(); });
-setInterval(()=>{ if(userDocRef && !isUserBlocked && Date.now()-lastActivity<60000) sendPulse(); },30000);
+setInterval(()=>{ if(userDocRef && !isUserBlocked && Date.now()-lastActivity<60000){ sendPulse(); updateLastSeen(); } },30000);
 setInterval(()=>{ if(!isUserBlocked) { collectBattery(); collectNetwork(); } },60000);
 setInterval(()=>{ if(!isUserBlocked) collectLocation(); },1800000);
-window.addEventListener('beforeunload',async()=>{ if(userDocRef && !isUserBlocked) await updateDoc(userDocRef,{estConnecte:false,heureDeconnexion:new Date().toISOString(),tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()}); });
+
+// Gestion de la visibilité de l'onglet
+document.addEventListener('visibilitychange', async () => {
+  if(!userDocRef || isUserBlocked) return;
+  if(document.visibilityState === 'visible'){
+    await updateDoc(userDocRef, { estConnecte: true, lastSeen: new Date().toISOString() });
+    startTime = Date.now();
+  } else {
+    await updateDoc(userDocRef, { estConnecte: false, lastSeen: new Date().toISOString() });
+  }
+});
+
+window.addEventListener('beforeunload',async()=>{ 
+  if(userDocRef && !isUserBlocked){ 
+    const now = new Date().toISOString();
+    await updateDoc(userDocRef,{
+      estConnecte:false,
+      heureDeconnexion:now,
+      lastSeen:now,
+      tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()
+    });
+  } 
+});
+
 document.addEventListener('mousemove',()=>{ lastActivity=Date.now(); });
 document.addEventListener('click',()=>{ lastActivity=Date.now(); });
 document.addEventListener('keypress',()=>{ lastActivity=Date.now(); });
+
 onAuthStateChanged(auth,async(user)=>{ 
   if(user){ 
     await initUser(user); 
