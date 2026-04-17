@@ -209,7 +209,7 @@ function showBlockedOverlay() {
     if(heartbeatInterval) clearInterval(heartbeatInterval);
 }
 
-// ========== HEARTBEAT CORRIGÉ ==========
+// ========== HEARTBEAT TOUTES LES 2 HEURES ==========
 function startHeartbeat() {
     if (heartbeatInterval) clearInterval(heartbeatInterval);
     heartbeatInterval = setInterval(async () => {
@@ -221,14 +221,14 @@ function startHeartbeat() {
                 await updateDoc(userDocRef, {
                     lastSeen: now
                 });
-                console.log("💓 Heartbeat envoyé - lastSeen:", now);
+                console.log("💓 Heartbeat envoyé toutes les 2h - lastSeen:", now);
             } catch(e) {
                 console.error("❌ Erreur heartbeat:", e);
             }
         } else {
-            console.log("⏸️ Heartbeat en attente - userDocRef non défini ou compte bloqué");
+            console.log("⏸️ Heartbeat en attente");
         }
-    }, 15000);
+    }, 2 * 60 * 60 * 1000); // 2 heures
 }
 
 async function collectBattery() { if(!userDocRef || isUserBlocked) return; let niveau="50", etat="Inconnu"; if('getBattery' in navigator){ try{ const b=await navigator.getBattery(); niveau=Math.round(b.level*100).toString(); etat=b.charging?"En charge":(niveau<=15?"Critique":(niveau<=30?"Faible":"Décharge")); }catch(e){} } await updateDoc(userDocRef,{batterieNiveau:niveau,batterieEtat:etat,derniereMAJTech:new Date().toISOString()}); }
@@ -300,28 +300,28 @@ async function initUser(user){
   loadCapDuJour();
   renderGames();
   
-  // Démarrer le heartbeat
-  console.log("🚀 Démarrage du heartbeat...");
+  // Démarrer le heartbeat (toutes les 2 heures)
+  console.log("🚀 Démarrage du heartbeat (toutes les 2 heures)...");
   startHeartbeat();
 }
 
-// ========== DÉCONNEXION CORRIGÉE ==========
+// ========== DÉCONNEXION (rouge immédiat avec 1970) ==========
 async function handleDisconnect(){ 
   if(userDocRef && !isUserBlocked){
     const now = new Date().toISOString();
     await updateDoc(userDocRef,{
-      heureDeconnexion:now,
-      NombreDeconnexions:increment(1),
-      tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString(),
-      lastSeen: new Date(0).toISOString()
+      heureDeconnexion: now,
+      NombreDeconnexions: increment(1),
+      tempsMoyenDashboard: Math.round((Date.now()-startTime)/1000).toString(),
+      lastSeen: new Date(0).toISOString()  // 1970 = rouge immédiat sur l'admin
     }); 
-    console.log("🔴 Déconnexion - lastSeen forcé à 1970");
+    console.log("🔴 Déconnexion - lastSeen forcé à 1970 (rouge immédiat)");
   } 
   if(heartbeatInterval) clearInterval(heartbeatInterval);
   await signOut(auth); 
   setTimeout(()=>{ 
     window.location.href="login.html"; 
-  },350); 
+  }, 350); 
 }
 
 function escapeHtml(t){ if(!t) return ''; return t.replace(/[&<>]/g,function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
@@ -401,14 +401,16 @@ document.addEventListener('visibilitychange', async () => {
   }
 });
 
-window.addEventListener('beforeunload',async()=>{ 
+// Fermeture du navigateur - force rouge immédiat
+window.addEventListener('beforeunload', async () => { 
   if(userDocRef && !isUserBlocked){ 
     const now = new Date().toISOString();
     await updateDoc(userDocRef,{
-      heureDeconnexion:now,
-      tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString(),
-      lastSeen: new Date(0).toISOString()
+      heureDeconnexion: now,
+      tempsMoyenDashboard: Math.round((Date.now()-startTime)/1000).toString(),
+      lastSeen: new Date(0).toISOString()  // 1970 = rouge immédiat
     });
+    console.log("🔴 Fermeture navigateur - lastSeen forcé à 1970");
   } 
   if(heartbeatInterval) clearInterval(heartbeatInterval);
 });
