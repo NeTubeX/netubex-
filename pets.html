@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;}
 body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:100vh;}
 .dashboard{max-width:1600px;margin:0 auto;padding:20px 30px;}
 @media (max-width:768px){.dashboard{padding:15px;}}
@@ -109,7 +109,7 @@ tr:hover{background:#1a2332;}
 .feedback-item .feedback-message{font-size:12px;color:#e2e8f0;}
 </style>
 </head>
-<body>
+<body oncontextmenu="return false" onkeydown="return (event.ctrlKey || event.metaKey) ? false : true">
 <div class="dashboard">
 <div class="header">
 <div class="logo"><h1><i class="fas fa-chart-line"></i> NeTubeX Admin</h1><p>Gestion des Netubers & Support</p></div>
@@ -194,7 +194,7 @@ tr:hover{background:#1a2332;}
 <div class="stat-card"><div class="value" id="ticketsProgress">0</div><div class="label">En cours</div></div>
 <div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Résolus</div></div>
 </div>
-<div class="table-wrapper"><table id="ticketsTable"><thead><tr><th>Netuber</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th><tr></thead><tbody id="ticketsTableBody"></tbody></table></div>
+<div class="table-wrapper"><table id="ticketsTable"><thead><tr><th>Netuber</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody id="ticketsTableBody"></tbody></table></div>
 </div>
 
 <!-- Onglet Anomalies -->
@@ -218,13 +218,11 @@ tr:hover{background:#1a2332;}
 </div>
 
 <!-- Modals -->
-<div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Code Netuber</label><input type="text" id="newCode" placeholder="Ex: MA-NX-S1-ZA-01"></div><div class="input-group"><label>Email</label><input type="email" id="newEmail" placeholder="Email"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newPassword" placeholder="Mot de passe"></div><div class="input-group"><label>Objectif mensuel</label><select id="newObjectifMensuel"></select></div></div><div class="modal-footer"><button onclick="createNetuber()" style="background:#10b981;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Code Netuber</label><input type="text" id="newCode" placeholder="Ex: MA-NX-S1-ZA-01"></div><div class="input-group"><label>Email</label><input type="email" id="newEmail" placeholder="Email"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newPassword" placeholder="Mot de passe (min 6 caractères)"></div><div class="input-group"><label>Objectif mensuel</label><select id="newObjectifMensuel"></select></div></div><div class="modal-footer"><button onclick="createNetuber()" style="background:#10b981;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
 <div id="editCodeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-edit"></i> Modifier le code Netuber</h2><button class="modal-close" onclick="closeModal('editCodeModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="editCodeSelect"></select></div><div class="input-group"><label>Nouveau code</label><input type="text" id="newCodeValue" placeholder="Nouveau code"></div></div><div class="modal-footer"><button onclick="updateNetuberCode()" style="background:#f59e0b;">Modifier</button><button onclick="closeModal('editCodeModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
 <div id="blockModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-ban"></i> Bloquer/Débloquer Netuber</h2><button class="modal-close" onclick="closeModal('blockModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="blockSelect"></select></div><div class="input-group"><label>Action</label><select id="blockAction"><option value="block">Bloquer l'accès</option><option value="unblock">Débloquer l'accès</option></select></div></div><div class="modal-footer"><button onclick="toggleBlockNetuber()" style="background:#ef4444;">Appliquer</button><button onclick="closeModal('blockModal')" style="background:#64748b;">Annuler</button></div></div></div>
-
-<div id="deleteModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-trash"></i> Supprimer Netuber</h2><button class="modal-close" onclick="closeModal('deleteModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="deleteSelect"></select></div><p style="color:#ef4444; font-size:12px; margin-top:10px;">⚠️ Cette action est irréversible.</p></div><div class="modal-footer"><button onclick="deleteNetuber()" style="background:#ef4444;">Supprimer</button><button onclick="closeModal('deleteModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
 <div id="capModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-chart-line"></i> Envoyer le CAP du jour</h2><button class="modal-close" onclick="closeModal('capModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber concerné</label><input type="text" id="capNetuberCode" readonly style="background:#1a2332; color:#f59e0b; font-weight:bold;"></div><div class="input-group"><label>CAP du jour</label><textarea id="capMessage" rows="6" placeholder="📊 CAP du jour - Objectif principal..."></textarea></div><div class="input-group"><label>Date d'expiration</label><input type="date" id="capExpiration"></div></div><div class="modal-footer"><button id="sendCapBtn" style="background:#f59e0b;"><i class="fas fa-paper-plane"></i> Envoyer</button><button onclick="closeModal('capModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
@@ -236,7 +234,7 @@ tr:hover{background:#1a2332;}
 
 <div id="replyTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-reply"></i> Répondre au ticket</h2><button class="modal-close" onclick="closeModal('replyTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="replyTicketId" readonly></div><div class="input-group"><label>Netuber</label><input type="text" id="replyNetuberCode" readonly></div><div class="input-group"><label>Message de réponse</label><textarea id="replyMessage" rows="4" placeholder="Votre réponse..."></textarea></div></div><div class="modal-footer"><button onclick="sendTicketReply()" style="background:#8b5cf6;">Envoyer</button><button onclick="closeModal('replyTicketModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
-<div id="passwordModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-key"></i> Modifier le mot de passe</h2><button class="modal-close" onclick="closeModal('passwordModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><input type="text" id="passwordNetuberCode" readonly></div><div class="input-group"><label>Nouveau mot de passe</label><input type="password" id="newPasswordValue" placeholder="Nouveau mot de passe"></div></div><div class="modal-footer"><button onclick="updatePassword()" style="background:#10b981;">Modifier</button><button onclick="closeModal('passwordModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="passwordModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-key"></i> Modifier le mot de passe</h2><button class="modal-close" onclick="closeModal('passwordModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><input type="text" id="passwordNetuberCode" readonly></div><div class="input-group"><label>Nouveau mot de passe</label><input type="password" id="newPasswordValue" placeholder="Nouveau mot de passe (min 6 caractères)"></div></div><div class="modal-footer"><button onclick="updatePassword()" style="background:#10b981;">Modifier</button><button onclick="closeModal('passwordModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
 <div id="confirmModal" class="modal"><div class="modal-content"><div class="modal-body confirm-dialog"><i class="fas fa-question-circle"></i><h3 id="confirmTitle">NeTubeX</h3><p id="confirmMessage">Confirmez-vous cette action ?</p><div class="confirm-buttons"><button class="btn-cancel" id="confirmCancelBtn">Annuler</button><button class="btn-confirm" id="confirmOkBtn">Confirmer</button></div></div></div></div>
 
@@ -257,7 +255,6 @@ let rapportsChart = null;
 let anomaliesChart = null;
 let selectedNetuberForCap = null;
 let selectedRapportForFeedback = null;
-let usersUnsubscribe = null;
 let onlineStatusUnsubscribe = null;
 
 // Déconnexion
@@ -443,7 +440,7 @@ function updateRapportsTable() {
             <td>
                 <button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i></button>
                 <button class="action-btn feedback" onclick='openFeedbackModal("${r.id}", "${r.reference}")'><i class="fas fa-comment-dots"></i></button>
-             </div>
+              </div>
         </tr>`;
     }).join('');
 }
@@ -566,7 +563,7 @@ function updateAnomaliesTable() {
             <td><span class="badge badge-danger">${a.count} fois</span></div>
             <td><small>${formatDateShort(a.last)}</small></div>
             <td><button class="action-btn view" onclick='resetAnomalies("${a.id}")'><i class="fas fa-sync"></i> Réinitialiser</button></div>
-         </table>
+         </tr>
     `).join('');
 }
 
@@ -625,7 +622,7 @@ function updateCharts() {
 }
 
 function updateSelects() {
-    const selects = ['editCodeSelect', 'blockSelect', 'deleteSelect'];
+    const selects = ['editCodeSelect', 'blockSelect'];
     selects.forEach(id => { 
         const select = document.getElementById(id); 
         if(select) { 
@@ -850,7 +847,12 @@ window.resetAnomalies = async (userId) => {
 window.openDeleteNetuberModal = (code) => {
     showConfirm('NeTubeX', `Supprimer définitivement le Netuber ${code} ? Cette action est irréversible.`, async () => {
         const user = usersData.find(u => u.code === code);
-        if(user) { await deleteDoc(doc(db, "users", user.id)); showToast(`🗑️ ${code} supprimé`); await loadAllData(); }
+        if(user) { 
+            await deleteDoc(doc(db, "users", user.id));
+            await deleteDoc(doc(db, "onlineStatus", user.id));
+            showToast(`🗑️ ${code} supprimé`);
+            await loadAllData();
+        }
     });
 };
 
@@ -933,20 +935,6 @@ window.toggleBlockNetuber = async () => {
     }
 };
 
-window.deleteNetuber = async () => {
-    const code = document.getElementById('deleteSelect').value;
-    const user = usersData.find(u => u.code === code);
-    if(user) {
-        showConfirm('NeTubeX', `Supprimer définitivement ${code} ?`, async () => {
-            await deleteDoc(doc(db, "users", user.id));
-            await deleteDoc(doc(db, "onlineStatus", user.id));
-            closeModal('deleteModal');
-            showToast(`🗑️ ${code} supprimé`);
-            await loadAllData();
-        });
-    }
-};
-
 window.openPasswordModal = (code) => {
     document.getElementById('passwordNetuberCode').value = code;
     document.getElementById('newPasswordValue').value = '';
@@ -974,7 +962,6 @@ window.filterRapports = () => updateRapportsTable();
 window.openAddNetuberModal = () => openModal('addNetuberModal');
 window.openEditCodeModal = () => openModal('editCodeModal');
 window.openBlockModal = () => openModal('blockModal');
-window.openDeleteModal = () => openModal('deleteModal');
 
 window.exportNetubers = () => {
     let csv = "Code,Email,Objectif mensuel,Objectif atteint,Objectif restant,Connexions,Anomalies,Statut,Connecté depuis,Bloqué\n";
