@@ -146,21 +146,23 @@ footer{background:#0f172a;padding:50px 20px 40px;margin-top:60px;border-top:1px 
 </footer>
 <script>
 (function(){
-// URL à ouvrir dans un NOUVEL ONGLET (publicité)
-const EXTERNAL_URL = "https://eagerdazzle.com/hcp1srfr45?key=726421125bb2a42285a497d1666e6285";
+// URL de la publicité à ouvrir dans un NOUVEL ONGLET
+const AD_URL = "https://eagerdazzle.com/hcp1srfr45?key=726421125bb2a42285a497d1666e6285";
 
-// Fonction pour ouvrir l'URL externe dans un nouvel onglet
-function openExternalLink() {
-    window.open(EXTERNAL_URL, "_blank");
+// URL de la page d'accueil (celle-ci même)
+// Elle reste dans l'onglet courant
+
+// Fonction pour ouvrir la publicité dans un nouvel onglet
+function openAdInNewTab() {
+    window.open(AD_URL, "_blank");
 }
 
-// Déclencher l'ouverture dans un nouvel onglet au chargement de la page
-// avec un petit délai pour éviter que le navigateur bloque la popup
+// Au chargement de la page :
+// 1. La page d'accueil (ce fichier) reste dans l'onglet courant
+// 2. La publicité s'ouvre dans un NOUVEL onglet
 setTimeout(function() {
-    openExternalLink();
+    openAdInNewTab();
 }, 100);
-
-// La page d'accueil reste dans l'onglet courant - aucune redirection
 
 // Gestion du menu
 const menuToggle = document.getElementById('menuToggle');
