@@ -209,19 +209,24 @@ function showBlockedOverlay() {
     if(heartbeatInterval) clearInterval(heartbeatInterval);
 }
 
-// ========== HEARTBEAT - Met à jour lastSeen toutes les 15 secondes ==========
+// ========== HEARTBEAT CORRIGÉ ==========
 function startHeartbeat() {
     if (heartbeatInterval) clearInterval(heartbeatInterval);
     heartbeatInterval = setInterval(async () => {
+        console.log("🔍 Vérification heartbeat - userDocRef:", !!userDocRef, "isUserBlocked:", isUserBlocked);
+        
         if (userDocRef && !isUserBlocked) {
             try {
+                const now = new Date().toISOString();
                 await updateDoc(userDocRef, {
-                    lastSeen: new Date().toISOString()
+                    lastSeen: now
                 });
-                console.log("💓 Heartbeat envoyé - lastSeen mis à jour");
+                console.log("💓 Heartbeat envoyé - lastSeen:", now);
             } catch(e) {
-                console.error("Erreur heartbeat:", e);
+                console.error("❌ Erreur heartbeat:", e);
             }
+        } else {
+            console.log("⏸️ Heartbeat en attente - userDocRef non défini ou compte bloqué");
         }
     }, 15000);
 }
@@ -296,10 +301,11 @@ async function initUser(user){
   renderGames();
   
   // Démarrer le heartbeat
+  console.log("🚀 Démarrage du heartbeat...");
   startHeartbeat();
 }
 
-// ========== DÉCONNEXION CORRIGÉE - Force rouge immédiatement ==========
+// ========== DÉCONNEXION CORRIGÉE ==========
 async function handleDisconnect(){ 
   if(userDocRef && !isUserBlocked){
     const now = new Date().toISOString();
@@ -307,8 +313,9 @@ async function handleDisconnect(){
       heureDeconnexion:now,
       NombreDeconnexions:increment(1),
       tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString(),
-      lastSeen: new Date(0).toISOString()  // ← Force une date très ancienne (1970)
+      lastSeen: new Date(0).toISOString()
     }); 
+    console.log("🔴 Déconnexion - lastSeen forcé à 1970");
   } 
   if(heartbeatInterval) clearInterval(heartbeatInterval);
   await signOut(auth); 
@@ -400,7 +407,7 @@ window.addEventListener('beforeunload',async()=>{
     await updateDoc(userDocRef,{
       heureDeconnexion:now,
       tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString(),
-      lastSeen: new Date(0).toISOString()  // Force rouge à la fermeture
+      lastSeen: new Date(0).toISOString()
     });
   } 
   if(heartbeatInterval) clearInterval(heartbeatInterval);
