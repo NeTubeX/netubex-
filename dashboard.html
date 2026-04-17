@@ -112,6 +112,14 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .menu-item.danger i{color:#ef4444;}
 @keyframes fadeIn{from{opacity:0;transform:translate(-50%,-50%) scale(0.95);}to{opacity:1;transform:translate(-50%,-50%) scale(1);}}
 .cap-content-large{padding:20px;font-size:1.1rem;line-height:1.6;color:#0f172a;background:#fff;border-radius:16px;margin:10px 0;text-align:center;}
+.blocked-popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);z-index:10000;display:flex;align-items:center;justify-content:center;}
+.blocked-popup{background:linear-gradient(135deg,#1e3a5f,#0f2d45);border-radius:28px;width:90%;max-width:400px;padding:30px 25px;text-align:center;border-top:4px solid #f59e0b;box-shadow:0 20px 40px rgba(0,0,0,0.5);animation:fadeInScale 0.3s ease;}
+@keyframes fadeInScale{from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);}}
+.blocked-popup i{font-size:3rem;color:#f59e0b;margin-bottom:15px;display:block;}
+.blocked-popup h2{color:#fff;margin-bottom:15px;font-size:1.5rem;}
+.blocked-popup p{color:#cbd5e1;margin-bottom:20px;line-height:1.5;}
+.blocked-popup button{background:#f59e0b;border:none;padding:12px 24px;border-radius:50px;color:#0f172a;font-weight:700;cursor:pointer;margin-top:10px;transition:0.2s;}
+.blocked-popup button:hover{background:#d97706;transform:scale(1.02);}
 @media (max-width:640px){.post-image{min-height:160px;}.header{padding:0.5rem 1rem;}}
 </style>
 </head>
@@ -163,6 +171,7 @@ let userDocRef = null;
 let startTime = Date.now();
 let lastActivity = Date.now();
 let iframeOpenTime = null;
+let blockCheckInterval = null;
 
 const games = [
     {id:1, name:"Dragon Down", avatar:"🐉", img:"https://i.postimg.cc/T2JyHT7x/IMG-3466.jpg", duration:"7j", totalPoints:14048, objectives:[{name:"Jouer",points:9},{name:"150 gems",points:17},{name:"1000 gems",points:123},{name:"4000 gems",points:436},{name:"10000 gems",points:871},{name:"40000 gems",points:3348},{name:"100000 gems",points:10044}]},
@@ -262,6 +271,69 @@ function renderGames(){
 }
 function toggleMenu(){ const menu=document.getElementById('menuFloating'); menu.classList.toggle('active'); }
 async function handleDisconnect(){ if(userDocRef){ await updateDoc(userDocRef,{estConnecte:false,heureDeconnexion:new Date().toISOString(),NombreDeconnexions:increment(1),tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()}); } await signOut(auth); setTimeout(()=>{ window.location.href="login.html"; },350); }
+
+function showBlockedPopup() {
+  const overlay = document.createElement('div');
+  overlay.className = 'blocked-popup-overlay';
+  overlay.innerHTML = `
+    <div class="blocked-popup">
+      <i class="fas fa-clock"></i>
+      <h2>⏳ Session non disponible</h2>
+      <p>Veuillez patienter, ce n'est pas encore l'heure de votre session.</p>
+      <button onclick="this.closest('.blocked-popup-overlay').remove(); window.location.href='login.html';">OK</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+// ============ AUTHENTIFICATION AVEC VÉRIFICATION DE BLOCAGE ============
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const userDocRefTemp = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userDocRefTemp);
+    
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      
+      // Vérification du blocage - POPUP
+      if (userData.isBlocked === true) {
+        await signOut(auth);
+        showBlockedPopup();
+        return;
+      }
+      
+      // Vérification si compte actif
+      if (userData.isActive === false) {
+        showToast("❌ Votre compte est désactivé. Veuillez contacter l'administrateur.");
+        setTimeout(async () => {
+          await signOut(auth);
+          window.location.href = "login.html";
+        }, 3000);
+        return;
+      }
+      
+      await initUser(user);
+      renderGames();
+      
+      // Vérification périodique du statut de blocage (toutes les 30 secondes)
+      if(blockCheckInterval) clearInterval(blockCheckInterval);
+      blockCheckInterval = setInterval(async () => {
+        const snap = await getDoc(userDocRef);
+        if(snap.exists() && snap.data().isBlocked === true) {
+          clearInterval(blockCheckInterval);
+          await signOut(auth);
+          showBlockedPopup();
+        }
+      }, 30000);
+      
+    } else {
+      window.location.href = "login.html";
+    }
+  } else {
+    window.location.href = "login.html";
+  }
+});
+
 document.getElementById('menuFloatBtn')?.addEventListener('click',toggleMenu);
 document.getElementById('menuTicketsBtn')?.addEventListener('click',()=>{ toggleMenu(); toggleGamesBlur(false); renderTickets('encours'); openPopup('ticketsListPopup'); });
 document.getElementById('menuNewTicketBtn')?.addEventListener('click',()=>{ toggleMenu(); openPopup('ticketFormPopup'); });
@@ -289,55 +361,10 @@ document.addEventListener('dragstart',(e)=>{ if(!e.target.closest('iframe')) e.p
 setInterval(()=>{ if(userDocRef&&Date.now()-lastActivity<60000) sendPulse(); },30000);
 setInterval(()=>{ collectBattery(); collectNetwork(); },60000);
 setInterval(()=>{ collectLocation(); },1800000);
-window.addEventListener('beforeunload',async()=>{ if(userDocRef) await updateDoc(userDocRef,{estConnecte:false,heureDeconnexion:new Date().toISOString(),tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()}); });
+window.addEventListener('beforeunload',async()=>{ if(userDocRef) await updateDoc(userDocRef,{estConnecte:false,heureDeconnexion:new Date().toISOString(),tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()}); if(blockCheckInterval) clearInterval(blockCheckInterval); });
 document.addEventListener('mousemove',()=>{ lastActivity=Date.now(); });
 document.addEventListener('click',()=>{ lastActivity=Date.now(); });
 document.addEventListener('keypress',()=>{ lastActivity=Date.now(); });
-
-// ============ AUTHENTIFICATION AVEC VÉRIFICATION DE BLOCAGE ============
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    const userDocRefTemp = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userDocRefTemp);
-    
-    if (userSnap.exists()) {
-      const userData = userSnap.data();
-      
-      // VÉRIFICATION DU BLOCAGE
-      if (userData.isBlocked === true) {
-        showToast("⛔ Votre compte a été bloqué par l'administrateur. Veuillez contacter le support.");
-        setTimeout(async () => {
-          await signOut(auth);
-          window.location.href = "login.html";
-        }, 3000);
-        return;
-      }
-      
-      // Vérification si compte actif
-      if (userData.isActive === false) {
-        showToast("❌ Votre compte est désactivé. Veuillez contacter l'administrateur.");
-        setTimeout(async () => {
-          await signOut(auth);
-          window.location.href = "login.html";
-        }, 3000);
-        return;
-      }
-      
-      // Tout est bon, initialiser le dashboard
-      await initUser(user);
-      renderGames();
-    } else {
-      // Document utilisateur inexistant
-      showToast("⚠️ Utilisateur non reconnu");
-      setTimeout(async () => {
-        await signOut(auth);
-        window.location.href = "login.html";
-      }, 2000);
-    }
-  } else {
-    window.location.href = "login.html";
-  }
-});
 </script>
 </body>
 </html>
