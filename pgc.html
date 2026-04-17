@@ -19,7 +19,11 @@
   
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  
+  // Exposer les fonctions nécessaires globalement
   window.db = db;
+  window.collection = collection;
+  window.addDoc = addDoc;
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
@@ -437,15 +441,20 @@ function renderTable(){
                 row.style.opacity = '0.6';
                 row.style.background = '#4a1a1a';
                 inputs.forEach(inp => { inp.disabled = true; inp.value = ''; });
+                ecartSpan.innerText = '0';
+                tendanceSpan.innerText = '→ Stable';
+                rendSpan.innerText = '0.00';
             } else {
                 row.style.opacity = '1';
                 row.style.background = '';
                 inputs.forEach(inp => { inp.disabled = false; });
+                updateAll();
             }
-            updateAll();
+            updateTotalsAndProgress();
         };
         
         const updateAll = () => {
+            if(selectPresence.value === 'Absent') return;
             const ptsPrecedents = parseFloat(inputPrecedents.value) || 0;
             const ptsJour = parseFloat(inputJour.value) || 0;
             const tempsPrec = parseFloat(inputTempsPrec.value) || 0;
@@ -501,15 +510,7 @@ function updateTotalsAndProgress(){
         <td style="font-weight:800;">${totalTempsJour}</td>
         <td style="font-weight:800;">${rendGlobal}</td>
         <td style="font-weight:800;">—</td>
-    </tr>`;
-    
-    // Mettre à jour les barres de progression dans le PDF (optionnel)
-    const maxPoints = Math.max(totalPointsPrecedents, totalPointsJour, 1);
-    const pointsPrevPercent = (totalPointsPrecedents / maxPoints) * 100;
-    const pointsJourPercent = (totalPointsJour / maxPoints) * 100;
-    const maxTemps = Math.max(totalTempsPrecedent, totalTempsJour, 1);
-    const tempsPrevPercent = (totalTempsPrecedent / maxTemps) * 100;
-    const tempsJourPercent = (totalTempsJour / maxTemps) * 100;
+    </table>`;
 }
 
 async function sendReportToFirebase() {
@@ -588,7 +589,9 @@ async function sendReportToFirebase() {
             createdAt: new Date().toISOString()
         };
         
-        const docRef = await addDoc(collection(window.db, "reports"), reportData);
+        // Utilisation des fonctions Firebase importées
+        const reportsCollection = collection(window.db, "reports");
+        const docRef = await addDoc(reportsCollection, reportData);
         console.log("✅ Rapport envoyé avec ID:", docRef.id);
         
         showSuccessToast(`Rapport ${reference} envoyé avec succès à l'administration !`);
@@ -607,6 +610,14 @@ async function sendReportToFirebase() {
             document.getElementById(`temps_precedent-${i}`).value = '';
             document.getElementById(`temps_jour-${i}`).value = '';
             document.getElementById(`jours-${i}`).value = '';
+            // Déclencher la mise à jour des styles
+            const row = document.getElementById(`row-${i}`);
+            if(row) {
+                row.style.opacity = '1';
+                row.style.background = '';
+                const inputs = row.querySelectorAll('input');
+                inputs.forEach(inp => { inp.disabled = false; });
+            }
         }
         updateGameRemaining();
         updateTotalsAndProgress();
