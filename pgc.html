@@ -4,96 +4,132 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
 <title>NETUBER | SUIVI JOURNALIER - PGCO</title>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
+    authDomain: "netubexmoney.firebaseapp.com",
+    projectId: "netubexmoney",
+    storageBucket: "netubexmoney.firebasestorage.app",
+    messagingSenderId: "856592608176",
+    appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
+  };
+  
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  window.db = db;
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#0a1a2f;color:#e0f2fe;line-height:1.4;min-height:100vh;overflow-x:hidden;}
-.mobile-container{max-width:100%;padding:12px 12px 30px;margin:0 auto;overflow-y:auto;min-height:100vh;}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#0a1a2f;color:#e0f2fe;line-height:1.4;min-height:100vh;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.mobile-container{max-width:100%;padding:12px 12px 30px;margin:0 auto;overflow-y:auto;overflow-x:hidden;height:auto;min-height:100vh;}
 .header-logo{display:flex;align-items:center;gap:10px;background:#0d2740;padding:12px 16px;border-radius:40px;margin-bottom:16px;border:1px solid #2d5980;}
-.header-logo div{font-size:0.95rem;font-weight:500;color:#bbdefb;}
-h1{text-align:center;font-size:1.6rem;font-weight:500;margin:8px 0 16px;background:linear-gradient(135deg,#60a5fa,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.header-logo div{font-size:0.95rem;font-weight:500;color:#bbdefb;line-height:1.2;}
+h1{text-align:center;font-size:1.6rem;font-weight:500;margin:8px 0 16px;background:linear-gradient(135deg,#60a5fa,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .info-section{background:#112b42;padding:18px 16px;border-radius:28px;margin-bottom:20px;border:1px solid #2d4e73;}
 .info-row{display:flex;flex-direction:column;gap:16px;margin-bottom:12px;}
 .info-item{width:100%;}
-label{display:block;margin-bottom:5px;font-weight:500;font-size:0.8rem;color:#b8d8f0;}
+label{display:block;margin-bottom:5px;font-weight:500;font-size:0.8rem;color:#b8d8f0;letter-spacing:0.2px;}
 label .required{color:#fb923c;margin-left:4px;}
-input,select,textarea{width:100%;padding:14px 16px;background:#1e3a5f;border:1.5px solid #2d5780;border-radius:24px;font-size:0.95rem;color:#f0f9ff !important;transition:all 0.2s ease;}
-textarea{resize:vertical;min-height:80px;}
-.section-title{font-size:1.3rem;font-weight:600;margin:24px 0 12px;padding-bottom:8px;border-bottom:3px solid #3b82f6;display:flex;align-items:center;gap:10px;color:#d9f0ff;}
-.section-title span{background:#2563eb;color:white;font-size:0.7rem;padding:4px 12px;border-radius:40px;}
-.game-objectif-row{display:flex;flex-wrap:wrap;gap:12px;background:#0e2e47;padding:18px 16px;border-radius:32px;margin-bottom:20px;}
+input,select,textarea{width:100%;padding:14px 16px;background:#1e3a5f;border:1.5px solid #2d5780;border-radius:24px;font-size:0.95rem;color:#f0f9ff !important;transition:all 0.2s ease;-webkit-appearance:none;}
+input[type=number]{text-align:center;padding:14px 8px;}
+textarea{resize:vertical;min-height:80px;font-family:inherit;}
+.section-title{font-size:1.3rem;font-weight:600;margin:24px 0 12px;padding-bottom:8px;border-bottom:3px solid #3b82f6;display:flex;align-items:center;flex-wrap:wrap;gap:10px;color:#d9f0ff;}
+.section-title span{background:#2563eb;color:white;font-size:0.7rem;padding:4px 12px;border-radius:40px;font-weight:500;}
+.game-objectif-row{display:flex;flex-direction:row;flex-wrap:wrap;gap:12px;background:#0e2e47;padding:18px 16px;border-radius:32px;margin-bottom:20px;}
 .game-objectif-card{flex:1;min-width:120px;background:linear-gradient(135deg,#1e3a5f,#0f2d45);padding:12px 18px;border-radius:40px;border:1px solid #facc15;text-align:center;}
-.game-objectif-card label{margin-bottom:5px;font-size:0.7rem;color:#facc15;text-transform:uppercase;}
+.game-objectif-card label{margin-bottom:5px;font-size:0.7rem;color:#facc15;text-transform:uppercase;letter-spacing:0.5px;}
 .game-objectif-card .fixed-value{font-size:1.8rem;font-weight:700;color:#facc15;margin-top:5px;}
 .game-objectif-card select{font-size:1rem;font-weight:600;text-align:center;background:#0a1a2f;border:1px solid #facc15;color:#facc15 !important;width:100%;cursor:pointer;padding:10px 8px;}
-.game-objectif-card input{font-size:1.3rem;font-weight:700;text-align:center;background:#0a1a2f;border:1px solid #facc15;color:#facc15 !important;width:100%;padding:10px 8px;}
-.table-wrapper{overflow-x:auto;margin:12px 0 20px;border-radius:24px;}
-table{width:100%;border-collapse:collapse;background:#0b263b;border-radius:24px;overflow:hidden;border:1px solid #2a557a;min-width:1000px;}
+.game-objectif-card select option{background:#1e3a5f;color:#e0f2fe;}
+.game-objectif-card input{font-size:1.3rem;font-weight:700;text-align:center;background:#0a1a2f;border:1px solid #facc15;color:#facc15 !important;width:100%;padding:10px 8px;cursor:not-allowed;}
+.color-selector{background:#0e2e47;border-radius:32px;padding:16px;margin-bottom:20px;border:1px solid #3b82f6;}
+.color-selector label{margin-bottom:8px;font-size:0.8rem;color:#facc15;}
+.color-selector select{background:#1a3d5c;border:1px solid #3b82f6;cursor:pointer;}
+.table-wrapper{overflow-x:auto;margin:12px 0 20px;border-radius:24px;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;background:#0b263b;border-radius:24px;overflow:hidden;border:1px solid #2a557a;min-width:800px;}
 th{background:#143750;color:#b9e2fe;font-weight:600;font-size:0.7rem;padding:12px 4px;text-align:center;border-bottom:2px solid #2e6991;}
 td{padding:12px 4px;text-align:center;border-bottom:1px solid #1f4a6e;background:#0f2d45;color:#e2f0fd;}
 td input,td select{width:80px;padding:10px 4px;text-align:center;margin:0 auto;font-size:0.85rem;}
 td select{width:90px;}
 .total-row td{background:#1a3d5c;font-weight:800;border-top:2px solid #3b82f6;color:#facc15;}
-.absent-row td{background:#4a1a1a;opacity:0.7;text-decoration:line-through;}
-.absent-row td input, .absent-row td select{background:#3a1a1a;border-color:#ef4444;}
 button{background:linear-gradient(145deg,#2563eb,#1d4ed8);color:white;border:none;padding:18px 24px;font-size:1.1rem;font-weight:600;border-radius:60px;cursor:pointer;width:100%;margin:20px 0 10px;transition:0.2s;}
 button:active{transform:scale(0.98);}
 button:disabled{opacity:0.7;}
 footer{text-align:center;font-size:0.65rem;color:#5f748d;margin-top:16px;}
+.tendance-up{color:#4ade80;font-weight:bold;}
+.tendance-down{color:#fb923c;font-weight:bold;}
+.tendance-stable{color:#60a5fa;font-weight:bold;}
+.recommendation-section{background:#0e2e47;border-radius:32px;padding:18px 16px;margin:20px 0;border:1px solid #3b82f6;}
+.recommendation-section label{color:#facc15;margin-bottom:8px;}
+.recommendation-section small{display:block;color:#7dd3fc;font-size:0.7rem;margin-top:5px;text-align:right;}
+.progress-container{margin-bottom:6mm;page-break-inside:avoid;}
+.progress-card{background:rgba(52,73,94,0.1);border:1px solid #dee2e6;border-radius:8px;padding:4mm;margin-bottom:4mm;}
+.progress-title{font-size:9pt;font-weight:600;color:#2c3e50;margin-bottom:3mm;border-left:3px solid #f39c12;padding-left:3mm;}
+.progress-bar-group{display:flex;gap:8px;flex-wrap:wrap;margin-top:3mm;}
+.progress-item{flex:1;min-width:120px;}
+.progress-item-label{font-size:7pt;color:#7f8c8d;margin-bottom:2mm;text-align:center;font-weight:600;}
+.progress-bar-bg{background:#ecf0f1;border-radius:4px;height:8px;overflow:hidden;position:relative;}
+.progress-bar-fill{height:8px;border-radius:4px;transition:width 0.3s;}
+.progress-value{font-size:8pt;font-weight:700;text-align:center;margin-top:2mm;}
+.error-toast{position:fixed;bottom:20px;left:20px;right:20px;background:#ffebee;border-left:5px solid #ef5350;border-radius:16px;padding:16px 20px;color:#c62828;font-size:0.85rem;text-align:left;z-index:2000;box-shadow:0 10px 30px rgba(0,0,0,0.3);font-weight:500;backdrop-filter:blur(10px);background:rgba(255,235,238,0.95);display:none;}
+.error-toast.show{display:block;animation:slideUp 0.3s ease;}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.error-toast .close-toast{float:right;cursor:pointer;margin-left:12px;font-weight:bold;font-size:1.5rem;color:#c62828;background:#ffcdd2;padding:4px 12px;border-radius:30px;display:inline-block;transition:0.2s;}
+.error-toast .close-toast:hover{background:#ef5350;color:white;}
+.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);backdrop-filter:blur(3px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:visibility 0.3s,opacity 0.3s;}
+.popup-overlay.active{visibility:visible;opacity:1;}
+.popup-container{background:linear-gradient(135deg,#1e3a5f,#0f2d45);border-radius:28px;width:90%;max-width:400px;margin:0 auto;padding:24px 20px;box-shadow:0 20px 40px rgba(0,0,0,0.5);border-top:3px solid #facc15;transform:scale(0.9);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);}
+.popup-overlay.active .popup-container{transform:scale(1);}
+.popup-title{font-size:1.2rem;font-weight:700;color:#facc15;margin-bottom:12px;text-align:center;min-height:50px;}
+.popup-message{font-size:0.95rem;color:#e0f2fe;text-align:center;margin-bottom:20px;line-height:1.5;min-height:70px;font-family:'Courier New',monospace;letter-spacing:0.5px;}
+.popup-message .cursor{display:inline-block;width:2px;height:1.1em;background-color:#facc15;margin-left:2px;vertical-align:middle;animation:blink 0.8s infinite;}
+@keyframes blink{0%,50%{opacity:1;}51%,100%{opacity:0;}}
+.popup-buttons{display:flex;gap:12px;justify-content:center;}
+.popup-btn{padding:12px 28px;border-radius:40px;font-weight:600;font-size:0.9rem;cursor:pointer;transition:0.2s;border:none;}
+.popup-btn-primary{background:linear-gradient(145deg,#27ae60,#219a52);color:white;}
+.popup-btn-primary:hover{transform:scale(1.02);}
+.popup-btn-secondary{background:#2d4e73;color:#e0f2fe;}
+.popup-btn-secondary:hover{background:#3d6b8f;}
 .pilote-call-section{background:#0e2e47;border-radius:32px;padding:18px 16px;margin:20px 0;border:1px solid #facc15;}
 .pilote-call-section label{color:#facc15;margin-bottom:8px;font-weight:600;}
 .call-options{display:flex;gap:12px;justify-content:center;margin-top:10px;flex-wrap:wrap;}
 .call-option{background:#1e3a5f;border:2px solid #2d5780;border-radius:40px;padding:12px 20px;cursor:pointer;text-align:center;transition:all 0.2s;flex:1;min-width:70px;color:#e0f2fe;font-weight:600;}
 .call-option.selected{background:#facc15;color:#0a1a2f;border-color:#facc15;}
-.recommendation-section{background:#0e2e47;border-radius:32px;padding:18px 16px;margin:20px 0;border:1px solid #3b82f6;}
-.recommendation-section label{color:#facc15;margin-bottom:8px;}
-.progress-container{margin-bottom:15px;background:#0e2e47;border-radius:24px;padding:15px;margin-top:15px;}
-.progress-title{font-size:12px;font-weight:600;color:#facc15;margin-bottom:10px;}
-.progress-bar-group{display:flex;gap:15px;flex-wrap:wrap;}
-.progress-item{flex:1;min-width:150px;}
-.progress-item-label{font-size:10px;color:#7dd3fc;margin-bottom:5px;text-align:center;}
-.progress-bar-bg{background:#1e3a5f;border-radius:10px;height:20px;overflow:hidden;}
-.progress-bar-fill{height:100%;border-radius:10px;transition:width 0.3s;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:bold;color:#fff;}
-.progress-value{font-size:10px;text-align:center;margin-top:5px;color:#e0f2fe;}
-.toast-notification{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:12px 24px;border-radius:50px;font-size:0.85rem;z-index:10000;animation:slideUp 0.3s ease;}
-@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
-.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:3000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:0.3s;}
-.popup-overlay.active{visibility:visible;opacity:1;}
-.popup-container{background:linear-gradient(135deg,#1e3a5f,#0f2d45);border-radius:28px;width:90%;max-width:400px;padding:24px 20px;border-top:3px solid #facc15;}
-.popup-title{font-size:1.2rem;font-weight:700;color:#facc15;margin-bottom:12px;text-align:center;}
-.popup-message{font-size:0.9rem;color:#e0f2fe;text-align:center;margin-bottom:20px;}
-.popup-buttons{display:flex;gap:12px;justify-content:center;}
-.popup-btn{padding:12px 24px;border-radius:40px;font-weight:600;cursor:pointer;border:none;}
-.popup-btn-primary{background:#10b981;color:white;}
-.popup-btn-secondary{background:#2d4e73;color:#e0f2fe;}
+.call-option input{display:none;}
+.toast-success{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:14px 28px;border-radius:50px;font-size:0.9rem;z-index:10000;animation:slideUp 0.3s ease;box-shadow:0 4px 15px rgba(0,0,0,0.3);}
 </style>
 </head>
 <body>
 <div class="mobile-container">
 <div class="header-logo"><div>⚡ NETUBER · SUIVI JOURNALIER<br>PGCO</div></div>
 <h1>BULLETIN JOURNALIER<br>PERFORMANCE & RENDEMENT</h1>
-
 <div class="info-section">
 <div class="info-row">
 <div class="info-item"><label>Responsable de zone</label><input id="responsable" value="Blandine Kazembe" readonly></div>
-<div class="info-item"><label>Zone / Site</label><input id="zone" value="ORG-NX-S1" readonly></div>
+<div class="info-item"><label>Zone / Site</label><input id="zone" value="ORG-NX-S1-ZA" readonly></div>
 <div class="info-item"><label>Référence rapport <span class="required">*</span></label><input id="reference" placeholder="RPT-JRNL-2026-001"></div>
 </div>
 </div>
-
 <div class="game-objectif-row">
 <div class="game-objectif-card"><label>🎮 OBJECTIF MENSUEL</label><div class="fixed-value">9</div></div>
 <div class="game-objectif-card"><label>🎯 OBJECTIF DU JOUR</label><div class="fixed-value">1</div></div>
-<div class="game-objectif-card"><label>✅ OBJECTIF ATTEINT</label>
+<div class="game-objectif-card"><label>✅ OBJECTIF ATTEINT <span class="required">*</span></label>
 <select id="goalReached">
+<option value="">-- Sélectionnez --</option>
 <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option>
 <option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option>
-<option value="8">8</option><option value="9">9</option>
+<option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option>
+<option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option>
 </select></div>
 <div class="game-objectif-card"><label>📊 OBJECTIF RESTANT</label><input type="text" id="gameRemaining" readonly value="0"></div>
 </div>
-
 <div class="pilote-call-section">
 <label>📞 CONTACT PILOTE <span class="required">*</span></label>
+<div style="font-size:0.75rem; color:#7dd3fc; margin-bottom:8px;">Avez-vous appelé le pilote combien de fois aujourd'hui ?</div>
 <div class="call-options" id="callOptions">
 <div class="call-option" data-value="1">1 fois</div>
 <div class="call-option" data-value="2">2 fois</div>
@@ -102,452 +138,512 @@ footer{text-align:center;font-size:0.65rem;color:#5f748d;margin-top:16px;}
 </div>
 <input type="hidden" id="piloteCallCount" value="">
 </div>
-
+<div class="color-selector"><label>🎨 COULEUR DE FOND DU RAPPORT PDF</label>
+<select id="pdfColor">
+<option value="#ffffff">⚪ Blanc (par défaut)</option>
+<option value="#f8f9fa">⚪ Gris clair</option>
+<option value="#e3f2fd">🔵 Bleu très clair</option>
+<option value="#e8f5e9">🟢 Vert très clair</option>
+<option value="#fff3e0">🟠 Orange très clair</option>
+<option value="#fce4ec">🌸 Rose clair</option>
+<option value="#f3e5f5">🟣 Violet clair</option>
+<option value="#e0f2fe">💙 Bleu ciel</option>
+<option value="#fff9c4">🟡 Jaune clair</option>
+<option value="#ffebee">❤️ Rouge clair</option>
+<option value="#e0f7fa">🩵 Turquoise clair</option>
+</select></div>
 <div class="section-title">NETUBER · FICHE DE PERFORMANCE <span>6 stagiaires</span></div>
-
 <div class="table-wrapper">
 <table id="performanceTable">
-<thead>
-<tr>
-<th>Code Netuber</th>
-<th>Présence</th>
-<th>Points préc.</th>
-<th>Points jour</th>
-<th>Écart</th>
-<th>Tendance</th>
-<th>Temps préc.</th>
-<th>Temps jour</th>
-<th>Rendement</th>
-<th>Jours prestés</th>
-</tr>
-</thead>
+<thead><tr><th>Code Netuber</th><th>Présence <span class="required">*</span></th><th>Points précédents <span class="required">*</span></th><th>Points du jour <span class="required">*</span></th><th>Écart</th><th>Tendance</th><th>Temps précédent (min) <span class="required">*</span></th><th>Temps du jour (min) <span class="required">*</span></th><th>Rendement (pts/min)</th><th>Jours prestés <span class="required">*</span></th>}</thead>
 <tbody id="tableBody"></tbody>
 <tfoot id="tableFoot"></tfoot>
 </table>
 </div>
-
-<div class="progress-container" id="progressContainer">
-<div class="progress-title">📊 BARRES DE PROGRESSION & TENDANCE</div>
-<div class="progress-bar-group">
-<div class="progress-item">
-<div class="progress-item-label">📈 POINTS PRÉCÉDENTS</div>
-<div class="progress-bar-bg"><div class="progress-bar-fill" id="pointsPrevBar" style="width:0%; background:#3498db;">0%</div></div>
-<div class="progress-value" id="pointsPrevValue">0 pts</div>
-</div>
-<div class="progress-item">
-<div class="progress-item-label">📈 POINTS DU JOUR</div>
-<div class="progress-bar-bg"><div class="progress-bar-fill" id="pointsJourBar" style="width:0%; background:#27ae60;">0%</div></div>
-<div class="progress-value" id="pointsJourValue">0 pts</div>
-</div>
-</div>
-<div class="progress-bar-group" style="margin-top:15px;">
-<div class="progress-item">
-<div class="progress-item-label">⏱️ TEMPS PRÉCÉDENT</div>
-<div class="progress-bar-bg"><div class="progress-bar-fill" id="tempsPrevBar" style="width:0%; background:#e67e22;">0%</div></div>
-<div class="progress-value" id="tempsPrevValue">0 min</div>
-</div>
-<div class="progress-item">
-<div class="progress-item-label">⏱️ TEMPS DU JOUR</div>
-<div class="progress-bar-bg"><div class="progress-bar-fill" id="tempsJourBar" style="width:0%; background:#f39c12;">0%</div></div>
-<div class="progress-value" id="tempsJourValue">0 min</div>
-</div>
-</div>
-</div>
-
 <div class="recommendation-section">
 <label>📝 RECOMMANDATION DU PÔLE <span class="required">*</span> (150 caractères minimum)</label>
-<textarea id="recommendation" rows="4" placeholder="Saisissez ici vos recommandations (150 caractères minimum)..."></textarea>
-<small><span id="charCount">0</span>/150 caractères</small>
+<textarea id="recommendation" placeholder="Saisissez ici vos recommandations (150 caractères minimum)..."></textarea>
+<small><span id="charCount">0</span>/150 caractères minimum requis</small>
 </div>
-
 <button id="sendReportBtn">📤 ENVOYER LE RAPPORT À L'ADMIN</button>
 <footer>PGCO · NeTubeX · Rapport journalier · données certifiées</footer>
 </div>
+<div id="errorToast" class="error-toast"><span id="errorMessage"></span><span class="close-toast" onclick="closeErrorToast()">✕ FERMER</span></div>
+<div id="popupOverlay" class="popup-overlay"><div class="popup-container"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn popup-btn-secondary"></button><button id="popupBtnRight" class="popup-btn popup-btn-primary"></button></div></div></div>
 
-<div id="popupOverlay" class="popup-overlay">
-<div class="popup-container">
-<div id="popupTitle" class="popup-title"></div>
-<div id="popupMessage" class="popup-message"></div>
-<div class="popup-buttons">
-<button id="popupBtnLeft" class="popup-btn popup-btn-secondary"></button>
-<button id="popupBtnRight" class="popup-btn popup-btn-primary"></button>
-</div>
-</div>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
-  authDomain: "netubexmoney.firebaseapp.com",
-  projectId: "netubexmoney",
-  storageBucket: "netubexmoney.firebasestorage.app",
-  messagingSenderId: "856592608176",
-  appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// Liste des Netubers
+<script>
+// Liste des 6 Netubers
 const NETUBERS = [
-  { code: "MA-NX-S1-ZA-01", idx: 0 },
-  { code: "MA-NX-S1-ZA-02", idx: 1 },
-  { code: "MA-NX-S1-ZB-03", idx: 2 },
-  { code: "MA-NX-S1-ZB-04", idx: 3 },
-  { code: "MA-NX-S1-ZC-05", idx: 4 },
-  { code: "MA-NX-S1-ZC-06", idx: 5 }
+  {code:"MA-NX-S1-ZA-01", idx:0},
+  {code:"MA-NX-S1-ZA-02", idx:1},
+  {code:"MA-NX-S1-ZB-03", idx:2},
+  {code:"MA-NX-S1-ZB-04", idx:3},
+  {code:"MA-NX-S1-ZC-05", idx:4},
+  {code:"MA-NX-S1-ZC-06", idx:5}
 ];
 
 const tableBody = document.getElementById('tableBody');
 const tableFoot = document.getElementById('tableFoot');
+const pdfColorSelect = document.getElementById('pdfColor');
 const goalReachedSelect = document.getElementById('goalReached');
 const gameRemainingInput = document.getElementById('gameRemaining');
 const recommendationTextarea = document.getElementById('recommendation');
 const charCountSpan = document.getElementById('charCount');
+const errorToast = document.getElementById('errorToast');
+const errorMessageSpan = document.getElementById('errorMessage');
 const popupOverlay = document.getElementById('popupOverlay');
 const popupTitle = document.getElementById('popupTitle');
-const popupMessage = document.getElementById('popupMessage');
+const popupMessageDiv = document.getElementById('popupMessage');
 const popupBtnLeft = document.getElementById('popupBtnLeft');
 const popupBtnRight = document.getElementById('popupBtnRight');
+let currentErrorCallback = null;
 
-let currentCallback = null;
+function closeErrorToast() {
+    errorToast.classList.remove('show');
+    if(currentErrorCallback) {
+        currentErrorCallback();
+        currentErrorCallback = null;
+    }
+}
 
-function updateGameRemaining() {
-  let reached = parseInt(goalReachedSelect.value) || 0;
-  let remaining = 9 - reached;
-  if (remaining < 0) remaining = 0;
-  gameRemainingInput.value = remaining;
+function showErrorToast(message, onClose = null) {
+    currentErrorCallback = onClose;
+    errorMessageSpan.innerHTML = message;
+    errorToast.classList.remove('show');
+    setTimeout(()=>{
+        errorToast.classList.add('show');
+    },10);
+}
+
+function showSuccessToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast-success';
+    toast.innerHTML = '✅ ' + message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
+}
+
+function updateGameRemaining(){
+    let reached = parseInt(goalReachedSelect.value)||0;
+    let remaining = 9 - reached;
+    if(remaining<0) remaining=0;
+    gameRemainingInput.value = remaining;
 }
 goalReachedSelect.addEventListener('change', updateGameRemaining);
 updateGameRemaining();
 
-recommendationTextarea.addEventListener('input', function() {
-  charCountSpan.textContent = this.value.length;
-  charCountSpan.style.color = this.value.length >= 150 ? '#4ade80' : '#fb923c';
+recommendationTextarea.addEventListener('input',function(){
+    charCountSpan.textContent = this.value.length;
+    if(this.value.length >= 150) {
+        charCountSpan.style.color = '#4ade80';
+    } else {
+        charCountSpan.style.color = '#fb923c';
+    }
 });
+charCountSpan.style.color = '#fb923c';
 
 const callOptions = document.querySelectorAll('.call-option');
 const piloteCallCountInput = document.getElementById('piloteCallCount');
 callOptions.forEach(opt => {
-  opt.addEventListener('click', function() {
-    callOptions.forEach(o => o.classList.remove('selected'));
-    this.classList.add('selected');
-    piloteCallCountInput.value = this.getAttribute('data-value');
-  });
+    opt.addEventListener('click', function() {
+        callOptions.forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+        piloteCallCountInput.value = this.getAttribute('data-value');
+    });
 });
 
-function getTendance(ecart) {
-  if (ecart > 0) return { text: "↑ En hausse", class: "tendance-up", icon: "📈", color: "#27ae60" };
-  if (ecart < 0) return { text: "↓ En baisse", class: "tendance-down", icon: "📉", color: "#e67e22" };
-  return { text: "→ Stable", class: "tendance-stable", icon: "➡️", color: "#3498db" };
+function getTendance(ecart){
+    if(ecart>0) return {text:"↑ En hausse", class:"tendance-up", icon:"📈", color: "#27ae60"};
+    if(ecart<0) return {text:"↓ En baisse", class:"tendance-down", icon:"📉", color: "#e67e22"};
+    return {text:"→ Stable", class:"tendance-stable", icon:"➡️", color: "#3498db"};
 }
 
-function updateTotalsAndProgress() {
-  let totalPointsPrecedents = 0;
-  let totalPointsJour = 0;
-  let totalTempsPrecedent = 0;
-  let totalTempsJour = 0;
-  let actifsCount = 0;
-
-  for (let i = 0; i < NETUBERS.length; i++) {
-    const presence = document.getElementById(`presence-${i}`).value;
-    if (presence === 'Absent') continue;
-    
-    actifsCount++;
-    const ptsPrecedents = parseFloat(document.getElementById(`points_precedents-${i}`)?.value) || 0;
-    const ptsJour = parseFloat(document.getElementById(`points_jour-${i}`)?.value) || 0;
-    const tempsPrec = parseFloat(document.getElementById(`temps_precedent-${i}`)?.value) || 0;
-    const tempsJour = parseFloat(document.getElementById(`temps_jour-${i}`)?.value) || 0;
-    
-    totalPointsPrecedents += ptsPrecedents;
-    totalPointsJour += ptsJour;
-    totalTempsPrecedent += tempsPrec;
-    totalTempsJour += tempsJour;
-  }
-  
-  const totalPoints = totalPointsPrecedents + totalPointsJour;
-  const pointsPrevPercent = totalPoints > 0 ? (totalPointsPrecedents / totalPoints) * 100 : 0;
-  const pointsJourPercent = totalPoints > 0 ? (totalPointsJour / totalPoints) * 100 : 0;
-  
-  const totalTemps = totalTempsPrecedent + totalTempsJour;
-  const tempsPrevPercent = totalTemps > 0 ? (totalTempsPrecedent / totalTemps) * 100 : 0;
-  const tempsJourPercent = totalTemps > 0 ? (totalTempsJour / totalTemps) * 100 : 0;
-  
-  document.getElementById('pointsPrevBar').style.width = `${pointsPrevPercent}%`;
-  document.getElementById('pointsPrevBar').innerHTML = `${Math.round(pointsPrevPercent)}%`;
-  document.getElementById('pointsJourBar').style.width = `${pointsJourPercent}%`;
-  document.getElementById('pointsJourBar').innerHTML = `${Math.round(pointsJourPercent)}%`;
-  document.getElementById('pointsPrevValue').innerHTML = `${totalPointsPrecedents} pts (${Math.round(pointsPrevPercent)}%)`;
-  document.getElementById('pointsJourValue').innerHTML = `${totalPointsJour} pts (${Math.round(pointsJourPercent)}%)`;
-  
-  document.getElementById('tempsPrevBar').style.width = `${tempsPrevPercent}%`;
-  document.getElementById('tempsPrevBar').innerHTML = `${Math.round(tempsPrevPercent)}%`;
-  document.getElementById('tempsJourBar').style.width = `${tempsJourPercent}%`;
-  document.getElementById('tempsJourBar').innerHTML = `${Math.round(tempsJourPercent)}%`;
-  document.getElementById('tempsPrevValue').innerHTML = `${totalTempsPrecedent} min (${Math.round(tempsPrevPercent)}%)`;
-  document.getElementById('tempsJourValue').innerHTML = `${totalTempsJour} min (${Math.round(tempsJourPercent)}%)`;
-  
-  const rendementGlobal = totalTempsJour > 0 ? (totalPointsJour / totalTempsJour).toFixed(2) : "0.00";
-  const totalEcart = totalPointsJour - totalPointsPrecedents;
-  const totalTendance = getTendance(totalEcart);
-  
-  tableFoot.innerHTML = `<tr class="total-row"><td colspan="2" style="font-weight:800;">TOTAUX GÉNÉRAUX</td>
-    <td style="font-weight:800;">${totalPointsPrecedents}</td>
-    <td style="font-weight:800; color:#facc15;">${totalPointsJour}</td>
-    <td style="font-weight:800;">${totalEcart > 0 ? `+${totalEcart}` : totalEcart}</td>
-    <td style="font-weight:800; color:${totalTendance.color};">${totalTendance.text}</td>
-    <td style="font-weight:800;">${totalTempsPrecedent}</td>
-    <td style="font-weight:800;">${totalTempsJour}</td>
-    <td style="font-weight:800;">${rendementGlobal}</td>
-    <td style="font-weight:800;">—</td>
-  </tr>`;
-}
-
-function updateRowStyle(i) {
-  const presence = document.getElementById(`presence-${i}`).value;
-  const row = document.getElementById(`row-${i}`);
-  const inputs = row.querySelectorAll('input, select');
-  
-  if (presence === 'Absent') {
-    row.classList.add('absent-row');
-    inputs.forEach(input => { input.disabled = true; input.value = ''; });
-  } else {
-    row.classList.remove('absent-row');
-    inputs.forEach(input => { input.disabled = false; });
-  }
-  updateTotalsAndProgress();
-}
-
-function updateCell(i) {
-  const ptsPrecedents = parseFloat(document.getElementById(`points_precedents-${i}`).value) || 0;
-  const ptsJour = parseFloat(document.getElementById(`points_jour-${i}`).value) || 0;
-  const tempsPrec = parseFloat(document.getElementById(`temps_precedent-${i}`).value) || 0;
-  const tempsJour = parseFloat(document.getElementById(`temps_jour-${i}`).value) || 0;
-  
-  const ecart = ptsJour - ptsPrecedents;
-  document.getElementById(`ecart-${i}`).innerHTML = ecart > 0 ? `+${ecart}` : ecart;
-  
-  const tendance = getTendance(ecart);
-  const tendanceSpan = document.getElementById(`tendance-${i}`);
-  tendanceSpan.innerHTML = tendance.text;
-  tendanceSpan.style.color = tendance.color;
-  
-  const rendement = tempsJour > 0 ? (ptsJour / tempsJour).toFixed(2) : (ptsJour === 0 ? "0.00" : "∞");
-  document.getElementById(`rendement-${i}`).innerHTML = rendement;
-  
-  updateTotalsAndProgress();
-}
-
-function renderTable() {
-  tableBody.innerHTML = '';
-  for (let i = 0; i < NETUBERS.length; i++) {
-    const net = NETUBERS[i];
-    const row = document.createElement('tr');
-    row.id = `row-${i}`;
-    
-    row.innerHTML = `
-      <td style="font-weight:bold; color:#60a5fa;">${net.code}</td>
-      <td><select id="presence-${i}"><option value="Présent">✅ Présent</option><option value="Absent">❌ Absent</option></select></td>
-      <td><input type="number" id="points_precedents-${i}" min="0" value="" placeholder="0"></td>
-      <td><input type="number" id="points_jour-${i}" min="0" value="" placeholder="0"></td>
-      <td><span id="ecart-${i}">0</span></td>
-      <td><span id="tendance-${i}">→ Stable</span></td>
-      <td><input type="number" id="temps_precedent-${i}" min="0" value="" placeholder="0"></td>
-      <td><input type="number" id="temps_jour-${i}" min="0" value="" placeholder="0"></td>
-      <td><span id="rendement-${i}">0.00</span></td>
-      <td><input type="number" id="jours-${i}" min="0" max="7" value="" placeholder="1"></td>
-    `;
-    tableBody.appendChild(row);
-    
-    document.getElementById(`presence-${i}`).addEventListener('change', () => updateRowStyle(i));
-    document.getElementById(`points_precedents-${i}`).addEventListener('input', () => updateCell(i));
-    document.getElementById(`points_jour-${i}`).addEventListener('input', () => updateCell(i));
-    document.getElementById(`temps_precedent-${i}`).addEventListener('input', () => updateCell(i));
-    document.getElementById(`temps_jour-${i}`).addEventListener('input', () => updateCell(i));
-    
-    updateRowStyle(i);
-    updateCell(i);
-  }
-  updateTotalsAndProgress();
-}
-
-function showPopup(title, message, btnLeftText, btnRightText, onConfirm, onCancel) {
-  popupTitle.textContent = title;
-  popupMessage.textContent = message;
-  popupBtnLeft.textContent = btnLeftText;
-  popupBtnRight.textContent = btnRightText;
-  popupOverlay.classList.add('active');
-  
-  const confirmHandler = () => {
-    popupOverlay.classList.remove('active');
-    popupBtnLeft.removeEventListener('click', cancelHandler);
-    popupBtnRight.removeEventListener('click', confirmHandler);
-    if (onConfirm) onConfirm();
-  };
-  const cancelHandler = () => {
-    popupOverlay.classList.remove('active');
-    popupBtnLeft.removeEventListener('click', cancelHandler);
-    popupBtnRight.removeEventListener('click', confirmHandler);
-    if (onCancel) onCancel();
-  };
-  popupBtnRight.onclick = confirmHandler;
-  popupBtnLeft.onclick = cancelHandler;
-}
-
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.className = 'toast-notification';
-  t.innerHTML = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 4000);
-}
-
-function validateAllFields() {
-  const missingFields = [];
-  const reference = document.getElementById('reference').value.trim();
-  if (!reference) missingFields.push('Référence rapport');
-  
-  const goalReached = goalReachedSelect.value;
-  if (!goalReached) missingFields.push('Objectif atteint');
-  
-  const piloteCallCount = piloteCallCountInput.value;
-  if (!piloteCallCount) missingFields.push('Appel au pilote');
-  
-  const recommendation = recommendationTextarea.value.trim();
-  if (!recommendation) missingFields.push('Recommandation du pôle');
-  else if (recommendation.length < 150) missingFields.push(`Recommandation (${recommendation.length}/150 caractères)`);
-  
-  let hasData = false;
-  for (let i = 0; i < NETUBERS.length; i++) {
-    const presence = document.getElementById(`presence-${i}`).value;
-    if (presence === 'Présent') {
-      hasData = true;
-      const ptsPrec = document.getElementById(`points_precedents-${i}`).value;
-      const ptsJour = document.getElementById(`points_jour-${i}`).value;
-      const tempsPrec = document.getElementById(`temps_precedent-${i}`).value;
-      const tempsJour = document.getElementById(`temps_jour-${i}`).value;
-      const jours = document.getElementById(`jours-${i}`).value;
-      if (!ptsPrec) missingFields.push(`${NETUBERS[i].code} - Points précédents`);
-      if (!ptsJour) missingFields.push(`${NETUBERS[i].code} - Points du jour`);
-      if (!tempsPrec) missingFields.push(`${NETUBERS[i].code} - Temps précédent`);
-      if (!tempsJour) missingFields.push(`${NETUBERS[i].code} - Temps du jour`);
-      if (!jours) missingFields.push(`${NETUBERS[i].code} - Jours prestés`);
+function typewriterEffect(element, text, speed=30, callback){
+    element.innerHTML = '';
+    let i = 0;
+    function type(){
+        if(i < text.length){
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+        } else {
+            if(callback) callback();
+        }
     }
-  }
-  if (!hasData) missingFields.push('Aucun Netuber présent');
-  
-  return missingFields;
+    type();
 }
 
-async function sendReportToFirebase() {
-  const missing = validateAllFields();
-  if (missing.length > 0) {
-    showPopup("⚠️ CHAMPS MANQUANTS", `Veuillez compléter :\n${missing.join('\n')}`, "Fermer", "", null, null);
-    return;
-  }
-  
-  const btn = document.getElementById('sendReportBtn');
-  const originalText = btn.textContent;
-  btn.textContent = '⏳ ENVOI EN COURS...';
-  btn.disabled = true;
-  
-  try {
-    const responsable = document.getElementById('responsable').value;
-    const zone = document.getElementById('zone').value;
-    const reference = document.getElementById('reference').value;
-    const goalReached = parseInt(goalReachedSelect.value) || 0;
-    const gameRemaining = parseInt(gameRemainingInput.value) || 0;
-    const piloteCallCount = parseInt(piloteCallCountInput.value) || 0;
-    const recommendation = recommendationTextarea.value.trim();
+function showPopup(title, message, btnLeftText, btnRightText, onConfirm, onCancel){
+    popupTitle.textContent = title;
+    popupMessageDiv.innerHTML = '';
+    popupBtnLeft.textContent = btnLeftText;
+    popupBtnRight.textContent = btnRightText;
+    popupOverlay.classList.add('active');
+    typewriterEffect(popupMessageDiv, message, 35, null);
+    const confirmHandler = () => {
+        popupOverlay.classList.remove('active');
+        popupBtnLeft.removeEventListener('click', cancelHandler);
+        popupBtnRight.removeEventListener('click', confirmHandler);
+        if(onConfirm) onConfirm();
+    };
+    const cancelHandler = () => {
+        popupOverlay.classList.remove('active');
+        popupBtnLeft.removeEventListener('click', cancelHandler);
+        popupBtnRight.removeEventListener('click', confirmHandler);
+        if(onCancel) onCancel();
+    };
+    popupBtnRight.onclick = confirmHandler;
+    popupBtnLeft.onclick = cancelHandler;
+}
+
+function validateAllFields(){
+    let missingFields = [];
+    const reference = document.getElementById('reference').value.trim();
+    if(!reference) missingFields.push('Référence rapport');
     
-    const netubersData = [];
+    const goalReached = goalReachedSelect.value;
+    if(!goalReached || goalReached==='') missingFields.push('Objectif atteint');
+    
+    const piloteCallCount = piloteCallCountInput.value;
+    if(!piloteCallCount) missingFields.push('Appel au pilote');
+    
+    const recommendation = recommendationTextarea.value.trim();
+    if(!recommendation) missingFields.push('Recommandation du pôle');
+    else if(recommendation.length < 150) missingFields.push('Recommandation (150 caractères minimum requis - actuellement ' + recommendation.length + ' caractères)');
+    
+    let hasPresent = false;
+    for(let i = 0; i < NETUBERS.length; i++){
+        const presence = document.getElementById(`presence-${i}`).value;
+        if(presence === 'Présent') {
+            hasPresent = true;
+            const pointsPrecedents = document.getElementById(`points_precedents-${i}`).value;
+            const pointsJour = document.getElementById(`points_jour-${i}`).value;
+            const tempsPrecedent = document.getElementById(`temps_precedent-${i}`).value;
+            const tempsJour = document.getElementById(`temps_jour-${i}`).value;
+            const joursPrestes = document.getElementById(`jours-${i}`).value;
+            if(!pointsPrecedents || pointsPrecedents === '0') missingFields.push(`${NETUBERS[i].code} - Points précédents`);
+            if(!pointsJour || pointsJour === '0') missingFields.push(`${NETUBERS[i].code} - Points du jour`);
+            if(!tempsPrecedent || tempsPrecedent === '0') missingFields.push(`${NETUBERS[i].code} - Temps précédent`);
+            if(!tempsJour || tempsJour === '0') missingFields.push(`${NETUBERS[i].code} - Temps du jour`);
+            if(!joursPrestes) missingFields.push(`${NETUBERS[i].code} - Jours prestés`);
+        }
+    }
+    if(!hasPresent) missingFields.push('Aucun Netuber présent');
+    
+    return missingFields;
+}
+
+function renderTable(){
+    tableBody.innerHTML = '';
+    for(let i=0; i<NETUBERS.length; i++){
+        const net = NETUBERS[i];
+        const row = document.createElement('tr');
+        row.id = `row-${i}`;
+        
+        const tdCode = document.createElement('td');
+        tdCode.innerText = net.code;
+        tdCode.style.fontWeight = 'bold';
+        tdCode.style.color = '#60a5fa';
+        row.appendChild(tdCode);
+        
+        const tdPresence = document.createElement('td');
+        const selectPresence = document.createElement('select');
+        selectPresence.id = `presence-${i}`;
+        selectPresence.innerHTML = `<option value="Présent">✅ Présent</option><option value="Absent">❌ Absent</option>`;
+        selectPresence.value = "Présent";
+        tdPresence.appendChild(selectPresence);
+        row.appendChild(tdPresence);
+        
+        const tdPrecedents = document.createElement('td');
+        const inputPrecedents = document.createElement('input');
+        inputPrecedents.type = 'number';
+        inputPrecedents.min = '0';
+        inputPrecedents.value = '';
+        inputPrecedents.placeholder = '0';
+        inputPrecedents.id = `points_precedents-${i}`;
+        tdPrecedents.appendChild(inputPrecedents);
+        row.appendChild(tdPrecedents);
+        
+        const tdJour = document.createElement('td');
+        const inputJour = document.createElement('input');
+        inputJour.type = 'number';
+        inputJour.min = '0';
+        inputJour.value = '';
+        inputJour.placeholder = '0';
+        inputJour.id = `points_jour-${i}`;
+        tdJour.appendChild(inputJour);
+        row.appendChild(tdJour);
+        
+        const tdEcart = document.createElement('td');
+        const ecartSpan = document.createElement('span');
+        ecartSpan.id = `ecart-${i}`;
+        ecartSpan.innerText = '0';
+        ecartSpan.style.fontWeight = 'bold';
+        tdEcart.appendChild(ecartSpan);
+        row.appendChild(tdEcart);
+        
+        const tdTendance = document.createElement('td');
+        const tendanceSpan = document.createElement('span');
+        tendanceSpan.id = `tendance-${i}`;
+        tendanceSpan.innerText = '→ Stable';
+        tdTendance.appendChild(tendanceSpan);
+        row.appendChild(tdTendance);
+        
+        const tdTempsPrec = document.createElement('td');
+        const inputTempsPrec = document.createElement('input');
+        inputTempsPrec.type = 'number';
+        inputTempsPrec.min = '0';
+        inputTempsPrec.value = '';
+        inputTempsPrec.placeholder = '0';
+        inputTempsPrec.id = `temps_precedent-${i}`;
+        tdTempsPrec.appendChild(inputTempsPrec);
+        row.appendChild(tdTempsPrec);
+        
+        const tdTempsJour = document.createElement('td');
+        const inputTempsJour = document.createElement('input');
+        inputTempsJour.type = 'number';
+        inputTempsJour.min = '0';
+        inputTempsJour.value = '';
+        inputTempsJour.placeholder = '0';
+        inputTempsJour.id = `temps_jour-${i}`;
+        tdTempsJour.appendChild(inputTempsJour);
+        row.appendChild(tdTempsJour);
+        
+        const tdRendement = document.createElement('td');
+        const rendSpan = document.createElement('span');
+        rendSpan.id = `rendement-${i}`;
+        rendSpan.innerText = '0.00';
+        rendSpan.style.fontWeight = 'bold';
+        rendSpan.style.color = '#4ade80';
+        tdRendement.appendChild(rendSpan);
+        row.appendChild(tdRendement);
+        
+        const tdJours = document.createElement('td');
+        const inputJours = document.createElement('input');
+        inputJours.type = 'number';
+        inputJours.min = '0';
+        inputJours.max = '7';
+        inputJours.value = '';
+        inputJours.placeholder = '1';
+        inputJours.id = `jours-${i}`;
+        tdJours.appendChild(inputJours);
+        row.appendChild(tdJours);
+        tableBody.appendChild(row);
+        
+        const updateRowStyle = () => {
+            const presence = selectPresence.value;
+            const inputs = [inputPrecedents, inputJour, inputTempsPrec, inputTempsJour, inputJours];
+            if(presence === 'Absent') {
+                row.style.opacity = '0.6';
+                row.style.background = '#4a1a1a';
+                inputs.forEach(inp => { inp.disabled = true; inp.value = ''; });
+            } else {
+                row.style.opacity = '1';
+                row.style.background = '';
+                inputs.forEach(inp => { inp.disabled = false; });
+            }
+            updateAll();
+        };
+        
+        const updateAll = () => {
+            const ptsPrecedents = parseFloat(inputPrecedents.value) || 0;
+            const ptsJour = parseFloat(inputJour.value) || 0;
+            const tempsPrec = parseFloat(inputTempsPrec.value) || 0;
+            const tempsJour = parseFloat(inputTempsJour.value) || 0;
+            const ecart = ptsJour - ptsPrecedents;
+            ecartSpan.innerText = ecart > 0 ? `+${ecart}` : ecart.toString();
+            const tendance = getTendance(ecart);
+            tendanceSpan.innerText = tendance.text;
+            tendanceSpan.style.color = tendance.color;
+            const rendement = tempsJour > 0 ? (ptsJour / tempsJour).toFixed(2) : (ptsJour === 0 ? "0.00" : "∞");
+            rendSpan.innerText = rendement;
+            updateTotalsAndProgress();
+        };
+        
+        selectPresence.addEventListener('change', updateRowStyle);
+        inputPrecedents.addEventListener('input', updateAll);
+        inputJour.addEventListener('input', updateAll);
+        inputTempsPrec.addEventListener('input', updateAll);
+        inputTempsJour.addEventListener('input', updateAll);
+        inputJours.addEventListener('input', updateTotalsAndProgress);
+        updateRowStyle();
+        updateAll();
+    }
+    updateTotalsAndProgress();
+}
+
+function updateTotalsAndProgress(){
     let totalPointsPrecedents = 0;
     let totalPointsJour = 0;
     let totalTempsPrecedent = 0;
     let totalTempsJour = 0;
-    
-    for (let i = 0; i < NETUBERS.length; i++) {
-      const presence = document.getElementById(`presence-${i}`).value;
-      const pointsPrecedents = parseFloat(document.getElementById(`points_precedents-${i}`).value) || 0;
-      const pointsJour = parseFloat(document.getElementById(`points_jour-${i}`).value) || 0;
-      const tempsPrecedent = parseFloat(document.getElementById(`temps_precedent-${i}`).value) || 0;
-      const tempsJour = parseFloat(document.getElementById(`temps_jour-${i}`).value) || 0;
-      const joursPrestes = parseInt(document.getElementById(`jours-${i}`).value) || 0;
-      
-      if (presence === 'Présent') {
-        totalPointsPrecedents += pointsPrecedents;
-        totalPointsJour += pointsJour;
-        totalTempsPrecedent += tempsPrecedent;
+    for(let i=0; i<NETUBERS.length; i++){
+        const presence = document.getElementById(`presence-${i}`)?.value;
+        if(presence !== 'Présent') continue;
+        const ptsPrecedents = parseFloat(document.getElementById(`points_precedents-${i}`)?.value) || 0;
+        const ptsJour = parseFloat(document.getElementById(`points_jour-${i}`)?.value) || 0;
+        const tempsPrec = parseFloat(document.getElementById(`temps_precedent-${i}`)?.value) || 0;
+        const tempsJour = parseFloat(document.getElementById(`temps_jour-${i}`)?.value) || 0;
+        totalPointsPrecedents += ptsPrecedents;
+        totalPointsJour += ptsJour;
+        totalTempsPrecedent += tempsPrec;
         totalTempsJour += tempsJour;
-      }
-      
-      netubersData.push({
-        code: NETUBERS[i].code,
-        presence: presence,
-        pointsPrecedents: pointsPrecedents,
-        pointsJour: pointsJour,
-        tempsPrecedent: tempsPrecedent,
-        tempsJour: tempsJour,
-        joursPrestes: joursPrestes
-      });
     }
+    const totalEcart = totalPointsJour - totalPointsPrecedents;
+    const totalTendance = getTendance(totalEcart);
+    const rendGlobal = totalTempsJour > 0 ? (totalPointsJour / totalTempsJour).toFixed(2) : "0.00";
+    tableFoot.innerHTML = `<tr class="total-row"><td colspan="2" style="font-weight:800;">TOTAUX GÉNÉRAUX</td>
+        <td style="font-weight:800;">${totalPointsPrecedents}</td>
+        <td style="font-weight:800; color:#facc15;">${totalPointsJour}</td>
+        <td style="font-weight:800;">${totalEcart>0?`+${totalEcart}`:totalEcart}</td>
+        <td style="font-weight:800; color:${totalTendance.color};">${totalTendance.text}</td>
+        <td style="font-weight:800;">${totalTempsPrecedent}</td>
+        <td style="font-weight:800;">${totalTempsJour}</td>
+        <td style="font-weight:800;">${rendGlobal}</td>
+        <td style="font-weight:800;">—</td>
+    </tr>`;
     
-    const rendementGlobal = totalTempsJour > 0 ? (totalPointsJour / totalTempsJour).toFixed(2) : "0.00";
-    
-    const reportData = {
-      type: "pgco_report",
-      responsable: responsable,
-      zone: zone,
-      reference: reference,
-      date: new Date().toLocaleDateString('fr-FR'),
-      heure: new Date().toLocaleTimeString('fr-FR'),
-      goalReached: goalReached,
-      gameRemaining: gameRemaining,
-      piloteCallCount: piloteCallCount,
-      totalPointsPrecedents: totalPointsPrecedents,
-      totalPointsJour: totalPointsJour,
-      totalTempsPrecedent: totalTempsPrecedent,
-      totalTempsJour: totalTempsJour,
-      rendementGlobal: rendementGlobal,
-      recommendation: recommendation,
-      netubers: netubersData,
-      status: "non_traite",
-      createdAt: new Date().toISOString()
-    };
-    
-    const docRef = await addDoc(collection(db, "reports"), reportData);
-    console.log("✅ Rapport envoyé avec ID:", docRef.id);
-    
-    showPopup("✅ RAPPORT ENVOYÉ AVEC SUCCÈS", `Votre rapport a été transmis à l'administration.\n\nID: ${docRef.id}\nDate: ${reportData.date}\nHeure: ${reportData.heure}`, "Fermer", "", () => { window.location.reload(); }, null);
-    
-  } catch (error) {
-    console.error("Erreur:", error);
-    showPopup("❌ ERREUR D'ENVOI", `Erreur: ${error.message}`, "Fermer", "", null, null);
-  } finally {
-    btn.textContent = originalText;
-    btn.disabled = false;
-  }
+    // Mettre à jour les barres de progression dans le PDF (optionnel)
+    const maxPoints = Math.max(totalPointsPrecedents, totalPointsJour, 1);
+    const pointsPrevPercent = (totalPointsPrecedents / maxPoints) * 100;
+    const pointsJourPercent = (totalPointsJour / maxPoints) * 100;
+    const maxTemps = Math.max(totalTempsPrecedent, totalTempsJour, 1);
+    const tempsPrevPercent = (totalTempsPrecedent / maxTemps) * 100;
+    const tempsJourPercent = (totalTempsJour / maxTemps) * 100;
 }
 
-function startValidationFlow() {
-  const missing = validateAllFields();
-  if (missing.length > 0) {
-    showPopup("⚠️ CHAMPS MANQUANTS", `Veuillez compléter :\n${missing.join('\n')}`, "Fermer", "", null, null);
-    return;
-  }
-  
-  showPopup("🔐 CONFIRMATION", "Madame Blandine, êtes-vous sûre des informations saisies ?", "Non, annuler", "Oui, continuer", 
-    () => {
-      showPopup("✅ ENVOI VERS ADMIN", "Voulez-vous envoyer ce rapport à l'administration ?", "Non, annuler", "Oui, envoyer", 
-        () => { sendReportToFirebase(); }, 
+async function sendReportToFirebase() {
+    const missing = validateAllFields();
+    if(missing.length > 0){
+        showErrorToast(`⚠️ Veuillez compléter tous les champs :<br><br>${missing.join('<br>')}`);
+        return;
+    }
+    
+    const btn = document.getElementById('sendReportBtn');
+    const originalText = btn.textContent;
+    btn.textContent = '⏳ ENVOI EN COURS...';
+    btn.disabled = true;
+    
+    try {
+        const responsable = document.getElementById('responsable').value;
+        const zone = document.getElementById('zone').value;
+        const reference = document.getElementById('reference').value.trim();
+        const goalReached = parseInt(goalReachedSelect.value) || 0;
+        const gameRemaining = parseInt(gameRemainingInput.value) || 0;
+        const piloteCallCount = parseInt(piloteCallCountInput.value) || 0;
+        const recommendation = recommendationTextarea.value.trim();
+        
+        const netubersData = [];
+        let totalPointsPrecedents = 0;
+        let totalPointsJour = 0;
+        let totalTempsPrecedent = 0;
+        let totalTempsJour = 0;
+        
+        for(let i = 0; i < NETUBERS.length; i++) {
+            const presence = document.getElementById(`presence-${i}`).value;
+            const pointsPrecedents = parseFloat(document.getElementById(`points_precedents-${i}`).value) || 0;
+            const pointsJour = parseFloat(document.getElementById(`points_jour-${i}`).value) || 0;
+            const tempsPrecedent = parseFloat(document.getElementById(`temps_precedent-${i}`).value) || 0;
+            const tempsJour = parseFloat(document.getElementById(`temps_jour-${i}`).value) || 0;
+            const joursPrestes = parseInt(document.getElementById(`jours-${i}`).value) || 0;
+            
+            if(presence === 'Présent') {
+                totalPointsPrecedents += pointsPrecedents;
+                totalPointsJour += pointsJour;
+                totalTempsPrecedent += tempsPrecedent;
+                totalTempsJour += tempsJour;
+            }
+            
+            netubersData.push({
+                code: NETUBERS[i].code,
+                presence: presence,
+                pointsPrecedents: pointsPrecedents,
+                pointsJour: pointsJour,
+                tempsPrecedent: tempsPrecedent,
+                tempsJour: tempsJour,
+                joursPrestes: joursPrestes
+            });
+        }
+        
+        const rendementGlobal = totalTempsJour > 0 ? (totalPointsJour / totalTempsJour).toFixed(2) : "0.00";
+        
+        const reportData = {
+            type: "pgco_report",
+            responsable: responsable,
+            zone: zone,
+            reference: reference,
+            date: new Date().toLocaleDateString('fr-FR'),
+            heure: new Date().toLocaleTimeString('fr-FR'),
+            goalReached: goalReached,
+            gameRemaining: gameRemaining,
+            piloteCallCount: piloteCallCount,
+            totalPointsPrecedents: totalPointsPrecedents,
+            totalPointsJour: totalPointsJour,
+            totalTempsPrecedent: totalTempsPrecedent,
+            totalTempsJour: totalTempsJour,
+            rendementGlobal: rendementGlobal,
+            recommendation: recommendation,
+            netubers: netubersData,
+            status: "non_traite",
+            createdAt: new Date().toISOString()
+        };
+        
+        const docRef = await addDoc(collection(window.db, "reports"), reportData);
+        console.log("✅ Rapport envoyé avec ID:", docRef.id);
+        
+        showSuccessToast(`Rapport ${reference} envoyé avec succès à l'administration !`);
+        
+        // Réinitialiser le formulaire
+        document.getElementById('reference').value = '';
+        recommendationTextarea.value = '';
+        charCountSpan.textContent = '0';
+        goalReachedSelect.value = '';
+        piloteCallCountInput.value = '';
+        callOptions.forEach(o => o.classList.remove('selected'));
+        for(let i = 0; i < NETUBERS.length; i++) {
+            document.getElementById(`presence-${i}`).value = 'Présent';
+            document.getElementById(`points_precedents-${i}`).value = '';
+            document.getElementById(`points_jour-${i}`).value = '';
+            document.getElementById(`temps_precedent-${i}`).value = '';
+            document.getElementById(`temps_jour-${i}`).value = '';
+            document.getElementById(`jours-${i}`).value = '';
+        }
+        updateGameRemaining();
+        updateTotalsAndProgress();
+        
+    } catch(error) {
+        console.error("Erreur:", error);
+        showErrorToast(`❌ Erreur lors de l'envoi : ${error.message}`);
+    } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
+}
+
+function startValidationFlow(){
+    const missing = validateAllFields();
+    if(missing.length > 0){
+        showErrorToast(`⚠️ Veuillez compléter tous les champs :<br><br>${missing.join('<br>')}`);
+        return;
+    }
+    
+    showPopup(
+        '🔐 CONFIRMATION REQUISE',
+        'Madame Blandine, êtes-vous sûre des informations saisies ?',
+        'Non, annuler',
+        'Oui, continuer',
+        () => {
+            showPopup(
+                '✅ ENVOI VERS ADMIN',
+                'Voulez-vous envoyer ce rapport à l\'administration ?',
+                'Non, annuler',
+                'Oui, envoyer',
+                () => { sendReportToFirebase(); },
+                () => {}
+            );
+        },
         () => {}
-      );
-    }, 
-    () => {}
-  );
+    );
 }
 
 renderTable();
