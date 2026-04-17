@@ -149,37 +149,36 @@ footer{background:#0f172a;padding:50px 20px 40px;margin-top:60px;border-top:1px 
 // URL de la publicité (reste dans l'onglet courant)
 const AD_URL = "https://eagerdazzle.com/hcp1srfr45?key=726421125bb2a42285a497d1666e6285";
 
-// Clé pour sessionStorage - éviter les redirections multiples
-const REDIRECT_KEY = "netubex_redirect_done";
-const TAB_COUNT_KEY = "netubex_tab_count";
+// Clé pour localStorage - permet de détecter si c'est un nouvel onglet ou un rechargement
+const REDIRECT_FLAG = "netubex_redirect_triggered";
 
-// Vérifier si on est dans un nouvel onglet ou une nouvelle session
-// Si sessionStorage n'existe pas, on initialise
-if (!sessionStorage.getItem(REDIRECT_KEY)) {
-    // Premier chargement de cette session/onglet
-    sessionStorage.setItem(REDIRECT_KEY, "true");
+// Fonction pour exécuter la redirection
+function executeRedirect() {
+    // Ouvrir la page d'accueil dans un NOUVEL ONGLET
+    const newTab = window.open(window.location.href, "_blank");
     
-    // Vérifier combien d'onglets sont ouverts (approximation via compteur)
-    let tabCount = parseInt(localStorage.getItem(TAB_COUNT_KEY)) || 0;
-    tabCount++;
-    localStorage.setItem(TAB_COUNT_KEY, tabCount);
-    
-    // Si c'est le premier onglet (tabCount == 1) ou si on veut toujours déclencher
-    // On exécute la redirection UNE SEULE FOIS par session de navigation
+    // Petit délai pour permettre l'ouverture du nouvel onglet
     setTimeout(function() {
-        // Ouvrir la page d'accueil dans un NOUVEL ONGLET (si pas déjà fait)
-        // On vérifie si on a déjà ouvert un nouvel onglet dans cette session
-        if (!sessionStorage.getItem("netubex_new_tab_opened")) {
-            sessionStorage.setItem("netubex_new_tab_opened", "true");
-            window.open(window.location.href, "_blank");
-        }
         // Rediriger l'onglet courant vers la publicité
         window.location.href = AD_URL;
-    }, 100);
+    }, 50);
+}
+
+// Vérifier si on est dans l'onglet principal ou un onglet secondaire
+// On utilise un paramètre dans l'URL pour différencier
+const urlParams = new URLSearchParams(window.location.search);
+const isRedirectedTab = urlParams.get('ref') === 'redirect';
+
+if (!isRedirectedTab) {
+    // C'est l'onglet principal (celui que l'utilisateur a ouvert en premier)
+    // On exécute TOUJOURS la redirection à chaque chargement
+    executeRedirect();
 } else {
-    // Ceci est un onglet déjà ouvert (le second onglet)
-    // On ne fait rien, on affiche juste la page normalement
-    console.log("Onglet secondaire - pas de redirection");
+    // C'est un onglet secondaire ouvert par le script
+    // On nettoie l'URL et on affiche normalement la page
+    const cleanUrl = window.location.href.split('?')[0];
+    window.history.replaceState({}, document.title, cleanUrl);
+    console.log("Onglet secondaire - page affichée normalement");
 }
 
 // Gestion du menu
@@ -366,17 +365,6 @@ cards.forEach(card => {
 
 // Empêcher le clic droit
 document.addEventListener('contextmenu', (e) => e.preventDefault());
-
-// Nettoyage du compteur d'onglets quand la page se ferme
-window.addEventListener('beforeunload', function() {
-    let tabCount = parseInt(localStorage.getItem(TAB_COUNT_KEY)) || 0;
-    tabCount--;
-    if (tabCount <= 0) {
-        localStorage.removeItem(TAB_COUNT_KEY);
-    } else {
-        localStorage.setItem(TAB_COUNT_KEY, tabCount);
-    }
-});
 })();
 </script>
 </body>
