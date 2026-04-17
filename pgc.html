@@ -10,34 +10,35 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#0a1a2f;color:#e0f2fe;line-height:1.4;min-height:100vh;overflow-x:hidden;}
-.mobile-container{max-width:100%;padding:12px 12px 30px;margin:0 auto;}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#0a1a2f;color:#e0f2fe;line-height:1.4;min-height:100vh;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.mobile-container{max-width:100%;padding:12px 12px 30px;margin:0 auto;overflow-y:auto;overflow-x:hidden;height:auto;min-height:100vh;}
 .header-logo{display:flex;align-items:center;gap:10px;background:#0d2740;padding:12px 16px;border-radius:40px;margin-bottom:16px;border:1px solid #2d5980;}
-.header-logo div{font-size:0.95rem;font-weight:500;color:#bbdefb;}
-h1{text-align:center;font-size:1.6rem;font-weight:500;margin:8px 0 16px;background:linear-gradient(135deg,#60a5fa,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.header-logo div{font-size:0.95rem;font-weight:500;color:#bbdefb;line-height:1.2;}
+h1{text-align:center;font-size:1.6rem;font-weight:500;margin:8px 0 16px;background:linear-gradient(135deg,#60a5fa,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .info-section{background:#112b42;padding:18px 16px;border-radius:28px;margin-bottom:20px;border:1px solid #2d4e73;}
 .info-row{display:flex;flex-direction:column;gap:16px;margin-bottom:12px;}
 .info-item{width:100%;}
-label{display:block;margin-bottom:5px;font-weight:500;font-size:0.8rem;color:#b8d8f0;}
-label .required{color:#fb923c;}
-input,select,textarea{width:100%;padding:14px 16px;background:#1e3a5f;border:1.5px solid #2d5780;border-radius:24px;font-size:0.95rem;color:#f0f9ff !important;}
-input[type=number]{text-align:center;}
-textarea{resize:vertical;min-height:80px;}
-.section-title{font-size:1.3rem;font-weight:600;margin:24px 0 12px;padding-bottom:8px;border-bottom:3px solid #3b82f6;display:flex;align-items:center;gap:10px;color:#d9f0ff;}
-.section-title span{background:#2563eb;color:white;font-size:0.7rem;padding:4px 12px;border-radius:40px;}
+label{display:block;margin-bottom:5px;font-weight:500;font-size:0.8rem;color:#b8d8f0;letter-spacing:0.2px;}
+label .required{color:#fb923c;margin-left:4px;}
+input,select,textarea{width:100%;padding:14px 16px;background:#1e3a5f;border:1.5px solid #2d5780;border-radius:24px;font-size:0.95rem;color:#f0f9ff !important;transition:all 0.2s ease;-webkit-appearance:none;}
+input[type=number]{text-align:center;padding:14px 8px;}
+textarea{resize:vertical;min-height:80px;font-family:inherit;}
+.section-title{font-size:1.3rem;font-weight:600;margin:24px 0 12px;padding-bottom:8px;border-bottom:3px solid #3b82f6;display:flex;align-items:center;flex-wrap:wrap;gap:10px;color:#d9f0ff;}
+.section-title span{background:#2563eb;color:white;font-size:0.7rem;padding:4px 12px;border-radius:40px;font-weight:500;}
 .action-buttons{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
-.action-buttons button{flex:1;margin:0;padding:12px;font-size:0.9rem;border-radius:40px;cursor:pointer;font-weight:600;}
-.btn-feedback{background:linear-gradient(145deg,#06b6d4,#0891b2);border:none;color:white;}
-.btn-memo{background:linear-gradient(145deg,#ec4899,#db2777);border:none;color:white;}
-.table-wrapper{overflow-x:auto;margin:12px 0 20px;border-radius:24px;}
+.action-buttons button{flex:1;margin:0;padding:12px;font-size:0.9rem;border-radius:40px;cursor:pointer;font-weight:600;border:none;}
+.btn-feedback{background:linear-gradient(145deg,#06b6d4,#0891b2);color:white;}
+.btn-memo{background:linear-gradient(145deg,#ec4899,#db2777);color:white;}
+.table-wrapper{overflow-x:auto;margin:12px 0 20px;border-radius:24px;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;background:#0b263b;border-radius:24px;overflow:hidden;border:1px solid #2a557a;min-width:1200px;}
 th{background:#143750;color:#b9e2fe;font-weight:600;font-size:0.7rem;padding:12px 4px;text-align:center;border-bottom:2px solid #2e6991;}
 td{padding:12px 4px;text-align:center;border-bottom:1px solid #1f4a6e;background:#0f2d45;color:#e2f0fd;}
-td input,td select{width:90px;padding:8px 4px;text-align:center;margin:0 auto;font-size:0.8rem;background:#1e3a5f;border:1px solid #2d5780;border-radius:12px;color:white;}
+td input,td select{width:90px;padding:10px 4px;text-align:center;margin:0 auto;font-size:0.85rem;background:#1e3a5f;border:1px solid #2d5780;border-radius:12px;color:white;}
 td select{width:100px;}
 .total-row td{background:#1a3d5c;font-weight:800;border-top:2px solid #3b82f6;color:#facc15;}
-button{background:linear-gradient(145deg,#2563eb,#1d4ed8);color:white;border:none;padding:18px 24px;font-size:1.1rem;font-weight:600;border-radius:60px;cursor:pointer;width:100%;margin:20px 0 10px;}
+button{background:linear-gradient(145deg,#2563eb,#1d4ed8);color:white;border:none;padding:18px 24px;font-size:1.1rem;font-weight:600;border-radius:60px;cursor:pointer;width:100%;margin:20px 0 10px;transition:0.2s;}
 button:active{transform:scale(0.98);}
+button:disabled{opacity:0.7;}
 footer{text-align:center;font-size:0.65rem;color:#5f748d;margin-top:16px;}
 .tendance-up{color:#4ade80;font-weight:bold;}
 .tendance-down{color:#fb923c;font-weight:bold;}
@@ -50,6 +51,9 @@ footer{text-align:center;font-size:0.65rem;color:#5f748d;margin-top:16px;}
 .call-options{display:flex;gap:12px;justify-content:center;margin-top:10px;flex-wrap:wrap;}
 .call-option{background:#1e3a5f;border:2px solid #2d5780;border-radius:40px;padding:12px 20px;cursor:pointer;text-align:center;transition:all 0.2s;flex:1;min-width:70px;color:#e0f2fe;font-weight:600;}
 .call-option.selected{background:#facc15;color:#0a1a2f;border-color:#facc15;}
+.color-selector{background:#0e2e47;border-radius:32px;padding:16px;margin-bottom:20px;border:1px solid #3b82f6;}
+.color-selector label{margin-bottom:8px;font-size:0.8rem;color:#facc15;}
+.color-selector select{background:#1a3d5c;border:1px solid #3b82f6;cursor:pointer;}
 .toast-success{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:14px 28px;border-radius:50px;font-size:0.9rem;z-index:10000;animation:slideUp 0.3s ease;}
 .toast-error{background:#ef4444;}
 @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
@@ -126,7 +130,7 @@ footer{text-align:center;font-size:0.65rem;color:#5f748d;margin-top:16px;}
 <th>Temps préc.</th>
 <th>Temps jour</th>
 <th>Rendement</th>
-<th>Jours</th>
+<th>Jours prestés</th>
 </tr>
 </thead>
 <tbody id="tableBody"></tbody>
@@ -172,7 +176,6 @@ const firebaseConfig = {
     appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
 };
 
-// Initialisation Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -207,47 +210,10 @@ function openModal(id) {
     document.getElementById(id).classList.add('active');
 }
 
-function updateObjectiveRemaining(rowId, mensuelSelect, atteintSelect, restantSpan) {
-    const mensuel = parseInt(mensuelSelect.value) || 0;
-    const atteint = parseInt(atteintSelect.value) || 0;
-    const restant = Math.max(0, mensuel - atteint);
-    restantSpan.textContent = restant;
-    return restant;
-}
-
-function updateTotalsObjectives() {
-    let totalMensuel = 0;
-    let totalAtteint = 0;
-    let totalRestant = 0;
-    
-    for(let i = 0; i < NETUBERS.length; i++) {
-        const presence = document.getElementById(`presence-${i}`)?.value;
-        if(presence !== 'Présent') continue;
-        
-        const mensuel = parseInt(document.getElementById(`objectif_mensuel-${i}`)?.value) || 0;
-        const atteint = parseInt(document.getElementById(`objectif_atteint-${i}`)?.value) || 0;
-        const restant = Math.max(0, mensuel - atteint);
-        
-        totalMensuel += mensuel;
-        totalAtteint += atteint;
-        totalRestant += restant;
-    }
-    
-    const footerRow = document.querySelector('#tableFoot .total-row');
-    if(footerRow) {
-        const cells = footerRow.querySelectorAll('td');
-        if(cells.length >= 5) {
-            cells[2].innerHTML = `<strong style="color:#facc15;">${totalMensuel}</strong>`;
-            cells[3].innerHTML = `<strong style="color:#4ade80;">${totalAtteint}</strong>`;
-            cells[4].innerHTML = `<strong style="color:#f59e0b;">${totalRestant}</strong>`;
-        }
-    }
-}
-
 function getTendance(ecart){
-    if(ecart>0) return {text:"↑ En hausse", class:"tendance-up", icon:"📈", color: "#27ae60"};
-    if(ecart<0) return {text:"↓ En baisse", class:"tendance-down", icon:"📉", color: "#e67e22"};
-    return {text:"→ Stable", class:"tendance-stable", icon:"➡️", color: "#3498db"};
+    if(ecart>0) return {text:"↑ En hausse", class:"tendance-up", color: "#27ae60"};
+    if(ecart<0) return {text:"↓ En baisse", class:"tendance-down", color: "#e67e22"};
+    return {text:"→ Stable", class:"tendance-stable", color: "#3498db"};
 }
 
 function renderTable(){
@@ -394,9 +360,13 @@ function renderTable(){
         
         tableBody.appendChild(row);
         
+        // Mise à jour objectif restant
         const updateObjectives = () => {
-            updateObjectiveRemaining(i, selectMensuel, selectAtteint, restantSpan);
-            updateTotalsObjectives();
+            const mensuel = parseInt(selectMensuel.value) || 0;
+            const atteint = parseInt(selectAtteint.value) || 0;
+            const restant = Math.max(0, mensuel - atteint);
+            restantSpan.textContent = restant;
+            updateTotals();
         };
         
         selectMensuel.addEventListener('change', updateObjectives);
@@ -424,8 +394,7 @@ function renderTable(){
                 updateObjectives();
                 updateAll();
             }
-            updateTotalsObjectives();
-            updateTotalsAndProgress();
+            updateTotals();
         };
         
         const updateAll = () => {
@@ -441,7 +410,7 @@ function renderTable(){
             tendanceSpan.style.color = tendance.color;
             const rendement = tempsJour > 0 ? (ptsJour / tempsJour).toFixed(2) : (ptsJour === 0 ? "0.00" : "∞");
             rendSpan.innerText = rendement;
-            updateTotalsAndProgress();
+            updateTotals();
         };
         
         selectPresence.addEventListener('change', updateRowStyle);
@@ -449,20 +418,23 @@ function renderTable(){
         inputJour.addEventListener('input', updateAll);
         inputTempsPrec.addEventListener('input', updateAll);
         inputTempsJour.addEventListener('input', updateAll);
-        inputJours.addEventListener('input', updateTotalsAndProgress);
+        inputJours.addEventListener('input', updateTotals);
         
         updateRowStyle();
         updateAll();
         updateObjectives();
     }
-    updateTotalsAndProgress();
+    updateTotals();
 }
 
-function updateTotalsAndProgress(){
+function updateTotals(){
     let totalPointsPrecedents = 0;
     let totalPointsJour = 0;
     let totalTempsPrecedent = 0;
     let totalTempsJour = 0;
+    let totalMensuel = 0;
+    let totalAtteint = 0;
+    let totalRestant = 0;
     
     for(let i=0; i<NETUBERS.length; i++){
         const presence = document.getElementById(`presence-${i}`)?.value;
@@ -472,11 +444,16 @@ function updateTotalsAndProgress(){
         const ptsJour = parseFloat(document.getElementById(`points_jour-${i}`)?.value) || 0;
         const tempsPrec = parseFloat(document.getElementById(`temps_precedent-${i}`)?.value) || 0;
         const tempsJour = parseFloat(document.getElementById(`temps_jour-${i}`)?.value) || 0;
+        const mensuel = parseInt(document.getElementById(`objectif_mensuel-${i}`)?.value) || 0;
+        const atteint = parseInt(document.getElementById(`objectif_atteint-${i}`)?.value) || 0;
         
         totalPointsPrecedents += ptsPrecedents;
         totalPointsJour += ptsJour;
         totalTempsPrecedent += tempsPrec;
         totalTempsJour += tempsJour;
+        totalMensuel += mensuel;
+        totalAtteint += atteint;
+        totalRestant += Math.max(0, mensuel - atteint);
     }
     
     const totalEcart = totalPointsJour - totalPointsPrecedents;
@@ -485,9 +462,9 @@ function updateTotalsAndProgress(){
     
     tableFoot.innerHTML = `<tr class="total-row">
         <td colspan="2" style="font-weight:800; text-align:left; padding-left:12px;">📊 TOTAUX GÉNÉRAUX</td>
-        <td id="totalMensuelFooter" style="font-weight:800;">0</td>
-        <td id="totalAtteintFooter" style="font-weight:800;">0</td>
-        <td id="totalRestantFooter" style="font-weight:800;">0</td>
+        <td style="font-weight:800;"><strong style="color:#facc15;">${totalMensuel}</strong></td>
+        <td style="font-weight:800;"><strong style="color:#4ade80;">${totalAtteint}</strong></td>
+        <td style="font-weight:800;"><strong style="color:#f59e0b;">${totalRestant}</strong></td>
         <td style="font-weight:800;">${totalPointsPrecedents}</td>
         <td style="font-weight:800; color:#facc15;">${totalPointsJour}</td>
         <td style="font-weight:800;">${totalEcart>0?`+${totalEcart}`:totalEcart}</td>
@@ -497,7 +474,6 @@ function updateTotalsAndProgress(){
         <td style="font-weight:800;">${rendGlobal}</td>
         <td style="font-weight:800;">—</td>
     </tr>`;
-    updateTotalsObjectives();
 }
 
 function validateAllFields(){
@@ -643,7 +619,7 @@ async function sendReportToFirebase() {
             document.getElementById(`objectif_atteint-${i}`).value = '0';
             document.getElementById(`objectif_restant-${i}`).textContent = '9';
         }
-        updateTotalsAndProgress();
+        updateTotals();
         
     } catch(error) {
         console.error("Erreur:", error);
@@ -657,7 +633,7 @@ async function sendReportToFirebase() {
 async function loadFeedbacks() {
     try {
         const responsable = document.getElementById('responsable').value;
-        const querySnapshot = await db.collection("reports").where("responsable", "==", responsable).orderBy("createdAt", "desc").limit(20).get();
+        const querySnapshot = await db.collection("reports").where("responsable", "==", responsable).orderBy("createdAt", "desc").limit(30).get();
         const feedbacksList = document.getElementById('feedbacksList');
         
         let allFeedbacks = [];
@@ -671,6 +647,7 @@ async function loadFeedbacks() {
         if(allFeedbacks.length === 0) {
             feedbacksList.innerHTML = '<div class="loading">📭 Aucun feedback reçu pour le moment</div>';
         } else {
+            allFeedbacks.sort((a,b) => new Date(b.date) - new Date(a.date));
             feedbacksList.innerHTML = allFeedbacks.map(f => `
                 <div class="feedback-item">
                     <div class="feedback-date">📅 ${new Date(f.date).toLocaleString()} - Rapport: ${f.reportRef}</div>
@@ -751,7 +728,6 @@ document.querySelectorAll('.modal').forEach(modal => {
     });
 });
 
-// Rendu du tableau
 renderTable();
 </script>
 </body>
