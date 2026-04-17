@@ -142,7 +142,7 @@ tr:hover{background:#1a2332;}
 </div>
 <div class="table-wrapper">
 <table id="netubersTable">
-<thead><tr><th>Code</th><th>Email</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Objectif restant</th><th>Connexions</th><th>Anomalies</th><th>Statut</th><th>Connecté depuis</th><th>Actions</th></tr></thead>
+<thead><tr><th>Code</th><th>Email</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Objectif restant</th><th>Connexions</th><th>Anomalies</th><th>Dernière activité</th><th>Actions</th></tr></thead>
 <tbody id="netubersTableBody"></tbody>
 </table>
 </div>
@@ -161,7 +161,7 @@ tr:hover{background:#1a2332;}
 <table id="confidentialiteTable">
 <thead><tr><th>Code</th><th>Email</th><th>Mot de passe</th><th>Statut</th><th>Actions</th></tr></thead>
 <tbody id="confidentialiteTableBody"></tbody>
-</tr>
+</table>
 </div>
 </div>
 
@@ -190,7 +190,7 @@ tr:hover{background:#1a2332;}
 <div class="stat-card"><div class="value" id="ticketsProgress">0</div><div class="label">En cours</div></div>
 <div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Résolus</div></div>
 </div>
-<div class="table-wrapper"><table id="ticketsTable"><thead><tr><th>Netuber</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody id="ticketsTableBody"></tbody></table></div>
+<div class="table-wrapper"><table id="ticketsTable"><thead><tr><th>Netuber</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th><tr></thead><tbody id="ticketsTableBody"></tbody></table></div>
 </div>
 
 <!-- Onglet Anomalies -->
@@ -298,7 +298,7 @@ function showConfirm(title, message, onConfirm) {
     confirmCancel.addEventListener('click', cancelHandler);
 }
 
-// ========== ÉCOUTE EN TEMPS RÉEL ==========
+// ========== ÉCOUTE EN TEMPS RÉEL DES UTILISATEURS ==========
 function listenToUsersRealtime() {
     if (usersUnsubscribe) usersUnsubscribe();
     
@@ -311,10 +311,10 @@ function listenToUsersRealtime() {
             const index = usersData.findIndex(u => u.id === updatedUser.id);
             
             if (index !== -1) {
-                const oldPage = usersData[index].pageActuelle;
-                const newPage = updatedUser.pageActuelle;
-                if (oldPage !== newPage) {
-                    console.log(`🔄 Page changée pour ${updatedUser.code}: ${oldPage} → ${newPage}`);
+                const oldLastSeen = usersData[index].lastSeen;
+                const newLastSeen = updatedUser.lastSeen;
+                if (oldLastSeen !== newLastSeen) {
+                    console.log(`🔄 Mise à jour lastSeen pour ${updatedUser.code}`);
                     hasChanges = true;
                 }
                 usersData[index] = updatedUser;
@@ -354,6 +354,7 @@ async function loadAllData() {
     updateSelects();
     updateCapHistory();
     
+    // Démarrer l'écoute en temps réel
     listenToUsersRealtime();
 }
 
@@ -441,9 +442,9 @@ function updateRapportsTable() {
             <td style="color:#10b981; font-weight:600;">${objectifAtteint}</td>
             <td style="color:#f59e0b; font-weight:600;">${objectifRestant}</td>
             <td style="color:#f59e0b; font-weight:bold;">${r.totalPointsJour || 0}</td>
-            <td class="${(r.totalPointsJour || 0) > (r.totalPointsPrecedents || 0) ? 'tendance-up' : 'tendance-down'}">${rendement} pts/min</div>
-            <td><small>${formatDateShort(r.createdAt)}</small></div>
-            <td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></div>
+            <td class="${(r.totalPointsJour || 0) > (r.totalPointsPrecedents || 0) ? 'tendance-up' : 'tendance-down'}">${rendement} pts/min</td>
+            <td><small>${formatDateShort(r.createdAt)}</small></td>
+            <td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></td>
             <td>
                 <button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i></button>
                 <button class="action-btn feedback" onclick='openFeedbackModal("${r.id}", "${r.reference}")'><i class="fas fa-comment-dots"></i></button>
@@ -462,22 +463,28 @@ function escapeHtml(text) {
     return text.replace(/[&<>]/g, m => m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'));
 }
 
-// ========== NETUBERS - DÉTECTION SANS CHRONO ==========
+// NETUBERS - Affichage avec point vert/rouge
 function updateNetubersTable() {
     const tbody = document.getElementById('netubersTableBody');
     if(!tbody) return;
     const search = document.getElementById('searchNetuber')?.value.toLowerCase() || '';
     const status = document.getElementById('statusFilter')?.value || 'all';
     
+    const now = new Date();
+    
     let filtered = usersData.filter(u => {
         const matchSearch = (u.code || '').toLowerCase().includes(search);
-        const isOnline = u.pageActuelle === "dashboard.html";
+        const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
+        const isOnline = lastSeenDate && (now - lastSeenDate) < 30000;
         const matchStatus = status === 'all' || (status === 'online' ? isOnline : !isOnline);
         return matchSearch && matchStatus;
     });
     
     // Mettre à jour le compteur en ligne
-    const onlineCount = usersData.filter(u => u.pageActuelle === "dashboard.html").length;
+    const onlineCount = usersData.filter(u => {
+        const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
+        return lastSeenDate && (now - lastSeenDate) < 30000;
+    }).length;
     document.getElementById('totalOnline').innerText = onlineCount;
     
     tbody.innerHTML = filtered.map(u => {
@@ -489,18 +496,24 @@ function updateNetubersTable() {
         const isBlocked = u.isBlocked === true;
         const anomalieClass = anomalies > 5 ? 'badge-danger' : (anomalies > 2 ? 'badge-warning' : 'badge-success');
         
-        // Détection basée sur pageActuelle (sans chrono)
-        const isOnline = u.pageActuelle === "dashboard.html";
+        // Détection du statut via lastSeen (30 secondes)
+        const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
+        const isOnline = lastSeenDate && (now - lastSeenDate) < 30000;
         const statusDot = isOnline ? '🟢' : '🔴';
         
-        // "Connecté depuis" basé sur connectedSince ou heureConnexion
-        let connectedSince = 'Jamais';
-        if (u.connectedSince) {
-            connectedSince = `Connecté depuis ${new Date(u.connectedSince).toLocaleString()}`;
-        } else if (u.heureConnexion) {
-            connectedSince = `Connecté depuis ${new Date(u.heureConnexion).toLocaleString()}`;
+        let lastActivityText = 'Jamais';
+        if (u.lastSeen) {
+            const diffSeconds = Math.floor((now - new Date(u.lastSeen)) / 1000);
+            const diffMinutes = Math.floor(diffSeconds / 60);
+            if (diffMinutes < 1) {
+                lastActivityText = `Il y a ${diffSeconds} secondes`;
+            } else if (diffMinutes < 60) {
+                lastActivityText = `Il y a ${diffMinutes} minute${diffMinutes > 1 ? 's' : ''}`;
+            } else {
+                lastActivityText = new Date(u.lastSeen).toLocaleString();
+            }
         } else if (u.createdAt) {
-            connectedSince = `Compte créé: ${new Date(u.createdAt).toLocaleDateString()}`;
+            lastActivityText = `Compte créé: ${new Date(u.createdAt).toLocaleDateString()}`;
         }
         
         return `<tr>
@@ -511,8 +524,7 @@ function updateNetubersTable() {
             <td style="color:#f59e0b; font-weight:600;">${objRestant}</td>
             <td style="color:#3b82f6;">${connexions}</td>
             <td><span class="badge ${anomalieClass}">${anomalies}</span></td>
-            <td><span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>${isOnline ? 'En ligne' : 'Hors ligne'}${isBlocked ? ' 🔒' : ''}</td>
-            <td><small>${connectedSince}</small></td>
+            <td><small>${lastActivityText}</small></td>
             <td>
                 <button class="action-btn cap" onclick="openCapModal('${u.code}')"><i class="fas fa-chart-line"></i> CAP</button>
                 <button class="action-btn view" onclick="showNetuberDetails('${u.code}')"><i class="fas fa-eye"></i></button>
@@ -531,7 +543,9 @@ function updateConfidentialiteTable() {
     
     tbody.innerHTML = filtered.map(u => {
         const maskedPassword = '••••••••';
-        const isOnline = u.pageActuelle === "dashboard.html";
+        const now = new Date();
+        const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
+        const isOnline = lastSeenDate && (now - lastSeenDate) < 30000;
         return `<tr>
             <td><strong>${u.code || '-'}</strong></td>
             <td>${u.email || '-'}</td>
@@ -547,8 +561,12 @@ function updateConfidentialiteTable() {
 window.filterConfidentialite = () => updateConfidentialiteTable();
 
 function updateStats() {
+    const now = new Date();
     document.getElementById('totalNetubers').innerText = usersData.length;
-    const onlineCount = usersData.filter(u => u.pageActuelle === "dashboard.html").length;
+    const onlineCount = usersData.filter(u => {
+        const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
+        return lastSeenDate && (now - lastSeenDate) < 30000;
+    }).length;
     document.getElementById('totalOnline').innerText = onlineCount;
     const totalAnom = usersData.reduce((a,u) => a + (parseInt(u.anomaliesConnexion)||0) + (parseInt(u.anomaliesSysteme)||0), 0);
     document.getElementById('totalAnomalies').innerText = totalAnom;
@@ -781,7 +799,7 @@ window.viewRapport = (id) => {
                         <div class="detail-value" style="color:#f59e0b;">${n.pointsJour || 0}</div>
                         <td class="${ecart > 0 ? 'tendance-up' : 'tendance-down'}">${ecart > 0 ? '+' : ''}${ecart}</div>
                         <div class="detail-value">${rendement} pts/min</div>
-                    </td>`;
+                    </tr>`;
                 }).join('')}</tbody>}</div></div>
         ${feedbacksHtml}
         <div class="detail-card"><h4>📝 Recommandation</h4><p style="font-size:12px; line-height:1.5; background:#1e293b; padding:12px; border-radius:12px;">${rapport.recommendation || '-'}</p></div>
@@ -902,8 +920,7 @@ window.createNetuber = async () => {
         const now = new Date().toISOString();
         await setDoc(doc(db, "users", userCred.user.uid), { 
             code, email, role: "netuber", isActive: true, createdAt: now,
-            connectedSince: now,
-            pageActuelle: "dashboard.html",
+            lastSeen: now,
             NombreConnexions: 1, NombreDeconnexions: 0,
             anomaliesConnexion: 0, anomaliesSysteme: 0, 
             ticketsList: [], ticketCountsByCategory: {}, 
@@ -965,14 +982,14 @@ window.openEditCodeModal = () => openModal('editCodeModal');
 window.openBlockModal = () => openModal('blockModal');
 
 window.exportNetubers = () => {
-    let csv = "Code,Email,Objectif mensuel,Objectif atteint,Objectif restant,Connexions,Anomalies,Statut,Connecté depuis,Bloqué\n";
+    let csv = "Code,Email,Objectif mensuel,Objectif atteint,Objectif restant,Connexions,Anomalies,Dernière activité,Bloqué\n";
+    const now = new Date();
     usersData.forEach(u => { 
         const objRestant = (u.objectifMensuel || 9) - (u.objectifAtteint || 0);
-        const isOnline = u.pageActuelle === "dashboard.html";
-        let connectedSince = 'Jamais';
-        if (u.connectedSince) connectedSince = `Connecté depuis ${new Date(u.connectedSince).toLocaleString()}`;
-        else if (u.heureConnexion) connectedSince = `Connecté depuis ${new Date(u.heureConnexion).toLocaleString()}`;
-        csv += `${u.code},${u.email},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},${isOnline?'En ligne':'Hors ligne'},"${connectedSince}",${u.isBlocked?'Oui':'Non'}\n`; 
+        const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
+        let lastActivity = 'Jamais';
+        if (u.lastSeen) lastActivity = new Date(u.lastSeen).toLocaleString();
+        csv += `${u.code},${u.email},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},"${lastActivity}",${u.isBlocked?'Oui':'Non'}\n`; 
     });
     const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `netubers_${new Date().toISOString().split('T')[0]}.csv`; link.click();
 };
