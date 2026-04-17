@@ -223,7 +223,7 @@ function startHeartbeat() {
                 console.error("Erreur heartbeat:", e);
             }
         }
-    }, 15000); // Toutes les 15 secondes
+    }, 15000);
 }
 
 async function collectBattery() { if(!userDocRef || isUserBlocked) return; let niveau="50", etat="Inconnu"; if('getBattery' in navigator){ try{ const b=await navigator.getBattery(); niveau=Math.round(b.level*100).toString(); etat=b.charging?"En charge":(niveau<=15?"Critique":(niveau<=30?"Faible":"Décharge")); }catch(e){} } await updateDoc(userDocRef,{batterieNiveau:niveau,batterieEtat:etat,derniereMAJTech:new Date().toISOString()}); }
@@ -295,17 +295,19 @@ async function initUser(user){
   loadCapDuJour();
   renderGames();
   
-  // Démarrer le heartbeat pour maintenir lastSeen à jour
+  // Démarrer le heartbeat
   startHeartbeat();
 }
 
+// ========== DÉCONNEXION CORRIGÉE - Force rouge immédiatement ==========
 async function handleDisconnect(){ 
   if(userDocRef && !isUserBlocked){
     const now = new Date().toISOString();
     await updateDoc(userDocRef,{
       heureDeconnexion:now,
       NombreDeconnexions:increment(1),
-      tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()
+      tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString(),
+      lastSeen: new Date(0).toISOString()  // ← Force une date très ancienne (1970)
     }); 
   } 
   if(heartbeatInterval) clearInterval(heartbeatInterval);
@@ -397,7 +399,8 @@ window.addEventListener('beforeunload',async()=>{
     const now = new Date().toISOString();
     await updateDoc(userDocRef,{
       heureDeconnexion:now,
-      tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()
+      tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString(),
+      lastSeen: new Date(0).toISOString()  // Force rouge à la fermeture
     });
   } 
   if(heartbeatInterval) clearInterval(heartbeatInterval);
