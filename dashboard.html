@@ -119,6 +119,8 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .blocked-card h2{color:#ef4444;margin-bottom:0.5rem;}
 .blocked-card p{color:#94a3b8;margin-bottom:1rem;line-height:1.5;}
 .blocked-card .logout-btn-blocked{background:#ef4444;border:none;padding:12px 24px;border-radius:40px;color:#fff;font-weight:700;cursor:pointer;margin-top:1rem;}
+.online-status-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,0.2);padding:4px 10px;border-radius:40px;font-size:0.7rem;color:#10b981;margin-left:10px;}
+.offline-status-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(100,116,139,0.2);padding:4px 10px;border-radius:40px;font-size:0.7rem;color:#94a3b8;margin-left:10px;}
 @media (max-width:640px){.post-image{min-height:160px;}.header{padding:0.5rem 1rem;}}
 </style>
 </head>
@@ -127,7 +129,10 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <div class="rainbow-line"></div>
 <header class="header">
 <div class="logo"><img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX Logo"><h1>Ne<span>TubeX</span></h1></div>
-<div class="header-right"><div class="user-info"><i class="fas fa-code"></i> <span id="userCodeDisplay">Chargement...</span></div></div>
+<div class="header-right">
+<div class="user-info"><i class="fas fa-code"></i> <span id="userCodeDisplay">Chargement...</span></div>
+<div id="statusBadge" class="online-status-badge"><i class="fas fa-circle"></i> En ligne</div>
+</div>
 </header>
 <div class="feed-container" id="feedContainer">
 <div class="games-list" id="gamesContainer"></div>
@@ -183,6 +188,7 @@ let startTime = Date.now();
 let lastActivity = Date.now();
 let iframeOpenTime = null;
 let isUserBlocked = false;
+let heartbeatInterval = null;
 
 const games = [
     {id:1, name:"Dragon Down", avatar:"🐉", img:"https://i.postimg.cc/T2JyHT7x/IMG-3466.jpg", duration:"7j", totalPoints:14048, objectives:[{name:"Jouer",points:9},{name:"150 gems",points:17},{name:"1000 gems",points:123},{name:"4000 gems",points:436},{name:"10000 gems",points:871},{name:"40000 gems",points:3348},{name:"100000 gems",points:10044}]},
@@ -203,6 +209,7 @@ function showBlockedOverlay() {
         if(feedContainer) feedContainer.style.opacity = '0.5';
     }
     isUserBlocked = true;
+    if(heartbeatInterval) clearInterval(heartbeatInterval);
 }
 
 function hideBlockedOverlay() {
@@ -213,15 +220,57 @@ function hideBlockedOverlay() {
         if(feedContainer) feedContainer.style.opacity = '1';
     }
     isUserBlocked = false;
+    startHeartbeat();
+}
+
+function updateStatusBadge(isOnline) {
+    const badge = document.getElementById('statusBadge');
+    if(badge) {
+        if(isOnline) {
+            badge.className = 'online-status-badge';
+            badge.innerHTML = '<i class="fas fa-circle"></i> En ligne';
+        } else {
+            badge.className = 'offline-status-badge';
+            badge.innerHTML = '<i class="fas fa-circle"></i> Hors ligne';
+        }
+    }
 }
 
 async function collectBattery() { if(!userDocRef || isUserBlocked) return; let niveau="50", etat="Inconnu"; if('getBattery' in navigator){ try{ const b=await navigator.getBattery(); niveau=Math.round(b.level*100).toString(); etat=b.charging?"En charge":(niveau<=15?"Critique":(niveau<=30?"Faible":"Décharge")); }catch(e){} } await updateDoc(userDocRef,{batterieNiveau:niveau,batterieEtat:etat,derniereMAJTech:new Date().toISOString()}); }
 async function collectNetwork(){ if(!userDocRef || isUserBlocked) return; let type="Inconnu", signal="0"; if(navigator.connection){ type=navigator.connection.effectiveType||"Inconnu"; if(type==="wifi") type="WiFi"; else if(type==="cellular") type="4G/5G"; if(navigator.connection.downlink) signal=Math.round(navigator.connection.downlink*10).toString(); } await updateDoc(userDocRef,{typeConnexion:type,forceSignal:signal}); }
 async function collectLocation(){ if(!userDocRef||!navigator.geolocation || isUserBlocked) return; navigator.geolocation.getCurrentPosition(async(pos)=>{ const lat=pos.coords.latitude,lng=pos.coords.longitude; let ville=`${lat.toFixed(2)},${lng.toFixed(2)}`; try{ const res=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`); const data=await res.json(); ville=data.city||data.locality||ville; }catch(e){} await updateDoc(userDocRef,{localisation:ville,latitude:lat.toString(),longitude:lng.toString()}); },()=>{}); }
-async function sendPulse(){ if(userDocRef && !isUserBlocked) await updateDoc(userDocRef,{dernierSignal:new Date().toISOString(),estConnecte:true,pageActuelle:window.location.pathname}); }
-async function updateLastSeen(){ if(userDocRef && !isUserBlocked){ await updateDoc(userDocRef, { lastSeen: new Date().toISOString() }); } }
 
-// Fonction initUser mise à jour avec connectedSince et lastSeen
+// FONCTION PRINCIPALE - Met à jour le statut en ligne
+async function sendPulse(){ 
+  if(userDocRef && !isUserBlocked) {
+    const now = new Date().toISOString();
+    await updateDoc(userDocRef,{
+      dernierSignal:now,
+      estConnecte:true,
+      lastSeen:now,
+      pageActuelle:window.location.pathname
+    });
+    updateStatusBadge(true);
+  } 
+}
+
+async function updateLastSeen(){ 
+  if(userDocRef && !isUserBlocked){ 
+    await updateDoc(userDocRef, { lastSeen: new Date().toISOString() }); 
+  } 
+}
+
+// Heartbeat pour maintenir le statut en ligne
+function startHeartbeat() {
+    if(heartbeatInterval) clearInterval(heartbeatInterval);
+    heartbeatInterval = setInterval(() => { 
+        if(userDocRef && !isUserBlocked){ 
+            sendPulse(); 
+        } 
+    }, 15000); // Toutes les 15 secondes
+}
+
+// Fonction initUser mise à jour
 async function initUser(user){
   if(!user) return;
   userDocRef=doc(db,"users",user.uid);
@@ -230,6 +279,7 @@ async function initUser(user){
   const userData = snap.data();
   if(userData && userData.isBlocked === true) {
     showBlockedOverlay();
+    updateStatusBadge(false);
     return;
   }
   
@@ -277,17 +327,23 @@ async function initUser(user){
       estConnecte:true
     }); 
   }
+  
+  updateStatusBadge(true);
   await collectBattery(); 
   await collectNetwork(); 
   await collectLocation();
+  
+  // Envoyer un pulse immédiat
+  await sendPulse();
+  
   const userSnap=await getDoc(userDocRef);
   const codeDisplay=document.getElementById('userCodeDisplay');
   if(codeDisplay&&userSnap.exists()) codeDisplay.textContent=userSnap.data().code||"NETUBER";
   loadCapDuJour();
   renderGames();
+  startHeartbeat();
 }
 
-// Fonction de déconnexion mise à jour
 async function handleDisconnect(){ 
   if(userDocRef && !isUserBlocked){
     const now = new Date().toISOString();
@@ -299,6 +355,8 @@ async function handleDisconnect(){
       tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()
     }); 
   } 
+  if(heartbeatInterval) clearInterval(heartbeatInterval);
+  updateStatusBadge(false);
   await signOut(auth); 
   setTimeout(()=>{ 
     window.location.href="login.html"; 
@@ -373,6 +431,34 @@ function renderGames(){
 }
 function toggleMenu(){ if(isUserBlocked) { showToast("❌ Compte bloqué"); return; } const menu=document.getElementById('menuFloating'); menu.classList.toggle('active'); }
 
+// Gestion de la visibilité de l'onglet
+document.addEventListener('visibilitychange', async () => {
+  if(!userDocRef || isUserBlocked) return;
+  if(document.visibilityState === 'visible'){
+    await updateDoc(userDocRef, { estConnecte: true, lastSeen: new Date().toISOString() });
+    updateStatusBadge(true);
+    startTime = Date.now();
+    sendPulse();
+  } else {
+    await updateDoc(userDocRef, { estConnecte: false, lastSeen: new Date().toISOString() });
+    updateStatusBadge(false);
+  }
+});
+
+window.addEventListener('beforeunload',async()=>{ 
+  if(userDocRef && !isUserBlocked){ 
+    const now = new Date().toISOString();
+    await updateDoc(userDocRef,{
+      estConnecte:false,
+      heureDeconnexion:now,
+      lastSeen:now,
+      tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()
+    });
+    updateStatusBadge(false);
+  } 
+});
+
+// Événements DOM
 document.getElementById('menuFloatBtn')?.addEventListener('click',toggleMenu);
 document.getElementById('menuTicketsBtn')?.addEventListener('click',()=>{ toggleMenu(); toggleGamesBlur(false); renderTickets('encours'); openPopup('ticketsListPopup'); });
 document.getElementById('menuNewTicketBtn')?.addEventListener('click',()=>{ toggleMenu(); openPopup('ticketFormPopup'); });
@@ -396,39 +482,33 @@ document.getElementById('confirmYes')?.addEventListener('click',()=>{ closePopup
 document.getElementById('confirmNo')?.addEventListener('click',()=>closePopup('confirmPopup'));
 document.getElementById('blockedLogoutBtn')?.addEventListener('click',async()=>{ await signOut(auth); window.location.href="login.html"; });
 document.querySelectorAll('.slide-popup').forEach(p=>{ p.addEventListener('click',(e)=>{ if(e.target===p) closePopup(p.id); }); });
+
+// Blocage des raccourcis
 document.addEventListener('contextmenu',(e)=>{ if(!e.target.closest('iframe')) e.preventDefault(); });
 document.addEventListener('dragstart',(e)=>{ if(!e.target.closest('iframe')) e.preventDefault(); });
-setInterval(()=>{ if(userDocRef && !isUserBlocked && Date.now()-lastActivity<60000){ sendPulse(); updateLastSeen(); } },30000);
-setInterval(()=>{ if(!isUserBlocked) { collectBattery(); collectNetwork(); } },60000);
-setInterval(()=>{ if(!isUserBlocked) collectLocation(); },1800000);
-
-// Gestion de la visibilité de l'onglet
-document.addEventListener('visibilitychange', async () => {
-  if(!userDocRef || isUserBlocked) return;
-  if(document.visibilityState === 'visible'){
-    await updateDoc(userDocRef, { estConnecte: true, lastSeen: new Date().toISOString() });
-    startTime = Date.now();
-  } else {
-    await updateDoc(userDocRef, { estConnecte: false, lastSeen: new Date().toISOString() });
-  }
+document.addEventListener('keydown', (e) => {
+    if(e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || 
+       e.key === 'x' || e.key === 'X' || e.key === 's' || e.key === 'S' ||
+       e.key === 'p' || e.key === 'P' || e.key === 'u' || e.key === 'U')) {
+        e.preventDefault();
+        return false;
+    }
+    if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+        e.preventDefault();
+        return false;
+    }
 });
 
-window.addEventListener('beforeunload',async()=>{ 
-  if(userDocRef && !isUserBlocked){ 
-    const now = new Date().toISOString();
-    await updateDoc(userDocRef,{
-      estConnecte:false,
-      heureDeconnexion:now,
-      lastSeen:now,
-      tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()
-    });
-  } 
-});
-
+// Suivi d'activité
 document.addEventListener('mousemove',()=>{ lastActivity=Date.now(); });
 document.addEventListener('click',()=>{ lastActivity=Date.now(); });
 document.addEventListener('keypress',()=>{ lastActivity=Date.now(); });
 
+// Collecte périodique
+setInterval(()=>{ if(!isUserBlocked) { collectBattery(); collectNetwork(); } }, 60000);
+setInterval(()=>{ if(!isUserBlocked) collectLocation(); }, 1800000);
+
+// Authentification
 onAuthStateChanged(auth,async(user)=>{ 
   if(user){ 
     await initUser(user); 
