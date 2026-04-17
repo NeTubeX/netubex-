@@ -90,7 +90,12 @@ tr:hover{background:#1a2332;}
 .action-btn.delete:hover{background:#dc2626;}
 .action-btn.reply{background:#8b5cf6;color:#fff;}
 .action-btn.reply:hover{background:#7c3aed;}
+.action-btn.feedback{background:#06b6d4;color:#fff;}
+.action-btn.feedback:hover{background:#0891b2;}
+.action-btn.memo{background:#ec4899;color:#fff;}
+.action-btn.memo:hover{background:#db2777;}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:40px;font-size:12px;z-index:10000;animation:slideUp 0.3s;}
+.toast-error{background:#ef4444;}
 @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
 .progress-bar-group{margin-top:10px;}
 .progress-item{margin-bottom:12px;}
@@ -100,11 +105,6 @@ tr:hover{background:#1a2332;}
 .tendance-up{color:#10b981;}
 .tendance-down{color:#f59e0b;}
 .tendance-stable{color:#3b82f6;}
-.neubers-objectifs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:15px;margin-bottom:20px;}
-.neuber-objectif-card{background:#1a2332;border-radius:16px;padding:15px;border:1px solid #2d3748;}
-.neuber-objectif-card h5{color:#f59e0b;margin-bottom:10px;font-size:13px;}
-.objectif-stats{display:flex;justify-content:space-between;margin:8px 0;font-size:12px;}
-.progress-circle{width:60px;height:60px;margin:0 auto 10px;}
 .confirm-dialog{text-align:center;}
 .confirm-dialog i{font-size:48px;color:#f59e0b;margin-bottom:15px;}
 .confirm-dialog h3{font-size:18px;margin-bottom:10px;}
@@ -115,6 +115,13 @@ tr:hover{background:#1a2332;}
 .confirm-buttons .btn-confirm:hover{background:#dc2626;}
 .confirm-buttons .btn-cancel{background:#1e293b;color:#fff;}
 .confirm-buttons .btn-cancel:hover{background:#334155;}
+.feedback-item{background:#1a2332;border-radius:12px;padding:12px;margin-bottom:10px;border-left:3px solid #06b6d4;}
+.feedback-item .feedback-date{font-size:10px;color:#64748b;margin-bottom:5px;}
+.feedback-item .feedback-message{font-size:12px;color:#e2e8f0;}
+.memo-item{background:#1a2332;border-radius:12px;padding:12px;margin-bottom:10px;border-left:3px solid #ec4899;}
+.memo-item .memo-date{font-size:10px;color:#64748b;margin-bottom:5px;}
+.memo-item .memo-title{font-size:13px;font-weight:600;color:#ec4899;margin-bottom:8px;}
+.memo-item .memo-content{font-size:12px;color:#e2e8f0;}
 </style>
 </head>
 <body>
@@ -144,9 +151,6 @@ tr:hover{background:#1a2332;}
 <div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Netubers bloqués</div></div>
 </div>
 
-<!-- Vue globale des objectifs -->
-<div class="neubers-objectifs-grid" id="globalObjectivesGrid"></div>
-
 <div class="filters">
 <input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()">
 <select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">En ligne</option><option value="offline">Hors ligne</option></select>
@@ -174,8 +178,9 @@ tr:hover{background:#1a2332;}
 <input type="text" id="searchRapport" placeholder="🔍 Référence ou zone..." class="search-input" onkeyup="filterRapports()">
 <select id="statutRapport" class="filter-select" onchange="filterRapports()"><option value="all">Tous statuts</option><option value="non_traite">Non traités</option><option value="traite">Traités</option></select>
 <button class="export-btn" onclick="exportRapports()"><i class="fas fa-file-excel"></i> Exporter</button>
+<button class="export-btn" onclick="openMemoModal()" style="background:#ec4899;"><i class="fas fa-envelope"></i> Mémorandum directif</button>
 </div>
-<div class="table-wrapper"><table id="rapportsTable"><thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Points jour</th><th>Points préc.</th><th>Rendement</th><th>Objectif atteint</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="rapportsTableBody"></tbody></table></div>
+<div class="table-wrapper"><table id="rapportsTable"><thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Objectif restant</th><th>Points jour</th><th>Rendement</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="rapportsTableBody"></tbody></table></div>
 </div>
 
 <!-- Onglet Tickets -->
@@ -222,13 +227,17 @@ tr:hover{background:#1a2332;}
 
 <div id="rapportModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-file-alt"></i> Détail rapport PGCO</h2><button class="modal-close" onclick="closeModal('rapportModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="rapportDetailBody"></div><div class="modal-footer"><button onclick="closeModal('rapportModal')" style="background:#64748b;">Fermer</button></div></div></div>
 
+<div id="feedbackModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-comment-dots"></i> Envoyer un feedback</h2><button class="modal-close" onclick="closeModal('feedbackModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Rapport concerné</label><input type="text" id="feedbackRapportRef" readonly></div><div class="input-group"><label>Votre feedback</label><textarea id="feedbackMessage" rows="5" placeholder="Saisissez votre feedback pour le PGCO..."></textarea></div></div><div class="modal-footer"><button onclick="sendFeedback()" style="background:#06b6d4;">Envoyer</button><button onclick="closeModal('feedbackModal')" style="background:#64748b;">Annuler</button></div></div></div>
+
+<div id="memoModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-envelope"></i> Mémorandum directif</h2><button class="modal-close" onclick="closeModal('memoModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Destinataire</label><select id="memoDestinataire"><option value="all">Tous les PGCO</option></select></div><div class="input-group"><label>Titre du mémorandum</label><input type="text" id="memoTitle" placeholder="Titre..."></div><div class="input-group"><label>Contenu du mémorandum</label><textarea id="memoContent" rows="6" placeholder="Instructions, directives, informations importantes..."></textarea></div></div><div class="modal-footer"><button onclick="sendMemorandum()" style="background:#ec4899;">Envoyer</button><button onclick="closeModal('memoModal')" style="background:#64748b;">Annuler</button></div></div></div>
+
 <div id="replyTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-reply"></i> Répondre au ticket</h2><button class="modal-close" onclick="closeModal('replyTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="replyTicketId" readonly></div><div class="input-group"><label>Netuber</label><input type="text" id="replyNetuberCode" readonly></div><div class="input-group"><label>Message de réponse</label><textarea id="replyMessage" rows="4" placeholder="Votre réponse..."></textarea></div></div><div class="modal-footer"><button onclick="sendTicketReply()" style="background:#8b5cf6;">Envoyer</button><button onclick="closeModal('replyTicketModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
 <div id="confirmModal" class="modal"><div class="modal-content"><div class="modal-body confirm-dialog"><i class="fas fa-question-circle"></i><h3 id="confirmTitle">NeTubeX</h3><p id="confirmMessage">Confirmez-vous cette action ?</p><div class="confirm-buttons"><button class="btn-cancel" id="confirmCancelBtn">Annuler</button><button class="btn-confirm" id="confirmOkBtn">Confirmer</button></div></div></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, increment, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
@@ -243,6 +252,7 @@ let rapportsChart = null;
 let anomaliesChart = null;
 let selectedNetuberForCap = null;
 let pendingConfirmAction = null;
+let selectedRapportForFeedback = null;
 
 // ============ CONFIRMATION MODALE ============
 function showConfirm(title, message, onConfirm) {
@@ -276,66 +286,77 @@ window.switchTab = (tab) => {
 
 window.closeModal = (id) => document.getElementById(id).classList.remove('active');
 function openModal(id) { document.getElementById(id).classList.add('active'); }
-function showToast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
-
-// ============ GESTION DES OBJECTIFS ============
-function updateGlobalObjectives() {
-    const totalObjectifMensuel = usersData.reduce((sum, u) => sum + (parseInt(u.objectifMensuel) || 9), 0);
-    const totalObjectifAtteint = usersData.reduce((sum, u) => sum + (parseInt(u.objectifAtteint) || 0), 0);
-    const totalObjectifRestant = totalObjectifMensuel - totalObjectifAtteint;
-    const pourcentage = totalObjectifMensuel > 0 ? (totalObjectifAtteint / totalObjectifMensuel * 100).toFixed(1) : 0;
-    
-    const grid = document.getElementById('globalObjectivesGrid');
-    grid.innerHTML = `
-        <div class="neuber-objectif-card">
-            <h5><i class="fas fa-chart-line"></i> Vue globale des objectifs</h5>
-            <div class="objectif-stats"><span>Objectifs mensuels totaux</span><strong>${totalObjectifMensuel}</strong></div>
-            <div class="objectif-stats"><span>Objectifs atteints</span><strong style="color:#10b981;">${totalObjectifAtteint}</strong></div>
-            <div class="objectif-stats"><span>Objectifs restants</span><strong style="color:#f59e0b;">${totalObjectifRestant}</strong></div>
-            <div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Progression globale (${pourcentage}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pourcentage}%; background:#10b981;"></div></div></div></div>
-        </div>
-        ${usersData.map(u => {
-            const objMensuel = parseInt(u.objectifMensuel) || 9;
-            const objAtteint = parseInt(u.objectifAtteint) || 0;
-            const objRestant = objMensuel - objAtteint;
-            const percent = objMensuel > 0 ? (objAtteint / objMensuel * 100).toFixed(1) : 0;
-            return `
-            <div class="neuber-objectif-card">
-                <h5><i class="fas fa-user"></i> ${u.code}</h5>
-                <div class="objectif-stats"><span>Objectif mensuel</span><strong>${objMensuel}</strong></div>
-                <div class="objectif-stats"><span>Objectif atteint</span><strong style="color:#10b981;">${objAtteint}</strong></div>
-                <div class="objectif-stats"><span>Objectif restant</span><strong style="color:#f59e0b;">${objRestant}</strong></div>
-                <div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Progression (${percent}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${percent}%; background:#10b981;"></div></div></div></div>
-            </div>`;
-        }).join('')}
-    `;
+function showToast(msg, isError = false) { 
+    const t = document.createElement('div'); 
+    t.className = 'toast' + (isError ? ' toast-error' : ''); 
+    t.innerHTML = (isError ? '❌ ' : '✅ ') + msg; 
+    document.body.appendChild(t); 
+    setTimeout(() => t.remove(), 4000); 
 }
 
-// ============ GESTION DES ANOMALIES PAR TICKETS ============
-async function checkAndUpdateAnomalies(userId, userCode, ticketCategory) {
-    const userRef = doc(db, "users", userId);
-    const userSnap = await getDoc(userRef);
-    const user = userSnap.data();
-    const ticketCounts = user.ticketCountsByCategory || {};
-    const newCount = (ticketCounts[ticketCategory] || 0) + 1;
-    ticketCounts[ticketCategory] = newCount;
-    
-    // Une anomalie est incrémentée quand un même type de ticket est envoyé 3 fois
-    if(newCount === 3) {
-        const currentAnomalies = (parseInt(user.anomaliesConnexion) || 0) + (parseInt(user.anomaliesSysteme) || 0);
-        await updateDoc(userRef, { 
-            anomaliesConnexion: increment(1),
-            ticketCountsByCategory: ticketCounts,
-            derniereAnomalie: new Date().toISOString(),
-            niveauAlerte: currentAnomalies + 1 >= 5 ? 'rouge' : (currentAnomalies + 1 >= 3 ? 'orange' : 'vert')
-        });
-        showToast(`⚠️ Anomalie détectée pour ${userCode} (${ticketCategory} x3)`);
-    } else {
-        await updateDoc(userRef, { ticketCountsByCategory: ticketCounts });
+// ============ GESTION DES TICKETS (CORRECTION DU BOUTON SUPPRIMER) ============
+async function loadTickets() {
+    ticketsData = [];
+    for(const user of usersData) {
+        const userTickets = user.ticketsList || [];
+        for(const ticket of userTickets) {
+            ticketsData.push({
+                ...ticket,
+                userCode: user.code,
+                userId: user.id
+            });
+        }
     }
+    ticketsData.sort((a,b) => new Date(b.date) - new Date(a.date));
+    updateTicketsTable();
 }
 
-// ============ CHARGEMENT DES DONNÉES ============
+function updateTicketsTable() {
+    const tbody = document.getElementById('ticketsTableBody');
+    if(!tbody) return;
+    tbody.innerHTML = ticketsData.map(t => {
+        const statusClass = t.status === 'resolu' ? 'badge-success' : (t.status === 'en-cours' ? 'badge-warning' : 'badge-info');
+        const statusText = t.status === 'resolu' ? 'Résolu' : (t.status === 'en-cours' ? 'En cours' : 'Ouvert');
+        const priorityClass = t.priority === 'haute' ? 'badge-danger' : (t.priority === 'moyenne' ? 'badge-warning' : 'badge-info');
+        return `<tr>
+            <td><strong>${t.userCode}</strong></td>
+            <td>${t.category || t.subject}</td>
+            <td><span class="badge ${priorityClass}">${t.priority}</span></td>
+            <td><span class="badge ${statusClass}">${statusText}</span></td>
+            <td><small>${new Date(t.date).toLocaleDateString()}</small></td>
+            <td>
+                <button class="action-btn reply" onclick="openReplyTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-reply"></i> Répondre</button>
+                ${t.status !== 'resolu' ? `<button class="action-btn resolve" onclick="openResolveTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-check"></i> Résoudre</button>` : ''}
+                <button class="action-btn delete" onclick="deleteTicket('${t.id}', '${t.userId}')"><i class="fas fa-trash"></i> Supprimer</button>
+             </td>
+         </tr>`;
+    }).join('');
+    
+    document.getElementById('ticketsOpen').innerText = ticketsData.filter(t => t.status === 'ouvert').length;
+    document.getElementById('ticketsProgress').innerText = ticketsData.filter(t => t.status === 'en-cours').length;
+    document.getElementById('ticketsResolved').innerText = ticketsData.filter(t => t.status === 'resolu').length;
+}
+
+// Correction de la fonction deleteTicket
+window.deleteTicket = async (ticketId, userId) => {
+    showConfirm('NeTubeX', 'Supprimer définitivement ce ticket ? Cette action est irréversible.', async () => {
+        try {
+            const userRef = doc(db, "users", userId);
+            const userSnap = await getDoc(userRef);
+            if(userSnap.exists()) {
+                const tickets = userSnap.data().ticketsList || [];
+                const newTickets = tickets.filter(t => t.id !== ticketId);
+                await updateDoc(userRef, { ticketsList: newTickets });
+                showToast('Ticket supprimé avec succès');
+                await loadAllData();
+            }
+        } catch(error) {
+            showToast('Erreur lors de la suppression: ' + error.message, true);
+        }
+    });
+};
+
+// ============ RAPPORTS PGCO AVEC OBJECTIFS PAR NETUBER ============
 async function loadAllData() {
     const usersSnap = await getDocs(collection(db, "users"));
     usersData = [];
@@ -354,37 +375,36 @@ async function loadAllData() {
     updateCharts();
     updateSelects();
     updateCapHistory();
-    updateGlobalObjectives();
 }
 
-async function loadTickets() {
-    ticketsData = [];
-    for(const user of usersData) {
-        const userTickets = user.ticketsList || [];
-        for(const ticket of userTickets) {
-            ticketsData.push({
-                ...ticket,
-                userCode: user.code,
-                userId: user.id
-            });
-        }
-    }
-    ticketsData.sort((a,b) => new Date(b.date) - new Date(a.date));
-    updateTicketsTable();
-}
-
-function updateStats() {
-    document.getElementById('totalNetubers').innerText = usersData.length;
-    document.getElementById('totalOnline').innerText = usersData.filter(u => u.estConnecte === true || u.estConnecte === 'true').length;
-    const totalAnom = usersData.reduce((a,u) => a + (parseInt(u.anomaliesConnexion)||0) + (parseInt(u.anomaliesSysteme)||0), 0);
-    document.getElementById('totalAnomalies').innerText = totalAnom;
-    document.getElementById('blockedCount').innerText = usersData.filter(u => u.isBlocked === true).length;
-    document.getElementById('totalRapports').innerText = rapportsData.length;
-    document.getElementById('nonTraites').innerText = rapportsData.filter(r => r.status !== 'traite').length;
-    const avgPts = rapportsData.reduce((a,r) => a + (r.totalPointsJour || 0), 0) / (rapportsData.length || 1);
-    document.getElementById('avgPoints').innerText = Math.round(avgPts);
-    const avgRend = rapportsData.reduce((a,r) => a + (parseFloat(r.rendementGlobal) || 0), 0) / (rapportsData.length || 1);
-    document.getElementById('avgRendement').innerText = avgRend.toFixed(2);
+function updateRapportsTable() {
+    const search = document.getElementById('searchRapport')?.value.toLowerCase() || '';
+    const statut = document.getElementById('statutRapport')?.value || 'all';
+    let filtered = rapportsData.filter(r => (r.reference || '').toLowerCase().includes(search) && (statut === 'all' || r.status === statut));
+    const tbody = document.getElementById('rapportsTableBody');
+    if(!tbody) return;
+    tbody.innerHTML = filtered.map(r => {
+        const rendement = r.rendementGlobal ? parseFloat(r.rendementGlobal).toFixed(2) : '-';
+        const objectifMensuel = r.goalReached ? Math.min(parseInt(r.goalReached) * 3, 9) : 9;
+        const objectifAtteint = r.goalReached || 0;
+        const objectifRestant = objectifMensuel - objectifAtteint;
+        return `<tr>
+            <td><strong>${r.reference || '-'}</strong></td>
+            <td>${r.zone || '-'}</td>
+            <td>${r.responsable || '-'}</td>
+            <td style="font-weight:600;">${objectifMensuel}</td>
+            <td style="color:#10b981; font-weight:600;">${objectifAtteint}</td>
+            <td style="color:#f59e0b; font-weight:600;">${objectifRestant}</td>
+            <td style="color:#f59e0b; font-weight:bold;">${r.totalPointsJour || 0}</td>
+            <td class="${(r.totalPointsJour || 0) > (r.totalPointsPrecedents || 0) ? 'tendance-up' : 'tendance-down'}">${rendement} pts/min</td>
+            <td><small>${formatDateShort(r.createdAt)}</small></td>
+            <td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></td>
+            <td>
+                <button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i></button>
+                <button class="action-btn feedback" onclick='openFeedbackModal("${r.id}", "${r.reference}")'><i class="fas fa-comment-dots"></i></button>
+             </td>
+         </tr>`;
+    }).join('');
 }
 
 function formatDateShort(dateStr) {
@@ -394,6 +414,7 @@ function formatDateShort(dateStr) {
 
 function updateNetubersTable() {
     const tbody = document.getElementById('netubersTableBody');
+    if(!tbody) return;
     const search = document.getElementById('searchNetuber')?.value.toLowerCase() || '';
     const status = document.getElementById('statusFilter')?.value || 'all';
     
@@ -423,57 +444,23 @@ function updateNetubersTable() {
             <td><span class="badge ${anomalieClass}">${anomalies}</span></td>
             <td><i class="fas fa-map-marker-alt"></i> ${u.localisation || '-'}</td>
             <td><span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>${isOnline ? 'En ligne' : 'Hors ligne'}${isBlocked ? ' 🔒' : ''}</td>
-            <td><button class="action-btn cap" onclick="openCapModal('${u.code}')"><i class="fas fa-chart-line"></i> CAP</button><button class="action-btn view" onclick="showNetuberDetails('${u.code}')"><i class="fas fa-eye"></i></button></button><button class="action-btn delete" onclick="openDeleteNetuberModal('${u.code}')"><i class="fas fa-trash"></i></button></td>
-        </tr>`;
+            <td><button class="action-btn cap" onclick="openCapModal('${u.code}')"><i class="fas fa-chart-line"></i> CAP</button><button class="action-btn view" onclick="showNetuberDetails('${u.code}')"><i class="fas fa-eye"></i></button><button class="action-btn delete" onclick="openDeleteNetuberModal('${u.code}')"><i class="fas fa-trash"></i></button></td>
+         </tr>`;
     }).join('');
 }
 
-function updateTicketsTable() {
-    const tbody = document.getElementById('ticketsTableBody');
-    tbody.innerHTML = ticketsData.map(t => {
-        const statusClass = t.status === 'resolu' ? 'badge-success' : (t.status === 'en-cours' ? 'badge-warning' : 'badge-info');
-        const statusText = t.status === 'resolu' ? 'Résolu' : (t.status === 'en-cours' ? 'En cours' : 'Ouvert');
-        const priorityClass = t.priority === 'haute' ? 'badge-danger' : (t.priority === 'moyenne' ? 'badge-warning' : 'badge-info');
-        return `<tr>
-            <td><strong>${t.userCode}</strong></td>
-            <td>${t.category || t.subject}</td>
-            <td><span class="badge ${priorityClass}">${t.priority}</span></td>
-            <td><span class="badge ${statusClass}">${statusText}</span></td>
-            <td><small>${new Date(t.date).toLocaleDateString()}</small></td>
-            <td>
-                <button class="action-btn reply" onclick="openReplyTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-reply"></i> Répondre</button>
-                ${t.status !== 'resolu' ? `<button class="action-btn resolve" onclick="openResolveTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-check"></i> Résoudre</button>` : ''}
-                <button class="action-btn delete" onclick="deleteTicket('${t.id}', '${t.userId}')"><i class="fas fa-trash"></i></button>
-            </td>
-        </tr>`;
-    }).join('');
-    
-    document.getElementById('ticketsOpen').innerText = ticketsData.filter(t => t.status === 'ouvert').length;
-    document.getElementById('ticketsProgress').innerText = ticketsData.filter(t => t.status === 'en-cours').length;
-    document.getElementById('ticketsResolved').innerText = ticketsData.filter(t => t.status === 'resolu').length;
-}
-
-function updateRapportsTable() {
-    const search = document.getElementById('searchRapport')?.value.toLowerCase() || '';
-    const statut = document.getElementById('statutRapport')?.value || 'all';
-    let filtered = rapportsData.filter(r => (r.reference || '').toLowerCase().includes(search) && (statut === 'all' || r.status === statut));
-    const tbody = document.getElementById('rapportsTableBody');
-    tbody.innerHTML = filtered.map(r => {
-        const rendement = r.rendementGlobal ? parseFloat(r.rendementGlobal).toFixed(2) : '-';
-        const tendanceClass = (r.totalPointsJour || 0) > (r.totalPointsPrecedents || 0) ? 'tendance-up' : ((r.totalPointsJour || 0) < (r.totalPointsPrecedents || 0) ? 'tendance-down' : 'tendance-stable');
-        return `<tr onclick='viewRapport("${r.id}")'>
-            <td><strong>${r.reference || '-'}</strong></td>
-            <td>${r.zone || '-'}</td>
-            <td>${r.responsable || '-'}</td>
-            <td style="color:#f59e0b; font-weight:bold;">${r.totalPointsJour || 0}</td>
-            <td>${r.totalPointsPrecedents || 0}</td>
-            <td class="${tendanceClass}">${rendement} pts/min</td>
-            <td><span class="badge badge-success">${r.goalReached || 0}/9</span></td>
-            <td><small>${formatDateShort(r.createdAt)}</small></td>
-            <td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></td>
-            <td><button class="action-btn view" onclick='event.stopPropagation();viewRapport("${r.id}")'><i class="fas fa-eye"></i> Voir</button></td>
-        </tr>`;
-    }).join('');
+function updateStats() {
+    document.getElementById('totalNetubers').innerText = usersData.length;
+    document.getElementById('totalOnline').innerText = usersData.filter(u => u.estConnecte === true || u.estConnecte === 'true').length;
+    const totalAnom = usersData.reduce((a,u) => a + (parseInt(u.anomaliesConnexion)||0) + (parseInt(u.anomaliesSysteme)||0), 0);
+    document.getElementById('totalAnomalies').innerText = totalAnom;
+    document.getElementById('blockedCount').innerText = usersData.filter(u => u.isBlocked === true).length;
+    document.getElementById('totalRapports').innerText = rapportsData.length;
+    document.getElementById('nonTraites').innerText = rapportsData.filter(r => r.status !== 'traite').length;
+    const avgPts = rapportsData.reduce((a,r) => a + (r.totalPointsJour || 0), 0) / (rapportsData.length || 1);
+    document.getElementById('avgPoints').innerText = Math.round(avgPts);
+    const avgRend = rapportsData.reduce((a,r) => a + (parseFloat(r.rendementGlobal) || 0), 0) / (rapportsData.length || 1);
+    document.getElementById('avgRendement').innerText = avgRend.toFixed(2);
 }
 
 function updateAnomaliesTable() {
@@ -485,6 +472,7 @@ function updateAnomaliesTable() {
         } 
     });
     const tbody = document.getElementById('anomaliesTableBody');
+    if(!tbody) return;
     tbody.innerHTML = anomalies.map(a => `
         <tr>
             <td><strong>${a.code}</strong></td>
@@ -492,7 +480,7 @@ function updateAnomaliesTable() {
             <td><span class="badge badge-danger">${a.count} fois</span></td>
             <td><small>${formatDateShort(a.last)}</small></td>
             <td><button class="action-btn view" onclick='resetAnomalies("${a.id}")'><i class="fas fa-sync"></i> Réinitialiser</button></td>
-        </tr>
+         </tr>
     `).join('');
 }
 
@@ -504,13 +492,14 @@ function updateCapHistory() {
         } 
     });
     const tbody = document.getElementById('capHistoryBody');
+    if(!tbody) return;
     tbody.innerHTML = history.map(h => `
         <tr>
             <td><strong>${h.code}</strong></td>
             <td>${h.cap}</td>
             <td>${h.envoyeLe ? new Date(h.envoyeLe).toLocaleString() : '-'}</td>
             <td>${h.expiration || '-'}</td>
-        </tr>
+         </tr>
     `).join('');
     document.getElementById('totalActions').innerText = history.length;
 }
@@ -528,21 +517,25 @@ function updateCharts() {
     }
     if(rapportsChart) rapportsChart.destroy();
     const ctx = document.getElementById('rapportsChart').getContext('2d');
-    rapportsChart = new Chart(ctx, { 
-        type: 'line', 
-        data: { labels: last7Days, datasets: [{ label: 'Points cumulés', data: pointsData, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.3 }] }, 
-        options: { responsive: true, maintainAspectRatio: true } 
-    });
+    if(ctx) {
+        rapportsChart = new Chart(ctx, { 
+            type: 'line', 
+            data: { labels: last7Days, datasets: [{ label: 'Points cumulés', data: pointsData, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.3 }] }, 
+            options: { responsive: true, maintainAspectRatio: true } 
+        });
+    }
     
     const anomaliesByDay = [0,0,0,0,0,0,0];
     usersData.forEach(u => { if(u.derniereAnomalie) { const d = new Date(u.derniereAnomalie); anomaliesByDay[d.getDay()]++; } });
     if(anomaliesChart) anomaliesChart.destroy();
     const ctx2 = document.getElementById('anomaliesChart').getContext('2d');
-    anomaliesChart = new Chart(ctx2, { 
-        type: 'bar', 
-        data: { labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'], datasets: [{ label: 'Anomalies', data: anomaliesByDay, backgroundColor: '#ef4444', borderRadius: 8 }] }, 
-        options: { responsive: true, maintainAspectRatio: true } 
-    });
+    if(ctx2) {
+        anomaliesChart = new Chart(ctx2, { 
+            type: 'bar', 
+            data: { labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'], datasets: [{ label: 'Anomalies', data: anomaliesByDay, backgroundColor: '#ef4444', borderRadius: 8 }] }, 
+            options: { responsive: true, maintainAspectRatio: true } 
+        });
+    }
 }
 
 function updateSelects() {
@@ -553,6 +546,94 @@ function updateSelects() {
             select.innerHTML = usersData.map(u => `<option value="${u.code}">${u.code} - ${u.email || ''}</option>`).join(''); 
         } 
     });
+    const memoSelect = document.getElementById('memoDestinataire');
+    if(memoSelect) {
+        const pgcoList = [...new Set(rapportsData.map(r => r.responsable).filter(r => r))];
+        memoSelect.innerHTML = '<option value="all">📢 Tous les PGCO</option>' + pgcoList.map(p => `<option value="${p}">👤 ${p}</option>`).join('');
+    }
+}
+
+// ============ FEEDBACK POUR PGCO ============
+window.openFeedbackModal = (rapportId, reference) => {
+    selectedRapportForFeedback = { id: rapportId, reference };
+    document.getElementById('feedbackRapportRef').value = reference;
+    document.getElementById('feedbackMessage').value = '';
+    openModal('feedbackModal');
+};
+
+async function sendFeedback() {
+    const message = document.getElementById('feedbackMessage').value.trim();
+    if(!message) {
+        showToast('Veuillez saisir un message', true);
+        return;
+    }
+    if(message.length < 10) {
+        showToast('Le feedback doit contenir au moins 10 caractères', true);
+        return;
+    }
+    
+    try {
+        const rapportRef = doc(db, "reports", selectedRapportForFeedback.id);
+        const rapportSnap = await getDoc(rapportRef);
+        if(rapportSnap.exists()) {
+            const existingFeedbacks = rapportSnap.data().feedbacks || [];
+            const newFeedback = {
+                id: `fb_${Date.now()}`,
+                message: message,
+                date: new Date().toISOString(),
+                admin: true
+            };
+            await updateDoc(rapportRef, { feedbacks: [...existingFeedbacks, newFeedback] });
+            showToast('Feedback envoyé avec succès au PGCO');
+            closeModal('feedbackModal');
+        }
+    } catch(error) {
+        showToast('Erreur lors de l\'envoi: ' + error.message, true);
+    }
+}
+
+// ============ MÉMORANDUM DIRECTIF ============
+window.openMemoModal = () => {
+    document.getElementById('memoTitle').value = '';
+    document.getElementById('memoContent').value = '';
+    openModal('memoModal');
+};
+
+async function sendMemorandum() {
+    const destinataire = document.getElementById('memoDestinataire').value;
+    const title = document.getElementById('memoTitle').value.trim();
+    const content = document.getElementById('memoContent').value.trim();
+    
+    if(!title) {
+        showToast('Veuillez saisir un titre', true);
+        return;
+    }
+    if(!content) {
+        showToast('Veuillez saisir le contenu du mémorandum', true);
+        return;
+    }
+    if(content.length < 20) {
+        showToast('Le contenu doit contenir au moins 20 caractères', true);
+        return;
+    }
+    
+    try {
+        const memoData = {
+            title: title,
+            content: content,
+            destinataire: destinataire,
+            date: new Date().toISOString(),
+            type: 'memorandum'
+        };
+        
+        // Stocker le mémorandum dans une collection dédiée
+        await addDoc(collection(db, "memorandums"), memoData);
+        
+        showToast(`Mémorandum envoyé ${destinataire === 'all' ? 'à tous les PGCO' : 'à ' + destinataire}`);
+        closeModal('memoModal');
+    } catch(error) {
+        showToast('Erreur lors de l\'envoi: ' + error.message, true);
+    }
 }
 
 // ============ AFFICHAGE RAPPORT DÉTAILLÉ ============
@@ -564,16 +645,39 @@ window.viewRapport = (id) => {
     const pointsPrevPercent = totalPoints > 0 ? ((rapport.totalPointsPrecedents || 0) / totalPoints) * 100 : 0;
     const pointsJourPercent = totalPoints > 0 ? ((rapport.totalPointsJour || 0) / totalPoints) * 100 : 0;
     
+    const feedbacks = rapport.feedbacks || [];
+    const feedbacksHtml = feedbacks.length > 0 ? `
+        <div class="detail-card"><h4><i class="fas fa-comment-dots"></i> Feedbacks reçus</h4>
+        ${feedbacks.map(f => `
+            <div class="feedback-item">
+                <div class="feedback-date">📅 ${new Date(f.date).toLocaleString()}</div>
+                <div class="feedback-message">${escapeHtml(f.message)}</div>
+            </div>
+        `).join('')}
+        </div>
+    ` : '';
+    
     const modalBody = document.getElementById('rapportDetailBody');
     modalBody.innerHTML = `
         <div class="detail-card"><h4>📋 Informations générales</h4><div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${rapport.reference || '-'}</span></div><div class="detail-row"><span class="detail-label">Zone / Site</span><span class="detail-value">${rapport.zone || '-'}</span></div><div class="detail-row"><span class="detail-label">Responsable</span><span class="detail-value">${rapport.responsable || '-'}</span></div><div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">${new Date(rapport.createdAt).toLocaleString('fr-FR')}</span></div></div>
         <div class="detail-card"><h4>🎯 Objectifs</h4><div class="detail-row"><span class="detail-label">Objectif atteint</span><span class="detail-value"><span class="badge badge-success">${rapport.goalReached || 0}/9</span></span></div><div class="detail-row"><span class="detail-label">Appels pilote</span><span class="detail-value">${rapport.piloteCallCount || 0} fois</span></div></div>
         <div class="detail-card"><h4>📊 Performance</h4><div class="detail-row"><span class="detail-label">Points précédents</span><span class="detail-value">${rapport.totalPointsPrecedents || 0} pts</span></div><div class="detail-row"><span class="detail-label">Points du jour</span><span class="detail-value" style="color:#f59e0b;">${rapport.totalPointsJour || 0} pts</span></div><div class="detail-row"><span class="detail-label">Progression</span><div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Points précédents (${Math.round(pointsPrevPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsPrevPercent}%; background:#3b82f6;"></div></div></div><div class="progress-item"><div class="progress-label">Points du jour (${Math.round(pointsJourPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsJourPercent}%; background:#f59e0b;"></div></div></div></div></div></div>
         <div class="detail-card"><h4>👥 Détail des Netubers</h4><div class="table-wrapper"><table style="min-width:600px;"><thead><tr><th>Code</th><th>Présence</th><th>Points préc.</th><th>Points jour</th><th>Écart</th><th>Rendement</th></tr></thead><tbody>${(rapport.netubers || []).map(n => { const ecart = (n.pointsJour || 0) - (n.pointsPrecedents || 0); const rendement = n.tempsJour > 0 ? ((n.pointsJour || 0) / n.tempsJour).toFixed(2) : '0'; return `<tr><td>${n.code}</td><td>${n.presence === 'Présent' ? '✅' : '❌'}</td><td>${n.pointsPrecedents || 0}</td><td style="color:#f59e0b;">${n.pointsJour || 0}</td><td class="${ecart > 0 ? 'tendance-up' : 'tendance-down'}">${ecart > 0 ? '+' : ''}${ecart}</td><td>${rendement}</td></tr>`; }).join('')}</tbody></table></div></div>
+        ${feedbacksHtml}
         <div class="detail-card"><h4>📝 Recommandation</h4><p style="font-size:12px; line-height:1.5; background:#1e293b; padding:12px; border-radius:12px;">${rapport.recommendation || '-'}</p></div>
     `;
     openModal('rapportModal');
 };
+
+function escapeHtml(text) {
+    if(!text) return '';
+    return text.replace(/[&<>]/g, function(m) {
+        if(m === '&') return '&amp;';
+        if(m === '<') return '&lt;';
+        if(m === '>') return '&gt;';
+        return m;
+    });
+}
 
 // ============ ACTIONS TICKETS ============
 window.openReplyTicketModal = (ticketId, userCode) => {
@@ -587,7 +691,7 @@ window.sendTicketReply = async () => {
     const ticketId = document.getElementById('replyTicketId').value;
     const userCode = document.getElementById('replyNetuberCode').value;
     const message = document.getElementById('replyMessage').value.trim();
-    if(!message) { showToast('Veuillez saisir un message'); return; }
+    if(!message) { showToast('Veuillez saisir un message', true); return; }
     const user = usersData.find(u => u.code === userCode);
     if(!user) return;
     const userRef = doc(db, "users", user.id);
@@ -601,21 +705,21 @@ window.sendTicketReply = async () => {
         await updateDoc(userRef, { ticketsList: tickets });
         showToast(`✅ Réponse envoyée à ${userCode}`);
         closeModal('replyTicketModal');
-        loadAllData();
+        await loadAllData();
     }
 };
 
 window.openResolveTicketModal = (ticketId, userCode) => {
-    document.getElementById('resolveTicketId').value = ticketId;
-    document.getElementById('resolveNetuberCode').value = userCode;
+    document.getElementById('resolveTicketId')?.setAttribute('value', ticketId);
+    document.getElementById('resolveNetuberCode')?.setAttribute('value', userCode);
     document.getElementById('resolveMessage').value = '';
     openModal('resolveTicketModal');
 };
 
 window.resolveTicket = async () => {
-    const ticketId = document.getElementById('resolveTicketId').value;
-    const userCode = document.getElementById('resolveNetuberCode').value;
-    const message = document.getElementById('resolveMessage').value.trim();
+    const ticketId = document.getElementById('resolveTicketId')?.value;
+    const userCode = document.getElementById('resolveNetuberCode')?.value;
+    const message = document.getElementById('resolveMessage')?.value.trim();
     const user = usersData.find(u => u.code === userCode);
     if(!user) return;
     const userRef = doc(db, "users", user.id);
@@ -631,20 +735,8 @@ window.resolveTicket = async () => {
         await updateDoc(userRef, { ticketsList: tickets });
         showToast(`✅ Ticket résolu`);
         closeModal('resolveTicketModal');
-        loadAllData();
+        await loadAllData();
     }
-};
-
-window.deleteTicket = async (ticketId, userId) => {
-    showConfirm('NeTubeX', 'Supprimer définitivement ce ticket ?', async () => {
-        const userRef = doc(db, "users", userId);
-        const userSnap = await getDoc(userRef);
-        const tickets = userSnap.data().ticketsList || [];
-        const newTickets = tickets.filter(t => t.id !== ticketId);
-        await updateDoc(userRef, { ticketsList: newTickets });
-        showToast('✅ Ticket supprimé');
-        loadAllData();
-    });
 };
 
 // ============ ACTIONS NETUBERS ============
@@ -661,14 +753,14 @@ window.resetAnomalies = async (userId) => {
         const userRef = doc(db, "users", userId);
         await updateDoc(userRef, { anomaliesConnexion: 0, anomaliesSysteme: 0, ticketCountsByCategory: {} });
         showToast("✅ Anomalies réinitialisées");
-        loadAllData();
+        await loadAllData();
     });
 };
 
 window.openDeleteNetuberModal = (code) => {
     showConfirm('NeTubeX', `Supprimer définitivement le Netuber ${code} ? Cette action est irréversible.`, async () => {
         const user = usersData.find(u => u.code === code);
-        if(user) { await deleteDoc(doc(db, "users", user.id)); showToast(`🗑️ ${code} supprimé`); loadAllData(); }
+        if(user) { await deleteDoc(doc(db, "users", user.id)); showToast(`🗑️ ${code} supprimé`); await loadAllData(); }
     });
 };
 
@@ -684,17 +776,17 @@ window.openCapModal = (code) => {
 };
 
 window.sendCapToNetuber = async () => {
-    if(!selectedNetuberForCap) { showToast("Aucun Netuber sélectionné"); return; }
+    if(!selectedNetuberForCap) { showToast("Aucun Netuber sélectionné", true); return; }
     const capMessage = document.getElementById('capMessage').value.trim();
     const expiration = document.getElementById('capExpiration').value;
-    if(!capMessage) { showToast("Veuillez saisir le message du CAP"); return; }
+    if(!capMessage) { showToast("Veuillez saisir le message du CAP", true); return; }
     try {
         const userRef = doc(db, "users", selectedNetuberForCap.id);
         await updateDoc(userRef, { capDuJour: capMessage, capExpiration: expiration, capEnvoyeLe: new Date().toISOString() });
         closeModal('capModal');
         showToast(`✅ CAP envoyé à ${selectedNetuberForCap.code}`);
-        loadAllData();
-    } catch(error) { showToast(`Erreur: ${error.message}`); }
+        await loadAllData();
+    } catch(error) { showToast(`Erreur: ${error.message}`, true); }
 };
 
 // ============ CRUD NETUBERS ============
@@ -703,22 +795,22 @@ window.createNetuber = async () => {
     const email = document.getElementById('newEmail').value.trim();
     const password = document.getElementById('newPassword').value;
     const objectifMensuel = parseInt(document.getElementById('newObjectifMensuel').value) || 9;
-    if(!code || !email || !password) { showToast("Tous les champs sont requis"); return; }
+    if(!code || !email || !password) { showToast("Tous les champs sont requis", true); return; }
     try {
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
         await setDoc(doc(db, "users", userCred.user.uid), { code, email, role: "netuber", isActive: true, createdAt: new Date().toISOString(), NombreConnexions: 0, NombreDeconnexions: 0, anomaliesConnexion: 0, anomaliesSysteme: 0, ticketsList: [], ticketCountsByCategory: {}, estConnecte: false, isBlocked: false, objectifMensuel, objectifAtteint: 0 });
         closeModal('addNetuberModal');
         showToast("✅ Netuber créé");
-        loadAllData();
-    } catch(e) { showToast("Erreur: " + e.message); }
+        await loadAllData();
+    } catch(e) { showToast("Erreur: " + e.message, true); }
 };
 
 window.updateNetuberCode = async () => {
     const code = document.getElementById('editCodeSelect').value;
     const newCode = document.getElementById('newCodeValue').value.trim();
-    if(!newCode) { showToast("Nouveau code requis"); return; }
+    if(!newCode) { showToast("Nouveau code requis", true); return; }
     const user = usersData.find(u => u.code === code);
-    if(user) { const userRef = doc(db, "users", user.id); await updateDoc(userRef, { code: newCode }); closeModal('editCodeModal'); showToast(`✅ Code modifié`); loadAllData(); }
+    if(user) { const userRef = doc(db, "users", user.id); await updateDoc(userRef, { code: newCode }); closeModal('editCodeModal'); showToast(`✅ Code modifié`); await loadAllData(); }
 };
 
 window.toggleBlockNetuber = async () => {
@@ -730,7 +822,7 @@ window.toggleBlockNetuber = async () => {
         await updateDoc(userRef, { isBlocked: action === 'block' }); 
         closeModal('blockModal'); 
         showToast(action === 'block' ? `🔒 ${code} bloqué` : `🔓 ${code} débloqué`); 
-        loadAllData(); 
+        await loadAllData(); 
     }
 };
 
@@ -741,41 +833,3 @@ window.deleteNetuber = async () => {
         showConfirm('NeTubeX', `Supprimer définitivement ${code} ?`, async () => {
             await deleteDoc(doc(db, "users", user.id));
             closeModal('deleteModal');
-            showToast(`🗑️ ${code} supprimé`);
-            loadAllData();
-        });
-    }
-};
-
-// ============ FILTRES ET EXPORTS ============
-window.filterNetubers = () => updateNetubersTable();
-window.filterRapports = () => updateRapportsTable();
-window.openAddNetuberModal = () => openModal('addNetuberModal');
-window.openEditCodeModal = () => openModal('editCodeModal');
-window.openBlockModal = () => openModal('blockModal');
-window.openDeleteModal = () => openModal('deleteModal');
-
-window.exportNetubers = () => {
-    let csv = "Code,Email,Objectif mensuel,Objectif atteint,Objectif restant,Connexions,Anomalies,Localisation,Statut,Bloqué\n";
-    usersData.forEach(u => { 
-        const objRestant = (u.objectifMensuel || 9) - (u.objectifAtteint || 0);
-        csv += `${u.code},${u.email},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},${u.localisation||'-'},${u.estConnecte?'En ligne':'Hors ligne'},${u.isBlocked?'Oui':'Non'}\n`; 
-    });
-    const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `netubers_${new Date().toISOString().split('T')[0]}.csv`; link.click();
-};
-
-window.exportRapports = () => {
-    let csv = "Référence,Zone,Responsable,Points préc.,Points jour,Écart,Temps préc.,Temps jour,Rendement,Objectif atteint,Date,Statut\n";
-    rapportsData.forEach(r => { 
-        const ecart = (r.totalPointsJour || 0) - (r.totalPointsPrecedents || 0);
-        csv += `${r.reference},${r.zone},${r.responsable},${r.totalPointsPrecedents||0},${r.totalPointsJour||0},${ecart},${r.totalTempsPrecedent||0},${r.totalTempsJour||0},${r.rendementGlobal||0},${r.goalReached||0}/9,${new Date(r.createdAt).toLocaleDateString()},${r.status}\n`; 
-    });
-    const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `rapports_${new Date().toISOString().split('T')[0]}.csv`; link.click();
-};
-
-// ============ INITIALISATION ============
-document.getElementById('sendCapBtn')?.addEventListener('click', () => { window.sendCapToNetuber(); });
-setInterval(loadAllData, 30000);
-loadAllData();
-</script>
-</body>
