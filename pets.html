@@ -180,7 +180,7 @@ tr:hover{background:#1a2332;}
 <button class="export-btn" onclick="exportRapports()"><i class="fas fa-file-excel"></i> Exporter</button>
 <button class="export-btn" onclick="openMemoModal()" style="background:#ec4899;"><i class="fas fa-envelope"></i> Mémorandum directif</button>
 </div>
-<div class="table-wrapper"><table id="rapportsTable"><thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Objectif restant</th><th>Points jour</th><th>Rendement</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="rapportsTableBody"></tbody></table></div>
+<div class="table-wrapper"><table id="rapportsTable"><thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Objectif restant</th><th>Points jour</th><th>Rendement</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="rapportsTableBody"></tbody>}</div>
 </div>
 
 <!-- Onglet Tickets -->
@@ -190,19 +190,19 @@ tr:hover{background:#1a2332;}
 <div class="stat-card"><div class="value" id="ticketsProgress">0</div><div class="label">En cours</div></div>
 <div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Résolus</div></div>
 </div>
-<div class="table-wrapper"><table id="ticketsTable"><thead><tr><th>Netuber</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th><tr></thead><tbody id="ticketsTableBody"></tbody></table></div>
+<div class="table-wrapper"><table id="ticketsTable"><thead><tr><th>Netuber</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody id="ticketsTableBody"></tbody>}</div>
 </div>
 
 <!-- Onglet Anomalies -->
 <div id="anomaliesTab" class="tab-content">
 <div class="chart-container"><canvas id="anomaliesChart" style="max-height:250px;"></canvas></div>
-<div class="table-wrapper"><table id="anomaliesTable"><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre</th><th>Dernière occurrence</th><th>Action</th></tr></thead><tbody id="anomaliesTableBody"></tbody></table></div>
+<div class="table-wrapper"><table id="anomaliesTable"><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre</th><th>Dernière occurrence</th><th>Action</th></tr></thead><tbody id="anomaliesTableBody"></tbody>}</div>
 </div>
 
 <!-- Onglet Paramètres -->
 <div id="settingsTab" class="tab-content">
 <div class="stats-grid"><div class="stat-card"><div class="value" id="totalActions">0</div><div class="label">CAP envoyés</div></div></div>
-<div class="detail-card" style="margin-bottom:20px;"><h4><i class="fas fa-chart-line"></i> CAP du jour - Derniers envois</h4><div class="table-wrapper" style="max-height:300px;"><table id="capHistoryTable"><thead><tr><th>Netuber</th><th>CAP</th><th>Date envoi</th><th>Expiration</th></tr></thead><tbody id="capHistoryBody"></tbody></table></div></div>
+<div class="detail-card" style="margin-bottom:20px;"><h4><i class="fas fa-chart-line"></i> CAP du jour - Derniers envois</h4><div class="table-wrapper" style="max-height:300px;"><table id="capHistoryTable"><thead><tr><th>Netuber</th><th>CAP</th><th>Date envoi</th><th>Expiration</th></tr></thead><tbody id="capHistoryBody"></tbody>}</div></div>
 <div class="detail-card"><h4><i class="fas fa-cog"></i> Administration</h4><table style="min-width:auto;"><thead><tr><th>Action</th><th>Description</th><th>Statut</th></tr></thead>
 <tbody>
 <tr><td><i class="fas fa-user-edit"></i> Modifier code Netuber</td><td>Changer le code unique d'un Netuber</td><td><button class="badge badge-info" onclick="openEditCodeModal()" style="cursor:pointer;">Modifier</button></td></tr>
@@ -387,8 +387,8 @@ function updateTicketsTable() {
                 <button class="action-btn reply" onclick="openReplyTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-reply"></i> Répondre</button>
                 ${t.status !== 'resolu' ? `<button class="action-btn resolve" onclick="openResolveTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-check"></i> Résoudre</button>` : ''}
                 <button class="action-btn delete" onclick="deleteTicket('${t.id}', '${t.userId}')"><i class="fas fa-trash"></i> Supprimer</button>
-              </td>
-          </tr>`;
+               </div>
+           </div>`;
     }).join('');
     
     document.getElementById('ticketsOpen').innerText = ticketsData.filter(t => t.status === 'ouvert').length;
@@ -435,21 +435,21 @@ function updateRapportsTable() {
         const objectifRestant = objectifMensuel - objectifAtteint;
         
         return `<tr>
-            <td><strong>${r.reference || '-'}</strong></td>
-            <td>${r.zone || '-'}</td>
-            <td>${r.responsable || '-'}</td>
-            <td style="font-weight:600;">${objectifMensuel}</td>
-            <td style="color:#10b981; font-weight:600;">${objectifAtteint}</td>
-            <td style="color:#f59e0b; font-weight:600;">${objectifRestant}</td>
-            <td style="color:#f59e0b; font-weight:bold;">${r.totalPointsJour || 0}</td>
-            <td class="${(r.totalPointsJour || 0) > (r.totalPointsPrecedents || 0) ? 'tendance-up' : 'tendance-down'}">${rendement} pts/min</td>
-            <td><small>${formatDateShort(r.createdAt)}</small></td>
-            <td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></td>
+            <td><strong>${r.reference || '-'}</strong></div>
+            <td>${r.zone || '-'}</div>
+            <td>${r.responsable || '-'}</div>
+            <td style="font-weight:600;">${objectifMensuel}</div>
+            <td style="color:#10b981; font-weight:600;">${objectifAtteint}</div>
+            <td style="color:#f59e0b; font-weight:600;">${objectifRestant}</div>
+            <td style="color:#f59e0b; font-weight:bold;">${r.totalPointsJour || 0}</div>
+            <td class="${(r.totalPointsJour || 0) > (r.totalPointsPrecedents || 0) ? 'tendance-up' : 'tendance-down'}">${rendement} pts/min</div>
+            <td><small>${formatDateShort(r.createdAt)}</small></div>
+            <td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></div>
             <td>
                 <button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i></button>
                 <button class="action-btn feedback" onclick='openFeedbackModal("${r.id}", "${r.reference}")'><i class="fas fa-comment-dots"></i></button>
-              </td>
-          </tr>`;
+               </div>
+           </div>`;
     }).join('');
 }
 
@@ -463,7 +463,7 @@ function escapeHtml(text) {
     return text.replace(/[&<>]/g, m => m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'));
 }
 
-// NETUBERS - Affichage avec point vert/rouge
+// ========== NETUBERS - Avec lampe rouge après 8h ==========
 function updateNetubersTable() {
     const tbody = document.getElementById('netubersTableBody');
     if(!tbody) return;
@@ -471,11 +471,13 @@ function updateNetubersTable() {
     const status = document.getElementById('statusFilter')?.value || 'all';
     
     const now = new Date();
+    const INACTIVITY_LIMIT = 8 * 60 * 60 * 1000; // 8 heures
     
     let filtered = usersData.filter(u => {
         const matchSearch = (u.code || '').toLowerCase().includes(search);
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
-        const isOnline = lastSeenDate && (now - lastSeenDate) < 30000;
+        // Si lastSeen est 1970 ou null, considéré comme déconnecté
+        const isOnline = lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT;
         const matchStatus = status === 'all' || (status === 'online' ? isOnline : !isOnline);
         return matchSearch && matchStatus;
     });
@@ -483,7 +485,7 @@ function updateNetubersTable() {
     // Mettre à jour le compteur en ligne
     const onlineCount = usersData.filter(u => {
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
-        return lastSeenDate && (now - lastSeenDate) < 30000;
+        return lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT;
     }).length;
     document.getElementById('totalOnline').innerText = onlineCount;
     
@@ -496,41 +498,51 @@ function updateNetubersTable() {
         const isBlocked = u.isBlocked === true;
         const anomalieClass = anomalies > 5 ? 'badge-danger' : (anomalies > 2 ? 'badge-warning' : 'badge-success');
         
-        // Détection du statut via lastSeen (30 secondes)
+        // Détection du statut via lastSeen (8 heures)
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
-        const isOnline = lastSeenDate && (now - lastSeenDate) < 30000;
-        const statusDot = isOnline ? '🟢' : '🔴';
+        let isOnline = false;
+        let lastActivityText = '';
         
-        let lastActivityText = 'Jamais';
-        if (u.lastSeen) {
-            const diffSeconds = Math.floor((now - new Date(u.lastSeen)) / 1000);
-            const diffMinutes = Math.floor(diffSeconds / 60);
-            if (diffMinutes < 1) {
-                lastActivityText = `Il y a ${diffSeconds} secondes`;
-            } else if (diffMinutes < 60) {
-                lastActivityText = `Il y a ${diffMinutes} minute${diffMinutes > 1 ? 's' : ''}`;
+        if (!lastSeenDate || lastSeenDate.getFullYear() <= 1970) {
+            // lastSeen = 1970 ou null -> déconnecté
+            isOnline = false;
+            lastActivityText = 'Déconnecté';
+        } else {
+            const diffMs = now - lastSeenDate;
+            if (diffMs < INACTIVITY_LIMIT) {
+                isOnline = true;
+                const diffHours = Math.floor(diffMs / (60 * 60 * 1000));
+                const diffMinutes = Math.floor((diffMs % (60 * 60 * 1000)) / (60 * 1000));
+                if (diffHours > 0) {
+                    lastActivityText = `Actif il y a ${diffHours}h${diffMinutes > 0 ? diffMinutes : ''}`;
+                } else if (diffMinutes > 0) {
+                    lastActivityText = `Actif il y a ${diffMinutes} min`;
+                } else {
+                    lastActivityText = `Actif à l'instant`;
+                }
             } else {
-                lastActivityText = new Date(u.lastSeen).toLocaleString();
+                isOnline = false;
+                const diffHours = Math.floor(diffMs / (60 * 60 * 1000));
+                lastActivityText = `Inactif depuis ${diffHours}h`;
             }
-        } else if (u.createdAt) {
-            lastActivityText = `Compte créé: ${new Date(u.createdAt).toLocaleDateString()}`;
         }
         
+        const statusDot = isOnline ? '🟢' : '🔴';
+        
         return `<tr>
-            <td>${statusDot} <strong>${u.code || '-'}</strong>${isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''} </td>
-            <td>${u.email || '-'}</td>
-            <td style="font-weight:600;">${objMensuel}</td>
-            <td style="color:#10b981; font-weight:600;">${objAtteint}</td>
-            <td style="color:#f59e0b; font-weight:600;">${objRestant}</td>
-            <td style="color:#3b82f6;">${connexions}</td>
-            <td><span class="badge ${anomalieClass}">${anomalies}</span></td>
-            <td><small>${lastActivityText}</small></td>
+            <td>${statusDot} <strong>${u.code || '-'}</strong>${isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''} </div>
+            <td>${u.email || '-'}</div>
+            <td style="font-weight:600;">${objMensuel}</div>
+            <td style="color:#10b981; font-weight:600;">${objAtteint}</div>
+            <td style="color:#f59e0b; font-weight:600;">${objRestant}</div>
+            <td style="color:#3b82f6;">${connexions}</div>
+            <td><span class="badge ${anomalieClass}">${anomalies}</span></div>
+            <td><small>${lastActivityText}</small></div>
             <td>
                 <button class="action-btn cap" onclick="openCapModal('${u.code}')"><i class="fas fa-chart-line"></i> CAP</button>
                 <button class="action-btn view" onclick="showNetuberDetails('${u.code}')"><i class="fas fa-eye"></i></button>
-                <button class="action-btn delete" onclick="openDeleteNetuberModal('${u.code}')"><i class="fas fa-trash"></i> Supprimer</button>
-              </td>
-          </tr>`;
+               </div>
+           </div>`;
     }).join('');
 }
 
@@ -541,18 +553,23 @@ function updateConfidentialiteTable() {
     const search = document.getElementById('searchConf')?.value.toLowerCase() || '';
     let filtered = usersData.filter(u => (u.code || '').toLowerCase().includes(search));
     
+    const now = new Date();
+    const INACTIVITY_LIMIT = 8 * 60 * 60 * 1000;
+    
     tbody.innerHTML = filtered.map(u => {
         const maskedPassword = '••••••••';
-        const now = new Date();
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
-        const isOnline = lastSeenDate && (now - lastSeenDate) < 30000;
+        let isOnline = false;
+        if (lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT) {
+            isOnline = true;
+        }
         return `<tr>
-            <td><strong>${u.code || '-'}</strong></td>
-            <td>${u.email || '-'}</td>
-            <td>${maskedPassword} <i class="fas fa-edit password-toggle" onclick='openPasswordModal("${u.code}")' style="cursor:pointer; color:#64748b;"></i></td>
-            <td><span class="badge ${u.isBlocked ? 'badge-danger' : (isOnline ? 'badge-success' : 'badge-warning')}">${u.isBlocked ? 'Bloqué' : (isOnline ? 'En ligne' : 'Hors ligne')}</span></td>
-            <td><button class="action-btn delete" onclick='openDeleteNetuberModal("${u.code}")'><i class="fas fa-trash"></i> Supprimer</button></td>
-          </tr>`;
+            <td><strong>${u.code || '-'}</strong></div>
+            <td>${u.email || '-'}</div>
+            <td>${maskedPassword} <i class="fas fa-edit password-toggle" onclick='openPasswordModal("${u.code}")' style="cursor:pointer; color:#64748b;"></i></div>
+            <td><span class="badge ${u.isBlocked ? 'badge-danger' : (isOnline ? 'badge-success' : 'badge-warning')}">${u.isBlocked ? 'Bloqué' : (isOnline ? 'En ligne' : 'Hors ligne')}</span></div>
+            <td><button class="action-btn delete" onclick='openDeleteNetuberModal("${u.code}")'><i class="fas fa-trash"></i> Supprimer</button></div>
+           </div>`;
     }).join('');
     document.getElementById('totalNetubersConf').innerText = usersData.length;
     document.getElementById('totalBlockedConf').innerText = usersData.filter(u => u.isBlocked === true).length;
@@ -562,10 +579,11 @@ window.filterConfidentialite = () => updateConfidentialiteTable();
 
 function updateStats() {
     const now = new Date();
+    const INACTIVITY_LIMIT = 8 * 60 * 60 * 1000;
     document.getElementById('totalNetubers').innerText = usersData.length;
     const onlineCount = usersData.filter(u => {
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
-        return lastSeenDate && (now - lastSeenDate) < 30000;
+        return lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT;
     }).length;
     document.getElementById('totalOnline').innerText = onlineCount;
     const totalAnom = usersData.reduce((a,u) => a + (parseInt(u.anomaliesConnexion)||0) + (parseInt(u.anomaliesSysteme)||0), 0);
@@ -589,12 +607,12 @@ function updateAnomaliesTable() {
     if(!tbody) return;
     tbody.innerHTML = anomalies.map(a => `
         <tr>
-            <td><strong>${a.code}</strong></td>
+            <td><strong>${a.code}</strong></div>
             <td>Anomalies système/connexion</div>
             <td><span class="badge badge-danger">${a.count} fois</span></div>
             <td><small>${formatDateShort(a.last)}</small></div>
             <td><button class="action-btn view" onclick='resetAnomalies("${a.id}")'><i class="fas fa-sync"></i> Réinitialiser</button></div>
-         </tr>
+          </div>
     `).join('');
 }
 
@@ -613,7 +631,7 @@ function updateCapHistory() {
             <td>${h.cap}</div>
             <td>${h.envoyeLe ? new Date(h.envoyeLe).toLocaleString() : '-'}</div>
             <td>${h.expiration || '-'}</div>
-         </tr>
+          </div>
     `).join('');
     document.getElementById('totalActions').innerText = history.length;
 }
@@ -791,7 +809,7 @@ window.viewRapport = (id) => {
                 <div class="detail-row"><span class="detail-label">Progression</span><div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Points précédents (${Math.round(pointsPrevPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsPrevPercent}%; background:#3b82f6;"></div></div></div><div class="progress-item"><div class="progress-label">Points du jour (${Math.round(pointsJourPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsJourPercent}%; background:#f59e0b;"></div></div></div></div></div></div>
         </div>
         <div class="detail-card"><h4>👥 Détail des Netubers</h4><div class="table-wrapper"><table style="min-width:600px;"><thead><tr><th>Code</th><th>Présence</th><th>Obj. mensuel</th><th>Obj. atteint</th><th>Points préc.</th><th>Points jour</th><th>Écart</th><th>Rendement</th></tr></thead><tbody>${(rapport.netubers || []).map(n => { const ecart = (n.pointsJour || 0) - (n.pointsPrecedents || 0); const rendement = n.tempsJour > 0 ? ((n.pointsJour || 0) / n.tempsJour).toFixed(2) : '0'; return `<tr>
-                        <td><strong>${n.code}</strong></td>
+                        <td><strong>${n.code}</strong></div>
                         <td>${n.presence === 'Présent' ? '✅' : '❌'} </div>
                         <div class="detail-value">${n.objectifMensuel || 0}</div>
                         <div class="detail-value" style="color:#10b981;">${n.objectifAtteint || 0}</div>
@@ -799,7 +817,7 @@ window.viewRapport = (id) => {
                         <div class="detail-value" style="color:#f59e0b;">${n.pointsJour || 0}</div>
                         <td class="${ecart > 0 ? 'tendance-up' : 'tendance-down'}">${ecart > 0 ? '+' : ''}${ecart}</div>
                         <div class="detail-value">${rendement} pts/min</div>
-                    </tr>`;
+                     </div>`;
                 }).join('')}</tbody>}</div></div>
         ${feedbacksHtml}
         <div class="detail-card"><h4>📝 Recommandation</h4><p style="font-size:12px; line-height:1.5; background:#1e293b; padding:12px; border-radius:12px;">${rapport.recommendation || '-'}</p></div>
@@ -984,11 +1002,16 @@ window.openBlockModal = () => openModal('blockModal');
 window.exportNetubers = () => {
     let csv = "Code,Email,Objectif mensuel,Objectif atteint,Objectif restant,Connexions,Anomalies,Dernière activité,Bloqué\n";
     const now = new Date();
+    const INACTIVITY_LIMIT = 8 * 60 * 60 * 1000;
     usersData.forEach(u => { 
         const objRestant = (u.objectifMensuel || 9) - (u.objectifAtteint || 0);
-        const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
-        let lastActivity = 'Jamais';
-        if (u.lastSeen) lastActivity = new Date(u.lastSeen).toLocaleString();
+        let lastActivity = 'Déconnecté';
+        if (u.lastSeen) {
+            const lastSeenDate = new Date(u.lastSeen);
+            if (lastSeenDate.getFullYear() > 1970) {
+                lastActivity = new Date(u.lastSeen).toLocaleString();
+            }
+        }
         csv += `${u.code},${u.email},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},"${lastActivity}",${u.isBlocked?'Oui':'Non'}\n`; 
     });
     const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `netubers_${new Date().toISOString().split('T')[0]}.csv`; link.click();
