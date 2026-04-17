@@ -2,32 +2,25 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>NeTubeX · Admin Dashboard Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:100vh;transition:background 0.3s, color 0.3s;}
-body.light-mode{background:#f1f5f9;color:#0f172a;}
-body.light-mode .header,body.light-mode .stat-card,body.light-mode .chart-container,body.light-mode .table-wrapper,body.light-mode .modal-content,body.light-mode .detail-card{background:#ffffff;border-color:#e2e8f0;}
-body.light-mode .tab:not(.active){color:#475569;}
-body.light-mode .tab:hover{background:#e2e8f0;color:#0f172a;}
-body.light-mode .search-input,body.light-mode .filter-select{background:#ffffff;border-color:#cbd5e1;color:#0f172a;}
-body.light-mode th{background:#f8fafc;color:#475569;}
-body.light-mode tr:hover{background:#f1f5f9;}
+body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:100vh;}
 .dashboard{max-width:1600px;margin:0 auto;padding:20px 30px;}
-.header{background:#0f1420;border-bottom:1px solid #1e293b;padding:0.8rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;margin:-20px -30px 20px -30px;padding:0.8rem 30px;transition:background 0.3s;}
-body.light-mode .header{background:#ffffff;border-bottom-color:#e2e8f0;}
+@media (max-width:768px){.dashboard{padding:15px;}}
+.header{background:#0f1420;border-bottom:1px solid #1e293b;padding:0.8rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;margin:-20px -30px 20px -30px;padding:0.8rem 30px;}
+@media (max-width:768px){.header{padding:0.5rem 15px;margin:-15px -15px 20px -15px;flex-wrap:wrap;gap:10px;}}
 .logo h1{font-size:22px;background:linear-gradient(135deg,#f59e0b,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .logo p{font-size:10px;color:#64748b;}
 .header-right{display:flex;align-items:center;gap:20px;}
+@media (max-width:768px){.header-right{gap:10px;}}
 .refresh-btn{background:#1e293b;border:none;padding:8px 14px;border-radius:40px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px;transition:0.2s;}
 .refresh-btn:hover{background:#334155;}
-body.light-mode .refresh-btn{background:#e2e8f0;color:#0f172a;}
 .admin-profile{display:flex;align-items:center;gap:10px;background:#1e293b;padding:6px 14px;border-radius:40px;}
-body.light-mode .admin-profile{background:#e2e8f0;}
 .admin-profile i{color:#f59e0b;}
 .admin-profile span{font-size:12px;font-weight:500;}
 .tabs{display:flex;gap:8px;margin-bottom:25px;flex-wrap:wrap;border-bottom:1px solid #1e293b;padding-bottom:10px;}
@@ -39,17 +32,19 @@ body.light-mode .admin-profile{background:#e2e8f0;}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 .filters{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
 .search-input{padding:10px 16px;border-radius:40px;border:1px solid #1e293b;background:#0f1420;color:#fff;min-width:250px;outline:none;font-size:13px;}
+@media (max-width:768px){.search-input{min-width:100%;}}
 .search-input:focus{border-color:#f59e0b;}
 .filter-select{padding:8px 14px;border-radius:40px;border:1px solid #1e293b;background:#0f1420;color:#fff;cursor:pointer;font-size:12px;}
 .export-btn{background:#10b981;border:none;padding:8px 16px;border-radius:40px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;}
 .export-btn:hover{background:#059669;}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:25px;}
-.stat-card{background:#0f1420;border-radius:16px;padding:15px;border:1px solid #1e293b;transition:background 0.3s;}
+.stat-card{background:#0f1420;border-radius:16px;padding:15px;border:1px solid #1e293b;}
 .stat-card .value{font-size:24px;font-weight:700;}
 .stat-card .label{font-size:11px;color:#64748b;margin-top:5px;}
-.chart-container{background:#0f1420;border-radius:16px;padding:20px;margin-bottom:20px;transition:background 0.3s;}
-.table-wrapper{background:#0f1420;border-radius:16px;overflow-x:auto;border:1px solid #1e293b;max-height:500px;overflow-y:auto;transition:background 0.3s;}
+.chart-container{background:#0f1420;border-radius:16px;padding:20px;margin-bottom:20px;overflow-x:auto;}
+.table-wrapper{background:#0f1420;border-radius:16px;overflow-x:auto;border:1px solid #1e293b;max-height:500px;overflow-y:auto;}
 table{width:100%;border-collapse:collapse;min-width:900px;}
+@media (max-width:768px){table{min-width:700px;}}
 th{text-align:left;padding:12px;font-size:11px;font-weight:600;color:#64748b;border-bottom:1px solid #1e293b;position:sticky;top:0;background:#0f1420;}
 td{padding:10px 12px;border-bottom:1px solid #1e293b;font-size:12px;}
 tr{cursor:pointer;transition:0.2s;}
@@ -59,14 +54,14 @@ tr:hover{background:#1a2332;}
 .badge-danger{background:rgba(239,68,68,0.2);color:#ef4444;}
 .badge-warning{background:rgba(245,158,11,0.2);color:#f59e0b;}
 .badge-info{background:rgba(59,130,246,0.2);color:#3b82f6;}
-.badge-primary{background:rgba(139,92,246,0.2);color:#a78bfa;}
 .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;}
 .online{background:#10b981;box-shadow:0 0 5px #10b981;animation:pulse 2s infinite;}
 .offline{background:#64748b;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(8px);z-index:1000;justify-content:center;align-items:center;}
 .modal.active{display:flex;}
-.modal-content{background:#0f1420;border-radius:20px;max-width:800px;width:90%;border:1px solid #1e293b;max-height:85vh;overflow-y:auto;transition:background 0.3s;}
+.modal-content{background:#0f1420;border-radius:20px;max-width:800px;width:90%;border:1px solid #1e293b;max-height:85vh;overflow-y:auto;}
+@media (max-width:768px){.modal-content{width:95%;}}
 .modal-header{padding:15px 20px;border-bottom:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#0f1420;}
 .modal-header h2{font-size:16px;display:flex;align-items:center;gap:8px;}
 .modal-close{background:#1e293b;border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;}
@@ -74,9 +69,10 @@ tr:hover{background:#1a2332;}
 .modal-footer{padding:12px 20px;border-top:1px solid #1e293b;display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#0f1420;}
 .modal-footer button{padding:8px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:600;}
 .detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
-.detail-card{background:#1a2332;border-radius:12px;padding:15px;border:1px solid #2d3748;transition:background 0.3s;}
+@media (max-width:768px){.detail-grid{grid-template-columns:1fr;}}
+.detail-card{background:#1a2332;border-radius:12px;padding:15px;border:1px solid #2d3748;}
 .detail-card h4{margin-bottom:10px;color:#f59e0b;font-size:13px;border-left:3px solid #f59e0b;padding-left:10px;}
-.detail-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #2d3748;font-size:12px;}
+.detail-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #2d3748;font-size:12px;flex-wrap:wrap;}
 .detail-label{color:#94a3b8;}
 .detail-value{font-weight:600;color:#e2e8f0;}
 .input-group{margin-bottom:15px;}
@@ -104,10 +100,21 @@ tr:hover{background:#1a2332;}
 .tendance-up{color:#10b981;}
 .tendance-down{color:#f59e0b;}
 .tendance-stable{color:#3b82f6;}
-@media (max-width:768px){.dashboard{padding:15px;}.header{padding:0.5rem 15px;}}
-.customize-btn{background:#8b5cf6;border:none;padding:8px 14px;border-radius:40px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px;transition:0.2s;}
-.customize-btn:hover{background:#7c3aed;}
-.color-preview{width:20px;height:20px;border-radius:50%;display:inline-block;margin-left:8px;}
+.neubers-objectifs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:15px;margin-bottom:20px;}
+.neuber-objectif-card{background:#1a2332;border-radius:16px;padding:15px;border:1px solid #2d3748;}
+.neuber-objectif-card h5{color:#f59e0b;margin-bottom:10px;font-size:13px;}
+.objectif-stats{display:flex;justify-content:space-between;margin:8px 0;font-size:12px;}
+.progress-circle{width:60px;height:60px;margin:0 auto 10px;}
+.confirm-dialog{text-align:center;}
+.confirm-dialog i{font-size:48px;color:#f59e0b;margin-bottom:15px;}
+.confirm-dialog h3{font-size:18px;margin-bottom:10px;}
+.confirm-dialog p{color:#94a3b8;margin-bottom:20px;font-size:13px;}
+.confirm-buttons{display:flex;gap:12px;justify-content:center;}
+.confirm-buttons button{padding:10px 24px;border-radius:40px;border:none;cursor:pointer;font-weight:600;transition:0.2s;}
+.confirm-buttons .btn-confirm{background:#ef4444;color:#fff;}
+.confirm-buttons .btn-confirm:hover{background:#dc2626;}
+.confirm-buttons .btn-cancel{background:#1e293b;color:#fff;}
+.confirm-buttons .btn-cancel:hover{background:#334155;}
 </style>
 </head>
 <body>
@@ -115,7 +122,6 @@ tr:hover{background:#1a2332;}
 <div class="header">
 <div class="logo"><h1><i class="fas fa-chart-line"></i> NeTubeX Admin</h1><p>Gestion des Netubers & Support</p></div>
 <div class="header-right">
-<button class="customize-btn" onclick="openCustomizeModal()"><i class="fas fa-palette"></i> Personnaliser</button>
 <button class="refresh-btn" onclick="location.reload()"><i class="fas fa-sync-alt"></i> Actualiser</button>
 <div class="admin-profile"><i class="fas fa-user-cog"></i><span>Flory Ngenda</span></div>
 </div>
@@ -137,6 +143,10 @@ tr:hover{background:#1a2332;}
 <div class="stat-card"><div class="value" id="totalAnomalies">0</div><div class="label">Total anomalies</div></div>
 <div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Netubers bloqués</div></div>
 </div>
+
+<!-- Vue globale des objectifs -->
+<div class="neubers-objectifs-grid" id="globalObjectivesGrid"></div>
+
 <div class="filters">
 <input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()">
 <select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">En ligne</option><option value="offline">Hors ligne</option></select>
@@ -145,7 +155,7 @@ tr:hover{background:#1a2332;}
 </div>
 <div class="table-wrapper">
 <table id="netubersTable">
-<thead><tr><th>Code</th><th>Email</th><th>Connexions ✅</th><th>Déconnexions 🚪</th><th>Anomalies ⚠️</th><th>Localisation 📍</th><th>Dernière connexion</th><th>Statut</th><th>Actions</th></tr></thead>
+<thead><tr><th>Code</th><th>Email</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Objectif restant</th><th>Connexions</th><th>Anomalies</th><th>Localisation</th><th>Statut</th><th>Actions</th></tr></thead>
 <tbody id="netubersTableBody"></tbody>
 </table>
 </div>
@@ -157,7 +167,7 @@ tr:hover{background:#1a2332;}
 <div class="stat-card"><div class="value" id="totalRapports">0</div><div class="label">Rapports reçus</div></div>
 <div class="stat-card"><div class="value" id="nonTraites">0</div><div class="label">Non traités</div></div>
 <div class="stat-card"><div class="value" id="avgPoints">0</div><div class="label">Moyenne points/jour</div></div>
-<div class="stat-card"><div class="value" id="avgRendement">0</div><div class="label">Rendement moyen (pts/min)</div></div>
+<div class="stat-card"><div class="value" id="avgRendement">0</div><div class="label">Rendement moyen</div></div>
 </div>
 <div class="chart-container"><canvas id="rapportsChart" style="max-height:250px;"></canvas></div>
 <div class="filters">
@@ -194,12 +204,13 @@ tr:hover{background:#1a2332;}
 <tr><td><i class="fas fa-ban"></i> Bloquer/Débloquer Netuber</td><td>Bloquer l'accès au Dashboard utilisateur</td><td><button class="badge badge-warning" onclick="openBlockModal()" style="cursor:pointer;">Gérer</button></td></tr>
 <tr><td><i class="fas fa-trash"></i> Supprimer Netuber</td><td>Supprimer définitivement un Netuber</td><td><button class="badge badge-danger" onclick="openDeleteModal()" style="cursor:pointer;">Supprimer</button></td></tr>
 </tbody>
-</table></div>
+</table>
+</div>
 </div>
 </div>
 
 <!-- Modals -->
-<div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Code Netuber</label><input type="text" id="newCode" placeholder="Ex: NETUBER001"></div><div class="input-group"><label>Email</label><input type="email" id="newEmail" placeholder="Email"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newPassword" placeholder="Mot de passe"></div></div><div class="modal-footer"><button onclick="createNetuber()" style="background:#10b981;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Code Netuber</label><input type="text" id="newCode" placeholder="Ex: NETUBER001"></div><div class="input-group"><label>Email</label><input type="email" id="newEmail" placeholder="Email"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newPassword" placeholder="Mot de passe"></div><div class="input-group"><label>Objectif mensuel</label><input type="number" id="newObjectifMensuel" value="9" placeholder="Objectif mensuel"></div></div><div class="modal-footer"><button onclick="createNetuber()" style="background:#10b981;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
 <div id="editCodeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-edit"></i> Modifier le code Netuber</h2><button class="modal-close" onclick="closeModal('editCodeModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="editCodeSelect"></select></div><div class="input-group"><label>Nouveau code</label><input type="text" id="newCodeValue" placeholder="Nouveau code"></div></div><div class="modal-footer"><button onclick="updateNetuberCode()" style="background:#f59e0b;">Modifier</button><button onclick="closeModal('editCodeModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
@@ -207,19 +218,17 @@ tr:hover{background:#1a2332;}
 
 <div id="deleteModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-trash"></i> Supprimer Netuber</h2><button class="modal-close" onclick="closeModal('deleteModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="deleteSelect"></select></div><p style="color:#ef4444; font-size:12px; margin-top:10px;">⚠️ Cette action est irréversible.</p></div><div class="modal-footer"><button onclick="deleteNetuber()" style="background:#ef4444;">Supprimer</button><button onclick="closeModal('deleteModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
-<div id="capModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-chart-line"></i> Envoyer le CAP du jour</h2><button class="modal-close" onclick="closeModal('capModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber concerné</label><input type="text" id="capNetuberCode" readonly style="background:#1a2332; color:#f59e0b; font-weight:bold;"></div><div class="input-group"><label>CAP du jour <span style="color:#f59e0b;">*</span></label><textarea id="capMessage" rows="6" placeholder="Exemple: &#10;📊 CAP du jour - Objectif principal: Atteindre 100 points&#10;📌 Challenge spécial: Terminer 3 jeux&#10;⭐ Bonus: +50 points si objectif atteint"></textarea></div><div class="input-group"><label>Date d'expiration</label><input type="date" id="capExpiration"></div></div><div class="modal-footer"><button id="sendCapBtn" style="background:#f59e0b;"><i class="fas fa-paper-plane"></i> Envoyer</button><button onclick="closeModal('capModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="capModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-chart-line"></i> Envoyer le CAP du jour</h2><button class="modal-close" onclick="closeModal('capModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber concerné</label><input type="text" id="capNetuberCode" readonly style="background:#1a2332; color:#f59e0b; font-weight:bold;"></div><div class="input-group"><label>CAP du jour</label><textarea id="capMessage" rows="6" placeholder="📊 CAP du jour - Objectif principal..."></textarea></div><div class="input-group"><label>Date d'expiration</label><input type="date" id="capExpiration"></div></div><div class="modal-footer"><button id="sendCapBtn" style="background:#f59e0b;"><i class="fas fa-paper-plane"></i> Envoyer</button><button onclick="closeModal('capModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
 <div id="rapportModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-file-alt"></i> Détail rapport PGCO</h2><button class="modal-close" onclick="closeModal('rapportModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="rapportDetailBody"></div><div class="modal-footer"><button onclick="closeModal('rapportModal')" style="background:#64748b;">Fermer</button></div></div></div>
 
-<div id="replyTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-reply"></i> Répondre au ticket</h2><button class="modal-close" onclick="closeModal('replyTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="replyTicketId" readonly></div><div class="input-group"><label>Netuber</label><input type="text" id="replyNetuberCode" readonly></div><div class="input-group"><label>Message de réponse</label><textarea id="replyMessage" rows="4" placeholder="Votre réponse..."></textarea></div></div><div class="modal-footer"><button onclick="sendTicketReply()" style="background:#8b5cf6;">Envoyer la réponse</button><button onclick="closeModal('replyTicketModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="replyTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-reply"></i> Répondre au ticket</h2><button class="modal-close" onclick="closeModal('replyTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="replyTicketId" readonly></div><div class="input-group"><label>Netuber</label><input type="text" id="replyNetuberCode" readonly></div><div class="input-group"><label>Message de réponse</label><textarea id="replyMessage" rows="4" placeholder="Votre réponse..."></textarea></div></div><div class="modal-footer"><button onclick="sendTicketReply()" style="background:#8b5cf6;">Envoyer</button><button onclick="closeModal('replyTicketModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
-<div id="resolveTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-check-circle"></i> Résoudre le ticket</h2><button class="modal-close" onclick="closeModal('resolveTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="resolveTicketId" readonly></div><div class="input-group"><label>Netuber</label><input type="text" id="resolveNetuberCode" readonly></div><div class="input-group"><label>Message de clôture (optionnel)</label><textarea id="resolveMessage" rows="3" placeholder="Message de clôture..."></textarea></div></div><div class="modal-footer"><button onclick="resolveTicket()" style="background:#10b981;">Marquer comme résolu</button><button onclick="closeModal('resolveTicketModal')" style="background:#64748b;">Annuler</button></div></div></div>
-
-<div id="customizeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-palette"></i> Personnalisation du Dashboard</h2><button class="modal-close" onclick="closeModal('customizeModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Couleur principale</label><input type="color" id="primaryColor" value="#f59e0b"></div><div class="input-group"><label>Couleur secondaire</label><input type="color" id="secondaryColor" value="#3b82f6"></div><div class="input-group"><label>Mode sombre/clair</label><select id="themeMode"><option value="dark">Sombre</option><option value="light">Clair</option></select></div><div class="input-group"><label>Titre du dashboard</label><input type="text" id="dashboardTitle" value="NeTubeX Admin"></div><div class="input-group"><label>Logo URL</label><input type="text" id="logoUrl" placeholder="URL du logo"></div></div><div class="modal-footer"><button onclick="applyCustomization()" style="background:#8b5cf6;">Appliquer</button><button onclick="closeModal('customizeModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="confirmModal" class="modal"><div class="modal-content"><div class="modal-body confirm-dialog"><i class="fas fa-question-circle"></i><h3 id="confirmTitle">NeTubeX</h3><p id="confirmMessage">Confirmez-vous cette action ?</p><div class="confirm-buttons"><button class="btn-cancel" id="confirmCancelBtn">Annuler</button><button class="btn-confirm" id="confirmOkBtn">Confirmer</button></div></div></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
@@ -233,186 +242,29 @@ let ticketsData = [];
 let rapportsChart = null;
 let anomaliesChart = null;
 let selectedNetuberForCap = null;
-let currentTicketForAction = null;
+let pendingConfirmAction = null;
 
-// ============ PERSONNALISATION ============
-function applyCustomization() {
-    const primaryColor = document.getElementById('primaryColor').value;
-    const secondaryColor = document.getElementById('secondaryColor').value;
-    const themeMode = document.getElementById('themeMode').value;
-    const dashboardTitle = document.getElementById('dashboardTitle').value;
-    
-    if(themeMode === 'light') {
-        document.body.classList.add('light-mode');
-    } else {
-        document.body.classList.remove('light-mode');
-    }
-    
-    document.querySelector('.logo h1').innerHTML = `<i class="fas fa-chart-line"></i> ${dashboardTitle}`;
-    document.documentElement.style.setProperty('--primary-color', primaryColor);
-    
-    localStorage.setItem('adminTheme', themeMode);
-    localStorage.setItem('adminTitle', dashboardTitle);
-    localStorage.setItem('adminPrimaryColor', primaryColor);
-    
-    closeModal('customizeModal');
-    showToast('✅ Personnalisation appliquée');
+// ============ CONFIRMATION MODALE ============
+function showConfirm(title, message, onConfirm) {
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmMessage').textContent = message;
+    document.getElementById('confirmModal').classList.add('active');
+    const confirmOk = document.getElementById('confirmOkBtn');
+    const confirmCancel = document.getElementById('confirmCancelBtn');
+    const handler = () => {
+        document.getElementById('confirmModal').classList.remove('active');
+        confirmOk.removeEventListener('click', handler);
+        confirmCancel.removeEventListener('click', cancelHandler);
+        if(onConfirm) onConfirm();
+    };
+    const cancelHandler = () => {
+        document.getElementById('confirmModal').classList.remove('active');
+        confirmOk.removeEventListener('click', handler);
+        confirmCancel.removeEventListener('click', cancelHandler);
+    };
+    confirmOk.addEventListener('click', handler);
+    confirmCancel.addEventListener('click', cancelHandler);
 }
-
-function openCustomizeModal() {
-    const savedTheme = localStorage.getItem('adminTheme') || 'dark';
-    const savedTitle = localStorage.getItem('adminTitle') || 'NeTubeX Admin';
-    document.getElementById('themeMode').value = savedTheme;
-    document.getElementById('dashboardTitle').value = savedTitle;
-    openModal('customizeModal');
-}
-
-function loadCustomization() {
-    const savedTheme = localStorage.getItem('adminTheme');
-    if(savedTheme === 'light') {
-        document.body.classList.add('light-mode');
-    }
-    const savedTitle = localStorage.getItem('adminTitle');
-    if(savedTitle) {
-        document.querySelector('.logo h1').innerHTML = `<i class="fas fa-chart-line"></i> ${savedTitle}`;
-    }
-}
-
-// ============ GESTION DES TICKETS ============
-async function loadTickets() {
-    ticketsData = [];
-    for(const user of usersData) {
-        const userTickets = user.ticketsList || [];
-        for(const ticket of userTickets) {
-            ticketsData.push({
-                ...ticket,
-                userCode: user.code,
-                userId: user.id
-            });
-        }
-    }
-    ticketsData.sort((a,b) => new Date(b.date) - new Date(a.date));
-    updateTicketsTable();
-}
-
-function updateTicketsTable() {
-    const tbody = document.getElementById('ticketsTableBody');
-    tbody.innerHTML = ticketsData.map(t => {
-        const statusClass = t.status === 'resolu' ? 'badge-success' : (t.status === 'en-cours' ? 'badge-warning' : 'badge-info');
-        const statusText = t.status === 'resolu' ? 'Résolu' : (t.status === 'en-cours' ? 'En cours' : 'Ouvert');
-        const priorityClass = t.priority === 'haute' ? 'badge-danger' : (t.priority === 'moyenne' ? 'badge-warning' : 'badge-info');
-        return `<tr>
-            <td><strong>${t.userCode}</strong></td>
-            <td>${t.category || t.subject}</td>
-            <td><span class="badge ${priorityClass}">${t.priority}</span></td>
-            <td><span class="badge ${statusClass}">${statusText}</span></td>
-            <td><small>${new Date(t.date).toLocaleDateString()}</small></td>
-            <td>
-                <button class="action-btn reply" onclick="openReplyTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-reply"></i> Répondre</button>
-                ${t.status !== 'resolu' ? `<button class="action-btn resolve" onclick="openResolveTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-check"></i> Résoudre</button>` : ''}
-                <button class="action-btn delete" onclick="deleteTicket('${t.id}', '${t.userId}')"><i class="fas fa-trash"></i> Supprimer</button>
-            </td>
-        </tr>`;
-    }).join('');
-    
-    document.getElementById('ticketsOpen').innerText = ticketsData.filter(t => t.status === 'ouvert').length;
-    document.getElementById('ticketsProgress').innerText = ticketsData.filter(t => t.status === 'en-cours').length;
-    document.getElementById('ticketsResolved').innerText = ticketsData.filter(t => t.status === 'resolu').length;
-}
-
-window.openReplyTicketModal = (ticketId, userCode) => {
-    document.getElementById('replyTicketId').value = ticketId;
-    document.getElementById('replyNetuberCode').value = userCode;
-    document.getElementById('replyMessage').value = '';
-    openModal('replyTicketModal');
-};
-
-window.sendTicketReply = async () => {
-    const ticketId = document.getElementById('replyTicketId').value;
-    const userCode = document.getElementById('replyNetuberCode').value;
-    const message = document.getElementById('replyMessage').value.trim();
-    
-    if(!message) {
-        showToast('⚠️ Veuillez saisir un message');
-        return;
-    }
-    
-    const user = usersData.find(u => u.code === userCode);
-    if(!user) return;
-    
-    const userRef = doc(db, "users", user.id);
-    const userSnap = await getDoc(userRef);
-    const tickets = userSnap.data().ticketsList || [];
-    const ticketIndex = tickets.findIndex(t => t.id === ticketId);
-    
-    if(ticketIndex !== -1) {
-        const reply = {
-            id: `reply_${Date.now()}`,
-            message: message,
-            admin: true,
-            date: new Date().toISOString()
-        };
-        tickets[ticketIndex].reponses = tickets[ticketIndex].reponses || [];
-        tickets[ticketIndex].reponses.push(reply);
-        if(tickets[ticketIndex].status === 'ouvert') {
-            tickets[ticketIndex].status = 'en-cours';
-        }
-        await updateDoc(userRef, { ticketsList: tickets });
-        showToast(`✅ Réponse envoyée à ${userCode}`);
-        closeModal('replyTicketModal');
-        loadAllData();
-    }
-};
-
-window.openResolveTicketModal = (ticketId, userCode) => {
-    document.getElementById('resolveTicketId').value = ticketId;
-    document.getElementById('resolveNetuberCode').value = userCode;
-    document.getElementById('resolveMessage').value = '';
-    openModal('resolveTicketModal');
-};
-
-window.resolveTicket = async () => {
-    const ticketId = document.getElementById('resolveTicketId').value;
-    const userCode = document.getElementById('resolveNetuberCode').value;
-    const message = document.getElementById('resolveMessage').value.trim();
-    
-    const user = usersData.find(u => u.code === userCode);
-    if(!user) return;
-    
-    const userRef = doc(db, "users", user.id);
-    const userSnap = await getDoc(userRef);
-    const tickets = userSnap.data().ticketsList || [];
-    const ticketIndex = tickets.findIndex(t => t.id === ticketId);
-    
-    if(ticketIndex !== -1) {
-        tickets[ticketIndex].status = 'resolu';
-        if(message) {
-            tickets[ticketIndex].reponses = tickets[ticketIndex].reponses || [];
-            tickets[ticketIndex].reponses.push({
-                id: `close_${Date.now()}`,
-                message: `✅ Ticket résolu : ${message}`,
-                admin: true,
-                date: new Date().toISOString()
-            });
-        }
-        await updateDoc(userRef, { ticketsList: tickets });
-        showToast(`✅ Ticket ${ticketId} marqué comme résolu`);
-        closeModal('resolveTicketModal');
-        loadAllData();
-    }
-};
-
-window.deleteTicket = async (ticketId, userId) => {
-    if(!confirm('Supprimer définitivement ce ticket ?')) return;
-    
-    const userRef = doc(db, "users", userId);
-    const userSnap = await getDoc(userRef);
-    const tickets = userSnap.data().ticketsList || [];
-    const newTickets = tickets.filter(t => t.id !== ticketId);
-    await updateDoc(userRef, { ticketsList: newTickets });
-    showToast('✅ Ticket supprimé');
-    loadAllData();
-};
 
 // ============ FONCTIONS GLOBALES ============
 window.switchTab = (tab) => {
@@ -425,6 +277,63 @@ window.switchTab = (tab) => {
 window.closeModal = (id) => document.getElementById(id).classList.remove('active');
 function openModal(id) { document.getElementById(id).classList.add('active'); }
 function showToast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
+
+// ============ GESTION DES OBJECTIFS ============
+function updateGlobalObjectives() {
+    const totalObjectifMensuel = usersData.reduce((sum, u) => sum + (parseInt(u.objectifMensuel) || 9), 0);
+    const totalObjectifAtteint = usersData.reduce((sum, u) => sum + (parseInt(u.objectifAtteint) || 0), 0);
+    const totalObjectifRestant = totalObjectifMensuel - totalObjectifAtteint;
+    const pourcentage = totalObjectifMensuel > 0 ? (totalObjectifAtteint / totalObjectifMensuel * 100).toFixed(1) : 0;
+    
+    const grid = document.getElementById('globalObjectivesGrid');
+    grid.innerHTML = `
+        <div class="neuber-objectif-card">
+            <h5><i class="fas fa-chart-line"></i> Vue globale des objectifs</h5>
+            <div class="objectif-stats"><span>Objectifs mensuels totaux</span><strong>${totalObjectifMensuel}</strong></div>
+            <div class="objectif-stats"><span>Objectifs atteints</span><strong style="color:#10b981;">${totalObjectifAtteint}</strong></div>
+            <div class="objectif-stats"><span>Objectifs restants</span><strong style="color:#f59e0b;">${totalObjectifRestant}</strong></div>
+            <div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Progression globale (${pourcentage}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pourcentage}%; background:#10b981;"></div></div></div></div>
+        </div>
+        ${usersData.map(u => {
+            const objMensuel = parseInt(u.objectifMensuel) || 9;
+            const objAtteint = parseInt(u.objectifAtteint) || 0;
+            const objRestant = objMensuel - objAtteint;
+            const percent = objMensuel > 0 ? (objAtteint / objMensuel * 100).toFixed(1) : 0;
+            return `
+            <div class="neuber-objectif-card">
+                <h5><i class="fas fa-user"></i> ${u.code}</h5>
+                <div class="objectif-stats"><span>Objectif mensuel</span><strong>${objMensuel}</strong></div>
+                <div class="objectif-stats"><span>Objectif atteint</span><strong style="color:#10b981;">${objAtteint}</strong></div>
+                <div class="objectif-stats"><span>Objectif restant</span><strong style="color:#f59e0b;">${objRestant}</strong></div>
+                <div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Progression (${percent}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${percent}%; background:#10b981;"></div></div></div></div>
+            </div>`;
+        }).join('')}
+    `;
+}
+
+// ============ GESTION DES ANOMALIES PAR TICKETS ============
+async function checkAndUpdateAnomalies(userId, userCode, ticketCategory) {
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+    const user = userSnap.data();
+    const ticketCounts = user.ticketCountsByCategory || {};
+    const newCount = (ticketCounts[ticketCategory] || 0) + 1;
+    ticketCounts[ticketCategory] = newCount;
+    
+    // Une anomalie est incrémentée quand un même type de ticket est envoyé 3 fois
+    if(newCount === 3) {
+        const currentAnomalies = (parseInt(user.anomaliesConnexion) || 0) + (parseInt(user.anomaliesSysteme) || 0);
+        await updateDoc(userRef, { 
+            anomaliesConnexion: increment(1),
+            ticketCountsByCategory: ticketCounts,
+            derniereAnomalie: new Date().toISOString(),
+            niveauAlerte: currentAnomalies + 1 >= 5 ? 'rouge' : (currentAnomalies + 1 >= 3 ? 'orange' : 'vert')
+        });
+        showToast(`⚠️ Anomalie détectée pour ${userCode} (${ticketCategory} x3)`);
+    } else {
+        await updateDoc(userRef, { ticketCountsByCategory: ticketCounts });
+    }
+}
 
 // ============ CHARGEMENT DES DONNÉES ============
 async function loadAllData() {
@@ -445,6 +354,23 @@ async function loadAllData() {
     updateCharts();
     updateSelects();
     updateCapHistory();
+    updateGlobalObjectives();
+}
+
+async function loadTickets() {
+    ticketsData = [];
+    for(const user of usersData) {
+        const userTickets = user.ticketsList || [];
+        for(const ticket of userTickets) {
+            ticketsData.push({
+                ...ticket,
+                userCode: user.code,
+                userId: user.id
+            });
+        }
+    }
+    ticketsData.sort((a,b) => new Date(b.date) - new Date(a.date));
+    updateTicketsTable();
 }
 
 function updateStats() {
@@ -479,8 +405,10 @@ function updateNetubersTable() {
     });
     
     tbody.innerHTML = filtered.map(u => {
+        const objMensuel = parseInt(u.objectifMensuel) || 9;
+        const objAtteint = parseInt(u.objectifAtteint) || 0;
+        const objRestant = objMensuel - objAtteint;
         const connexions = parseInt(u.NombreConnexions) || 0;
-        const deconnexions = parseInt(u.NombreDeconnexions) || 0;
         const anomalies = (parseInt(u.anomaliesConnexion)||0) + (parseInt(u.anomaliesSysteme)||0);
         const isOnline = u.estConnecte === true || u.estConnecte === 'true';
         const isBlocked = u.isBlocked === true;
@@ -488,15 +416,41 @@ function updateNetubersTable() {
         return `<tr>
             <td><strong>${u.code || '-'}</strong>${isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</td>
             <td>${u.email || '-'}</td>
-            <td style="color:#10b981; font-weight:600;">${connexions}</td>
-            <td style="color:#f59e0b; font-weight:600;">${deconnexions}</td>
+            <td style="font-weight:600;">${objMensuel}</td>
+            <td style="color:#10b981; font-weight:600;">${objAtteint}</td>
+            <td style="color:#f59e0b; font-weight:600;">${objRestant}</td>
+            <td style="color:#3b82f6;">${connexions}</td>
             <td><span class="badge ${anomalieClass}">${anomalies}</span></td>
             <td><i class="fas fa-map-marker-alt"></i> ${u.localisation || '-'}</td>
-            <td><small>${formatDateShort(u.heureConnexion)}</small></td>
             <td><span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>${isOnline ? 'En ligne' : 'Hors ligne'}${isBlocked ? ' 🔒' : ''}</td>
-            <td><button class="action-btn cap" onclick="openCapModal('${u.code}')"><i class="fas fa-chart-line"></i> CAP</button><button class="action-btn view" onclick="showNetuberDetails('${u.code}')"><i class="fas fa-eye"></i></button></td>
+            <td><button class="action-btn cap" onclick="openCapModal('${u.code}')"><i class="fas fa-chart-line"></i> CAP</button><button class="action-btn view" onclick="showNetuberDetails('${u.code}')"><i class="fas fa-eye"></i></button></button><button class="action-btn delete" onclick="openDeleteNetuberModal('${u.code}')"><i class="fas fa-trash"></i></button></td>
         </tr>`;
     }).join('');
+}
+
+function updateTicketsTable() {
+    const tbody = document.getElementById('ticketsTableBody');
+    tbody.innerHTML = ticketsData.map(t => {
+        const statusClass = t.status === 'resolu' ? 'badge-success' : (t.status === 'en-cours' ? 'badge-warning' : 'badge-info');
+        const statusText = t.status === 'resolu' ? 'Résolu' : (t.status === 'en-cours' ? 'En cours' : 'Ouvert');
+        const priorityClass = t.priority === 'haute' ? 'badge-danger' : (t.priority === 'moyenne' ? 'badge-warning' : 'badge-info');
+        return `<tr>
+            <td><strong>${t.userCode}</strong></td>
+            <td>${t.category || t.subject}</td>
+            <td><span class="badge ${priorityClass}">${t.priority}</span></td>
+            <td><span class="badge ${statusClass}">${statusText}</span></td>
+            <td><small>${new Date(t.date).toLocaleDateString()}</small></td>
+            <td>
+                <button class="action-btn reply" onclick="openReplyTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-reply"></i> Répondre</button>
+                ${t.status !== 'resolu' ? `<button class="action-btn resolve" onclick="openResolveTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-check"></i> Résoudre</button>` : ''}
+                <button class="action-btn delete" onclick="deleteTicket('${t.id}', '${t.userId}')"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>`;
+    }).join('');
+    
+    document.getElementById('ticketsOpen').innerText = ticketsData.filter(t => t.status === 'ouvert').length;
+    document.getElementById('ticketsProgress').innerText = ticketsData.filter(t => t.status === 'en-cours').length;
+    document.getElementById('ticketsResolved').innerText = ticketsData.filter(t => t.status === 'resolu').length;
 }
 
 function updateRapportsTable() {
@@ -526,8 +480,8 @@ function updateAnomaliesTable() {
     const anomalies = [];
     usersData.forEach(u => { 
         const count = (parseInt(u.anomaliesConnexion) || 0) + (parseInt(u.anomaliesSysteme) || 0); 
-        if(count >= 2) { 
-            anomalies.push({ code: u.code, type: 'Anomalies multiples', count: count, last: u.derniereMAJTech, id: u.id }); 
+        if(count >= 1) { 
+            anomalies.push({ code: u.code, type: 'Anomalies système/connexion', count: count, last: u.derniereAnomalie || u.derniereMAJTech, id: u.id }); 
         } 
     });
     const tbody = document.getElementById('anomaliesTableBody');
@@ -576,23 +530,17 @@ function updateCharts() {
     const ctx = document.getElementById('rapportsChart').getContext('2d');
     rapportsChart = new Chart(ctx, { 
         type: 'line', 
-        data: { 
-            labels: last7Days, 
-            datasets: [{ label: 'Points cumulés', data: pointsData, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.3 }] 
-        }, 
+        data: { labels: last7Days, datasets: [{ label: 'Points cumulés', data: pointsData, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.3 }] }, 
         options: { responsive: true, maintainAspectRatio: true } 
     });
     
     const anomaliesByDay = [0,0,0,0,0,0,0];
-    usersData.forEach(u => { if(u.derniereMAJTech) { const d = new Date(u.derniereMAJTech); anomaliesByDay[d.getDay()]++; } });
+    usersData.forEach(u => { if(u.derniereAnomalie) { const d = new Date(u.derniereAnomalie); anomaliesByDay[d.getDay()]++; } });
     if(anomaliesChart) anomaliesChart.destroy();
     const ctx2 = document.getElementById('anomaliesChart').getContext('2d');
     anomaliesChart = new Chart(ctx2, { 
         type: 'bar', 
-        data: { 
-            labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'], 
-            datasets: [{ label: 'Anomalies', data: anomaliesByDay, backgroundColor: '#ef4444', borderRadius: 8 }] 
-        }, 
+        data: { labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'], datasets: [{ label: 'Anomalies', data: anomaliesByDay, backgroundColor: '#ef4444', borderRadius: 8 }] }, 
         options: { responsive: true, maintainAspectRatio: true } 
     });
 }
@@ -618,75 +566,85 @@ window.viewRapport = (id) => {
     
     const modalBody = document.getElementById('rapportDetailBody');
     modalBody.innerHTML = `
-        <div class="detail-card">
-            <h4>📋 INFORMATIONS GÉNÉRALES</h4>
-            <div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${rapport.reference || '-'}</span></div>
-            <div class="detail-row"><span class="detail-label">Zone / Site</span><span class="detail-value">${rapport.zone || '-'}</span></div>
-            <div class="detail-row"><span class="detail-label">Responsable</span><span class="detail-value">${rapport.responsable || '-'}</span></div>
-            <div class="detail-row"><span class="detail-label">Date du rapport</span><span class="detail-value">${new Date(rapport.createdAt).toLocaleDateString('fr-FR')} à ${new Date(rapport.createdAt).toLocaleTimeString('fr-FR')}</span></div>
-        </div>
-        
-        <div class="detail-card">
-            <h4>🎯 OBJECTIFS DU JOUR</h4>
-            <div class="detail-row"><span class="detail-label">Objectif mensuel</span><span class="detail-value">9 jeux</span></div>
-            <div class="detail-row"><span class="detail-label">Objectif du jour</span><span class="detail-value">1 jeu</span></div>
-            <div class="detail-row"><span class="detail-label">Objectif atteint</span><span class="detail-value"><span class="badge badge-success">${rapport.goalReached || 0}/9</span></span></div>
-            <div class="detail-row"><span class="detail-label">Objectif restant</span><span class="detail-value">${rapport.gameRemaining || 9 - (rapport.goalReached || 0)}</span></div>
-            <div class="detail-row"><span class="detail-label">Appels au pilote</span><span class="detail-value">${rapport.piloteCallCount || 0} fois</span></div>
-        </div>
-        
-        <div class="detail-card">
-            <h4>📊 PERFORMANCE GLOBALE</h4>
-            <div class="detail-row"><span class="detail-label">Points précédents</span><span class="detail-value">${rapport.totalPointsPrecedents || 0} pts</span></div>
-            <div class="detail-row"><span class="detail-label">Points du jour</span><span class="detail-value" style="color:#f59e0b;">${rapport.totalPointsJour || 0} pts</span></div>
-            <div class="detail-row"><span class="detail-label">Écart</span><span class="detail-value ${(rapport.totalPointsJour || 0) > (rapport.totalPointsPrecedents || 0) ? 'tendance-up' : 'tendance-down'}">${((rapport.totalPointsJour || 0) - (rapport.totalPointsPrecedents || 0)) > 0 ? '+' : ''}${(rapport.totalPointsJour || 0) - (rapport.totalPointsPrecedents || 0)} pts</span></div>
-            <div class="detail-row"><span class="detail-label">Temps précédent</span><span class="detail-value">${rapport.totalTempsPrecedent || 0} min</span></div>
-            <div class="detail-row"><span class="detail-label">Temps du jour</span><span class="detail-value">${rapport.totalTempsJour || 0} min</span></div>
-            <div class="detail-row"><span class="detail-label">Rendement global</span><span class="detail-value ${rapport.rendementGlobal > 0.5 ? 'tendance-up' : 'tendance-down'}">${rapport.rendementGlobal || 0} pts/min</span></div>
-        </div>
-        
-        <div class="detail-card">
-            <h4>📈 PROGRESSION DES POINTS</h4>
-            <div class="progress-bar-group">
-                <div class="progress-item">
-                    <div class="progress-label">Points précédents (${rapport.totalPointsPrecedents || 0} pts)</div>
-                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsPrevPercent}%; background:#3b82f6;"></div></div>
-                </div>
-                <div class="progress-item">
-                    <div class="progress-label">Points du jour (${rapport.totalPointsJour || 0} pts)</div>
-                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsJourPercent}%; background:#f59e0b;"></div></div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="detail-card">
-            <h4>👥 DÉTAIL DES NETUBERS</h4>
-            <table style="width:100%; font-size:11px;">
-                <thead><tr><th>Code</th><th>Présence</th><th>Points préc.</th><th>Points jour</th><th>Écart</th><th>Temps préc.</th><th>Temps jour</th><th>Rendement</th><th>Jours</th></tr></thead>
-                <tbody>${(rapport.netubers || []).map(n => {
-                    const ecart = (n.pointsJour || 0) - (n.pointsPrecedents || 0);
-                    const rendement = n.tempsJour > 0 ? ((n.pointsJour || 0) / n.tempsJour).toFixed(2) : '0';
-                    return `<tr>
-                        <td>${n.code}</td>
-                        <td>${n.presence === 'Présent' ? '✅' : '❌'}</td>
-                        <td>${n.pointsPrecedents || 0}</td>
-                        <td style="color:#f59e0b;">${n.pointsJour || 0}</td>
-                        <td class="${ecart > 0 ? 'tendance-up' : 'tendance-down'}">${ecart > 0 ? '+' : ''}${ecart}</td>
-                        <td>${n.tempsPrecedent || 0}</td>
-                        <td>${n.tempsJour || 0}</td>
-                        <td>${rendement}</td>
-                        <td>${n.joursPrestes || 0}</td>
-                    </tr>`;
-                }).join('')}</tbody>
-            </table>
-        </div>
-        
-        <div class="detail-card">
-            <h4>📝 RECOMMANDATION DU PÔLE</h4>
-            <p style="font-size:12px; line-height:1.5; background:#1e293b; padding:12px; border-radius:12px;">${rapport.recommendation || '-'}</p>
-        </div>
+        <div class="detail-card"><h4>📋 Informations générales</h4><div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${rapport.reference || '-'}</span></div><div class="detail-row"><span class="detail-label">Zone / Site</span><span class="detail-value">${rapport.zone || '-'}</span></div><div class="detail-row"><span class="detail-label">Responsable</span><span class="detail-value">${rapport.responsable || '-'}</span></div><div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">${new Date(rapport.createdAt).toLocaleString('fr-FR')}</span></div></div>
+        <div class="detail-card"><h4>🎯 Objectifs</h4><div class="detail-row"><span class="detail-label">Objectif atteint</span><span class="detail-value"><span class="badge badge-success">${rapport.goalReached || 0}/9</span></span></div><div class="detail-row"><span class="detail-label">Appels pilote</span><span class="detail-value">${rapport.piloteCallCount || 0} fois</span></div></div>
+        <div class="detail-card"><h4>📊 Performance</h4><div class="detail-row"><span class="detail-label">Points précédents</span><span class="detail-value">${rapport.totalPointsPrecedents || 0} pts</span></div><div class="detail-row"><span class="detail-label">Points du jour</span><span class="detail-value" style="color:#f59e0b;">${rapport.totalPointsJour || 0} pts</span></div><div class="detail-row"><span class="detail-label">Progression</span><div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Points précédents (${Math.round(pointsPrevPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsPrevPercent}%; background:#3b82f6;"></div></div></div><div class="progress-item"><div class="progress-label">Points du jour (${Math.round(pointsJourPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsJourPercent}%; background:#f59e0b;"></div></div></div></div></div></div>
+        <div class="detail-card"><h4>👥 Détail des Netubers</h4><div class="table-wrapper"><table style="min-width:600px;"><thead><tr><th>Code</th><th>Présence</th><th>Points préc.</th><th>Points jour</th><th>Écart</th><th>Rendement</th></tr></thead><tbody>${(rapport.netubers || []).map(n => { const ecart = (n.pointsJour || 0) - (n.pointsPrecedents || 0); const rendement = n.tempsJour > 0 ? ((n.pointsJour || 0) / n.tempsJour).toFixed(2) : '0'; return `<tr><td>${n.code}</td><td>${n.presence === 'Présent' ? '✅' : '❌'}</td><td>${n.pointsPrecedents || 0}</td><td style="color:#f59e0b;">${n.pointsJour || 0}</td><td class="${ecart > 0 ? 'tendance-up' : 'tendance-down'}">${ecart > 0 ? '+' : ''}${ecart}</td><td>${rendement}</td></tr>`; }).join('')}</tbody></table></div></div>
+        <div class="detail-card"><h4>📝 Recommandation</h4><p style="font-size:12px; line-height:1.5; background:#1e293b; padding:12px; border-radius:12px;">${rapport.recommendation || '-'}</p></div>
     `;
     openModal('rapportModal');
+};
+
+// ============ ACTIONS TICKETS ============
+window.openReplyTicketModal = (ticketId, userCode) => {
+    document.getElementById('replyTicketId').value = ticketId;
+    document.getElementById('replyNetuberCode').value = userCode;
+    document.getElementById('replyMessage').value = '';
+    openModal('replyTicketModal');
+};
+
+window.sendTicketReply = async () => {
+    const ticketId = document.getElementById('replyTicketId').value;
+    const userCode = document.getElementById('replyNetuberCode').value;
+    const message = document.getElementById('replyMessage').value.trim();
+    if(!message) { showToast('Veuillez saisir un message'); return; }
+    const user = usersData.find(u => u.code === userCode);
+    if(!user) return;
+    const userRef = doc(db, "users", user.id);
+    const userSnap = await getDoc(userRef);
+    const tickets = userSnap.data().ticketsList || [];
+    const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+    if(ticketIndex !== -1) {
+        tickets[ticketIndex].reponses = tickets[ticketIndex].reponses || [];
+        tickets[ticketIndex].reponses.push({ id: `reply_${Date.now()}`, message, admin: true, date: new Date().toISOString() });
+        if(tickets[ticketIndex].status === 'ouvert') tickets[ticketIndex].status = 'en-cours';
+        await updateDoc(userRef, { ticketsList: tickets });
+        showToast(`✅ Réponse envoyée à ${userCode}`);
+        closeModal('replyTicketModal');
+        loadAllData();
+    }
+};
+
+window.openResolveTicketModal = (ticketId, userCode) => {
+    document.getElementById('resolveTicketId').value = ticketId;
+    document.getElementById('resolveNetuberCode').value = userCode;
+    document.getElementById('resolveMessage').value = '';
+    openModal('resolveTicketModal');
+};
+
+window.resolveTicket = async () => {
+    const ticketId = document.getElementById('resolveTicketId').value;
+    const userCode = document.getElementById('resolveNetuberCode').value;
+    const message = document.getElementById('resolveMessage').value.trim();
+    const user = usersData.find(u => u.code === userCode);
+    if(!user) return;
+    const userRef = doc(db, "users", user.id);
+    const userSnap = await getDoc(userRef);
+    const tickets = userSnap.data().ticketsList || [];
+    const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+    if(ticketIndex !== -1) {
+        tickets[ticketIndex].status = 'resolu';
+        if(message) {
+            tickets[ticketIndex].reponses = tickets[ticketIndex].reponses || [];
+            tickets[ticketIndex].reponses.push({ id: `close_${Date.now()}`, message: `✅ Ticket résolu : ${message}`, admin: true, date: new Date().toISOString() });
+        }
+        await updateDoc(userRef, { ticketsList: tickets });
+        showToast(`✅ Ticket résolu`);
+        closeModal('resolveTicketModal');
+        loadAllData();
+    }
+};
+
+window.deleteTicket = async (ticketId, userId) => {
+    showConfirm('NeTubeX', 'Supprimer définitivement ce ticket ?', async () => {
+        const userRef = doc(db, "users", userId);
+        const userSnap = await getDoc(userRef);
+        const tickets = userSnap.data().ticketsList || [];
+        const newTickets = tickets.filter(t => t.id !== ticketId);
+        await updateDoc(userRef, { ticketsList: newTickets });
+        showToast('✅ Ticket supprimé');
+        loadAllData();
+    });
 };
 
 // ============ ACTIONS NETUBERS ============
@@ -694,19 +652,24 @@ window.showNetuberDetails = (code) => {
     const user = usersData.find(u => u.code === code);
     if(!user) return;
     const modalBody = document.getElementById('rapportDetailBody');
-    modalBody.innerHTML = `
-        <div class="detail-grid">
-            <div class="detail-card"><h4>Identité</h4><div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${user.code || '-'}</span></div><div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${user.email || '-'}</span></div></div>
-            <div class="detail-card"><h4>Statistiques</h4><div class="detail-row"><span class="detail-label">Connexions</span><span class="detail-value">${user.NombreConnexions || 0}</span></div><div class="detail-row"><span class="detail-label">Déconnexions</span><span class="detail-value">${user.NombreDeconnexions || 0}</span></div></div>
-        </div>`;
+    modalBody.innerHTML = `<div class="detail-grid"><div class="detail-card"><h4>Identité</h4><div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${user.code || '-'}</span></div><div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${user.email || '-'}</span></div></div><div class="detail-card"><h4>Objectifs</h4><div class="detail-row"><span class="detail-label">Objectif mensuel</span><span class="detail-value">${user.objectifMensuel || 9}</span></div><div class="detail-row"><span class="detail-label">Objectif atteint</span><span class="detail-value">${user.objectifAtteint || 0}</span></div><div class="detail-row"><span class="detail-label">Objectif restant</span><span class="detail-value">${(user.objectifMensuel || 9) - (user.objectifAtteint || 0)}</span></div></div><div class="detail-card"><h4>Statistiques</h4><div class="detail-row"><span class="detail-label">Connexions</span><span class="detail-value">${user.NombreConnexions || 0}</span></div><div class="detail-row"><span class="detail-label">Déconnexions</span><span class="detail-value">${user.NombreDeconnexions || 0}</span></div><div class="detail-row"><span class="detail-label">Anomalies</span><span class="detail-value">${(user.anomaliesConnexion||0)+(user.anomaliesSysteme||0)}</span></div></div></div>`;
     openModal('rapportModal');
 };
 
 window.resetAnomalies = async (userId) => {
-    const userRef = doc(db, "users", userId);
-    await updateDoc(userRef, { anomaliesConnexion: 0, anomaliesSysteme: 0 });
-    showToast("✅ Anomalies réinitialisées");
-    loadAllData();
+    showConfirm('NeTubeX', 'Réinitialiser les anomalies de ce Netuber ?', async () => {
+        const userRef = doc(db, "users", userId);
+        await updateDoc(userRef, { anomaliesConnexion: 0, anomaliesSysteme: 0, ticketCountsByCategory: {} });
+        showToast("✅ Anomalies réinitialisées");
+        loadAllData();
+    });
+};
+
+window.openDeleteNetuberModal = (code) => {
+    showConfirm('NeTubeX', `Supprimer définitivement le Netuber ${code} ? Cette action est irréversible.`, async () => {
+        const user = usersData.find(u => u.code === code);
+        if(user) { await deleteDoc(doc(db, "users", user.id)); showToast(`🗑️ ${code} supprimé`); loadAllData(); }
+    });
 };
 
 // ============ CAP DU JOUR ============
@@ -721,17 +684,17 @@ window.openCapModal = (code) => {
 };
 
 window.sendCapToNetuber = async () => {
-    if(!selectedNetuberForCap) { showToast("⚠️ Aucun Netuber sélectionné"); return; }
+    if(!selectedNetuberForCap) { showToast("Aucun Netuber sélectionné"); return; }
     const capMessage = document.getElementById('capMessage').value.trim();
     const expiration = document.getElementById('capExpiration').value;
-    if(!capMessage) { showToast("⚠️ Veuillez saisir le message du CAP"); return; }
+    if(!capMessage) { showToast("Veuillez saisir le message du CAP"); return; }
     try {
         const userRef = doc(db, "users", selectedNetuberForCap.id);
         await updateDoc(userRef, { capDuJour: capMessage, capExpiration: expiration, capEnvoyeLe: new Date().toISOString() });
         closeModal('capModal');
         showToast(`✅ CAP envoyé à ${selectedNetuberForCap.code}`);
         loadAllData();
-    } catch(error) { showToast(`❌ Erreur: ${error.message}`); }
+    } catch(error) { showToast(`Erreur: ${error.message}`); }
 };
 
 // ============ CRUD NETUBERS ============
@@ -739,14 +702,15 @@ window.createNetuber = async () => {
     const code = document.getElementById('newCode').value.trim();
     const email = document.getElementById('newEmail').value.trim();
     const password = document.getElementById('newPassword').value;
+    const objectifMensuel = parseInt(document.getElementById('newObjectifMensuel').value) || 9;
     if(!code || !email || !password) { showToast("Tous les champs sont requis"); return; }
     try {
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
-        await setDoc(doc(db, "users", userCred.user.uid), { code, email, role: "netuber", isActive: true, createdAt: new Date().toISOString(), NombreConnexions: 0, NombreDeconnexions: 0, NombreEchecsConnexion: 0, anomaliesConnexion: 0, anomaliesSysteme: 0, ticketsList: [], estConnecte: false, isBlocked: false });
+        await setDoc(doc(db, "users", userCred.user.uid), { code, email, role: "netuber", isActive: true, createdAt: new Date().toISOString(), NombreConnexions: 0, NombreDeconnexions: 0, anomaliesConnexion: 0, anomaliesSysteme: 0, ticketsList: [], ticketCountsByCategory: {}, estConnecte: false, isBlocked: false, objectifMensuel, objectifAtteint: 0 });
         closeModal('addNetuberModal');
         showToast("✅ Netuber créé");
         loadAllData();
-    } catch(e) { showToast("❌ Erreur: " + e.message); }
+    } catch(e) { showToast("Erreur: " + e.message); }
 };
 
 window.updateNetuberCode = async () => {
@@ -754,7 +718,7 @@ window.updateNetuberCode = async () => {
     const newCode = document.getElementById('newCodeValue').value.trim();
     if(!newCode) { showToast("Nouveau code requis"); return; }
     const user = usersData.find(u => u.code === code);
-    if(user) { const userRef = doc(db, "users", user.id); await updateDoc(userRef, { code: newCode }); closeModal('editCodeModal'); showToast(`✅ Code modifié: ${code} → ${newCode}`); loadAllData(); }
+    if(user) { const userRef = doc(db, "users", user.id); await updateDoc(userRef, { code: newCode }); closeModal('editCodeModal'); showToast(`✅ Code modifié`); loadAllData(); }
 };
 
 window.toggleBlockNetuber = async () => {
@@ -773,7 +737,14 @@ window.toggleBlockNetuber = async () => {
 window.deleteNetuber = async () => {
     const code = document.getElementById('deleteSelect').value;
     const user = usersData.find(u => u.code === code);
-    if(user && confirm(`Supprimer définitivement ${code} ?`)) { await deleteDoc(doc(db, "users", user.id)); closeModal('deleteModal'); showToast(`🗑️ ${code} supprimé`); loadAllData(); }
+    if(user) {
+        showConfirm('NeTubeX', `Supprimer définitivement ${code} ?`, async () => {
+            await deleteDoc(doc(db, "users", user.id));
+            closeModal('deleteModal');
+            showToast(`🗑️ ${code} supprimé`);
+            loadAllData();
+        });
+    }
 };
 
 // ============ FILTRES ET EXPORTS ============
@@ -785,8 +756,11 @@ window.openBlockModal = () => openModal('blockModal');
 window.openDeleteModal = () => openModal('deleteModal');
 
 window.exportNetubers = () => {
-    let csv = "Code,Email,Connexions,Déconnexions,Anomalies,Localisation,Statut,Bloqué\n";
-    usersData.forEach(u => { csv += `${u.code},${u.email},${u.NombreConnexions||0},${u.NombreDeconnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},${u.localisation||'-'},${u.estConnecte?'En ligne':'Hors ligne'},${u.isBlocked?'Oui':'Non'}\n`; });
+    let csv = "Code,Email,Objectif mensuel,Objectif atteint,Objectif restant,Connexions,Anomalies,Localisation,Statut,Bloqué\n";
+    usersData.forEach(u => { 
+        const objRestant = (u.objectifMensuel || 9) - (u.objectifAtteint || 0);
+        csv += `${u.code},${u.email},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},${u.localisation||'-'},${u.estConnecte?'En ligne':'Hors ligne'},${u.isBlocked?'Oui':'Non'}\n`; 
+    });
     const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `netubers_${new Date().toISOString().split('T')[0]}.csv`; link.click();
 };
 
@@ -801,7 +775,6 @@ window.exportRapports = () => {
 
 // ============ INITIALISATION ============
 document.getElementById('sendCapBtn')?.addEventListener('click', () => { window.sendCapToNetuber(); });
-loadCustomization();
 setInterval(loadAllData, 30000);
 loadAllData();
 </script>
