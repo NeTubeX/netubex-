@@ -6,7 +6,7 @@
 <title>NETUBER | SUIVI JOURNALIER - PGCO</title>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, doc, getDoc, getDocs, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
  
   const firebaseConfig = {
     apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
@@ -20,10 +20,16 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
  
-  // Exposer les fonctions nécessaires globalement
   window.db = db;
   window.collection = collection;
   window.addDoc = addDoc;
+  window.doc = doc;
+  window.getDoc = getDoc;
+  window.getDocs = getDocs;
+  window.query = query;
+  window.where = where;
+  window.orderBy = orderBy;
+  window.limit = limit;
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
@@ -50,12 +56,16 @@ textarea{resize:vertical;min-height:80px;font-family:inherit;}
 table{width:100%;border-collapse:collapse;background:#0b263b;border-radius:24px;overflow:hidden;border:1px solid #2a557a;min-width:1300px;}
 th{background:#143750;color:#b9e2fe;font-weight:600;font-size:0.7rem;padding:12px 4px;text-align:center;border-bottom:2px solid #2e6991;}
 td{padding:12px 4px;text-align:center;border-bottom:1px solid #1f4a6e;background:#0f2d45;color:#e2f0fd;}
-td input,td select{width:90px;padding:10px 4px;text-align:center;margin:0 auto;font-size:0.85rem;}
-td select{width:100px;}
+td select{width:100px;padding:10px 4px;text-align:center;margin:0 auto;font-size:0.85rem;}
+td input{width:100px;padding:10px 4px;text-align:center;margin:0 auto;font-size:0.85rem;}
 .total-row td{background:#1a3d5c;font-weight:800;border-top:2px solid #3b82f6;color:#facc15;}
 button{background:linear-gradient(145deg,#2563eb,#1d4ed8);color:white;border:none;padding:18px 24px;font-size:1.1rem;font-weight:600;border-radius:60px;cursor:pointer;width:100%;margin:20px 0 10px;transition:0.2s;}
 button:active{transform:scale(0.98);}
 button:disabled{opacity:0.7;}
+.action-buttons{display:flex;gap:12px;flex-wrap:wrap;}
+.action-buttons button{flex:1;margin:10px 0;background:linear-gradient(145deg,#2c3e50,#1a2632);}
+.action-buttons button:first-child{background:linear-gradient(145deg,#27ae60,#1e8449);}
+.action-buttons button:last-child{background:linear-gradient(145deg,#e67e22,#d35400);}
 footer{text-align:center;font-size:0.65rem;color:#5f748d;margin-top:16px;}
 .tendance-up{color:#4ade80;font-weight:bold;}
 .tendance-down{color:#fb923c;font-weight:bold;}
@@ -73,7 +83,7 @@ footer{text-align:center;font-size:0.65rem;color:#5f748d;margin-top:16px;}
 .popup-container{background:linear-gradient(135deg,#1e3a5f,#0f2d45);border-radius:28px;width:90%;max-width:400px;margin:0 auto;padding:24px 20px;box-shadow:0 20px 40px rgba(0,0,0,0.5);border-top:3px solid #facc15;transform:scale(0.9);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);}
 .popup-overlay.active .popup-container{transform:scale(1);}
 .popup-title{font-size:1.2rem;font-weight:700;color:#facc15;margin-bottom:12px;text-align:center;min-height:50px;}
-.popup-message{font-size:0.95rem;color:#e0f2fe;text-align:center;margin-bottom:20px;line-height:1.5;min-height:70px;font-family:'Courier New',monospace;letter-spacing:0.5px;}
+.popup-message{font-size:0.95rem;color:#e0f2fe;text-align:center;margin-bottom:20px;line-height:1.5;min-height:70px;font-family:'Courier New',monospace;letter-spacing:0.5px;white-space:pre-wrap;max-height:300px;overflow-y:auto;}
 .popup-message .cursor{display:inline-block;width:2px;height:1.1em;background-color:#facc15;margin-left:2px;vertical-align:middle;animation:blink 0.8s infinite;}
 @keyframes blink{0%,50%{opacity:1;}51%,100%{opacity:0;}}
 .popup-buttons{display:flex;gap:12px;justify-content:center;}
@@ -158,6 +168,10 @@ footer{text-align:center;font-size:0.65rem;color:#5f748d;margin-top:16px;}
 <textarea id="recommendation" placeholder="Saisissez ici vos recommandations (150 caractères minimum)..."></textarea>
 <small><span id="charCount">0</span>/150 caractères minimum requis</small>
 </div>
+<div class="action-buttons">
+<button id="showFeedbackBtn">📢 AFFICHER FEED-BACK</button>
+<button id="showMemoBtn">📋 AFFICHER MÉMORANDUM</button>
+</div>
 <button id="sendReportBtn">📤 ENVOYER LE RAPPORT À L'ADMIN</button>
 <footer>PGCO · NeTubeX · Rapport journalier · données certifiées</footer>
 </div>
@@ -175,6 +189,16 @@ const NETUBERS = [
   {code:"MA-NX-S1-ZC-06", idx:5}
 ];
 
+// Générer les options 0-15 pour les listes déroulantes
+function generateOptions() {
+  let options = '';
+  for(let i = 0; i <= 15; i++) {
+    options += `<option value="${i}">${i}</option>`;
+  }
+  return options;
+}
+const SELECT_OPTIONS_0_15 = generateOptions();
+
 const tableBody = document.getElementById('tableBody');
 const tableFoot = document.getElementById('tableFoot');
 const pdfColorSelect = document.getElementById('pdfColor');
@@ -188,6 +212,53 @@ const popupMessageDiv = document.getElementById('popupMessage');
 const popupBtnLeft = document.getElementById('popupBtnLeft');
 const popupBtnRight = document.getElementById('popupBtnRight');
 let currentErrorCallback = null;
+
+// Stockage des messages admin (récupérés depuis Firebase)
+let adminFeedback = "📢 Chargement des feed-back...";
+let adminMemorandum = "📋 Chargement des mémorandums...";
+
+// Fonctions pour récupérer les feed-back et mémorandums depuis Firebase
+async function loadFeedbacks() {
+  try {
+    const feedbacksRef = collection(window.db, "feedbacks");
+    const q = query(feedbacksRef, orderBy("date", "desc"), limit(5));
+    const snapshot = await getDocs(q);
+    if(!snapshot.empty) {
+      let feedbacksList = [];
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        feedbacksList.push(`📌 ${new Date(data.date).toLocaleString('fr-FR')}\n${data.message}\n`);
+      });
+      adminFeedback = "📢 DERNIERS FEED-BACKS DE L'ADMINISTRATION :\n\n" + feedbacksList.join("\n---\n\n");
+    } else {
+      adminFeedback = "📢 Aucun feed-back récent de l'administration.\n\nSoyez patients, nous vous répondrons bientôt.";
+    }
+  } catch(e) {
+    console.error("Erreur chargement feed-backs:", e);
+    adminFeedback = "📢 Service feed-back temporairement indisponible.\nVeuillez réessayer plus tard.";
+  }
+}
+
+async function loadMemorandums() {
+  try {
+    const memosRef = collection(window.db, "memorandums");
+    const q = query(memosRef, orderBy("date", "desc"), limit(3));
+    const snapshot = await getDocs(q);
+    if(!snapshot.empty) {
+      let memosList = [];
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        memosList.push(`📋 ${data.title || 'Mémorandum'}\n📅 ${new Date(data.date).toLocaleString('fr-FR')}\n${data.content || ''}\n`);
+      });
+      adminMemorandum = "📋 MÉMORANDUMS RÉCENTS :\n\n" + memosList.join("\n" + "═".repeat(40) + "\n\n");
+    } else {
+      adminMemorandum = "📋 Aucun mémorandum récent.\n\nConsultez régulièrement cette section pour les directives.";
+    }
+  } catch(e) {
+    console.error("Erreur chargement mémorandums:", e);
+    adminMemorandum = "📋 Service mémorandum temporairement indisponible.\nVeuillez réessayer plus tard.";
+  }
+}
 
 function closeErrorToast() {
     errorToast.classList.remove('show');
@@ -240,7 +311,7 @@ function getTendance(ecart){
     return {text:"→ Stable", class:"tendance-stable", icon:"➡️", color: "#3498db"};
 }
 
-function typewriterEffect(element, text, speed=30, callback){
+function typewriterEffect(element, text, speed=25, callback){
     element.innerHTML = '';
     let i = 0;
     function type(){
@@ -261,7 +332,7 @@ function showPopup(title, message, btnLeftText, btnRightText, onConfirm, onCance
     popupBtnLeft.textContent = btnLeftText;
     popupBtnRight.textContent = btnRightText;
     popupOverlay.classList.add('active');
-    typewriterEffect(popupMessageDiv, message, 35, null);
+    typewriterEffect(popupMessageDiv, message, 30, null);
     const confirmHandler = () => {
         popupOverlay.classList.remove('active');
         popupBtnLeft.removeEventListener('click', cancelHandler);
@@ -278,13 +349,23 @@ function showPopup(title, message, btnLeftText, btnRightText, onConfirm, onCance
     popupBtnLeft.onclick = cancelHandler;
 }
 
+async function showFeedback() {
+    await loadFeedbacks();
+    showPopup('📢 FEED-BACK ADMINISTRATION', adminFeedback, 'Fermer', '', () => {}, () => {});
+}
+
+async function showMemorandum() {
+    await loadMemorandums();
+    showPopup('📋 MÉMORANDUM ADMINISTRATION', adminMemorandum, 'Fermer', '', () => {}, () => {});
+}
+
 function updateRowCalculations(i) {
     const presence = document.getElementById(`presence-${i}`).value;
     if(presence !== 'Présent') return;
     
     // Calcul objectif restant
-    const objMensuel = parseFloat(document.getElementById(`obj_mensuel-${i}`).value) || 0;
-    const objAtteint = parseFloat(document.getElementById(`obj_atteint-${i}`).value) || 0;
+    const objMensuel = parseInt(document.getElementById(`obj_mensuel-${i}`).value) || 0;
+    const objAtteint = parseInt(document.getElementById(`obj_atteint-${i}`).value) || 0;
     const objRestant = objMensuel - objAtteint;
     document.getElementById(`obj_restant-${i}`).innerText = objRestant >= 0 ? objRestant : 0;
     
@@ -328,8 +409,7 @@ function updateTotals(){
     const totalTendance = getTendance(totalEcart);
     const rendGlobal = totalTempsJour > 0 ? (totalPtsJour / totalTempsJour).toFixed(2) : "0.00";
     
-    tableFoot.innerHTML = `<tr class="total-row"><td colspan="2" style="font-weight:800;">TOTAUX GÉNÉRAUX</td>
-        <td style="font-weight:800;">—</td>
+    tableFoot.innerHTML = `<tr class="total-row"><td colspan="3" style="font-weight:800;">TOTAUX GÉNÉRAUX</td>
         <td style="font-weight:800;">—</td>
         <td style="font-weight:800;">—</td>
         <td style="font-weight:800;">—</td>
@@ -371,8 +451,8 @@ function validateAllFields(){
             const tempsPrecedent = document.getElementById(`temps_precedent-${i}`).value;
             const tempsJour = document.getElementById(`temps_jour-${i}`).value;
             
-            if(!objMensuel || objMensuel === '0') missingFields.push(`${NETUBERS[i].code} - Objectif mensuel`);
-            if(!objAtteint || objAtteint === '0') missingFields.push(`${NETUBERS[i].code} - Objectif atteint`);
+            if(objMensuel === '' || objMensuel === '0') missingFields.push(`${NETUBERS[i].code} - Objectif mensuel`);
+            if(objAtteint === '' || objAtteint === '0') missingFields.push(`${NETUBERS[i].code} - Objectif atteint`);
             if(!nbNiveaux || nbNiveaux === '0') missingFields.push(`${NETUBERS[i].code} - Nb niveaux/événements`);
             if(!nbNiveauxAtteints || nbNiveauxAtteints === '0') missingFields.push(`${NETUBERS[i].code} - Nb niveaux/événements atteints`);
             if(!pointsPrecedents || pointsPrecedents === '0') missingFields.push(`${NETUBERS[i].code} - Points précédents`);
@@ -409,35 +489,29 @@ function renderTable(){
         tdPresence.appendChild(selectPresence);
         row.appendChild(tdPresence);
         
-        // Objectif mensuel
+        // Objectif mensuel (liste déroulante 0-15)
         const tdObjMensuel = document.createElement('td');
-        const inputObjMensuel = document.createElement('input');
-        inputObjMensuel.type = 'number';
-        inputObjMensuel.min = '0';
-        inputObjMensuel.max = '15';
-        inputObjMensuel.value = '';
-        inputObjMensuel.placeholder = '0';
-        inputObjMensuel.id = `obj_mensuel-${i}`;
-        tdObjMensuel.appendChild(inputObjMensuel);
+        const selectObjMensuel = document.createElement('select');
+        selectObjMensuel.id = `obj_mensuel-${i}`;
+        selectObjMensuel.innerHTML = SELECT_OPTIONS_0_15;
+        selectObjMensuel.value = "9";
+        tdObjMensuel.appendChild(selectObjMensuel);
         row.appendChild(tdObjMensuel);
         
-        // Objectif atteint
+        // Objectif atteint (liste déroulante 0-15)
         const tdObjAtteint = document.createElement('td');
-        const inputObjAtteint = document.createElement('input');
-        inputObjAtteint.type = 'number';
-        inputObjAtteint.min = '0';
-        inputObjAtteint.max = '15';
-        inputObjAtteint.value = '';
-        inputObjAtteint.placeholder = '0';
-        inputObjAtteint.id = `obj_atteint-${i}`;
-        tdObjAtteint.appendChild(inputObjAtteint);
+        const selectObjAtteint = document.createElement('select');
+        selectObjAtteint.id = `obj_atteint-${i}`;
+        selectObjAtteint.innerHTML = SELECT_OPTIONS_0_15;
+        selectObjAtteint.value = "0";
+        tdObjAtteint.appendChild(selectObjAtteint);
         row.appendChild(tdObjAtteint);
         
         // Objectif restant (auto)
         const tdObjRestant = document.createElement('td');
         const spanObjRestant = document.createElement('span');
         spanObjRestant.id = `obj_restant-${i}`;
-        spanObjRestant.innerText = '0';
+        spanObjRestant.innerText = '9';
         spanObjRestant.style.fontWeight = 'bold';
         spanObjRestant.style.color = '#facc15';
         tdObjRestant.appendChild(spanObjRestant);
@@ -551,11 +625,13 @@ function renderTable(){
         
         const updateRowStyle = () => {
             const presence = selectPresence.value;
-            const inputs = [inputObjMensuel, inputObjAtteint, inputNbNiveaux, inputNbNiveauxAtteints, inputPtsPrec, inputPtsJour, inputTempsPrec, inputTempsJour];
+            const inputs = [selectObjMensuel, selectObjAtteint, inputNbNiveaux, inputNbNiveauxAtteints, inputPtsPrec, inputPtsJour, inputTempsPrec, inputTempsJour];
             if(presence === 'Absent') {
                 row.style.opacity = '0.6';
                 row.style.background = '#4a1a1a';
-                inputs.forEach(inp => { inp.disabled = true; inp.value = ''; });
+                inputs.forEach(inp => { inp.disabled = true; });
+                selectObjMensuel.disabled = true;
+                selectObjAtteint.disabled = true;
                 spanObjRestant.innerText = '0';
                 spanNbRestantsAuto.innerText = '0';
                 spanEcart.innerText = '0';
@@ -565,6 +641,8 @@ function renderTable(){
                 row.style.opacity = '1';
                 row.style.background = '';
                 inputs.forEach(inp => { inp.disabled = false; });
+                selectObjMensuel.disabled = false;
+                selectObjAtteint.disabled = false;
                 updateRowCalculations(i);
             }
             updateTotals();
@@ -573,8 +651,8 @@ function renderTable(){
         const handleInput = () => { if(selectPresence.value === 'Présent') updateRowCalculations(i); };
         
         selectPresence.addEventListener('change', updateRowStyle);
-        inputObjMensuel.addEventListener('input', handleInput);
-        inputObjAtteint.addEventListener('input', handleInput);
+        selectObjMensuel.addEventListener('change', handleInput);
+        selectObjAtteint.addEventListener('change', handleInput);
         inputNbNiveaux.addEventListener('input', handleInput);
         inputNbNiveauxAtteints.addEventListener('input', handleInput);
         inputPtsPrec.addEventListener('input', handleInput);
@@ -613,8 +691,8 @@ async function sendReportToFirebase() {
         
         for(let i = 0; i < NETUBERS.length; i++) {
             const presence = document.getElementById(`presence-${i}`).value;
-            const objMensuel = parseFloat(document.getElementById(`obj_mensuel-${i}`).value) || 0;
-            const objAtteint = parseFloat(document.getElementById(`obj_atteint-${i}`).value) || 0;
+            const objMensuel = parseInt(document.getElementById(`obj_mensuel-${i}`).value) || 0;
+            const objAtteint = parseInt(document.getElementById(`obj_atteint-${i}`).value) || 0;
             const nbNiveaux = parseFloat(document.getElementById(`nb_niveaux-${i}`).value) || 0;
             const nbNiveauxAtteints = parseFloat(document.getElementById(`nb_niveaux_atteints-${i}`).value) || 0;
             const pointsPrecedents = parseFloat(document.getElementById(`points_precedents-${i}`).value) || 0;
@@ -670,7 +748,6 @@ async function sendReportToFirebase() {
         
         showSuccessToast(`Rapport ${reference} envoyé avec succès à l'administration !`);
         
-        // Réinitialiser le formulaire
         document.getElementById('reference').value = '';
         recommendationTextarea.value = '';
         charCountSpan.textContent = '0';
@@ -678,7 +755,9 @@ async function sendReportToFirebase() {
         callOptions.forEach(o => o.classList.remove('selected'));
         for(let i = 0; i < NETUBERS.length; i++) {
             document.getElementById(`presence-${i}`).value = 'Présent';
-            const inputs = [`obj_mensuel-${i}`, `obj_atteint-${i}`, `nb_niveaux-${i}`, `nb_niveaux_atteints-${i}`, `points_precedents-${i}`, `points_jour-${i}`, `temps_precedent-${i}`, `temps_jour-${i}`];
+            document.getElementById(`obj_mensuel-${i}`).value = '9';
+            document.getElementById(`obj_atteint-${i}`).value = '0';
+            const inputs = [`nb_niveaux-${i}`, `nb_niveaux_atteints-${i}`, `points_precedents-${i}`, `points_jour-${i}`, `temps_precedent-${i}`, `temps_jour-${i}`];
             inputs.forEach(id => {
                 const el = document.getElementById(id);
                 if(el) el.value = '';
@@ -731,6 +810,8 @@ function startValidationFlow(){
 
 renderTable();
 document.getElementById('sendReportBtn').addEventListener('click', startValidationFlow);
+document.getElementById('showFeedbackBtn').addEventListener('click', showFeedback);
+document.getElementById('showMemoBtn').addEventListener('click', showMemorandum);
 </script>
 </body>
 </html>
