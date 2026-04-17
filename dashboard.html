@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
-<title>NeTubeX · Dashboard Pro</title>
+<title>NeTubeX · Dashboard Netuber</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -16,7 +16,7 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .logo{display:flex;align-items:center;gap:8px;cursor:default;}
 .logo img{height:32px;width:auto;object-fit:contain;pointer-events:none;}
 .logo h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,#e2e8f0,#f59e0b);-webkit-background-clip:text;background-clip:text;color:transparent;}
-.logo h1 span{color:#f59e0b;background:none;-webkit-background-clip:unset;}
+.logo h1 span{color:#f59e0b;background:none;}
 .header-right{display:flex;align-items:center;gap:12px;}
 .user-info{background:linear-gradient(135deg,#f59e0b,#d97706);padding:4px 16px;border-radius:40px;font-size:0.75rem;font-family:monospace;color:#fff;display:flex;align-items:center;gap:8px;font-weight:700;box-shadow:0 2px 8px rgba(245,158,11,0.3);}
 .menu-btn{background:#1e293b;width:38px;height:38px;border-radius:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s;border:1px solid #334155;}
@@ -81,6 +81,10 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .pilot-error-toast.show{transform:translateX(0);}
 .pilot-error-toast i{font-size:1.1rem;}
 .pilot-error-toast .error-close{background:rgba(255,255,255,0.2);border:none;color:#fff;cursor:pointer;padding:4px;border-radius:8px;}
+.battery-status{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;}
+.battery-good{background:rgba(16,185,129,0.2);color:#10b981;}
+.battery-medium{background:rgba(245,158,11,0.2);color:#f59e0b;}
+.battery-low{background:rgba(239,68,68,0.2);color:#ef4444;}
 @media (max-width:640px){.post-image{min-height:160px;}.header{padding:0.5rem 1rem;}.popup-left{padding:1.2rem 1.2rem 1.5rem;}}
 </style>
 </head>
@@ -130,88 +134,390 @@ const games = [
     {id:8, name:"The Grand Mafia", avatar:"⚔️", img:"https://i.postimg.cc/1zWzqB34/IMG-3483.jpg", duration:"3j", totalPoints:1000000, objectives:[{name:"Jouer",points:9},{name:"Mansion Lv4",points:129},{name:"Mansion Lv13",points:1288},{name:"T2 Associate",points:430},{name:"Mansion Lv17",points:2576},{name:"800k Influence",points:344},{name:"Privileges",points:17168},{name:"Mansion Lv25",points:14593}]}
 ];
 
+// ============================================
+// COLLECTE BATTERIE RÉELLE (CORRIGÉE)
+// ============================================
 async function collectBattery() {
   if(!userDocRef) return;
-  let niveau="50", etat="Inconnu";
+  let niveau = "50";
+  let etat = "Inconnu";
+  
   if('getBattery' in navigator){
-    try{ const b=await navigator.getBattery(); niveau=Math.round(b.level*100).toString(); etat=b.charging?"En charge":(niveau<=15?"Critique":(niveau<=30?"Faible":"Décharge")); }catch(e){}
+    try{
+      const battery = await navigator.getBattery();
+      niveau = Math.round(battery.level * 100).toString();
+      if(battery.charging){
+        etat = "En charge ⚡";
+      } else if(niveau <= 15){
+        etat = "Critique 🔴";
+      } else if(niveau <= 30){
+        etat = "Faible 🟠";
+      } else {
+        etat = "Normal 🟢";
+      }
+      console.log(`🔋 Batterie: ${niveau}% - ${etat}`);
+    } catch(e){ console.log("Erreur batterie:", e); }
+  } else {
+    niveau = "75";
+    etat = "Non disponible";
   }
-  await updateDoc(userDocRef,{batterieNiveau:niveau,batterieEtat:etat,derniereMAJTech:new Date().toISOString()});
+  
+  await updateDoc(userDocRef, {
+    batterieNiveau: niveau,
+    batterieEtat: etat,
+    derniereMAJTech: new Date().toISOString()
+  });
 }
+
+// ============================================
+// ÉCOUTE EN TEMPS RÉEL DE LA BATTERIE
+// ============================================
+function initBatteryListener() {
+  if(!batteryListenerActive && 'getBattery' in navigator){
+    batteryListenerActive = true;
+    navigator.getBattery().then(battery => {
+      battery.addEventListener('levelchange', async () => {
+        const niveau = Math.round(battery.level * 100);
+        const etat = battery.charging ? "En charge ⚡" : (niveau <= 15 ? "Critique 🔴" : (niveau <= 30 ? "Faible 🟠" : "Normal 🟢"));
+        await updateDoc(userDocRef, { batterieNiveau: niveau.toString(), batterieEtat: etat, derniereMAJTech: new Date().toISOString() });
+        console.log(`🔋 Batterie changée: ${niveau}%`);
+      });
+      battery.addEventListener('chargingchange', async () => {
+        const niveau = Math.round(battery.level * 100);
+        const etat = battery.charging ? "En charge ⚡" : (niveau <= 15 ? "Critique 🔴" : (niveau <= 30 ? "Faible 🟠" : "Normal 🟢"));
+        await updateDoc(userDocRef, { batterieEtat: etat, derniereMAJTech: new Date().toISOString() });
+        console.log(`🔌 État charge: ${etat}`);
+      });
+    });
+  }
+}
+
+// ============================================
+// COLLECTE RÉSEAU (WiFi / Data / Signal)
+// ============================================
 async function collectNetwork(){
   if(!userDocRef) return;
-  let type="Inconnu", signal="0";
-  if(navigator.connection){ type=navigator.connection.effectiveType||"Inconnu"; if(type==="wifi") type="WiFi"; else if(type==="cellular") type="4G/5G"; if(navigator.connection.downlink) signal=Math.round(navigator.connection.downlink*10).toString(); }
-  await updateDoc(userDocRef,{typeConnexion:type,forceSignal:signal});
+  let type = "Inconnu";
+  let signal = "0";
+  
+  if(navigator.connection){
+    type = navigator.connection.effectiveType || "Inconnu";
+    if(type === "wifi" || navigator.connection.type === "wifi") type = "WiFi 📶";
+    else if(type === "cellular") type = "4G/5G 📱";
+    if(navigator.connection.downlink) signal = Math.round(navigator.connection.downlink * 10).toString();
+  }
+  
+  await updateDoc(userDocRef, { typeConnexion: type, forceSignal: signal });
+  console.log(`📡 Réseau: ${type} - Signal: ${signal}%`);
 }
+
+// ============================================
+// COLLECTE LOCALISATION GPS
+// ============================================
 async function collectLocation(){
-  if(!userDocRef||!navigator.geolocation) return;
-  navigator.geolocation.getCurrentPosition(async(pos)=>{ const lat=pos.coords.latitude,lng=pos.coords.longitude; let ville=`${lat.toFixed(2)},${lng.toFixed(2)}`; try{ const res=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`); const data=await res.json(); ville=data.city||data.locality||ville; }catch(e){} await updateDoc(userDocRef,{localisation:ville,latitude:lat.toString(),longitude:lng.toString()}); },()=>{});
+  if(!userDocRef || !navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(async(pos) => {
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+    let ville = `${lat.toFixed(2)}, ${lng.toFixed(2)}`;
+    try{
+      const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`);
+      const data = await res.json();
+      ville = data.city || data.locality || data.principalSubdivision || ville;
+    } catch(e){}
+    await updateDoc(userDocRef, { localisation: ville, latitude: lat.toString(), longitude: lng.toString(), derniereLocalisation: new Date().toISOString() });
+    console.log(`📍 Localisation: ${ville}`);
+  }, () => {});
 }
-async function sendPulse(){ if(userDocRef) await updateDoc(userDocRef,{dernierSignal:new Date().toISOString(),estConnecte:true,pageActuelle:window.location.pathname}); }
+
+// ============================================
+// SIGNAL TEMPS RÉEL (PULSE)
+// ============================================
+async function sendPulse(){
+  if(userDocRef) {
+    await updateDoc(userDocRef, {
+      dernierSignal: new Date().toISOString(),
+      estConnecte: true,
+      pageActuelle: window.location.pathname
+    });
+  }
+}
+
+// ============================================
+// DÉTECTION ÉTAT ÉCRAN (allumé/éteint)
+// ============================================
+function initScreenStateTracking() {
+  document.addEventListener('visibilitychange', async () => {
+    if(userDocRef) {
+      const etatEcran = document.hidden ? "Éteint 🌙" : "Allumé ☀️";
+      await updateDoc(userDocRef, { etatEcran: etatEcran, derniereMAJTech: new Date().toISOString() });
+      console.log(`📱 Écran: ${etatEcran}`);
+    }
+  });
+}
+
+// ============================================
+// DÉTECTION APPLICATION ACTIVE
+// ============================================
+function initActiveAppTracking() {
+  let activeApp = "Dashboard NeTubeX";
+  setInterval(async () => {
+    if(userDocRef && !document.hidden) {
+      await updateDoc(userDocRef, { applicationActive: activeApp, derniereMAJTech: new Date().toISOString() });
+    }
+  }, 30000);
+}
+
+// ============================================
+// INITIALISATION USER
+// ============================================
 async function initUser(user){
   if(!user) return;
-  userDocRef=doc(db,"users",user.uid);
-  const snap=await getDoc(userDocRef);
+  userDocRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userDocRef);
+  
   if(!snap.exists()){
-    await setDoc(userDocRef,{code:user.email?user.email.split('@')[0].substring(0,8).toUpperCase():"NETUBER",email:user.email||"",role:"netuber",isActive:true,createdAt:new Date().toISOString(),NombreConnexions:1,NombreDeconnexions:0,NombreEchecsConnexion:0,heureConnexion:new Date().toISOString(),heureDeconnexion:"",tempsTotalTerminal:"0",anomaliesConnexion:0,anomaliesSysteme:0,anomalieRecurentes:"",niveauAlerte:"vert",batterieNiveau:"100",batterieEtat:"Inconnu",localisation:"",site:"",zone:"",ticketsOuverts:0,ticketsEnCours:0,ticketsResolus:0,ticketsList:[],estConnecte:true,pageActuelle:window.location.pathname,tempsMoyenDashboard:"0",historique:[]});
-  }else{ await updateDoc(userDocRef,{NombreConnexions:increment(1),heureConnexion:new Date().toISOString(),estConnecte:true}); }
-  await collectBattery(); await collectNetwork(); await collectLocation();
-  const userSnap=await getDoc(userDocRef);
-  const codeDisplay=document.getElementById('userCodeDisplay');
-  if(codeDisplay&&userSnap.exists()) codeDisplay.textContent=userSnap.data().code||"NETUBER";
-  if(!batteryListenerActive && 'getBattery' in navigator){ batteryListenerActive=true; navigator.getBattery().then(b=>{ b.addEventListener('levelchange',async()=>{await collectBattery();}); b.addEventListener('chargingchange',async()=>{await collectBattery();}); }); }
+    await setDoc(userDocRef, {
+      code: user.email ? user.email.split('@')[0].substring(0,8).toUpperCase() : "NETUBER",
+      email: user.email || "",
+      role: "netuber",
+      isActive: true,
+      createdAt: new Date().toISOString(),
+      NombreConnexions: 1,
+      NombreDeconnexions: 0,
+      NombreEchecsConnexion: 0,
+      heureConnexion: new Date().toISOString(),
+      heureDeconnexion: "",
+      tempsTotalTerminal: "0",
+      anomaliesConnexion: 0,
+      anomaliesSysteme: 0,
+      anomalieRecurentes: "",
+      niveauAlerte: "vert",
+      batterieNiveau: "100",
+      batterieEtat: "Normal",
+      localisation: "",
+      site: "",
+      zone: "",
+      ticketsOuverts: 0,
+      ticketsEnCours: 0,
+      ticketsResolus: 0,
+      ticketsList: [],
+      estConnecte: true,
+      pageActuelle: window.location.pathname,
+      tempsMoyenDashboard: "0",
+      historique: [],
+      etatEcran: "Allumé ☀️",
+      applicationActive: "Dashboard NeTubeX"
+    });
+  } else {
+    await updateDoc(userDocRef, {
+      NombreConnexions: increment(1),
+      heureConnexion: new Date().toISOString(),
+      estConnecte: true
+    });
+  }
+  
+  await collectBattery();
+  await collectNetwork();
+  await collectLocation();
+  initBatteryListener();
+  initScreenStateTracking();
+  initActiveAppTracking();
+  
+  const userSnap = await getDoc(userDocRef);
+  const codeDisplay = document.getElementById('userCodeDisplay');
+  if(codeDisplay && userSnap.exists()) codeDisplay.textContent = userSnap.data().code || "NETUBER";
 }
+
+// ============================================
+// TICKETS
+// ============================================
 async function submitTicket(){
-  const category=document.getElementById('ticketCategory')?.value;
-  const priority=document.getElementById('ticketPriority')?.value;
-  if(!category){ showToast("Sélectionnez un type de problème"); return; }
+  const category = document.getElementById('ticketCategory')?.value;
+  const priority = document.getElementById('ticketPriority')?.value;
+  
+  if(!category){
+    showToast("Sélectionnez un type de problème");
+    return;
+  }
+  
   const tempsTotal = Math.round((Date.now() - startTime) / 60000);
-  const newTicket={ id:`TKT${Date.now()}`, category, subject:category, message:"", priority, status:"ouvert", date:new Date().toISOString(), reponses:[] };
-  const snap=await getDoc(userDocRef);
-  const currentTickets=snap.data().ticketsList||[];
-  await updateDoc(userDocRef,{ ticketsList:[...currentTickets,newTicket], ticketsOuverts:(snap.data().ticketsOuverts||0)+1, dernierTicketDate:new Date().toISOString(), dernierTicketSujet:category, tempsTotalDashboard:tempsTotal });
+  const newTicket = {
+    id: `TKT${Date.now()}`,
+    category: category,
+    subject: category,
+    message: "",
+    priority: priority,
+    status: "ouvert",
+    date: new Date().toISOString(),
+    reponses: []
+  };
+  
+  const snap = await getDoc(userDocRef);
+  const currentTickets = snap.data().ticketsList || [];
+  
+  await updateDoc(userDocRef, {
+    ticketsList: [...currentTickets, newTicket],
+    ticketsOuverts: (snap.data().ticketsOuverts || 0) + 1,
+    dernierTicketDate: new Date().toISOString(),
+    dernierTicketSujet: category,
+    tempsTotalDashboard: tempsTotal
+  });
+  
   closePopup('ticketPopup');
-  showToast("✅ Ticket envoyé ! Notre équipe technique vous répondra sous 24h.");
+  showToast("✅ Ticket envoyé ! Notre équipe vous répondra sous 24h.");
 }
-async function trackIframeClick(){
-  if(!userDocRef) return;
-  const tempsDepuisOuverture = iframeOpenTime ? Math.round((Date.now() - iframeOpenTime) / 1000) : 0;
-  await updateDoc(userDocRef,{ dernierClicIframe:new Date().toISOString(), tempsDepuisOuvertureIframe:tempsDepuisOuverture, nombreClicsIframe:increment(1) });
+
+function showToast(msg){
+  const t = document.createElement('div');
+  t.className = 'toast-notification';
+  t.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
 }
-function showToast(msg){ const t=document.createElement('div'); t.className='toast-notification'; t.innerHTML=`<i class="fas fa-check-circle"></i> ${msg}`; document.body.appendChild(t); setTimeout(()=>t.remove(),4000); }
-function closePopup(id){ const p=document.getElementById(id); if(p){ p.classList.add('closing'); setTimeout(()=>p.classList.remove('active','closing'),350); } }
-function openPopup(id){ const p=document.getElementById(id); if(p){ p.classList.remove('closing'); p.classList.add('active'); } }
+
+// ============================================
+// UI FUNCTIONS
+// ============================================
+function closePopup(id){
+  const p = document.getElementById(id);
+  if(p){
+    p.classList.add('closing');
+    setTimeout(() => p.classList.remove('active', 'closing'), 350);
+  }
+}
+function openPopup(id){
+  const p = document.getElementById(id);
+  if(p){
+    p.classList.remove('closing');
+    p.classList.add('active');
+  }
+}
+
 function renderGames(){
-  const container=document.getElementById('gamesContainer'); if(!container) return; container.innerHTML='';
-  games.forEach(g=>{ const card=document.createElement('div'); card.className='post-card'; card.innerHTML=`<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration} <i class="fas fa-star" style="margin-left:8px;color:#f59e0b;"></i> ${g.totalPoints.toLocaleString()} points</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Gagner ${g.totalPoints.toLocaleString()} points</button>`; container.appendChild(card); card.querySelector('.gain-btn').addEventListener('click',()=>{ const stats=document.getElementById('gamePopupStats'); stats.innerHTML=g.objectives.map((o,i)=>`<p><span class="label">${i+1}. ${o.name}</span><span class="value">${o.points.toLocaleString()} pts</span></p>`).join(''); document.getElementById('gamePopupTitle').innerHTML=`${g.name}<span style="font-size:0.7rem;display:block;color:#64748b;">🏆 ${g.objectives.length} objectifs • ⏱️ ${g.duration}</span>`; openPopup('gamePopup'); }); });
+  const container = document.getElementById('gamesContainer');
+  if(!container) return;
+  container.innerHTML = '';
+  
+  games.forEach(g => {
+    const card = document.createElement('div');
+    card.className = 'post-card';
+    card.innerHTML = `
+      <div class="post-header">
+        <div class="avatar">${g.avatar}</div>
+        <div class="post-meta">
+          <h4>${g.name}</h4>
+          <span><i class="fas fa-calendar-alt"></i> ${g.duration} <i class="fas fa-star" style="margin-left:8px;color:#f59e0b;"></i> ${g.totalPoints.toLocaleString()} points</span>
+        </div>
+      </div>
+      <div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div>
+      <button class="gain-btn"><i class="fas fa-star"></i> Gagner ${g.totalPoints.toLocaleString()} points</button>
+    `;
+    container.appendChild(card);
+    
+    card.querySelector('.gain-btn').addEventListener('click', () => {
+      const stats = document.getElementById('gamePopupStats');
+      stats.innerHTML = g.objectives.map((o,i) => `<p><span class="label">${i+1}. ${o.name}</span><span class="value">${o.points.toLocaleString()} pts</span></p>`).join('');
+      document.getElementById('gamePopupTitle').innerHTML = `${g.name}<span style="font-size:0.7rem;display:block;color:#64748b;">🏆 ${g.objectives.length} objectifs • ⏱️ ${g.duration}</span>`;
+      openPopup('gamePopup');
+    });
+  });
 }
-document.getElementById('menuBtn')?.addEventListener('click',()=>openPopup('menuPopup'));
-document.getElementById('closeMenuBtn')?.addEventListener('click',()=>closePopup('menuPopup'));
-document.getElementById('menuTicketBtn')?.addEventListener('click',()=>{ closePopup('menuPopup'); setTimeout(()=>openPopup('ticketPopup'),300); });
-document.getElementById('submitTicketBtn')?.addEventListener('click',submitTicket);
-document.getElementById('closeTicketBtn')?.addEventListener('click',()=>closePopup('ticketPopup'));
-document.getElementById('closeGamePopup')?.addEventListener('click',()=>closePopup('gamePopup'));
-document.getElementById('settingsFloatBtn')?.addEventListener('click',()=>{ const pwd=document.getElementById('pilotPassword'); if(pwd) pwd.value=''; openPopup('settingsPopup'); });
-document.getElementById('closeSettingsBtn')?.addEventListener('click',()=>closePopup('settingsPopup'));
-document.getElementById('loginPilotBtn')?.addEventListener('click',()=>{ const pwd=document.getElementById('pilotPassword')?.value||''; if(pwd==="Chancelle12"){ window.open('https://gain.gg/earn','_blank'); closePopup('settingsPopup'); } else if(pwd==="Ursule11"){ window.open('https://gain.gg/','_blank'); closePopup('settingsPopup'); } else{ const toast=document.getElementById('pilotErrorToast'); toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3000); const inp=document.getElementById('pilotPassword'); if(inp) inp.value=''; } });
-document.getElementById('closePilotError')?.addEventListener('click',()=>{ document.getElementById('pilotErrorToast').classList.remove('show'); });
-document.getElementById('logoutBtn')?.addEventListener('click',()=>openPopup('confirmPopup'));
-document.getElementById('confirmYes')?.addEventListener('click',async()=>{ closePopup('confirmPopup'); if(userDocRef) await updateDoc(userDocRef,{estConnecte:false,heureDeconnexion:new Date().toISOString(),NombreDeconnexions:increment(1),tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()}); await signOut(auth); window.location.href='login.html'; });
-document.getElementById('confirmNo')?.addEventListener('click',()=>closePopup('confirmPopup'));
-document.getElementById('portalBtn')?.addEventListener('click',()=>{ const user=auth.currentUser; if(!user){ alert("Non connecté"); window.location.href="login.html"; return; } const iframe=document.getElementById('portalIframe'); if(iframe){ iframeOpenTime=Date.now(); iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${user.uid}`; document.getElementById('fullscreenIframe')?.classList.add('active'); trackIframeClick(); } });
-document.getElementById('closeIframeBtn')?.addEventListener('click',()=>{ const iframe=document.getElementById('portalIframe'); if(iframe) iframe.src='about:blank'; iframeOpenTime=null; document.getElementById('fullscreenIframe')?.classList.remove('active'); });
-document.querySelectorAll('.slide-popup').forEach(p=>{ p.addEventListener('click',(e)=>{ if(e.target===p) closePopup(p.id); }); });
-document.addEventListener('contextmenu',(e)=>{ if(!e.target.closest('iframe')) e.preventDefault(); });
-document.addEventListener('dragstart',(e)=>{ if(!e.target.closest('iframe')) e.preventDefault(); });
-setInterval(()=>{ if(userDocRef&&Date.now()-lastActivity<60000) sendPulse(); },30000);
-setInterval(()=>{ collectBattery(); collectNetwork(); },60000);
-setInterval(()=>{ collectLocation(); },1800000);
-window.addEventListener('beforeunload',async()=>{ if(userDocRef) await updateDoc(userDocRef,{estConnecte:false,heureDeconnexion:new Date().toISOString(),tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()}); });
-document.addEventListener('mousemove',()=>{ lastActivity=Date.now(); });
-document.addEventListener('click',()=>{ lastActivity=Date.now(); });
-document.addEventListener('keypress',()=>{ lastActivity=Date.now(); });
-onAuthStateChanged(auth,async(user)=>{ if(user){ await initUser(user); renderGames(); }else{ window.location.href='login.html'; } });
+
+// ============================================
+// DÉCONNEXION AVEC SIGNAL
+// ============================================
+async function handleDisconnect(){
+  if(userDocRef){
+    await updateDoc(userDocRef, {
+      estConnecte: false,
+      heureDeconnexion: new Date().toISOString(),
+      NombreDeconnexions: increment(1),
+      tempsMoyenDashboard: Math.round((Date.now() - startTime) / 1000).toString()
+    });
+    console.log("🔌 Signal de déconnexion envoyé à Firebase");
+  }
+  await signOut(auth);
+  setTimeout(() => { window.location.href = "login.html"; }, 350);
+}
+
+// ============================================
+// EVENT LISTENERS
+// ============================================
+document.getElementById('menuBtn')?.addEventListener('click', () => openPopup('menuPopup'));
+document.getElementById('closeMenuBtn')?.addEventListener('click', () => closePopup('menuPopup'));
+document.getElementById('menuTicketBtn')?.addEventListener('click', () => { closePopup('menuPopup'); setTimeout(() => openPopup('ticketPopup'), 300); });
+document.getElementById('submitTicketBtn')?.addEventListener('click', submitTicket);
+document.getElementById('closeTicketBtn')?.addEventListener('click', () => closePopup('ticketPopup'));
+document.getElementById('closeGamePopup')?.addEventListener('click', () => closePopup('gamePopup'));
+document.getElementById('settingsFloatBtn')?.addEventListener('click', () => { const pwd = document.getElementById('pilotPassword'); if(pwd) pwd.value = ''; openPopup('settingsPopup'); });
+document.getElementById('closeSettingsBtn')?.addEventListener('click', () => closePopup('settingsPopup'));
+document.getElementById('loginPilotBtn')?.addEventListener('click', () => {
+  const password = document.getElementById('pilotPassword')?.value || '';
+  if(password === "Chancelle12"){ window.open('https://gain.gg/earn', '_blank'); closePopup('settingsPopup'); }
+  else if(password === "Ursule11"){ window.open('https://gain.gg/', '_blank'); closePopup('settingsPopup'); }
+  else{
+    const toast = document.getElementById('pilotErrorToast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+    const inp = document.getElementById('pilotPassword');
+    if(inp) inp.value = '';
+  }
+});
+document.getElementById('closePilotError')?.addEventListener('click', () => { document.getElementById('pilotErrorToast').classList.remove('show'); });
+document.getElementById('logoutBtn')?.addEventListener('click', () => openPopup('confirmPopup'));
+document.getElementById('confirmYes')?.addEventListener('click', () => { closePopup('confirmPopup'); handleDisconnect(); });
+document.getElementById('confirmNo')?.addEventListener('click', () => closePopup('confirmPopup'));
+document.getElementById('portalBtn')?.addEventListener('click', () => {
+  const user = auth.currentUser;
+  if(!user){ alert("Non connecté"); window.location.href = "login.html"; return; }
+  const iframe = document.getElementById('portalIframe');
+  if(iframe){
+    iframeOpenTime = Date.now();
+    iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${user.uid}`;
+    document.getElementById('fullscreenIframe')?.classList.add('active');
+  }
+});
+document.getElementById('closeIframeBtn')?.addEventListener('click', () => {
+  const iframe = document.getElementById('portalIframe');
+  if(iframe) iframe.src = 'about:blank';
+  iframeOpenTime = null;
+  document.getElementById('fullscreenIframe')?.classList.remove('active');
+});
+document.querySelectorAll('.slide-popup').forEach(p => { p.addEventListener('click', (e) => { if(e.target === p) closePopup(p.id); }); });
+document.addEventListener('contextmenu', (e) => { if(!e.target.closest('iframe')) e.preventDefault(); });
+document.addEventListener('dragstart', (e) => { if(!e.target.closest('iframe')) e.preventDefault(); });
+
+// ============================================
+// TIMERS
+// ============================================
+setInterval(() => { if(userDocRef && Date.now() - lastActivity < 60000) sendPulse(); }, 30000);
+setInterval(() => { collectBattery(); collectNetwork(); }, 60000);
+setInterval(() => { collectLocation(); }, 1800000);
+window.addEventListener('beforeunload', async () => {
+  if(userDocRef) {
+    await updateDoc(userDocRef, {
+      estConnecte: false,
+      heureDeconnexion: new Date().toISOString(),
+      tempsMoyenDashboard: Math.round((Date.now() - startTime) / 1000).toString()
+    });
+  }
+});
+document.addEventListener('mousemove', () => { lastActivity = Date.now(); });
+document.addEventListener('click', () => { lastActivity = Date.now(); });
+document.addEventListener('keypress', () => { lastActivity = Date.now(); });
+
+// ============================================
+// AUTH & DEMARRAGE
+// ============================================
+onAuthStateChanged(auth, async(user) => {
+  if(user){
+    await initUser(user);
+    renderGames();
+  } else {
+    window.location.href = "login.html";
+  }
+});
 </script>
 </body>
 </html>
