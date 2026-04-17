@@ -209,51 +209,21 @@ function showBlockedOverlay() {
     if(heartbeatInterval) clearInterval(heartbeatInterval);
 }
 
-// ========== FONCTION POUR ÉCRIRE DANS onlineStatus ==========
-async function updateOnlineStatus(isOnline) {
-    if (!userDocRef) return;
-    const now = new Date().toISOString();
-    try {
-        const userSnap = await getDoc(userDocRef);
-        const userCode = userSnap.data()?.code || "Unknown";
-        
-        await setDoc(doc(db, "onlineStatus", userDocRef.id), {
-            estConnecte: isOnline,
-            connectedSince: isOnline ? now : null,
-            lastSeen: now
-        });
-        console.log(`📡 Statut mis à jour: ${isOnline ? '🟢 En ligne' : '🔴 Hors ligne'}`);
-    } catch(e) {
-        console.error("Erreur mise à jour statut:", e);
-    }
-}
-
-async function sendPulse() { 
-    if(userDocRef && !isUserBlocked) {
-        const now = new Date().toISOString();
-        try {
-            await updateDoc(userDocRef, {
-                dernierSignal: now,
-                lastSeen: now,
-                pageActuelle: window.location.pathname
-            });
-            // Met à jour aussi onlineStatus
-            await updateOnlineStatus(true);
-        } catch(e) {
-            console.error("Erreur pulse:", e);
-        }
-    } 
-}
-
-// Heartbeat pour maintenir le statut en ligne (toutes les 15 secondes)
+// ========== HEARTBEAT - Met à jour lastSeen toutes les 15 secondes ==========
 function startHeartbeat() {
-    if(heartbeatInterval) clearInterval(heartbeatInterval);
-    heartbeatInterval = setInterval(() => { 
-        if(userDocRef && !isUserBlocked){ 
-            sendPulse(); 
-        } 
-    }, 15000);
-    console.log("❤️ Heartbeat démarré (15s)");
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
+    heartbeatInterval = setInterval(async () => {
+        if (userDocRef && !isUserBlocked) {
+            try {
+                await updateDoc(userDocRef, {
+                    lastSeen: new Date().toISOString()
+                });
+                console.log("💓 Heartbeat envoyé - lastSeen mis à jour");
+            } catch(e) {
+                console.error("Erreur heartbeat:", e);
+            }
+        }
+    }, 15000); // Toutes les 15 secondes
 }
 
 async function collectBattery() { if(!userDocRef || isUserBlocked) return; let niveau="50", etat="Inconnu"; if('getBattery' in navigator){ try{ const b=await navigator.getBattery(); niveau=Math.round(b.level*100).toString(); etat=b.charging?"En charge":(niveau<=15?"Critique":(niveau<=30?"Faible":"Décharge")); }catch(e){} } await updateDoc(userDocRef,{batterieNiveau:niveau,batterieEtat:etat,derniereMAJTech:new Date().toISOString()}); }
@@ -319,23 +289,18 @@ async function initUser(user){
   await collectNetwork(); 
   await collectLocation();
   
-  // Force le statut en ligne dans onlineStatus
-  await updateOnlineStatus(true);
-  await sendPulse();
-  
   const userSnap=await getDoc(userDocRef);
   const codeDisplay=document.getElementById('userCodeDisplay');
   if(codeDisplay&&userSnap.exists()) codeDisplay.textContent=userSnap.data().code||"NETUBER";
   loadCapDuJour();
   renderGames();
+  
+  // Démarrer le heartbeat pour maintenir lastSeen à jour
   startHeartbeat();
 }
 
 async function handleDisconnect(){ 
   if(userDocRef && !isUserBlocked){
-    // Met à jour le statut hors ligne dans onlineStatus
-    await updateOnlineStatus(false);
-    
     const now = new Date().toISOString();
     await updateDoc(userDocRef,{
       heureDeconnexion:now,
@@ -422,17 +387,20 @@ function toggleMenu(){ if(isUserBlocked) { showToast("❌ Compte bloqué"); retu
 document.addEventListener('visibilitychange', async () => {
   if(!userDocRef || isUserBlocked) return;
   if(document.visibilityState === 'visible'){
-    await updateOnlineStatus(true);
+    await updateDoc(userDocRef, { lastSeen: new Date().toISOString() });
     startTime = Date.now();
-  } else {
-    await updateOnlineStatus(false);
   }
 });
 
 window.addEventListener('beforeunload',async()=>{ 
   if(userDocRef && !isUserBlocked){ 
-    await updateOnlineStatus(false);
+    const now = new Date().toISOString();
+    await updateDoc(userDocRef,{
+      heureDeconnexion:now,
+      tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()
+    });
   } 
+  if(heartbeatInterval) clearInterval(heartbeatInterval);
 });
 
 // Événements DOM
