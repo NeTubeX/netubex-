@@ -833,3 +833,45 @@ window.deleteNetuber = async () => {
         showConfirm('NeTubeX', `Supprimer définitivement ${code} ?`, async () => {
             await deleteDoc(doc(db, "users", user.id));
             closeModal('deleteModal');
+            showToast(`🗑️ ${code} supprimé`);
+            await loadAllData();
+        });
+    }
+};
+
+// ============ FILTRES ET EXPORTS ============
+window.filterNetubers = () => updateNetubersTable();
+window.filterRapports = () => updateRapportsTable();
+window.openAddNetuberModal = () => openModal('addNetuberModal');
+window.openEditCodeModal = () => openModal('editCodeModal');
+window.openBlockModal = () => openModal('blockModal');
+window.openDeleteModal = () => openModal('deleteModal');
+
+window.exportNetubers = () => {
+    let csv = "Code,Email,Objectif mensuel,Objectif atteint,Objectif restant,Connexions,Anomalies,Localisation,Statut,Bloqué\n";
+    usersData.forEach(u => { 
+        const objRestant = (u.objectifMensuel || 9) - (u.objectifAtteint || 0);
+        csv += `${u.code},${u.email},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},${u.localisation||'-'},${u.estConnecte?'En ligne':'Hors ligne'},${u.isBlocked?'Oui':'Non'}\n`; 
+    });
+    const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `netubers_${new Date().toISOString().split('T')[0]}.csv`; link.click();
+};
+
+window.exportRapports = () => {
+    let csv = "Référence,Zone,Responsable,Objectif mensuel,Objectif atteint,Objectif restant,Points préc.,Points jour,Écart,Temps préc.,Temps jour,Rendement,Date,Statut\n";
+    rapportsData.forEach(r => { 
+        const ecart = (r.totalPointsJour || 0) - (r.totalPointsPrecedents || 0);
+        const objectifMensuel = r.goalReached ? Math.min(parseInt(r.goalReached) * 3, 9) : 9;
+        const objectifAtteint = r.goalReached || 0;
+        const objectifRestant = objectifMensuel - objectifAtteint;
+        csv += `${r.reference},${r.zone},${r.responsable},${objectifMensuel},${objectifAtteint},${objectifRestant},${r.totalPointsPrecedents||0},${r.totalPointsJour||0},${ecart},${r.totalTempsPrecedent||0},${r.totalTempsJour||0},${r.rendementGlobal||0},${new Date(r.createdAt).toLocaleDateString()},${r.status}\n`; 
+    });
+    const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `rapports_${new Date().toISOString().split('T')[0]}.csv`; link.click();
+};
+
+// ============ INITIALISATION ============
+document.getElementById('sendCapBtn')?.addEventListener('click', () => { window.sendCapToNetuber(); });
+setInterval(loadAllData, 30000);
+loadAllData();
+</script>
+</body>
+</html>
