@@ -16,8 +16,7 @@ body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:
 .logo p{font-size:10px;color:#64748b;}
 .header-right{display:flex;align-items:center;gap:20px;}
 .notif-bell{position:relative;cursor:pointer;}
-.notif-bell i{font-size:22px;color:#94a3b8;transition:0.3s;}
-.notif-bell:hover i{color:#f59e0b;}
+.notif-bell i{font-size:22px;color:#94a3b8;}
 .notif-badge{position:absolute;top:-8px;right:-8px;background:#ef4444;color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;display:flex;align-items:center;justify-content:center;}
 .admin-profile{display:flex;align-items:center;gap:10px;background:#1e293b;padding:6px 14px;border-radius:40px;}
 .tabs{display:flex;gap:8px;margin-bottom:25px;flex-wrap:wrap;border-bottom:1px solid #1e293b;padding-bottom:10px;}
@@ -31,14 +30,14 @@ body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:
 .search-input{padding:10px 16px;border-radius:40px;border:1px solid #1e293b;background:#0f1420;color:#fff;min-width:250px;outline:none;font-size:13px;}
 .search-input:focus{border-color:#f59e0b;}
 .filter-select{padding:8px 14px;border-radius:40px;border:1px solid #1e293b;background:#0f1420;color:#fff;cursor:pointer;font-size:12px;}
-.export-btn{background:#10b981;border:none;padding:8px 16px;border-radius:40px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;transition:0.2s;}
+.export-btn{background:#10b981;border:none;padding:8px 16px;border-radius:40px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;}
 .export-btn:hover{background:#059669;}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:25px;}
 .stat-card{background:#0f1420;border-radius:16px;padding:15px;border:1px solid #1e293b;}
 .stat-card .value{font-size:24px;font-weight:700;}
 .stat-card .label{font-size:11px;color:#64748b;margin-top:5px;}
 .table-wrapper{background:#0f1420;border-radius:16px;overflow-x:auto;border:1px solid #1e293b;max-height:600px;overflow-y:auto;}
-table{width:100%;border-collapse:collapse;min-width:900px;}
+table{width:100%;border-collapse:collapse;min-width:1000px;}
 th{text-align:left;padding:12px;font-size:11px;font-weight:600;color:#64748b;border-bottom:1px solid #1e293b;position:sticky;top:0;background:#0f1420;}
 td{padding:10px 12px;border-bottom:1px solid #1e293b;font-size:12px;}
 tr{cursor:pointer;transition:0.2s;}
@@ -52,14 +51,13 @@ tr:hover{background:#1a2332;}
 .online{background:#10b981;box-shadow:0 0 5px #10b981;animation:pulse 2s infinite;}
 .offline{background:#64748b;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
-.action-buttons{display:flex;gap:6px;}
-.action-btn{padding:5px 10px;border-radius:6px;font-size:10px;cursor:pointer;border:none;transition:0.2s;}
-.action-btn.view{background:#3b82f6;color:#fff;}
-.action-btn.view:hover{background:#2563eb;}
-.action-btn.archive{background:#f59e0b;color:#fff;}
-.action-btn.archive:hover{background:#d97706;}
-.action-btn.feedback{background:#10b981;color:#fff;}
-.action-btn.feedback:hover{background:#059669;}
+.battery{display:flex;align-items:center;gap:6px;}
+.battery-icon{width:28px;height:12px;border:1px solid #64748b;border-radius:2px;position:relative;background:#0a0f1a;}
+.battery-icon::after{content:'';position:absolute;right:-3px;top:2px;width:3px;height:5px;background:#64748b;border-radius:1px;}
+.battery-level{height:100%;border-radius:1px;}
+.battery-level.high{background:#10b981;}
+.battery-level.medium{background:#f59e0b;}
+.battery-level.low{background:#ef4444;}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(8px);z-index:1000;justify-content:center;align-items:center;}
 .modal.active{display:flex;}
 .modal-content{background:#0f1420;border-radius:20px;max-width:700px;width:90%;border:1px solid #1e293b;max-height:80vh;overflow-y:auto;}
@@ -67,12 +65,17 @@ tr:hover{background:#1a2332;}
 .modal-header h2{font-size:16px;display:flex;align-items:center;gap:8px;}
 .modal-close{background:#1e293b;border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;}
 .modal-body{padding:20px;}
-.modal-footer{padding:12px 20px;border-top:1px solid #1e293b;display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#0f1420;}
+.modal-footer{padding:12px 20px;border-top:1px solid #1e293b;display:flex;justify-content:flex-end;gap:10px;}
 .modal-footer button{padding:8px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:600;}
-.info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e293b;}
-.info-label{font-size:11px;color:#64748b;}
-.info-value{font-size:12px;font-weight:500;}
-textarea{width:100%;padding:12px;border-radius:12px;border:1px solid #1e293b;background:#1a2332;color:#fff;resize:vertical;font-family:inherit;}
+.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+.detail-card{background:#1a2332;border-radius:12px;padding:15px;border:1px solid #2d3748;}
+.detail-card h4{margin-bottom:10px;color:#f59e0b;font-size:13px;border-left:3px solid #f59e0b;padding-left:10px;}
+.detail-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #2d3748;font-size:12px;}
+.detail-label{color:#94a3b8;}
+.detail-value{font-weight:600;color:#e2e8f0;}
+.netuber-table{width:100%;border-collapse:collapse;margin-top:10px;}
+.netuber-table th{background:#0f1420;padding:8px;font-size:10px;text-align:left;}
+.netuber-table td{padding:8px;font-size:11px;border-bottom:1px solid #2d3748;}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:40px;font-size:12px;z-index:10000;animation:slideUp 0.3s;}
 @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
 @media (max-width:768px){.dashboard{padding:15px;}.header{padding:0.5rem 15px;}}
@@ -89,77 +92,107 @@ textarea{width:100%;padding:12px;border-radius:12px;border:1px solid #1e293b;bac
 </div>
 
 <div class="tabs">
-<button class="tab active" onclick="switchTab('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
-<button class="tab" onclick="switchTab('netubers')"><i class="fas fa-users"></i> Netubers</button>
+<button class="tab active" onclick="switchTab('netubers')"><i class="fas fa-users"></i> Netubers</button>
 <button class="tab" onclick="switchTab('rapports')"><i class="fas fa-file-alt"></i> Rapports PGCO</button>
-<button class="tab" onclick="switchTab('archives')"><i class="fas fa-archive"></i> Archives</button>
 <button class="tab" onclick="switchTab('tickets')"><i class="fas fa-ticket-alt"></i> Tickets</button>
 <button class="tab" onclick="switchTab('anomalies')"><i class="fas fa-exclamation-triangle"></i> Anomalies</button>
 </div>
 
-<!-- Onglet Dashboard -->
-<div id="dashboardTab" class="tab-content active">
+<!-- Onglet Netubers -->
+<div id="netubersTab" class="tab-content active">
 <div class="stats-grid">
 <div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Total Netubers</div></div>
 <div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">En ligne</div></div>
-<div class="stat-card"><div class="value" id="totalRapports">0</div><div class="label">Rapports reçus</div></div>
-<div class="stat-card"><div class="value" id="totalTickets">0</div><div class="label">Tickets ouverts</div></div>
-</div>
-<div class="chart-container" style="background:#0f1420; border-radius:16px; padding:20px; margin-bottom:20px;"><canvas id="weeklyChart" style="max-height:250px;"></canvas></div>
-<div class="stats-grid">
 <div class="stat-card"><div class="value" id="avgBattery">0%</div><div class="label">Batterie moyenne</div></div>
-<div class="stat-card"><div class="value" id="avgRendement">0</div><div class="label">Rendement moyen</div></div>
-<div class="stat-card"><div class="value" id="archivedCount">0</div><div class="label">Rapports archivés</div></div>
+<div class="stat-card"><div class="value" id="totalAnomalies">0</div><div class="label">Total anomalies</div></div>
 </div>
+<div class="filters">
+<input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input">
+<select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">En ligne</option><option value="offline">Hors ligne</option></select>
+<button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button>
 </div>
-
-<!-- Onglet Netubers -->
-<div id="netubersTab" class="tab-content">
-<div class="filters"><input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input"><select id="statusFilter" class="filter-select"><option value="all">Tous statuts</option><option value="online">En ligne</option><option value="offline">Hors ligne</option></select><button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button></div>
-<div class="table-wrapper"><table id="netubersTable"><thead><tr><th>Code</th><th>Email</th><th>Connexions</th><th>Anomalies</th><th>Batterie</th><th>Statut</th><th>Dernière activité</th></tr></thead><tbody id="netubersTableBody"></tbody></table></div>
+<div class="table-wrapper">
+<table id="netubersTable">
+<thead>
+<tr>
+<th>Code</th>
+<th>Email</th>
+<th>Connexions ✅</th>
+<th>Déconnexions 🚪</th>
+<th>Échecs ❌</th>
+<th>Anomalies ⚠️</th>
+<th>Batterie 🔋</th>
+<th>Réseau 📡</th>
+<th>Localisation 📍</th>
+<th>Dernière connexion</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody id="netubersTableBody"></tbody>
+</table>
+</div>
 </div>
 
 <!-- Onglet Rapports PGCO -->
 <div id="rapportsTab" class="tab-content">
+<div class="stats-grid">
+<div class="stat-card"><div class="value" id="totalRapports">0</div><div class="label">Rapports reçus</div></div>
+<div class="stat-card"><div class="value" id="nonTraites">0</div><div class="label">Non traités</div></div>
+</div>
 <div class="filters">
 <input type="text" id="searchRapport" placeholder="🔍 Référence ou zone..." class="search-input">
 <select id="statutRapport" class="filter-select" onchange="filterRapports()"><option value="all">Tous statuts</option><option value="non_traite">Non traités</option><option value="traite">Traités</option></select>
-<select id="dateRapport" class="filter-select" onchange="filterRapports()"><option value="all">Toutes dates</option><option value="today">Aujourd'hui</option><option value="week">Cette semaine</option><option value="month">Ce mois</option></select>
 <button class="export-btn" onclick="exportRapports()"><i class="fas fa-file-excel"></i> Exporter</button>
 </div>
-<div class="table-wrapper"><table id="rapportsTable"><thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Points jour</th><th>Rendement</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="rapportsTableBody"></tbody></table></div>
+<div class="table-wrapper">
+<table id="rapportsTable">
+<thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Points jour</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead>
+<tbody id="rapportsTableBody"></tbody>
+</table>
 </div>
-
-<!-- Onglet Archives -->
-<div id="archivesTab" class="tab-content">
-<div class="filters"><input type="text" id="searchArchive" placeholder="🔍 Référence..." class="search-input"><input type="date" id="archiveDateFilter" class="filter-select" onchange="filterArchives()"><button class="export-btn" onclick="exportArchives()"><i class="fas fa-file-excel"></i> Exporter</button></div>
-<div class="table-wrapper"><table id="archivesTable"><thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Points jour</th><th>Date</th><th>Archivé le</th><th>Actions</th></tr></thead><tbody id="archivesTableBody"></tbody></table></div>
 </div>
 
 <!-- Onglet Tickets -->
-<div id="ticketsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="ticketsOpen">0</div><div class="label">Ouverts</div></div><div class="stat-card"><div class="value" id="ticketsProgress">0</div><div class="label">En cours</div></div><div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Résolus</div></div></div><div class="table-wrapper"><table><thead><tr><th>Netuber</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody id="ticketsTableBody"></tbody></table></div></div>
+<div id="ticketsTab" class="tab-content">
+<div class="stats-grid">
+<div class="stat-card"><div class="value" id="ticketsOpen">0</div><div class="label">Ouverts</div></div>
+<div class="stat-card"><div class="value" id="ticketsProgress">0</div><div class="label">En cours</div></div>
+<div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Résolus</div></div>
+</div>
+<div class="table-wrapper">
+<table id="ticketsTable"><thead><tr><th>Netuber</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody id="ticketsTableBody"></tbody></table>
+</div>
+</div>
 
 <!-- Onglet Anomalies -->
-<div id="anomaliesTab" class="tab-content"><div class="table-wrapper"><table><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre</th><th>Dernière occurrence</th></tr></thead><tbody id="anomaliesTableBody"></tbody></table></div></div>
+<div id="anomaliesTab" class="tab-content">
+<div class="table-wrapper">
+<table id="anomaliesTable"><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre</th><th>Dernière occurrence</th><th>Action</th></tr></thead><tbody id="anomaliesTableBody"></tbody></table>
+</div>
+</div>
 
 <!-- Modals -->
-<div id="rapportModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-file-alt"></i> Détail du rapport PGCO</h2><button class="modal-close" onclick="closeModal('rapportModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="rapportDetailBody"></div><div class="modal-footer"><button class="action-btn feedback" onclick="openFeedbackModal()"><i class="fas fa-reply"></i> Envoyer feedback</button><button class="action-btn archive" onclick="archiveCurrentRapport()"><i class="fas fa-archive"></i> Archiver</button><button onclick="closeModal('rapportModal')" style="background:#64748b;">Fermer</button></div></div></div>
-
-<div id="feedbackModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-comment-dots"></i> Envoyer un feedback au PGCO</h2><button class="modal-close" onclick="closeModal('feedbackModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><textarea id="feedbackMessage" rows="5" placeholder="Votre message de feedback..."></textarea></div><div class="modal-footer"><button onclick="sendFeedback()" style="background:#10b981;"><i class="fas fa-paper-plane"></i> Envoyer</button><button onclick="closeModal('feedbackModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="netuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-circle"></i> Détails Netuber</h2><button class="modal-close" onclick="closeModal('netuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="netuberDetailBody"></div><div class="modal-footer"><button onclick="closeModal('netuberModal')" style="background:#64748b;">Fermer</button></div></div></div>
+<div id="rapportModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-file-alt"></i> Détail rapport PGCO</h2><button class="modal-close" onclick="closeModal('rapportModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="rapportDetailBody"></div><div class="modal-footer"><button onclick="closeModal('rapportModal')" style="background:#64748b;">Fermer</button></div></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
+const firebaseConfig = {
+  apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
+  authDomain: "netubexmoney.firebaseapp.com",
+  projectId: "netubexmoney",
+  storageBucket: "netubexmoney.firebasestorage.app",
+  messagingSenderId: "856592608176",
+  appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
+};
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 let usersData = [];
 let rapportsData = [];
-let archivedReports = [];
-let currentRapport = null;
-let weeklyChart = null;
 
 window.switchTab = (tab) => {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -170,88 +203,126 @@ window.switchTab = (tab) => {
 
 async function loadAllData() {
   const usersSnap = await getDocs(collection(db, "users"));
-  usersData = []; usersSnap.forEach(doc => usersData.push({ id: doc.id, ...doc.data() }));
+  usersData = [];
+  usersSnap.forEach(doc => usersData.push({ id: doc.id, ...doc.data() }));
   
   const rapportsSnap = await getDocs(collection(db, "reports"));
-  rapportsData = []; archivedReports = [];
-  rapportsSnap.forEach(doc => {
-    const data = doc.data();
-    if (data.archived === true) archivedReports.push({ id: doc.id, ...data });
-    else rapportsData.push({ id: doc.id, ...data });
-  });
+  rapportsData = [];
+  rapportsSnap.forEach(doc => rapportsData.push({ id: doc.id, ...doc.data() }));
   rapportsData.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-  archivedReports.sort((a,b) => new Date(b.archivedAt) - new Date(a.archivedAt));
   
-  updateDashboard();
   updateNetubersTable();
   updateRapportsTable();
-  updateArchivesTable();
   updateTicketsTable();
   updateAnomaliesTable();
-  updateNotifCount();
+  updateStats();
 }
 
-function updateDashboard() {
+function updateStats() {
   document.getElementById('totalNetubers').innerText = usersData.length;
   document.getElementById('totalOnline').innerText = usersData.filter(u => u.estConnecte === true || u.estConnecte === 'true').length;
-  document.getElementById('totalRapports').innerText = rapportsData.length;
-  document.getElementById('totalTickets').innerText = usersData.reduce((a,u) => a + (u.ticketsList?.filter(t => t.status !== 'resolu').length || 0), 0);
   const avgBatt = usersData.reduce((a,u) => a + (parseInt(u.batterieNiveau) || 0), 0) / (usersData.length || 1);
   document.getElementById('avgBattery').innerText = Math.round(avgBatt) + '%';
-  const avgRend = rapportsData.reduce((a,r) => a + (parseFloat(r.rendementGlobal) || 0), 0) / (rapportsData.length || 1);
-  document.getElementById('avgRendement').innerText = avgRend.toFixed(2) + '/min';
-  document.getElementById('archivedCount').innerText = archivedReports.length;
-  
-  if (weeklyChart) weeklyChart.destroy();
-  const ctx = document.getElementById('weeklyChart').getContext('2d');
-  weeklyChart = new Chart(ctx, { type: 'line', data: { labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'], datasets: [{ label: 'Rapports reçus', data: [4,7,5,8,6,3,2], borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true }] }, options: { responsive: true, maintainAspectRatio: true } });
+  const totalAnom = usersData.reduce((a,u) => a + (parseInt(u.anomaliesConnexion)||0) + (parseInt(u.anomaliesSysteme)||0), 0);
+  document.getElementById('totalAnomalies').innerText = totalAnom;
+  document.getElementById('totalRapports').innerText = rapportsData.length;
+  document.getElementById('nonTraites').innerText = rapportsData.filter(r => r.status !== 'traite').length;
 }
+
+function formatDate(dateStr) {
+  if(!dateStr) return 'Jamais';
+  try { return new Date(dateStr).toLocaleString('fr-FR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'}); } 
+  catch(e) { return '-'; }
+}
+
+function getBatteryClass(b) { return b > 60 ? 'high' : (b > 20 ? 'medium' : 'low'); }
+function getBatteryColor(b) { return b > 60 ? '#10b981' : (b > 20 ? '#f59e0b' : '#ef4444'); }
 
 function updateNetubersTable() {
   const tbody = document.getElementById('netubersTableBody');
-  tbody.innerHTML = usersData.map(u => `<tr onclick='showUserDetails("${u.code}")'><td><strong>${u.code || '-'}</strong></td><td>${u.email || '-'}</td><td>${u.NombreConnexions || 0}</td><td><span class="badge ${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)>2 ? 'badge-warning' : 'badge-success'}">${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)}</span></td><td>${u.batterieNiveau || 0}%</td><td><span class="status-dot ${u.estConnecte ? 'online' : 'offline'}"></span>${u.estConnecte ? 'En ligne' : 'Hors ligne'}</td><td>${u.dernierSignal ? new Date(u.dernierSignal).toLocaleString() : '-'}</td></tr>`).join('');
+  const search = document.getElementById('searchNetuber')?.value.toLowerCase() || '';
+  const status = document.getElementById('statusFilter')?.value || 'all';
+  
+  let filtered = usersData.filter(u => {
+    const matchSearch = (u.code || '').toLowerCase().includes(search);
+    const isOnline = u.estConnecte === true || u.estConnecte === 'true';
+    const matchStatus = status === 'all' || (status === 'online' ? isOnline : !isOnline);
+    return matchSearch && matchStatus;
+  });
+  
+  tbody.innerHTML = filtered.map(u => {
+    const connexions = parseInt(u.NombreConnexions) || 0;
+    const deconnexions = parseInt(u.NombreDeconnexions) || 0;
+    const echecs = parseInt(u.NombreEchecsConnexion) || 0;
+    const anomalies = (parseInt(u.anomaliesConnexion)||0) + (parseInt(u.anomaliesSysteme)||0);
+    const batterie = parseInt(u.batterieNiveau) || 0;
+    const isOnline = u.estConnecte === true || u.estConnecte === 'true';
+    const anomalieClass = anomalies > 5 ? 'badge-danger' : (anomalies > 2 ? 'badge-warning' : 'badge-success');
+    const batterieClass = getBatteryClass(batterie);
+    
+    return `
+      <tr onclick='showNetuberDetails("${u.code}")'>
+        <td><strong>${u.code || '-'}</strong></td>
+        <td>${u.email || '-'}</td>
+        <td style="color:#10b981; font-weight:600;">${connexions}</td>
+        <td style="color:#f59e0b; font-weight:600;">${deconnexions}</td>
+        <td style="color:#ef4444;">${echecs}</td>
+        <td><span class="badge ${anomalieClass}">${anomalies}</span></td>
+        <td><div class="battery"><div class="battery-icon"><div class="battery-level ${batterieClass}" style="width:${Math.min(batterie,100)}%"></div></div><span style="color:${getBatteryColor(batterie)}">${batterie}%</span></div></td>
+        <td><i class="fas fa-${u.typeConnexion === 'WiFi' ? 'wifi' : 'signal'}"></i> ${u.typeConnexion || '-'}<br><small>📶 ${u.forceSignal || 0}%</small></td>
+        <td><i class="fas fa-map-marker-alt"></i> ${u.localisation || '-'}</td>
+        <td><small>${formatDate(u.heureConnexion)}</small></td>
+        <td><span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>${isOnline ? 'En ligne' : 'Hors ligne'}</td>
+      </tr>
+    `;
+  }).join('');
 }
 
 function updateRapportsTable() {
   const search = document.getElementById('searchRapport')?.value.toLowerCase() || '';
   const statut = document.getElementById('statutRapport')?.value || 'all';
-  const dateFilter = document.getElementById('dateRapport')?.value || 'all';
   
   let filtered = rapportsData.filter(r => {
     const matchSearch = (r.reference || '').toLowerCase().includes(search) || (r.zone || '').toLowerCase().includes(search);
     const matchStatut = statut === 'all' || r.status === statut;
-    let matchDate = true;
-    if (dateFilter === 'today') matchDate = new Date(r.createdAt).toDateString() === new Date().toDateString();
-    else if (dateFilter === 'week') matchDate = (new Date() - new Date(r.createdAt)) < 7*24*60*60*1000;
-    else if (dateFilter === 'month') matchDate = (new Date() - new Date(r.createdAt)) < 30*24*60*60*1000;
-    return matchSearch && matchStatut && matchDate;
+    return matchSearch && matchStatut;
   });
   
   const tbody = document.getElementById('rapportsTableBody');
-  tbody.innerHTML = filtered.map(r => `<tr><td><strong>${r.reference || '-'}</strong></td><td>${r.zone || '-'}</td><td>${r.responsable || '-'}</td><td><span style="color:#f59e0b; font-weight:bold;">${r.totalPointsJour || 0}</span></td><td>${r.rendementGlobal || '0'}/min</td><td>${new Date(r.createdAt).toLocaleDateString()}</td><td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></td><td><div class="action-buttons"><button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i> Voir</button></div></td></tr>`).join('');
-}
-
-function updateArchivesTable() {
-  const search = document.getElementById('searchArchive')?.value.toLowerCase() || '';
-  const dateFilter = document.getElementById('archiveDateFilter')?.value || '';
-  
-  let filtered = archivedReports.filter(r => {
-    const matchSearch = (r.reference || '').toLowerCase().includes(search);
-    let matchDate = true;
-    if (dateFilter) matchDate = new Date(r.createdAt).toISOString().split('T')[0] === dateFilter;
-    return matchSearch && matchDate;
-  });
-  
-  const tbody = document.getElementById('archivesTableBody');
-  tbody.innerHTML = filtered.map(r => `<tr><td><strong>${r.reference || '-'}</strong></td><td>${r.zone || '-'}</td><td>${r.responsable || '-'}</td><td>${r.totalPointsJour || 0}</td><td>${new Date(r.createdAt).toLocaleDateString()}</td><td>${r.archivedAt ? new Date(r.archivedAt).toLocaleDateString() : '-'}</td><td><button class="action-btn view" onclick='viewArchivedRapport("${r.id}")'><i class="fas fa-eye"></i> Voir</button></td></tr>`).join('');
+  tbody.innerHTML = filtered.map(r => `
+    <tr>
+      <td><strong>${r.reference || '-'}</strong></td>
+      <td>${r.zone || '-'}</td>
+      <td>${r.responsable || '-'}</td>
+      <td style="color:#f59e0b; font-weight:bold;">${r.totalPointsJour || 0}</td>
+      <td><small>${new Date(r.createdAt).toLocaleDateString()}</small></td>
+      <td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></td>
+      <td><button class="badge badge-info" style="cursor:pointer;" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i> Voir</button></td>
+    </tr>
+  `).join('');
 }
 
 function updateTicketsTable() {
   const allTickets = [];
-  usersData.forEach(u => { (u.ticketsList || []).forEach(t => { allTickets.push({ ...t, userCode: u.code }); }); });
+  usersData.forEach(u => {
+    (u.ticketsList || []).forEach(t => {
+      allTickets.push({ ...t, userCode: u.code });
+    });
+  });
   allTickets.sort((a,b) => new Date(b.date) - new Date(a.date));
+  
   const tbody = document.getElementById('ticketsTableBody');
-  tbody.innerHTML = allTickets.slice(0,30).map(t => `<tr><td>${t.userCode}</td><td>${t.category || t.subject}</td><td><span class="badge ${t.priority === 'haute' ? 'badge-danger' : 'badge-warning'}">${t.priority}</span></td><td><span class="badge ${t.status === 'resolu' ? 'badge-success' : 'badge-warning'}">${t.status}</span></td><td>${new Date(t.date).toLocaleDateString()}</td><td><button class="action-btn view" onclick='alert("Ticket: ${t.id}")'><i class="fas fa-reply"></i> Répondre</button></td></tr>`).join('');
+  tbody.innerHTML = allTickets.slice(0,30).map(t => `
+    <tr>
+      <td><strong>${t.userCode}</strong></td>
+      <td>${t.category || t.subject}</td>
+      <td><span class="badge ${t.priority === 'haute' ? 'badge-danger' : 'badge-warning'}">${t.priority}</span></td>
+      <td><span class="badge ${t.status === 'resolu' ? 'badge-success' : 'badge-warning'}">${t.status}</span></td>
+      <td><small>${new Date(t.date).toLocaleDateString()}</small></td>
+      <td><button class="badge badge-info" style="cursor:pointer;"><i class="fas fa-reply"></i> Répondre</button></td>
+    </tr>
+  `).join('');
+  
   document.getElementById('ticketsOpen').innerText = allTickets.filter(t => t.status === 'ouvert').length;
   document.getElementById('ticketsProgress').innerText = allTickets.filter(t => t.status === 'en-cours').length;
   document.getElementById('ticketsResolved').innerText = allTickets.filter(t => t.status === 'resolu').length;
@@ -261,83 +332,124 @@ function updateAnomaliesTable() {
   const anomalies = [];
   usersData.forEach(u => {
     const count = (parseInt(u.anomaliesConnexion) || 0) + (parseInt(u.anomaliesSysteme) || 0);
-    if (count >= 2) anomalies.push({ code: u.code, type: 'Anomalies multiples', count: count, last: u.derniereMAJTech });
+    if(count >= 2) {
+      anomalies.push({ code: u.code, type: 'Anomalies multiples', count: count, last: u.derniereMAJTech, id: u.id });
+    }
   });
+  
   const tbody = document.getElementById('anomaliesTableBody');
-  tbody.innerHTML = anomalies.map(a => `<tr><td><strong>${a.code}</strong></td><td>${a.type}</td><td><span class="badge badge-danger">${a.count}</span></td><td>${a.last ? new Date(a.last).toLocaleString() : '-'}</td></tr>`).join('');
+  tbody.innerHTML = anomalies.map(a => `
+    <tr>
+      <td><strong>${a.code}</strong></td>
+      <td>${a.type}</td>
+      <td><span class="badge badge-danger">${a.count} fois</span></td>
+      <td><small>${formatDate(a.last)}</small></td>
+      <td><button class="badge badge-warning" style="cursor:pointer;" onclick='resetAnomalies("${a.id}")'><i class="fas fa-sync"></i> Réinitialiser</button></td>
+    </tr>
+  `).join('');
 }
 
-function updateNotifCount() {
-  const nonTraites = rapportsData.filter(r => r.status !== 'traite').length;
-  document.getElementById('notifCount').innerText = nonTraites > 0 ? nonTraites : '';
-}
+window.resetAnomalies = async (userId) => {
+  const userRef = doc(db, "users", userId);
+  await updateDoc(userRef, { anomaliesConnexion: 0, anomaliesSysteme: 0 });
+  showToast("✅ Anomalies réinitialisées");
+  loadAllData();
+};
 
-window.viewRapport = async (id) => {
-  currentRapport = rapportsData.find(r => r.id === id);
-  if (!currentRapport) return;
+window.showNetuberDetails = (code) => {
+  const user = usersData.find(u => u.code === code);
+  if(!user) return;
+  
+  const modalBody = document.getElementById('netuberDetailBody');
+  modalBody.innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-card"><h4><i class="fas fa-user"></i> Identité</h4>
+        <div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${user.code || '-'}</span></div>
+        <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${user.email || '-'}</span></div>
+        <div class="detail-row"><span class="detail-label">Rôle</span><span class="detail-value">${user.role || '-'}</span></div>
+        <div class="detail-row"><span class="detail-label">Membre depuis</span><span class="detail-value">${formatDate(user.createdAt)}</span></div>
+      </div>
+      <div class="detail-card"><h4><i class="fas fa-chart-line"></i> Statistiques</h4>
+        <div class="detail-row"><span class="detail-label">✅ Connexions</span><span class="detail-value">${user.NombreConnexions || 0}</span></div>
+        <div class="detail-row"><span class="detail-label">🚪 Déconnexions</span><span class="detail-value">${user.NombreDeconnexions || 0}</span></div>
+        <div class="detail-row"><span class="detail-label">❌ Échecs</span><span class="detail-value">${user.NombreEchecsConnexion || 0}</span></div>
+        <div class="detail-row"><span class="detail-label">📊 Temps total</span><span class="detail-value">${user.tempsTotalTerminal || '0'} min</span></div>
+      </div>
+      <div class="detail-card"><h4><i class="fas fa-mobile-alt"></i> Terminal</h4>
+        <div class="detail-row"><span class="detail-label">🔋 Batterie</span><span class="detail-value">${user.batterieNiveau || 0}% (${user.batterieEtat || '-'})</span></div>
+        <div class="detail-row"><span class="detail-label">📡 Réseau</span><span class="detail-value">${user.typeConnexion || '-'} 📶 ${user.forceSignal || 0}%</span></div>
+        <div class="detail-row"><span class="detail-label">📍 Localisation</span><span class="detail-value">${user.localisation || '-'}</span></div>
+        <div class="detail-row"><span class="detail-label">🕐 Dernière MAJ</span><span class="detail-value">${formatDate(user.derniereMAJTech)}</span></div>
+      </div>
+      <div class="detail-card"><h4><i class="fas fa-clock"></i> Connexions</h4>
+        <div class="detail-row"><span class="detail-label">🟢 Dernière connexion</span><span class="detail-value">${formatDate(user.heureConnexion)}</span></div>
+        <div class="detail-row"><span class="detail-label">🔴 Dernière déconnexion</span><span class="detail-value">${formatDate(user.heureDeconnexion)}</span></div>
+        <div class="detail-row"><span class="detail-label">📱 Statut</span><span class="detail-value"><span class="status-dot ${user.estConnecte ? 'online' : 'offline'}"></span>${user.estConnecte ? 'En ligne' : 'Hors ligne'}</span></div>
+        <div class="detail-row"><span class="detail-label">⚠️ Niveau alerte</span><span class="detail-value"><span class="badge ${user.niveauAlerte === 'rouge' ? 'badge-danger' : 'badge-warning'}">${user.niveauAlerte || 'vert'}</span></span></div>
+      </div>
+    </div>
+  `;
+  document.getElementById('netuberModal').classList.add('active');
+};
+
+window.viewRapport = (id) => {
+  const rapport = rapportsData.find(r => r.id === id);
+  if(!rapport) return;
+  
   const modalBody = document.getElementById('rapportDetailBody');
   modalBody.innerHTML = `
-    <div class="info-row"><span class="info-label">Référence</span><span class="info-value">${currentRapport.reference || '-'}</span></div>
-    <div class="info-row"><span class="info-label">Zone / Site</span><span class="info-value">${currentRapport.zone || '-'}</span></div>
-    <div class="info-row"><span class="info-label">Responsable</span><span class="info-value">${currentRapport.responsable || '-'}</span></div>
-    <div class="info-row"><span class="info-label">Date d'envoi</span><span class="info-value">${new Date(currentRapport.createdAt).toLocaleString()}</span></div>
-    <div class="info-row"><span class="info-label">Objectif atteint</span><span class="info-value">${currentRapport.goalReached || 0} / 9</span></div>
-    <div class="info-row"><span class="info-label">Points précédents</span><span class="info-value">${currentRapport.totalPointsPrecedents || 0}</span></div>
-    <div class="info-row"><span class="info-label">Points du jour</span><span class="info-value" style="color:#f59e0b; font-weight:bold;">${currentRapport.totalPointsJour || 0}</span></div>
-    <div class="info-row"><span class="info-label">Temps précédent</span><span class="info-value">${currentRapport.totalTempsPrecedent || 0} min</span></div>
-    <div class="info-row"><span class="info-label">Temps du jour</span><span class="info-value">${currentRapport.totalTempsJour || 0} min</span></div>
-    <div class="info-row"><span class="info-label">Rendement global</span><span class="info-value">${currentRapport.rendementGlobal || '0'}/min</span></div>
-    <div class="info-row"><span class="info-label">Appels pilote</span><span class="info-value">${currentRapport.piloteCallCount || 0} fois</span></div>
-    <div class="info-row"><span class="info-label">Recommandation</span><span class="info-value">${currentRapport.recommendation || '-'}</span></div>
-    <div style="margin-top:15px;"><strong>📋 Détail Netubers</strong></div>
-    ${(currentRapport.netubers || []).map(n => `<div class="info-row"><span class="info-label">${n.code}</span><span class="info-value">Présence: ${n.presence} | Points: ${n.pointsJour} | Temps: ${n.tempsJour} min</span></div>`).join('')}
+    <div class="detail-grid">
+      <div class="detail-card"><h4><i class="fas fa-info-circle"></i> Général</h4>
+        <div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${rapport.reference || '-'}</span></div>
+        <div class="detail-row"><span class="detail-label">Zone</span><span class="detail-value">${rapport.zone || '-'}</span></div>
+        <div class="detail-row"><span class="detail-label">Responsable</span><span class="detail-value">${rapport.responsable || '-'}</span></div>
+        <div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">${new Date(rapport.createdAt).toLocaleString()}</span></div>
+      </div>
+      <div class="detail-card"><h4><i class="fas fa-chart-simple"></i> Performances</h4>
+        <div class="detail-row"><span class="detail-label">Objectif atteint</span><span class="detail-value">${rapport.goalReached || 0} / 9</span></div>
+        <div class="detail-row"><span class="detail-label">Points précédents</span><span class="detail-value">${rapport.totalPointsPrecedents || 0}</span></div>
+        <div class="detail-row"><span class="detail-label">Points du jour</span><span class="detail-value" style="color:#f59e0b;">${rapport.totalPointsJour || 0}</span></div>
+        <div class="detail-row"><span class="detail-label">Rendement</span><span class="detail-value">${rapport.rendementGlobal || '0'}/min</span></div>
+        <div class="detail-row"><span class="detail-label">Appels pilote</span><span class="detail-value">${rapport.piloteCallCount || 0} fois</span></div>
+      </div>
+    </div>
+    <div class="detail-card"><h4><i class="fas fa-users"></i> Détail Netubers</h4>
+      <table class="netuber-table"><thead><tr><th>Code</th><th>Présence</th><th>Points</th><th>Temps</th></tr></thead><tbody>
+      ${(rapport.netubers || []).map(n => `<tr><td>${n.code}</td><td>${n.presence}</td><td>${n.pointsJour}</td><td>${n.tempsJour} min</td></tr>`).join('')}
+      </tbody></table>
+    </div>
+    <div class="detail-card" style="margin-top:15px;"><h4><i class="fas fa-comment"></i> Recommandation</h4>
+      <p style="font-size:12px; line-height:1.5; margin-top:10px;">${rapport.recommendation || '-'}</p>
+    </div>
   `;
   document.getElementById('rapportModal').classList.add('active');
 };
 
-window.viewArchivedRapport = async (id) => {
-  const rapport = archivedReports.find(r => r.id === id);
-  if (!rapport) return;
-  const modalBody = document.getElementById('rapportDetailBody');
-  modalBody.innerHTML = `<div class="info-row"><span class="info-label">Référence</span><span class="info-value">${rapport.reference || '-'}</span></div><div class="info-row"><span class="info-label">Zone</span><span class="info-value">${rapport.zone || '-'}</span></div><div class="info-row"><span class="info-label">Responsable</span><span class="info-value">${rapport.responsable || '-'}</span></div><div class="info-row"><span class="info-label">Points jour</span><span class="info-value">${rapport.totalPointsJour || 0}</span></div><div class="info-row"><span class="info-label">Date</span><span class="info-value">${new Date(rapport.createdAt).toLocaleString()}</span></div><div class="info-row"><span class="info-label">Archivé le</span><span class="info-value">${rapport.archivedAt ? new Date(rapport.archivedAt).toLocaleString() : '-'}</span></div>`;
-  document.getElementById('rapportModal').classList.add('active');
-};
-
-window.archiveCurrentRapport = async () => {
-  if (!currentRapport) return;
-  const reportRef = doc(db, "reports", currentRapport.id);
-  await updateDoc(reportRef, { archived: true, archivedAt: new Date().toISOString(), status: "traite" });
-  await loadAllData();
-  closeModal('rapportModal');
-  showToast("📦 Rapport archivé avec succès");
-};
-
-window.openFeedbackModal = () => {
-  document.getElementById('feedbackModal').classList.add('active');
-};
-
-window.sendFeedback = async () => {
-  const message = document.getElementById('feedbackMessage').value.trim();
-  if (!message) { showToast("Veuillez écrire un message"); return; }
-  if (!currentRapport) return;
-  const reportRef = doc(db, "reports", currentRapport.id);
-  const feedbacks = currentRapport.feedbacks || [];
-  feedbacks.push({ message, date: new Date().toISOString(), from: "admin" });
-  await updateDoc(reportRef, { feedbacks: feedbacks, status: "traite" });
-  closeModal('feedbackModal');
-  document.getElementById('feedbackMessage').value = '';
-  showToast("✅ Feedback envoyé au PGCO");
-  await loadAllData();
-};
-
-window.closeModal = (id) => { document.getElementById(id).classList.remove('active'); };
-window.showUserDetails = (code) => { alert("Détails de " + code); };
+window.filterNetubers = () => updateNetubersTable();
 window.filterRapports = () => updateRapportsTable();
-window.filterArchives = () => updateArchivesTable();
-window.exportRapports = () => { let csv = "Référence,Zone,Responsable,Points,Date\n"; rapportsData.forEach(r => { csv += `${r.reference},${r.zone},${r.responsable},${r.totalPointsJour},${new Date(r.createdAt).toLocaleDateString()}\n`; }); downloadCSV(csv, "rapports_pgco.csv"); };
-window.exportArchives = () => { let csv = "Référence,Zone,Responsable,Points,Date archivage\n"; archivedReports.forEach(r => { csv += `${r.reference},${r.zone},${r.responsable},${r.totalPointsJour},${r.archivedAt ? new Date(r.archivedAt).toLocaleDateString() : '-'}\n`; }); downloadCSV(csv, "archives_pgco.csv"); };
-window.exportNetubers = () => { let csv = "Code,Email,Connexions,Anomalies,Batterie,Statut\n"; usersData.forEach(u => { csv += `${u.code},${u.email},${u.NombreConnexions || 0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},${u.batterieNiveau || 0}%,${u.estConnecte ? 'En ligne' : 'Hors ligne'}\n`; }); downloadCSV(csv, "netubers.csv"); };
-function downloadCSV(csv, filename) { const blob = new Blob([csv], {type: 'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = filename; link.click(); }
+window.closeModal = (id) => document.getElementById(id).classList.remove('active');
+window.exportNetubers = () => {
+  let csv = "Code,Email,Connexions,Déconnexions,Échecs,Anomalies,Batterie,Réseau,Localisation,Statut\n";
+  usersData.forEach(u => {
+    csv += `${u.code},${u.email},${u.NombreConnexions||0},${u.NombreDeconnexions||0},${u.NombreEchecsConnexion||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},${u.batterieNiveau||0}%,${u.typeConnexion||'-'},${u.localisation||'-'},${u.estConnecte?'En ligne':'Hors ligne'}\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `netubers_${new Date().toISOString().split('T')[0]}.csv`;
+  link.click();
+};
+window.exportRapports = () => {
+  let csv = "Référence,Zone,Responsable,Points jour,Date,Statut\n";
+  rapportsData.forEach(r => {
+    csv += `${r.reference},${r.zone},${r.responsable},${r.totalPointsJour||0},${new Date(r.createdAt).toLocaleDateString()},${r.status}\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `rapports_${new Date().toISOString().split('T')[0]}.csv`;
+  link.click();
+};
 function showToast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
 
 setInterval(loadAllData, 30000);
