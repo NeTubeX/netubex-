@@ -190,7 +190,7 @@ tr:hover{background:#1a2332;}
 <div class="stat-card"><div class="value" id="ticketsProgress">0</div><div class="label">En cours</div></div>
 <div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Résolus</div></div>
 </div>
-<div class="table-wrapper"><table id="ticketsTable"><thead><tr><th>Netuber</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody id="ticketsTableBody"></tbody></table></div>
+<div class="table-wrapper"><table id="ticketsTable"><thead><tr><th>Netuber</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th><tr></thead><tbody id="ticketsTableBody"></tbody></table></div>
 </div>
 
 <!-- Onglet Anomalies -->
@@ -205,8 +205,8 @@ tr:hover{background:#1a2332;}
 <div class="detail-card" style="margin-bottom:20px;"><h4><i class="fas fa-chart-line"></i> CAP du jour - Derniers envois</h4><div class="table-wrapper" style="max-height:300px;"><table id="capHistoryTable"><thead><tr><th>Netuber</th><th>CAP</th><th>Date envoi</th><th>Expiration</th></tr></thead><tbody id="capHistoryBody"></tbody></table></div></div>
 <div class="detail-card"><h4><i class="fas fa-cog"></i> Administration</h4><table style="min-width:auto;"><thead><tr><th>Action</th><th>Description</th><th>Statut</th></tr></thead>
 <tbody>
-<tr><td><i class="fas fa-user-edit"></i> Modifier code Netuber</div><div class="detail-value">Changer le code unique d'un Netuber</div><div class="detail-value"><button class="badge badge-info" onclick="openEditCodeModal()" style="cursor:pointer;">Modifier</button></div></tr>
-<tr><td><i class="fas fa-ban"></i> Bloquer/Débloquer Netuber</div><div class="detail-value">Bloquer l'accès au Dashboard utilisateur</div><div class="detail-value"><button class="badge badge-warning" onclick="openBlockModal()" style="cursor:pointer;">Gérer</button></div></tr>
+<tr><td><i class="fas fa-user-edit"></i> Modifier code Netuber</td><td>Changer le code unique d'un Netuber</td><td><button class="badge badge-info" onclick="openEditCodeModal()" style="cursor:pointer;">Modifier</button></td></tr>
+<tr><td><i class="fas fa-ban"></i> Bloquer/Débloquer Netuber</td><td>Bloquer l'accès au Dashboard utilisateur</td><td><button class="badge badge-warning" onclick="openBlockModal()" style="cursor:pointer;">Gérer</button></td></tr>
 </tbody>
 </table>
 </div>
@@ -236,7 +236,7 @@ tr:hover{background:#1a2332;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, getDoc, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, getDoc, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, updatePassword as updateUserPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
@@ -251,6 +251,7 @@ let rapportsChart = null;
 let anomaliesChart = null;
 let selectedNetuberForCap = null;
 let selectedRapportForFeedback = null;
+let usersUnsubscribe = null;
 
 // Déconnexion
 window.logout = async () => {
@@ -297,6 +298,42 @@ function showConfirm(title, message, onConfirm) {
     confirmCancel.addEventListener('click', cancelHandler);
 }
 
+// ========== ÉCOUTE EN TEMPS RÉEL DES UTILISATEURS ==========
+function listenToUsersRealtime() {
+    if (usersUnsubscribe) usersUnsubscribe();
+    
+    const usersRef = collection(db, "users");
+    usersUnsubscribe = onSnapshot(usersRef, (snapshot) => {
+        let hasChanges = false;
+        
+        snapshot.docChanges().forEach((change) => {
+            const updatedUser = { id: change.doc.id, ...change.doc.data() };
+            const index = usersData.findIndex(u => u.id === updatedUser.id);
+            
+            if (index !== -1) {
+                const oldLastSeen = usersData[index].lastSeen;
+                const newLastSeen = updatedUser.lastSeen;
+                if (oldLastSeen !== newLastSeen) {
+                    console.log(`🔄 Mise à jour lastSeen pour ${updatedUser.code}`);
+                    hasChanges = true;
+                }
+                usersData[index] = updatedUser;
+            } else {
+                usersData.push(updatedUser);
+                hasChanges = true;
+            }
+        });
+        
+        if (hasChanges) {
+            updateNetubersTable();
+            updateConfidentialiteTable();
+            updateStats();
+        }
+    }, (error) => {
+        console.error("Erreur écoute:", error);
+    });
+}
+
 // Chargement initial des données
 async function loadAllData() {
     const usersSnap = await getDocs(collection(db, "users"));
@@ -317,11 +354,8 @@ async function loadAllData() {
     updateSelects();
     updateCapHistory();
     
-    // Rafraîchir toutes les 30 secondes
-    setInterval(() => {
-        updateNetubersTable();
-        updateStats();
-    }, 30000);
+    // Démarrer l'écoute en temps réel
+    listenToUsersRealtime();
 }
 
 async function loadTickets() {
@@ -353,8 +387,8 @@ function updateTicketsTable() {
                 <button class="action-btn reply" onclick="openReplyTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-reply"></i> Répondre</button>
                 ${t.status !== 'resolu' ? `<button class="action-btn resolve" onclick="openResolveTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-check"></i> Résoudre</button>` : ''}
                 <button class="action-btn delete" onclick="deleteTicket('${t.id}', '${t.userId}')"><i class="fas fa-trash"></i> Supprimer</button>
-              </div>
-         </tr>`;
+              </td>
+          </tr>`;
     }).join('');
     
     document.getElementById('ticketsOpen').innerText = ticketsData.filter(t => t.status === 'ouvert').length;
@@ -408,14 +442,14 @@ function updateRapportsTable() {
             <td style="color:#10b981; font-weight:600;">${objectifAtteint}</td>
             <td style="color:#f59e0b; font-weight:600;">${objectifRestant}</td>
             <td style="color:#f59e0b; font-weight:bold;">${r.totalPointsJour || 0}</td>
-            <td class="${(r.totalPointsJour || 0) > (r.totalPointsPrecedents || 0) ? 'tendance-up' : 'tendance-down'}">${rendement} pts/min</div>
-            <td><small>${formatDateShort(r.createdAt)}</small></div>
-            <td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></div>
+            <td class="${(r.totalPointsJour || 0) > (r.totalPointsPrecedents || 0) ? 'tendance-up' : 'tendance-down'}">${rendement} pts/min</td>
+            <td><small>${formatDateShort(r.createdAt)}</small></td>
+            <td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></td>
             <td>
                 <button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i></button>
                 <button class="action-btn feedback" onclick='openFeedbackModal("${r.id}", "${r.reference}")'><i class="fas fa-comment-dots"></i></button>
-              </div>
-        </tr>`;
+              </td>
+          </tr>`;
     }).join('');
 }
 
@@ -464,7 +498,7 @@ function updateNetubersTable() {
         
         // Détection du statut via lastSeen (30 secondes)
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
-        const isOnline = lastSeenDate && (now - lastSeenDate) < 30000; 
+        const isOnline = lastSeenDate && (now - lastSeenDate) < 30000;
         const statusDot = isOnline ? '🟢' : '🔴';
         
         let lastActivityText = 'Jamais';
@@ -483,20 +517,20 @@ function updateNetubersTable() {
         }
         
         return `<tr>
-            <td>${statusDot} <strong>${u.code || '-'}</strong>${isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''} </div>
-            <td>${u.email || '-'}</div>
-            <td style="font-weight:600;">${objMensuel}</div>
-            <td style="color:#10b981; font-weight:600;">${objAtteint}</div>
-            <td style="color:#f59e0b; font-weight:600;">${objRestant}</div>
-            <td style="color:#3b82f6;">${connexions}</div>
-            <td><span class="badge ${anomalieClass}">${anomalies}</span></div>
-            <td><small>${lastActivityText}</small></div>
+            <td>${statusDot} <strong>${u.code || '-'}</strong>${isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''} </td>
+            <td>${u.email || '-'}</td>
+            <td style="font-weight:600;">${objMensuel}</td>
+            <td style="color:#10b981; font-weight:600;">${objAtteint}</td>
+            <td style="color:#f59e0b; font-weight:600;">${objRestant}</td>
+            <td style="color:#3b82f6;">${connexions}</td>
+            <td><span class="badge ${anomalieClass}">${anomalies}</span></td>
+            <td><small>${lastActivityText}</small></td>
             <td>
                 <button class="action-btn cap" onclick="openCapModal('${u.code}')"><i class="fas fa-chart-line"></i> CAP</button>
                 <button class="action-btn view" onclick="showNetuberDetails('${u.code}')"><i class="fas fa-eye"></i></button>
                 <button class="action-btn delete" onclick="openDeleteNetuberModal('${u.code}')"><i class="fas fa-trash"></i> Supprimer</button>
-              </div>
-        </tr>`;
+              </td>
+          </tr>`;
     }).join('');
 }
 
@@ -512,13 +546,13 @@ function updateConfidentialiteTable() {
         const now = new Date();
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
         const isOnline = lastSeenDate && (now - lastSeenDate) < 30000;
-        return `<td>
-            <td><strong>${u.code || '-'}</strong></div>
-            <td>${u.email || '-'}</div>
-            <td>${maskedPassword} <i class="fas fa-edit password-toggle" onclick='openPasswordModal("${u.code}")' style="cursor:pointer; color:#64748b;"></i></div>
-            <td><span class="badge ${u.isBlocked ? 'badge-danger' : (isOnline ? 'badge-success' : 'badge-warning')}">${u.isBlocked ? 'Bloqué' : (isOnline ? 'En ligne' : 'Hors ligne')}</span></div>
-            <td><button class="action-btn delete" onclick='openDeleteNetuberModal("${u.code}")'><i class="fas fa-trash"></i> Supprimer</button></div>
-        </tr>`;
+        return `<tr>
+            <td><strong>${u.code || '-'}</strong></td>
+            <td>${u.email || '-'}</td>
+            <td>${maskedPassword} <i class="fas fa-edit password-toggle" onclick='openPasswordModal("${u.code}")' style="cursor:pointer; color:#64748b;"></i></td>
+            <td><span class="badge ${u.isBlocked ? 'badge-danger' : (isOnline ? 'badge-success' : 'badge-warning')}">${u.isBlocked ? 'Bloqué' : (isOnline ? 'En ligne' : 'Hors ligne')}</span></td>
+            <td><button class="action-btn delete" onclick='openDeleteNetuberModal("${u.code}")'><i class="fas fa-trash"></i> Supprimer</button></td>
+          </tr>`;
     }).join('');
     document.getElementById('totalNetubersConf').innerText = usersData.length;
     document.getElementById('totalBlockedConf').innerText = usersData.filter(u => u.isBlocked === true).length;
@@ -953,7 +987,6 @@ window.exportNetubers = () => {
     usersData.forEach(u => { 
         const objRestant = (u.objectifMensuel || 9) - (u.objectifAtteint || 0);
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
-        const isOnline = lastSeenDate && (now - lastSeenDate) < 30000;
         let lastActivity = 'Jamais';
         if (u.lastSeen) lastActivity = new Date(u.lastSeen).toLocaleString();
         csv += `${u.code},${u.email},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},"${lastActivity}",${u.isBlocked?'Oui':'Non'}\n`; 
