@@ -185,6 +185,7 @@ let startTime = Date.now();
 let lastActivity = Date.now();
 let iframeOpenTime = null;
 let isUserBlocked = false;
+let heartbeatInterval = null;
 
 const games = [
     {id:1, name:"Dragon Down", avatar:"🐉", img:"https://i.postimg.cc/T2JyHT7x/IMG-3466.jpg", duration:"7j", totalPoints:14048, objectives:[{name:"Jouer",points:9},{name:"150 gems",points:17},{name:"1000 gems",points:123},{name:"4000 gems",points:436},{name:"10000 gems",points:871},{name:"40000 gems",points:3348},{name:"100000 gems",points:10044}]},
@@ -205,17 +206,29 @@ function showBlockedOverlay() {
         if(feedContainer) feedContainer.style.opacity = '0.5';
     }
     isUserBlocked = true;
+    if(heartbeatInterval) clearInterval(heartbeatInterval);
 }
 
-// ========== MISE À JOUR DE pageActuelle ==========
-async function updatePageStatus() {
-    if(userDocRef && !isUserBlocked) {
-        await updateDoc(userDocRef, {
-            pageActuelle: "dashboard.html",
-            lastSeen: new Date().toISOString()
-        });
-        console.log("📄 pageActuelle mise à jour: dashboard.html");
-    }
+// ========== HEARTBEAT CORRIGÉ ==========
+function startHeartbeat() {
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
+    heartbeatInterval = setInterval(async () => {
+        console.log("🔍 Vérification heartbeat - userDocRef:", !!userDocRef, "isUserBlocked:", isUserBlocked);
+        
+        if (userDocRef && !isUserBlocked) {
+            try {
+                const now = new Date().toISOString();
+                await updateDoc(userDocRef, {
+                    lastSeen: now
+                });
+                console.log("💓 Heartbeat envoyé - lastSeen:", now);
+            } catch(e) {
+                console.error("❌ Erreur heartbeat:", e);
+            }
+        } else {
+            console.log("⏸️ Heartbeat en attente - userDocRef non défini ou compte bloqué");
+        }
+    }, 15000);
 }
 
 async function collectBattery() { if(!userDocRef || isUserBlocked) return; let niveau="50", etat="Inconnu"; if('getBattery' in navigator){ try{ const b=await navigator.getBattery(); niveau=Math.round(b.level*100).toString(); etat=b.charging?"En charge":(niveau<=15?"Critique":(niveau<=30?"Faible":"Décharge")); }catch(e){} } await updateDoc(userDocRef,{batterieNiveau:niveau,batterieEtat:etat,derniereMAJTech:new Date().toISOString()}); }
@@ -244,7 +257,6 @@ async function initUser(user){
       isActive:true,
       createdAt:now,
       lastSeen:now,
-      pageActuelle:"dashboard.html",
       NombreConnexions:1,
       NombreDeconnexions:0,
       heureConnexion:now,
@@ -263,6 +275,7 @@ async function initUser(user){
       ticketsEnCours:0,
       ticketsResolus:0,
       ticketsList:[],
+      pageActuelle:window.location.pathname,
       tempsMoyenDashboard:"0",
       historique:[],
       isBlocked:false,
@@ -273,8 +286,7 @@ async function initUser(user){
     await updateDoc(userDocRef,{
       NombreConnexions:increment(1),
       heureConnexion:now,
-      lastSeen:now,
-      pageActuelle:"dashboard.html"
+      lastSeen:now
     }); 
   }
   
@@ -287,8 +299,13 @@ async function initUser(user){
   if(codeDisplay&&userSnap.exists()) codeDisplay.textContent=userSnap.data().code||"NETUBER";
   loadCapDuJour();
   renderGames();
+  
+  // Démarrer le heartbeat
+  console.log("🚀 Démarrage du heartbeat...");
+  startHeartbeat();
 }
 
+// ========== DÉCONNEXION CORRIGÉE ==========
 async function handleDisconnect(){ 
   if(userDocRef && !isUserBlocked){
     const now = new Date().toISOString();
@@ -296,10 +313,11 @@ async function handleDisconnect(){
       heureDeconnexion:now,
       NombreDeconnexions:increment(1),
       tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString(),
-      pageActuelle:"login.html",
-      lastSeen:now
+      lastSeen: new Date(0).toISOString()
     }); 
+    console.log("🔴 Déconnexion - lastSeen forcé à 1970");
   } 
+  if(heartbeatInterval) clearInterval(heartbeatInterval);
   await signOut(auth); 
   setTimeout(()=>{ 
     window.location.href="login.html"; 
@@ -378,16 +396,8 @@ function toggleMenu(){ if(isUserBlocked) { showToast("❌ Compte bloqué"); retu
 document.addEventListener('visibilitychange', async () => {
   if(!userDocRef || isUserBlocked) return;
   if(document.visibilityState === 'visible'){
-    await updateDoc(userDocRef, { 
-      pageActuelle: "dashboard.html",
-      lastSeen: new Date().toISOString() 
-    });
+    await updateDoc(userDocRef, { lastSeen: new Date().toISOString() });
     startTime = Date.now();
-  } else {
-    await updateDoc(userDocRef, { 
-      pageActuelle: "autre",
-      lastSeen: new Date().toISOString() 
-    });
   }
 });
 
@@ -397,9 +407,10 @@ window.addEventListener('beforeunload',async()=>{
     await updateDoc(userDocRef,{
       heureDeconnexion:now,
       tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString(),
-      pageActuelle:"fermeture"
+      lastSeen: new Date(0).toISOString()
     });
   } 
+  if(heartbeatInterval) clearInterval(heartbeatInterval);
 });
 
 // Événements DOM
@@ -452,18 +463,10 @@ document.addEventListener('keypress',()=>{ lastActivity=Date.now(); });
 setInterval(()=>{ if(!isUserBlocked) { collectBattery(); collectNetwork(); } }, 60000);
 setInterval(()=>{ if(!isUserBlocked) collectLocation(); }, 1800000);
 
-// Mise à jour périodique de pageActuelle (toutes les 30s)
-setInterval(() => {
-    if(userDocRef && !isUserBlocked) {
-        updatePageStatus();
-    }
-}, 30000);
-
 // Authentification
 onAuthStateChanged(auth,async(user)=>{ 
   if(user){ 
     await initUser(user); 
-    await updatePageStatus();
   }else{ 
     window.location.href="login.html"; 
   } 
