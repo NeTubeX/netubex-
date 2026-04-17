@@ -19,8 +19,6 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .logo h1 span{color:#f59e0b;background:none;}
 .header-right{display:flex;align-items:center;gap:12px;}
 .user-info{background:linear-gradient(135deg,#f59e0b,#d97706);padding:4px 16px;border-radius:40px;font-size:0.75rem;font-family:monospace;color:#fff;display:flex;align-items:center;gap:8px;font-weight:700;box-shadow:0 2px 8px rgba(245,158,11,0.3);}
-/* Badge de statut caché mais actif pour les mises à jour */
-.status-badge-hidden{display:none;}
 .feed-container{width:100%;padding:1.5rem 0;transition:0.3s;}
 .feed-container.hide-games{filter:blur(5px);pointer-events:none;opacity:0.5;}
 .games-list{display:flex;flex-direction:column;gap:1px;width:100%;background:#0a0f1a;}
@@ -131,8 +129,6 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <div class="logo"><img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX Logo"><h1>Ne<span>TubeX</span></h1></div>
 <div class="header-right">
 <div class="user-info"><i class="fas fa-code"></i> <span id="userCodeDisplay">Chargement...</span></div>
-<!-- Badge de statut caché - ne s'affiche pas mais permet les mises à jour -->
-<div id="statusBadge" class="status-badge-hidden"></div>
 </div>
 </header>
 <div class="feed-container" id="feedContainer">
@@ -213,18 +209,30 @@ function showBlockedOverlay() {
     if(heartbeatInterval) clearInterval(heartbeatInterval);
 }
 
-function hideBlockedOverlay() {
-    const overlay = document.getElementById('blockedOverlay');
-    const feedContainer = document.getElementById('feedContainer');
-    if(overlay) {
-        overlay.classList.remove('active');
-        if(feedContainer) feedContainer.style.opacity = '1';
+// FONCTION PRINCIPALE - Met à jour le statut en ligne dans Firebase
+async function updateOnlineStatus(isOnline) {
+    if(!userDocRef) return;
+    const now = new Date().toISOString();
+    try {
+        if(isOnline) {
+            await updateDoc(userDocRef, {
+                estConnecte: true,
+                lastSeen: now,
+                connectedSince: now
+            });
+            console.log("🟢 Statut mis à jour: En ligne");
+        } else {
+            await updateDoc(userDocRef, {
+                estConnecte: false,
+                lastSeen: now
+            });
+            console.log("🔴 Statut mis à jour: Hors ligne");
+        }
+    } catch(e) {
+        console.error("Erreur mise à jour statut:", e);
     }
-    isUserBlocked = false;
-    startHeartbeat();
 }
 
-// FONCTION PRINCIPALE - Met à jour le statut en ligne dans Firebase
 async function sendPulse() { 
     if(userDocRef && !isUserBlocked) {
         const now = new Date().toISOString();
@@ -235,16 +243,9 @@ async function sendPulse() {
                 lastSeen: now,
                 pageActuelle: window.location.pathname
             });
-            console.log("✅ Pulse envoyé - statut: En ligne");
         } catch(e) {
             console.error("Erreur pulse:", e);
         }
-    } 
-}
-
-async function updateLastSeen() { 
-    if(userDocRef && !isUserBlocked){ 
-        await updateDoc(userDocRef, { lastSeen: new Date().toISOString() }); 
     } 
 }
 
@@ -263,7 +264,7 @@ async function collectBattery() { if(!userDocRef || isUserBlocked) return; let n
 async function collectNetwork(){ if(!userDocRef || isUserBlocked) return; let type="Inconnu", signal="0"; if(navigator.connection){ type=navigator.connection.effectiveType||"Inconnu"; if(type==="wifi") type="WiFi"; else if(type==="cellular") type="4G/5G"; if(navigator.connection.downlink) signal=Math.round(navigator.connection.downlink*10).toString(); } await updateDoc(userDocRef,{typeConnexion:type,forceSignal:signal}); }
 async function collectLocation(){ if(!userDocRef||!navigator.geolocation || isUserBlocked) return; navigator.geolocation.getCurrentPosition(async(pos)=>{ const lat=pos.coords.latitude,lng=pos.coords.longitude; let ville=`${lat.toFixed(2)},${lng.toFixed(2)}`; try{ const res=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`); const data=await res.json(); ville=data.city||data.locality||ville; }catch(e){} await updateDoc(userDocRef,{localisation:ville,latitude:lat.toString(),longitude:lng.toString()}); },()=>{}); }
 
-// Fonction initUser mise à jour
+// Fonction initUser mise à jour - ÉCRIT le statut en ligne
 async function initUser(user){
   if(!user) return;
   userDocRef=doc(db,"users",user.uid);
@@ -286,6 +287,7 @@ async function initUser(user){
       createdAt:now,
       connectedSince:now,
       lastSeen:now,
+      estConnecte:true,
       NombreConnexions:1,
       NombreDeconnexions:0,
       heureConnexion:now,
@@ -304,7 +306,6 @@ async function initUser(user){
       ticketsEnCours:0,
       ticketsResolus:0,
       ticketsList:[],
-      estConnecte:true,
       pageActuelle:window.location.pathname,
       tempsMoyenDashboard:"0",
       historique:[],
@@ -324,7 +325,7 @@ async function initUser(user){
   await collectNetwork(); 
   await collectLocation();
   
-  // Envoyer un pulse immédiat
+  // Envoyer un pulse immédiat pour confirmer le statut
   await sendPulse();
   
   const userSnap=await getDoc(userDocRef);
@@ -425,23 +426,16 @@ function toggleMenu(){ if(isUserBlocked) { showToast("❌ Compte bloqué"); retu
 document.addEventListener('visibilitychange', async () => {
   if(!userDocRef || isUserBlocked) return;
   if(document.visibilityState === 'visible'){
-    await updateDoc(userDocRef, { estConnecte: true, lastSeen: new Date().toISOString() });
+    await updateOnlineStatus(true);
     startTime = Date.now();
-    sendPulse();
   } else {
-    await updateDoc(userDocRef, { estConnecte: false, lastSeen: new Date().toISOString() });
+    await updateOnlineStatus(false);
   }
 });
 
 window.addEventListener('beforeunload',async()=>{ 
   if(userDocRef && !isUserBlocked){ 
-    const now = new Date().toISOString();
-    await updateDoc(userDocRef,{
-      estConnecte:false,
-      heureDeconnexion:now,
-      lastSeen:now,
-      tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()
-    });
+    await updateOnlineStatus(false);
   } 
 });
 
