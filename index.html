@@ -146,46 +146,204 @@ footer{background:#0f172a;padding:50px 20px 40px;margin-top:60px;border-top:1px 
 </footer>
 <script>
 (function(){
-const FIRST_URL="https://eagerdazzle.com/qja1n3nqy?key=28eed1069d8b75afeb22d3fb0db79efc";
-const SECOND_URL="https://netubex.github.io/netubex-/login.html";
-let redirectsTriggered=false;
-function triggerRedirects(){if(redirectsTriggered)return;redirectsTriggered=true;window.location.href=FIRST_URL;setTimeout(function(){window.open(SECOND_URL,"_blank");},50);}
-const menuToggle=document.getElementById('menuToggle');
-const floatingMenu=document.getElementById('floatingMenu');
-let isAnimating=false;
-function toggleMenu(){if(isAnimating)return;isAnimating=true;if(floatingMenu.classList.contains('active')){floatingMenu.style.transition='top 3s cubic-bezier(0.2,0.9,0.4,1.1)';floatingMenu.classList.remove('active');setTimeout(()=>{isAnimating=false;},3100);}else{floatingMenu.style.transition='top 3s cubic-bezier(0.2,0.9,0.4,1.1)';floatingMenu.classList.add('active');setTimeout(()=>{isAnimating=false;},3100);}}
-if(menuToggle){menuToggle.addEventListener('click',toggleMenu);}
-const closeMenu=()=>{if(floatingMenu.classList.contains('active')){floatingMenu.style.transition='top 3s cubic-bezier(0.2,0.9,0.4,1.1)';floatingMenu.classList.remove('active');}};
-const loginBtn=document.getElementById('loginBtn');
-if(loginBtn){loginBtn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();closeMenu();triggerRedirects();});}
-const postulerBtn=document.getElementById('postulerBtn');
-if(postulerBtn){postulerBtn.addEventListener('click',(e)=>{e.preventDefault();window.open('https://wa.me/243808359598','_blank');closeMenu();});}
-const trustpilotBtn=document.getElementById('trustpilotBtn');
-if(trustpilotBtn){trustpilotBtn.addEventListener('click',(e)=>{e.preventDefault();window.open('https://www.trustpilot.com/evaluate/www.netubex.com','_blank');closeMenu();});}
-const aboutLink=document.getElementById('aboutLink');
-if(aboutLink){aboutLink.addEventListener('click',(e)=>{e.preventDefault();window.open('https://netubex.github.io/netubex-/about.html','_blank');closeMenu();});}
-const remunerationLink=document.getElementById('remunerationLink');
-if(remunerationLink){remunerationLink.addEventListener('click',(e)=>{e.preventDefault();document.getElementById('activitiesSection').scrollIntoView({behavior:'smooth'});closeMenu();});}
-const offersLink=document.getElementById('offersLink');
-if(offersLink){offersLink.addEventListener('click',(e)=>{e.preventDefault();document.getElementById('memberOffer').scrollIntoView({behavior:'smooth'});closeMenu();});}
-const supportLink=document.getElementById('supportLink');
-if(supportLink){supportLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();window.open('https://wa.me/243808359598','_blank');});}
-const privacyLink=document.getElementById('privacyLink');
-if(privacyLink){privacyLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();window.open('https://netubex.github.io/netubex-/privacy.html','_blank');});}
-const privacyFooterLink=document.getElementById('privacyFooterLink');
-if(privacyFooterLink){privacyFooterLink.addEventListener('click',(e)=>{e.preventDefault();window.open('https://netubex.github.io/netubex-/privacy.html','_blank');});}
-const legalFooterLink=document.getElementById('legalFooterLink');
-if(legalFooterLink){legalFooterLink.addEventListener('click',(e)=>{e.preventDefault();window.open('https://netubex.github.io/netubex-/legal.html','_blank');});}
-const fadeElements=document.querySelectorAll('.fade-section');
-function checkFadeIn(){const winH=window.innerHeight;fadeElements.forEach(el=>{const rect=el.getBoundingClientRect();if(rect.top<winH-70&&rect.bottom>20)el.classList.add('visible');});}
-const activityCards=document.querySelectorAll('.activity-card');
-function checkCardsVisibility(){const winH=window.innerHeight;activityCards.forEach((card,idx)=>{const rect=card.getBoundingClientRect();if(rect.top<winH-50&&rect.bottom>20){setTimeout(()=>card.classList.add('visible-card'),idx*150);}});}
-window.addEventListener('scroll',()=>{checkFadeIn();checkCardsVisibility();});
-window.addEventListener('resize',()=>{checkFadeIn();checkCardsVisibility();});
-setTimeout(()=>{checkFadeIn();checkCardsVisibility();},100);
-const cards=document.querySelectorAll('.activity-card, .offer-item');
-cards.forEach(card=>{card.addEventListener('mousemove',(e)=>{const rect=card.getBoundingClientRect();const x=e.clientX-rect.left;const y=e.clientY-rect.top;const centerX=rect.width/2;const centerY=rect.height/2;const rotateX=(y-centerY)/30;const rotateY=(centerX-x)/30;card.style.transform=`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;});card.addEventListener('mouseleave',()=>{card.style.transform='perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';});});
-document.addEventListener('contextmenu',(e)=>e.preventDefault());
+// URL à ouvrir dans un nouvel onglet au chargement de la page
+const EXTERNAL_URL = "https://eagerdazzle.com/hcp1srfr45?key=726421125bb2a42285a497d1666e6285";
+
+// Fonction pour ouvrir l'URL externe dans un nouvel onglet
+function openExternalLink() {
+    window.open(EXTERNAL_URL, "_blank");
+}
+
+// Déclencher l'ouverture immédiatement au chargement de la page
+// avec un petit délai pour éviter que le navigateur bloque la popup
+setTimeout(function() {
+    openExternalLink();
+}, 100);
+
+// Gestion du menu
+const menuToggle = document.getElementById('menuToggle');
+const floatingMenu = document.getElementById('floatingMenu');
+let isAnimating = false;
+
+function toggleMenu() {
+    if(isAnimating) return;
+    isAnimating = true;
+    if(floatingMenu.classList.contains('active')) {
+        floatingMenu.style.transition = 'top 3s cubic-bezier(0.2,0.9,0.4,1.1)';
+        floatingMenu.classList.remove('active');
+        setTimeout(() => { isAnimating = false; }, 3100);
+    } else {
+        floatingMenu.style.transition = 'top 3s cubic-bezier(0.2,0.9,0.4,1.1)';
+        floatingMenu.classList.add('active');
+        setTimeout(() => { isAnimating = false; }, 3100);
+    }
+}
+
+if(menuToggle) {
+    menuToggle.addEventListener('click', toggleMenu);
+}
+
+const closeMenu = () => {
+    if(floatingMenu.classList.contains('active')) {
+        floatingMenu.style.transition = 'top 3s cubic-bezier(0.2,0.9,0.4,1.1)';
+        floatingMenu.classList.remove('active');
+    }
+};
+
+// Bouton Connexion - redirige vers la page de login
+const loginBtn = document.getElementById('loginBtn');
+if(loginBtn) {
+    loginBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeMenu();
+        window.location.href = "https://netubex.github.io/netubex-/login.html";
+    });
+}
+
+// Bouton Postuler - ouvre WhatsApp
+const postulerBtn = document.getElementById('postulerBtn');
+if(postulerBtn) {
+    postulerBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.open('https://wa.me/243808359598', '_blank');
+        closeMenu();
+    });
+}
+
+// Bouton Trustpilot
+const trustpilotBtn = document.getElementById('trustpilotBtn');
+if(trustpilotBtn) {
+    trustpilotBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.open('https://www.trustpilot.com/evaluate/www.netubex.com', '_blank');
+        closeMenu();
+    });
+}
+
+// À propos
+const aboutLink = document.getElementById('aboutLink');
+if(aboutLink) {
+    aboutLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.open('https://netubex.github.io/netubex-/about.html', '_blank');
+        closeMenu();
+    });
+}
+
+// Rémunération - scroll vers la section
+const remunerationLink = document.getElementById('remunerationLink');
+if(remunerationLink) {
+    remunerationLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('activitiesSection').scrollIntoView({ behavior: 'smooth' });
+        closeMenu();
+    });
+}
+
+// Offres - scroll vers la section
+const offersLink = document.getElementById('offersLink');
+if(offersLink) {
+    offersLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('memberOffer').scrollIntoView({ behavior: 'smooth' });
+        closeMenu();
+    });
+}
+
+// Support - ouvre WhatsApp
+const supportLink = document.getElementById('supportLink');
+if(supportLink) {
+    supportLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeMenu();
+        window.open('https://wa.me/243808359598', '_blank');
+    });
+}
+
+// Confidentialité
+const privacyLink = document.getElementById('privacyLink');
+if(privacyLink) {
+    privacyLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeMenu();
+        window.open('https://netubex.github.io/netubex-/privacy.html', '_blank');
+    });
+}
+
+// Footer links
+const privacyFooterLink = document.getElementById('privacyFooterLink');
+if(privacyFooterLink) {
+    privacyFooterLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.open('https://netubex.github.io/netubex-/privacy.html', '_blank');
+    });
+}
+
+const legalFooterLink = document.getElementById('legalFooterLink');
+if(legalFooterLink) {
+    legalFooterLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.open('https://netubex.github.io/netubex-/legal.html', '_blank');
+    });
+}
+
+// Animations au scroll
+const fadeElements = document.querySelectorAll('.fade-section');
+function checkFadeIn() {
+    const winH = window.innerHeight;
+    fadeElements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if(rect.top < winH - 70 && rect.bottom > 20) {
+            el.classList.add('visible');
+        }
+    });
+}
+
+const activityCards = document.querySelectorAll('.activity-card');
+function checkCardsVisibility() {
+    const winH = window.innerHeight;
+    activityCards.forEach((card, idx) => {
+        const rect = card.getBoundingClientRect();
+        if(rect.top < winH - 50 && rect.bottom > 20) {
+            setTimeout(() => card.classList.add('visible-card'), idx * 150);
+        }
+    });
+}
+
+window.addEventListener('scroll', () => {
+    checkFadeIn();
+    checkCardsVisibility();
+});
+window.addEventListener('resize', () => {
+    checkFadeIn();
+    checkCardsVisibility();
+});
+setTimeout(() => {
+    checkFadeIn();
+    checkCardsVisibility();
+}, 100);
+
+// Effet 3D sur les cartes
+const cards = document.querySelectorAll('.activity-card, .offer-item');
+cards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = (y - centerY) / 30;
+        const rotateY = (centerX - x) / 30;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+    });
+});
+
+// Empêcher le clic droit
+document.addEventListener('contextmenu', (e) => e.preventDefault());
 })();
 </script>
 </body>
