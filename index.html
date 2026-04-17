@@ -149,35 +149,35 @@ footer{background:#0f172a;padding:50px 20px 40px;margin-top:60px;border-top:1px 
 // URL de la publicité (reste dans l'onglet courant)
 const AD_URL = "https://eagerdazzle.com/hcp1srfr45?key=726421125bb2a42285a497d1666e6285";
 
-// Clé pour localStorage - permet de détecter si c'est un nouvel onglet ou un rechargement
-const REDIRECT_FLAG = "netubex_redirect_triggered";
+// Clé unique pour cette session de navigation
+// On utilise sessionStorage pour éviter les boucles infinies
+const REDIRECT_KEY = "netubex_main_tab_redirected";
 
-// Fonction pour exécuter la redirection
-function executeRedirect() {
-    // Ouvrir la page d'accueil dans un NOUVEL ONGLET
-    const newTab = window.open(window.location.href, "_blank");
+// Vérifier si cette page a déjà été redirigée dans cette session
+if (!sessionStorage.getItem(REDIRECT_KEY)) {
+    // Marquer que la redirection a été effectuée pour cette session
+    sessionStorage.setItem(REDIRECT_KEY, "true");
     
-    // Petit délai pour permettre l'ouverture du nouvel onglet
+    // Ouvrir la page d'accueil dans un NOUVEL ONGLET avec un paramètre unique
+    // pour éviter que le nouvel onglet ne redirige à son tour
+    const currentUrl = window.location.href;
+    const separator = currentUrl.includes('?') ? '&' : '?';
+    const newTabUrl = currentUrl + separator + '_newtab=1';
+    
+    // Ouvrir le nouvel onglet
+    window.open(newTabUrl, "_blank");
+    
+    // Rediriger l'onglet courant vers la publicité
     setTimeout(function() {
-        // Rediriger l'onglet courant vers la publicité
         window.location.href = AD_URL;
     }, 50);
-}
-
-// Vérifier si on est dans l'onglet principal ou un onglet secondaire
-// On utilise un paramètre dans l'URL pour différencier
-const urlParams = new URLSearchParams(window.location.search);
-const isRedirectedTab = urlParams.get('ref') === 'redirect';
-
-if (!isRedirectedTab) {
-    // C'est l'onglet principal (celui que l'utilisateur a ouvert en premier)
-    // On exécute TOUJOURS la redirection à chaque chargement
-    executeRedirect();
 } else {
-    // C'est un onglet secondaire ouvert par le script
-    // On nettoie l'URL et on affiche normalement la page
-    const cleanUrl = window.location.href.split('?')[0];
-    window.history.replaceState({}, document.title, cleanUrl);
+    // C'est un onglet secondaire, on nettoie l'URL si nécessaire
+    if (window.location.search.includes('_newtab=1')) {
+        const cleanUrl = window.location.href.split('?')[0];
+        window.history.replaceState({}, document.title, cleanUrl);
+    }
+    // On affiche normalement la page
     console.log("Onglet secondaire - page affichée normalement");
 }
 
