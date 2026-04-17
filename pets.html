@@ -163,7 +163,8 @@ tr:hover{background:#1a2332;}
 <tr><td><i class="fas fa-user-edit"></i> Modifier code Netuber</td><td>Changer le code unique d'un Netuber</td><td><button class="badge badge-info" onclick="openEditCodeModal()" style="cursor:pointer;">Modifier</button></td></tr>
 <tr><td><i class="fas fa-ban"></i> Bloquer/Débloquer Netuber</td><td>Bloquer l'accès au Dashboard utilisateur</td><td><button class="badge badge-warning" onclick="openBlockModal()" style="cursor:pointer;">Gérer</button></td></tr>
 <tr><td><i class="fas fa-trash"></i> Supprimer Netuber</td><td>Supprimer définitivement un Netuber</td><td><button class="badge badge-danger" onclick="openDeleteModal()" style="cursor:pointer;">Supprimer</button></td></tr>
-</tbody></table></div>
+</tbody>
+</table></div>
 </div>
 </div>
 
@@ -387,7 +388,7 @@ window.createNetuber = async () => {
   if(!code || !email || !password) { showToast("Tous les champs sont requis"); return; }
   try {
     const userCred = await createUserWithEmailAndPassword(auth, email, password);
-    await setDoc(doc(db, "users", userCred.user.uid), { code, email, role: "netuber", isActive: true, createdAt: new Date().toISOString(), NombreConnexions: 0, NombreDeconnexions: 0, NombreEchecsConnexion: 0, anomaliesConnexion: 0, anomaliesSysteme: 0, ticketsList: [], estConnecte: false });
+    await setDoc(doc(db, "users", userCred.user.uid), { code, email, role: "netuber", isActive: true, createdAt: new Date().toISOString(), NombreConnexions: 0, NombreDeconnexions: 0, NombreEchecsConnexion: 0, anomaliesConnexion: 0, anomaliesSysteme: 0, ticketsList: [], estConnecte: false, isBlocked: false });
     closeModal('addNetuberModal');
     showToast("✅ Netuber créé");
     loadAllData();
@@ -406,7 +407,13 @@ window.toggleBlockNetuber = async () => {
   const code = document.getElementById('blockSelect').value;
   const action = document.getElementById('blockAction').value;
   const user = usersData.find(u => u.code === code);
-  if(user) { const userRef = doc(db, "users", user.id); await updateDoc(userRef, { isBlocked: action === 'block' }); closeModal('blockModal'); showToast(action === 'block' ? `🔒 ${code} bloqué` : `🔓 ${code} débloqué`); loadAllData(); }
+  if(user) { 
+    const userRef = doc(db, "users", user.id); 
+    await updateDoc(userRef, { isBlocked: action === 'block' }); 
+    closeModal('blockModal'); 
+    showToast(action === 'block' ? `🔒 ${code} bloqué` : `🔓 ${code} débloqué`); 
+    loadAllData(); 
+  }
 };
 
 window.deleteNetuber = async () => {
@@ -424,8 +431,8 @@ window.openBlockModal = () => openModal('blockModal');
 window.openDeleteModal = () => openModal('deleteModal');
 
 window.exportNetubers = () => {
-  let csv = "Code,Email,Connexions,Déconnexions,Anomalies,Localisation,Statut\n";
-  usersData.forEach(u => { csv += `${u.code},${u.email},${u.NombreConnexions||0},${u.NombreDeconnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},${u.localisation||'-'},${u.estConnecte?'En ligne':'Hors ligne'}\n`; });
+  let csv = "Code,Email,Connexions,Déconnexions,Anomalies,Localisation,Statut,Bloqué\n";
+  usersData.forEach(u => { csv += `${u.code},${u.email},${u.NombreConnexions||0},${u.NombreDeconnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},${u.localisation||'-'},${u.estConnecte?'En ligne':'Hors ligne'},${u.isBlocked?'Oui':'Non'}\n`; });
   const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `netubers_${new Date().toISOString().split('T')[0]}.csv`; link.click();
 };
 
