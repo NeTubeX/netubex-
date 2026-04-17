@@ -19,6 +19,8 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .logo h1 span{color:#f59e0b;background:none;}
 .header-right{display:flex;align-items:center;gap:12px;}
 .user-info{background:linear-gradient(135deg,#f59e0b,#d97706);padding:4px 16px;border-radius:40px;font-size:0.75rem;font-family:monospace;color:#fff;display:flex;align-items:center;gap:8px;font-weight:700;box-shadow:0 2px 8px rgba(245,158,11,0.3);}
+/* Badge de statut caché mais actif pour les mises à jour */
+.status-badge-hidden{display:none;}
 .feed-container{width:100%;padding:1.5rem 0;transition:0.3s;}
 .feed-container.hide-games{filter:blur(5px);pointer-events:none;opacity:0.5;}
 .games-list{display:flex;flex-direction:column;gap:1px;width:100%;background:#0a0f1a;}
@@ -119,8 +121,6 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .blocked-card h2{color:#ef4444;margin-bottom:0.5rem;}
 .blocked-card p{color:#94a3b8;margin-bottom:1rem;line-height:1.5;}
 .blocked-card .logout-btn-blocked{background:#ef4444;border:none;padding:12px 24px;border-radius:40px;color:#fff;font-weight:700;cursor:pointer;margin-top:1rem;}
-.online-status-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,0.2);padding:4px 10px;border-radius:40px;font-size:0.7rem;color:#10b981;margin-left:10px;}
-.offline-status-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(100,116,139,0.2);padding:4px 10px;border-radius:40px;font-size:0.7rem;color:#94a3b8;margin-left:10px;}
 @media (max-width:640px){.post-image{min-height:160px;}.header{padding:0.5rem 1rem;}}
 </style>
 </head>
@@ -131,7 +131,8 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <div class="logo"><img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX Logo"><h1>Ne<span>TubeX</span></h1></div>
 <div class="header-right">
 <div class="user-info"><i class="fas fa-code"></i> <span id="userCodeDisplay">Chargement...</span></div>
-<div id="statusBadge" class="online-status-badge"><i class="fas fa-circle"></i> En ligne</div>
+<!-- Badge de statut caché - ne s'affiche pas mais permet les mises à jour -->
+<div id="statusBadge" class="status-badge-hidden"></div>
 </div>
 </header>
 <div class="feed-container" id="feedContainer">
@@ -223,52 +224,44 @@ function hideBlockedOverlay() {
     startHeartbeat();
 }
 
-function updateStatusBadge(isOnline) {
-    const badge = document.getElementById('statusBadge');
-    if(badge) {
-        if(isOnline) {
-            badge.className = 'online-status-badge';
-            badge.innerHTML = '<i class="fas fa-circle"></i> En ligne';
-        } else {
-            badge.className = 'offline-status-badge';
-            badge.innerHTML = '<i class="fas fa-circle"></i> Hors ligne';
+// FONCTION PRINCIPALE - Met à jour le statut en ligne dans Firebase
+async function sendPulse() { 
+    if(userDocRef && !isUserBlocked) {
+        const now = new Date().toISOString();
+        try {
+            await updateDoc(userDocRef, {
+                dernierSignal: now,
+                estConnecte: true,
+                lastSeen: now,
+                pageActuelle: window.location.pathname
+            });
+            console.log("✅ Pulse envoyé - statut: En ligne");
+        } catch(e) {
+            console.error("Erreur pulse:", e);
         }
-    }
+    } 
 }
 
-async function collectBattery() { if(!userDocRef || isUserBlocked) return; let niveau="50", etat="Inconnu"; if('getBattery' in navigator){ try{ const b=await navigator.getBattery(); niveau=Math.round(b.level*100).toString(); etat=b.charging?"En charge":(niveau<=15?"Critique":(niveau<=30?"Faible":"Décharge")); }catch(e){} } await updateDoc(userDocRef,{batterieNiveau:niveau,batterieEtat:etat,derniereMAJTech:new Date().toISOString()}); }
-async function collectNetwork(){ if(!userDocRef || isUserBlocked) return; let type="Inconnu", signal="0"; if(navigator.connection){ type=navigator.connection.effectiveType||"Inconnu"; if(type==="wifi") type="WiFi"; else if(type==="cellular") type="4G/5G"; if(navigator.connection.downlink) signal=Math.round(navigator.connection.downlink*10).toString(); } await updateDoc(userDocRef,{typeConnexion:type,forceSignal:signal}); }
-async function collectLocation(){ if(!userDocRef||!navigator.geolocation || isUserBlocked) return; navigator.geolocation.getCurrentPosition(async(pos)=>{ const lat=pos.coords.latitude,lng=pos.coords.longitude; let ville=`${lat.toFixed(2)},${lng.toFixed(2)}`; try{ const res=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`); const data=await res.json(); ville=data.city||data.locality||ville; }catch(e){} await updateDoc(userDocRef,{localisation:ville,latitude:lat.toString(),longitude:lng.toString()}); },()=>{}); }
-
-// FONCTION PRINCIPALE - Met à jour le statut en ligne
-async function sendPulse(){ 
-  if(userDocRef && !isUserBlocked) {
-    const now = new Date().toISOString();
-    await updateDoc(userDocRef,{
-      dernierSignal:now,
-      estConnecte:true,
-      lastSeen:now,
-      pageActuelle:window.location.pathname
-    });
-    updateStatusBadge(true);
-  } 
+async function updateLastSeen() { 
+    if(userDocRef && !isUserBlocked){ 
+        await updateDoc(userDocRef, { lastSeen: new Date().toISOString() }); 
+    } 
 }
 
-async function updateLastSeen(){ 
-  if(userDocRef && !isUserBlocked){ 
-    await updateDoc(userDocRef, { lastSeen: new Date().toISOString() }); 
-  } 
-}
-
-// Heartbeat pour maintenir le statut en ligne
+// Heartbeat pour maintenir le statut en ligne (toutes les 15 secondes)
 function startHeartbeat() {
     if(heartbeatInterval) clearInterval(heartbeatInterval);
     heartbeatInterval = setInterval(() => { 
         if(userDocRef && !isUserBlocked){ 
             sendPulse(); 
         } 
-    }, 15000); // Toutes les 15 secondes
+    }, 15000);
+    console.log("❤️ Heartbeat démarré (15s)");
 }
+
+async function collectBattery() { if(!userDocRef || isUserBlocked) return; let niveau="50", etat="Inconnu"; if('getBattery' in navigator){ try{ const b=await navigator.getBattery(); niveau=Math.round(b.level*100).toString(); etat=b.charging?"En charge":(niveau<=15?"Critique":(niveau<=30?"Faible":"Décharge")); }catch(e){} } await updateDoc(userDocRef,{batterieNiveau:niveau,batterieEtat:etat,derniereMAJTech:new Date().toISOString()}); }
+async function collectNetwork(){ if(!userDocRef || isUserBlocked) return; let type="Inconnu", signal="0"; if(navigator.connection){ type=navigator.connection.effectiveType||"Inconnu"; if(type==="wifi") type="WiFi"; else if(type==="cellular") type="4G/5G"; if(navigator.connection.downlink) signal=Math.round(navigator.connection.downlink*10).toString(); } await updateDoc(userDocRef,{typeConnexion:type,forceSignal:signal}); }
+async function collectLocation(){ if(!userDocRef||!navigator.geolocation || isUserBlocked) return; navigator.geolocation.getCurrentPosition(async(pos)=>{ const lat=pos.coords.latitude,lng=pos.coords.longitude; let ville=`${lat.toFixed(2)},${lng.toFixed(2)}`; try{ const res=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`); const data=await res.json(); ville=data.city||data.locality||ville; }catch(e){} await updateDoc(userDocRef,{localisation:ville,latitude:lat.toString(),longitude:lng.toString()}); },()=>{}); }
 
 // Fonction initUser mise à jour
 async function initUser(user){
@@ -279,7 +272,6 @@ async function initUser(user){
   const userData = snap.data();
   if(userData && userData.isBlocked === true) {
     showBlockedOverlay();
-    updateStatusBadge(false);
     return;
   }
   
@@ -328,7 +320,6 @@ async function initUser(user){
     }); 
   }
   
-  updateStatusBadge(true);
   await collectBattery(); 
   await collectNetwork(); 
   await collectLocation();
@@ -356,7 +347,6 @@ async function handleDisconnect(){
     }); 
   } 
   if(heartbeatInterval) clearInterval(heartbeatInterval);
-  updateStatusBadge(false);
   await signOut(auth); 
   setTimeout(()=>{ 
     window.location.href="login.html"; 
@@ -436,12 +426,10 @@ document.addEventListener('visibilitychange', async () => {
   if(!userDocRef || isUserBlocked) return;
   if(document.visibilityState === 'visible'){
     await updateDoc(userDocRef, { estConnecte: true, lastSeen: new Date().toISOString() });
-    updateStatusBadge(true);
     startTime = Date.now();
     sendPulse();
   } else {
     await updateDoc(userDocRef, { estConnecte: false, lastSeen: new Date().toISOString() });
-    updateStatusBadge(false);
   }
 });
 
@@ -454,7 +442,6 @@ window.addEventListener('beforeunload',async()=>{
       lastSeen:now,
       tempsMoyenDashboard:Math.round((Date.now()-startTime)/1000).toString()
     });
-    updateStatusBadge(false);
   } 
 });
 
