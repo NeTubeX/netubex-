@@ -115,9 +115,6 @@ tr:hover{background:#1a2332;}
 .confirm-buttons .btn-confirm:hover{background:#dc2626;}
 .confirm-buttons .btn-cancel{background:#1e293b;color:#fff;}
 .confirm-buttons .btn-cancel:hover{background:#334155;}
-.adsterra-stats{background:linear-gradient(135deg,#1e3a5f,#0f2d45);border-radius:16px;padding:20px;margin-bottom:20px;}
-.adsterra-value{font-size:28px;font-weight:700;color:#f59e0b;}
-.adsterra-label{font-size:11px;color:#94a3b8;}
 </style>
 </head>
 <body>
@@ -135,7 +132,6 @@ tr:hover{background:#1a2332;}
 <button class="tab" onclick="switchTab('rapports')"><i class="fas fa-file-alt"></i> Rapports PGCO</button>
 <button class="tab" onclick="switchTab('tickets')"><i class="fas fa-ticket-alt"></i> Tickets</button>
 <button class="tab" onclick="switchTab('anomalies')"><i class="fas fa-exclamation-triangle"></i> Anomalies</button>
-<button class="tab" onclick="switchTab('adsterra')"><i class="fas fa-chart-line"></i> Adsterra</button>
 <button class="tab" onclick="switchTab('settings')"><i class="fas fa-cog"></i> Paramètres</button>
 </div>
 
@@ -198,31 +194,6 @@ tr:hover{background:#1a2332;}
 <div class="table-wrapper"><table id="anomaliesTable"><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre</th><th>Dernière occurrence</th><th>Action</th></tr></thead><tbody id="anomaliesTableBody"></tbody></table></div>
 </div>
 
-<!-- Onglet Adsterra -->
-<div id="adsterraTab" class="tab-content">
-<div class="adsterra-stats">
-<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px;">
-<div><div class="adsterra-label">Revenue total</div><div class="adsterra-value" id="adsterraTotal">0.00 $</div></div>
-<div><div class="adsterra-label">Revenue aujourd'hui</div><div class="adsterra-value" id="adsterraToday">0.00 $</div></div>
-<div><div class="adsterra-label">Revenue ce mois</div><div class="adsterra-value" id="adsterraMonth">0.00 $</div></div>
-<div><div class="adsterra-label">Impressions totales</div><div class="adsterra-value" id="adsterraImpressions">0</div></div>
-</div>
-</div>
-<div class="filters">
-<input type="date" id="adsterraStartDate" class="search-input">
-<input type="date" id="adsterraEndDate" class="search-input">
-<button class="export-btn" onclick="fetchAdsterraData()" style="background:#f59e0b;"><i class="fas fa-sync-alt"></i> Actualiser</button>
-<button class="export-btn" onclick="exportAdsterraData()"><i class="fas fa-file-excel"></i> Exporter</button>
-</div>
-<div class="chart-container"><canvas id="adsterraChart" style="max-height:250px;"></canvas></div>
-<div class="table-wrapper">
-<table id="adsterraTable">
-<thead><tr><th>Date</th><th>Impressions</th><th>CPM ($)</th><th>Revenue ($)</th></tr></thead>
-<tbody id="adsterraTableBody"><tr><td colspan="4" style="text-align:center;">Chargement des données...</td></tr></tbody>
-</table>
-</div>
-</div>
-
 <!-- Onglet Paramètres -->
 <div id="settingsTab" class="tab-content">
 <div class="stats-grid"><div class="stat-card"><div class="value" id="totalActions">0</div><div class="label">CAP envoyés</div></div></div>
@@ -238,7 +209,7 @@ tr:hover{background:#1a2332;}
 </div>
 </div>
 
-<!-- Modals existants (conservés) -->
+<!-- Modals -->
 <div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Code Netuber</label><input type="text" id="newCode" placeholder="Ex: NETUBER001"></div><div class="input-group"><label>Email</label><input type="email" id="newEmail" placeholder="Email"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newPassword" placeholder="Mot de passe"></div><div class="input-group"><label>Objectif mensuel</label><input type="number" id="newObjectifMensuel" value="9" placeholder="Objectif mensuel"></div></div><div class="modal-footer"><button onclick="createNetuber()" style="background:#10b981;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
 <div id="editCodeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-edit"></i> Modifier le code Netuber</h2><button class="modal-close" onclick="closeModal('editCodeModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="editCodeSelect"></select></div><div class="input-group"><label>Nouveau code</label><input type="text" id="newCodeValue" placeholder="Nouveau code"></div></div><div class="modal-footer"><button onclick="updateNetuberCode()" style="background:#f59e0b;">Modifier</button><button onclick="closeModal('editCodeModal')" style="background:#64748b;">Annuler</button></div></div></div>
@@ -252,8 +223,6 @@ tr:hover{background:#1a2332;}
 <div id="rapportModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-file-alt"></i> Détail rapport PGCO</h2><button class="modal-close" onclick="closeModal('rapportModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="rapportDetailBody"></div><div class="modal-footer"><button onclick="closeModal('rapportModal')" style="background:#64748b;">Fermer</button></div></div></div>
 
 <div id="replyTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-reply"></i> Répondre au ticket</h2><button class="modal-close" onclick="closeModal('replyTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="replyTicketId" readonly></div><div class="input-group"><label>Netuber</label><input type="text" id="replyNetuberCode" readonly></div><div class="input-group"><label>Message de réponse</label><textarea id="replyMessage" rows="4" placeholder="Votre réponse..."></textarea></div></div><div class="modal-footer"><button onclick="sendTicketReply()" style="background:#8b5cf6;">Envoyer</button><button onclick="closeModal('replyTicketModal')" style="background:#64748b;">Annuler</button></div></div></div>
-
-<div id="resolveTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-check-circle"></i> Résoudre le ticket</h2><button class="modal-close" onclick="closeModal('resolveTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="resolveTicketId" readonly></div><div class="input-group"><label>Netuber</label><input type="text" id="resolveNetuberCode" readonly></div><div class="input-group"><label>Message de clôture (optionnel)</label><textarea id="resolveMessage" rows="3" placeholder="Message de clôture..."></textarea></div></div><div class="modal-footer"><button onclick="resolveTicket()" style="background:#10b981;">Résoudre</button><button onclick="closeModal('resolveTicketModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
 <div id="confirmModal" class="modal"><div class="modal-content"><div class="modal-body confirm-dialog"><i class="fas fa-question-circle"></i><h3 id="confirmTitle">NeTubeX</h3><p id="confirmMessage">Confirmez-vous cette action ?</p><div class="confirm-buttons"><button class="btn-cancel" id="confirmCancelBtn">Annuler</button><button class="btn-confirm" id="confirmOkBtn">Confirmer</button></div></div></div></div>
 
@@ -272,12 +241,8 @@ let rapportsData = [];
 let ticketsData = [];
 let rapportsChart = null;
 let anomaliesChart = null;
-let adsterraChart = null;
 let selectedNetuberForCap = null;
 let pendingConfirmAction = null;
-
-// Configuration Adsterra
-const ADSTERRA_API_KEY = "2dd9a6c83b0e050b9034bf143afd6fb9";
 
 // ============ CONFIRMATION MODALE ============
 function showConfirm(title, message, onConfirm) {
@@ -307,109 +272,11 @@ window.switchTab = (tab) => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     event.target.closest('.tab').classList.add('active');
     document.getElementById(`${tab}Tab`).classList.add('active');
-    if(tab === 'adsterra') fetchAdsterraData();
 };
 
 window.closeModal = (id) => document.getElementById(id).classList.remove('active');
 function openModal(id) { document.getElementById(id).classList.add('active'); }
 function showToast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
-
-// ============ ADSTERRA API ============
-async function fetchAdsterraData() {
-    const startDate = document.getElementById('adsterraStartDate').value;
-    const endDate = document.getElementById('adsterraEndDate').value;
-    let from = startDate;
-    let to = endDate;
-    if(!from) { const date = new Date(); date.setDate(date.getDate() - 30); from = date.toISOString().split('T')[0]; }
-    if(!to) { to = new Date().toISOString().split('T')[0]; }
-    try {
-        showToast("📊 Chargement des données Adsterra...");
-        // Simulation de données car l'API nécessite une configuration supplémentaire
-        // En production, remplacer par l'appel réel à l'API Adsterra
-        const demoStats = generateDemoAdsterraData(from, to);
-        processAdsterraData(demoStats);
-    } catch(error) {
-        console.error("Erreur Adsterra:", error);
-        const demoStats = generateDemoAdsterraData(from, to);
-        processAdsterraData(demoStats);
-    }
-}
-
-function generateDemoAdsterraData(from, to) {
-    const stats = [];
-    let currentDate = new Date(from);
-    const endDate = new Date(to);
-    while(currentDate <= endDate) {
-        const dateStr = currentDate.toISOString().split('T')[0];
-        const impressions = Math.floor(Math.random() * 5000) + 500;
-        const revenue = (Math.random() * 100 + 10).toFixed(2);
-        stats.push({ date: dateStr, impressions: impressions, revenue: parseFloat(revenue) });
-        currentDate.setDate(currentDate.getDate() + 1);
-    }
-    return { stats: stats };
-}
-
-function processAdsterraData(data) {
-    let stats = [];
-    let totalRevenue = 0;
-    let todayRevenue = 0;
-    let monthRevenue = 0;
-    let totalImpressions = 0;
-    if(data.stats) stats = data.stats;
-    else if(data.data) stats = data.data;
-    else if(Array.isArray(data)) stats = data;
-    const today = new Date().toISOString().split('T')[0];
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
-    stats.forEach(stat => {
-        const revenue = parseFloat(stat.revenue || stat.earnings || 0);
-        const impressions = parseInt(stat.impressions || 0);
-        totalRevenue += revenue;
-        totalImpressions += impressions;
-        if(stat.date === today) todayRevenue += revenue;
-        const statDate = new Date(stat.date);
-        if(statDate.getMonth() === currentMonth && statDate.getFullYear() === currentYear) monthRevenue += revenue;
-    });
-    document.getElementById('adsterraTotal').innerHTML = totalRevenue.toFixed(2) + ' $';
-    document.getElementById('adsterraToday').innerHTML = todayRevenue.toFixed(2) + ' $';
-    document.getElementById('adsterraMonth').innerHTML = monthRevenue.toFixed(2) + ' $';
-    document.getElementById('adsterraImpressions').innerHTML = totalImpressions.toLocaleString();
-    updateAdsterraTable(stats);
-    updateAdsterraChart(stats);
-}
-
-function updateAdsterraTable(stats) {
-    const tbody = document.getElementById('adsterraTableBody');
-    if(!stats || stats.length === 0) { tbody.innerHTML = '<tr><td colspan="4">Aucune donnée disponible</td></tr>'; return; }
-    stats.sort((a,b) => new Date(b.date) - new Date(a.date));
-    tbody.innerHTML = stats.map(stat => {
-        const impressions = parseInt(stat.impressions || 0);
-        const revenue = parseFloat(stat.revenue || stat.earnings || 0);
-        const cpm = impressions > 0 ? (revenue / impressions) * 1000 : 0;
-        return `<tr><td>${stat.date || '-'}</td><td>${impressions.toLocaleString()}</td><td>${cpm.toFixed(2)} $</td><td style="color:#10b981; font-weight:600;">${revenue.toFixed(2)} $</td></tr>`;
-    }).join('');
-}
-
-function updateAdsterraChart(stats) {
-    if(!stats || stats.length === 0) return;
-    const sorted = [...stats].sort((a,b) => new Date(a.date) - new Date(b.date));
-    const labels = sorted.map(s => s.date);
-    const revenues = sorted.map(s => parseFloat(s.revenue || s.earnings || 0));
-    if(adsterraChart) adsterraChart.destroy();
-    const ctx = document.getElementById('adsterraChart').getContext('2d');
-    adsterraChart = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: 'Revenue ($)', data: revenues, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: true } });
-}
-
-function exportAdsterraData() {
-    const rows = document.querySelectorAll('#adsterraTableBody tr');
-    let csv = "Date,Impressions,CPM ($),Revenue ($)\n";
-    rows.forEach(row => { const cols = row.querySelectorAll('td'); if(cols.length === 4) csv += `${cols[0].innerText},${cols[1].innerText},${cols[2].innerText},${cols[3].innerText}\n`; });
-    const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `adsterra_stats_${new Date().toISOString().split('T')[0]}.csv`; link.click();
-    showToast("✅ Export CSV terminé");
-}
-
-window.fetchAdsterraData = fetchAdsterraData;
-window.exportAdsterraData = exportAdsterraData;
 
 // ============ GESTION DES OBJECTIFS ============
 function updateGlobalObjectives() {
@@ -417,8 +284,31 @@ function updateGlobalObjectives() {
     const totalObjectifAtteint = usersData.reduce((sum, u) => sum + (parseInt(u.objectifAtteint) || 0), 0);
     const totalObjectifRestant = totalObjectifMensuel - totalObjectifAtteint;
     const pourcentage = totalObjectifMensuel > 0 ? (totalObjectifAtteint / totalObjectifMensuel * 100).toFixed(1) : 0;
+    
     const grid = document.getElementById('globalObjectivesGrid');
-    grid.innerHTML = `<div class="neuber-objectif-card"><h5><i class="fas fa-chart-line"></i> Vue globale des objectifs</h5><div class="objectif-stats"><span>Objectifs mensuels totaux</span><strong>${totalObjectifMensuel}</strong></div><div class="objectif-stats"><span>Objectifs atteints</span><strong style="color:#10b981;">${totalObjectifAtteint}</strong></div><div class="objectif-stats"><span>Objectifs restants</span><strong style="color:#f59e0b;">${totalObjectifRestant}</strong></div><div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Progression globale (${pourcentage}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pourcentage}%; background:#10b981;"></div></div></div></div></div>${usersData.map(u => { const objMensuel = parseInt(u.objectifMensuel) || 9; const objAtteint = parseInt(u.objectifAtteint) || 0; const objRestant = objMensuel - objAtteint; const percent = objMensuel > 0 ? (objAtteint / objMensuel * 100).toFixed(1) : 0; return `<div class="neuber-objectif-card"><h5><i class="fas fa-user"></i> ${u.code}</h5><div class="objectif-stats"><span>Objectif mensuel</span><strong>${objMensuel}</strong></div><div class="objectif-stats"><span>Objectif atteint</span><strong style="color:#10b981;">${objAtteint}</strong></div><div class="objectif-stats"><span>Objectif restant</span><strong style="color:#f59e0b;">${objRestant}</strong></div><div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Progression (${percent}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${percent}%; background:#10b981;"></div></div></div></div></div>`; }).join('')}`;
+    grid.innerHTML = `
+        <div class="neuber-objectif-card">
+            <h5><i class="fas fa-chart-line"></i> Vue globale des objectifs</h5>
+            <div class="objectif-stats"><span>Objectifs mensuels totaux</span><strong>${totalObjectifMensuel}</strong></div>
+            <div class="objectif-stats"><span>Objectifs atteints</span><strong style="color:#10b981;">${totalObjectifAtteint}</strong></div>
+            <div class="objectif-stats"><span>Objectifs restants</span><strong style="color:#f59e0b;">${totalObjectifRestant}</strong></div>
+            <div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Progression globale (${pourcentage}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pourcentage}%; background:#10b981;"></div></div></div></div>
+        </div>
+        ${usersData.map(u => {
+            const objMensuel = parseInt(u.objectifMensuel) || 9;
+            const objAtteint = parseInt(u.objectifAtteint) || 0;
+            const objRestant = objMensuel - objAtteint;
+            const percent = objMensuel > 0 ? (objAtteint / objMensuel * 100).toFixed(1) : 0;
+            return `
+            <div class="neuber-objectif-card">
+                <h5><i class="fas fa-user"></i> ${u.code}</h5>
+                <div class="objectif-stats"><span>Objectif mensuel</span><strong>${objMensuel}</strong></div>
+                <div class="objectif-stats"><span>Objectif atteint</span><strong style="color:#10b981;">${objAtteint}</strong></div>
+                <div class="objectif-stats"><span>Objectif restant</span><strong style="color:#f59e0b;">${objRestant}</strong></div>
+                <div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Progression (${percent}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${percent}%; background:#10b981;"></div></div></div></div>
+            </div>`;
+        }).join('')}
+    `;
 }
 
 // ============ GESTION DES ANOMALIES PAR TICKETS ============
@@ -429,11 +319,20 @@ async function checkAndUpdateAnomalies(userId, userCode, ticketCategory) {
     const ticketCounts = user.ticketCountsByCategory || {};
     const newCount = (ticketCounts[ticketCategory] || 0) + 1;
     ticketCounts[ticketCategory] = newCount;
+    
+    // Une anomalie est incrémentée quand un même type de ticket est envoyé 3 fois
     if(newCount === 3) {
         const currentAnomalies = (parseInt(user.anomaliesConnexion) || 0) + (parseInt(user.anomaliesSysteme) || 0);
-        await updateDoc(userRef, { anomaliesConnexion: increment(1), ticketCountsByCategory: ticketCounts, derniereAnomalie: new Date().toISOString(), niveauAlerte: currentAnomalies + 1 >= 5 ? 'rouge' : (currentAnomalies + 1 >= 3 ? 'orange' : 'vert') });
+        await updateDoc(userRef, { 
+            anomaliesConnexion: increment(1),
+            ticketCountsByCategory: ticketCounts,
+            derniereAnomalie: new Date().toISOString(),
+            niveauAlerte: currentAnomalies + 1 >= 5 ? 'rouge' : (currentAnomalies + 1 >= 3 ? 'orange' : 'vert')
+        });
         showToast(`⚠️ Anomalie détectée pour ${userCode} (${ticketCategory} x3)`);
-    } else { await updateDoc(userRef, { ticketCountsByCategory: ticketCounts }); }
+    } else {
+        await updateDoc(userRef, { ticketCountsByCategory: ticketCounts });
+    }
 }
 
 // ============ CHARGEMENT DES DONNÉES ============
@@ -441,10 +340,12 @@ async function loadAllData() {
     const usersSnap = await getDocs(collection(db, "users"));
     usersData = [];
     usersSnap.forEach(doc => usersData.push({ id: doc.id, ...doc.data() }));
+    
     const rapportsSnap = await getDocs(collection(db, "reports"));
     rapportsData = [];
     rapportsSnap.forEach(doc => rapportsData.push({ id: doc.id, ...doc.data() }));
     rapportsData.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
     await loadTickets();
     updateNetubersTable();
     updateRapportsTable();
@@ -460,7 +361,13 @@ async function loadTickets() {
     ticketsData = [];
     for(const user of usersData) {
         const userTickets = user.ticketsList || [];
-        for(const ticket of userTickets) { ticketsData.push({ ...ticket, userCode: user.code, userId: user.id }); }
+        for(const ticket of userTickets) {
+            ticketsData.push({
+                ...ticket,
+                userCode: user.code,
+                userId: user.id
+            });
+        }
     }
     ticketsData.sort((a,b) => new Date(b.date) - new Date(a.date));
     updateTicketsTable();
@@ -489,13 +396,58 @@ function updateNetubersTable() {
     const tbody = document.getElementById('netubersTableBody');
     const search = document.getElementById('searchNetuber')?.value.toLowerCase() || '';
     const status = document.getElementById('statusFilter')?.value || 'all';
-    let filtered = usersData.filter(u => { const matchSearch = (u.code || '').toLowerCase().includes(search); const isOnline = u.estConnecte === true || u.estConnecte === 'true'; const matchStatus = status === 'all' || (status === 'online' ? isOnline : !isOnline); return matchSearch && matchStatus; });
-    tbody.innerHTML = filtered.map(u => { const objMensuel = parseInt(u.objectifMensuel) || 9; const objAtteint = parseInt(u.objectifAtteint) || 0; const objRestant = objMensuel - objAtteint; const connexions = parseInt(u.NombreConnexions) || 0; const anomalies = (parseInt(u.anomaliesConnexion)||0) + (parseInt(u.anomaliesSysteme)||0); const isOnline = u.estConnecte === true || u.estConnecte === 'true'; const isBlocked = u.isBlocked === true; const anomalieClass = anomalies > 5 ? 'badge-danger' : (anomalies > 2 ? 'badge-warning' : 'badge-success'); return `<tr><td><strong>${u.code || '-'}</strong>${isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</td><td>${u.email || '-'}</td><td style="font-weight:600;">${objMensuel}</td><td style="color:#10b981; font-weight:600;">${objAtteint}</td><td style="color:#f59e0b; font-weight:600;">${objRestant}</td><td style="color:#3b82f6;">${connexions}</td><td><span class="badge ${anomalieClass}">${anomalies}</span></td><td><i class="fas fa-map-marker-alt"></i> ${u.localisation || '-'}</td><td><span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>${isOnline ? 'En ligne' : 'Hors ligne'}${isBlocked ? ' 🔒' : ''}</td><td><button class="action-btn cap" onclick="openCapModal('${u.code}')"><i class="fas fa-chart-line"></i> CAP</button><button class="action-btn view" onclick="showNetuberDetails('${u.code}')"><i class="fas fa-eye"></i></button><button class="action-btn delete" onclick="openDeleteNetuberModal('${u.code}')"><i class="fas fa-trash"></i></button></td></tr>`; }).join('');
+    
+    let filtered = usersData.filter(u => {
+        const matchSearch = (u.code || '').toLowerCase().includes(search);
+        const isOnline = u.estConnecte === true || u.estConnecte === 'true';
+        const matchStatus = status === 'all' || (status === 'online' ? isOnline : !isOnline);
+        return matchSearch && matchStatus;
+    });
+    
+    tbody.innerHTML = filtered.map(u => {
+        const objMensuel = parseInt(u.objectifMensuel) || 9;
+        const objAtteint = parseInt(u.objectifAtteint) || 0;
+        const objRestant = objMensuel - objAtteint;
+        const connexions = parseInt(u.NombreConnexions) || 0;
+        const anomalies = (parseInt(u.anomaliesConnexion)||0) + (parseInt(u.anomaliesSysteme)||0);
+        const isOnline = u.estConnecte === true || u.estConnecte === 'true';
+        const isBlocked = u.isBlocked === true;
+        const anomalieClass = anomalies > 5 ? 'badge-danger' : (anomalies > 2 ? 'badge-warning' : 'badge-success');
+        return `<tr>
+            <td><strong>${u.code || '-'}</strong>${isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</td>
+            <td>${u.email || '-'}</td>
+            <td style="font-weight:600;">${objMensuel}</td>
+            <td style="color:#10b981; font-weight:600;">${objAtteint}</td>
+            <td style="color:#f59e0b; font-weight:600;">${objRestant}</td>
+            <td style="color:#3b82f6;">${connexions}</td>
+            <td><span class="badge ${anomalieClass}">${anomalies}</span></td>
+            <td><i class="fas fa-map-marker-alt"></i> ${u.localisation || '-'}</td>
+            <td><span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>${isOnline ? 'En ligne' : 'Hors ligne'}${isBlocked ? ' 🔒' : ''}</td>
+            <td><button class="action-btn cap" onclick="openCapModal('${u.code}')"><i class="fas fa-chart-line"></i> CAP</button><button class="action-btn view" onclick="showNetuberDetails('${u.code}')"><i class="fas fa-eye"></i></button></button><button class="action-btn delete" onclick="openDeleteNetuberModal('${u.code}')"><i class="fas fa-trash"></i></button></td>
+        </tr>`;
+    }).join('');
 }
 
 function updateTicketsTable() {
     const tbody = document.getElementById('ticketsTableBody');
-    tbody.innerHTML = ticketsData.map(t => { const statusClass = t.status === 'resolu' ? 'badge-success' : (t.status === 'en-cours' ? 'badge-warning' : 'badge-info'); const statusText = t.status === 'resolu' ? 'Résolu' : (t.status === 'en-cours' ? 'En cours' : 'Ouvert'); const priorityClass = t.priority === 'haute' ? 'badge-danger' : (t.priority === 'moyenne' ? 'badge-warning' : 'badge-info'); return `<tr><td><strong>${t.userCode}</strong></td><td>${t.category || t.subject}</td><td><span class="badge ${priorityClass}">${t.priority}</span></td><td><span class="badge ${statusClass}">${statusText}</span></td><td><small>${new Date(t.date).toLocaleDateString()}</small></td><td><button class="action-btn reply" onclick="openReplyTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-reply"></i> Répondre</button>${t.status !== 'resolu' ? `<button class="action-btn resolve" onclick="openResolveTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-check"></i> Résoudre</button>` : ''}<button class="action-btn delete" onclick="deleteTicket('${t.id}', '${t.userId}')"><i class="fas fa-trash"></i></button></td></tr>`; }).join('');
+    tbody.innerHTML = ticketsData.map(t => {
+        const statusClass = t.status === 'resolu' ? 'badge-success' : (t.status === 'en-cours' ? 'badge-warning' : 'badge-info');
+        const statusText = t.status === 'resolu' ? 'Résolu' : (t.status === 'en-cours' ? 'En cours' : 'Ouvert');
+        const priorityClass = t.priority === 'haute' ? 'badge-danger' : (t.priority === 'moyenne' ? 'badge-warning' : 'badge-info');
+        return `<tr>
+            <td><strong>${t.userCode}</strong></td>
+            <td>${t.category || t.subject}</td>
+            <td><span class="badge ${priorityClass}">${t.priority}</span></td>
+            <td><span class="badge ${statusClass}">${statusText}</span></td>
+            <td><small>${new Date(t.date).toLocaleDateString()}</small></td>
+            <td>
+                <button class="action-btn reply" onclick="openReplyTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-reply"></i> Répondre</button>
+                ${t.status !== 'resolu' ? `<button class="action-btn resolve" onclick="openResolveTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-check"></i> Résoudre</button>` : ''}
+                <button class="action-btn delete" onclick="deleteTicket('${t.id}', '${t.userId}')"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>`;
+    }).join('');
+    
     document.getElementById('ticketsOpen').innerText = ticketsData.filter(t => t.status === 'ouvert').length;
     document.getElementById('ticketsProgress').innerText = ticketsData.filter(t => t.status === 'en-cours').length;
     document.getElementById('ticketsResolved').innerText = ticketsData.filter(t => t.status === 'resolu').length;
@@ -506,51 +458,120 @@ function updateRapportsTable() {
     const statut = document.getElementById('statutRapport')?.value || 'all';
     let filtered = rapportsData.filter(r => (r.reference || '').toLowerCase().includes(search) && (statut === 'all' || r.status === statut));
     const tbody = document.getElementById('rapportsTableBody');
-    tbody.innerHTML = filtered.map(r => { const rendement = r.rendementGlobal ? parseFloat(r.rendementGlobal).toFixed(2) : '-'; const tendanceClass = (r.totalPointsJour || 0) > (r.totalPointsPrecedents || 0) ? 'tendance-up' : ((r.totalPointsJour || 0) < (r.totalPointsPrecedents || 0) ? 'tendance-down' : 'tendance-stable'); return `<tr onclick='viewRapport("${r.id}")'><td><strong>${r.reference || '-'}</strong></td><td>${r.zone || '-'}</td><td>${r.responsable || '-'}</td><td style="color:#f59e0b; font-weight:bold;">${r.totalPointsJour || 0}</td><td>${r.totalPointsPrecedents || 0}</td><td class="${tendanceClass}">${rendement} pts/min</td><td><span class="badge badge-success">${r.goalReached || 0}/9</span></td><td><small>${formatDateShort(r.createdAt)}</small></td><td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></td><td><button class="action-btn view" onclick='event.stopPropagation();viewRapport("${r.id}")'><i class="fas fa-eye"></i> Voir</button></td></tr>`; }).join('');
+    tbody.innerHTML = filtered.map(r => {
+        const rendement = r.rendementGlobal ? parseFloat(r.rendementGlobal).toFixed(2) : '-';
+        const tendanceClass = (r.totalPointsJour || 0) > (r.totalPointsPrecedents || 0) ? 'tendance-up' : ((r.totalPointsJour || 0) < (r.totalPointsPrecedents || 0) ? 'tendance-down' : 'tendance-stable');
+        return `<tr onclick='viewRapport("${r.id}")'>
+            <td><strong>${r.reference || '-'}</strong></td>
+            <td>${r.zone || '-'}</td>
+            <td>${r.responsable || '-'}</td>
+            <td style="color:#f59e0b; font-weight:bold;">${r.totalPointsJour || 0}</td>
+            <td>${r.totalPointsPrecedents || 0}</td>
+            <td class="${tendanceClass}">${rendement} pts/min</td>
+            <td><span class="badge badge-success">${r.goalReached || 0}/9</span></td>
+            <td><small>${formatDateShort(r.createdAt)}</small></td>
+            <td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></td>
+            <td><button class="action-btn view" onclick='event.stopPropagation();viewRapport("${r.id}")'><i class="fas fa-eye"></i> Voir</button></td>
+        </tr>`;
+    }).join('');
 }
 
 function updateAnomaliesTable() {
     const anomalies = [];
-    usersData.forEach(u => { const count = (parseInt(u.anomaliesConnexion) || 0) + (parseInt(u.anomaliesSysteme) || 0); if(count >= 1) { anomalies.push({ code: u.code, type: 'Anomalies système/connexion', count: count, last: u.derniereAnomalie || u.derniereMAJTech, id: u.id }); } });
+    usersData.forEach(u => { 
+        const count = (parseInt(u.anomaliesConnexion) || 0) + (parseInt(u.anomaliesSysteme) || 0); 
+        if(count >= 1) { 
+            anomalies.push({ code: u.code, type: 'Anomalies système/connexion', count: count, last: u.derniereAnomalie || u.derniereMAJTech, id: u.id }); 
+        } 
+    });
     const tbody = document.getElementById('anomaliesTableBody');
-    tbody.innerHTML = anomalies.map(a => `<tr><td><strong>${a.code}</strong></td><td>${a.type}</td><td><span class="badge badge-danger">${a.count} fois</span></td><td><small>${formatDateShort(a.last)}</small></td><td><button class="action-btn view" onclick='resetAnomalies("${a.id}")'><i class="fas fa-sync"></i> Réinitialiser</button></td></tr>`).join('');
+    tbody.innerHTML = anomalies.map(a => `
+        <tr>
+            <td><strong>${a.code}</strong></td>
+            <td>${a.type}</td>
+            <td><span class="badge badge-danger">${a.count} fois</span></td>
+            <td><small>${formatDateShort(a.last)}</small></td>
+            <td><button class="action-btn view" onclick='resetAnomalies("${a.id}")'><i class="fas fa-sync"></i> Réinitialiser</button></td>
+        </tr>
+    `).join('');
 }
 
 function updateCapHistory() {
     const history = [];
-    usersData.forEach(user => { if(user.capDuJour) { history.push({ code: user.code, cap: user.capDuJour.substring(0, 60) + (user.capDuJour.length > 60 ? '...' : ''), envoyeLe: user.capEnvoyeLe, expiration: user.capExpiration }); } });
+    usersData.forEach(user => { 
+        if(user.capDuJour) { 
+            history.push({ code: user.code, cap: user.capDuJour.substring(0, 60) + (user.capDuJour.length > 60 ? '...' : ''), envoyeLe: user.capEnvoyeLe, expiration: user.capExpiration }); 
+        } 
+    });
     const tbody = document.getElementById('capHistoryBody');
-    tbody.innerHTML = history.map(h => `<tr><td><strong>${h.code}</strong></td><td>${h.cap}</td><td>${h.envoyeLe ? new Date(h.envoyeLe).toLocaleString() : '-'}</td><td>${h.expiration || '-'}</td></tr>`).join('');
+    tbody.innerHTML = history.map(h => `
+        <tr>
+            <td><strong>${h.code}</strong></td>
+            <td>${h.cap}</td>
+            <td>${h.envoyeLe ? new Date(h.envoyeLe).toLocaleString() : '-'}</td>
+            <td>${h.expiration || '-'}</td>
+        </tr>
+    `).join('');
     document.getElementById('totalActions').innerText = history.length;
 }
 
 function updateCharts() {
-    const last7Days = []; const pointsData = [];
-    for(let i=6; i>=0; i--) { const d = new Date(); d.setDate(d.getDate() - i); const jours = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']; last7Days.push(jours[d.getDay()]); const dayReports = rapportsData.filter(r => new Date(r.createdAt).toDateString() === d.toDateString()); pointsData.push(dayReports.reduce((a,r) => a + (r.totalPointsJour || 0), 0)); }
+    const last7Days = []; 
+    const pointsData = [];
+    for(let i=6; i>=0; i--) { 
+        const d = new Date(); 
+        d.setDate(d.getDate() - i); 
+        const jours = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']; 
+        last7Days.push(jours[d.getDay()]); 
+        const dayReports = rapportsData.filter(r => new Date(r.createdAt).toDateString() === d.toDateString()); 
+        pointsData.push(dayReports.reduce((a,r) => a + (r.totalPointsJour || 0), 0)); 
+    }
     if(rapportsChart) rapportsChart.destroy();
     const ctx = document.getElementById('rapportsChart').getContext('2d');
-    rapportsChart = new Chart(ctx, { type: 'line', data: { labels: last7Days, datasets: [{ label: 'Points cumulés', data: pointsData, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: true } });
+    rapportsChart = new Chart(ctx, { 
+        type: 'line', 
+        data: { labels: last7Days, datasets: [{ label: 'Points cumulés', data: pointsData, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.3 }] }, 
+        options: { responsive: true, maintainAspectRatio: true } 
+    });
+    
     const anomaliesByDay = [0,0,0,0,0,0,0];
     usersData.forEach(u => { if(u.derniereAnomalie) { const d = new Date(u.derniereAnomalie); anomaliesByDay[d.getDay()]++; } });
     if(anomaliesChart) anomaliesChart.destroy();
     const ctx2 = document.getElementById('anomaliesChart').getContext('2d');
-    anomaliesChart = new Chart(ctx2, { type: 'bar', data: { labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'], datasets: [{ label: 'Anomalies', data: anomaliesByDay, backgroundColor: '#ef4444', borderRadius: 8 }] }, options: { responsive: true, maintainAspectRatio: true } });
+    anomaliesChart = new Chart(ctx2, { 
+        type: 'bar', 
+        data: { labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'], datasets: [{ label: 'Anomalies', data: anomaliesByDay, backgroundColor: '#ef4444', borderRadius: 8 }] }, 
+        options: { responsive: true, maintainAspectRatio: true } 
+    });
 }
 
 function updateSelects() {
     const selects = ['editCodeSelect', 'blockSelect', 'deleteSelect'];
-    selects.forEach(id => { const select = document.getElementById(id); if(select) { select.innerHTML = usersData.map(u => `<option value="${u.code}">${u.code} - ${u.email || ''}</option>`).join(''); } });
+    selects.forEach(id => { 
+        const select = document.getElementById(id); 
+        if(select) { 
+            select.innerHTML = usersData.map(u => `<option value="${u.code}">${u.code} - ${u.email || ''}</option>`).join(''); 
+        } 
+    });
 }
 
 // ============ AFFICHAGE RAPPORT DÉTAILLÉ ============
 window.viewRapport = (id) => {
     const rapport = rapportsData.find(r => r.id === id);
     if(!rapport) return;
+    
     const totalPoints = (rapport.totalPointsPrecedents || 0) + (rapport.totalPointsJour || 0);
     const pointsPrevPercent = totalPoints > 0 ? ((rapport.totalPointsPrecedents || 0) / totalPoints) * 100 : 0;
     const pointsJourPercent = totalPoints > 0 ? ((rapport.totalPointsJour || 0) / totalPoints) * 100 : 0;
+    
     const modalBody = document.getElementById('rapportDetailBody');
-    modalBody.innerHTML = `<div class="detail-card"><h4>📋 Informations générales</h4><div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${rapport.reference || '-'}</span></div><div class="detail-row"><span class="detail-label">Zone / Site</span><span class="detail-value">${rapport.zone || '-'}</span></div><div class="detail-row"><span class="detail-label">Responsable</span><span class="detail-value">${rapport.responsable || '-'}</span></div><div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">${new Date(rapport.createdAt).toLocaleString('fr-FR')}</span></div></div><div class="detail-card"><h4>🎯 Objectifs</h4><div class="detail-row"><span class="detail-label">Objectif atteint</span><span class="detail-value"><span class="badge badge-success">${rapport.goalReached || 0}/9</span></span></div><div class="detail-row"><span class="detail-label">Appels pilote</span><span class="detail-value">${rapport.piloteCallCount || 0} fois</span></div></div><div class="detail-card"><h4>📊 Performance</h4><div class="detail-row"><span class="detail-label">Points précédents</span><span class="detail-value">${rapport.totalPointsPrecedents || 0} pts</span></div><div class="detail-row"><span class="detail-label">Points du jour</span><span class="detail-value" style="color:#f59e0b;">${rapport.totalPointsJour || 0} pts</span></div><div class="detail-row"><span class="detail-label">Progression</span><div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Points précédents (${Math.round(pointsPrevPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsPrevPercent}%; background:#3b82f6;"></div></div></div><div class="progress-item"><div class="progress-label">Points du jour (${Math.round(pointsJourPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsJourPercent}%; background:#f59e0b;"></div></div></div></div></div></div><div class="detail-card"><h4>👥 Détail des Netubers</h4><div class="table-wrapper"><table style="min-width:600px;"><thead><tr><th>Code</th><th>Présence</th><th>Points préc.</th><th>Points jour</th><th>Écart</th><th>Rendement</th></tr></thead><tbody>${(rapport.netubers || []).map(n => { const ecart = (n.pointsJour || 0) - (n.pointsPrecedents || 0); const rendement = n.tempsJour > 0 ? ((n.pointsJour || 0) / n.tempsJour).toFixed(2) : '0'; return `<tr><td>${n.code}</td><td>${n.presence === 'Présent' ? '✅' : '❌'}</td><td>${n.pointsPrecedents || 0}</td><td style="color:#f59e0b;">${n.pointsJour || 0}</td><td class="${ecart > 0 ? 'tendance-up' : 'tendance-down'}">${ecart > 0 ? '+' : ''}${ecart}</td><td>${rendement}</td></tr>`; }).join('')}</tbody></table></div></div><div class="detail-card"><h4>📝 Recommandation</h4><p style="font-size:12px; line-height:1.5; background:#1e293b; padding:12px; border-radius:12px;">${rapport.recommendation || '-'}</p></div>`;
+    modalBody.innerHTML = `
+        <div class="detail-card"><h4>📋 Informations générales</h4><div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${rapport.reference || '-'}</span></div><div class="detail-row"><span class="detail-label">Zone / Site</span><span class="detail-value">${rapport.zone || '-'}</span></div><div class="detail-row"><span class="detail-label">Responsable</span><span class="detail-value">${rapport.responsable || '-'}</span></div><div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">${new Date(rapport.createdAt).toLocaleString('fr-FR')}</span></div></div>
+        <div class="detail-card"><h4>🎯 Objectifs</h4><div class="detail-row"><span class="detail-label">Objectif atteint</span><span class="detail-value"><span class="badge badge-success">${rapport.goalReached || 0}/9</span></span></div><div class="detail-row"><span class="detail-label">Appels pilote</span><span class="detail-value">${rapport.piloteCallCount || 0} fois</span></div></div>
+        <div class="detail-card"><h4>📊 Performance</h4><div class="detail-row"><span class="detail-label">Points précédents</span><span class="detail-value">${rapport.totalPointsPrecedents || 0} pts</span></div><div class="detail-row"><span class="detail-label">Points du jour</span><span class="detail-value" style="color:#f59e0b;">${rapport.totalPointsJour || 0} pts</span></div><div class="detail-row"><span class="detail-label">Progression</span><div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Points précédents (${Math.round(pointsPrevPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsPrevPercent}%; background:#3b82f6;"></div></div></div><div class="progress-item"><div class="progress-label">Points du jour (${Math.round(pointsJourPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsJourPercent}%; background:#f59e0b;"></div></div></div></div></div></div>
+        <div class="detail-card"><h4>👥 Détail des Netubers</h4><div class="table-wrapper"><table style="min-width:600px;"><thead><tr><th>Code</th><th>Présence</th><th>Points préc.</th><th>Points jour</th><th>Écart</th><th>Rendement</th></tr></thead><tbody>${(rapport.netubers || []).map(n => { const ecart = (n.pointsJour || 0) - (n.pointsPrecedents || 0); const rendement = n.tempsJour > 0 ? ((n.pointsJour || 0) / n.tempsJour).toFixed(2) : '0'; return `<tr><td>${n.code}</td><td>${n.presence === 'Présent' ? '✅' : '❌'}</td><td>${n.pointsPrecedents || 0}</td><td style="color:#f59e0b;">${n.pointsJour || 0}</td><td class="${ecart > 0 ? 'tendance-up' : 'tendance-down'}">${ecart > 0 ? '+' : ''}${ecart}</td><td>${rendement}</td></tr>`; }).join('')}</tbody></table></div></div>
+        <div class="detail-card"><h4>📝 Recommandation</h4><p style="font-size:12px; line-height:1.5; background:#1e293b; padding:12px; border-radius:12px;">${rapport.recommendation || '-'}</p></div>
+    `;
     openModal('rapportModal');
 };
 
@@ -704,7 +725,13 @@ window.toggleBlockNetuber = async () => {
     const code = document.getElementById('blockSelect').value;
     const action = document.getElementById('blockAction').value;
     const user = usersData.find(u => u.code === code);
-    if(user) { const userRef = doc(db, "users", user.id); await updateDoc(userRef, { isBlocked: action === 'block' }); closeModal('blockModal'); showToast(action === 'block' ? `🔒 ${code} bloqué` : `🔓 ${code} débloqué`); loadAllData(); }
+    if(user) { 
+        const userRef = doc(db, "users", user.id); 
+        await updateDoc(userRef, { isBlocked: action === 'block' }); 
+        closeModal('blockModal'); 
+        showToast(action === 'block' ? `🔒 ${code} bloqué` : `🔓 ${code} débloqué`); 
+        loadAllData(); 
+    }
 };
 
 window.deleteNetuber = async () => {
@@ -730,13 +757,19 @@ window.openDeleteModal = () => openModal('deleteModal');
 
 window.exportNetubers = () => {
     let csv = "Code,Email,Objectif mensuel,Objectif atteint,Objectif restant,Connexions,Anomalies,Localisation,Statut,Bloqué\n";
-    usersData.forEach(u => { const objRestant = (u.objectifMensuel || 9) - (u.objectifAtteint || 0); csv += `${u.code},${u.email},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},${u.localisation||'-'},${u.estConnecte?'En ligne':'Hors ligne'},${u.isBlocked?'Oui':'Non'}\n`; });
+    usersData.forEach(u => { 
+        const objRestant = (u.objectifMensuel || 9) - (u.objectifAtteint || 0);
+        csv += `${u.code},${u.email},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},${u.localisation||'-'},${u.estConnecte?'En ligne':'Hors ligne'},${u.isBlocked?'Oui':'Non'}\n`; 
+    });
     const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `netubers_${new Date().toISOString().split('T')[0]}.csv`; link.click();
 };
 
 window.exportRapports = () => {
     let csv = "Référence,Zone,Responsable,Points préc.,Points jour,Écart,Temps préc.,Temps jour,Rendement,Objectif atteint,Date,Statut\n";
-    rapportsData.forEach(r => { const ecart = (r.totalPointsJour || 0) - (r.totalPointsPrecedents || 0); csv += `${r.reference},${r.zone},${r.responsable},${r.totalPointsPrecedents||0},${r.totalPointsJour||0},${ecart},${r.totalTempsPrecedent||0},${r.totalTempsJour||0},${r.rendementGlobal||0},${r.goalReached||0}/9,${new Date(r.createdAt).toLocaleDateString()},${r.status}\n`; });
+    rapportsData.forEach(r => { 
+        const ecart = (r.totalPointsJour || 0) - (r.totalPointsPrecedents || 0);
+        csv += `${r.reference},${r.zone},${r.responsable},${r.totalPointsPrecedents||0},${r.totalPointsJour||0},${ecart},${r.totalTempsPrecedent||0},${r.totalTempsJour||0},${r.rendementGlobal||0},${r.goalReached||0}/9,${new Date(r.createdAt).toLocaleDateString()},${r.status}\n`; 
+    });
     const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `rapports_${new Date().toISOString().split('T')[0]}.csv`; link.click();
 };
 
@@ -746,4 +779,3 @@ setInterval(loadAllData, 30000);
 loadAllData();
 </script>
 </body>
-</html>
