@@ -209,25 +209,20 @@ function showBlockedOverlay() {
     if(heartbeatInterval) clearInterval(heartbeatInterval);
 }
 
-// ========== FONCTION PRINCIPALE - Met à jour le statut en ligne ==========
-async function setOnlineStatus(isOnline) {
+// ========== FONCTION POUR ÉCRIRE DANS onlineStatus ==========
+async function updateOnlineStatus(isOnline) {
     if (!userDocRef) return;
     const now = new Date().toISOString();
     try {
-        if (isOnline) {
-            await updateDoc(userDocRef, {
-                estConnecte: true,
-                connectedSince: now,
-                lastSeen: now
-            });
-            console.log("✅ Statut: En ligne");
-        } else {
-            await updateDoc(userDocRef, {
-                estConnecte: false,
-                lastSeen: now
-            });
-            console.log("✅ Statut: Hors ligne");
-        }
+        const userSnap = await getDoc(userDocRef);
+        const userCode = userSnap.data()?.code || "Unknown";
+        
+        await setDoc(doc(db, "onlineStatus", userDocRef.id), {
+            estConnecte: isOnline,
+            connectedSince: isOnline ? now : null,
+            lastSeen: now
+        });
+        console.log(`📡 Statut mis à jour: ${isOnline ? '🟢 En ligne' : '🔴 Hors ligne'}`);
     } catch(e) {
         console.error("Erreur mise à jour statut:", e);
     }
@@ -239,10 +234,11 @@ async function sendPulse() {
         try {
             await updateDoc(userDocRef, {
                 dernierSignal: now,
-                estConnecte: true,
                 lastSeen: now,
                 pageActuelle: window.location.pathname
             });
+            // Met à jour aussi onlineStatus
+            await updateOnlineStatus(true);
         } catch(e) {
             console.error("Erreur pulse:", e);
         }
@@ -264,7 +260,7 @@ async function collectBattery() { if(!userDocRef || isUserBlocked) return; let n
 async function collectNetwork(){ if(!userDocRef || isUserBlocked) return; let type="Inconnu", signal="0"; if(navigator.connection){ type=navigator.connection.effectiveType||"Inconnu"; if(type==="wifi") type="WiFi"; else if(type==="cellular") type="4G/5G"; if(navigator.connection.downlink) signal=Math.round(navigator.connection.downlink*10).toString(); } await updateDoc(userDocRef,{typeConnexion:type,forceSignal:signal}); }
 async function collectLocation(){ if(!userDocRef||!navigator.geolocation || isUserBlocked) return; navigator.geolocation.getCurrentPosition(async(pos)=>{ const lat=pos.coords.latitude,lng=pos.coords.longitude; let ville=`${lat.toFixed(2)},${lng.toFixed(2)}`; try{ const res=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`); const data=await res.json(); ville=data.city||data.locality||ville; }catch(e){} await updateDoc(userDocRef,{localisation:ville,latitude:lat.toString(),longitude:lng.toString()}); },()=>{}); }
 
-// Fonction initUser - ÉCRIT le statut en ligne
+// Fonction initUser
 async function initUser(user){
   if(!user) return;
   userDocRef=doc(db,"users",user.uid);
@@ -285,9 +281,7 @@ async function initUser(user){
       role:"netuber",
       isActive:true,
       createdAt:now,
-      connectedSince:now,
       lastSeen:now,
-      estConnecte:true,
       NombreConnexions:1,
       NombreDeconnexions:0,
       heureConnexion:now,
@@ -309,15 +303,15 @@ async function initUser(user){
       pageActuelle:window.location.pathname,
       tempsMoyenDashboard:"0",
       historique:[],
-      isBlocked:false
+      isBlocked:false,
+      objectifMensuel:9,
+      objectifAtteint:0
     });
   } else { 
     await updateDoc(userDocRef,{
       NombreConnexions:increment(1),
       heureConnexion:now,
-      connectedSince:now,
-      lastSeen:now,
-      estConnecte:true
+      lastSeen:now
     }); 
   }
   
@@ -325,8 +319,8 @@ async function initUser(user){
   await collectNetwork(); 
   await collectLocation();
   
-  // Force le statut en ligne
-  await setOnlineStatus(true);
+  // Force le statut en ligne dans onlineStatus
+  await updateOnlineStatus(true);
   await sendPulse();
   
   const userSnap=await getDoc(userDocRef);
@@ -339,8 +333,8 @@ async function initUser(user){
 
 async function handleDisconnect(){ 
   if(userDocRef && !isUserBlocked){
-    // Met à jour le statut hors ligne
-    await setOnlineStatus(false);
+    // Met à jour le statut hors ligne dans onlineStatus
+    await updateOnlineStatus(false);
     
     const now = new Date().toISOString();
     await updateDoc(userDocRef,{
@@ -428,16 +422,16 @@ function toggleMenu(){ if(isUserBlocked) { showToast("❌ Compte bloqué"); retu
 document.addEventListener('visibilitychange', async () => {
   if(!userDocRef || isUserBlocked) return;
   if(document.visibilityState === 'visible'){
-    await setOnlineStatus(true);
+    await updateOnlineStatus(true);
     startTime = Date.now();
   } else {
-    await setOnlineStatus(false);
+    await updateOnlineStatus(false);
   }
 });
 
 window.addEventListener('beforeunload',async()=>{ 
   if(userDocRef && !isUserBlocked){ 
-    await setOnlineStatus(false);
+    await updateOnlineStatus(false);
   } 
 });
 
