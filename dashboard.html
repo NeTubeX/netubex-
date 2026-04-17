@@ -138,7 +138,7 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <div class="menu-item" id="menuCapBtn"><i class="fas fa-chart-line"></i> Voir le CAP du jour</div>
 <div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div>
 </div>
-<div id="ticketFormPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i><h3>Ouvrir un ticket</h3><p>Sélectionnez votre problème</p><div class="input-group"><select id="ticketCategory"><option value="">-- Type de problème --</option><option value="🔌 Problème de connexion">🔌 Problème de connexion</option><option value="🔋 Problème de batterie">🔋 Problème de batterie</option><option value="🌡️ Surchauffe">🌡️ Surchauffe du terminal</option><option value="🐢 Terminal lent">🐢 Terminal lent</option><option value="📡 Hors signal">📡 Hors signal</option><option value="💥 Terminal tombé">💥 Terminal tombé</option><option value="🔨 Terminal cassé">🔨 Terminal cassé</option><option value="⚠️ Dysfonctionnement">⚠️ Dysfonctionnement</option><option value="🎮 Jeux inaccessibles">🎮 Jeux inaccessibles</option><option value="🚫 Jeux bloqués">🚫 Jeux bloqués</option><option value="💰 Points non attribués">💰 Points non attribués</option></select></div><div class="input-group"><select id="ticketPriority"><option value="basse">🟢 Basse</option><option value="moyenne" selected>🟠 Moyenne</option><option value="haute">🔴 Haute - Urgent</option></select></div><div class="confirm-buttons"><button class="popup-btn" id="submitTicketBtn"><i class="fas fa-paper-plane"></i> Envoyer</button><button class="close-popup-btn" id="closeTicketFormBtn">Annuler</button></div></div></div>
+<div id="ticketFormPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i><h3>Ouvrir un ticket</h3><p>Sélectionnez votre problème</p><div class="input-group"><select id="ticketCategory"><option value="">-- Type de problème --</option><option value="🔌 Problème de connexion">🔌 Problème de connexion</option><option value="🔋 Problème de batterie">🔋 Problème de batterie</option><option value="🌡️ Surchauffe">🌡️ Surchauffe du terminal</option><option value="🐢 Terminal lent">🐢 Terminal lent</option><option value="📡 Hors signal">📡 Hors signal</option><option value="💥 Terminal tombé">💥 Terminal tombé</option><option value="🔨 Terminal cassé">🔨 Terminal cassé</option><option value="⚠️ Dysfonctionnement">⚠️ Dysfonctionnement</option><option value="🎮 Jeux inaccessibles">🎮 Jeux inaccessibles</option><option value="🚫 Jeux bloqués">🚫 Jeux bloqués</option><option value="💰 Points non attribués">💰 Points non attribués</option><option value="💥 Application qui crash">💥 Application qui crash</option><option value="🔄 Erreur de chargement">🔄 Erreur de chargement</option><option value="⏰ Session expirée trop souvent">⏰ Session expirée trop souvent</option><option value="🚪 Déconnexion automatique répétée">🚪 Déconnexion automatique répétée</option><option value="🔄 Problème de synchronisation">🔄 Problème de synchronisation</option><option value="🔔 Notifications non reçues">🔔 Notifications non reçues</option><option value="💀 Interface qui ne répond pas">💀 Interface qui ne répond pas</option><option value="🔘 Boutons inactifs">🔘 Boutons inactifs</option><option value="🔐 Problème de login">🔐 Problème de login / authentification</option><option value="💾 Données non enregistrées">💾 Données non enregistrées</option></select></div><div class="input-group"><select id="ticketPriority"><option value="basse">🟢 Basse</option><option value="moyenne" selected>🟠 Moyenne</option><option value="haute">🔴 Haute - Urgent</option></select></div><div class="confirm-buttons"><button class="popup-btn" id="submitTicketBtn"><i class="fas fa-paper-plane"></i> Envoyer</button><button class="close-popup-btn" id="closeTicketFormBtn">Annuler</button></div></div></div>
 <div id="ticketsListPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i><h3>Mes tickets support</h3><div class="tickets-popup-tabs"><button class="tickets-tab active" data-tab="encours">📩 En cours</button><button class="tickets-tab" data-tab="resolus">✅ Résolus</button><button id="deleteAllResolvedBtn" class="delete-all-btn" style="display:none;"><i class="fas fa-trash-alt"></i> Tout supprimer</button></div><div id="ticketsListContainer" class="tickets-list"></div><button class="close-popup-btn" id="closeTicketsPopupBtn">Fermer</button></div></div>
 <div id="settingsPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-shield-alt" style="font-size:2rem;color:#3b82f6;"></i><h3>Accès Pilote</h3><p>Code d'authentification</p><div class="input-group"><input type="password" id="pilotPassword" placeholder="Code d'accès" autocomplete="off"></div><button class="popup-btn" id="loginPilotBtn"><i class="fas fa-unlock-alt"></i> Authentifier</button><button class="close-popup-btn" id="closeSettingsBtn">Annuler</button></div></div>
 <div id="gamePopup" class="slide-popup"><div class="popup-left"><i class="fas fa-star" style="font-size:2rem;color:#f59e0b;"></i><h3 id="gamePopupTitle"></h3><div class="game-stats" id="gamePopupStats"></div><button class="popup-btn" id="closeGamePopup"><i class="fas fa-play-circle"></i> Démarrer</button></div></div>
@@ -235,7 +235,10 @@ window.deleteAllResolvedTickets=async()=>{
 async function loadCapDuJour(){
   if(!userDocRef) return;
   const snap=await getDoc(userDocRef);
-  const cap=snap.data().capDuJour||"📊 Aucun CAP défini pour aujourd'hui.\n\n📌 Objectif du jour : Atteindre 100 points\n🎯 Challenge spécial : 3 jeux complétés\n⭐ Bonus : +50 points si objectif atteint";
+  let cap = snap.data().capDuJour;
+  if(!cap || cap === "") {
+    cap = "📊 Bonjour, bientôt votre CAP. Le pôle stratégie et innovation prépare votre séance.";
+  }
   document.getElementById('capContent').innerHTML=`<p style="white-space:pre-line;">${cap}</p>`;
 }
 async function submitTicket(){
@@ -290,7 +293,51 @@ window.addEventListener('beforeunload',async()=>{ if(userDocRef) await updateDoc
 document.addEventListener('mousemove',()=>{ lastActivity=Date.now(); });
 document.addEventListener('click',()=>{ lastActivity=Date.now(); });
 document.addEventListener('keypress',()=>{ lastActivity=Date.now(); });
-onAuthStateChanged(auth,async(user)=>{ if(user){ await initUser(user); renderGames(); }else{ window.location.href="login.html"; } });
+
+// ============ AUTHENTIFICATION AVEC VÉRIFICATION DE BLOCAGE ============
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const userDocRefTemp = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userDocRefTemp);
+    
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      
+      // VÉRIFICATION DU BLOCAGE
+      if (userData.isBlocked === true) {
+        showToast("⛔ Votre compte a été bloqué par l'administrateur. Veuillez contacter le support.");
+        setTimeout(async () => {
+          await signOut(auth);
+          window.location.href = "login.html";
+        }, 3000);
+        return;
+      }
+      
+      // Vérification si compte actif
+      if (userData.isActive === false) {
+        showToast("❌ Votre compte est désactivé. Veuillez contacter l'administrateur.");
+        setTimeout(async () => {
+          await signOut(auth);
+          window.location.href = "login.html";
+        }, 3000);
+        return;
+      }
+      
+      // Tout est bon, initialiser le dashboard
+      await initUser(user);
+      renderGames();
+    } else {
+      // Document utilisateur inexistant
+      showToast("⚠️ Utilisateur non reconnu");
+      setTimeout(async () => {
+        await signOut(auth);
+        window.location.href = "login.html";
+      }, 2000);
+    }
+  } else {
+    window.location.href = "login.html";
+  }
+});
 </script>
 </body>
 </html>
