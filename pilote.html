@@ -3,148 +3,109 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>NeTubeX · Rapport Journalier PGCO & PETS</title>
+<title>NETUBER | SUIVI JOURNALIER - PGCO</title>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, doc, getDoc, getDocs, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+ 
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
+    authDomain: "netubexmoney.firebaseapp.com",
+    projectId: "netubexmoney",
+    storageBucket: "netubexmoney.firebasestorage.app",
+    messagingSenderId: "856592608176",
+    appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
+  };
+ 
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+ 
+  window.db = db;
+  window.collection = collection;
+  window.addDoc = addDoc;
+  window.doc = doc;
+  window.getDoc = getDoc;
+  window.getDocs = getDocs;
+  window.query = query;
+  window.where = where;
+  window.orderBy = orderBy;
+  window.limit = limit;
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{height:100%;overflow:hidden;}
-body{font-family:'Inter','Courier New',monospace;background:#0a1a2f;height:100vh;display:flex;flex-direction:column;}
-
-.app-container{max-width:950px;margin:0 auto;width:100%;height:100vh;display:flex;flex-direction:column;padding:10px 16px 10px 16px;overflow:hidden;}
-
-/* HEADER */
-.header{text-align:center;border-radius:20px;padding:8px;margin-bottom:6px;transition:all 0.3s;flex-shrink:0;}
-.header h1{font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,#facc15,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.header p{font-size:0.6rem;margin-top:2px;opacity:0.8;}
-
-/* Couleurs header */
-body.header-gray .header{background:#e8e8e8;}
-body.header-gray .datetime-container{background:#d0d0d0;color:#1a1a2e;}
-body.header-blue .header{background:#d4e6f1;}
-body.header-blue .datetime-container{background:#b8d4e8;color:#1a3a5c;}
-body.header-green .header{background:#e8f5e9;}
-body.header-green .datetime-container{background:#d0e8d0;color:#2a5c2a;}
-body.header-beige .header{background:#f5f0e0;}
-body.header-beige .datetime-container{background:#e8dcc8;color:#5c4a2a;}
-
-.datetime-container{display:flex;justify-content:center;gap:12px;padding:5px 12px;border-radius:50px;margin-top:4px;font-family:'Courier New',monospace;font-weight:700;flex-wrap:wrap;}
-.datetime-item{display:flex;align-items:center;gap:4px;font-size:0.65rem;}
-.datetime-item span:last-child{background:rgba(0,0,0,0.15);padding:2px 8px;border-radius:30px;}
-
-.pilot-name{font-size:0.7rem;font-weight:700;margin-top:4px;padding:2px 10px;background:rgba(250,204,21,0.2);border-radius:40px;display:inline-block;}
-.theme-selector{display:flex;gap:6px;justify-content:center;margin-top:5px;flex-wrap:wrap;}
-.theme-btn{background:rgba(0,0,0,0.15);border:none;padding:3px 10px;border-radius:40px;font-size:0.55rem;font-weight:600;cursor:pointer;font-family:inherit;color:white;}
-.theme-btn.active{background:#facc15;color:#0a1a2f;}
-
-/* Carte question */
-.question-card{
-    border-radius:24px;
-    padding:24px 20px;
-    margin-bottom:8px;
-    background:linear-gradient(145deg,#0f2d45,#0a2538);
-    box-shadow:20px 20px 40px rgba(0,0,0,0.6), -8px -8px 16px rgba(255,255,255,0.03);
-    border:1px solid rgba(250,204,21,0.2);
-    flex-shrink:0;
-    min-height: 280px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.question-text {
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.5;
-    margin-bottom: 20px;
-    color: #ffffff;
-    word-break: break-word;
-    white-space: pre-wrap;
-}
-.question-meta{border-left:3px solid #facc15;padding:3px 8px;border-radius:6px;margin-bottom:10px;font-size:0.6rem;font-weight:700;color:#f1f5f9;}
-.question-num{display:inline-block;background:#facc15;color:#0a1a2f;border-radius:30px;padding:1px 6px;font-size:0.55rem;font-weight:800;margin-right:6px;}
-.input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px;}
-.input-row select{flex:2;min-width:130px;padding:12px 12px;font-size:0.85rem;border-radius:60px;background:white;border:1px solid rgba(255,255,255,0.3);font-weight:500;}
-.input-row input{flex:2;min-width:130px;padding:12px 12px;font-size:0.85rem;border-radius:60px;background:white;border:1px solid rgba(255,255,255,0.3);font-weight:500;}
-.input-row .dual-input-group{display:flex;gap:8px;flex:2;min-width:280px;}
-.input-row .dual-input-group select{flex:1;min-width:100px;}
-.input-row .dual-input-group input{flex:1;min-width:100px;}
-.input-row .time-select-group{display:flex;gap:8px;flex:2;min-width:200px;}
-.input-row .time-select-group select{padding:12px 8px;min-width:80px;}
-button{background:linear-gradient(145deg,#facc15,#e5b800);border:none;padding:10px 20px;border-radius:60px;font-weight:700;font-size:0.8rem;color:#0a1a2f;cursor:pointer;transition:0.2s;}
+body{font-family:'Inter','Courier New',monospace;background:#0a1a2f;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+.app-container{max-width:950px;margin:0 auto;width:100%;height:100vh;display:flex;flex-direction:column;padding:10px 16px;overflow:hidden;}
+.tabs{display:flex;gap:8px;margin-bottom:12px;flex-shrink:0;}
+.tab-btn{background:rgba(255,255,255,0.1);color:#bbdefb;padding:10px 20px;font-size:0.85rem;font-weight:600;border:none;cursor:pointer;border-radius:40px;transition:all 0.2s;}
+.tab-btn.active{background:#facc15;color:#0a1a2f;}
+.tab-content{display:none;height:100%;overflow-y:auto;flex:1;}
+.tab-content.active{display:block;}
+.header-logo{background:#0d2740;padding:10px 16px;border-radius:40px;margin-bottom:12px;border:1px solid #2d5980;text-align:center;flex-shrink:0;}
+.header-logo div{font-size:0.85rem;font-weight:500;color:#bbdefb;}
+h1{font-size:1.2rem;font-weight:800;text-align:center;margin-bottom:12px;background:linear-gradient(135deg,#facc15,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.question-card{border-radius:24px;padding:24px 20px;margin-bottom:12px;background:linear-gradient(145deg,#0f2d45,#0a2538);border:1px solid rgba(250,204,21,0.2);}
+.question-text{font-size:1.1rem;font-weight:700;line-height:1.5;margin-bottom:20px;color:#ffffff;min-height:80px;}
+.question-meta{border-left:3px solid #facc15;padding:3px 8px;margin-bottom:10px;font-size:0.65rem;font-weight:700;color:#f1f5f9;}
+.question-num{display:inline-block;background:#facc15;color:#0a1a2f;border-radius:30px;padding:2px 8px;font-size:0.55rem;font-weight:800;margin-right:8px;}
+.input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;}
+.input-row select{flex:2;min-width:150px;padding:14px 16px;font-size:0.9rem;border-radius:60px;background:white;border:none;font-weight:500;color:#0a1a2f;}
+.input-row input{flex:2;min-width:150px;padding:14px 16px;font-size:0.9rem;border-radius:60px;background:white;border:none;font-weight:500;color:#0a1a2f;}
+button{background:linear-gradient(145deg,#facc15,#e5b800);border:none;padding:14px 24px;border-radius:60px;font-weight:700;font-size:0.85rem;color:#0a1a2f;cursor:pointer;transition:0.2s;}
 button:active{transform:scale(0.97);}
 .choice-row{display:flex;gap:12px;margin-top:12px;}
-.choice-btn{flex:1;text-align:center;padding:12px 0;border-radius:60px;font-weight:700;font-size:0.85rem;cursor:pointer;border:none;}
+.choice-btn{flex:1;text-align:center;padding:14px 0;border-radius:60px;font-weight:700;font-size:0.9rem;cursor:pointer;border:none;}
 .choice-btn.yes{background:#27ae60;color:white;}
 .choice-btn.no{background:#c0392b;color:white;}
 .progress-bar{background:rgba(255,255,255,0.15);border-radius:40px;height:4px;margin:14px 0 6px;}
 .progress-fill{background:#facc15;width:0%;height:4px;border-radius:40px;}
 .step-info{display:flex;justify-content:space-between;font-size:0.6rem;color:#ccc;margin-top:4px;}
 .action-buttons{display:flex;gap:10px;margin-top:12px;}
-.nav-btn{background:rgba(255,255,255,0.12);color:white;padding:7px 14px;font-size:0.7rem;}
+.nav-btn{background:rgba(255,255,255,0.12);color:white;padding:8px 16px;font-size:0.7rem;}
 .reset-btn{background:linear-gradient(145deg,#e74c3c,#c0392b);color:white;}
-.pdf-buttons-container{display:flex;gap:10px;margin-top:15px;padding-top:10px;border-top:1px solid rgba(250,204,21,0.3);justify-content:center;}
-.pdf-btn{flex:1;padding:10px 0;border-radius:60px;font-weight:700;font-size:0.7rem;border:none;cursor:pointer;text-align:center;}
-.pdf-btn.pgco{background:#1e4a6e;color:white;}
-.pdf-btn.pets{background:#2d5a3b;color:white;}
-.rapport-num-input-pdf{display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:12px;background:rgba(255,255,255,0.1);padding:6px 12px;border-radius:50px;}
-.rapport-num-input-pdf label{font-weight:600;font-size:0.65rem;color:#facc15;}
-.rapport-num-input-pdf input{background:white;border:1px solid #ddd;padding:5px 12px;border-radius:40px;font-size:0.65rem;width:130px;}
-.time-remaining-bar{background:rgba(0,0,0,0.5);border-radius:50px;padding:6px 12px;margin-top:8px;margin-bottom:5px;text-align:center;font-weight:700;font-size:0.7rem;border:1px solid rgba(250,204,21,0.3);flex-shrink:0;}
-.time-remaining-bar.on-time{background:rgba(39,174,96,0.3);border-color:#27ae60;color:#27ae60;}
-.time-remaining-bar.late{background:rgba(192,57,43,0.3);border-color:#c0392b;color:#e74c3c;}
 .hidden{display:none;}
-.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;}
+.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;}
 .popup-overlay.active{visibility:visible;}
-.popup-card{background:linear-gradient(145deg,#ffffff,#f8fafc);border-radius:28px;width:90%;max-width:340px;padding:24px 20px;text-align:center;border-top:5px solid #facc15;transform:translateX(-40px);opacity:0;transition:all 0.3s cubic-bezier(0.34,1.2,0.64,1);}
-.popup-overlay.active .popup-card{transform:translateX(0);opacity:1;}
-.popup-title{font-size:1.2rem;font-weight:800;color:#facc15;margin-bottom:8px;}
-.popup-message{font-size:0.85rem;margin-bottom:20px;color:#1e293b;line-height:1.5;}
+.popup-card{background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:28px;width:90%;max-width:400px;padding:24px 20px;text-align:center;border-top:5px solid #facc15;}
+.popup-title{font-size:1.2rem;font-weight:800;color:#facc15;margin-bottom:12px;}
+.popup-message{font-size:0.85rem;margin-bottom:20px;color:#e0f2fe;line-height:1.5;min-height:80px;font-family:'Courier New',monospace;white-space:pre-wrap;}
+.popup-message .cursor{display:inline-block;width:2px;height:1.1em;background-color:#facc15;margin-left:2px;vertical-align:middle;animation:blink 0.8s infinite;}
+@keyframes blink{0%,50%{opacity:1;}51%,100%{opacity:0;}}
 .popup-buttons{display:flex;gap:12px;justify-content:center;}
-.popup-btn{padding:8px 22px;border-radius:60px;font-weight:700;font-size:0.8rem;border:none;cursor:pointer;}
-.popup-btn.secondary{background:#e2e8f0;color:#1e293b;}
+.popup-btn{padding:10px 22px;border-radius:60px;font-weight:700;font-size:0.8rem;border:none;cursor:pointer;}
+.popup-btn.secondary{background:#2d4e73;color:white;}
 .popup-btn.primary{background:#27ae60;color:white;}
-.typewriter-cursor::after{content:'▊';animation:blink 0.9s step-end infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
-.form-container{flex:1;display:flex;flex-direction:column;min-height:0;}
+.toast-success{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:12px 24px;border-radius:50px;font-size:0.85rem;z-index:2000;animation:slideUp 0.3s ease;}
+@keyframes slideUp{from{transform:translateY(100%) translateX(-50%);opacity:0;}to{transform:translateY(0) translateX(-50%);opacity:1;}}
+.memorandum-list{background:#112b42;border-radius:24px;padding:20px;margin-bottom:16px;}
+.memorandum-item{border-bottom:1px solid #2d4e73;padding:16px 0;}
+.memorandum-item:last-child{border-bottom:none;}
+.memorandum-title{color:#facc15;font-weight:700;margin-bottom:8px;}
+.memorandum-date{font-size:0.7rem;color:#7dd3fc;margin-bottom:8px;}
+.memorandum-content{font-size:0.85rem;color:#e0f2fe;line-height:1.4;}
+footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shrink:0;}
 </style>
 </head>
-<body class="header-blue">
+<body>
 <div class="app-container">
-<div class="header">
-<h1>📡 NeTubeX</h1>
-<p>Espace de Rémunération Digitale</p>
-<div class="datetime-container">
-<div class="datetime-item">📅 <span id="currentDate">--/--/----</span></div>
-<div class="datetime-item">⏰ <span id="currentTime">--:--:--</span></div>
-<div class="datetime-item">⚡ <span id="currentMs">---</span> ms</div>
-</div>
-<div id="pilotNameDisplay" class="pilot-name">👤 Pilote : Non défini</div>
-<div class="theme-selector">
-<button class="theme-btn" data-theme="gray">◻️ Gris</button>
-<button class="theme-btn active" data-theme="blue">💙 Bleu</button>
-<button class="theme-btn" data-theme="green">🍃 Vert</button>
-<button class="theme-btn" data-theme="beige">🧸 Beige</button>
-</div>
+<div class="header-logo"><div>⚡ NETUBER · SUIVI JOURNALIER<br>PGCO</div></div>
+<h1>BULLETIN JOURNALIER<br>PERFORMANCE & RENDEMENT</h1>
+
+<div class="tabs">
+<button class="tab-btn active" data-tab="form">📋 FORMULAIRE RAPPORT</button>
+<button class="tab-btn" data-tab="memo">📜 MÉMORANDUM</button>
 </div>
 
-<div id="formContainer" class="form-container">
+<div id="tabForm" class="tab-content active">
 <div class="question-card" id="questionCard">
-<div id="questionMeta" class="question-meta hidden"></div>
+<div id="questionMeta" class="question-meta"></div>
 <div class="question-text" id="questionText"></div>
 <div class="answer-area" id="answerArea">
 <div class="input-row" id="inputRow">
 <select id="answerSelect" style="display:none;"></select>
-<div id="dualInputGroup" class="dual-input-group" style="display:none;">
-<select id="dualSelect"></select>
-<input type="number" id="dualText" placeholder="Saisir manuellement...">
-</div>
-<div id="timeSelectGroup" class="time-select-group" style="display:none;">
-<select id="hourSelect"></select>
-<select id="minuteSelect"></select>
-</div>
-<input type="number" id="answerText" placeholder="Saisir..." value="" style="display:none;">
+<input type="number" id="answerNumber" placeholder="Saisir..." style="display:none;">
 <button id="submitBtn">✓ Valider</button>
 </div>
 <div class="choice-row hidden" id="choiceRow">
@@ -156,561 +117,419 @@ button:active{transform:scale(0.97);}
 <div class="step-info"><span id="stepCounter">0 / 0</span><span id="saveStatus">💾 Auto</span></div>
 <div class="action-buttons">
 <button id="prevBtn" class="nav-btn hidden">◀ Reculer</button>
-<button id="resetBtn" class="reset-btn">🔄 Nouveau</button>
-</div>
-<div id="pdfButtonsCard" class="hidden">
-    <div class="rapport-num-input-pdf">
-        <label>📄 N° RAPPORT :</label>
-        <input type="text" id="rapportNumberCard" value="RPT-2026-001">
-    </div>
-    <div class="pdf-buttons-container">
-        <button class="pdf-btn pgco" id="genPgcoBtnCard">📊 PGCO</button>
-        <button class="pdf-btn pets" id="genPetsBtnCard">🐾 PETS</button>
-    </div>
+<button id="resetBtn" class="reset-btn">🔄 Nouveau rapport</button>
 </div>
 </div>
-<div id="timeRemaining" class="time-remaining-bar">⏳ Chargement...</div>
+<button id="sendReportBtn" style="margin-top:12px;">📤 ENVOYER À LA DIRECTION DES OPÉRATIONS</button>
+<footer>PGCO · NeTubeX · Rapport journalier · données certifiées</footer>
+</div>
+
+<div id="tabMemo" class="tab-content">
+<div class="memorandum-list" id="memorandumList">
+<div style="text-align:center;padding:40px;">Chargement des mémorandums...</div>
+</div>
 </div>
 </div>
 
 <div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
 
 <script>
-const URSULLE={name:"Madame Ursule"};
-const CHANCELLE={name:"Madame Chancelle"};
+const NETUBERS = [
+  {code:"MA-NX-S1-ZA-01", name:"Netuber ZA-01"},
+  {code:"MA-NX-S1-ZA-02", name:"Netuber ZA-02"},
+  {code:"MA-NX-S1-ZB-03", name:"Netuber ZB-03"},
+  {code:"MA-NX-S1-ZB-04", name:"Netuber ZB-04"},
+  {code:"MA-NX-S1-ZC-05", name:"Netuber ZC-05"},
+  {code:"MA-NX-S1-ZC-06", name:"Netuber ZC-06"}
+];
 
-let currentConfig=null,questions=[],currentStep=0,responses={},waitingYesNo=false;
-let editMode=false,editReturnToSummary=false,typewriterTimeout=null;
-let fieldToQuestionText={};
+let currentStep=0, responses={}, questions=[], waitingYesNo=false, typewriterTimeout=null;
+let totalQuestions=0;
 
-// DOM
-const questionText=document.getElementById('questionText'),questionMeta=document.getElementById('questionMeta'),inputRow=document.getElementById('inputRow'),choiceRow=document.getElementById('choiceRow'),answerSelect=document.getElementById('answerSelect'),answerText=document.getElementById('answerText'),submitBtn=document.getElementById('submitBtn'),yesBtn=document.getElementById('yesBtn'),noBtn=document.getElementById('noBtn'),progressFill=document.getElementById('progressFill'),stepCounterSpan=document.getElementById('stepCounter'),prevBtn=document.getElementById('prevBtn'),resetBtn=document.getElementById('resetBtn'),saveStatus=document.getElementById('saveStatus'),pilotNameDisplay=document.getElementById('pilotNameDisplay'),timeRemainingDiv=document.getElementById('timeRemaining');
-const popupOverlay=document.getElementById('popupOverlay'),popupTitle=document.getElementById('popupTitle'),popupMessage=document.getElementById('popupMessage'),popupBtnLeft=document.getElementById('popupBtnLeft'),popupBtnRight=document.getElementById('popupBtnRight');
-const pdfButtonsCard=document.getElementById('pdfButtonsCard');
-const rapportNumberCard=document.getElementById('rapportNumberCard');
-const genPgcoBtnCard=document.getElementById('genPgcoBtnCard');
-const genPetsBtnCard=document.getElementById('genPetsBtnCard');
-const timeSelectGroup=document.getElementById('timeSelectGroup');
-const hourSelect=document.getElementById('hourSelect');
-const minuteSelect=document.getElementById('minuteSelect');
-const dualInputGroup=document.getElementById('dualInputGroup');
-const dualSelect=document.getElementById('dualSelect');
-const dualText=document.getElementById('dualText');
+const questionText=document.getElementById('questionText');
+const questionMeta=document.getElementById('questionMeta');
+const inputRow=document.getElementById('inputRow');
+const choiceRow=document.getElementById('choiceRow');
+const answerSelect=document.getElementById('answerSelect');
+const answerNumber=document.getElementById('answerNumber');
+const submitBtn=document.getElementById('submitBtn');
+const yesBtn=document.getElementById('yesBtn');
+const noBtn=document.getElementById('noBtn');
+const progressFill=document.getElementById('progressFill');
+const stepCounterSpan=document.getElementById('stepCounter');
+const prevBtn=document.getElementById('prevBtn');
+const resetBtn=document.getElementById('resetBtn');
+const saveStatus=document.getElementById('saveStatus');
+const popupOverlay=document.getElementById('popupOverlay');
+const popupTitle=document.getElementById('popupTitle');
+const popupMessageDiv=document.getElementById('popupMessage');
+const popupBtnLeft=document.getElementById('popupBtnLeft');
+const popupBtnRight=document.getElementById('popupBtnRight');
+const sendReportBtn=document.getElementById('sendReportBtn');
 
-for(let i=0;i<=23;i++){ let opt=document.createElement('option'); opt.value=i.toString().padStart(2,'0'); opt.textContent=i.toString().padStart(2,'0'); hourSelect.appendChild(opt); }
-for(let i=0;i<=59;i++){ let opt=document.createElement('option'); opt.value=i.toString().padStart(2,'0'); opt.textContent=i.toString().padStart(2,'0'); minuteSelect.appendChild(opt); }
+let adminMemorandumList=[];
 
-const numericOptions=[]; for(let i=0;i<=30;i++) numericOptions.push(i.toString());
-const levelOptions=[]; for(let i=0;i<=99;i++) levelOptions.push(i.toString());
-
-function updateClock(){
-    const n=new Date();
-    document.getElementById('currentDate').textContent=n.toLocaleDateString('fr-FR');
-    document.getElementById('currentTime').textContent=n.toLocaleTimeString('fr-FR');
-    document.getElementById('currentMs').textContent=n.getMilliseconds().toString().padStart(3,'0');
-    const now=new Date();
-    const totalMinutes=now.getHours()*60+now.getMinutes();
-    const debut=14*60+30, fin=16*60+30;
-    if(totalMinutes<debut){
-        const reste=debut-totalMinutes;
-        const h=Math.floor(reste/60), m=reste%60;
-        timeRemainingDiv.innerHTML=`⏳ Il vous reste ${h}h${m.toString().padStart(2,'0')} pour envoyer le rapport`;
-        timeRemainingDiv.className="time-remaining-bar on-time";
-    }else if(totalMinutes>=debut && totalMinutes<=fin){
-        const reste=fin-totalMinutes;
-        const h=Math.floor(reste/60), m=reste%60;
-        timeRemainingDiv.innerHTML=`⏳ Il vous reste ${h}h${m.toString().padStart(2,'0')} pour envoyer le rapport`;
-        timeRemainingDiv.className="time-remaining-bar on-time";
-    }else{
-        const retard=totalMinutes-fin;
-        const h=Math.floor(retard/60), m=retard%60;
-        timeRemainingDiv.innerHTML=`⚠️ Vous êtes en retard de ${h}h${m.toString().padStart(2,'0')} pour envoyer votre rapport`;
-        timeRemainingDiv.className="time-remaining-bar late";
+async function loadMemorandumsFromFirebase(){
+  try{
+    const memosRef = collection(window.db, "memorandums");
+    const q = query(memosRef, orderBy("date", "desc"), limit(10));
+    const snapshot = await getDocs(q);
+    const memoDiv = document.getElementById('memorandumList');
+    if(!snapshot.empty){
+      let html='';
+      snapshot.forEach(doc=>{
+        const data=doc.data();
+        html+=`
+          <div class="memorandum-item">
+            <div class="memorandum-title">📋 ${data.title || 'Mémorandum'}</div>
+            <div class="memorandum-date">📅 ${new Date(data.date).toLocaleString('fr-FR')}</div>
+            <div class="memorandum-content">${(data.content || '').replace(/\n/g,'<br>')}</div>
+          </div>
+        `;
+      });
+      memoDiv.innerHTML=html;
+    } else {
+      memoDiv.innerHTML='<div style="text-align:center;padding:40px;">📭 Aucun mémorandum récent.</div>';
     }
+  } catch(e){
+    console.error(e);
+    document.getElementById('memorandumList').innerHTML='<div style="text-align:center;padding:40px;">⚠️ Service indisponible</div>';
+  }
 }
-setInterval(updateClock,1000); updateClock();
 
-function saveLocal(){ localStorage.setItem('netubex_rapport',JSON.stringify({configName:currentConfig?.name,responses,currentStep})); saveStatus.innerHTML='💾 OK'; setTimeout(()=>saveStatus.innerHTML='💾 Auto',1200); }
+function saveLocal(){
+  localStorage.setItem('pgco_rapport',JSON.stringify({responses,currentStep}));
+  saveStatus.innerHTML='💾 OK';
+  setTimeout(()=>saveStatus.innerHTML='💾 Auto',1200);
+}
 function autoSave(){ saveLocal(); }
-function updateProgress(){ if(questions.length){ progressFill.style.width=`${(currentStep/questions.length)*100}%`; stepCounterSpan.innerText=`${currentStep}/${questions.length}`; } }
-function showPopup(title,msg,leftT,rightT,onConfirm,onCancel,animRight=false){
-    popupTitle.textContent=title; popupMessage.innerHTML=msg; popupBtnLeft.textContent=leftT; popupBtnRight.textContent=rightT;
-    if(animRight) popupOverlay.classList.add('right-animation');
-    else popupOverlay.classList.remove('right-animation');
-    popupOverlay.classList.add('active');
-    popupBtnRight.onclick=()=>{ popupOverlay.classList.remove('active'); popupOverlay.classList.remove('right-animation'); if(onConfirm)onConfirm(); };
-    popupBtnLeft.onclick=()=>{ popupOverlay.classList.remove('active'); popupOverlay.classList.remove('right-animation'); if(onCancel)onCancel(); };
+
+function typewriterEffect(el, text, speed=25, callback){
+  if(typewriterTimeout) clearTimeout(typewriterTimeout);
+  el.innerHTML='';
+  let i=0;
+  function type(){
+    if(i<text.length){
+      el.innerHTML = text.substring(0, i+1);
+      i++;
+      typewriterTimeout = setTimeout(type, speed);
+    } else {
+      if(callback) callback();
+    }
+  }
+  type();
 }
 
-function typewriterEffect(el,htmlContent,speed=22,cb){
-    if(typewriterTimeout) clearTimeout(typewriterTimeout);
-    el.innerHTML='';
-    el.classList.remove('typewriter-cursor');
-    let i=0;
-    const plainText = htmlContent.replace(/<[^>]*>/g, '');
-    function type(){
-        if(i<plainText.length){
-            el.innerHTML = plainText.substring(0, i+1);
-            i++;
-            typewriterTimeout = setTimeout(type, speed);
-        } else {
-            el.classList.add('typewriter-cursor');
-            if(cb) cb();
-        }
-    }
-    type();
+function showPopup(title, msg, leftT, rightT, onConfirm, onCancel){
+  popupTitle.textContent=title;
+  popupMessageDiv.innerHTML='';
+  popupBtnLeft.textContent=leftT;
+  popupBtnRight.textContent=rightT;
+  popupOverlay.classList.add('active');
+  typewriterEffect(popupMessageDiv, msg, 25, null);
+  popupBtnRight.onclick=()=>{ popupOverlay.classList.remove('active'); if(onConfirm)onConfirm(); };
+  popupBtnLeft.onclick=()=>{ popupOverlay.classList.remove('active'); if(onCancel)onCancel(); };
+}
+
+function showSuccessToast(msg){
+  const toast=document.createElement('div');
+  toast.className='toast-success';
+  toast.innerHTML='✅ '+msg;
+  document.body.appendChild(toast);
+  setTimeout(()=>toast.remove(),4000);
+}
+
+function buildQuestions(){
+  const qList=[];
+  let num=0;
+  qList.push({num:num++, type:"choice", field:"responsable", meta:"Identification", text:"Qui remplit le rapport aujourd'hui ?", options:["Madame Ursule","Madame Chancelle"]});
+  
+  for(let n of NETUBERS){
+    qList.push({num:num++, type:"yesno", field:`${n.code}_present`, meta:n.code, text:`${n.name} (${n.code}) : Était-il présent aujourd'hui ?`});
+    qList.push({num:num++, type:"number", field:`${n.code}_objMensuel`, meta:n.code, text:`${n.code} : Quel est son objectif mensuel ? (0-15)`, min:0, max:15});
+    qList.push({num:num++, type:"number", field:`${n.code}_objAtteint`, meta:n.code, text:`${n.code} : Combien d'objectifs a-t-il atteints aujourd'hui ? (0-15)`, min:0, max:15});
+    qList.push({num:num++, type:"number", field:`${n.code}_nbNiveaux`, meta:n.code, text:`${n.code} : Quel est le nombre de niveaux/événements ?`, min:0});
+    qList.push({num:num++, type:"number", field:`${n.code}_nbNiveauxAtteints`, meta:n.code, text:`${n.code} : Combien de niveaux/événements a-t-il atteints ?`, min:0});
+    qList.push({num:num++, type:"number", field:`${n.code}_pointsPrec`, meta:n.code, text:`${n.code} : Combien de points avait-il précédemment ?`, min:0});
+    qList.push({num:num++, type:"number", field:`${n.code}_pointsJour`, meta:n.code, text:`${n.code} : Combien de points a-t-il aujourd'hui ?`, min:0});
+    qList.push({num:num++, type:"number", field:`${n.code}_tempsPrec`, meta:n.code, text:`${n.code} : Quel temps avait-il précédemment (en minutes) ?`, min:0});
+    qList.push({num:num++, type:"number", field:`${n.code}_tempsJour`, meta:n.code, text:`${n.code} : Quel temps a-t-il aujourd'hui (en minutes) ?`, min:0});
+  }
+  qList.push({num:num++, type:"text", field:"reference", meta:"Rapport", text:"Numéro du rapport (format: RPT-BLTJRNL-2026-XXX)", placeholder:"Ex: RPT-BLTJRNL-2026-001"});
+  return qList;
+}
+
+function getObjRestant(netuber){
+  const objM=parseInt(responses[`${netuber}_objMensuel`])||0;
+  const objA=parseInt(responses[`${netuber}_objAtteint`])||0;
+  return Math.max(0, objM-objA);
+}
+function getNbRestantsAuto(netuber){
+  const nbN=parseFloat(responses[`${netuber}_nbNiveaux`])||0;
+  const nbA=parseFloat(responses[`${netuber}_nbNiveauxAtteints`])||0;
+  return Math.max(0, nbN-nbA);
+}
+function getEcart(netuber){
+  const ptsJ=parseFloat(responses[`${netuber}_pointsJour`])||0;
+  const ptsP=parseFloat(responses[`${netuber}_pointsPrec`])||0;
+  return ptsJ-ptsP;
+}
+function getTendance(ecart){
+  if(ecart>0) return "↑ En hausse";
+  if(ecart<0) return "↓ En baisse";
+  return "→ Stable";
+}
+function getRendement(netuber){
+  const ptsJ=parseFloat(responses[`${netuber}_pointsJour`])||0;
+  const tempsJ=parseFloat(responses[`${netuber}_tempsJour`])||0;
+  if(tempsJ>0) return (ptsJ/tempsJ).toFixed(2);
+  return ptsJ===0?"0.00":"∞";
 }
 
 function displayCurrent(){
-    if(currentStep>=questions.length){
-        typewriterEffect(questionText,"✅ Formulaire terminé",25);
-        inputRow.classList.add('hidden'); 
-        choiceRow.classList.add('hidden');
-        pdfButtonsCard.classList.remove('hidden');
-        return;
-    }
-    pdfButtonsCard.classList.add('hidden');
-    const q=questions[currentStep];
-    waitingYesNo=false;
-    inputRow.classList.add('hidden'); choiceRow.classList.add('hidden');
-    answerSelect.style.display='none'; answerText.style.display='none';
-    timeSelectGroup.style.display='none';
-    dualInputGroup.style.display='none';
-    questionMeta.classList.remove('hidden');
-    questionMeta.innerHTML=`<span class="question-num">#${q.num}</span> ${q.meta||''}`;
-    
-    if(q.type==="yesno"){
-        choiceRow.classList.remove('hidden');
-        waitingYesNo=true;
-        typewriterEffect(questionText, q.displayText, 22);
-    }else if(q.type==="time"){
-        inputRow.classList.remove('hidden');
-        timeSelectGroup.style.display='flex';
-        if(responses[q.field]){
-            let [h,m]=responses[q.field].split(':');
-            hourSelect.value=h||'00';
-            minuteSelect.value=m||'00';
-        }else{
-            hourSelect.value='08';
-            minuteSelect.value='00';
-        }
-        typewriterEffect(questionText, q.displayText, 22);
-    }else if(q.type==="dual"){
-        inputRow.classList.remove('hidden');
-        dualInputGroup.style.display='flex';
-        dualSelect.innerHTML='';
-        const opts = q.options || numericOptions;
-        opts.forEach(opt=>{ let o=document.createElement('option'); o.value=opt; o.textContent=opt; dualSelect.appendChild(o); });
-        if(responses[q.field]){
-            let exists=false;
-            for(let i=0;i<dualSelect.options.length;i++){
-                if(dualSelect.options[i].value===responses[q.field]){ exists=true; break; }
-            }
-            if(exists) dualSelect.value=responses[q.field];
-            else dualText.value=responses[q.field];
-        }else{
-            if(opts.length>0) dualSelect.value=opts[0];
-            dualText.value='';
-        }
-        typewriterEffect(questionText, q.displayText, 22);
-    }else if(q.type==="select"){
-        inputRow.classList.remove('hidden');
-        answerSelect.style.display='block';
-        answerText.style.display='none';
-        timeSelectGroup.style.display='none';
-        answerSelect.innerHTML='';
-        q.options.forEach(opt=>{ let o=document.createElement('option'); o.value=opt; o.textContent=opt; answerSelect.appendChild(o); });
-        if(responses[q.field]) answerSelect.value=responses[q.field];
-        typewriterEffect(questionText, q.displayText, 22);
-    }else{
-        inputRow.classList.remove('hidden');
-        answerSelect.style.display='none';
-        answerText.style.display='block';
-        timeSelectGroup.style.display='none';
-        answerText.value=responses[q.field]||'';
-        answerText.placeholder=q.placeholder||"Saisir...";
-        if(q.type==="number") answerText.type="number";
-        else answerText.type="text";
-        typewriterEffect(questionText, q.displayText, 22);
-    }
-    updateProgress();
-    prevBtn.classList.toggle('hidden',currentStep===0);
+  if(currentStep>=questions.length){
+    const totalPtsP=NETUBERS.reduce((s,n)=>s+(responses[`${n.code}_present`]==='OUI'?(parseFloat(responses[`${n.code}_pointsPrec`])||0):0),0);
+    const totalPtsJ=NETUBERS.reduce((s,n)=>s+(responses[`${n.code}_present`]==='OUI'?(parseFloat(responses[`${n.code}_pointsJour`])||0):0),0);
+    const totalTempsP=NETUBERS.reduce((s,n)=>s+(responses[`${n.code}_present`]==='OUI'?(parseFloat(responses[`${n.code}_tempsPrec`])||0):0),0);
+    const totalTempsJ=NETUBERS.reduce((s,n)=>s+(responses[`${n.code}_present`]==='OUI'?(parseFloat(responses[`${n.code}_tempsJour`])||0):0),0);
+    const ecartGlobal=totalPtsJ-totalPtsP;
+    const rendGlobal=totalTempsJ>0?(totalPtsJ/totalTempsJ).toFixed(2):"0.00";
+    const summary=`✅ Formulaire terminé !\n\n📊 RÉCAPITULATIF PGCO\n━━━━━━━━━━━━━━━━━━━━\n📌 Total points précédents: ${totalPtsP}\n📌 Total points jour: ${totalPtsJ}\n📌 Écart global: ${ecartGlobal>0?`+${ecartGlobal}`:ecartGlobal}\n📌 Tendance: ${getTendance(ecartGlobal)}\n📌 Rendement global: ${rendGlobal} pts/min\n\nCliquez sur "Envoyer" pour transmettre à la direction.`;
+    typewriterEffect(questionText, summary, 25);
+    inputRow.classList.add('hidden');
+    choiceRow.classList.add('hidden');
+    return;
+  }
+  const q=questions[currentStep];
+  waitingYesNo=false;
+  inputRow.classList.add('hidden');
+  choiceRow.classList.add('hidden');
+  answerSelect.style.display='none';
+  answerNumber.style.display='none';
+  questionMeta.innerHTML=`<span class="question-num">#${q.num+1}</span> ${q.meta}`;
+  
+  if(q.type==="choice"){
+    choiceRow.classList.remove('hidden');
+    waitingYesNo=true;
+    yesBtn.textContent=q.options[0];
+    noBtn.textContent=q.options[1];
+    typewriterEffect(questionText, q.text, 25);
+  }else if(q.type==="yesno"){
+    choiceRow.classList.remove('hidden');
+    waitingYesNo=true;
+    yesBtn.textContent="✔ Oui";
+    noBtn.textContent="✘ Non";
+    typewriterEffect(questionText, q.text, 25);
+  }else if(q.type==="number"){
+    inputRow.classList.remove('hidden');
+    answerNumber.style.display='block';
+    answerSelect.style.display='none';
+    answerNumber.type='number';
+    answerNumber.min=q.min||0;
+    answerNumber.max=q.max||100;
+    answerNumber.value=responses[q.field]||'';
+    answerNumber.placeholder=q.placeholder||"Saisir un nombre";
+    typewriterEffect(questionText, q.text, 25);
+  }else if(q.type==="text"){
+    inputRow.classList.remove('hidden');
+    answerNumber.style.display='block';
+    answerSelect.style.display='none';
+    answerNumber.type='text';
+    answerNumber.value=responses[q.field]||'';
+    answerNumber.placeholder=q.placeholder||"Saisir...";
+    typewriterEffect(questionText, q.text, 25);
+  }
+  progressFill.style.width=`${((currentStep+1)/questions.length)*100}%`;
+  stepCounterSpan.innerText=`${currentStep+1} / ${questions.length}`;
+  prevBtn.classList.toggle('hidden',currentStep===0);
 }
 
-function nextQ(){ if(currentStep<questions.length){ currentStep++; if(currentStep<questions.length) displayCurrent(); else displayCurrent(); autoSave(); } else displayCurrent(); }
-function prevQ(){ if(currentStep>0){ currentStep--; displayCurrent(); autoSave(); } }
-
 function handleResponse(val){
-    if(currentStep>=questions.length) return;
-    const q=questions[currentStep];
-    responses[q.field]=val;
-    fieldToQuestionText[q.field]=q.rawQuestion;
-    
-    // Si le Netuber n'est pas présent, on saute les questions d'heures
-    if(q.field === "MA-S1-ZA-01_present" && val === "NON"){
-        // Sauter heureArrivee et heureSortie pour ZA-01
-        const skipFields = ["MA-S1-ZA-01_heureArrivee", "MA-S1-ZA-01_heureSortie"];
-        for(let field of skipFields){
-            if(!responses[field]){
-                responses[field] = "Absent";
-                fieldToQuestionText[field] = "Heure (absent)";
-            }
-        }
-        nextQ();
-        autoSave();
-        return;
-    }
-    if(q.field === "MA-S1-ZB-02_present" && val === "NON"){
-        const skipFields = ["MA-S1-ZB-02_heureArrivee", "MA-S1-ZB-02_heureSortie"];
-        for(let field of skipFields){
-            if(!responses[field]){
-                responses[field] = "Absent";
-                fieldToQuestionText[field] = "Heure (absent)";
-            }
-        }
-        nextQ();
-        autoSave();
-        return;
-    }
-    if(q.field === "MA-S1-ZC-03_present" && val === "NON"){
-        const skipFields = ["MA-S1-ZC-03_heureArrivee", "MA-S1-ZC-03_heureSortie"];
-        for(let field of skipFields){
-            if(!responses[field]){
-                responses[field] = "Absent";
-                fieldToQuestionText[field] = "Heure (absent)";
-            }
-        }
-        nextQ();
-        autoSave();
-        return;
-    }
-    
-    if(q.field === "ticketBesoin" && val === "NON"){
-        responses["typeTicket"] = "Aucun ticket";
-        fieldToQuestionText["typeTicket"] = "Type de ticket";
-        nextQ();
-        autoSave();
-        return;
-    }
-    
-    if(editMode && editReturnToSummary){ editMode=false; editReturnToSummary=false; autoSave(); return; }
-    nextQ(); autoSave();
+  if(currentStep>=questions.length) return;
+  const q=questions[currentStep];
+  responses[q.field]=val;
+  autoSave();
+  
+  if(q.field.includes('_present') && val==='NON'){
+    nextQ();
+    return;
+  }
+  nextQ();
+}
+
+function nextQ(){
+  if(currentStep<questions.length-1){
+    currentStep++;
+    displayCurrent();
+  }else if(currentStep===questions.length-1){
+    currentStep++;
+    displayCurrent();
+  }
+}
+
+function prevQ(){
+  if(currentStep>0){
+    currentStep--;
+    displayCurrent();
+  }
 }
 
 function validateCurrent(){
-    if(waitingYesNo || currentStep>=questions.length) return;
-    const q=questions[currentStep];
-    if(q.type==="time"){
-        let timeValue=`${hourSelect.value}:${minuteSelect.value}`;
-        handleResponse(timeValue);
-    }else if(q.type==="dual"){
-        let val = dualSelect.value;
-        if(dualText.value && dualText.value.trim()!==''){
-            val = dualText.value;
-        }
-        if(val!=='' && val!==null){
-            if(isNaN(parseFloat(val))){
-                showPopup("⚠️ Erreur de saisie","Veuillez entrer une valeur numérique valide","Fermer","",()=>{},()=>{},false);
-                return;
-            }
-            handleResponse(val);
-        }else{
-            showPopup("⚠️ Champ requis","Veuillez saisir ou sélectionner une valeur","Fermer","",()=>{},()=>{},false);
-        }
-    }else if(q.useSelect && q.options){
-        handleResponse(answerSelect.value);
-    }else{
-        const val=answerText.value;
-        if(val!=='' && val!==null){
-            if(q.type==="number" && isNaN(parseFloat(val))){
-                showPopup("⚠️ Erreur de saisie","Veuillez entrer une valeur numérique valide","Fermer","",()=>{},()=>{},false);
-                return;
-            }
-            handleResponse(val);
-        }else{
-            showPopup("⚠️ Champ requis","Veuillez saisir une réponse avant de continuer","Fermer","",()=>{},()=>{},false);
-        }
+  if(waitingYesNo || currentStep>=questions.length) return;
+  const q=questions[currentStep];
+  if(q.type==="number" || q.type==="text"){
+    const val=answerNumber.value.trim();
+    if(val===''){
+      showPopup("⚠️ Champ requis","Veuillez saisir une réponse","Fermer","",()=>{},()=>{});
+      return;
     }
+    if(q.type==="number" && isNaN(parseFloat(val))){
+      showPopup("⚠️ Erreur","Veuillez saisir un nombre valide","Fermer","",()=>{},()=>{});
+      return;
+    }
+    if(q.type==="number" && q.max && parseFloat(val)>q.max){
+      showPopup("⚠️ Valeur max","La valeur ne peut pas dépasser "+q.max,"Fermer","",()=>{},()=>{});
+      return;
+    }
+    handleResponse(val);
+  }
 }
 
-function buildAllQuestions(){
-    const qList=[];
-    let num=0;
-    
-    // Question 0 : responsable (yesno) - choix entre Ursule et Chancelle
-    qList.push({num:num++, type:"yesno", field:"responsable", meta:"Identification", rawQuestion:"Qui remplit le rapport aujourd'hui ?", displayText:"Qui remplit le rapport aujourd'hui ?"});
-    
-    const ticketTypes = ["Terminaux", "Internet", "Problème de compte Netuber", "Erreur d'affichage", "Équipement endommagé", "Autres"];
-    
-    function addDualQ(field, intro, questionBody, meta, customOptions=null) {
-        const fullText = `${intro}\n\n${questionBody}`;
-        qList.push({num:num++, type:"dual", field:field, meta:meta, rawQuestion:questionBody, displayText:fullText, options: customOptions || numericOptions});
+function defaultYes(){
+  if(waitingYesNo && currentStep<questions.length){
+    const q=questions[currentStep];
+    if(q.type==="choice"){
+      handleResponse(yesBtn.textContent);
+    }else{
+      handleResponse("OUI");
     }
-    
-    function addYesNoQ(field, intro, questionBody, meta) {
-        const fullText = `${intro}\n\n${questionBody}`;
-        qList.push({num:num++, type:"yesno", field:field, meta:meta, rawQuestion:questionBody, displayText:fullText});
+  }
+}
+function defaultNo(){
+  if(waitingYesNo && currentStep<questions.length){
+    const q=questions[currentStep];
+    if(q.type==="choice"){
+      handleResponse(noBtn.textContent);
+    }else{
+      handleResponse("NON");
     }
-    
-    function addTimeQ(field, intro, questionBody, meta) {
-        const fullText = `${intro}\n\n${questionBody}`;
-        qList.push({num:num++, type:"time", field:field, meta:meta, rawQuestion:questionBody, displayText:fullText});
-    }
-    
-    function addTextQ(field, intro, questionBody, meta, placeholder) {
-        const fullText = `${intro}\n\n${questionBody}`;
-        qList.push({num:num++, type:"text", field:field, meta:meta, rawQuestion:questionBody, displayText:fullText, placeholder:placeholder});
-    }
-    
-    // ==================== PGCO ====================
-    addDualQ("MA-S1-ZA-01_objMensuels","En tout cas, faites travailler les Netubers efficacement !","Pouvez-vous rappeler les objectifs mensuels totaux de MA-S1-ZA-01 ?","PGCO · MA-S1-ZA-01");
-    addDualQ("MA-S1-ZA-01_objAtteints","Il faut lutter et rester concentrés pour un meilleur résultat !","Combien d'objectifs MA-S1-ZA-01 a-t-il atteints aujourd'hui ?","PGCO · MA-S1-ZA-01");
-    addDualQ("MA-S1-ZA-01_objTotalAtteints","Hummm… donnez toutes les directives clairement !","Combien d'objectifs au total a-t-il atteints jusqu'à aujourd'hui ?","PGCO · MA-S1-ZA-01");
-    addDualQ("MA-S1-ZA-01_pointsJour","Très bien, mais assurez-vous que tout le monde suit les instructions !","Combien de points MA-S1-ZA-01 a-t-il totalisés aujourd'hui ?","PGCO · MA-S1-ZA-01");
-    addDualQ("MA-S1-ZA-01_pointsPrec","Merci, donnez des directives précises et claires !","Et le total de points déjà totalisés précédemment ?","PGCO · MA-S1-ZA-01");
-    addDualQ("MA-S1-ZA-01_tempsPrec","J'avais déjà oublié, alors refocalisez-vous pour un résultat solide !","Pouvez-vous me dire le temps total qu'il a passé précédemment ?","PGCO · MA-S1-ZA-01");
-    addDualQ("MA-S1-ZA-01_tempsJour","Eh bien, poussez les Netubers à faire de leur mieux !","Et aujourd'hui, combien de temps a-t-il passé ?","PGCO · MA-S1-ZA-01");
-    addDualQ("MA-S1-ZA-01_N1_quantieme","Waouh, assurez-vous que tout le monde travaille efficacement !","Dans le jeu rémunérateur du terminal n°1, le Netuber est-il au quantième objectif, événement, mètres ou niveau ?","PGCO · MA-S1-ZA-01 · N1", levelOptions);
-    addDualQ("MA-S1-ZA-01_N2_quantieme","Hé ! Soyez rigoureux, ça peut être mieux !","Et dans le terminal n°2, quel niveau a-t-il atteint ?","PGCO · MA-S1-ZA-01 · N2", levelOptions);
-    
-    addDualQ("MA-S1-ZB-02_objMensuels","Oh ! Encouragez les Netubers à dépasser les attentes !","Pouvez-vous rappeler les objectifs mensuels de MA-S1-ZB-02 ?","PGCO · MA-S1-ZB-02");
-    addDualQ("MA-S1-ZB-02_objAtteints","Allons-y, gardez le cap et donnez des directives nettes !","Combien d'objectifs a-t-il atteints aujourd'hui ?","PGCO · MA-S1-ZB-02");
-    addDualQ("MA-S1-ZB-02_objTotalAtteints","Voyons voir… faites travailler les Netubers intelligemment !","Et combien d'objectifs au total a-t-il atteints jusqu'à aujourd'hui ?","PGCO · MA-S1-ZB-02");
-    addDualQ("MA-S1-ZB-02_pointsJour","Incroyable, mais vous pouvez obtenir de meilleurs résultats !","Combien de points a-t-il totalisés aujourd'hui ?","PGCO · MA-S1-ZB-02");
-    addDualQ("MA-S1-ZB-02_pointsPrec","Super, organisez bien le travail et assurez-vous que chacun suit !","Et le total de points déjà totalisés précédemment ?","PGCO · MA-S1-ZB-02");
-    addDualQ("MA-S1-ZB-02_tempsPrec","Eh hop ! Mettez tout en œuvre pour un résultat fort !","Quel est le temps total qu'il a passé précédemment ?","PGCO · MA-S1-ZB-02");
-    addDualQ("MA-S1-ZB-02_tempsJour","C'est parti, concentrez-vous et poussez les Netubers à performer !","Et aujourd'hui, combien de temps a-t-il passé ?","PGCO · MA-S1-ZB-02");
-    addDualQ("MA-S1-ZB-02_N1_quantieme","Bon alors, soyez efficaces et clairs dans vos instructions !","Dans le jeu rémunérateur du terminal n°1, le Netuber est-il au quantième objectif, événement, mètres ou niveau ?","PGCO · MA-S1-ZB-02 · N1", levelOptions);
-    addDualQ("MA-S1-ZB-02_N2_quantieme","Tiens donc ! Faites preuve de rigueur et poussez chacun à mieux !","Et dans le terminal n°2, quel niveau a-t-il atteint ?","PGCO · MA-S1-ZB-02 · N2", levelOptions);
-    
-    addDualQ("MA-S1-ZC-03_objMensuels","Allez, faites plus que ça, vous pouvez mieux !","Quels sont les objectifs mensuels totaux pour MA-S1-ZC-03 ?","PGCO · MA-S1-ZC-03");
-    addDualQ("MA-S1-ZC-03_objAtteints","Hummm… donnez toutes les directives clairement !","Combien d'objectifs a-t-il atteints aujourd'hui ?","PGCO · MA-S1-ZC-03");
-    addDualQ("MA-S1-ZC-03_objTotalAtteints","En tout cas, faites travailler les Netubers efficacement !","Et combien d'objectifs au total a-t-il atteints jusqu'à aujourd'hui ?","PGCO · MA-S1-ZC-03");
-    addDualQ("MA-S1-ZC-03_pointsJour","Il faut lutter et rester concentrés pour un meilleur résultat !","Combien de points a-t-il totalisés aujourd'hui ?","PGCO · MA-S1-ZC-03");
-    addDualQ("MA-S1-ZC-03_pointsPrec","Ah bon ? On peut viser plus haut, ne lâchez rien !","Et le total de points déjà totalisés précédemment ?","PGCO · MA-S1-ZC-03");
-    addDualQ("MA-S1-ZC-03_tempsPrec","Très bien, mais assurez-vous que tout le monde suit les instructions !","Pouvez-vous me dire le temps total qu'il a passé précédemment ?","PGCO · MA-S1-ZC-03");
-    addDualQ("MA-S1-ZC-03_tempsJour","Merci, donnez des directives précises et claires !","Et aujourd'hui, combien de temps a-t-il passé ?","PGCO · MA-S1-ZC-03");
-    addDualQ("MA-S1-ZC-03_N1_quantieme","J'avais déjà oublié, alors refocalisez-vous pour un résultat solide !","Dans le jeu rémunérateur du terminal n°1, le Netuber est-il au quantième objectif, événement, mètres ou niveau ?","PGCO · MA-S1-ZC-03 · N1", levelOptions);
-    addDualQ("MA-S1-ZC-03_N2_quantieme","Eh bien, poussez les Netubers à faire de leur mieux !","Et dans le terminal n°2, quel niveau a-t-il atteint ?","PGCO · MA-S1-ZC-03 · N2", levelOptions);
-    
-    // ==================== PETS ====================
-    addDualQ("MA-S1-ZA-01_anomalies","Waouh, assurez-vous que tout le monde travaille efficacement !","Combien d'anomalies MA-S1-ZA-01 a-t-il détectées aujourd'hui ?","PETS · MA-S1-ZA-01");
-    addDualQ("MA-S1-ZA-01_rejets","Hé ! Soyez rigoureux, ça peut être mieux !","Combien d'événements ont été rejetés par MA-S1-ZA-01 ?","PETS · MA-S1-ZA-01");
-    addYesNoQ("MA-S1-ZA-01_jeuxBloques","Oh ! Encouragez les Netubers à dépasser les attentes !","Des jeux rémunérateurs sont-ils bloqués ?","PETS · MA-S1-ZA-01");
-    addYesNoQ("MA-S1-ZA-01_present","Allons-y, gardez le cap et donnez des directives nettes !","Était-il présent aujourd'hui ?","PETS · MA-S1-ZA-01");
-    addTimeQ("MA-S1-ZA-01_heureArrivee","Voyons voir… faites travailler les Netubers intelligemment !","À quelle heure est-il arrivé ? (HH:MM)","PETS · MA-S1-ZA-01");
-    addTimeQ("MA-S1-ZA-01_heureSortie","Incroyable, mais vous pouvez obtenir de meilleurs résultats !","Et à quelle heure est-il sorti ? (HH:MM)","PETS · MA-S1-ZA-01");
-    addDualQ("MA-S1-ZA-01_forfaitGo","Super, organisez bien le travail et assurez-vous que chacun suit !","Combien de Go de forfait internet reste-t-il ?","PETS · MA-S1-ZA-01");
-    addYesNoQ("MA-S1-ZA-01_btnRetirer","Eh hop ! Mettez tout en œuvre pour un résultat fort !","Le bouton \"Retirer\" a-t-il été cliqué aujourd'hui ?","PETS · MA-S1-ZA-01");
-    addDualQ("MA-S1-ZA-01_N1_pets","C'est parti, concentrez-vous et poussez les Netubers à performer !","Dans le jeu rémunérateur n°1, le Netuber est-il au quantième objectif, événement, mètres ou niveau ?","PETS · MA-S1-ZA-01 · N1", levelOptions);
-    addDualQ("MA-S1-ZA-01_N2_pets","Bon alors, soyez efficaces et clairs dans vos instructions !","Et dans le jeu rémunérateur n°2, quel niveau a-t-il atteint ?","PETS · MA-S1-ZA-01 · N2", levelOptions);
-    
-    addDualQ("MA-S1-ZB-02_anomalies","Tiens donc ! Faites preuve de rigueur et poussez chacun à mieux !","Combien d'anomalies MA-S1-ZB-02 a-t-il relevées aujourd'hui ?","PETS · MA-S1-ZB-02");
-    addDualQ("MA-S1-ZB-02_rejets","Allez, faites plus que ça, vous pouvez mieux !","Combien d'événements ont été rejetés aujourd'hui ?","PETS · MA-S1-ZB-02");
-    addYesNoQ("MA-S1-ZB-02_jeuxBloques","Hummm… donnez toutes les directives clairement !","Des jeux rémunérateurs sont-ils bloqués ?","PETS · MA-S1-ZB-02");
-    addYesNoQ("MA-S1-ZB-02_present","En tout cas, faites travailler les Netubers efficacement !","Était-il présent aujourd'hui ?","PETS · MA-S1-ZB-02");
-    addTimeQ("MA-S1-ZB-02_heureArrivee","Il faut lutter et rester concentrés pour un meilleur résultat !","À quelle heure est-il arrivé ? (HH:MM)","PETS · MA-S1-ZB-02");
-    addTimeQ("MA-S1-ZB-02_heureSortie","Ah bon ? On peut viser plus haut, ne lâchez rien !","Et à quelle heure est-il parti ? (HH:MM)","PETS · MA-S1-ZB-02");
-    addDualQ("MA-S1-ZB-02_forfaitGo","Très bien, mais assurez-vous que tout le monde suit les instructions !","Combien de Go de forfait internet reste-t-il ?","PETS · MA-S1-ZB-02");
-    addYesNoQ("MA-S1-ZB-02_btnRetirer","Merci, donnez des directives précises et claires !","Le bouton \"Retirer\" a-t-il été utilisé aujourd'hui ?","PETS · MA-S1-ZB-02");
-    addDualQ("MA-S1-ZB-02_N1_pets","J'avais déjà oublié, alors refocalisez-vous pour un résultat solide !","Dans le jeu rémunérateur n°1, le Netuber est-il au quantième objectif, événement, mètres ou niveau ?","PETS · MA-S1-ZB-02 · N1", levelOptions);
-    addDualQ("MA-S1-ZB-02_N2_pets","Eh bien, poussez les Netubers à faire de leur mieux !","Et dans le terminal n°2, quel niveau a-t-il atteint ?","PETS · MA-S1-ZB-02 · N2", levelOptions);
-    
-    addDualQ("MA-S1-ZC-03_anomalies","Waouh, assurez-vous que tout le monde travaille efficacement !","Combien d'anomalies MA-S1-ZC-03 a-t-il détectées aujourd'hui ?","PETS · MA-S1-ZC-03");
-    addDualQ("MA-S1-ZC-03_rejets","Hé ! Soyez rigoureux, ça peut être mieux !","Combien d'événements ont été rejetés aujourd'hui ?","PETS · MA-S1-ZC-03");
-    addYesNoQ("MA-S1-ZC-03_jeuxBloques","Oh ! Encouragez les Netubers à dépasser les attentes !","Des jeux rémunérateurs sont-ils bloqués ?","PETS · MA-S1-ZC-03");
-    addYesNoQ("MA-S1-ZC-03_present","Allons-y, gardez le cap et donnez des directives nettes !","Était-il présent aujourd'hui ?","PETS · MA-S1-ZC-03");
-    addTimeQ("MA-S1-ZC-03_heureArrivee","Voyons voir… faites travailler les Netubers intelligemment !","À quelle heure est-il arrivé ? (HH:MM)","PETS · MA-S1-ZC-03");
-    addTimeQ("MA-S1-ZC-03_heureSortie","Incroyable, mais vous pouvez obtenir de meilleurs résultats !","Et à quelle heure est-il parti ? (HH:MM)","PETS · MA-S1-ZC-03");
-    addDualQ("MA-S1-ZC-03_forfaitGo","Super, organisez bien le travail et assurez-vous que chacun suit !","Combien de Go de forfait internet reste-t-il ?","PETS · MA-S1-ZC-03");
-    addYesNoQ("MA-S1-ZC-03_btnRetirer","Eh hop ! Mettez tout en œuvre pour un résultat fort !","Le bouton \"Retirer\" a-t-il été cliqué aujourd'hui ?","PETS · MA-S1-ZC-03");
-    addDualQ("MA-S1-ZC-03_N1_pets","C'est parti, concentrez-vous et poussez les Netubers à performer !","Dans le jeu rémunérateur n°1, le Netuber est-il au quantième objectif, événement, mètres ou niveau ?","PETS · MA-S1-ZC-03 · N1", levelOptions);
-    addDualQ("MA-S1-ZC-03_N2_pets","Bon alors, soyez efficaces et clairs dans vos instructions !","Et dans le terminal n°2, quel niveau a-t-il atteint ?","PETS · MA-S1-ZC-03 · N2", levelOptions);
-    
-    addTextQ("recommandation","Tiens donc ! Faites preuve de rigueur et poussez chacun à mieux !","Recommandation pour amélioration ?","PETS · Recommandation","Votre recommandation...");
-    addYesNoQ("ticketBesoin","Hummm… gardez le contrôle !","Souhaitez-vous créer un ticket afin que l'équipe technique intervienne rapidement ?","PETS · Support Technique");
-    
-    qList.push({num:num++, type:"select", field:"typeTicket", meta:"PETS · Support Technique", rawQuestion:"Type de ticket :", displayText:"Type de ticket :", useSelect:true, options:ticketTypes});
-    
-    return qList;
+  }
 }
 
 function resetAll(){
-    showPopup("Confirmation","Tout recommencer ?","Annuler","Confirmer",()=>{
-        responses={}; fieldToQuestionText={}; currentStep=0; currentConfig=null; editMode=false; editReturnToSummary=false;
-        localStorage.removeItem('netubex_rapport');
-        startFresh();
-        showPopup("Succès","Nouveau rapport initialisé","OK","",()=>{},()=>{},false);
-    },()=>{},false);
-}
-
-function startFresh(){
-    currentStep=0;
-    currentConfig=null;
+  showPopup("Confirmation","⚠️ Tout recommencer ? Toutes les données seront perdues.","Annuler","Confirmer",()=>{
     responses={};
-    fieldToQuestionText={};
-    pdfButtonsCard.classList.add('hidden');
-    
-    const allQs=buildAllQuestions();
-    questions = allQs.slice(0,1);
-    waitingYesNo=true;
-    inputRow.classList.add('hidden');
-    choiceRow.classList.remove('hidden');
-    questionMeta.classList.remove('hidden');
-    questionMeta.innerHTML='<span class="question-num">#0</span> Identification';
-    
-    yesBtn.textContent = "👩‍💼 Madame Ursule";
-    noBtn.textContent = "👩‍💻 Madame Chancelle";
-    
-    pilotNameDisplay.innerHTML=`👤 Pilote : Non défini`;
-    prevBtn.classList.add('hidden');
-    
-    const handleChoice = (isUrsule) => {
-        currentConfig = isUrsule ? URSULLE : CHANCELLE;
-        responses.responsable = isUrsule ? "Ursule" : "Chancelle";
-        fieldToQuestionText.responsable = "Qui remplit le rapport aujourd'hui ?";
-        pilotNameDisplay.innerHTML=`👤 Pilote : ${currentConfig.name}`;
-        
-        questions = buildAllQuestions().slice(1);
-        currentStep=0;
-        waitingYesNo=false;
-        choiceRow.classList.add('hidden');
-        inputRow.classList.remove('hidden');
-        
-        yesBtn.textContent = "✔ Oui";
-        noBtn.textContent = "✘ Non";
-        
-        yesBtn.onclick = defaultYes;
-        noBtn.onclick = defaultNo;
-        
-        displayCurrent();
-        autoSave();
-    };
-    
-    yesBtn.onclick=()=>handleChoice(true);
-    noBtn.onclick=()=>handleChoice(false);
-    typewriterEffect(questionText, questions[0].displayText, 22);
-    updateProgress();
+    currentStep=0;
+    localStorage.removeItem('pgco_rapport');
+    questions=buildQuestions();
+    displayCurrent();
+    showPopup("Succès","Nouveau rapport initialisé","OK","",()=>{},()=>{});
+  },()=>{});
 }
 
-function defaultYes(){ if(waitingYesNo && questions[currentStep]?.type==="yesno") handleResponse("OUI"); }
-function defaultNo(){ if(waitingYesNo && questions[currentStep]?.type==="yesno") handleResponse("NON"); }
+async function sendReportToFirebase(){
+  let missing=[];
+  if(!responses.reference || responses.reference.trim()==='') missing.push("Référence du rapport");
+  for(let n of NETUBERS){
+    if(responses[`${n.code}_present`]==='OUI'){
+      if(!responses[`${n.code}_objMensuel`]) missing.push(`${n.code} - Objectif mensuel`);
+      if(!responses[`${n.code}_objAtteint`]) missing.push(`${n.code} - Objectif atteint`);
+      if(!responses[`${n.code}_nbNiveaux`]) missing.push(`${n.code} - Nb niveaux`);
+      if(!responses[`${n.code}_nbNiveauxAtteints`]) missing.push(`${n.code} - Nb niveaux atteints`);
+      if(!responses[`${n.code}_pointsPrec`]) missing.push(`${n.code} - Points précédents`);
+      if(!responses[`${n.code}_pointsJour`]) missing.push(`${n.code} - Points jour`);
+      if(!responses[`${n.code}_tempsPrec`]) missing.push(`${n.code} - Temps précédent`);
+      if(!responses[`${n.code}_tempsJour`]) missing.push(`${n.code} - Temps jour`);
+    }
+  }
+  if(missing.length>0){
+    showPopup("⚠️ Champs manquants",missing.join("\n"),"Fermer","",()=>{},()=>{});
+    return;
+  }
+  showPopup("Confirmation envoi","Envoyer ce rapport à la Direction des Opérations ?","Annuler","Confirmer",async()=>{
+    const btn=sendReportBtn;
+    const orig=btn.textContent;
+    btn.textContent="⏳ Envoi...";
+    btn.disabled=true;
+    try{
+      let totalPtsP=0, totalPtsJ=0, totalTempsP=0, totalTempsJ=0;
+      const netubersData=[];
+      for(let n of NETUBERS){
+        const present=responses[`${n.code}_present`]==='OUI'?'Présent':'Absent';
+        const objM=parseInt(responses[`${n.code}_objMensuel`])||0;
+        const objA=parseInt(responses[`${n.code}_objAtteint`])||0;
+        const nbN=parseFloat(responses[`${n.code}_nbNiveaux`])||0;
+        const nbA=parseFloat(responses[`${n.code}_nbNiveauxAtteints`])||0;
+        const ptsP=parseFloat(responses[`${n.code}_pointsPrec`])||0;
+        const ptsJ=parseFloat(responses[`${n.code}_pointsJour`])||0;
+        const tempsP=parseFloat(responses[`${n.code}_tempsPrec`])||0;
+        const tempsJ=parseFloat(responses[`${n.code}_tempsJour`])||0;
+        if(present==='Présent'){
+          totalPtsP+=ptsP; totalPtsJ+=ptsJ; totalTempsP+=tempsP; totalTempsJ+=tempsJ;
+        }
+        netubersData.push({code:n.code,presence:present,objectifMensuel:objM,objectifAtteint:objA,nbNiveaux:nbN,nbNiveauxAtteints:nbA,pointsPrecedents:ptsP,pointsJour:ptsJ,tempsPrecedent:tempsP,tempsJour:tempsJ});
+      }
+      const reportData={
+        type:"pgco_report",
+        responsable:responses.responsable||"Non spécifié",
+        zone:"ORG-NX-S1",
+        reference:responses.reference,
+        date:new Date().toLocaleDateString('fr-FR'),
+        heure:new Date().toLocaleTimeString('fr-FR'),
+        totalPointsPrecedents:totalPtsP,
+        totalPointsJour:totalPtsJ,
+        totalTempsPrecedent:totalTempsP,
+        totalTempsJour:totalTempsJ,
+        rendementGlobal:totalTempsJ>0?(totalPtsJ/totalTempsJ).toFixed(2):"0.00",
+        netubers:netubersData,
+        status:"non_traite",
+        createdAt:new Date().toISOString()
+      };
+      const reportsRef=collection(window.db,"reports");
+      await addDoc(reportsRef,reportData);
+      showSuccessToast(`Rapport ${responses.reference} envoyé à la Direction !`);
+      resetAll();
+    }catch(e){
+      showPopup("Erreur",e.message,"Fermer","",()=>{},()=>{});
+    }finally{
+      btn.textContent=orig;
+      btn.disabled=false;
+    }
+  },()=>{});
+}
 
-document.addEventListener('keydown',(e)=>{ if(e.key==='Enter') validateCurrent(); });
+yesBtn.onclick=defaultYes;
+noBtn.onclick=defaultNo;
 submitBtn.onclick=validateCurrent;
 prevBtn.onclick=prevQ;
 resetBtn.onclick=resetAll;
+sendReportBtn.onclick=sendReportToFirebase;
 
-function generatePGCO(){
-    try{
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({unit:'mm',format:'a4',orientation:'landscape'});
-        const now=new Date();
-        const rapportNum=rapportNumberCard.value||'RPT-2026-001';
-        
-        doc.setFillColor(26,74,110); doc.rect(0,0,297,45,'F');
-        doc.setFillColor(31,89,130); doc.rect(0,0,297,6,'F');
-        doc.setTextColor(255,255,255); doc.setFontSize(18); doc.setFont('helvetica','bold');
-        doc.text("NeTubeX - Espace de Rémunération Digitale",20,15);
-        doc.setFontSize(13); doc.text("RAPPORT JOURNALIER PGCO",20,28);
-        doc.setFontSize(9); doc.setFont('helvetica','normal');
-        doc.text(`N° ${rapportNum}`,275,15,{align:'right'});
-        doc.text(`Rédigé par : ${currentConfig?.name||'ND'}`,20,36);
-        doc.text(`Date : ${now.toLocaleDateString('fr-FR')} - Heure : ${now.toLocaleTimeString('fr-FR')}`,20,42);
-        doc.setDrawColor(250,204,21); doc.setLineWidth(0.5); doc.line(20,48,277,48);
-        
-        let startY = 55;
-        const netubers = ["MA-S1-ZA-01", "MA-S1-ZB-02", "MA-S1-ZC-03"];
-        
-        for(let idx=0; idx<netubers.length; idx++){
-            const code = netubers[idx];
-            const xOffset = 15 + (idx * 92);
-            doc.setFillColor(250,204,21); doc.roundedRect(xOffset,startY-6,88,8,2,2,'F');
-            doc.setTextColor(10,26,47); doc.setFontSize(10); doc.setFont('helvetica','bold');
-            doc.text(code, xOffset+5, startY-1);
-            
-            doc.autoTable({startY:startY, body:[["Obj. mensuels", responses[`${code}_objMensuels`]||'—'],["Obj. atteints (jour)", responses[`${code}_objAtteints`]||'—'],["Obj. atteints (total)", responses[`${code}_objTotalAtteints`]||'—']], theme:'plain', styles:{fontSize:7,cellPadding:2,lineColor:[200,200,200],lineWidth:0.1}, columnStyles:{0:{cellWidth:45,fontStyle:'bold'},1:{cellWidth:38}}, margin:{left:xOffset,right:xOffset+88}, alternateRowStyles:{fillColor:[248,248,248]}});
-            let currentY = doc.lastAutoTable.finalY + 3;
-            doc.autoTable({startY:currentY, body:[["Points (jour)", responses[`${code}_pointsJour`]||'—'],["Points (précédent)", responses[`${code}_pointsPrec`]||'—'],["Temps préc. (min)", responses[`${code}_tempsPrec`]||'—'],["Temps jour (min)", responses[`${code}_tempsJour`]||'—']], theme:'plain', styles:{fontSize:7,cellPadding:2,lineColor:[200,200,200],lineWidth:0.1}, columnStyles:{0:{cellWidth:45,fontStyle:'bold'},1:{cellWidth:38}}, margin:{left:xOffset,right:xOffset+88}, alternateRowStyles:{fillColor:[248,248,248]}});
-            currentY = doc.lastAutoTable.finalY + 3;
-            doc.autoTable({startY:currentY, body:[["Niveau N1", responses[`${code}_N1_quantieme`]||'—'],["Niveau N2", responses[`${code}_N2_quantieme`]||'—']], theme:'plain', styles:{fontSize:7,cellPadding:2,lineColor:[200,200,200],lineWidth:0.1}, columnStyles:{0:{cellWidth:45,fontStyle:'bold'},1:{cellWidth:38}}, margin:{left:xOffset,right:xOffset+88}, alternateRowStyles:{fillColor:[248,248,248]}});
-        }
-        
-        const pageCount = doc.internal.getNumberOfPages();
-        for(let i = 1; i <= pageCount; i++){ doc.setPage(i); doc.setFontSize(8); doc.setTextColor(150,150,150); doc.text("NeTubeX - Système de Rémunération Digitale", 148.5, 200, {align:'center'}); doc.text(`Page ${i} / ${pageCount}`, 285, 200, {align:'right'}); }
-        doc.save(`RAPPORT_PGCO_${rapportNum}.pdf`);
-        showPopup("Succès","Rapport PGCO généré avec succès","Fermer","",()=>{},()=>{},false);
-    }catch(e){ showPopup("Erreur","Une erreur est survenue","Fermer","",()=>{},()=>{},true); }
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(`tab${btn.dataset.tab==='form'?'Form':'Memo'}`).classList.add('active');
+    if(btn.dataset.tab==='memo') loadMemorandumsFromFirebase();
+  };
+});
+
+questions=buildQuestions();
+displayCurrent();
+loadMemorandumsFromFirebase();
+
+const saved=localStorage.getItem('pgco_rapport');
+if(saved){
+  try{
+    const data=JSON.parse(saved);
+    if(data.responses && Object.keys(data.responses).length>0){
+      responses=data.responses;
+      currentStep=data.currentStep||0;
+      displayCurrent();
+    }
+  }catch(e){}
 }
-
-function generatePETS(){
-    try{
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({unit:'mm',format:'a4',orientation:'landscape'});
-        const now=new Date();
-        const rapportNum=rapportNumberCard.value||'RPT-2026-001';
-        
-        doc.setFillColor(45,90,59); doc.rect(0,0,297,45,'F');
-        doc.setFillColor(55,110,69); doc.rect(0,0,297,6,'F');
-        doc.setTextColor(255,255,255); doc.setFontSize(18); doc.setFont('helvetica','bold');
-        doc.text("NeTubeX - Espace de Rémunération Digitale",20,15);
-        doc.setFontSize(13); doc.text("RAPPORT JOURNALIER PETS",20,28);
-        doc.setFontSize(9); doc.setFont('helvetica','normal');
-        doc.text(`N° ${rapportNum}`,275,15,{align:'right'});
-        doc.text(`Rédigé par : ${currentConfig?.name||'ND'}`,20,36);
-        doc.text(`Date : ${now.toLocaleDateString('fr-FR')} - Heure : ${now.toLocaleTimeString('fr-FR')}`,20,42);
-        doc.setDrawColor(250,204,21); doc.setLineWidth(0.5); doc.line(20,48,277,48);
-        
-        let startY = 55;
-        const netubers = ["MA-S1-ZA-01", "MA-S1-ZB-02", "MA-S1-ZC-03"];
-        
-        for(let idx=0; idx<netubers.length; idx++){
-            const code = netubers[idx];
-            const xOffset = 15 + (idx * 92);
-            doc.setFillColor(74,222,128); doc.roundedRect(xOffset,startY-6,88,8,2,2,'F');
-            doc.setTextColor(10,26,47); doc.setFontSize(10); doc.setFont('helvetica','bold');
-            doc.text(code, xOffset+5, startY-1);
-            
-            doc.autoTable({startY:startY, body:[["Anomalies", responses[`${code}_anomalies`]||'—'],["Rejets", responses[`${code}_rejets`]||'—'],["Jeux bloqués", responses[`${code}_jeuxBloques`]==='OUI'?'Oui':'Non']], theme:'plain', styles:{fontSize:7,cellPadding:2,lineColor:[200,200,200],lineWidth:0.1}, columnStyles:{0:{cellWidth:45,fontStyle:'bold'},1:{cellWidth:38}}, margin:{left:xOffset,right:xOffset+88}, alternateRowStyles:{fillColor:[248,248,248]}});
-            let currentY = doc.lastAutoTable.finalY + 3;
-            doc.autoTable({startY:currentY, body:[["Présence", responses[`${code}_present`]==='OUI'?'Présent':'Absent'],["Heure arrivée", responses[`${code}_heureArrivee`] === "Absent" ? "—" : (responses[`${code}_heureArrivee`]||'—')],["Heure sortie", responses[`${code}_heureSortie`] === "Absent" ? "—" : (responses[`${code}_heureSortie`]||'—')],["Forfait Go", responses[`${code}_forfaitGo`]?`${responses[`${code}_forfaitGo`]} Go`:'—'],["Btn Retirer", responses[`${code}_btnRetirer`]==='OUI'?'Oui':'Non']], theme:'plain', styles:{fontSize:7,cellPadding:2,lineColor:[200,200,200],lineWidth:0.1}, columnStyles:{0:{cellWidth:45,fontStyle:'bold'},1:{cellWidth:38}}, margin:{left:xOffset,right:xOffset+88}, alternateRowStyles:{fillColor:[248,248,248]}});
-            currentY = doc.lastAutoTable.finalY + 3;
-            doc.autoTable({startY:currentY, body:[["Niveau N1", responses[`${code}_N1_pets`]||'—'],["Niveau N2", responses[`${code}_N2_pets`]||'—']], theme:'plain', styles:{fontSize:7,cellPadding:2,lineColor:[200,200,200],lineWidth:0.1}, columnStyles:{0:{cellWidth:45,fontStyle:'bold'},1:{cellWidth:38}}, margin:{left:xOffset,right:xOffset+88}, alternateRowStyles:{fillColor:[248,248,248]}});
-        }
-        
-        const besoinTicket = responses["ticketBesoin"];
-        let ticketY = 175;
-        doc.setFillColor(250,204,21); doc.roundedRect(15,ticketY-6,267,8,2,2,'F');
-        doc.setTextColor(10,26,47); doc.setFontSize(10); doc.setFont('helvetica','bold');
-        doc.text("SUPPORT TECHNIQUE - TICKETS",20,ticketY-1);
-        
-        if(besoinTicket === "OUI"){
-            doc.autoTable({startY:ticketY, body:[["Statut", "Tickets ouverts"],["Type de ticket", responses["typeTicket"]||"Non spécifié"],["Message", `Cher Pôle Excellence Technique et Support, nous avons besoin de votre assistance technique d'urgence sur le cas (${responses["typeTicket"]||"Non spécifié"})`]], theme:'plain', styles:{fontSize:7,cellPadding:2.5,lineColor:[200,200,200],lineWidth:0.1}, columnStyles:{0:{cellWidth:40,fontStyle:'bold'},1:{cellWidth:227}}, margin:{left:20,right:20}, alternateRowStyles:{fillColor:[248,248,248]}});
-        } else {
-            doc.autoTable({startY:ticketY, body:[["Statut", "Aucun ticket ouvert"],["Message", "Cher Pôle Excellence Technique et Support, aucun ticket n'est ouvert aujourd'hui tout fonctionne normalement."]], theme:'plain', styles:{fontSize:7,cellPadding:2.5,lineColor:[200,200,200],lineWidth:0.1}, columnStyles:{0:{cellWidth:40,fontStyle:'bold'},1:{cellWidth:227}}, margin:{left:20,right:20}, alternateRowStyles:{fillColor:[248,248,248]}});
-        }
-        
-        let finalY = doc.lastAutoTable.finalY + 5;
-        const recommandation = responses.recommandation || "Aucune recommandation";
-        doc.setFillColor(255,248,225); doc.roundedRect(15,finalY-4,267,12,2,2,'F');
-        doc.setFontSize(8); doc.setFont('helvetica','bold');
-        doc.setTextColor(10,26,47);
-        doc.text("Recommandation :",20,finalY+1);
-        doc.setFont('helvetica','normal');
-        doc.text(recommandation,45,finalY+1);
-        
-        const pageCount = doc.internal.getNumberOfPages();
-        for(let i = 1; i <= pageCount; i++){ doc.setPage(i); doc.setFontSize(8); doc.setTextColor(150,150,150); doc.text("NeTubeX - Système de Rémunération Digitale", 148.5, 205, {align:'center'}); doc.text(`Page ${i} / ${pageCount}`, 285, 205, {align:'right'}); }
-        doc.save(`RAPPORT_PETS_${rapportNum}.pdf`);
-        showPopup("Succès","Rapport PETS généré avec succès","Fermer","",()=>{},()=>{},false);
-    }catch(e){ showPopup("Erreur","Une erreur est survenue","Fermer","",()=>{},()=>{},true); }
-}
-
-genPgcoBtnCard.onclick=()=>{ if(Object.keys(responses).length>3 && currentConfig) generatePGCO(); else showPopup("Information","Veuillez compléter le formulaire avant de générer le rapport","Fermer","",()=>{},()=>{},false); };
-genPetsBtnCard.onclick=()=>{ if(Object.keys(responses).length>3 && currentConfig) generatePETS(); else showPopup("Information","Veuillez compléter le formulaire avant de générer le rapport","Fermer","",()=>{},()=>{},false); };
-document.querySelectorAll('.theme-btn').forEach(btn=>{ btn.onclick=()=>{ document.body.className=`header-${btn.dataset.theme}`; document.querySelectorAll('.theme-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }; });
-
-startFresh();
 </script>
 </body>
 </html>
