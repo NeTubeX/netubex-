@@ -263,27 +263,6 @@ function buildQuestions(){
   return qList;
 }
 
-function getObjRestant(netuber){
-  const objM=parseInt(responses[`${netuber}_objMensuel`])||0;
-  const objA=parseInt(responses[`${netuber}_objAtteint`])||0;
-  return Math.max(0, objM-objA);
-}
-function getNbRestantsAuto(netuber){
-  const nbN=parseFloat(responses[`${netuber}_nbNiveaux`])||0;
-  const nbA=parseFloat(responses[`${netuber}_nbNiveauxAtteints`])||0;
-  return Math.max(0, nbN-nbA);
-}
-function getEcart(netuber){
-  const ptsJ=parseFloat(responses[`${netuber}_pointsJour`])||0;
-  const ptsP=parseFloat(responses[`${netuber}_pointsPrec`])||0;
-  return ptsJ-ptsP;
-}
-function getTendance(ecart){
-  if(ecart>0) return "↑ En hausse";
-  if(ecart<0) return "↓ En baisse";
-  return "→ Stable";
-}
-
 function displayCurrent(){
   if(currentStep>=questions.length){
     let recap = "RÉCAPITULATIF DU RAPPORT\n\n";
@@ -359,23 +338,35 @@ function handleResponse(val){
   autoSave();
   
   if(q.field.includes('_present') && val==='NON'){
-    const netuberCode = q.field.replace('_present','');
-    const skipFields = ['_objMensuel','_objAtteint','_nbNiveaux','_nbNiveauxAtteints','_pointsPrec','_pointsJour','_tempsPrec','_tempsJour'];
-    for(let sf of skipFields){
-      const f = netuberCode+sf;
-      if(!responses[f]) responses[f]='0';
+    let stepsToSkip = 0;
+    let foundCurrent = false;
+    for(let i=currentStep+1; i<questions.length; i++){
+      const nextField = questions[i].field;
+      if(nextField && nextField.includes(q.field.replace('_present',''))){
+        stepsToSkip++;
+      } else {
+        break;
+      }
     }
-    nextQ();
+    for(let i=0; i<stepsToSkip; i++){
+      if(currentStep < questions.length - 1){
+        currentStep++;
+        const skipQ = questions[currentStep];
+        responses[skipQ.field] = "0";
+      }
+    }
+    if(currentStep < questions.length - 1){
+      currentStep++;
+    }
+    displayCurrent();
+    autoSave();
     return;
   }
-  nextQ();
-}
-
-function nextQ(){
-  if(currentStep<questions.length-1){
+  
+  if(currentStep < questions.length - 1){
     currentStep++;
     displayCurrent();
-  }else if(currentStep===questions.length-1){
+  } else {
     currentStep++;
     displayCurrent();
   }
