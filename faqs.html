@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeTubeX · FAQ · Espace de rémunération digitale</title>
+  <meta name="description" content="Réponses claires sur NeTubeX : adhésion, tâches, paiements, parrainage et fonctionnement de l'espace.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--primary:#1a4cbc;--primary-dark:#0f3a8a;--primary-light:#e2ebff;--accent-teal:#0e7b6e;--gray-50:#f9fcff;--gray-100:#f0f5fe;--gray-200:#e2eaf5;--gray-400:#94a8c2;--gray-600:#3e506c;--gray-800:#1f293d;--white:#ffffff;--shadow-card:0 20px 35px -12px rgba(0,20,50,0.12);--radius-large:32px;--radius-medium:24px}
+    body{font-family:"Inter",sans-serif;background:var(--gray-50);color:var(--gray-800);line-height:1.5}
+    .container{max-width:1200px;margin:0 auto;padding:0 24px}
+    .nav-home{display:flex;justify-content:flex-end;padding:24px 0 12px}
+    .btn-home{display:inline-flex;align-items:center;gap:12px;background:var(--primary);color:white;text-decoration:none;padding:14px 32px;border-radius:50px;font-weight:600;font-size:1rem;box-shadow:0 10px 18px -10px var(--primary);transition:all 0.2s;border:none}
+    .btn-home:hover{background:var(--primary-dark);transform:translateY(-2px);box-shadow:0 16px 24px -12px var(--primary-dark)}
+    .page-header{text-align:center;margin:30px 0 40px}
+    .page-title{font-size:3rem;font-weight:700;letter-spacing:-0.02em;background:linear-gradient(145deg,#1a4cbc,#0e7b6e);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:16px}
+    .page-subtitle{font-size:1.2rem;color:var(--gray-600);max-width:750px;margin:0 auto}
+    .search-wrapper{max-width:750px;margin:0 auto 40px;position:relative}
+    .search-box{width:100%;padding:18px 60px 18px 28px;border-radius:70px;border:1px solid var(--gray-200);background:white;font-size:1.1rem;box-shadow:0 10px 30px -12px rgba(0,0,0,0.08)}
+    .search-box:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(26,76,188,0.1)}
+    .search-icon{position:absolute;right:24px;top:50%;transform:translateY(-50%);color:var(--gray-400);font-size:1.3rem}
+    .suggestions-container{position:absolute;top:calc(100% + 12px);left:0;right:0;background:white;border-radius:30px;box-shadow:0 25px 40px -18px rgba(0,0,0,0.2);max-height:260px;overflow-y:auto;z-index:30;display:none;border:1px solid #e6ecf5}
+    .suggestion-item{padding:14px 28px;cursor:pointer;border-bottom:1px solid #eef3fa;font-weight:500;color:var(--gray-600)}
+    .suggestion-item:hover{background:var(--primary-light);color:var(--primary-dark)}
+    .response-card{background:white;border-radius:40px;padding:30px 36px;margin:30px 0 40px;box-shadow:var(--shadow-card);border:1px solid #e2ebf6;display:none}
+    .response-header{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+    .response-avatar{width:48px;height:48px;background:var(--primary-light);border-radius:30px;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:1.5rem}
+    .response-title{font-size:1.4rem;font-weight:600;color:var(--gray-800)}
+    .response-content{color:var(--gray-600);font-size:1.1rem;line-height:1.6;padding-left:24px;border-left:4px solid var(--primary)}
+    .quick-index{margin:40px 0 30px}
+    .index-title{font-size:1.6rem;font-weight:600;color:var(--gray-800);margin-bottom:24px;text-align:center}
+    .index-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+    .index-card{background:white;border:1px solid #dee8f2;border-radius:60px;padding:14px 16px;text-align:center;font-size:0.95rem;font-weight:500;color:var(--gray-600);cursor:pointer;transition:0.15s;box-shadow:0 4px 8px rgba(0,0,0,0.02)}
+    .index-card:hover{border-color:var(--primary);background:#f3f8ff;color:var(--primary)}
+    .faq-section{background:white;border-radius:42px;margin-bottom:18px;border:1px solid #e2ecf7;box-shadow:0 12px 28px -18px rgba(0,0,0,0.2);overflow:hidden}
+    .faq-header{padding:22px 32px;background:white;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid transparent}
+    .faq-header h2{font-size:1.4rem;font-weight:600;color:var(--gray-800);display:flex;align-items:center;gap:14px}
+    .faq-header h2 i{color:var(--primary);width:28px}
+    .faq-icon{color:var(--primary);font-size:1.2rem;transition:transform 0.2s}
+    .faq-content{max-height:0;overflow:hidden;transition:max-height 0.4s ease-in-out;background:#fbfdff}
+    .faq-content.active{max-height:3500px}
+    .faq-item{padding:20px 32px;border-bottom:1px solid #e2ecf7}
+    .faq-item:last-child{border-bottom:none}
+    .faq-question{font-weight:600;font-size:1.1rem;color:var(--gray-800);margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;cursor:pointer}
+    .faq-question i{color:var(--accent-teal);font-size:1rem;margin-top:3px}
+    .faq-answer{color:var(--gray-600);padding-left:32px;font-size:1rem;line-height:1.6;display:none}
+    .faq-answer a{color:var(--primary);text-decoration:none}
+    .footer-home{display:flex;justify-content:center;padding:30px 0 60px}
+    .footer-home-link{background:transparent;border:2px solid var(--primary);color:var(--primary);padding:14px 38px;border-radius:60px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:12px;transition:0.2s}
+    .footer-home-link:hover{background:var(--primary);color:white}
+    @media (max-width:600px){.page-title{font-size:2.4rem}.faq-header{padding:16px 22px}.faq-item{padding:16px 22px}}
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="nav-home">
+    <a href="index.html" class="btn-home"><i class="fas fa-arrow-left"></i> Accueil</a>
+  </div>
+  <div class="page-header">
+    <h1 class="page-title">Foire aux questions</h1>
+    <p class="page-subtitle">Trouvez rapidement une réponse sur l'espace de rémunération digitale NeTubeX.</p>
+  </div>
+  <div class="search-wrapper">
+    <input type="text" class="search-box" id="searchInput" placeholder="Posez votre question (ex: comment suis-je payé ?)">
+    <i class="fas fa-search search-icon"></i>
+    <div class="suggestions-container" id="suggestionsContainer"></div>
+  </div>
+  <div class="response-card" id="responseSection">
+    <div class="response-header">
+      <div class="response-avatar"><i class="fas fa-message"></i></div>
+      <h2 class="response-title">Réponse</h2>
+    </div>
+    <div class="response-content" id="responseContent"></div>
+  </div>
+  <div class="quick-index">
+    <div class="index-title">📋 Toutes les questions</div>
+    <div class="index-grid" id="indexGrid"></div>
+  </div>
+  <div id="faqThemes"></div>
+  <div class="footer-home">
+    <a href="index.html" class="footer-home-link"><i class="fas fa-home"></i> Retour à l'accueil</a>
+  </div>
+</div>
+<script>
+  const faqList = [
+    { q: "Qu’est-ce que NeTubeX ?", a: "NeTubeX est un espace de rémunération digitale qui valorise le temps en ligne des membres actifs en leur proposant des activités rémunérées." },
+    { q: "Comment rejoindre NeTubeX ?", a: "Il faut postuler via le site officiel ou les canaux de recrutement officiels. Le recrutement se fait après validation." },
+    { q: "Recrute-t-on ou s’inscrit-on ?", a: "On recrute des membres actifs. L’adhésion se fait après évaluation et encadrement." },
+    { q: "L’adhésion est-elle payante ?", a: "Non, rejoindre l'espace ne nécessite pas de paiement pour devenir membre actif." },
+    { q: "Quels types de tâches sont disponibles ?", a: "✔ Jeux rémunérateurs<br>✔ Missions guidées<br>✔ Tâches rapides" },
+    { q: "Dois-je avoir de l’expérience ?", a: "Non, un encadrement est fourni pour accompagner les nouveaux membres." },
+    { q: "Comment suis-je formé avant de travailler ?", a: "NeTubeX propose des instructions et un accompagnement pour préparer les membres." },
+    { q: "Les tâches sont-elles difficiles ?", a: "Non, elles sont accessibles à tous." },
+    { q: "Puis-je travailler depuis mon téléphone ?", a: "Oui, la majorité des activités sont compatibles avec les smartphones." },
+    { q: "Quels moyens de paiement sont disponibles ?", a: "✔ PayPal<br>✔ Orange Money<br>✔ Airtel Money" },
+    { q: "Quand puis-je recevoir mon paiement ?", a: "Les paiements se font selon les conditions de l'espace et le seuil de retrait." },
+    { q: "Y a-t-il un seuil minimum de retrait ?", a: "Oui, un montant minimum peut être requis avant de demander un retrait." },
+    { q: "Que faire en cas de problème de paiement ?", a: "Contactez le support avec votre ID et les détails du paiement." },
+    { q: "Les gains sont-ils garantis ?", a: "Les gains dépendent de la participation et des activités réalisées." },
+    { q: "Puis-je recruter d’autres membres ?", a: "Oui, le recrutement peut offrir des avantages selon l'espace." },
+    { q: "Y a-t-il des bonus pour le parrainage ?", a: "Oui, certains espaces offrent des commissions ou bonus." },
+    { q: "Les jeux rémunérateurs sont-ils obligatoires ?", a: "Non, vous pouvez choisir les activités qui vous conviennent." },
+    { q: "Les missions guidées nécessitent-elles de l’expérience ?", a: "Non, elles sont accessibles avec l’accompagnement fourni." },
+    { q: "Combien de temps prennent les tâches rapides ?", a: "Quelques minutes selon la mission." },
+    { q: "Dois-je travailler tous les jours ?", a: "Non, la participation est flexible." },
+    { q: "Puis-je arrêter le programme à tout moment ?", a: "Oui, la participation est généralement volontaire." },
+    { q: "Y a-t-il un contrat obligatoire ?", a: "Cela dépend de l'espace, mais la plupart des engagements sont flexibles." },
+    { q: "NeTubeX est-il une plateforme légale ?", a: "Oui, l'espace fonctionne selon les règles du programme." },
+    { q: "Comment éviter les arnaques ?", a: "Utilisez uniquement les canaux officiels et ne payez jamais pour rejoindre l'espace." },
+    { q: "Qui peut rejoindre NeTubeX ?", a: "Toute personne répondant aux critères de l'espace." },
+    { q: "Puis-je travailler depuis n’importe quel pays ?", a: "Cela dépend des conditions de l'espace et des moyens de paiement." },
+    { q: "Y a-t-il un support en cas de problème ?", a: "Oui, le support est disponible via les canaux officiels." },
+    { q: "Comment améliorer mes gains ?", a: "En participant régulièrement aux activités et en suivant les instructions." },
+    { q: "Quels sont les risques en cas de non-respect des règles ?", a: "Avertissements ou suspension du compte." },
+    { q: "Où trouver plus d’informations ?", a: "Sur le site officiel ou auprès des responsables." },
+    { q: "NeTubeX propose-t-il des formations ?", a: "Oui, des formations sont disponibles." },
+    { q: "Puis-je travailler en équipe ?", a: "Certaines activités permettent la collaboration." },
+    { q: "Les gains sont-ils imposables ?", a: "Cela dépend des réglementations locales." },
+    { q: "Comment devenir recruteur ?", a: "Selon les critères de l'espace." },
+    { q: "NeTubeX valorise-t-il le temps en ligne ?", a: "Oui, il transforme le temps digital en opportunités." },
+    { q: "Puis-je travailler à temps partiel ?", a: "Oui, la participation est flexible." },
+    { q: "Y a-t-il des objectifs à atteindre ?", a: "Certaines missions peuvent avoir des objectifs." },
+    { q: "Les tâches sont-elles sécurisées ?", a: "Oui, elles sont encadrées pour garantir la fiabilité." },
+    { q: "Puis-je utiliser plusieurs moyens de paiement ?", a: "Oui, selon les options disponibles." },
+    { q: "Que faire si je veux quitter le programme ?", a: "Vous pouvez arrêter la participation selon les conditions." },
+    { q: "Comment sont calculés les gains ?", a: "Selon le type de tâche et l'espace." },
+    { q: "Existe-t-il un contrat de participation ?", a: "Généralement flexible selon l'espace." },
+    { q: "Puis-je avoir plusieurs comptes ?", a: "Non, un seul compte est autorisé." },
+    { q: "Que se passe-t-il en cas de fraude ?", a: "Suspension ou suppression du compte." },
+    { q: "Comment signaler un problème technique ?", a: "Contactez le support avec une description du problème." },
+    { q: "Les tâches sont-elles disponibles 24/7 ?", a: "Oui, certaines tâches sont accessibles à tout moment." },
+    { q: "Dois-je payer des frais pour retirer mes gains ?", a: "Non (selon les conditions de l'espace)." },
+    { q: "Y a-t-il un âge minimum ?", a: "Oui, selon les règles de l'espace." },
+    { q: "Puis-je travailler depuis un cybercafé ?", a: "Oui, mais sécurisez vos informations." },
+    { q: "Comment protéger mon compte ?", a: "Utilisez un mot de passe fort et ne partagez pas vos identifiants." },
+    { q: "Les gains sont-ils instantanés ?", a: "Les paiements suivent le calendrier de l'espace." },
+    { q: "Puis-je modifier mes informations de paiement ?", a: "Oui, via les paramètres du compte." },
+    { q: "Que faire si je ne reçois pas mon paiement ?", a: "Vérifiez les conditions et contactez le support." },
+    { q: "NeTubeX offre-t-il un support client ?", a: "Oui, via les canaux officiels." },
+    { q: "Puis-je suspendre mon activité ?", a: "Oui, la participation est flexible." },
+    { q: "Les activités sont-elles surveillées ?", a: "Oui, pour garantir le respect des règles." },
+    { q: "Puis-je recommander NeTubeX ?", a: "Oui, le parrainage peut offrir des avantages." },
+    { q: "Les missions guidées sont-elles obligatoires ?", a: "Non, vous pouvez choisir vos activités." },
+    { q: "Puis-je changer de moyen de paiement ?", a: "Oui, selon les options disponibles." },
+    { q: "Comment savoir si une tâche est valide ?", a: "Les tâches validées apparaissent dans le tableau de bord." }
+  ];
+
+  const indexGrid = document.getElementById('indexGrid');
+  faqList.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'index-card';
+    card.textContent = item.q;
+    card.addEventListener('click', () => {
+      document.getElementById('searchInput').value = item.q;
+      performSearch();
+    });
+    indexGrid.appendChild(card);
+  });
+
+  const themes = [
+    { name: "🔹 Présentation & adhésion", icon: "building", indices: [0,1,2,3,22,24,29,30,34] },
+    { name: "🔹 Tâches et activités", icon: "tasks", indices: [4,5,6,7,16,17,18,36,37,45,57] },
+    { name: "🔹 Paiements et gains", icon: "money-bill-wave", indices: [9,10,11,12,13,40,46,50,51,52,58] },
+    { name: "🔹 Parrainage & recrutement", icon: "users", indices: [14,15,33,56] },
+    { name: "🔹 Flexibilité & conditions", icon: "clock", indices: [19,20,21,35,39,54] },
+    { name: "🔹 Sécurité et règles", icon: "shield-alt", indices: [23,26,28,38,42,43,44,47,48,49,55] },
+    { name: "🔹 Support & assistance", icon: "headset", indices: [25,26,27,31,32,41,53,59] }
+  ];
+
+  const container = document.getElementById('faqThemes');
+  themes.forEach(theme => {
+    const section = document.createElement('div');
+    section.className = 'faq-section';
+    const header = document.createElement('div');
+    header.className = 'faq-header';
+    header.setAttribute('onclick', 'toggleSection(this)');
+    header.innerHTML = `<h2><i class="fas fa-${theme.icon}"></i> ${theme.name}</h2><i class="fas fa-chevron-down faq-icon"></i>`;
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'faq-content';
+    theme.indices.forEach(idx => {
+      const item = faqList[idx];
+      if (!item) return;
+      const qDiv = document.createElement('div');
+      qDiv.className = 'faq-item';
+      qDiv.innerHTML = `<div class="faq-question" onclick="toggleAnswer(this)"><i class="fas fa-question-circle"></i> ${item.q}</div><div class="faq-answer">${item.a}</div>`;
+      contentDiv.appendChild(qDiv);
+    });
+    section.appendChild(header);
+    section.appendChild(contentDiv);
+    container.appendChild(section);
+  });
+
+  window.toggleSection = function(header) {
+    const content = header.nextElementSibling;
+    const icon = header.querySelector('.faq-icon');
+    content.classList.toggle('active');
+    if (content.classList.contains('active')) {
+      icon.classList.remove('fa-chevron-down');
+      icon.classList.add('fa-chevron-up');
+    } else {
+      icon.classList.remove('fa-chevron-up');
+      icon.classList.add('fa-chevron-down');
+    }
+  };
+
+  window.toggleAnswer = function(questionElem) {
+    const answer = questionElem.nextElementSibling;
+    if (answer.style.display === 'block') answer.style.display = 'none';
+    else answer.style.display = 'block';
+  };
+
+  const searchInput = document.getElementById('searchInput');
+  const suggestionsContainer = document.getElementById('suggestionsContainer');
+  const responseSection = document.getElementById('responseSection');
+  const responseContent = document.getElementById('responseContent');
+
+  const keywords = faqList.map(f => f.q);
+
+  function showSuggestions() {
+    const term = searchInput.value.toLowerCase();
+    suggestionsContainer.innerHTML = '';
+    let filtered = term ? keywords.filter(k => k.toLowerCase().includes(term)) : keywords.slice(0,5);
+    filtered.slice(0,5).forEach(k => {
+      const div = document.createElement('div');
+      div.className = 'suggestion-item';
+      div.textContent = k;
+      div.addEventListener('click', () => {
+        searchInput.value = k;
+        suggestionsContainer.style.display = 'none';
+        performSearch();
+      });
+      suggestionsContainer.appendChild(div);
+    });
+    suggestionsContainer.style.display = filtered.length ? 'block' : 'none';
+  }
+
+  function performSearch() {
+    const term = searchInput.value.toLowerCase();
+    if (!term) { responseSection.style.display = 'none'; return; }
+    const match = faqList.find(f => f.q.toLowerCase().includes(term) || f.a.toLowerCase().includes(term));
+    if (match) {
+      responseContent.innerHTML = match.a;
+      responseSection.style.display = 'block';
+      responseSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+      responseContent.innerHTML = "Aucune réponse exacte. Consultez les questions ci-dessous.";
+      responseSection.style.display = 'block';
+    }
+  }
+
+  searchInput.addEventListener('focus', showSuggestions);
+  searchInput.addEventListener('input', showSuggestions);
+  document.addEventListener('click', (e) => {
+    if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target))
+      suggestionsContainer.style.display = 'none';
+  });
+  let timeout;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(performSearch, 500);
+  });
+  searchInput.addEventListener('keypress', (e) => e.key === 'Enter' && performSearch());
+
+  setTimeout(() => {
+    const firstHeader = document.querySelector('.faq-header');
+    if (firstHeader) toggleSection(firstHeader);
+  }, 150);
+</script>
+</body>
+</html>
