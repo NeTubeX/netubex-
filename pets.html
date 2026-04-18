@@ -58,6 +58,7 @@ tr:hover{background:#1a2332;}
 .badge-danger{background:rgba(239,68,68,0.2);color:#ef4444;}
 .badge-warning{background:rgba(245,158,11,0.2);color:#f59e0b;}
 .badge-info{background:rgba(59,130,246,0.2);color:#3b82f6;}
+.badge-pending{background:rgba(245,158,11,0.2);color:#f59e0b;}
 
 .status-spot{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:30px;font-size:11px;font-weight:600;}
 .status-spot.online{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);}
@@ -87,6 +88,8 @@ tr:hover{background:#1a2332;}
 .action-btn.delete:hover{background:#dc2626;}
 .action-btn.reply{background:#8b5cf6;color:#fff;}
 .action-btn.reply:hover{background:#7c3aed;}
+.action-btn.resolve{background:#10b981;color:#fff;}
+.action-btn.resolve:hover{background:#059669;}
 
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:40px;font-size:12px;z-index:10000;animation:slideUp 0.3s;}
 .toast-error{background:#ef4444;}
@@ -125,9 +128,15 @@ tr:hover{background:#1a2332;}
 .empty-state{text-align:center;padding:40px;color:#64748b;}
 .empty-state i{font-size:48px;margin-bottom:15px;color:#f59e0b40;}
 
-/* Tableau administration compact */
 .admin-table{width:auto;min-width:300px;}
 .admin-table th,.admin-table td{padding:8px 12px;}
+
+.alert-item{background:#1a2332;border-radius:12px;padding:15px;margin-bottom:12px;border-left:4px solid #f59e0b;display:flex;justify-content:space-between;align-items:center;}
+.alert-content{flex:1;}
+.alert-title{font-weight:700;color:#f59e0b;margin-bottom:5px;}
+.alert-details{font-size:11px;color:#94a3b8;}
+.alert-date{font-size:10px;color:#64748b;margin-top:5px;}
+.alert-badge{background:#ef4444;color:#fff;padding:3px 8px;border-radius:20px;font-size:10px;margin-left:10px;}
 </style>
 </head>
 <body>
@@ -145,6 +154,7 @@ tr:hover{background:#1a2332;}
 <button class="tab" onclick="switchTab('rapports')"><i class="fas fa-file-alt"></i> Rapports PGCO</button>
 <button class="tab" onclick="switchTab('tickets')"><i class="fas fa-ticket-alt"></i> Tickets Support</button>
 <button class="tab" onclick="switchTab('anomalies')"><i class="fas fa-exclamation-triangle"></i> Anomalies</button>
+<button class="tab" onclick="switchTab('security')"><i class="fas fa-shield-alt"></i> Sécurité</button>
 <button class="tab" onclick="switchTab('confidentialite')"><i class="fas fa-lock"></i> Confidentialité</button>
 <button class="tab" onclick="switchTab('settings')"><i class="fas fa-cog"></i> Paramètres</button>
 </div>
@@ -165,21 +175,8 @@ tr:hover{background:#1a2332;}
 </div>
 <div class="table-wrapper">
 <table id="netubersTable">
-<thead>
-<tr>
-<th>Code</th>
-<th>Objectif mensuel</th>
-<th>Objectif atteint</th>
-<th>Objectif restant</th>
-<th>Connexions</th>
-<th>Déconnexions</th>
-<th>Statut</th>
-<th>Heure connexion</th>
-<th>Actions</th>
-</tr>
-</thead>
+<thead><tr><th>Code</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Objectif restant</th><th>Connexions</th><th>Déconnexions</th><th>Statut</th><th>Heure connexion</th><th>Actions</th></tr></thead>
 <tbody id="netubersTableBody"></tbody>
-</table>
 </div>
 </div>
 
@@ -204,8 +201,8 @@ tr:hover{background:#1a2332;}
 </div>
 <div id="report-present" class="report-category active"><div class="table-wrapper"><table><thead><tr><th>Code</th><th>Présence</th><th>Points préc.</th><th>Points jour</th><th>Temps préc.</th><th>Temps jour</th><th>Rendement</th><th>Forfait</th><th>Date</th><th>Actions</th></tr></thead><tbody id="presentRapportsBody"></tbody></table></div></div>
 <div id="report-absent" class="report-category"><div class="table-wrapper"><table><thead><tr><th>Code</th><th>Présence</th><th>Raison absence</th><th>Date</th><th>Actions</th></tr></thead><tbody id="absentRapportsBody"></tbody></table></div></div>
-<div id="report-performant" class="report-category"><div class="table-wrapper"><table><thead><tr><th>Classement</th><th>Code</th><th>Points/jour</th><th>Temps (min)</th><th>Date</th><th>Actions</th></tr></thead><tbody id="performantRapportsBody"></tbody></table></div></div>
-<div id="report-actif" class="report-category"><div class="table-wrapper"><table><thead><tr><th>Classement</th><th>Code</th><th>Temps (min)</th><th>Points/jour</th><th>Date</th><th>Actions</th></tr></thead><tbody id="actifRapportsBody"></tbody></table></div></div>
+<div id="report-performant" class="report-category"><div class="table-wrapper"><tr><thead><tr><th>Classement</th><th>Code</th><th>Points/jour</th><th>Temps (min)</th><th>Date</th><th>Actions</th></tr></thead><tbody id="performantRapportsBody"></tbody></table></div></div>
+<div id="report-actif" class="report-category"><div class="table-wrapper"></table><thead><tr><th>Classement</th><th>Code</th><th>Temps (min)</th><th>Points/jour</th><th>Date</th><th>Actions</th></tr></thead><tbody id="actifRapportsBody"></tbody></table></div></div>
 </div>
 
 <!-- Tickets -->
@@ -223,6 +220,18 @@ tr:hover{background:#1a2332;}
 <div class="stats-grid"><div class="stat-card"><div class="value" id="totalAnomalies">0</div><div class="label"><i class="fas fa-exclamation-triangle"></i> Anomalies détectées</div></div></div>
 <div class="chart-container"><canvas id="anomaliesChart" style="max-height:250px;"></canvas></div>
 <div class="table-wrapper"><table id="anomaliesTable"><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre</th><th>Dernière occurrence</th><th>Action</th></tr></thead><tbody id="anomaliesTableBody"></tbody></table></div>
+</div>
+
+<!-- Sécurité - Alertes de tentative frauduleuse -->
+<div id="securityTab" class="tab-content">
+<div class="stats-grid">
+<div class="stat-card"><div class="value" id="totalAlerts">0</div><div class="label"><i class="fas fa-bell"></i> Alertes sécurité</div></div>
+<div class="stat-card"><div class="value" id="pendingAlerts">0</div><div class="label"><i class="fas fa-clock"></i> En attente</div></div>
+</div>
+<div class="detail-card">
+<h4><i class="fas fa-shield-alt"></i> Alertes de tentative de connexion sur appareil non autorisé</h4>
+<div id="alertsListContainer" style="max-height:400px; overflow-y:auto;"></div>
+</div>
 </div>
 
 <!-- Confidentialité -->
@@ -245,10 +254,18 @@ tr:hover{background:#1a2332;}
 <tr><td><i class="fas fa-ban"></i> Bloquer/Débloquer Netuber</td><td><button class="badge badge-warning" onclick="openBlockModal()">Gérer</button></td></tr>
 <tr><td><i class="fas fa-trash"></i> Supprimer Netuber</td><td><button class="badge badge-danger" onclick="openDeleteModal()">Supprimer</button></td></tr>
 </tbody>
-</table></div>
+</div>
+<div class="detail-card" style="margin-top:20px;">
+<h4><i class="fas fa-mobile-alt"></i> Gestion des appareils Netubers</h4>
+<div class="table-wrapper">
+<table class="admin-table">
+<thead><tr><th>Netuber</th><th>Email</th><th>Appareil enregistré</th><th>Première connexion</th><th>Action</th></tr></thead>
+<tbody id="devicesTableBody"></tbody>
+</div>
+</div>
 </div>
 
-<!-- Modales -->
+<!-- Modales (réduites pour la lisibilité - garder les mêmes que précédemment) -->
 <div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Code Netuber</label><input type="text" id="newCode" placeholder="Ex: MA-NX-S1-ZA-01"></div><div class="input-group"><label>Email</label><input type="email" id="newEmail" placeholder="Email"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newPassword" placeholder="Min 6 caractères"></div></div><div class="modal-footer"><button onclick="createNetuber()" style="background:#10b981;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
 <div id="editCodeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-edit"></i> Modifier le code</h2><button class="modal-close" onclick="closeModal('editCodeModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><select id="editCodeSelect"></select></div><div class="input-group"><label>Nouveau code</label><input type="text" id="newCodeValue" placeholder="Nouveau code"></div></div><div class="modal-footer"><button onclick="updateNetuberCode()" style="background:#f59e0b;">Modifier</button><button onclick="closeModal('editCodeModal')" style="background:#64748b;">Annuler</button></div></div></div>
@@ -269,7 +286,7 @@ tr:hover{background:#1a2332;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, addDoc, getDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, addDoc, getDoc, onSnapshot, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = { 
@@ -289,10 +306,12 @@ let usersData = [];
 let rapportsData = [];
 let ticketsData = [];
 let memorandumsData = [];
+let alertsData = [];
 let rapportsChart = null;
 let anomaliesChart = null;
 let selectedNetuberForCap = null;
 let usersUnsubscribe = null;
+let alertsUnsubscribe = null;
 
 function escapeHtml(text) {
     if(!text) return '';
@@ -302,6 +321,11 @@ function escapeHtml(text) {
 function formatDateShort(dateStr) {
     if(!dateStr) return 'Jamais';
     try { const d = new Date(dateStr); return d.toLocaleDateString('fr-FR'); } catch(e) { return '-'; }
+}
+
+function formatDateTime(dateStr) {
+    if(!dateStr) return 'Jamais';
+    try { const d = new Date(dateStr); return d.toLocaleString('fr-FR'); } catch(e) { return '-'; }
 }
 
 function formatTime(dateStr) {
@@ -355,6 +379,122 @@ document.getElementById('logoutBtn')?.addEventListener('click', () => {
     });
 });
 
+// ============ ALERTES DE SÉCURITÉ ============
+async function loadSecurityAlerts() {
+    try {
+        const alertsRef = collection(db, "device_alerts");
+        const q = query(alertsRef, orderBy("timestamp", "desc"));
+        const snapshot = await getDocs(q);
+        alertsData = [];
+        snapshot.forEach(doc => {
+            alertsData.push({ id: doc.id, ...doc.data() });
+        });
+        updateAlertsList();
+        
+        const totalAlerts = alertsData.length;
+        const pendingAlerts = alertsData.filter(a => a.status === "pending").length;
+        document.getElementById('totalAlerts').innerText = totalAlerts;
+        document.getElementById('pendingAlerts').innerText = pendingAlerts;
+    } catch(error) {
+        console.error("Erreur chargement alertes:", error);
+    }
+}
+
+function updateAlertsList() {
+    const container = document.getElementById('alertsListContainer');
+    if(!container) return;
+    
+    if(alertsData.length === 0) {
+        container.innerHTML = '<div class="empty-state"><i class="fas fa-shield-alt"></i><p>Aucune alerte de sécurité</p></div>';
+        return;
+    }
+    
+    container.innerHTML = alertsData.map(alert => {
+        const statusBadge = alert.status === 'pending' 
+            ? '<span class="alert-badge">⚠️ En attente</span>' 
+            : '<span class="badge badge-success">✓ Résolu</span>';
+        
+        return `
+            <div class="alert-item">
+                <div class="alert-content">
+                    <div class="alert-title">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        ${escapeHtml(alert.userCode || alert.userId?.substring(0,8) || 'Inconnu')}
+                        ${statusBadge}
+                    </div>
+                    <div class="alert-details">
+                        <i class="fas fa-mobile-alt"></i> Tentative depuis: ${escapeHtml(alert.attemptedDeviceId?.substring(0,20) || 'Inconnu')}...
+                    </div>
+                    <div class="alert-details">
+                        <i class="fas fa-desktop"></i> ${escapeHtml(alert.attemptedUserAgent?.substring(0,80) || 'Inconnu')}
+                    </div>
+                    <div class="alert-date">
+                        <i class="fas fa-calendar"></i> ${formatDateTime(alert.timestamp)}
+                    </div>
+                </div>
+                ${alert.status === 'pending' ? `<button class="action-btn resolve" onclick="resolveAlert('${alert.id}')"><i class="fas fa-check"></i> Marquer résolu</button>` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+window.resolveAlert = async (alertId) => {
+    try {
+        await updateDoc(doc(db, "device_alerts", alertId), {
+            status: "resolved",
+            resolvedAt: new Date().toISOString()
+        });
+        showToast("Alerte marquée comme résolue");
+        await loadSecurityAlerts();
+    } catch(error) {
+        showToast("Erreur: " + error.message, true);
+    }
+};
+
+// ============ GESTION DES APPAREILS ============
+async function loadDevices() {
+    const devicesSnap = await getDocs(collection(db, "user_devices"));
+    const devices = [];
+    devicesSnap.forEach(doc => {
+        devices.push({ id: doc.id, ...doc.data() });
+    });
+    
+    const tbody = document.getElementById('devicesTableBody');
+    if(!tbody) return;
+    
+    if(devices.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><i class="fas fa-mobile-alt"></i><p>Aucun appareil enregistré</p></td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = devices.map(device => {
+        const user = usersData.find(u => u.id === device.id);
+        const userName = user ? user.code : device.id.substring(0, 8);
+        const userEmail = user ? user.email : '-';
+        const firstLogin = device.firstLogin ? new Date(device.firstLogin).toLocaleString('fr-FR') : '-';
+        
+        return `<tr>
+            <td><strong>${escapeHtml(userName)}</strong></div>
+            <td>${escapeHtml(userEmail)}</div>
+            <td><span class="badge badge-info"><i class="fas fa-mobile-alt"></i> ${device.deviceId ? device.deviceId.substring(0, 20)+'...' : 'Non enregistré'}</span></div>
+            <td><small>${firstLogin}</small></div>
+            <td><button class="action-btn delete" onclick="resetDevice('${device.id}')" style="background:#f59e0b;"><i class="fas fa-sync-alt"></i> Réinitialiser</button></div>
+        </tr>`;
+    }).join('');
+}
+
+window.resetDevice = async (userId) => {
+    showConfirm('Réinitialisation', '⚠️ Cette action permet au netuber de se connecter depuis un NOUVEL appareil. L\'ancien appareil sera désactivé. Confirmez ?', async () => {
+        try {
+            await deleteDoc(doc(db, "user_devices", userId));
+            showToast(`✅ Appareil réinitialisé. Le netuber peut maintenant se connecter depuis un nouvel appareil.`);
+            await loadDevices();
+        } catch(error) {
+            showToast(`Erreur: ${error.message}`, true);
+        }
+    });
+};
+
 // ============ RAPPORTS PGCO ============
 async function loadAllData() {
     try {
@@ -373,6 +513,8 @@ async function loadAllData() {
         
         await loadTickets();
         await loadMemorandums();
+        await loadSecurityAlerts();
+        await loadDevices();
         updateNetubersTable();
         updateRapportCategories();
         updateAnomaliesTable();
@@ -383,11 +525,28 @@ async function loadAllData() {
         updatePrivacyTab();
         
         listenToUsersRealtime();
+        listenToAlertsRealtime();
         
     } catch(error) {
         console.error("Erreur:", error);
         showToast("Erreur de chargement: " + error.message, true);
     }
+}
+
+function listenToAlertsRealtime() {
+    if (alertsUnsubscribe) alertsUnsubscribe();
+    const alertsRef = collection(db, "device_alerts");
+    alertsUnsubscribe = onSnapshot(query(alertsRef, orderBy("timestamp", "desc")), (snapshot) => {
+        alertsData = [];
+        snapshot.forEach(doc => {
+            alertsData.push({ id: doc.id, ...doc.data() });
+        });
+        updateAlertsList();
+        const totalAlerts = alertsData.length;
+        const pendingAlerts = alertsData.filter(a => a.status === "pending").length;
+        document.getElementById('totalAlerts').innerText = totalAlerts;
+        document.getElementById('pendingAlerts').innerText = pendingAlerts;
+    });
 }
 
 function updateRapportCategories() {
@@ -402,7 +561,6 @@ function updateRapportCategories() {
         return true;
     });
     
-    // Récupérer tous les netubers de TOUS les rapports
     const allNetubersData = [];
     rapportsData.forEach(rapport => {
         (rapport.netubers || []).forEach(n => {
@@ -419,22 +577,21 @@ function updateRapportCategories() {
                 objectifAtteint: n.objectifAtteint || 0,
                 nbNiveaux: n.nbNiveaux || 0,
                 nbNiveauxAtteints: n.nbNiveauxAtteints || 0,
-                rapportRef: rapport.reference,
                 rapportId: rapport.id,
                 date: rapport.createdAt
             });
         });
     });
     
-    // 1. PRÉSENTS - avec tous les détails
+    // Présents
     const presents = allNetubersData.filter(n => n.presence === 'Présent');
     document.getElementById('presentRapportsBody').innerHTML = presents.length ? presents.map(n => {
         const rendement = n.tempsJour > 0 ? ((n.pointsJour / (n.tempsJour / 60)).toFixed(2)) : '0';
         return `<tr>
-            <td><strong>${escapeHtml(n.code)}</strong></div>
-            <td><span class="badge badge-success">✅ Présent</span></div>
-            <td>${n.pointsPrec}</div>
-            <td style="color:#f59e0b; font-weight:bold;">${n.pointsJour}</div>
+            <td><strong>${escapeHtml(n.code)}</strong></td>
+            <td><span class="badge badge-success">✅ Présent</span></td>
+            <td>${n.pointsPrec}</td>
+            <td style="color:#f59e0b;">${n.pointsJour}</div>
             <td>${Math.floor(n.tempsPrec / 60)}h${n.tempsPrec % 60}min</div>
             <td>${Math.floor(n.tempsJour / 60)}h${n.tempsJour % 60}min</div>
             <td>${rendement} pts/h</div>
@@ -444,9 +601,9 @@ function updateRapportCategories() {
                 <button class="action-btn delete" onclick='deleteRapport("${n.rapportId}")'><i class="fas fa-trash"></i></button>
              </div>
           </div>`;
-    }).join('') : '<tr><td colspan="10" class="empty-state"><i class="fas fa-inbox"></i><p>Aucun netuber présent</p></td></tr>';
+    }).join('') : '<tr><td colspan="10" class="empty-state"><i class="fas fa-inbox"></i><p>Aucun netuber présent</p></div></tr>';
     
-    // 2. ABSENTS
+    // Absents
     const absents = allNetubersData.filter(n => n.presence !== 'Présent');
     document.getElementById('absentRapportsBody').innerHTML = absents.length ? absents.map(n => `<tr>
         <td><strong>${escapeHtml(n.code)}</strong></div>
@@ -456,28 +613,28 @@ function updateRapportCategories() {
         <td><button class="action-btn view" onclick='viewRapportDetail("${n.rapportId}", "${n.code}")'><i class="fas fa-eye"></i></button>
             <button class="action-btn delete" onclick='deleteRapport("${n.rapportId}")'><i class="fas fa-trash"></i></button>
          </div>
-      </div>`).join('') : '<tr><td colspan="5" class="empty-state"><i class="fas fa-inbox"></i><p>Aucun netuber absent</p></td></tr>';
+      </div>`).join('') : '<tr><td colspan="5" class="empty-state"><i class="fas fa-inbox"></i><p>Aucun netuber absent</p></div></tr>';
     
-    // 3. PERFORMANTS - classement par pointsJour (seulement les présents)
+    // Performants
     const performants = [...presents].sort((a,b) => b.pointsJour - a.pointsJour);
     document.getElementById('performantRapportsBody').innerHTML = performants.length ? performants.map((n, idx) => {
         const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx+1}ème`));
         return `<tr>
             <td><span class="badge badge-warning">${medal}</span></div>
             <td><strong>${escapeHtml(n.code)}</strong></div>
-            <td style="color:#f59e0b; font-weight:bold;">${n.pointsJour} pts</div>
+            <td style="color:#f59e0b;">${n.pointsJour} pts</div>
             <td>${Math.floor(n.tempsJour / 60)}min</div>
             <td><small>${formatDateShort(n.date)}</small></div>
             <td><button class="action-btn view" onclick='viewRapportDetail("${n.rapportId}", "${n.code}")'><i class="fas fa-eye"></i></button>
              </div>
           </div>`;
-    }).join('') : '<tr><td colspan="6" class="empty-state"><i class="fas fa-chart-line"></i><p>Aucune donnée de performance</p></td></tr>';
+    }).join('') : '<tr><td colspan="6" class="empty-state"><i class="fas fa-chart-line"></i><p>Aucune donnée de performance</p></div></tr>';
     
-    // 4. ACTIFS - classement par tempsJour (seulement les présents)
+    // Actifs
     const actifs = [...presents].sort((a,b) => b.tempsJour - a.tempsJour);
     document.getElementById('actifRapportsBody').innerHTML = actifs.length ? actifs.map((n, idx) => {
         const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx+1}ème`));
-        return `<tr>
+        return `<td>
             <td><span class="badge badge-info">${medal}</span></div>
             <td><strong>${escapeHtml(n.code)}</strong></div>
             <td>${Math.floor(n.tempsJour / 60)}h${n.tempsJour % 60}min</div>
@@ -486,9 +643,8 @@ function updateRapportCategories() {
             <td><button class="action-btn view" onclick='viewRapportDetail("${n.rapportId}", "${n.code}")'><i class="fas fa-eye"></i></button>
              </div>
           </div>`;
-    }).join('') : '<tr><td colspan="6" class="empty-state"><i class="fas fa-clock"></i><p>Aucune donnée d\'activité</p></td></tr>';
+    }).join('') : '<td><td colspan="6" class="empty-state"><i class="fas fa-clock"></i><p>Aucune donnée d\'activité</p></div></tr>';
     
-    // Statistiques globales
     const totalPoints = presents.reduce((a,n) => a + n.pointsJour, 0);
     const avgPoints = presents.length ? (totalPoints / presents.length).toFixed(1) : 0;
     const avgRendement = presents.length ? (presents.reduce((a,n) => a + (n.tempsJour > 0 ? (n.pointsJour / (n.tempsJour / 60)) : 0), 0) / presents.length).toFixed(2) : 0;
@@ -498,7 +654,6 @@ function updateRapportCategories() {
     document.getElementById('totalRapports').innerText = rapportsData.length;
 }
 
-// Vue détaillée d'un netuber dans un rapport
 window.viewRapportDetail = (rapportId, netuberCode) => {
     const rapport = rapportsData.find(r => r.id === rapportId);
     if(!rapport) return;
@@ -510,35 +665,10 @@ window.viewRapportDetail = (rapportId, netuberCode) => {
     const rendement = netuber.tempsJour > 0 ? ((netuber.pointsJour / (netuber.tempsJour / 60)).toFixed(2)) : '0';
     
     modalBody.innerHTML = `
-        <div class="detail-card">
-            <h4><i class="fas fa-info-circle"></i> Informations du rapport</h4>
-            <div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${escapeHtml(rapport.reference || '-')}</span></div>
-            <div class="detail-row"><span class="detail-label">Zone</span><span class="detail-value">${escapeHtml(rapport.zone || 'ORG-NX-S1')}</span></div>
-            <div class="detail-row"><span class="detail-label">Responsable PGCO</span><span class="detail-value">${escapeHtml(rapport.responsable || '-')}</span></div>
-            <div class="detail-row"><span class="detail-label">Date d'envoi</span><span class="detail-value">${new Date(rapport.createdAt).toLocaleString('fr-FR')}</span></div>
-        </div>
-        <div class="detail-card">
-            <h4><i class="fas fa-user"></i> Détail du Netuber</h4>
-            <div class="detail-row"><span class="detail-label">Code</span><span class="detail-value"><strong>${escapeHtml(netuber.code)}</strong></span></div>
-            <div class="detail-row"><span class="detail-label">Présence</span><span class="detail-value">${netuber.presence === 'Présent' ? '<span class="badge badge-success">✅ Présent</span>' : '<span class="badge badge-danger">❌ Absent</span>'}</span></div>
-            ${netuber.presence !== 'Présent' ? `<div class="detail-row"><span class="detail-label">Raison absence</span><span class="detail-value">${escapeHtml(netuber.raisonAbsence || '-')}</span></div>` : ''}
-        </div>
-        <div class="detail-card">
-            <h4><i class="fas fa-chart-line"></i> Objectifs</h4>
-            <div class="detail-row"><span class="detail-label">Objectif mensuel</span><span class="detail-value">${netuber.objectifMensuel || 0}/15</span></div>
-            <div class="detail-row"><span class="detail-label">Objectif atteint</span><span class="detail-value">${netuber.objectifAtteint || 0}/15</span></div>
-            <div class="detail-row"><span class="detail-label">Niveaux/événements</span><span class="detail-value">${netuber.nbNiveaux || 0}</span></div>
-            <div class="detail-row"><span class="detail-label">Niveaux atteints</span><span class="detail-value">${netuber.nbNiveauxAtteints || 0}</span></div>
-        </div>
-        <div class="detail-card">
-            <h4><i class="fas fa-tachometer-alt"></i> Performance</h4>
-            <div class="detail-row"><span class="detail-label">Points précédents</span><span class="detail-value">${netuber.pointsPrecedents || 0} pts</span></div>
-            <div class="detail-row"><span class="detail-label">Points du jour</span><span class="detail-value" style="color:#f59e0b; font-weight:bold;">${netuber.pointsJour || 0} pts</span></div>
-            <div class="detail-row"><span class="detail-label">Temps précédent</span><span class="detail-value">${Math.floor((netuber.tempsPrecedent || 0) / 60)}h${(netuber.tempsPrecedent || 0) % 60}min</span></div>
-            <div class="detail-row"><span class="detail-label">Temps du jour</span><span class="detail-value">${Math.floor((netuber.tempsJour || 0) / 60)}h${(netuber.tempsJour || 0) % 60}min</span></div>
-            <div class="detail-row"><span class="detail-label">Rendement</span><span class="detail-value">${rendement} pts/heure</span></div>
-            <div class="detail-row"><span class="detail-label">Forfait internet restant</span><span class="detail-value">${netuber.forfaitInternet || 0} Go</span></div>
-        </div>
+        <div class="detail-card"><h4>Informations du rapport</h4><div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${escapeHtml(rapport.reference || '-')}</span></div><div class="detail-row"><span class="detail-label">Zone</span><span class="detail-value">${escapeHtml(rapport.zone || 'ORG-NX-S1')}</span></div><div class="detail-row"><span class="detail-label">Responsable PGCO</span><span class="detail-value">${escapeHtml(rapport.responsable || '-')}</span></div><div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">${new Date(rapport.createdAt).toLocaleString()}</span></div></div>
+        <div class="detail-card"><h4>Détail du Netuber</h4><div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${escapeHtml(netuber.code)}</span></div><div class="detail-row"><span class="detail-label">Présence</span><span class="detail-value">${netuber.presence === 'Présent' ? '✅ Présent' : '❌ Absent'}</span></div>${netuber.presence !== 'Présent' ? `<div class="detail-row"><span class="detail-label">Raison absence</span><span class="detail-value">${escapeHtml(netuber.raisonAbsence || '-')}</span></div>` : ''}</div>
+        <div class="detail-card"><h4>Objectifs</h4><div class="detail-row"><span class="detail-label">Mensuel</span><span class="detail-value">${netuber.objectifMensuel || 0}/15</span></div><div class="detail-row"><span class="detail-label">Atteint</span><span class="detail-value">${netuber.objectifAtteint || 0}/15</span></div><div class="detail-row"><span class="detail-label">Niveaux</span><span class="detail-value">${netuber.nbNiveaux || 0}</span></div><div class="detail-row"><span class="detail-label">Niveaux atteints</span><span class="detail-value">${netuber.nbNiveauxAtteints || 0}</span></div></div>
+        <div class="detail-card"><h4>Performance</h4><div class="detail-row"><span class="detail-label">Points précédents</span><span class="detail-value">${netuber.pointsPrecedents || 0} pts</span></div><div class="detail-row"><span class="detail-label">Points jour</span><span class="detail-value">${netuber.pointsJour || 0} pts</span></div><div class="detail-row"><span class="detail-label">Temps précédent</span><span class="detail-value">${Math.floor((netuber.tempsPrecedent || 0) / 60)}h${(netuber.tempsPrecedent || 0) % 60}min</span></div><div class="detail-row"><span class="detail-label">Temps jour</span><span class="detail-value">${Math.floor((netuber.tempsJour || 0) / 60)}h${(netuber.tempsJour || 0) % 60}min</span></div><div class="detail-row"><span class="detail-label">Rendement</span><span class="detail-value">${rendement} pts/h</span></div><div class="detail-row"><span class="detail-label">Forfait internet</span><span class="detail-value">${netuber.forfaitInternet || 0} Go</span></div></div>
     `;
     openModal('rapportModal');
 };
@@ -641,7 +771,7 @@ function updateAnomaliesTable() {
 function updatePrivacyTab() {
     const tbody = document.getElementById('privacyEmailsBody');
     if(!tbody) return;
-    tbody.innerHTML = usersData.length ? usersData.map(u => `<td>
+    tbody.innerHTML = usersData.length ? usersData.map(u => `<tr>
         <td><strong>${escapeHtml(u.code || '-')}</strong>${u.isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</div>
         <td>${escapeHtml(u.email || '-')}</div>
         <td><span class="badge ${u.isBlocked ? 'badge-danger' : 'badge-success'}">${u.isBlocked ? 'Bloqué' : 'Actif'}</span></div>
@@ -665,7 +795,7 @@ function updateCapHistory() {
         <td>${escapeHtml(h.cap)}</div>
         <td>${h.envoyeLe ? new Date(h.envoyeLe).toLocaleString() : '-'}</div>
         <td>${h.expiration || '-'}</div>
-      </tr>`).join('') : '<tr><td colspan="4" class="empty-state"><i class="fas fa-chart-line"></i><p>Aucun CAP envoyé</p></td></tr>';
+      </td>`).join('') : '<tr><td colspan="4" class="empty-state"><i class="fas fa-chart-line"></i><p>Aucun CAP envoyé</p></div></tr>';
     document.getElementById('totalActions').innerText = history.length;
 }
 
@@ -945,8 +1075,21 @@ window.createNetuber = async () => {
             ticketsList: [], 
             isBlocked: false, objectifMensuel: 9, objectifAtteint: 0
         });
+        
+        // Créer un document dans user_devices (vide pour l'instant)
+        await setDoc(doc(db, "user_devices", userCred.user.uid), {
+            deviceId: null,
+            firstLogin: null,
+            lastLogin: null,
+            isActive: false,
+            userAgent: null,
+            platform: null,
+            registeredAt: now,
+            status: "pending"
+        });
+        
         closeModal('addNetuberModal');
-        showToast("Netuber créé");
+        showToast(`✅ Netuber "${code}" créé avec succès`);
         await loadAllData();
     } catch(e) { showToast("Erreur: " + e.message, true); }
 };
@@ -977,6 +1120,7 @@ window.deleteNetuber = async () => {
     if(user) {
         showConfirm('Suppression', `Supprimer ${code} ?`, async () => {
             await deleteDoc(doc(db, "users", user.id));
+            await deleteDoc(doc(db, "user_devices", user.id));
             closeModal('deleteModal');
             showToast(`${code} supprimé`);
             await loadAllData();
@@ -1033,6 +1177,7 @@ function listenToUsersRealtime() {
         updatePrivacyTab();
         loadTickets();
         updateCharts();
+        loadDevices();
     }, (error) => {
         console.error("Erreur Firestore:", error);
     });
