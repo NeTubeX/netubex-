@@ -68,9 +68,9 @@ button:active{transform:scale(0.97);}
 .hidden{display:none;}
 .popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;}
 .popup-overlay.active{visibility:visible;}
-.popup-card{background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:28px;width:90%;max-width:400px;padding:24px 20px;text-align:center;border-top:5px solid #facc15;}
+.popup-card{background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:28px;width:90%;max-width:450px;padding:24px 20px;text-align:center;border-top:5px solid #facc15;}
 .popup-title{font-size:1.2rem;font-weight:800;color:#facc15;margin-bottom:12px;}
-.popup-message{font-size:0.9rem;margin-bottom:20px;color:#e0f2fe;line-height:1.5;white-space:pre-wrap;word-wrap:break-word;}
+.popup-message{font-size:0.9rem;margin-bottom:20px;color:#e0f2fe;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;text-align:left;}
 .popup-buttons{display:flex;gap:12px;justify-content:center;}
 .popup-btn{padding:10px 22px;border-radius:60px;font-weight:700;font-size:0.8rem;border:none;cursor:pointer;}
 .popup-btn.secondary{background:#2d4e73;color:white;}
@@ -171,7 +171,15 @@ function generateOptions015(){
   for(let i=0;i<=15;i++) opts+=`<option value="${i}">${i}</option>`;
   return opts;
 }
+
+function generateOptions030(){
+  let opts='';
+  for(let i=0;i<=30;i++) opts+=`<option value="${i}">${i} Go</option>`;
+  return opts;
+}
+
 const OPTIONS_015=generateOptions015();
+const OPTIONS_030=generateOptions030();
 
 async function loadMemorandumsFromFirebase(){
   try{
@@ -258,6 +266,7 @@ function buildQuestions(){
     qList.push({num:num++, type:"number", field:`${n.code}_pointsJour`, meta:n.code, text:`${n.code} : Combien de points a-t-il aujourd'hui ?`, min:0});
     qList.push({num:num++, type:"number", field:`${n.code}_tempsPrec`, meta:n.code, text:`${n.code} : Quel temps avait-il précédemment (en minutes) ?`, min:0});
     qList.push({num:num++, type:"number", field:`${n.code}_tempsJour`, meta:n.code, text:`${n.code} : Quel temps a-t-il aujourd'hui (en minutes) ?`, min:0});
+    qList.push({num:num++, type:"select", field:`${n.code}_forfaitGo`, meta:n.code, text:`${n.code} : Combien de Go de forfait internet reste-t-il ?`, options:OPTIONS_030});
   }
   qList.push({num:num++, type:"text", field:"reference", meta:"Rapport", text:"Numéro du rapport (format: RPT-BLTJRNL-2026-XXX)", placeholder:"Ex: RPT-BLTJRNL-2026-001"});
   return qList;
@@ -270,7 +279,8 @@ function displayCurrent(){
       if(responses[`${n.code}_present`]==='OUI'){
         const ptsP = parseFloat(responses[`${n.code}_pointsPrec`])||0;
         const ptsJ = parseFloat(responses[`${n.code}_pointsJour`])||0;
-        recap += `▪ ${n.code} : vous avez dit que les points précédents étaient de ${ptsP} et que les points du jour sont de ${ptsJ}.\n`;
+        const forfait = responses[`${n.code}_forfaitGo`] || '0';
+        recap += `▪ ${n.code} : points précédents ${ptsP}, points du jour ${ptsJ}, forfait restant ${forfait} Go.\n`;
       }
     }
     recap += "\nCliquez sur \"Envoyer\" pour transmettre ce rapport à la Direction des Opérations.";
@@ -339,7 +349,6 @@ function handleResponse(val){
   
   if(q.field.includes('_present') && val==='NON'){
     let stepsToSkip = 0;
-    let foundCurrent = false;
     for(let i=currentStep+1; i<questions.length; i++){
       const nextField = questions[i].field;
       if(nextField && nextField.includes(q.field.replace('_present',''))){
@@ -443,6 +452,7 @@ async function sendReportToFirebase(){
       if(!responses[`${n.code}_pointsJour`]) missing.push(`${n.code} - Points jour`);
       if(!responses[`${n.code}_tempsPrec`]) missing.push(`${n.code} - Temps précédent`);
       if(!responses[`${n.code}_tempsJour`]) missing.push(`${n.code} - Temps jour`);
+      if(!responses[`${n.code}_forfaitGo`]) missing.push(`${n.code} - Forfait internet restant`);
     }
   }
   if(missing.length>0){
@@ -467,10 +477,23 @@ async function sendReportToFirebase(){
         const ptsJ=parseFloat(responses[`${n.code}_pointsJour`])||0;
         const tempsP=parseFloat(responses[`${n.code}_tempsPrec`])||0;
         const tempsJ=parseFloat(responses[`${n.code}_tempsJour`])||0;
+        const forfaitGo=responses[`${n.code}_forfaitGo`]||'0';
         if(present==='Présent'){
           totalPtsP+=ptsP; totalPtsJ+=ptsJ; totalTempsP+=tempsP; totalTempsJ+=tempsJ;
         }
-        netubersData.push({code:n.code,presence:present,objectifMensuel:objM,objectifAtteint:objA,nbNiveaux:nbN,nbNiveauxAtteints:nbA,pointsPrecedents:ptsP,pointsJour:ptsJ,tempsPrecedent:tempsP,tempsJour:tempsJ});
+        netubersData.push({
+          code:n.code,
+          presence:present,
+          objectifMensuel:objM,
+          objectifAtteint:objA,
+          nbNiveaux:nbN,
+          nbNiveauxAtteints:nbA,
+          pointsPrecedents:ptsP,
+          pointsJour:ptsJ,
+          tempsPrecedent:tempsP,
+          tempsJour:tempsJ,
+          forfaitInternet:forfaitGo
+        });
       }
       const reportData={
         type:"pgco_report",
@@ -488,14 +511,24 @@ async function sendReportToFirebase(){
         createdAt:new Date().toISOString()
       };
       const reportsRef=collection(window.db,"reports");
-      await addDoc(reportsRef,reportData);
+      const docRef = await addDoc(reportsRef, reportData);
       const now = new Date();
       const dateStr = now.toLocaleDateString('fr-FR');
       const timeStr = now.toLocaleTimeString('fr-FR');
-      showPopup("✅ Confirmation d'envoi",`Le rapport a été envoyé à la Direction des Opérations le ${dateStr} à ${timeStr}.`,"Fermer","",()=>{},()=>{},'primary');
+      const confirmationMsg = `📋 RAPPORT ENVOYÉ AVEC SUCCÈS\n\n` +
+        `┌─────────────────────────────────────┐\n` +
+        `│ ID: ${docRef.id.substring(0,8)}...\n` +
+        `│ Référence: ${responses.reference}\n` +
+        `│ Date d'envoi: ${dateStr}\n` +
+        `│ Heure: ${timeStr}\n` +
+        `│ Destinataire: Direction des Opérations\n` +
+        `│ Statut: ✓ Réceptionné\n` +
+        `└─────────────────────────────────────┘\n\n` +
+        `Un accusé de réception a été enregistré dans le système.`;
+      showPopup("✅ CONFIRMATION D'ENVOI", confirmationMsg, "Fermer","",()=>{},()=>{},'primary');
       resetAll();
     }catch(e){
-      showPopup("Erreur",e.message,"Fermer","",()=>{},()=>{});
+      showPopup("❌ ERREUR D'ENVOI",`Le rapport n'a pas pu être transmis.\n\nCause: ${e.message}\n\nVeuillez réessayer ou contacter le support technique.`,"Fermer","",()=>{},()=>{},'primary');
     }finally{
       btn.textContent=orig;
       btn.disabled=false;
