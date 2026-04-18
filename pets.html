@@ -3,17 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>NeTubeX · Admin Dashboard DEO</title>
+<title>DEO · Administration des Rapports PGCO</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:100vh;}
-.dashboard{max-width:1600px;margin:0 auto;padding:20px 30px;}
-@media (max-width:768px){.dashboard{padding:15px;}}
-.header{background:#0f1420;border-bottom:1px solid #1e293b;padding:0.8rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;margin:-20px -30px 20px -30px;padding:0.8rem 30px;}
-@media (max-width:768px){.header{padding:0.5rem 15px;margin:-15px -15px 20px -15px;flex-wrap:wrap;gap:10px;}}
+.dashboard{max-width:1400px;margin:0 auto;padding:20px 30px;}
+.header{background:#0f1420;border-bottom:1px solid #1e293b;padding:0.8rem 2rem;display:flex;justify-content:space-between;align-items:center;margin:-20px -30px 20px -30px;padding:0.8rem 30px;}
 .logo h1{font-size:22px;background:linear-gradient(135deg,#f59e0b,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .logo p{font-size:10px;color:#64748b;}
 .header-right{display:flex;align-items:center;gap:20px;}
@@ -31,59 +28,50 @@ body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:
 .tab-content{display:none;animation:fadeIn 0.2s;}
 .tab-content.active{display:block;}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-.sub-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;border-bottom:1px solid #2d3748;padding-bottom:8px;}
-.sub-tab{padding:8px 16px;background:transparent;border:none;border-radius:30px;color:#94a3b8;cursor:pointer;font-size:12px;transition:0.2s;}
-.sub-tab:hover{background:#1e293b;color:#fff;}
-.sub-tab.active{background:#f59e0b;color:#0a0f1a;font-weight:600;}
-.filters{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
-.search-input{padding:10px 16px;border-radius:40px;border:1px solid #1e293b;background:#0f1420;color:#fff;min-width:250px;outline:none;font-size:13px;}
-.search-input:focus{border-color:#f59e0b;}
-.filter-select{padding:8px 14px;border-radius:40px;border:1px solid #1e293b;background:#0f1420;color:#fff;cursor:pointer;font-size:12px;}
-.export-btn{background:#10b981;border:none;padding:8px 16px;border-radius:40px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;}
-.export-btn:hover{background:#059669;}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:25px;}
 .stat-card{background:#0f1420;border-radius:16px;padding:15px;border:1px solid #1e293b;}
 .stat-card .value{font-size:24px;font-weight:700;}
 .stat-card .label{font-size:11px;color:#64748b;margin-top:5px;}
-.table-wrapper{background:#0f1420;border-radius:16px;overflow-x:auto;border:1px solid #1e293b;max-height:500px;overflow-y:auto;}
-table{width:100%;border-collapse:collapse;min-width:900px;}
+.table-wrapper{background:#0f1420;border-radius:16px;overflow-x:auto;border:1px solid #1e293b;max-height:600px;overflow-y:auto;}
+table{width:100%;border-collapse:collapse;min-width:800px;}
 th{text-align:left;padding:12px;font-size:11px;font-weight:600;color:#64748b;border-bottom:1px solid #1e293b;position:sticky;top:0;background:#0f1420;}
 td{padding:10px 12px;border-bottom:1px solid #1e293b;font-size:12px;}
-tr{cursor:pointer;transition:0.2s;}
-tr:hover{background:#1a2332;}
 .badge{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:500;display:inline-block;}
 .badge-success{background:rgba(16,185,129,0.2);color:#10b981;}
-.badge-danger{background:rgba(239,68,68,0.2);color:#ef4444;}
 .badge-warning{background:rgba(245,158,11,0.2);color:#f59e0b;}
-.badge-info{background:rgba(59,130,246,0.2);color:#3b82f6;}
+.badge-danger{background:rgba(239,68,68,0.2);color:#ef4444;}
+.detail-card{background:#1a2332;border-radius:12px;padding:15px;border:1px solid #2d3748;margin-bottom:20px;}
+.detail-card h4{margin-bottom:10px;color:#f59e0b;font-size:13px;border-left:3px solid #f59e0b;padding-left:10px;}
+.detail-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #2d3748;font-size:12px;}
+.detail-label{color:#94a3b8;}
+.detail-value{font-weight:600;color:#e2e8f0;}
+.progress-bar-group{margin-top:10px;}
+.progress-item{margin-bottom:12px;}
+.progress-label{font-size:10px;margin-bottom:4px;color:#94a3b8;}
+.progress-bar-bg{background:#1e293b;border-radius:4px;height:8px;overflow:hidden;}
+.progress-bar-fill{height:8px;border-radius:4px;}
+.tendance-up{color:#10b981;}
+.tendance-down{color:#f59e0b;}
+.action-btn{padding:5px 10px;border-radius:6px;font-size:10px;cursor:pointer;border:none;transition:0.2s;}
+.action-btn.view{background:#3b82f6;color:#fff;}
+.action-btn.view:hover{background:#2563eb;}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(8px);z-index:1000;justify-content:center;align-items:center;}
 .modal.active{display:flex;}
 .modal-content{background:#0f1420;border-radius:20px;max-width:800px;width:90%;border:1px solid #1e293b;max-height:85vh;overflow-y:auto;}
-.modal-header{padding:15px 20px;border-bottom:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#0f1420;}
+.modal-header{padding:15px 20px;border-bottom:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center;background:#0f1420;}
 .modal-header h2{font-size:16px;display:flex;align-items:center;gap:8px;}
 .modal-close{background:#1e293b;border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;}
 .modal-body{padding:20px;}
 .modal-footer{padding:12px 20px;border-top:1px solid #1e293b;display:flex;justify-content:flex-end;gap:10px;}
 .modal-footer button{padding:8px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:600;}
-.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
-@media (max-width:768px){.detail-grid{grid-template-columns:1fr;}}
-.detail-card{background:#1a2332;border-radius:12px;padding:15px;border:1px solid #2d3748;}
-.detail-card h4{margin-bottom:10px;color:#f59e0b;font-size:13px;border-left:3px solid #f59e0b;padding-left:10px;}
-.detail-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #2d3748;font-size:12px;flex-wrap:wrap;}
-.detail-label{color:#94a3b8;}
-.detail-value{font-weight:600;color:#e2e8f0;}
-.action-btn{padding:5px 10px;border-radius:6px;font-size:10px;cursor:pointer;border:none;transition:0.2s;margin:0 2px;}
-.action-btn.view{background:#3b82f6;color:#fff;}
-.action-btn.view:hover{background:#2563eb;}
-.action-btn.cap{background:#f59e0b;color:#fff;}
-.action-btn.cap:hover{background:#d97706;}
-.progress-bar-group{margin-top:10px;}
-.progress-item{margin-bottom:12px;}
-.progress-label{font-size:10px;margin-bottom:4px;color:#94a3b8;}
-.progress-bar-bg{background:#1e293b;border-radius:4px;height:8px;overflow:hidden;}
-.progress-bar-fill{height:8px;border-radius:4px;transition:width 0.3s;}
-.tendance-up{color:#10b981;}
-.tendance-down{color:#f59e0b;}
+.notification-badge{position:relative;cursor:pointer;}
+.notification-badge .badge-count{position:absolute;top:-8px;right:-8px;background:#ef4444;color:white;border-radius:50%;width:18px;height:18px;font-size:10px;display:flex;align-items:center;justify-content:center;}
+.filters{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
+.search-input{padding:10px 16px;border-radius:40px;border:1px solid #1e293b;background:#0f1420;color:#fff;min-width:250px;outline:none;font-size:13px;}
+.search-input:focus{border-color:#f59e0b;}
+.filter-select{padding:8px 14px;border-radius:40px;border:1px solid #1e293b;background:#0f1420;color:#fff;cursor:pointer;font-size:12px;}
+.export-btn{background:#10b981;border:none;padding:8px 16px;border-radius:40px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;}
+.btn-primary{background:#f59e0b;border:none;padding:8px 16px;border-radius:40px;color:#0a0f1a;cursor:pointer;font-weight:600;font-size:12px;}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:40px;font-size:12px;z-index:10000;animation:slideUp 0.3s;}
 .toast-error{background:#ef4444;}
 @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
@@ -92,378 +80,384 @@ tr:hover{background:#1a2332;}
 <body>
 <div class="dashboard">
 <div class="header">
-<div class="logo"><h1><i class="fas fa-chart-line"></i> NeTubeX Admin</h1><p>Direction des Opérations - DEO</p></div>
+<div class="logo"><h1><i class="fas fa-chart-line"></i> DEO · Administration</h1><p>Direction des Opérations</p></div>
 <div class="header-right">
-<button class="refresh-btn" onclick="location.reload()"><i class="fas fa-sync-alt"></i> Actualiser</button>
-<button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
-<div class="admin-profile"><i class="fas fa-user-cog"></i><span>Admin DEO</span></div>
+<button class="refresh-btn" onclick="location.reload()"><i class="fas fa-sync-alt"></i> Synchroniser</button>
+<button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Quitter</button>
+<div class="admin-profile"><i class="fas fa-user-shield"></i><span>Administrateur DEO</span></div>
 </div>
 </div>
 
 <div class="tabs">
-<button class="tab active" onclick="switchTab('netubers')"><i class="fas fa-users"></i> Netubers</button>
-<button class="tab" onclick="switchTab('rapports')"><i class="fas fa-file-alt"></i> Rapports PGCO</button>
-<button class="tab" onclick="switchTab('tickets')"><i class="fas fa-ticket-alt"></i> Tickets</button>
-<button class="tab" onclick="switchTab('anomalies')"><i class="fas fa-exclamation-triangle"></i> Anomalies</button>
-<button class="tab" onclick="switchTab('settings')"><i class="fas fa-cog"></i> Paramètres</button>
+<button class="tab active" onclick="switchTab('rapport')"><i class="fas fa-file-alt"></i> Rapport PGCO</button>
+<button class="tab" onclick="switchTab('historique')"><i class="fas fa-history"></i> Historique (précédent)</button>
+<button class="tab" onclick="switchTab('parametres')"><i class="fas fa-cog"></i> Paramètres</button>
 </div>
 
-<!-- Onglet Netubers -->
-<div id="netubersTab" class="tab-content active">
+<!-- Onglet Rapport PGCO (unique) -->
+<div id="rapportTab" class="tab-content active">
 <div class="stats-grid">
-<div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Total Netubers</div></div>
-<div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">En ligne</div></div>
-<div class="stat-card"><div class="value" id="totalAnomalies">0</div><div class="label">Total anomalies</div></div>
-<div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Netubers bloqués</div></div>
-</div>
-<div class="filters">
-<input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()">
-<select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">En ligne</option><option value="offline">Hors ligne</option></select>
-<button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button>
-<button class="export-btn" onclick="openAddNetuberModal()" style="background:#3b82f6;"><i class="fas fa-user-plus"></i> Ajouter Netuber</button>
-</div>
-<div class="table-wrapper"><table id="netubersTable"><thead><tr><th>Code</th><th>Email</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Objectif restant</th><th>Connexions</th><th>Anomalies</th><th>Localisation</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="netubersTableBody"></tbody></table></div>
+<div class="stat-card"><div class="value" id="rapportRef">---</div><div class="label">Référence du rapport</div></div>
+<div class="stat-card"><div class="value" id="rapportDate">---</div><div class="label">Date de réception</div></div>
+<div class="stat-card"><div class="value" id="rapportResponsable">---</div><div class="label">Responsable</div></div>
+<div class="stat-card"><div class="value" id="rapportStatus">---</div><div class="label">Statut</div></div>
 </div>
 
-<!-- Onglet Rapports PGCO avec sous-onglets -->
-<div id="rapportsTab" class="tab-content">
-<div class="stats-grid">
-<div class="stat-card"><div class="value" id="totalRapports">0</div><div class="label">Rapports reçus</div></div>
-<div class="stat-card"><div class="value" id="nonTraites">0</div><div class="label">Non traités</div></div>
-<div class="stat-card"><div class="value" id="avgPoints">0</div><div class="label">Moyenne points/jour</div></div>
-<div class="stat-card"><div class="value" id="avgRendement">0</div><div class="label">Rendement moyen</div></div>
+<div class="detail-card" id="rapportDetailContainer">
+<div style="text-align:center;padding:40px;color:#64748b;">
+<i class="fas fa-inbox" style="font-size:48px;margin-bottom:15px;display:block;"></i>
+Aucun rapport disponible<br>En attente de réception
+</div>
 </div>
 
-<div class="sub-tabs">
-<button class="sub-tab active" data-subtab="all">📋 Tous les rapports</button>
-<button class="sub-tab" data-subtab="absents">❌ Rapports avec absents</button>
-<button class="sub-tab" data-subtab="presents">✅ Rapports avec présents</button>
-<button class="sub-tab" data-subtab="highperf">🏆 Haut rendement (top 20%)</button>
+<div class="filters" style="justify-content:flex-end;">
+<button class="export-btn" onclick="exportCurrentRapport()"><i class="fas fa-download"></i> Exporter le rapport</button>
+</div>
 </div>
 
-<div class="filters">
-<input type="text" id="searchRapport" placeholder="🔍 Référence ou zone..." class="search-input" onkeyup="filterRapports()">
-<select id="statutRapport" class="filter-select" onchange="filterRapports()"><option value="all">Tous statuts</option><option value="non_traite">Non traités</option><option value="traite">Traités</option></select>
-<button class="export-btn" onclick="exportRapports()"><i class="fas fa-file-excel"></i> Exporter</button>
-<button class="export-btn" onclick="openMemoModal()" style="background:#ec4899;"><i class="fas fa-envelope"></i> Mémorandum directif</button>
+<!-- Onglet Historique (rapport précédent) -->
+<div id="historiqueTab" class="tab-content">
+<div class="detail-card" id="historiqueContainer">
+<div style="text-align:center;padding:40px;color:#64748b;">
+<i class="fas fa-archive" style="font-size:48px;margin-bottom:15px;display:block;"></i>
+Aucun historique disponible
 </div>
-<div class="table-wrapper"><table id="rapportsTable"><thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Points jour</th><th>Rendement</th><th>Absents</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="rapportsTableBody"></tbody></table></div>
 </div>
-
-<!-- Onglet Tickets -->
-<div id="ticketsTab" class="tab-content">
-<div class="stats-grid"><div class="stat-card"><div class="value" id="ticketsOpen">0</div><div class="label">Ouverts</div></div><div class="stat-card"><div class="value" id="ticketsProgress">0</div><div class="label">En cours</div></div><div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Résolus</div></div></div>
-<div class="table-wrapper"><table id="ticketsTable"><thead><tr><th>Netuber</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody id="ticketsTableBody"></tbody></table></div>
 </div>
 
-<!-- Onglet Anomalies -->
-<div id="anomaliesTab" class="tab-content">
-<div class="chart-container"><canvas id="anomaliesChart" style="max-height:250px;"></canvas></div>
-<div class="table-wrapper"><table id="anomaliesTable"><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre</th><th>Dernière occurrence</th><th>Action</th></tr></thead><tbody id="anomaliesTableBody"></tbody></table></div>
+<!-- Onglet Paramètres (sans descriptions) -->
+<div id="parametresTab" class="tab-content">
+<div class="detail-card">
+<h4><i class="fas fa-user-cog"></i> Gestion des Netubers</h4>
+<div class="table-wrapper">
+<table id="netubersTable">
+<thead><tr><th>Code</th><th>Email</th><th>Statut</th><th>Actions</th></tr></thead>
+<tbody id="netubersTableBody"></tbody>
+</table>
 </div>
-
-<!-- Onglet Paramètres -->
-<div id="settingsTab" class="tab-content">
-<div class="stats-grid"><div class="stat-card"><div class="value" id="totalActions">0</div><div class="label">CAP envoyés</div></div></div>
-<div class="detail-card" style="margin-bottom:20px;"><h4><i class="fas fa-chart-line"></i> CAP du jour - Derniers envois</h4><div class="table-wrapper"><table id="capHistoryTable"><thead><tr><th>Netuber</th><th>CAP</th><th>Date envoi</th><th>Expiration</th></tr></thead><tbody id="capHistoryBody"></tbody></table></div></div>
-<div class="detail-card"><h4><i class="fas fa-cog"></i> Administration</h4><table><thead><tr><th>Action</th><th>Description</th><th>Statut</th></tr></thead>
-<tbody>
-<tr><td><i class="fas fa-user-edit"></i> Modifier code Netuber</td><td>Changer le code unique d'un Netuber</td><td><button class="badge badge-info" onclick="openEditCodeModal()" style="cursor:pointer;">Modifier</button></td></tr>
-<tr><td><i class="fas fa-ban"></i> Bloquer/Débloquer Netuber</td><td>Bloquer l'accès au Dashboard utilisateur</td><td><button class="badge badge-warning" onclick="openBlockModal()" style="cursor:pointer;">Gérer</button></td></tr>
-<tr><td><i class="fas fa-trash"></i> Supprimer Netuber</td><td>Supprimer définitivement un Netuber</td><td><button class="badge badge-danger" onclick="openDeleteModal()" style="cursor:pointer;">Supprimer</button></td></tr>
-</tbody>
-</table></div>
+</div>
+<div class="detail-card">
+<h4><i class="fas fa-envelope"></i> Communications</h4>
+<button class="btn-primary" onclick="openMemoModal()" style="margin-right:10px;"><i class="fas fa-paper-plane"></i> Envoyer un mémorandum</button>
+</div>
 </div>
 </div>
 
 <!-- Modals -->
-<div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Code Netuber</label><input type="text" id="newCode" placeholder="Ex: NETUBER001"></div><div class="input-group"><label>Email</label><input type="email" id="newEmail" placeholder="Email"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newPassword" placeholder="Mot de passe (min 6 caractères)"></div><div class="input-group"><label>Objectif mensuel</label><input type="number" id="newObjectifMensuel" value="9"></div></div><div class="modal-footer"><button onclick="createNetuber()" style="background:#10b981;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="rapportModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-file-alt"></i> Détail complet du rapport</h2><button class="modal-close" onclick="closeModal('rapportModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="rapportDetailBody"></div><div class="modal-footer"><button onclick="closeModal('rapportModal')" style="background:#64748b;">Fermer</button></div></div></div>
 
-<div id="editCodeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-edit"></i> Modifier code Netuber</h2><button class="modal-close" onclick="closeModal('editCodeModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><select id="editCodeSelect"></select></div><div class="input-group"><label>Nouveau code</label><input type="text" id="newCodeValue"></div></div><div class="modal-footer"><button onclick="updateNetuberCode()" style="background:#f59e0b;">Modifier</button><button onclick="closeModal('editCodeModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="memoModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-envelope"></i> Mémorandum directif</h2><button class="modal-close" onclick="closeModal('memoModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="detail-row" style="margin-bottom:15px;"><span class="detail-label">Destinataire</span><select id="memoDestinataire" style="background:#1a2332;color:#fff;padding:8px;border-radius:8px;border:1px solid #2d3748;"></select></div><div class="detail-row" style="margin-bottom:15px;"><span class="detail-label">Titre</span><input type="text" id="memoTitle" style="flex:1;background:#1a2332;color:#fff;border:1px solid #2d3748;border-radius:8px;padding:8px;margin-left:10px;"></div><div class="detail-row" style="margin-bottom:15px;"><span class="detail-label">Contenu</span><textarea id="memoContent" rows="6" style="flex:1;background:#1a2332;color:#fff;border:1px solid #2d3748;border-radius:8px;padding:8px;margin-left:10px;"></textarea></div></div><div class="modal-footer"><button onclick="sendMemorandum()" style="background:#ec4899;">Envoyer</button><button onclick="closeModal('memoModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
-<div id="blockModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-ban"></i> Bloquer/Débloquer Netuber</h2><button class="modal-close" onclick="closeModal('blockModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><select id="blockSelect"></select></div><div class="input-group"><label>Action</label><select id="blockAction"><option value="block">Bloquer</option><option value="unblock">Débloquer</option></select></div></div><div class="modal-footer"><button onclick="toggleBlockNetuber()" style="background:#ef4444;">Appliquer</button><button onclick="closeModal('blockModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="detail-row" style="margin-bottom:15px;"><span class="detail-label">Code</span><input type="text" id="newCode" style="flex:1;background:#1a2332;color:#fff;border:1px solid #2d3748;border-radius:8px;padding:8px;margin-left:10px;"></div><div class="detail-row" style="margin-bottom:15px;"><span class="detail-label">Email</span><input type="email" id="newEmail" style="flex:1;background:#1a2332;color:#fff;border:1px solid #2d3748;border-radius:8px;padding:8px;margin-left:10px;"></div><div class="detail-row" style="margin-bottom:15px;"><span class="detail-label">Mot de passe</span><input type="password" id="newPassword" style="flex:1;background:#1a2332;color:#fff;border:1px solid #2d3748;border-radius:8px;padding:8px;margin-left:10px;"></div></div><div class="modal-footer"><button onclick="createNetuber()" style="background:#10b981;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
-<div id="deleteModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-trash"></i> Supprimer Netuber</h2><button class="modal-close" onclick="closeModal('deleteModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><select id="deleteSelect"></select></div><p style="color:#ef4444; font-size:12px;">⚠️ Action irréversible.</p></div><div class="modal-footer"><button onclick="deleteNetuber()" style="background:#ef4444;">Supprimer</button><button onclick="closeModal('deleteModal')" style="background:#64748b;">Annuler</button></div></div></div>
-
-<div id="capModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-chart-line"></i> Envoyer le CAP du jour</h2><button class="modal-close" onclick="closeModal('capModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><input type="text" id="capNetuberCode" readonly style="background:#1a2332;color:#f59e0b;"></div><div class="input-group"><label>CAP du jour</label><textarea id="capMessage" rows="6"></textarea></div><div class="input-group"><label>Expiration</label><input type="date" id="capExpiration"></div></div><div class="modal-footer"><button id="sendCapBtn" style="background:#f59e0b;">Envoyer</button><button onclick="closeModal('capModal')" style="background:#64748b;">Annuler</button></div></div></div>
-
-<div id="rapportModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-file-alt"></i> Détail rapport PGCO</h2><button class="modal-close" onclick="closeModal('rapportModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="rapportDetailBody"></div><div class="modal-footer"><button onclick="closeModal('rapportModal')" style="background:#64748b;">Fermer</button></div></div></div>
-
-<div id="memoModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-envelope"></i> Mémorandum directif</h2><button class="modal-close" onclick="closeModal('memoModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Destinataire</label><select id="memoDestinataire"><option value="all">Tous les PGCO</option></select></div><div class="input-group"><label>Titre</label><input type="text" id="memoTitle"></div><div class="input-group"><label>Contenu</label><textarea id="memoContent" rows="6"></textarea></div></div><div class="modal-footer"><button id="sendMemoBtn" style="background:#ec4899;">Envoyer</button><button onclick="closeModal('memoModal')" style="background:#64748b;">Annuler</button></div></div></div>
-
-<div id="replyTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-reply"></i> Répondre au ticket</h2><button class="modal-close" onclick="closeModal('replyTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="replyTicketId" readonly></div><div class="input-group"><label>Netuber</label><input type="text" id="replyNetuberCode" readonly></div><div class="input-group"><label>Message</label><textarea id="replyMessage" rows="4"></textarea></div></div><div class="modal-footer"><button onclick="sendTicketReply()" style="background:#8b5cf6;">Envoyer</button><button onclick="closeModal('replyTicketModal')" style="background:#64748b;">Annuler</button></div></div></div>
-
-<div id="confirmModal" class="modal"><div class="modal-content"><div class="modal-body confirm-dialog"><i class="fas fa-question-circle"></i><h3 id="confirmTitle">Confirmation</h3><p id="confirmMessage">Confirmez-vous cette action ?</p><div class="confirm-buttons"><button class="btn-cancel" id="confirmCancelBtn">Annuler</button><button class="btn-confirm" id="confirmOkBtn">Confirmer</button></div></div></div></div>
+<div id="notificationModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-bell"></i> Notification DEO</h2><button class="modal-close" onclick="closeModal('notificationModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="notificationBody"></div><div class="modal-footer"><button onclick="closeModal('notificationModal')" style="background:#f59e0b;">Accuser réception</button></div></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, addDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, addDoc, getDoc, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
+const firebaseConfig = {
+  apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
+  authDomain: "netubexmoney.firebaseapp.com",
+  projectId: "netubexmoney",
+  storageBucket: "netubexmoney.firebasestorage.app",
+  messagingSenderId: "856592608176",
+  appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
+};
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-let usersData = [];
-let rapportsData = [];
-let ticketsData = [];
-let anomaliesChart = null;
-let currentSubTab = 'all';
-let usersUnsubscribe = null;
+let currentRapport = null;
+let previousRapport = null;
+let lastNotificationId = null;
 
-window.logout = async () => { await signOut(auth); window.location.href = "index.html"; };
-window.closeModal = (id) => document.getElementById(id).classList.remove('active');
-function openModal(id) { document.getElementById(id).classList.add('active'); }
-function showToast(msg, isError = false) { const t = document.createElement('div'); t.className = 'toast' + (isError ? ' toast-error' : ''); t.innerHTML = (isError ? '❌ ' : '✅ ') + msg; document.body.appendChild(t); setTimeout(() => t.remove(), 4000); }
-function showConfirm(title, message, onConfirm) { document.getElementById('confirmTitle').textContent = title; document.getElementById('confirmMessage').textContent = message; document.getElementById('confirmModal').classList.add('active'); const confirmOk = document.getElementById('confirmOkBtn'); const confirmCancel = document.getElementById('confirmCancelBtn'); const handler = () => { document.getElementById('confirmModal').classList.remove('active'); confirmOk.removeEventListener('click', handler); confirmCancel.removeEventListener('click', cancelHandler); if(onConfirm) onConfirm(); }; const cancelHandler = () => { document.getElementById('confirmModal').classList.remove('active'); confirmOk.removeEventListener('click', handler); confirmCancel.removeEventListener('click', cancelHandler); }; confirmOk.addEventListener('click', handler); confirmCancel.addEventListener('click', cancelHandler); }
+function showToast(msg, isError = false) {
+  const t = document.createElement('div');
+  t.className = 'toast' + (isError ? ' toast-error' : '');
+  t.innerHTML = (isError ? '⚠️ ' : '✓ ') + msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+function showProfessionalPopup(title, message, onConfirm = null) {
+  const modal = document.getElementById('notificationModal');
+  const body = document.getElementById('notificationBody');
+  body.innerHTML = `<div style="line-height:1.6;">${message}</div>`;
+  document.getElementById('notificationModal').classList.add('active');
+  const closeBtn = document.querySelector('#notificationModal .modal-footer button');
+  const originalClick = closeBtn.onclick;
+  closeBtn.onclick = () => {
+    document.getElementById('notificationModal').classList.remove('active');
+    if(onConfirm) onConfirm();
+  };
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+window.logout = async () => {
+  await signOut(auth);
+  window.location.href = "index.html";
+};
 
 window.switchTab = (tab) => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    event.target.closest('.tab').classList.add('active');
-    document.getElementById(`${tab}Tab`).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  event.target.closest('.tab').classList.add('active');
+  document.getElementById(`${tab}Tab`).classList.add('active');
 };
 
-document.querySelectorAll('.sub-tab').forEach(btn => {
-    btn.onclick = () => {
-        document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentSubTab = btn.dataset.subtab;
-        updateRapportsTable();
-    };
-});
-
-function listenToUsersRealtime() {
-    if (usersUnsubscribe) usersUnsubscribe();
-    const usersRef = collection(db, "users");
-    usersUnsubscribe = onSnapshot(usersRef, async (snapshot) => {
-        usersData = [];
-        snapshot.forEach(doc => usersData.push({ id: doc.id, ...doc.data() }));
-        const rapportsSnap = await getDocs(collection(db, "reports"));
-        rapportsData = [];
-        rapportsSnap.forEach(doc => rapportsData.push({ id: doc.id, ...doc.data() }));
-        rapportsData.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-        await loadTickets();
-        updateNetubersTable();
-        updateRapportsTable();
-        updateAnomaliesTable();
-        updateStats();
-        updateCharts();
-        updateSelects();
-        updateCapHistory();
-    });
+function formatDate(dateStr) {
+  if(!dateStr) return '---';
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('fr-FR') + ' à ' + d.toLocaleTimeString('fr-FR');
+  } catch(e) { return '---'; }
 }
 
-async function loadTickets() {
-    ticketsData = [];
-    for(const user of usersData) {
-        const userTickets = user.ticketsList || [];
-        for(const ticket of userTickets) {
-            ticketsData.push({ ...ticket, userCode: user.code, userId: user.id });
-        }
+function displayRapport(rapport, isPrevious = false) {
+  if(!rapport) {
+    if(isPrevious) {
+      document.getElementById('historiqueContainer').innerHTML = '<div style="text-align:center;padding:40px;color:#64748b;"><i class="fas fa-archive" style="font-size:48px;margin-bottom:15px;display:block;"></i>Aucun historique disponible</div>';
     }
-    ticketsData.sort((a,b) => new Date(b.date) - new Date(a.date));
-    updateTicketsTable();
+    return;
+  }
+  
+  const totalPoints = (rapport.totalPointsPrecedents || 0) + (rapport.totalPointsJour || 0);
+  const pointsPrevPercent = totalPoints > 0 ? ((rapport.totalPointsPrecedents || 0) / totalPoints) * 100 : 0;
+  const pointsJourPercent = totalPoints > 0 ? ((rapport.totalPointsJour || 0) / totalPoints) * 100 : 0;
+  
+  const nbAbsents = (rapport.netubers || []).filter(n => n.presence === 'Absent').length;
+  const nbPresents = (rapport.netubers || []).filter(n => n.presence === 'Présent').length;
+  
+  const html = `
+    <h4 style="margin-bottom:15px;"><i class="fas fa-chart-line"></i> Synthèse du rapport</h4>
+    <div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${rapport.reference || '-'}</span></div>
+    <div class="detail-row"><span class="detail-label">Zone / Site</span><span class="detail-value">${rapport.zone || '-'}</span></div>
+    <div class="detail-row"><span class="detail-label">Responsable</span><span class="detail-value">${rapport.responsable || '-'}</span></div>
+    <div class="detail-row"><span class="detail-label">Date d'envoi</span><span class="detail-value">${formatDate(rapport.createdAt)}</span></div>
+    <div class="detail-row"><span class="detail-label">Statut</span><span class="detail-value"><span class="badge ${rapport.status === 'traite' ? 'badge-success' : 'badge-warning'}">${rapport.status === 'traite' ? 'Traité' : 'En attente'}</span></span></div>
+    
+    <h4 style="margin:20px 0 10px;"><i class="fas fa-users"></i> Effectifs</h4>
+    <div class="detail-row"><span class="detail-label">Netubers présents</span><span class="detail-value" style="color:#10b981;">${nbPresents}</span></div>
+    <div class="detail-row"><span class="detail-label">Netubers absents</span><span class="detail-value" style="color:#f59e0b;">${nbAbsents}</span></div>
+    
+    <h4 style="margin:20px 0 10px;"><i class="fas fa-chart-simple"></i> Performance</h4>
+    <div class="detail-row"><span class="detail-label">Points précédents</span><span class="detail-value">${rapport.totalPointsPrecedents || 0} pts</span></div>
+    <div class="detail-row"><span class="detail-label">Points du jour</span><span class="detail-value" style="color:#f59e0b;font-weight:bold;">${rapport.totalPointsJour || 0} pts</span></div>
+    <div class="detail-row"><span class="detail-label">Progression</span><div class="progress-bar-group" style="flex:1;margin-left:10px;"><div class="progress-item"><div class="progress-label">Précédents (${Math.round(pointsPrevPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsPrevPercent}%; background:#3b82f6;"></div></div></div><div class="progress-item"><div class="progress-label">Jour (${Math.round(pointsJourPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsJourPercent}%; background:#f59e0b;"></div></div></div></div></div>
+    <div class="detail-row"><span class="detail-label">Rendement global</span><span class="detail-value ${(rapport.totalPointsJour||0) > (rapport.totalPointsPrecedents||0) ? 'tendance-up' : 'tendance-down'}">${rapport.rendementGlobal || '0.00'} pts/min</span></div>
+    
+    <h4 style="margin:20px 0 10px;"><i class="fas fa-list"></i> Détail par Netuber</h4>
+    <div class="table-wrapper"><table style="min-width:700px;"><thead><tr><th>Code</th><th>Présence</th><th>Raison absence</th><th>Points préc.</th><th>Points jour</th><th>Écart</th><th>Forfait Go</th></tr></thead><tbody>
+      ${(rapport.netubers || []).map(n => {
+        const ecart = (n.pointsJour || 0) - (n.pointsPrecedents || 0);
+        return `<tr><td><strong>${n.code}</strong></td><td>${n.presence === 'Présent' ? '✓ Présent' : '✗ Absent'}</td><td>${n.raisonAbsence || '-'}</td><td>${n.pointsPrecedents || 0}</td><td style="color:#f59e0b;">${n.pointsJour || 0}</td><td class="${ecart > 0 ? 'tendance-up' : 'tendance-down'}">${ecart > 0 ? '+' : ''}${ecart}</td><td>${n.forfaitInternet || '-'} Go</td></tr>`;
+      }).join('')}
+    </tbody></table></div>
+    <div style="margin-top:15px;text-align:right;">
+      <button class="action-btn view" onclick='openFullRapportModal("${rapport.id}")'><i class="fas fa-expand"></i> Voir en grand</button>
+    </div>
+  `;
+  
+  if(isPrevious) {
+    document.getElementById('historiqueContainer').innerHTML = html;
+  } else {
+    document.getElementById('rapportDetailContainer').innerHTML = html;
+    document.getElementById('rapportRef').innerHTML = rapport.reference || '---';
+    document.getElementById('rapportDate').innerHTML = formatDate(rapport.createdAt).split(' à ')[0];
+    document.getElementById('rapportResponsable').innerHTML = rapport.responsable || '---';
+    document.getElementById('rapportStatus').innerHTML = `<span class="badge ${rapport.status === 'traite' ? 'badge-success' : 'badge-warning'}">${rapport.status === 'traite' ? 'Traité' : 'En attente'}</span>`;
+  }
 }
 
-function updateTicketsTable() {
-    const tbody = document.getElementById('ticketsTableBody');
-    if(!tbody) return;
-    tbody.innerHTML = ticketsData.map(t => {
-        const statusClass = t.status === 'resolu' ? 'badge-success' : (t.status === 'en-cours' ? 'badge-warning' : 'badge-info');
-        const statusText = t.status === 'resolu' ? 'Résolu' : (t.status === 'en-cours' ? 'En cours' : 'Ouvert');
-        const priorityClass = t.priority === 'haute' ? 'badge-danger' : (t.priority === 'moyenne' ? 'badge-warning' : 'badge-info');
-        return `<tr><td><strong>${t.userCode}</strong></td><td>${t.category || t.subject}</td><td><span class="badge ${priorityClass}">${t.priority}</span></td><td><span class="badge ${statusClass}">${statusText}</span></td><td><small>${new Date(t.date).toLocaleDateString()}</small></td><td><button class="action-btn reply" onclick='openReplyTicketModal("${t.id}", "${t.userCode}")'><i class="fas fa-reply"></i></button>${t.status !== 'resolu' ? `<button class="action-btn resolve" onclick='resolveTicket("${t.id}", "${t.userId}")'><i class="fas fa-check"></i></button>` : ''}<button class="action-btn delete" onclick='deleteTicket("${t.id}", "${t.userId}")'><i class="fas fa-trash"></i></button></td></tr>`;
-    }).join('');
-    document.getElementById('ticketsOpen').innerText = ticketsData.filter(t => t.status === 'ouvert').length;
-    document.getElementById('ticketsProgress').innerText = ticketsData.filter(t => t.status === 'en-cours').length;
-    document.getElementById('ticketsResolved').innerText = ticketsData.filter(t => t.status === 'resolu').length;
+window.openFullRapportModal = (id) => {
+  const rapport = (currentRapport && currentRapport.id === id) ? currentRapport : previousRapport;
+  if(!rapport) return;
+  const totalPoints = (rapport.totalPointsPrecedents || 0) + (rapport.totalPointsJour || 0);
+  const pointsPrevPercent = totalPoints > 0 ? ((rapport.totalPointsPrecedents || 0) / totalPoints) * 100 : 0;
+  const pointsJourPercent = totalPoints > 0 ? ((rapport.totalPointsJour || 0) / totalPoints) * 100 : 0;
+  const modalBody = document.getElementById('rapportDetailBody');
+  modalBody.innerHTML = `
+    <div class="detail-card"><h4>Informations générales</h4><div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${rapport.reference || '-'}</span></div><div class="detail-row"><span class="detail-label">Zone</span><span class="detail-value">${rapport.zone || '-'}</span></div><div class="detail-row"><span class="detail-label">Responsable</span><span class="detail-value">${rapport.responsable || '-'}</span></div><div class="detail-row"><span class="detail-label">Date d'envoi</span><span class="detail-value">${formatDate(rapport.createdAt)}</span></div></div>
+    <div class="detail-card"><h4>Performance</h4><div class="detail-row"><span class="detail-label">Points précédents</span><span class="detail-value">${rapport.totalPointsPrecedents || 0} pts</span></div><div class="detail-row"><span class="detail-label">Points du jour</span><span class="detail-value" style="color:#f59e0b;">${rapport.totalPointsJour || 0} pts</span></div><div class="detail-row"><span class="detail-label">Progression</span><div class="progress-bar-group" style="flex:1;"><div class="progress-item"><div class="progress-label">Précédents (${Math.round(pointsPrevPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsPrevPercent}%; background:#3b82f6;"></div></div></div><div class="progress-item"><div class="progress-label">Jour (${Math.round(pointsJourPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsJourPercent}%; background:#f59e0b;"></div></div></div></div></div></div>
+    <div class="detail-card"><h4>Détail des Netubers</h4><div class="table-wrapper"><table style="min-width:700px;"><thead><tr><th>Code</th><th>Présence</th><th>Raison absence</th><th>Points préc.</th><th>Points jour</th><th>Écart</th><th>Forfait Go</th></tr></thead><tbody>${(rapport.netubers || []).map(n => { const ecart = (n.pointsJour || 0) - (n.pointsPrecedents || 0); return `<tr><td>${n.code}</td><td>${n.presence}</td><td>${n.raisonAbsence || '-'}</td><td>${n.pointsPrecedents || 0}</td><td>${n.pointsJour || 0}</td><td>${ecart > 0 ? '+' : ''}${ecart}</td><td>${n.forfaitInternet || '-'}</td></tr>`; }).join('')}</tbody></table></div></div>
+  `;
+  document.getElementById('rapportModal').classList.add('active');
+};
+
+async function loadNetubers() {
+  const usersSnap = await getDocs(collection(db, "users"));
+  const users = [];
+  usersSnap.forEach(doc => users.push({ id: doc.id, ...doc.data() }));
+  const tbody = document.getElementById('netubersTableBody');
+  if(tbody) {
+    tbody.innerHTML = users.map(u => `
+      <tr><td><strong>${u.code || '-'}</strong></td><td>${u.email || '-'}</td><td><span class="badge ${u.isBlocked ? 'badge-danger' : 'badge-success'}">${u.isBlocked ? 'Bloqué' : 'Actif'}</span></td><td><button class="action-btn view" onclick='toggleBlockUser("${u.id}", ${!u.isBlocked})'><i class="fas fa-ban"></i> ${u.isBlocked ? 'Débloquer' : 'Bloquer'}</button></td></tr>
+    `).join('');
+  }
 }
 
-window.deleteTicket = async (ticketId, userId) => {
-    showConfirm('NeTubeX', 'Supprimer ce ticket ?', async () => {
-        const userRef = doc(db, "users", userId);
-        const userSnap = await getDoc(userRef);
-        const tickets = userSnap.data().ticketsList || [];
-        await updateDoc(userRef, { ticketsList: tickets.filter(t => t.id !== ticketId) });
-        showToast('Ticket supprimé');
-        await loadTickets();
+window.toggleBlockUser = async (userId, block) => {
+  await setDoc(doc(db, "users", userId), { isBlocked: block }, { merge: true });
+  showToast(block ? 'Compte bloqué' : 'Compte débloqué');
+  loadNetubers();
+};
+
+window.createNetuber = async () => {
+  const code = document.getElementById('newCode').value.trim();
+  const email = document.getElementById('newEmail').value.trim();
+  const pwd = document.getElementById('newPassword').value;
+  if(!code || !email || !pwd) { showToast('Tous les champs sont requis', true); return; }
+  if(pwd.length < 6) { showToast('Le mot de passe doit contenir au moins 6 caractères', true); return; }
+  try {
+    const { createUserWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js");
+    const authLocal = getAuth();
+    const cred = await createUserWithEmailAndPassword(authLocal, email, pwd);
+    await setDoc(doc(db, "users", cred.user.uid), {
+      code, email, role: "netuber", isActive: true, isBlocked: false,
+      createdAt: new Date().toISOString(), lastSeen: new Date().toISOString(),
+      NombreConnexions: 0, NombreDeconnexions: 0, anomaliesConnexion: 0, anomaliesSysteme: 0, ticketsList: []
     });
+    closeModal('addNetuberModal');
+    showToast('Netuber créé avec succès');
+    loadNetubers();
+  } catch(e) { showToast(e.message, true); }
 };
 
-window.resolveTicket = async (ticketId, userId) => {
-    showConfirm('NeTubeX', 'Marquer ce ticket comme résolu ?', async () => {
-        const userRef = doc(db, "users", userId);
-        const userSnap = await getDoc(userRef);
-        const tickets = userSnap.data().ticketsList || [];
-        const idx = tickets.findIndex(t => t.id === ticketId);
-        if(idx !== -1) { tickets[idx].status = 'resolu'; await updateDoc(userRef, { ticketsList: tickets }); showToast('Ticket résolu'); await loadTickets(); }
-    });
+window.openAddNetuberModal = () => document.getElementById('addNetuberModal').classList.add('active');
+window.openMemoModal = () => document.getElementById('memoModal').classList.add('active');
+
+window.sendMemorandum = async () => {
+  const title = document.getElementById('memoTitle').value.trim();
+  const content = document.getElementById('memoContent').value.trim();
+  if(!title || !content || content.length < 20) {
+    showToast('Le titre et le contenu (minimum 20 caractères) sont requis', true);
+    return;
+  }
+  await addDoc(collection(db, "memorandums"), {
+    title, content,
+    destinataire: document.getElementById('memoDestinataire').value,
+    date: new Date().toISOString()
+  });
+  showToast('Mémorandum envoyé');
+  closeModal('memoModal');
+  document.getElementById('memoTitle').value = '';
+  document.getElementById('memoContent').value = '';
 };
 
-window.openReplyTicketModal = (ticketId, userCode) => {
-    document.getElementById('replyTicketId').value = ticketId;
-    document.getElementById('replyNetuberCode').value = userCode;
-    openModal('replyTicketModal');
+window.exportCurrentRapport = () => {
+  if(!currentRapport) { showToast('Aucun rapport à exporter', true); return; }
+  const data = JSON.stringify(currentRapport, null, 2);
+  const blob = new Blob([data], {type: 'application/json'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `rapport_${currentRapport.reference || 'pgco'}_${new Date().toISOString().split('T')[0]}.json`;
+  link.click();
+  showToast('Rapport exporté');
 };
 
-window.sendTicketReply = async () => {
-    const ticketId = document.getElementById('replyTicketId').value;
-    const userCode = document.getElementById('replyNetuberCode').value;
-    const message = document.getElementById('replyMessage').value.trim();
-    if(!message) { showToast('Message requis', true); return; }
-    const user = usersData.find(u => u.code === userCode);
-    if(!user) return;
-    const userRef = doc(db, "users", user.id);
-    const userSnap = await getDoc(userRef);
-    const tickets = userSnap.data().ticketsList || [];
-    const idx = tickets.findIndex(t => t.id === ticketId);
-    if(idx !== -1) {
-        tickets[idx].reponses = tickets[idx].reponses || [];
-        tickets[idx].reponses.push({ id: `reply_${Date.now()}`, message, admin: true, date: new Date().toISOString() });
-        if(tickets[idx].status === 'ouvert') tickets[idx].status = 'en-cours';
-        await updateDoc(userRef, { ticketsList: tickets });
-        showToast(`Réponse envoyée`);
-        closeModal('replyTicketModal');
-        await loadTickets();
+async function updateSelects() {
+  const usersSnap = await getDocs(collection(db, "users"));
+  const pgcoList = [];
+  usersSnap.forEach(doc => {
+    const u = doc.data();
+    if(u.role === 'netuber' || u.role === 'pgco') pgcoList.push(u.code);
+  });
+  const select = document.getElementById('memoDestinataire');
+  if(select) select.innerHTML = '<option value="all">📢 Tous les Netubers</option>' + pgcoList.map(p => `<option value="${p}">👤 ${p}</option>`).join('');
+}
+
+async function checkAndReplaceRapport() {
+  const reportsRef = collection(db, "reports");
+  const q = query(reportsRef, orderBy("createdAt", "desc"));
+  const snapshot = await getDocs(q);
+  
+  const allReports = [];
+  snapshot.forEach(doc => allReports.push({ id: doc.id, ...doc.data() }));
+  
+  if(allReports.length === 0) {
+    currentRapport = null;
+    previousRapport = null;
+    displayRapport(null, false);
+    displayRapport(null, true);
+    return;
+  }
+  
+  const sorted = allReports.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const latest = sorted[0];
+  const previous = sorted.length > 1 ? sorted[1] : null;
+  
+  const isNewRapport = !currentRapport || currentRapport.id !== latest.id;
+  
+  if(isNewRapport && currentRapport) {
+    previousRapport = currentRapport;
+    const expediteur = latest.responsable || 'Un responsable';
+    showProfessionalPopup(
+      '📋 Nouveau rapport reçu',
+      `<div style="font-size:14px;">
+        <p style="margin-bottom:10px;">Un nouveau rapport PGCO a été enregistré dans le système.</p>
+        <div style="background:#1a2332;padding:12px;border-radius:12px;margin:10px 0;">
+          <div><strong>Expéditeur :</strong> ${expediteur}</div>
+          <div><strong>Référence :</strong> ${latest.reference || 'N/A'}</div>
+          <div><strong>Date d'envoi :</strong> ${formatDate(latest.createdAt)}</div>
+        </div>
+        <p>Le rapport précédent a été archivé dans l'historique.</p>
+      </div>`,
+      null
+    );
+  }
+  
+  currentRapport = latest;
+  if(previous) previousRapport = previous;
+  
+  displayRapport(currentRapport, false);
+  displayRapport(previousRapport, true);
+  
+  if(sorted.length > 2) {
+    for(let i = 2; i < sorted.length; i++) {
+      await deleteDoc(doc(db, "reports", sorted[i].id));
     }
-};
-
-function updateNetubersTable() {
-    const tbody = document.getElementById('netubersTableBody');
-    if(!tbody) return;
-    const search = document.getElementById('searchNetuber')?.value.toLowerCase() || '';
-    const statusFilter = document.getElementById('statusFilter')?.value || 'all';
-    const now = new Date();
-    const INACTIVITY_LIMIT = 8 * 60 * 60 * 1000;
-    let filtered = usersData.filter(u => {
-        const matchSearch = (u.code || '').toLowerCase().includes(search);
-        const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
-        let isOnline = lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT;
-        const matchStatus = statusFilter === 'all' || (statusFilter === 'online' ? isOnline : !isOnline);
-        return matchSearch && matchStatus;
-    });
-    const onlineCount = usersData.filter(u => { const ls = u.lastSeen ? new Date(u.lastSeen) : null; return ls && ls.getFullYear() > 1970 && (now - ls) < INACTIVITY_LIMIT; }).length;
-    document.getElementById('totalOnline').innerText = onlineCount;
-    tbody.innerHTML = filtered.map(u => {
-        const objM = parseInt(u.objectifMensuel) || 9;
-        const objA = parseInt(u.objectifAtteint) || 0;
-        const anomalies = (parseInt(u.anomaliesConnexion)||0) + (parseInt(u.anomaliesSysteme)||0);
-        const isBlocked = u.isBlocked === true;
-        const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
-        let isOnline = lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT;
-        return `<tr><td><strong>${u.code || '-'}</strong>${isBlocked ? ' 🔒' : ''}</td><td>${u.email || '-'}</td><td>${objM}</td><td style="color:#10b981;">${objA}</td><td style="color:#f59e0b;">${objM-objA}</td><td>${u.NombreConnexions||0}</td><td><span class="badge ${anomalies>5?'badge-danger':(anomalies>2?'badge-warning':'badge-success')}">${anomalies}</span></td><td>${u.localisation||'-'}</td><td><span class="status-dot ${isOnline?'online':'offline'}" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${isOnline?'#10b981':'#64748b'};margin-right:6px;"></span>${isOnline?'Connecté':'Déconnecté'}</td><td><button class="action-btn cap" onclick='openCapModal("${u.code}")'><i class="fas fa-chart-line"></i></button><button class="action-btn view" onclick='showNetuberDetails("${u.code}")'><i class="fas fa-eye"></i></button></td></tr>`;
-    }).join('');
+  }
 }
 
-function updateRapportsTable() {
-    const search = document.getElementById('searchRapport')?.value.toLowerCase() || '';
-    const statut = document.getElementById('statutRapport')?.value || 'all';
-    let filtered = rapportsData.filter(r => {
-        const matchSearch = (r.reference || '').toLowerCase().includes(search);
-        const matchStatut = statut === 'all' || r.status === statut;
-        let hasAbsent = (r.netubers || []).some(n => n.presence === 'Absent');
-        let hasPresent = (r.netubers || []).some(n => n.presence === 'Présent');
-        let rendement = parseFloat(r.rendementGlobal) || 0;
-        let top20Percentile = rapportsData.length ? rendement > (rapportsData.sort((a,b)=>parseFloat(b.rendementGlobal||0)-parseFloat(a.rendementGlobal||0))[Math.floor(rapportsData.length*0.2)]?.rendementGlobal || 0) : false;
-        if(currentSubTab === 'absents' && !hasAbsent) return false;
-        if(currentSubTab === 'presents' && !hasPresent) return false;
-        if(currentSubTab === 'highperf' && !top20Percentile) return false;
-        return matchSearch && matchStatut;
-    });
-    const tbody = document.getElementById('rapportsTableBody');
-    if(!tbody) return;
-    tbody.innerHTML = filtered.map(r => {
-        const nbAbsents = (r.netubers || []).filter(n => n.presence === 'Absent').length;
-        const rendement = parseFloat(r.rendementGlobal || 0).toFixed(2);
-        return `<tr><td><strong>${r.reference || '-'}</strong></td><td>${r.zone || '-'}</td><td>${r.responsable || '-'}</td><td style="color:#f59e0b;font-weight:bold;">${r.totalPointsJour || 0}</td><td class="${(r.totalPointsJour||0) > (r.totalPointsPrecedents||0) ? 'tendance-up' : 'tendance-down'}">${rendement} pts/min</td><td><span class="badge ${nbAbsents>0?'badge-danger':'badge-success'}">${nbAbsents} absent${nbAbsents>1?'s':''}</span></td><td><small>${new Date(r.createdAt).toLocaleDateString()}</small></td><td><span class="badge ${r.status === 'traite' ? 'badge-success' : 'badge-warning'}">${r.status === 'traite' ? 'Traité' : 'Non traité'}</span></td><td><button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i></button></td></tr>`;
-    }).join('');
-    document.getElementById('totalRapports').innerText = rapportsData.length;
-    document.getElementById('nonTraites').innerText = rapportsData.filter(r => r.status !== 'traite').length;
-    const avgPts = rapportsData.reduce((a,r) => a + (r.totalPointsJour || 0), 0) / (rapportsData.length || 1);
-    document.getElementById('avgPoints').innerText = Math.round(avgPts);
-    const avgRend = rapportsData.reduce((a,r) => a + (parseFloat(r.rendementGlobal) || 0), 0) / (rapportsData.length || 1);
-    document.getElementById('avgRendement').innerText = avgRend.toFixed(2);
+function listenToReports() {
+  const reportsRef = collection(db, "reports");
+  onSnapshot(reportsRef, async () => {
+    await checkAndReplaceRapport();
+    await updateSelects();
+  });
 }
 
-window.viewRapport = (id) => {
-    const rapport = rapportsData.find(r => r.id === id);
-    if(!rapport) return;
-    const totalPoints = (rapport.totalPointsPrecedents || 0) + (rapport.totalPointsJour || 0);
-    const pointsPrevPercent = totalPoints > 0 ? ((rapport.totalPointsPrecedents || 0) / totalPoints) * 100 : 0;
-    const pointsJourPercent = totalPoints > 0 ? ((rapport.totalPointsJour || 0) / totalPoints) * 100 : 0;
-    const modalBody = document.getElementById('rapportDetailBody');
-    modalBody.innerHTML = `
-        <div class="detail-card"><h4>📋 Informations générales</h4><div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${rapport.reference || '-'}</span></div><div class="detail-row"><span class="detail-label">Zone / Site</span><span class="detail-value">${rapport.zone || '-'}</span></div><div class="detail-row"><span class="detail-label">Responsable</span><span class="detail-value">${rapport.responsable || '-'}</span></div><div class="detail-row"><span class="detail-label">Date d'envoi</span><span class="detail-value">${new Date(rapport.createdAt).toLocaleString('fr-FR')}</span></div></div>
-        <div class="detail-card"><h4>📊 Performance globale</h4><div class="detail-row"><span class="detail-label">Points précédents</span><span class="detail-value">${rapport.totalPointsPrecedents || 0} pts</span></div><div class="detail-row"><span class="detail-label">Points du jour</span><span class="detail-value" style="color:#f59e0b;">${rapport.totalPointsJour || 0} pts</span></div><div class="detail-row"><span class="detail-label">Progression</span><div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Précédents (${Math.round(pointsPrevPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsPrevPercent}%; background:#3b82f6;"></div></div></div><div class="progress-item"><div class="progress-label">Jour (${Math.round(pointsJourPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsJourPercent}%; background:#f59e0b;"></div></div></div></div></div></div>
-        <div class="detail-card"><h4>👥 Détail des Netubers</h4><div class="table-wrapper"><table style="min-width:700px;"><thead><tr><th>Code</th><th>Présence</th><th>Raison absence</th><th>Points préc.</th><th>Points jour</th><th>Écart</th><th>Forfait Go</th></tr></thead><tbody>${(rapport.netubers || []).map(n => { const ecart = (n.pointsJour || 0) - (n.pointsPrecedents || 0); return `<tr><td>${n.code}</td><td>${n.presence === 'Présent' ? '✅ Présent' : '❌ Absent'}</td><td>${n.raisonAbsence || '-'}</td><td>${n.pointsPrecedents || 0}</td><td style="color:#f59e0b;">${n.pointsJour || 0}</td><td class="${ecart > 0 ? 'tendance-up' : 'tendance-down'}">${ecart > 0 ? '+' : ''}${ecart}</td><td>${n.forfaitInternet || '-'} Go</td></tr>`; }).join('')}</tbody></table></div></div>`;
-    openModal('rapportModal');
-};
-
-function updateAnomaliesTable() {
-    const anomalies = [];
-    usersData.forEach(u => { const count = (parseInt(u.anomaliesConnexion)||0)+(parseInt(u.anomaliesSysteme)||0); if(count>=1) anomalies.push({ code: u.code, type: 'Anomalies système/connexion', count, last: u.derniereAnomalie || u.derniereMAJTech, id: u.id }); });
-    const tbody = document.getElementById('anomaliesTableBody');
-    if(tbody) tbody.innerHTML = anomalies.map(a => `<tr><td><strong>${a.code}</strong></td><td>${a.type}</td><td><span class="badge badge-danger">${a.count} fois</span></td><td><small>${a.last ? new Date(a.last).toLocaleDateString() : '-'}</small></td><td><button class="action-btn view" onclick='resetAnomalies("${a.id}")'><i class="fas fa-sync"></i> Réinitialiser</button></td></tr>`).join('');
+async function init() {
+  await checkAndReplaceRapport();
+  await loadNetubers();
+  await updateSelects();
+  listenToReports();
+  
+  const addBtn = document.querySelector('#parametresTab .btn-primary');
+  if(addBtn && addBtn.textContent.includes('Ajouter')) {
+    const newBtn = document.createElement('button');
+    newBtn.className = 'btn-primary';
+    newBtn.style.marginTop = '15px';
+    newBtn.innerHTML = '<i class="fas fa-user-plus"></i> Ajouter un Netuber';
+    newBtn.onclick = () => openAddNetuberModal();
+    document.querySelector('#parametresTab .detail-card:first-child').appendChild(newBtn);
+  } else if(addBtn && addBtn.textContent.includes('Envoyer')) {
+    const addBtn2 = document.createElement('button');
+    addBtn2.className = 'btn-primary';
+    addBtn2.style.marginTop = '15px';
+    addBtn2.innerHTML = '<i class="fas fa-user-plus"></i> Ajouter un Netuber';
+    addBtn2.onclick = () => openAddNetuberModal();
+    document.querySelector('#parametresTab .detail-card:first-child').appendChild(addBtn2);
+  }
 }
 
-function updateCapHistory() {
-    const history = [];
-    usersData.forEach(user => { if(user.capDuJour) history.push({ code: user.code, cap: user.capDuJour.substring(0,60)+(user.capDuJour.length>60?'...':''), envoyeLe: user.capEnvoyeLe, expiration: user.capExpiration }); });
-    const tbody = document.getElementById('capHistoryBody');
-    if(tbody) tbody.innerHTML = history.map(h => `<tr><td><strong>${h.code}</strong></td><td>${h.cap}</td><td>${h.envoyeLe ? new Date(h.envoyeLe).toLocaleString() : '-'}</td><td>${h.expiration || '-'}</td></tr>`).join('');
-    document.getElementById('totalActions').innerText = history.length;
-}
-
-function updateStats() {
-    const now = new Date();
-    const INACTIVITY_LIMIT = 8*60*60*1000;
-    document.getElementById('totalNetubers').innerText = usersData.length;
-    const onlineCount = usersData.filter(u => { const ls = u.lastSeen ? new Date(u.lastSeen) : null; return ls && ls.getFullYear()>1970 && (now-ls)<INACTIVITY_LIMIT; }).length;
-    document.getElementById('totalOnline').innerText = onlineCount;
-    const totalAnom = usersData.reduce((a,u)=>a+(parseInt(u.anomaliesConnexion)||0)+(parseInt(u.anomaliesSysteme)||0),0);
-    document.getElementById('totalAnomalies').innerText = totalAnom;
-    document.getElementById('blockedCount').innerText = usersData.filter(u=>u.isBlocked===true).length;
-}
-
-function updateCharts() {
-    const anomaliesByDay = [0,0,0,0,0,0,0];
-    usersData.forEach(u => { if(u.derniereAnomalie) { const d = new Date(u.derniereAnomalie); anomaliesByDay[d.getDay()]++; } });
-    if(anomaliesChart) anomaliesChart.destroy();
-    const ctx = document.getElementById('anomaliesChart')?.getContext('2d');
-    if(ctx) anomaliesChart = new Chart(ctx, { type: 'bar', data: { labels: ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'], datasets: [{ label: 'Anomalies', data: anomaliesByDay, backgroundColor: '#ef4444', borderRadius: 8 }] }, options: { responsive: true } });
-}
-
-function updateSelects() {
-    ['editCodeSelect', 'blockSelect', 'deleteSelect'].forEach(id => { const sel = document.getElementById(id); if(sel) sel.innerHTML = usersData.map(u => `<option value="${u.code}">${u.code}</option>`).join(''); });
-    const memoSelect = document.getElementById('memoDestinataire');
-    if(memoSelect) { const pgcoList = [...new Set(rapportsData.map(r=>r.responsable).filter(r=>r))]; memoSelect.innerHTML = '<option value="all">📢 Tous les PGCO</option>' + pgcoList.map(p=>`<option value="${p}">👤 ${p}</option>`).join(''); }
-}
-
-window.resetAnomalies = async (userId) => { showConfirm('NeTubeX', 'Réinitialiser les anomalies ?', async () => { await updateDoc(doc(db,"users",userId), { anomaliesConnexion:0, anomaliesSysteme:0 }); showToast("✅ Anomalies réinitialisées"); await listenToUsersRealtime(); }); };
-window.showNetuberDetails = (code) => { const user = usersData.find(u=>u.code===code); if(!user) return; const modalBody = document.getElementById('rapportDetailBody'); modalBody.innerHTML = `<div class="detail-grid"><div class="detail-card"><h4>Identité</h4><div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${user.code||'-'}</span></div><div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${user.email||'-'}</span></div></div><div class="detail-card"><h4>Objectifs</h4><div class="detail-row"><span class="detail-label">Mensuel</span><span class="detail-value">${user.objectifMensuel||9}</span></div><div class="detail-row"><span class="detail-label">Atteint</span><span class="detail-value">${user.objectifAtteint||0}</span></div><div class="detail-row"><span class="detail-label">Restant</span><span class="detail-value">${(user.objectifMensuel||9)-(user.objectifAtteint||0)}</span></div></div></div>`; openModal('rapportModal'); };
-window.openCapModal = (code) => { const user = usersData.find(u=>u.code===code); if(user) { document.getElementById('capNetuberCode').value = user.code; document.getElementById('capMessage').value = ''; document.getElementById('capExpiration').value = new Date().toISOString().split('T')[0]; openModal('capModal'); } };
-window.sendCapToNetuber = async () => { const user = usersData.find(u=>u.code===document.getElementById('capNetuberCode').value); if(!user) return; const capMessage = document.getElementById('capMessage').value.trim(); if(!capMessage) { showToast("Message requis", true); return; } await updateDoc(doc(db,"users",user.id), { capDuJour: capMessage, capExpiration: document.getElementById('capExpiration').value, capEnvoyeLe: new Date().toISOString() }); closeModal('capModal'); showToast(`CAP envoyé`); await listenToUsersRealtime(); };
-window.createNetuber = async () => { const code = document.getElementById('newCode').value.trim(); const email = document.getElementById('newEmail').value.trim(); const pwd = document.getElementById('newPassword').value; if(!code||!email||!pwd) { showToast("Tous champs requis", true); return; } if(pwd.length<6) { showToast("Mot de passe min 6 caractères", true); return; } try { const cred = await createUserWithEmailAndPassword(auth, email, pwd); await setDoc(doc(db,"users",cred.user.uid), { code, email, role:"netuber", isActive:true, createdAt:new Date().toISOString(), lastSeen:new Date().toISOString(), NombreConnexions:1, NombreDeconnexions:0, anomaliesConnexion:0, anomaliesSysteme:0, ticketsList:[], isBlocked:false, objectifMensuel:9, objectifAtteint:0 }); closeModal('addNetuberModal'); showToast("✅ Netuber créé"); await listenToUsersRealtime(); } catch(e) { showToast(e.message, true); } };
-window.updateNetuberCode = async () => { const code = document.getElementById('editCodeSelect').value; const newCode = document.getElementById('newCodeValue').value.trim(); if(!newCode) return; const user = usersData.find(u=>u.code===code); if(user) { await updateDoc(doc(db,"users",user.id), { code: newCode }); closeModal('editCodeModal'); showToast("Code modifié"); await listenToUsersRealtime(); } };
-window.toggleBlockNetuber = async () => { const code = document.getElementById('blockSelect').value; const action = document.getElementById('blockAction').value; const user = usersData.find(u=>u.code===code); if(user) { await updateDoc(doc(db,"users",user.id), { isBlocked: action === 'block' }); closeModal('blockModal'); showToast(action === 'block' ? "Bloqué" : "Débloqué"); await listenToUsersRealtime(); } };
-window.deleteNetuber = () => { const code = document.getElementById('deleteSelect').value; const user = usersData.find(u=>u.code===code); if(user) showConfirm('NeTubeX', `Supprimer ${code} ?`, async () => { await deleteDoc(doc(db,"users",user.id)); closeModal('deleteModal'); showToast("Supprimé"); await listenToUsersRealtime(); }); };
-window.openAddNetuberModal = () => openModal('addNetuberModal');
-window.openEditCodeModal = () => openModal('editCodeModal');
-window.openBlockModal = () => openModal('blockModal');
-window.openDeleteModal = () => openModal('deleteModal');
-window.openMemoModal = () => { document.getElementById('memoTitle').value = ''; document.getElementById('memoContent').value = ''; openModal('memoModal'); };
-window.sendMemorandum = async () => { const title = document.getElementById('memoTitle').value.trim(); const content = document.getElementById('memoContent').value.trim(); if(!title||!content||content.length<20) { showToast("Titre et contenu (20+ caractères)", true); return; } await addDoc(collection(db,"memorandums"), { title, content, destinataire:document.getElementById('memoDestinataire').value, date:new Date().toISOString() }); showToast("✅ Mémorandum envoyé"); closeModal('memoModal'); };
-window.exportNetubers = () => { let csv = "Code,Email,Objectif mensuel,Objectif atteint,Objectif restant,Connexions,Anomalies\n"; usersData.forEach(u=>{ csv+=`${u.code},${u.email},${u.objectifMensuel||9},${u.objectifAtteint||0},${(u.objectifMensuel||9)-(u.objectifAtteint||0)},${u.NombreConnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)}\n`; }); const blob=new Blob([csv],{type:'text/csv'}); const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=`netubers_${new Date().toISOString().split('T')[0]}.csv`; link.click(); };
-window.exportRapports = () => { let csv = "Référence,Zone,Responsable,Points préc.,Points jour,Rendement,Date,Statut\n"; rapportsData.forEach(r=>{ csv+=`${r.reference},${r.zone},${r.responsable},${r.totalPointsPrecedents||0},${r.totalPointsJour||0},${r.rendementGlobal||0},${new Date(r.createdAt).toLocaleDateString()},${r.status}\n`; }); const blob=new Blob([csv],{type:'text/csv'}); const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=`rapports_${new Date().toISOString().split('T')[0]}.csv`; link.click(); };
-window.filterNetubers = () => updateNetubersTable();
-window.filterRapports = () => updateRapportsTable();
-
-document.getElementById('sendCapBtn')?.addEventListener('click', () => window.sendCapToNetuber());
-document.getElementById('sendMemoBtn')?.addEventListener('click', () => window.sendMemorandum());
-
-listenToUsersRealtime();
+init();
 </script>
 </body>
 </html>
