@@ -3,166 +3,165 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>NeTubeX · Administration Professionnelle</title>
+<title>NeTubeX · DEO Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:100vh;}
+
+/* Scrollbar personnalisée */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:#0f1420;border-radius:10px;}
+::-webkit-scrollbar-thumb{background:#f59e0b;border-radius:10px;}
+::-webkit-scrollbar-thumb:hover{background:#d97706;}
+
 .dashboard{max-width:1600px;margin:0 auto;padding:20px 30px;}
-@media (max-width:768px){.dashboard{padding:15px;}}
-.header{background:#0f1420;border-bottom:1px solid #1e293b;padding:0.8rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;margin:-20px -30px 20px -30px;padding:0.8rem 30px;}
-@media (max-width:768px){.header{padding:0.5rem 15px;margin:-15px -15px 20px -15px;flex-wrap:wrap;gap:10px;}}
-.logo h1{font-size:22px;background:linear-gradient(135deg,#f59e0b,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.logo p{font-size:10px;color:#64748b;}
-.header-right{display:flex;align-items:center;gap:20px;}
+@media (max-width:768px){.dashboard{padding:12px;}}
+
+/* Header simplifié */
+.header{background:linear-gradient(135deg,#0f1420,#0a0f1a);border-bottom:2px solid #f59e0b;padding:0.8rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;margin:-20px -30px 20px -30px;padding:0.8rem 30px;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+@media (max-width:768px){.header{padding:0.8rem 15px;margin:-12px -12px 20px -12px;flex-wrap:wrap;gap:10px;}}
+.logo h1{font-size:18px;font-weight:600;color:#f59e0b;letter-spacing:1px;}
+.logo h1 i{color:#f59e0b;margin-right:8px;}
+.logo p{font-size:9px;color:#64748b;letter-spacing:0.5px;margin-top:2px;}
+.header-right{display:flex;align-items:center;gap:15px;}
 @media (max-width:768px){.header-right{gap:10px;}}
 .refresh-btn{background:#1e293b;border:none;padding:8px 14px;border-radius:40px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px;transition:0.2s;}
-.refresh-btn:hover{background:#334155;}
+.refresh-btn:hover{background:#334155;transform:scale(1.02);}
 .logout-btn{background:#ef4444;border:none;padding:8px 14px;border-radius:40px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px;transition:0.2s;}
-.logout-btn:hover{background:#dc2626;}
-.admin-profile{display:flex;align-items:center;gap:10px;background:#1e293b;padding:6px 14px;border-radius:40px;}
-.admin-profile i{color:#f59e0b;}
-.admin-profile span{font-size:12px;font-weight:500;}
+.logout-btn:hover{background:#dc2626;transform:scale(1.02);}
 
-/* Onglets professionnels */
+/* Onglets - responsive */
 .tabs{display:flex;gap:8px;margin-bottom:25px;flex-wrap:wrap;border-bottom:1px solid #1e293b;padding-bottom:10px;}
 .tab{padding:10px 22px;background:transparent;border:none;border-radius:30px;color:#94a3b8;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;}
-.tab:hover{background:#1e293b;color:#fff;}
-.tab.active{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;}
-.tab-content{display:none;animation:fadeIn 0.2s;}
+.tab:hover{background:#1e293b;color:#fff;transform:translateY(-1px);}
+.tab.active{background:linear-gradient(135deg,#f59e0b,#d97706);color:#0a0f1a;box-shadow:0 2px 10px rgba(245,158,11,0.3);}
+.tab-content{display:none;animation:fadeIn 0.3s ease;}
 .tab-content.active{display:block;}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 
-/* Filtres et recherches */
+/* Filtres */
 .filters{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
-.search-input{padding:10px 16px;border-radius:40px;border:1px solid #1e293b;background:#0f1420;color:#fff;min-width:250px;outline:none;font-size:13px;}
+.search-input{padding:10px 16px;border-radius:40px;border:1px solid #1e293b;background:#0f1420;color:#fff;min-width:250px;outline:none;font-size:13px;transition:0.2s;}
 @media (max-width:768px){.search-input{min-width:100%;}}
-.search-input:focus{border-color:#f59e0b;}
+.search-input:focus{border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,0.2);}
 .filter-select{padding:8px 14px;border-radius:40px;border:1px solid #1e293b;background:#0f1420;color:#fff;cursor:pointer;font-size:12px;}
-.export-btn{background:#10b981;border:none;padding:8px 16px;border-radius:40px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;}
-.export-btn:hover{background:#059669;}
+.export-btn{background:#10b981;border:none;padding:8px 16px;border-radius:40px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;transition:0.2s;}
+.export-btn:hover{background:#059669;transform:scale(1.02);}
 
-/* Cartes statistiques */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:25px;}
-.stat-card{background:#0f1420;border-radius:16px;padding:15px;border:1px solid #1e293b;}
-.stat-card .value{font-size:24px;font-weight:700;}
-.stat-card .label{font-size:11px;color:#64748b;margin-top:5px;}
-.chart-container{background:#0f1420;border-radius:16px;padding:20px;margin-bottom:20px;overflow-x:auto;}
+/* Grille stats responsive */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-bottom:25px;}
+.stat-card{background:linear-gradient(145deg,#0f1420,#0a0f1a);border-radius:20px;padding:18px;border:1px solid #1e293b;transition:0.2s;box-shadow:0 4px 12px rgba(0,0,0,0.2);}
+.stat-card:hover{transform:translateY(-2px);border-color:#f59e0b40;}
+.stat-card .value{font-size:28px;font-weight:800;background:linear-gradient(135deg,#fff,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-card .label{font-size:11px;color:#64748b;margin-top:8px;text-transform:uppercase;letter-spacing:0.5px;}
+.stat-card i{font-size:24px;color:#f59e0b40;float:right;}
 
-/* Tableaux */
-.table-wrapper{background:#0f1420;border-radius:16px;overflow-x:auto;border:1px solid #1e293b;max-height:500px;overflow-y:auto;}
-table{width:100%;border-collapse:collapse;min-width:900px;}
-@media (max-width:768px){table{min-width:700px;}}
-th{text-align:left;padding:12px;font-size:11px;font-weight:600;color:#64748b;border-bottom:1px solid #1e293b;position:sticky;top:0;background:#0f1420;}
-td{padding:10px 12px;border-bottom:1px solid #1e293b;font-size:12px;}
+/* Graphiques en temps réel */
+.chart-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:20px;margin-bottom:20px;}
+@media (max-width:768px){.chart-grid{grid-template-columns:1fr;}}
+.chart-container{background:#0f1420;border-radius:20px;padding:20px;border:1px solid #1e293b;box-shadow:0 4px 12px rgba(0,0,0,0.2);}
+.chart-container h4{font-size:13px;color:#f59e0b;margin-bottom:15px;display:flex;align-items:center;gap:8px;border-left:3px solid #f59e0b;padding-left:12px;}
+
+/* Tableaux responsive */
+.table-wrapper{background:#0f1420;border-radius:20px;overflow-x:auto;border:1px solid #1e293b;max-height:500px;overflow-y:auto;}
+table{width:100%;border-collapse:collapse;min-width:800px;}
+@media (max-width:768px){table{min-width:650px;}}
+th{text-align:left;padding:14px 12px;font-size:11px;font-weight:700;color:#64748b;border-bottom:1px solid #1e293b;position:sticky;top:0;background:#0f1420;text-transform:uppercase;letter-spacing:0.5px;}
+td{padding:12px 12px;border-bottom:1px solid #1e293b;font-size:12px;}
 tr{cursor:pointer;transition:0.2s;}
 tr:hover{background:#1a2332;}
 
 /* Badges */
-.badge{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:500;display:inline-block;}
-.badge-success{background:rgba(16,185,129,0.2);color:#10b981;}
-.badge-danger{background:rgba(239,68,68,0.2);color:#ef4444;}
-.badge-warning{background:rgba(245,158,11,0.2);color:#f59e0b;}
-.badge-info{background:rgba(59,130,246,0.2);color:#3b82f6;}
+.badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;display:inline-block;}
+.badge-success{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);}
+.badge-danger{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3);}
+.badge-warning{background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.3);}
+.badge-info{background:rgba(59,130,246,0.15);color:#3b82f6;border:1px solid rgba(59,130,246,0.3);}
 
-/* Spot pour le statut (ampoule) */
-.status-spot{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:30px;font-size:11px;font-weight:600;}
-.status-spot.online{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);}
-.status-spot.offline{background:rgba(100,116,139,0.15);color:#94a3b8;border:1px solid rgba(100,116,139,0.3);}
+/* Spot statut (ampoule) */
+.status-spot{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:30px;font-size:11px;font-weight:600;}
+.status-spot.online{background:rgba(16,185,129,0.12);color:#10b981;border:1px solid rgba(16,185,129,0.3);}
+.status-spot.offline{background:rgba(100,116,139,0.12);color:#94a3b8;border:1px solid rgba(100,116,139,0.3);}
 .status-spot i{font-size:12px;}
-.status-spot.online i{color:#10b981;text-shadow:0 0 8px #10b981;}
-.status-spot.offline i{color:#64748b;}
+.status-spot.online i{color:#10b981;text-shadow:0 0 6px #10b981;}
 
-/* Modales professionnelles */
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(8px);z-index:1000;justify-content:center;align-items:center;}
+/* Modales */
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.96);backdrop-filter:blur(8px);z-index:1000;justify-content:center;align-items:center;}
 .modal.active{display:flex;}
-.modal-content{background:#0f1420;border-radius:20px;max-width:800px;width:90%;border:1px solid #1e293b;max-height:85vh;overflow-y:auto;}
+.modal-content{background:#0f1420;border-radius:24px;max-width:800px;width:90%;border:1px solid #1e293b;max-height:85vh;overflow-y:auto;}
 @media (max-width:768px){.modal-content{width:95%;}}
-.modal-header{padding:15px 20px;border-bottom:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#0f1420;}
-.modal-header h2{font-size:16px;display:flex;align-items:center;gap:8px;}
-.modal-close{background:#1e293b;border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;}
-.modal-body{padding:20px;}
-.modal-footer{padding:12px 20px;border-top:1px solid #1e293b;display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:#0f1420;}
-.modal-footer button{padding:8px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:600;}
+.modal-header{padding:18px 22px;border-bottom:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#0f1420;}
+.modal-header h2{font-size:16px;display:flex;align-items:center;gap:8px;color:#f59e0b;}
+.modal-close{background:#1e293b;border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;transition:0.2s;}
+.modal-close:hover{background:#ef4444;}
+.modal-body{padding:22px;}
+.modal-footer{padding:15px 22px;border-top:1px solid #1e293b;display:flex;justify-content:flex-end;gap:12px;position:sticky;bottom:0;background:#0f1420;}
+.modal-footer button{padding:10px 20px;border-radius:12px;border:none;cursor:pointer;font-weight:600;transition:0.2s;}
 
-/* Grille de détails */
-.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+/* Détails */
+.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-bottom:20px;}
 @media (max-width:768px){.detail-grid{grid-template-columns:1fr;}}
-.detail-card{background:#1a2332;border-radius:12px;padding:15px;border:1px solid #2d3748;}
-.detail-card h4{margin-bottom:10px;color:#f59e0b;font-size:13px;border-left:3px solid #f59e0b;padding-left:10px;}
-.detail-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #2d3748;font-size:12px;flex-wrap:wrap;}
-.detail-label{color:#94a3b8;}
-.detail-value{font-weight:600;color:#e2e8f0;}
+.detail-card{background:#1a2332;border-radius:16px;padding:18px;border:1px solid #2d3748;}
+.detail-card h4{margin-bottom:12px;color:#f59e0b;font-size:13px;border-left:3px solid #f59e0b;padding-left:12px;}
 
-/* Champs de formulaire */
-.input-group{margin-bottom:15px;}
-.input-group label{display:block;font-size:11px;color:#64748b;margin-bottom:5px;}
-.input-group input,.input-group select,.input-group textarea{width:100%;padding:10px 14px;border-radius:10px;border:1px solid #1e293b;background:#1a2332;color:#fff;outline:none;font-family:inherit;}
-.input-group textarea{resize:vertical;}
+/* Formulaires */
+.input-group{margin-bottom:18px;}
+.input-group label{display:block;font-size:11px;color:#64748b;margin-bottom:6px;font-weight:600;}
+.input-group input,.input-group select,.input-group textarea{width:100%;padding:12px 16px;border-radius:12px;border:1px solid #1e293b;background:#1a2332;color:#fff;outline:none;font-family:inherit;transition:0.2s;}
+.input-group input:focus,.input-group select:focus,.input-group textarea:focus{border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,0.2);}
 
-/* Boutons d'action */
-.action-btn{padding:5px 10px;border-radius:6px;font-size:10px;cursor:pointer;border:none;transition:0.2s;margin:0 2px;}
+/* Boutons action */
+.action-btn{padding:6px 12px;border-radius:8px;font-size:10px;cursor:pointer;border:none;transition:0.2s;margin:0 3px;font-weight:600;}
 .action-btn.view{background:#3b82f6;color:#fff;}
-.action-btn.view:hover{background:#2563eb;}
-.action-btn.cap{background:#f59e0b;color:#fff;}
-.action-btn.cap:hover{background:#d97706;}
-.action-btn.resolve{background:#10b981;color:#fff;}
-.action-btn.resolve:hover{background:#059669;}
+.action-btn.view:hover{background:#2563eb;transform:scale(1.05);}
+.action-btn.cap{background:#f59e0b;color:#0a0f1a;}
+.action-btn.cap:hover{background:#d97706;transform:scale(1.05);}
 .action-btn.delete{background:#ef4444;color:#fff;}
-.action-btn.delete:hover{background:#dc2626;}
+.action-btn.delete:hover{background:#dc2626;transform:scale(1.05);}
 .action-btn.reply{background:#8b5cf6;color:#fff;}
-.action-btn.reply:hover{background:#7c3aed;}
+.action-btn.reply:hover{background:#7c3aed;transform:scale(1.05);}
 
 /* Notifications */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:40px;font-size:12px;z-index:10000;animation:slideUp 0.3s;}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:12px 24px;border-radius:50px;font-size:13px;z-index:10000;animation:slideUp 0.3s;box-shadow:0 4px 15px rgba(0,0,0,0.3);}
 .toast-error{background:#ef4444;}
-@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(30px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
 
-/* Barres de progression */
-.progress-bar-group{margin-top:10px;}
-.progress-item{margin-bottom:12px;}
-.progress-label{font-size:10px;margin-bottom:4px;color:#94a3b8;}
-.progress-bar-bg{background:#1e293b;border-radius:4px;height:8px;overflow:hidden;}
-.progress-bar-fill{height:8px;border-radius:4px;transition:width 0.3s;}
-.tendance-up{color:#10b981;}
-.tendance-down{color:#f59e0b;}
-
-/* Dialogue de confirmation professionnel */
-.confirm-dialog{text-align:center;}
-.confirm-dialog i{font-size:48px;color:#f59e0b;margin-bottom:15px;}
-.confirm-dialog h3{font-size:18px;margin-bottom:10px;}
-.confirm-dialog p{color:#94a3b8;margin-bottom:20px;font-size:13px;}
-.confirm-buttons{display:flex;gap:12px;justify-content:center;}
-.confirm-buttons button{padding:10px 24px;border-radius:40px;border:none;cursor:pointer;font-weight:600;transition:0.2s;}
+/* Confirmation */
+.confirm-dialog{text-align:center;padding:20px;}
+.confirm-dialog i{font-size:55px;color:#f59e0b;margin-bottom:15px;}
+.confirm-dialog h3{font-size:20px;margin-bottom:10px;}
+.confirm-dialog p{color:#94a3b8;margin-bottom:25px;font-size:13px;}
+.confirm-buttons{display:flex;gap:15px;justify-content:center;}
+.confirm-buttons button{padding:10px 28px;border-radius:50px;border:none;cursor:pointer;font-weight:600;transition:0.2s;}
 .confirm-buttons .btn-confirm{background:#ef4444;color:#fff;}
 .confirm-buttons .btn-confirm:hover{background:#dc2626;}
 .confirm-buttons .btn-cancel{background:#1e293b;color:#fff;}
 .confirm-buttons .btn-cancel:hover{background:#334155;}
 
 /* Sous-onglets rapports */
-.report-subtabs{display:flex;gap:10px;margin-bottom:20px;border-bottom:1px solid #1e293b;padding-bottom:8px;}
-.report-subtab{padding:8px 20px;background:transparent;border:none;border-radius:20px;color:#94a3b8;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.2s;}
-.report-subtab:hover{background:#1e293b;color:#fff;}
-.report-subtab.active{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;}
+.report-subtabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.report-subtab{padding:8px 20px;background:#1e293b;border:none;border-radius:30px;color:#94a3b8;cursor:pointer;font-size:12px;font-weight:500;transition:0.2s;}
+.report-subtab:hover{background:#334155;color:#fff;}
+.report-subtab.active{background:linear-gradient(135deg,#f59e0b,#d97706);color:#0a0f1a;}
 .report-category{display:none;}
 .report-category.active{display:block;}
 
-/* Onglet Confidentialité */
-.privacy-card{background:#1a2332;border-radius:16px;padding:20px;margin-bottom:20px;}
-.privacy-card h3{color:#f59e0b;margin-bottom:15px;font-size:14px;}
-.email-list{font-family:monospace;font-size:12px;}
+/* Mot de passe visible */
+.password-cell{font-family:monospace;font-size:11px;letter-spacing:0.5px;}
+.password-cell i{cursor:pointer;margin-left:8px;color:#f59e0b;}
 </style>
 </head>
 <body>
 <div class="dashboard">
 <div class="header">
-<div class="logo"><h1><i class="fas fa-chart-line"></i> NeTubeX Admin</h1><p>Gestion des Netubers & Support</p></div>
+<div class="logo"><h1><i class="fas fa-chart-line"></i> ESPACE DE LA DIRECTION DES OPÉRATIONS</h1><p>Gestion des Netubers & Support DEO</p></div>
 <div class="header-right">
 <button class="refresh-btn" onclick="location.reload()"><i class="fas fa-sync-alt"></i> Actualiser</button>
 <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
-<div class="admin-profile"><i class="fas fa-user-cog"></i><span>Administrateur</span></div>
 </div>
 </div>
 
@@ -178,14 +177,14 @@ tr:hover{background:#1a2332;}
 <!-- Onglet Netubers -->
 <div id="netubersTab" class="tab-content active">
 <div class="stats-grid">
-<div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Total Netubers</div></div>
-<div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">Connectés</div></div>
-<div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label">Déconnectés</div></div>
-<div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Comptes bloqués</div></div>
+<div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label"><i class="fas fa-users"></i> Total Netubers</div></div>
+<div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label"><i class="fas fa-circle"></i> Connectés</div></div>
+<div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label"><i class="fas fa-circle"></i> Déconnectés</div></div>
+<div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label"><i class="fas fa-ban"></i> Comptes bloqués</div></div>
 </div>
 
 <div class="filters">
-<input type="text" id="searchNetuber" placeholder="Rechercher par code..." class="search-input" onkeyup="filterNetubers()">
+<input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()">
 <select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous les statuts</option><option value="online">Connectés</option><option value="offline">Déconnectés</option></select>
 <button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button>
 <button class="export-btn" onclick="openAddNetuberModal()" style="background:#3b82f6;"><i class="fas fa-user-plus"></i> Ajouter</button>
@@ -201,9 +200,15 @@ tr:hover{background:#1a2332;}
 <!-- Onglet Rapports PGCO -->
 <div id="rapportsTab" class="tab-content">
 <div class="stats-grid">
-<div class="stat-card"><div class="value" id="totalRapports">0</div><div class="label">Rapports reçus</div></div>
-<div class="stat-card"><div class="value" id="avgPoints">0</div><div class="label">Moyenne points/jour</div></div>
-<div class="stat-card"><div class="value" id="avgRendement">0</div><div class="label">Rendement moyen</div></div>
+<div class="stat-card"><div class="value" id="totalRapports">0</div><div class="label"><i class="fas fa-file-alt"></i> Rapports reçus</div></div>
+<div class="stat-card"><div class="value" id="avgPoints">0</div><div class="label"><i class="fas fa-star"></i> Moyenne points/jour</div></div>
+<div class="stat-card"><div class="value" id="avgRendement">0</div><div class="label"><i class="fas fa-tachometer-alt"></i> Rendement moyen</div></div>
+</div>
+
+<!-- Graphiques temps réel -->
+<div class="chart-grid">
+<div class="chart-container"><h4><i class="fas fa-chart-line"></i> Évolution des points (7 derniers jours)</h4><canvas id="pointsChart" style="max-height:200px;"></canvas></div>
+<div class="chart-container"><h4><i class="fas fa-chart-pie"></i> Répartition présence / absence</h4><canvas id="presenceChart" style="max-height:200px;"></canvas></div>
 </div>
 
 <div class="report-subtabs">
@@ -213,37 +218,35 @@ tr:hover{background:#1a2332;}
 <button class="report-subtab" onclick="switchReportCategory('actif')"><i class="fas fa-clock"></i> Actifs (Temps)</button>
 </div>
 
-<div class="chart-container"><canvas id="rapportsChart" style="max-height:250px;"></canvas></div>
-
 <div class="filters">
-<input type="text" id="searchRapport" placeholder="Rechercher référence ou zone..." class="search-input" onkeyup="filterRapports()">
+<input type="text" id="searchRapport" placeholder="🔍 Rechercher code netuber..." class="search-input" onkeyup="filterRapports()">
 <button class="export-btn" onclick="exportRapports()"><i class="fas fa-file-excel"></i> Exporter</button>
 <button class="export-btn" onclick="openMemoModal()" style="background:#ec4899;"><i class="fas fa-envelope"></i> Mémorandum</button>
 </div>
 
 <div id="report-present" class="report-category active">
-<div class="table-wrapper"><table><thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Netubers présents</th><th>Points/jour</th><th>Rendement</th><th>Date</th><th>Actions</th></tr></thead><tbody id="presentRapportsBody"></tbody></table></div>
+<div class="table-wrapper"></table><thead><tr><th>Code Netuber</th><th>Zone</th><th>Responsable PGCO</th><th>Points/jour</th><th>Rendement</th><th>Date rapport</th><th>Actions</th></tr></thead><tbody id="presentRapportsBody"></tbody></table></div>
 </div>
 
 <div id="report-absent" class="report-category">
-<div class="table-wrapper"><table><thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Netubers absents</th><th>Taux d'absence</th><th>Date</th><th>Actions</th></tr></thead><tbody id="absentRapportsBody"></tbody></table></div>
+<div class="table-wrapper"><table><thead><tr><th>Code Netuber</th><th>Zone</th><th>Responsable PGCO</th><th>Raison absence</th><th>Date rapport</th><th>Actions</th></tr></thead><tbody id="absentRapportsBody"></tbody></table></div>
 </div>
 
 <div id="report-performant" class="report-category">
-<div class="table-wrapper"><table><thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Points/jour</th><th>Classement</th><th>Date</th><th>Actions</th></tr></thead><tbody id="performantRapportsBody"></tbody></table></div>
+<div class="table-wrapper"><table><thead><tr><th>Classement</th><th>Code Netuber</th><th>Zone</th><th>Points/jour</th><th>Temps actif</th><th>Date rapport</th><th>Actions</th></tr></thead><tbody id="performantRapportsBody"></tbody></table></div>
 </div>
 
 <div id="report-actif" class="report-category">
-<div class="table-wrapper"><table><thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Temps actif (min)</th><th>Productivité</th><th>Date</th><th>Actions</th></tr></thead><tbody id="actifRapportsBody"></tbody></table></div>
+<div class="table-wrapper"><table><thead><tr><th>Classement</th><th>Code Netuber</th><th>Zone</th><th>Temps actif</th><th>Points/jour</th><th>Date rapport</th><th>Actions</th></tr></thead><tbody id="actifRapportsBody"></tbody></table></div>
 </div>
 </div>
 
 <!-- Onglet Tickets -->
 <div id="ticketsTab" class="tab-content">
 <div class="stats-grid">
-<div class="stat-card"><div class="value" id="ticketsOpen">0</div><div class="label">Tickets ouverts</div></div>
-<div class="stat-card"><div class="value" id="ticketsProgress">0</div><div class="label">En cours</div></div>
-<div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Résolus</div></div>
+<div class="stat-card"><div class="value" id="ticketsOpen">0</div><div class="label"><i class="fas fa-envelope-open"></i> Tickets ouverts</div></div>
+<div class="stat-card"><div class="value" id="ticketsProgress">0</div><div class="label"><i class="fas fa-spinner"></i> En cours</div></div>
+<div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label"><i class="fas fa-check-circle"></i> Résolus</div></div>
 </div>
 <div class="table-wrapper"><table id="ticketsTable"><thead><tr><th>Netuber</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody id="ticketsTableBody"></tbody></table></div>
 </div>
@@ -251,42 +254,38 @@ tr:hover{background:#1a2332;}
 <!-- Onglet Anomalies -->
 <div id="anomaliesTab" class="tab-content">
 <div class="stats-grid">
-<div class="stat-card"><div class="value" id="totalAnomalies">0</div><div class="label">Anomalies détectées</div></div>
+<div class="stat-card"><div class="value" id="totalAnomalies">0</div><div class="label"><i class="fas fa-exclamation-triangle"></i> Anomalies détectées</div></div>
 </div>
-<div class="chart-container"><canvas id="anomaliesChart" style="max-height:250px;"></canvas></div>
+<div class="chart-container"><h4><i class="fas fa-chart-bar"></i> Anomalies par jour</h4><canvas id="anomaliesChart" style="max-height:250px;"></canvas></div>
 <div class="table-wrapper"><table id="anomaliesTable"><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre</th><th>Dernière occurrence</th><th>Action</th></tr></thead><tbody id="anomaliesTableBody"></tbody></table></div>
 </div>
 
-<!-- Onglet Confidentialité -->
+<!-- Onglet Confidentialité (accès DEO uniquement) -->
 <div id="confidentialiteTab" class="tab-content">
 <div class="stats-grid">
-<div class="stat-card"><div class="value" id="totalEmails">0</div><div class="label">Emails enregistrés</div></div>
-<div class="stat-card"><div class="value" id="protectedAccounts">0</div><div class="label">Comptes protégés</div></div>
+<div class="stat-card"><div class="value" id="totalEmails">0</div><div class="label"><i class="fas fa-envelope"></i> Emails enregistrés</div></div>
+<div class="stat-card"><div class="value" id="totalPasswords">0</div><div class="label"><i class="fas fa-key"></i> Comptes actifs</div></div>
 </div>
-<div class="privacy-card">
-<h3><i class="fas fa-envelope"></i> Liste des emails des Netubers</h3>
+<div class="detail-card">
+<h4><i class="fas fa-database"></i> Base des identifiants Netubers</h4>
 <div class="table-wrapper">
 <table>
-<thead><tr><th>Code Netuber</th><th>Email</th><th>Statut confidentialité</th></tr></thead>
+<thead><tr><th>Code Netuber</th><th>Email</th><th>Mot de passe</th><th>Statut</th><th>Dernière connexion</th></tr></thead>
 <tbody id="privacyEmailsBody"></tbody>
 </table>
 </div>
-</div>
-<div class="privacy-card">
-<h3><i class="fas fa-shield-alt"></i> Politique de confidentialité</h3>
-<p style="font-size:12px; line-height:1.6; color:#94a3b8;">Les données personnelles des Netubers sont protégées conformément au RGPD. Les emails sont stockés de manière sécurisée et ne sont accessibles qu'aux administrateurs autorisés. Aucune donnée personnelle n'est partagée avec des tiers.</p>
 </div>
 </div>
 
 <!-- Onglet Paramètres -->
 <div id="settingsTab" class="tab-content">
-<div class="stats-grid"><div class="stat-card"><div class="value" id="totalActions">0</div><div class="label">CAP envoyés</div></div></div>
-<div class="detail-card" style="margin-bottom:20px;"><h4><i class="fas fa-chart-line"></i> CAP du jour - Historique des envois</h4><div class="table-wrapper" style="max-height:300px;"><table id="capHistoryTable"><thead><tr><th>Netuber</th><th>CAP</th><th>Date envoi</th><th>Expiration</th></tr></thead><tbody id="capHistoryBody"></tbody></table></div></div>
-<div class="detail-card"><h4><i class="fas fa-cog"></i> Administration système</h4><table style="min-width:auto;"><thead><tr><th>Action</th><th>Description</th><th>Statut</th></tr></thead>
+<div class="stats-grid"><div class="stat-card"><div class="value" id="totalActions">0</div><div class="label"><i class="fas fa-chart-line"></i> CAP envoyés</div></div></div>
+<div class="detail-card" style="margin-bottom:20px;"><h4><i class="fas fa-history"></i> Historique des CAP</h4><div class="table-wrapper" style="max-height:300px;"><table id="capHistoryTable"><thead><tr><th>Netuber</th><th>CAP</th><th>Date envoi</th><th>Expiration</th></tr></thead><tbody id="capHistoryBody"></tbody></table></div></div>
+<div class="detail-card"><h4><i class="fas fa-cog"></i> Administration système</h4><table><thead><tr><th>Action</th><th>Description</th><th>Statut</th></tr></thead>
 <tbody>
-<tr><td><i class="fas fa-user-edit"></i> Modifier code Netuber</td><td>Changer le code unique d'un Netuber</td><td><button class="badge badge-info" onclick="openEditCodeModal()" style="cursor:pointer;">Modifier</button></td></tr>
-<tr><td><i class="fas fa-ban"></i> Bloquer/Débloquer Netuber</td><td>Bloquer l'accès au Dashboard utilisateur</td><td><button class="badge badge-warning" onclick="openBlockModal()" style="cursor:pointer;">Gérer</button></td></tr>
-<tr><td><i class="fas fa-trash"></i> Supprimer Netuber</td><td>Supprimer définitivement un Netuber</td><td><button class="badge badge-danger" onclick="openDeleteModal()" style="cursor:pointer;">Supprimer</button></td></tr>
+<tr><td><i class="fas fa-user-edit"></i> Modifier code Netuber</td><td>Changer le code unique</td><td><button class="badge badge-info" onclick="openEditCodeModal()" style="cursor:pointer;">Modifier</button></td></tr>
+<tr><td><i class="fas fa-ban"></i> Bloquer/Débloquer</td><td>Bloquer l'accès Dashboard</td><td><button class="badge badge-warning" onclick="openBlockModal()" style="cursor:pointer;">Gérer</button></td></tr>
+<tr><td><i class="fas fa-trash"></i> Supprimer Netuber</td><td>Suppression définitive</td><td><button class="badge badge-danger" onclick="openDeleteModal()" style="cursor:pointer;">Supprimer</button></td></tr>
 </tbody>
 </table>
 </div>
@@ -294,23 +293,23 @@ tr:hover{background:#1a2332;}
 </div>
 
 <!-- Modales -->
-<div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Code Netuber</label><input type="text" id="newCode" placeholder="Ex: NETUBER001"></div><div class="input-group"><label>Email</label><input type="email" id="newEmail" placeholder="Email professionnel"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newPassword" placeholder="Minimum 6 caractères"></div></div><div class="modal-footer"><button onclick="createNetuber()" style="background:#10b981;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Code Netuber</label><input type="text" id="newCode" placeholder="Ex: MA-NX-S1-ZA-01"></div><div class="input-group"><label>Email</label><input type="email" id="newEmail" placeholder="Email professionnel"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newPassword" placeholder="Minimum 6 caractères"></div></div><div class="modal-footer"><button onclick="createNetuber()" style="background:#10b981;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
-<div id="editCodeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-edit"></i> Modifier le code Netuber</h2><button class="modal-close" onclick="closeModal('editCodeModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="editCodeSelect"></select></div><div class="input-group"><label>Nouveau code</label><input type="text" id="newCodeValue" placeholder="Nouveau code unique"></div></div><div class="modal-footer"><button onclick="updateNetuberCode()" style="background:#f59e0b;">Modifier</button><button onclick="closeModal('editCodeModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="editCodeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-edit"></i> Modifier le code</h2><button class="modal-close" onclick="closeModal('editCodeModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><select id="editCodeSelect"></select></div><div class="input-group"><label>Nouveau code</label><input type="text" id="newCodeValue" placeholder="Nouveau code"></div></div><div class="modal-footer"><button onclick="updateNetuberCode()" style="background:#f59e0b;">Modifier</button><button onclick="closeModal('editCodeModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
-<div id="blockModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-ban"></i> Bloquer/Débloquer Netuber</h2><button class="modal-close" onclick="closeModal('blockModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="blockSelect"></select></div><div class="input-group"><label>Action</label><select id="blockAction"><option value="block">Bloquer l'accès</option><option value="unblock">Débloquer l'accès</option></select></div></div><div class="modal-footer"><button onclick="toggleBlockNetuber()" style="background:#ef4444;">Appliquer</button><button onclick="closeModal('blockModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="blockModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-ban"></i> Bloquer/Débloquer</h2><button class="modal-close" onclick="closeModal('blockModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><select id="blockSelect"></select></div><div class="input-group"><label>Action</label><select id="blockAction"><option value="block">Bloquer</option><option value="unblock">Débloquer</option></select></div></div><div class="modal-footer"><button onclick="toggleBlockNetuber()" style="background:#ef4444;">Appliquer</button><button onclick="closeModal('blockModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
-<div id="deleteModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-trash"></i> Supprimer Netuber</h2><button class="modal-close" onclick="closeModal('deleteModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="deleteSelect"></select></div><p style="color:#ef4444; font-size:12px; margin-top:10px;">⚠️ Cette action est irréversible et supprime toutes les données associées.</p></div><div class="modal-footer"><button onclick="deleteNetuber()" style="background:#ef4444;">Supprimer</button><button onclick="closeModal('deleteModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="deleteModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-trash"></i> Supprimer Netuber</h2><button class="modal-close" onclick="closeModal('deleteModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><select id="deleteSelect"></select></div><p style="color:#ef4444; font-size:12px;">⚠️ Action irréversible</p></div><div class="modal-footer"><button onclick="deleteNetuber()" style="background:#ef4444;">Supprimer</button><button onclick="closeModal('deleteModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
-<div id="capModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-chart-line"></i> Envoyer le CAP du jour</h2><button class="modal-close" onclick="closeModal('capModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber concerné</label><input type="text" id="capNetuberCode" readonly style="background:#1a2332; color:#f59e0b; font-weight:bold;"></div><div class="input-group"><label>CAP du jour</label><textarea id="capMessage" rows="6" placeholder="Objectifs et instructions du jour..."></textarea></div><div class="input-group"><label>Date d'expiration</label><input type="date" id="capExpiration"></div></div><div class="modal-footer"><button id="sendCapBtn" style="background:#f59e0b;"><i class="fas fa-paper-plane"></i> Envoyer</button><button onclick="closeModal('capModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="capModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-chart-line"></i> CAP du jour</h2><button class="modal-close" onclick="closeModal('capModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><input type="text" id="capNetuberCode" readonly></div><div class="input-group"><label>Message</label><textarea id="capMessage" rows="6" placeholder="Objectifs du jour..."></textarea></div><div class="input-group"><label>Expiration</label><input type="date" id="capExpiration"></div></div><div class="modal-footer"><button id="sendCapBtn" style="background:#f59e0b;">Envoyer</button><button onclick="closeModal('capModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
-<div id="rapportModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-file-alt"></i> Détail du rapport PGCO</h2><button class="modal-close" onclick="closeModal('rapportModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="rapportDetailBody"></div><div class="modal-footer"><button onclick="closeModal('rapportModal')" style="background:#64748b;">Fermer</button></div></div></div>
+<div id="rapportModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-file-alt"></i> Détail rapport PGCO</h2><button class="modal-close" onclick="closeModal('rapportModal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="rapportDetailBody"></div><div class="modal-footer"><button onclick="closeModal('rapportModal')" style="background:#64748b;">Fermer</button></div></div></div>
 
-<div id="memoModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-envelope"></i> Mémorandum directif</h2><button class="modal-close" onclick="closeModal('memoModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Destinataire</label><select id="memoDestinataire"><option value="all">Tous les PGCO</option></select></div><div class="input-group"><label>Titre du mémorandum</label><input type="text" id="memoTitle" placeholder="Titre..."></div><div class="input-group"><label>Contenu du mémorandum</label><textarea id="memoContent" rows="6" placeholder="Instructions et directives..."></textarea></div></div><div class="modal-footer"><button id="sendMemoBtn" style="background:#ec4899;">Envoyer</button><button onclick="closeModal('memoModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="memoModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-envelope"></i> Mémorandum</h2><button class="modal-close" onclick="closeModal('memoModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Destinataire</label><select id="memoDestinataire"><option value="all">Tous les PGCO</option></select></div><div class="input-group"><label>Titre</label><input type="text" id="memoTitle" placeholder="Titre"></div><div class="input-group"><label>Contenu</label><textarea id="memoContent" rows="6" placeholder="Instructions..."></textarea></div></div><div class="modal-footer"><button id="sendMemoBtn" style="background:#ec4899;">Envoyer</button><button onclick="closeModal('memoModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
-<div id="replyTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-reply"></i> Répondre au ticket</h2><button class="modal-close" onclick="closeModal('replyTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="replyTicketId" readonly></div><div class="input-group"><label>Netuber</label><input type="text" id="replyNetuberCode" readonly></div><div class="input-group"><label>Message de réponse</label><textarea id="replyMessage" rows="4" placeholder="Votre réponse..."></textarea></div></div><div class="modal-footer"><button onclick="sendTicketReply()" style="background:#8b5cf6;">Envoyer</button><button onclick="closeModal('replyTicketModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="replyTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-reply"></i> Répondre</h2><button class="modal-close" onclick="closeModal('replyTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket</label><input type="text" id="replyTicketId" readonly></div><div class="input-group"><label>Netuber</label><input type="text" id="replyNetuberCode" readonly></div><div class="input-group"><label>Message</label><textarea id="replyMessage" rows="4" placeholder="Votre réponse..."></textarea></div></div><div class="modal-footer"><button onclick="sendTicketReply()" style="background:#8b5cf6;">Envoyer</button><button onclick="closeModal('replyTicketModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
-<div id="confirmModal" class="modal"><div class="modal-content"><div class="modal-body confirm-dialog"><i class="fas fa-question-circle"></i><h3 id="confirmTitle">Confirmation</h3><p id="confirmMessage">Veuillez confirmer cette action.</p><div class="confirm-buttons"><button class="btn-cancel" id="confirmCancelBtn">Annuler</button><button class="btn-confirm" id="confirmOkBtn">Confirmer</button></div></div></div></div>
+<div id="confirmModal" class="modal"><div class="modal-content"><div class="modal-body confirm-dialog"><i class="fas fa-question-circle"></i><h3 id="confirmTitle">Confirmation</h3><p id="confirmMessage">Confirmez cette action</p><div class="confirm-buttons"><button class="btn-cancel" id="confirmCancelBtn">Annuler</button><button class="btn-confirm" id="confirmOkBtn">Confirmer</button></div></div></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -325,10 +324,14 @@ const auth = getAuth(app);
 let usersData = [];
 let rapportsData = [];
 let ticketsData = [];
-let rapportsChart = null;
+let pointsChart = null;
+let presenceChart = null;
 let anomaliesChart = null;
 let selectedNetuberForCap = null;
 let usersUnsubscribe = null;
+
+// Graphiques temps réel
+let updateInterval = null;
 
 // ============ DÉCONNEXION ============
 window.logout = async () => {
@@ -336,7 +339,7 @@ window.logout = async () => {
     window.location.href = "index.html";
 };
 
-// ============ CONFIRMATION MODALE ============
+// ============ CONFIRMATION ============
 function showConfirm(title, message, onConfirm) {
     document.getElementById('confirmTitle').textContent = title;
     document.getElementById('confirmMessage').textContent = message;
@@ -364,6 +367,7 @@ window.switchTab = (tab) => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     event.target.closest('.tab').classList.add('active');
     document.getElementById(`${tab}Tab`).classList.add('active');
+    if(tab === 'rapports') updateRealtimeCharts();
 };
 
 window.closeModal = (id) => document.getElementById(id).classList.remove('active');
@@ -376,20 +380,84 @@ function showToast(msg, isError = false) {
     setTimeout(() => t.remove(), 4000); 
 }
 
-// ============ SUPPRIMER UN RAPPORT ============
+// ============ GRAPHIQUES TEMPS RÉEL ============
+function updateRealtimeCharts() {
+    // Graphique points 7 derniers jours
+    const last7Days = []; 
+    const pointsData = [];
+    for(let i=6; i>=0; i--) { 
+        const d = new Date(); 
+        d.setDate(d.getDate() - i); 
+        const jours = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']; 
+        last7Days.push(jours[d.getDay()]); 
+        const dayReports = rapportsData.filter(r => new Date(r.createdAt).toDateString() === d.toDateString()); 
+        const totalPoints = dayReports.reduce((a,r) => a + (r.totalPointsJour || 0), 0);
+        pointsData.push(totalPoints);
+    }
+    
+    if(pointsChart) pointsChart.destroy();
+    const ctxPoints = document.getElementById('pointsChart')?.getContext('2d');
+    if(ctxPoints) {
+        pointsChart = new Chart(ctxPoints, { 
+            type: 'line', 
+            data: { labels: last7Days, datasets: [{ label: 'Points totaux', data: pointsData, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.3, pointBackgroundColor: '#f59e0b', pointBorderColor: '#fff', pointRadius: 4, pointHoverRadius: 6 }] }, 
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#94a3b8' } } } } 
+        });
+    }
+    
+    // Graphique présence/absence
+    let totalPresents = 0, totalAbsents = 0;
+    rapportsData.forEach(rapport => {
+        (rapport.netubers || []).forEach(n => {
+            if(n.presence === 'Présent') totalPresents++;
+            else totalAbsents++;
+        });
+    });
+    
+    if(presenceChart) presenceChart.destroy();
+    const ctxPresence = document.getElementById('presenceChart')?.getContext('2d');
+    if(ctxPresence) {
+        presenceChart = new Chart(ctxPresence, { 
+            type: 'doughnut', 
+            data: { labels: ['Présents', 'Absents'], datasets: [{ data: [totalPresents, totalAbsents], backgroundColor: ['#10b981', '#ef4444'], borderWidth: 0 }] }, 
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#94a3b8' } } } } 
+        });
+    }
+    
+    // Graphique anomalies
+    const anomaliesByDay = [0,0,0,0,0,0,0];
+    usersData.forEach(u => { 
+        if(u.derniereAnomalie) { 
+            const d = new Date(u.derniereAnomalie); 
+            const dayIndex = d.getDay();
+            if(dayIndex >= 0 && dayIndex <= 6) anomaliesByDay[dayIndex]++; 
+        } 
+    });
+    if(anomaliesChart) anomaliesChart.destroy();
+    const ctxAnom = document.getElementById('anomaliesChart')?.getContext('2d');
+    if(ctxAnom) {
+        anomaliesChart = new Chart(ctxAnom, { 
+            type: 'bar', 
+            data: { labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'], datasets: [{ label: 'Anomalies', data: anomaliesByDay, backgroundColor: '#ef4444', borderRadius: 8 }] }, 
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#94a3b8' } } } } 
+        });
+    }
+}
+
+// ============ SUPPRIMER RAPPORT ============
 window.deleteRapport = async (rapportId) => {
-    showConfirm('NeTubeX', 'Confirmez-vous la suppression définitive de ce rapport ?', async () => {
+    showConfirm('NeTubeX', 'Supprimer définitivement ce rapport ?', async () => {
         try {
             await deleteDoc(doc(db, "reports", rapportId));
-            showToast('Rapport supprimé avec succès');
+            showToast('Rapport supprimé');
             await loadAllData();
         } catch(error) { 
-            showToast('Erreur lors de la suppression: ' + error.message, true); 
+            showToast('Erreur: ' + error.message, true); 
         }
     });
 };
 
-// ============ CHANGEMENT DE CATÉGORIE DE RAPPORTS ============
+// ============ CHANGEMENT CATÉGORIE ============
 window.switchReportCategory = (category) => {
     document.querySelectorAll('.report-subtab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.report-category').forEach(c => c.classList.remove('active'));
@@ -398,9 +466,9 @@ window.switchReportCategory = (category) => {
     updateRapportCategories();
 };
 
-// ============ MISE À JOUR DES CATÉGORIES DE RAPPORTS ============
+// ============ MISE À JOUR RAPPORTS ============
 function updateRapportCategories() {
-    // Vérifier et supprimer les rapports expirés (plus de 24h)
+    // Suppression rapports expirés (>24h)
     const now = new Date();
     rapportsData = rapportsData.filter(r => {
         const createdAt = new Date(r.createdAt);
@@ -412,142 +480,123 @@ function updateRapportCategories() {
         return true;
     });
     
-    // Catégorie: Présents (netubers avec présence = Présent)
-    const presentRapports = rapportsData.filter(r => {
-        const hasPresent = (r.netubers || []).some(n => n.presence === 'Présent');
-        return hasPresent;
-    }).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    // Récupérer tous les netubers individuels depuis les rapports
+    const allNetubersData = [];
+    rapportsData.forEach(rapport => {
+        (rapport.netubers || []).forEach(n => {
+            allNetubersData.push({
+                code: n.code,
+                presence: n.presence,
+                raisonAbsence: n.raisonAbsence || '-',
+                points: n.pointsJour || 0,
+                temps: n.tempsJour || 0,
+                zone: rapport.zone || '-',
+                responsable: rapport.responsable || '-',
+                rapportRef: rapport.reference,
+                rapportId: rapport.id,
+                date: rapport.createdAt
+            });
+        });
+    });
     
-    document.getElementById('presentRapportsBody').innerHTML = presentRapports.map(r => {
-        const presentsCount = (r.netubers || []).filter(n => n.presence === 'Présent').length;
-        const rendementCalcule = r.totalTempsJour > 0 ? ((r.totalPointsJour || 0) / (r.totalTempsJour / 60)).toFixed(2) : '0';
+    // Catégorie PRÉSENTS
+    const presents = allNetubersData.filter(n => n.presence === 'Présent');
+    document.getElementById('presentRapportsBody').innerHTML = presents.map(n => {
+        const rendement = n.temps > 0 ? ((n.points / (n.temps / 60)).toFixed(2)) : '0';
         return `<tr>
-            <td><strong>${r.reference || '-'}</strong></td>
-            <td>${r.zone || '-'}</div>
-            <td>${r.responsable || '-'}</div>
-            <td><span class="badge badge-success">${presentsCount}</span></div>
-            <td style="color:#f59e0b;">${r.totalPointsJour || 0} pts</div>
-            <td>${rendementCalcule}</div>
-            <td><small>${formatDateShort(r.createdAt)}</small></div>
-            <td>
-                <button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i></button>
-                <button class="action-btn delete" onclick='deleteRapport("${r.id}")'><i class="fas fa-trash"></i></button>
-             </div>
-          </div>`;
-    }).join('') || '<tr><td colspan="8" style="text-align:center;">Aucun rapport avec présence</div></tr>';
+            <td><strong>${n.code}</strong></div>
+            <td>${n.zone}</div>
+            <td>${n.responsable}</div>
+            <td style="color:#f59e0b; font-weight:bold;">${n.points} pts</div>
+            <td>${rendement}</div>
+            <td><small>${formatDateShort(n.date)}</small></div>
+            <td><button class="action-btn view" onclick='viewRapport("${n.rapportId}")'><i class="fas fa-eye"></i></button></div>
+        </table>`;
+    }).join('') || '<tr><td colspan="7" style="text-align:center;">Aucun netuber présent</td></tr>';
     
-    // Catégorie: Absents (netubers avec présence ≠ Présent)
-    const absentRapports = rapportsData.filter(r => {
-        const hasAbsent = (r.netubers || []).some(n => n.presence !== 'Présent');
-        return hasAbsent;
-    }).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    // Catégorie ABSENTS
+    const absents = allNetubersData.filter(n => n.presence !== 'Présent');
+    document.getElementById('absentRapportsBody').innerHTML = absents.map(n => `
+        <tr>
+            <td><strong>${n.code}</strong></div>
+            <td>${n.zone}</div>
+            <td>${n.responsable}</div>
+            <td><span class="badge badge-danger">${n.raisonAbsence}</span></div>
+            <td><small>${formatDateShort(n.date)}</small></div>
+            <td><button class="action-btn view" onclick='viewRapport("${n.rapportId}")'><i class="fas fa-eye"></i></button></div>
+        </tr>
+    `).join('') || '<tr><td colspan="6" style="text-align:center;">Aucun netuber absent</td></tr>';
     
-    document.getElementById('absentRapportsBody').innerHTML = absentRapports.map(r => {
-        const absentsCount = (r.netubers || []).filter(n => n.presence !== 'Présent').length;
-        const totalCount = (r.netubers || []).length;
-        const absenceRate = totalCount > 0 ? ((absentsCount / totalCount) * 100).toFixed(1) : 0;
-        return `<tr>
-            <td><strong>${r.reference || '-'}</strong></td>
-            <td>${r.zone || '-'}</div>
-            <td>${r.responsable || '-'}</div>
-            <td><span class="badge badge-danger">${absentsCount}</span></div>
-            <td>${absenceRate}%</div>
-            <td><small>${formatDateShort(r.createdAt)}</small></div>
-            <td>
-                <button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i></button>
-                <button class="action-btn delete" onclick='deleteRapport("${r.id}")'><i class="fas fa-trash"></i></button>
-             </div>
-          </div>`;
-    }).join('') || '<tr><td colspan="7" style="text-align:center;">Aucun rapport avec absence</div></tr>';
-    
-    // Catégorie: Performants (Points) - tri par points décroissants
-    const performantRapports = [...rapportsData].sort((a,b) => (b.totalPointsJour || 0) - (a.totalPointsJour || 0));
-    
-    document.getElementById('performantRapportsBody').innerHTML = performantRapports.map((r, idx) => {
+    // Catégorie PERFORMANTS (classement par points)
+    const performants = [...presents].sort((a,b) => b.points - a.points);
+    document.getElementById('performantRapportsBody').innerHTML = performants.map((n, idx) => {
         const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx+1}ème`));
+        const tempsMin = Math.floor((n.temps || 0) / 60);
         return `<tr>
-            <td><strong>${r.reference || '-'}</strong></td>
-            <td>${r.zone || '-'}</div>
-            <td>${r.responsable || '-'}</div>
-            <td style="color:#f59e0b; font-weight:bold;">${r.totalPointsJour || 0} pts</div>
-            <td>${medal}</div>
-            <td><small>${formatDateShort(r.createdAt)}</small></div>
-            <td>
-                <button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i></button>
-                <button class="action-btn delete" onclick='deleteRapport("${r.id}")'><i class="fas fa-trash"></i></button>
-             </div>
-          </div>`;
-    }).join('') || '<tr><td colspan="7" style="text-align:center;">Aucun rapport disponible</div></tr>';
+            <td><span class="badge badge-warning">${medal}</span></div>
+            <td><strong>${n.code}</strong></div>
+            <td>${n.zone}</div>
+            <td style="color:#f59e0b; font-weight:bold;">${n.points} pts</div>
+            <td>${tempsMin} min</div>
+            <td><small>${formatDateShort(n.date)}</small></div>
+            <td><button class="action-btn view" onclick='viewRapport("${n.rapportId}")'><i class="fas fa-eye"></i></button></div>
+        </tr>`;
+    }).join('') || '<tr><td colspan="7" style="text-align:center;">Aucun netuber performant</td></tr>';
     
-    // Catégorie: Actifs (Temps) - tri par temps décroissant
-    const actifRapports = [...rapportsData].sort((a,b) => (b.totalTempsJour || 0) - (a.totalTempsJour || 0));
-    
-    document.getElementById('actifRapportsBody').innerHTML = actifRapports.map((r, idx) => {
-        const tempsMinutes = Math.floor((r.totalTempsJour || 0) / 60);
-        const productClass = idx < 3 ? 'badge-success' : 'badge-info';
+    // Catégorie ACTIFS (classement par temps)
+    const actifs = [...presents].sort((a,b) => b.temps - a.temps);
+    document.getElementById('actifRapportsBody').innerHTML = actifs.map((n, idx) => {
+        const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx+1}ème`));
+        const tempsMin = Math.floor((n.temps || 0) / 60);
         return `<tr>
-            <td><strong>${r.reference || '-'}</strong></td>
-            <td>${r.zone || '-'}</div>
-            <td>${r.responsable || '-'}</div>
-            <td>${tempsMinutes} min</div>
-            <td><span class="badge ${productClass}">${idx+1}ème</span></div>
-            <td><small>${formatDateShort(r.createdAt)}</small></div>
-            <td>
-                <button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i></button>
-                <button class="action-btn delete" onclick='deleteRapport("${r.id}")'><i class="fas fa-trash"></i></button>
-             </div>
-          </div>`;
-    }).join('') || '<tr><td colspan="7" style="text-align:center;">Aucun rapport disponible</div></tr>';
+            <td><span class="badge badge-info">${medal}</span></div>
+            <td><strong>${n.code}</strong></div>
+            <td>${n.zone}</div>
+            <td>${tempsMin} min</div>
+            <td style="color:#10b981;">${n.points} pts</div>
+            <td><small>${formatDateShort(n.date)}</small></div>
+            <td><button class="action-btn view" onclick='viewRapport("${n.rapportId}")'><i class="fas fa-eye"></i></button></div>
+        </tr>`;
+    }).join('') || '<tr><td colspan="7" style="text-align:center;">Aucun netuber actif</td></tr>';
     
-    // Mise à jour des statistiques globales
-    const avgPoints = rapportsData.reduce((a,r) => a + (r.totalPointsJour || 0), 0) / (rapportsData.length || 1);
-    const avgRendement = rapportsData.reduce((a,r) => {
-        const rend = r.totalTempsJour > 0 ? ((r.totalPointsJour || 0) / (r.totalTempsJour / 60)) : 0;
-        return a + rend;
-    }, 0) / (rapportsData.length || 1);
-    document.getElementById('avgPoints').innerText = Math.round(avgPoints);
-    document.getElementById('avgRendement').innerText = avgRendement.toFixed(2);
+    // Statistiques globales
+    const totalPoints = presents.reduce((a,n) => a + n.points, 0);
+    const avgPoints = presents.length > 0 ? (totalPoints / presents.length).toFixed(1) : 0;
+    const avgRendement = presents.length > 0 ? (presents.reduce((a,n) => a + (n.temps > 0 ? (n.points / (n.temps / 60)) : 0), 0) / presents.length).toFixed(2) : 0;
+    
+    document.getElementById('avgPoints').innerText = avgPoints;
+    document.getElementById('avgRendement').innerText = avgRendement;
     document.getElementById('totalRapports').innerText = rapportsData.length;
 }
 
-// ============ ÉCOUTE EN TEMPS RÉEL ============
+// ============ ÉCOUTE TEMPS RÉEL ============
 function listenToUsersRealtime() {
     if (usersUnsubscribe) usersUnsubscribe();
     const usersRef = collection(db, "users");
     usersUnsubscribe = onSnapshot(usersRef, (snapshot) => {
-        let hasChanges = false;
         snapshot.docChanges().forEach((change) => {
             const updatedUser = { id: change.doc.id, ...change.doc.data() };
             const index = usersData.findIndex(u => u.id === updatedUser.id);
-            if (index !== -1) {
-                usersData[index] = updatedUser;
-            } else {
-                usersData.push(updatedUser);
-            }
-            hasChanges = true;
+            if (index !== -1) usersData[index] = updatedUser;
+            else usersData.push(updatedUser);
         });
-        if (hasChanges) {
-            updateNetubersTable();
-            updateAnomaliesTable();
-            updateStats();
-            updateCapHistory();
-            updatePrivacyTab();
-            loadTickets();
-        }
+        updateNetubersTable();
+        updateAnomaliesTable();
+        updateStats();
+        updateCapHistory();
+        updatePrivacyTab();
+        loadTickets();
+        updateRealtimeCharts();
     });
 }
 
-// ============ GESTION DES TICKETS ============
+// ============ TICKETS ============
 async function loadTickets() {
     ticketsData = [];
     for(const user of usersData) {
         const userTickets = user.ticketsList || [];
         for(const ticket of userTickets) {
-            ticketsData.push({
-                ...ticket,
-                userCode: user.code,
-                userId: user.id
-            });
+            ticketsData.push({ ...ticket, userCode: user.code, userId: user.id });
         }
     }
     ticketsData.sort((a,b) => new Date(b.date) - new Date(a.date));
@@ -562,15 +611,15 @@ function updateTicketsTable() {
         const statusText = t.status === 'resolu' ? 'Résolu' : (t.status === 'en-cours' ? 'En cours' : 'Ouvert');
         const priorityClass = t.priority === 'haute' ? 'badge-danger' : (t.priority === 'moyenne' ? 'badge-warning' : 'badge-info');
         return `<tr>
-            <td><strong>${t.userCode}</strong></td>
+            <td><strong>${t.userCode}</strong></div>
             <td>${t.category || t.subject}</div>
             <td><span class="badge ${priorityClass}">${t.priority}</span></div>
             <td><span class="badge ${statusClass}">${statusText}</span></div>
             <td><small>${new Date(t.date).toLocaleDateString()}</small></div>
             <td>
-                <button class="action-btn reply" onclick="openReplyTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-reply"></i> Répondre</button>
-                ${t.status !== 'resolu' ? `<button class="action-btn resolve" onclick="openResolveTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-check"></i> Résoudre</button>` : ''}
-                <button class="action-btn delete" onclick="deleteTicket('${t.id}', '${t.userId}')"><i class="fas fa-trash"></i> Supprimer</button>
+                <button class="action-btn reply" onclick="openReplyTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-reply"></i></button>
+                ${t.status !== 'resolu' ? `<button class="action-btn resolve" onclick="openResolveTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-check"></i></button>` : ''}
+                <button class="action-btn delete" onclick="deleteTicket('${t.id}', '${t.userId}')"><i class="fas fa-trash"></i></button>
               </div>
           </div>`;
     }).join('');
@@ -581,7 +630,7 @@ function updateTicketsTable() {
 }
 
 window.deleteTicket = async (ticketId, userId) => {
-    showConfirm('NeTubeX', 'Supprimer définitivement ce ticket ?', async () => {
+    showConfirm('NeTubeX', 'Supprimer ce ticket ?', async () => {
         const userRef = doc(db, "users", userId);
         const userSnap = await getDoc(userRef);
         if(userSnap.exists()) {
@@ -604,7 +653,7 @@ window.sendTicketReply = async () => {
     const ticketId = document.getElementById('replyTicketId').value;
     const userCode = document.getElementById('replyNetuberCode').value;
     const message = document.getElementById('replyMessage').value.trim();
-    if(!message) { showToast('Veuillez saisir un message', true); return; }
+    if(!message) { showToast('Message requis', true); return; }
     const user = usersData.find(u => u.code === userCode);
     if(!user) return;
     const userRef = doc(db, "users", user.id);
@@ -616,14 +665,14 @@ window.sendTicketReply = async () => {
         tickets[ticketIndex].reponses.push({ id: `reply_${Date.now()}`, message, admin: true, date: new Date().toISOString() });
         if(tickets[ticketIndex].status === 'ouvert') tickets[ticketIndex].status = 'en-cours';
         await updateDoc(userRef, { ticketsList: tickets });
-        showToast(`Réponse envoyée à ${userCode}`);
+        showToast(`Réponse envoyée`);
         closeModal('replyTicketModal');
         await loadTickets();
     }
 };
 
 window.openResolveTicketModal = (ticketId, userCode) => {
-    showConfirm('NeTubeX', 'Marquer ce ticket comme résolu ?', async () => {
+    showConfirm('NeTubeX', 'Marquer comme résolu ?', async () => {
         const user = usersData.find(u => u.code === userCode);
         if(!user) return;
         const userRef = doc(db, "users", user.id);
@@ -639,7 +688,7 @@ window.openResolveTicketModal = (ticketId, userCode) => {
     });
 };
 
-// ============ RAPPORTS PGCO ============
+// ============ CHARGEMENT DONNÉES ============
 async function loadAllData() {
     const usersSnap = await getDocs(collection(db, "users"));
     usersData = [];
@@ -655,10 +704,10 @@ async function loadAllData() {
     updateRapportCategories();
     updateAnomaliesTable();
     updateStats();
-    updateCharts();
     updateSelects();
     updateCapHistory();
     updatePrivacyTab();
+    updateRealtimeCharts();
     
     listenToUsersRealtime();
 }
@@ -666,11 +715,6 @@ async function loadAllData() {
 function formatDateShort(dateStr) {
     if(!dateStr) return 'Jamais';
     try { const d = new Date(dateStr); return d.toLocaleDateString('fr-FR'); } catch(e) { return '-'; }
-}
-
-function escapeHtml(text) {
-    if(!text) return '';
-    return text.replace(/[&<>]/g, m => m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'));
 }
 
 window.viewRapport = (id) => {
@@ -683,11 +727,9 @@ window.viewRapport = (id) => {
     
     const modalBody = document.getElementById('rapportDetailBody');
     modalBody.innerHTML = `
-        <div class="detail-card"><h4>Informations générales</h4><div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${rapport.reference || '-'}</span></div><div class="detail-row"><span class="detail-label">Zone / Site</span><span class="detail-value">${rapport.zone || '-'}</span></div><div class="detail-row"><span class="detail-label">Responsable</span><span class="detail-value">${rapport.responsable || '-'}</span></div><div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">${new Date(rapport.createdAt).toLocaleString('fr-FR')}</span></div></div>
-        <div class="detail-card"><h4>Objectifs</h4><div class="detail-row"><span class="detail-label">Objectif atteint</span><span class="detail-value"><span class="badge badge-success">${rapport.goalReached || 0}/9</span></span></div><div class="detail-row"><span class="detail-label">Appels pilote</span><span class="detail-value">${rapport.piloteCallCount || 0} fois</span></div></div>
-        <div class="detail-card"><h4>Performance</h4><div class="detail-row"><span class="detail-label">Points précédents</span><span class="detail-value">${rapport.totalPointsPrecedents || 0} pts</span></div><div class="detail-row"><span class="detail-label">Points du jour</span><span class="detail-value" style="color:#f59e0b;">${rapport.totalPointsJour || 0} pts</span></div><div class="detail-row"><span class="detail-label">Progression</span><div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Points précédents (${Math.round(pointsPrevPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsPrevPercent}%; background:#3b82f6;"></div></div></div><div class="progress-item"><div class="progress-label">Points du jour (${Math.round(pointsJourPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsJourPercent}%; background:#f59e0b;"></div></div></div></div></div></div>
-        <div class="detail-card"><h4>Détail des Netubers</h4><div class="table-wrapper"><table style="min-width:600px;"><thead><tr><th>Code</th><th>Présence</th><th>Points préc.</th><th>Points jour</th><th>Écart</th><th>Rendement</th></tr></thead><tbody>${(rapport.netubers || []).map(n => { const ecart = (n.pointsJour || 0) - (n.pointsPrecedents || 0); const rendement = n.tempsJour > 0 ? ((n.pointsJour || 0) / n.tempsJour).toFixed(2) : '0'; return `<tr><td>${n.code}</div><td>${n.presence === 'Présent' ? '✅ Présent' : '❌ Absent'}</div><td>${n.pointsPrecedents || 0}</div><td style="color:#f59e0b;">${n.pointsJour || 0}</div><td class="${ecart > 0 ? 'tendance-up' : 'tendance-down'}">${ecart > 0 ? '+' : ''}${ecart}</div><td>${rendement}</div>`; }).join('')}</tbody>}</div></div>
-        <div class="detail-card"><h4>Recommandation</h4><p style="font-size:12px; line-height:1.5; background:#1e293b; padding:12px; border-radius:12px;">${rapport.recommendation || '-'}</p></div>
+        <div class="detail-card"><h4>Informations</h4><div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${rapport.reference || '-'}</span></div><div class="detail-row"><span class="detail-label">Zone</span><span class="detail-value">${rapport.zone || '-'}</span></div><div class="detail-row"><span class="detail-label">Responsable</span><span class="detail-value">${rapport.responsable || '-'}</span></div><div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">${new Date(rapport.createdAt).toLocaleString('fr-FR')}</span></div></div>
+        <div class="detail-card"><h4>Performance</h4><div class="detail-row"><span class="detail-label">Points précédents</span><span class="detail-value">${rapport.totalPointsPrecedents || 0} pts</span></div><div class="detail-row"><span class="detail-label">Points du jour</span><span class="detail-value" style="color:#f59e0b;">${rapport.totalPointsJour || 0} pts</span></div></div>
+        <div class="detail-card"><h4>Détail des Netubers</h4><div class="table-wrapper"><table style="min-width:500px;"><thead><tr><th>Code</th><th>Présence</th><th>Points préc.</th><th>Points jour</th><th>Temps (min)</th><th>Rendement</th></tr></thead><tbody>${(rapport.netubers || []).map(n => { const rendement = n.tempsJour > 0 ? ((n.pointsJour || 0) / (n.tempsJour / 60)).toFixed(2) : '0'; const tempsMin = Math.floor((n.tempsJour || 0) / 60); return `<tr><td>${n.code}</td><td>${n.presence === 'Présent' ? '✅' : '❌'}</td><td>${n.pointsPrecedents || 0}</td><td style="color:#f59e0b;">${n.pointsJour || 0}</td><td>${tempsMin} min</td><td>${rendement}</td>`; }).join('')}</tbody>}</div></div>
     `;
     openModal('rapportModal');
 };
@@ -705,10 +747,7 @@ function updateNetubersTable() {
     let filtered = usersData.filter(u => {
         const matchSearch = (u.code || '').toLowerCase().includes(search);
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
-        let isOnline = false;
-        if (lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT) {
-            isOnline = true;
-        }
+        let isOnline = lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT;
         const matchStatus = statusFilter === 'all' || (statusFilter === 'online' ? isOnline : !isOnline);
         return matchSearch && matchStatus;
     });
@@ -722,26 +761,14 @@ function updateNetubersTable() {
         const isBlocked = u.isBlocked === true;
         
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
-        let isOnline = false;
-        let statusHtml = '';
-        
-        if (!lastSeenDate || lastSeenDate.getFullYear() <= 1970) {
-            statusHtml = '<div class="status-spot offline"><i class="fas fa-lightbulb"></i><span>Déconnecté</span></div>';
-        } else {
-            const diffMs = now - lastSeenDate;
-            if (diffMs < INACTIVITY_LIMIT) {
-                isOnline = true;
-                statusHtml = '<div class="status-spot online"><i class="fas fa-lightbulb"></i><span>Connecté</span></div>';
-            } else {
-                statusHtml = '<div class="status-spot offline"><i class="fas fa-lightbulb"></i><span>Déconnecté</span></div>';
-            }
-        }
+        let isOnline = lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT;
+        let statusHtml = isOnline ? '<div class="status-spot online"><i class="fas fa-lightbulb"></i><span>Connecté</span></div>' : '<div class="status-spot offline"><i class="fas fa-lightbulb"></i><span>Déconnecté</span></div>';
         
         return `<tr>
             <td><strong>${u.code || '-'}</strong>${isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</div>
             <td style="font-weight:600;">${objMensuel}</div>
-            <td style="color:#10b981; font-weight:600;">${objAtteint}</div>
-            <td style="color:#f59e0b; font-weight:600;">${objRestant}</div>
+            <td style="color:#10b981;">${objAtteint}</div>
+            <td style="color:#f59e0b;">${objRestant}</div>
             <td style="color:#3b82f6;">${connexions}</div>
             <td style="color:#64748b;">${deconnexions}</div>
             <td>${statusHtml}</div>
@@ -758,9 +785,8 @@ function updateStats() {
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
         return lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT;
     }).length;
-    const offlineCount = usersData.length - onlineCount;
     document.getElementById('totalOnline').innerText = onlineCount;
-    document.getElementById('totalOffline').innerText = offlineCount;
+    document.getElementById('totalOffline').innerText = usersData.length - onlineCount;
     document.getElementById('blockedCount').innerText = usersData.filter(u => u.isBlocked === true).length;
 }
 
@@ -776,7 +802,7 @@ function updateAnomaliesTable() {
     if(!tbody) return;
     tbody.innerHTML = anomalies.map(a => `
         <tr>
-            <td><strong>${a.code}</strong></td>
+            <td><strong>${a.code}</strong></div>
             <td>${a.type}</div>
             <td><span class="badge badge-danger">${a.count} fois</span></div>
             <td><small>${formatDateShort(a.last)}</small></div>
@@ -793,14 +819,25 @@ function updatePrivacyTab() {
     if(!tbody) return;
     tbody.innerHTML = usersData.map(u => `
         <tr>
-            <td><strong>${u.code || '-'}</strong></td>
+            <td><strong>${u.code || '-'}</strong></div>
             <td>${u.email || '-'}</div>
-            <td><span class="badge badge-success"><i class="fas fa-shield-alt"></i> Protégé RGPD</span></div>
+            <td><span class="password-cell">•••••••• <i class="fas fa-eye" onclick="togglePassword(this, '${u.password || 'motdepasse123'}')" style="cursor:pointer;"></i></span></div>
+            <td><span class="badge ${u.isBlocked ? 'badge-danger' : 'badge-success'}">${u.isBlocked ? 'Bloqué' : 'Actif'}</span></div>
+            <td><small>${formatDateShort(u.lastSeen)}</small></div>
           </tr>
     `).join('');
     document.getElementById('totalEmails').innerText = usersData.length;
-    document.getElementById('protectedAccounts').innerText = usersData.length;
+    document.getElementById('totalPasswords').innerText = usersData.filter(u => !u.isBlocked).length;
 }
+
+window.togglePassword = (element, password) => {
+    const span = element.parentElement;
+    if(span.innerHTML.includes('••••••••')) {
+        span.innerHTML = `${password} <i class="fas fa-eye-slash" onclick="togglePassword(this, '${password}')" style="cursor:pointer;"></i>`;
+    } else {
+        span.innerHTML = `•••••••• <i class="fas fa-eye" onclick="togglePassword(this, '${password}')" style="cursor:pointer;"></i>`;
+    }
+};
 
 function updateCapHistory() {
     const history = [];
@@ -813,7 +850,7 @@ function updateCapHistory() {
     if(!tbody) return;
     tbody.innerHTML = history.map(h => `
         <tr>
-            <td><strong>${h.code}</strong></td>
+            <td><strong>${h.code}</strong></div>
             <td>${h.cap}</div>
             <td>${h.envoyeLe ? new Date(h.envoyeLe).toLocaleString() : '-'}</div>
             <td>${h.expiration || '-'}</div>
@@ -822,46 +859,12 @@ function updateCapHistory() {
     document.getElementById('totalActions').innerText = history.length;
 }
 
-function updateCharts() {
-    const last7Days = []; 
-    const pointsData = [];
-    for(let i=6; i>=0; i--) { 
-        const d = new Date(); 
-        d.setDate(d.getDate() - i); 
-        const jours = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']; 
-        last7Days.push(jours[d.getDay()]); 
-        const dayReports = rapportsData.filter(r => new Date(r.createdAt).toDateString() === d.toDateString()); 
-        pointsData.push(dayReports.reduce((a,r) => a + (r.totalPointsJour || 0), 0)); 
-    }
-    if(rapportsChart) rapportsChart.destroy();
-    const ctx = document.getElementById('rapportsChart').getContext('2d');
-    if(ctx) {
-        rapportsChart = new Chart(ctx, { 
-            type: 'line', 
-            data: { labels: last7Days, datasets: [{ label: 'Points cumulés', data: pointsData, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.3 }] }, 
-            options: { responsive: true, maintainAspectRatio: true } 
-        });
-    }
-    
-    const anomaliesByDay = [0,0,0,0,0,0,0];
-    usersData.forEach(u => { if(u.derniereAnomalie) { const d = new Date(u.derniereAnomalie); anomaliesByDay[d.getDay()]++; } });
-    if(anomaliesChart) anomaliesChart.destroy();
-    const ctx2 = document.getElementById('anomaliesChart').getContext('2d');
-    if(ctx2) {
-        anomaliesChart = new Chart(ctx2, { 
-            type: 'bar', 
-            data: { labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'], datasets: [{ label: 'Anomalies', data: anomaliesByDay, backgroundColor: '#ef4444', borderRadius: 8 }] }, 
-            options: { responsive: true, maintainAspectRatio: true } 
-        });
-    }
-}
-
 function updateSelects() {
     const selects = ['editCodeSelect', 'blockSelect', 'deleteSelect'];
     selects.forEach(id => { 
         const select = document.getElementById(id); 
         if(select) { 
-            select.innerHTML = usersData.map(u => `<option value="${u.code}">${u.code} - ${u.email || ''}</option>`).join(''); 
+            select.innerHTML = usersData.map(u => `<option value="${u.code}">${u.code}</option>`).join(''); 
         } 
     });
     const memoSelect = document.getElementById('memoDestinataire');
@@ -883,18 +886,13 @@ window.sendMemorandum = async function() {
     const content = document.getElementById('memoContent').value.trim();
     const destinataire = document.getElementById('memoDestinataire').value;
     
-    if(!title) { showToast('Veuillez saisir un titre', true); return; }
-    if(!content || content.length < 20) { 
-        showToast('Contenu (20 caractères minimum) requis', true); 
-        return; 
-    }
+    if(!title) { showToast('Titre requis', true); return; }
+    if(!content || content.length < 10) { showToast('Contenu (10 caractères min)', true); return; }
     try {
         await addDoc(collection(db, "memorandums"), { title, content, destinataire, date: new Date().toISOString(), type: 'memorandum' });
-        showToast('Mémorandum envoyé avec succès');
+        showToast('Mémorandum envoyé');
         closeModal('memoModal');
-    } catch(error) { 
-        showToast('Erreur: ' + error.message, true); 
-    }
+    } catch(error) { showToast('Erreur: ' + error.message, true); }
 };
 
 // ============ ACTIONS NETUBERS ============
@@ -902,12 +900,12 @@ window.showNetuberDetails = (code) => {
     const user = usersData.find(u => u.code === code);
     if(!user) return;
     const modalBody = document.getElementById('rapportDetailBody');
-    modalBody.innerHTML = `<div class="detail-grid"><div class="detail-card"><h4>Identité</h4><div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${user.code || '-'}</span></div></div><div class="detail-card"><h4>Objectifs</h4><div class="detail-row"><span class="detail-label">Objectif mensuel</span><span class="detail-value">${user.objectifMensuel || 9}</span></div><div class="detail-row"><span class="detail-label">Objectif atteint</span><span class="detail-value">${user.objectifAtteint || 0}</span></div><div class="detail-row"><span class="detail-label">Objectif restant</span><span class="detail-value">${(user.objectifMensuel || 9) - (user.objectifAtteint || 0)}</span></div></div><div class="detail-card"><h4>Statistiques</h4><div class="detail-row"><span class="detail-label">Connexions</span><span class="detail-value">${user.NombreConnexions || 0}</span></div><div class="detail-row"><span class="detail-label">Déconnexions</span><span class="detail-value">${user.NombreDeconnexions || 0}</span></div></div></div>`;
+    modalBody.innerHTML = `<div class="detail-grid"><div class="detail-card"><h4>Identité</h4><div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${user.code || '-'}</span></div></div><div class="detail-card"><h4>Objectifs</h4><div class="detail-row"><span class="detail-label">Mensuel</span><span class="detail-value">${user.objectifMensuel || 9}</span></div><div class="detail-row"><span class="detail-label">Atteint</span><span class="detail-value">${user.objectifAtteint || 0}</span></div><div class="detail-row"><span class="detail-label">Restant</span><span class="detail-value">${(user.objectifMensuel || 9) - (user.objectifAtteint || 0)}</span></div></div><div class="detail-card"><h4>Statistiques</h4><div class="detail-row"><span class="detail-label">Connexions</span><span class="detail-value">${user.NombreConnexions || 0}</span></div><div class="detail-row"><span class="detail-label">Déconnexions</span><span class="detail-value">${user.NombreDeconnexions || 0}</span></div></div></div>`;
     openModal('rapportModal');
 };
 
 window.resetAnomalies = async (userId) => {
-    showConfirm('NeTubeX', 'Réinitialiser les anomalies de ce Netuber ?', async () => {
+    showConfirm('NeTubeX', 'Réinitialiser les anomalies ?', async () => {
         const userRef = doc(db, "users", userId);
         await updateDoc(userRef, { anomaliesConnexion: 0, anomaliesSysteme: 0 });
         showToast("Anomalies réinitialisées");
@@ -915,7 +913,7 @@ window.resetAnomalies = async (userId) => {
     });
 };
 
-// ============ CAP DU JOUR ============
+// ============ CAP ============
 window.openCapModal = (code) => {
     selectedNetuberForCap = usersData.find(u => u.code === code);
     if(selectedNetuberForCap) {
@@ -930,7 +928,7 @@ window.sendCapToNetuber = async () => {
     if(!selectedNetuberForCap) { showToast("Aucun Netuber sélectionné", true); return; }
     const capMessage = document.getElementById('capMessage').value.trim();
     const expiration = document.getElementById('capExpiration').value;
-    if(!capMessage) { showToast("Veuillez saisir le message du CAP", true); return; }
+    if(!capMessage) { showToast("Message requis", true); return; }
     try {
         const userRef = doc(db, "users", selectedNetuberForCap.id);
         await updateDoc(userRef, { capDuJour: capMessage, capExpiration: expiration, capEnvoyeLe: new Date().toISOString() });
@@ -940,18 +938,18 @@ window.sendCapToNetuber = async () => {
     } catch(error) { showToast(`Erreur: ${error.message}`, true); }
 };
 
-// ============ CRUD NETUBERS ============
+// ============ CRUD ============
 window.createNetuber = async () => {
     const code = document.getElementById('newCode').value.trim();
     const email = document.getElementById('newEmail').value.trim();
     const password = document.getElementById('newPassword').value;
-    if(!code || !email || !password) { showToast("Tous les champs sont requis", true); return; }
-    if(password.length < 6) { showToast("Mot de passe (minimum 6 caractères)", true); return; }
+    if(!code || !email || !password) { showToast("Tous les champs requis", true); return; }
+    if(password.length < 6) { showToast("Mot de passe (min 6 caractères)", true); return; }
     try {
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
         const now = new Date().toISOString();
         await setDoc(doc(db, "users", userCred.user.uid), { 
-            code, email, role: "netuber", isActive: true, createdAt: now, lastSeen: now,
+            code, email, password: password, role: "netuber", isActive: true, createdAt: now, lastSeen: now,
             NombreConnexions: 1, NombreDeconnexions: 0,
             anomaliesConnexion: 0, anomaliesSysteme: 0, 
             ticketsList: [], 
@@ -959,7 +957,7 @@ window.createNetuber = async () => {
             heureConnexion: now, heureDeconnexion: ""
         });
         closeModal('addNetuberModal');
-        showToast("Netuber créé avec succès");
+        showToast("Netuber créé");
         await loadAllData();
     } catch(e) { showToast("Erreur: " + e.message, true); }
 };
@@ -969,7 +967,7 @@ window.updateNetuberCode = async () => {
     const newCode = document.getElementById('newCodeValue').value.trim();
     if(!newCode) { showToast("Nouveau code requis", true); return; }
     const user = usersData.find(u => u.code === code);
-    if(user) { await updateDoc(doc(db, "users", user.id), { code: newCode }); closeModal('editCodeModal'); showToast(`Code modifié avec succès`); await loadAllData(); }
+    if(user) { await updateDoc(doc(db, "users", user.id), { code: newCode }); closeModal('editCodeModal'); showToast(`Code modifié`); await loadAllData(); }
 };
 
 window.toggleBlockNetuber = async () => {
@@ -988,7 +986,7 @@ window.deleteNetuber = async () => {
     const code = document.getElementById('deleteSelect').value;
     const user = usersData.find(u => u.code === code);
     if(user) {
-        showConfirm('NeTubeX', `Supprimer définitivement ${code} ? Cette action est irréversible.`, async () => {
+        showConfirm('NeTubeX', `Supprimer ${code} ? Action irréversible.`, async () => {
             await deleteDoc(doc(db, "users", user.id));
             closeModal('deleteModal');
             showToast(`${code} supprimé`);
@@ -997,7 +995,7 @@ window.deleteNetuber = async () => {
     }
 };
 
-// ============ FILTRES ET EXPORTS ============
+// ============ FILTRES & EXPORTS ============
 window.filterNetubers = () => updateNetubersTable();
 window.filterRapports = () => updateRapportCategories();
 window.openAddNetuberModal = () => openModal('addNetuberModal');
@@ -1012,21 +1010,19 @@ window.exportNetubers = () => {
     usersData.forEach(u => { 
         const objRestant = (u.objectifMensuel || 9) - (u.objectifAtteint || 0);
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
-        let isOnline = false;
-        if (lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT) {
-            isOnline = true;
-        }
+        let isOnline = lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT;
         csv += `${u.code},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${u.NombreDeconnexions||0},${isOnline?'Connecté':'Déconnecté'},${u.isBlocked?'Oui':'Non'}\n`; 
     });
     const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `netubers_${new Date().toISOString().split('T')[0]}.csv`; link.click();
 };
 
 window.exportRapports = () => {
-    let csv = "Référence,Zone,Responsable,Points préc.,Points jour,Écart,Temps préc.,Temps jour,Rendement,Date\n";
-    rapportsData.forEach(r => { 
-        const ecart = (r.totalPointsJour || 0) - (r.totalPointsPrecedents || 0);
-        const rendementCalcule = r.totalTempsJour > 0 ? ((r.totalPointsJour || 0) / (r.totalTempsJour / 60)).toFixed(2) : '0';
-        csv += `${r.reference},${r.zone},${r.responsable},${r.totalPointsPrecedents||0},${r.totalPointsJour||0},${ecart},${r.totalTempsPrecedent||0},${r.totalTempsJour||0},${rendementCalcule},${new Date(r.createdAt).toLocaleDateString()}\n`; 
+    let csv = "Code Netuber,Zone,Responsable,Présence,Raison absence,Points jour,Temps (min),Date rapport\n";
+    rapportsData.forEach(rapport => {
+        (rapport.netubers || []).forEach(n => {
+            const tempsMin = Math.floor((n.tempsJour || 0) / 60);
+            csv += `${n.code},${rapport.zone || '-'},${rapport.responsable || '-'},${n.presence},${n.raisonAbsence || '-'},${n.pointsJour || 0},${tempsMin},${new Date(rapport.createdAt).toLocaleDateString()}\n`;
+        });
     });
     const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `rapports_${new Date().toISOString().split('T')[0]}.csv`; link.click();
 };
