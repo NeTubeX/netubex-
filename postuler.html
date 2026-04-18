@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>NeTubeX · Postuler · Espace de rémunération digitale</title>
+<link rel="icon" type="image/png" href="https://i.postimg.cc/hv177jYQ/2B3DD50B-CAE2-4B4E-9085-65CC656C83A9.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#0a0e1a 0%,#0f1629 50%,#0a0f1f 100%);color:#e2e8f0;min-height:100vh;}
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:16px 28px;background:rgba(30,35,48,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08);position:fixed;top:0;left:0;right:0;z-index:1000;width:100%;}
+.logo-wrapper{display:flex;align-items:center;gap:12px;}
+.logo-img-large{max-width:48px;height:auto;border-radius:12px;}
+.logo-text{font-size:1.6rem;font-weight:700;background:linear-gradient(135deg,#e2e8f0,#94a3b8);background-clip:text;-webkit-background-clip:text;color:transparent;}
+.btn-home{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);padding:10px 20px;border-radius:40px;font-weight:500;color:#e2e8f0;text-decoration:none;display:flex;align-items:center;gap:10px;transition:all 0.3s ease;}
+.btn-home:hover{background:rgba(59,130,246,0.2);border-color:rgba(59,130,246,0.4);}
+.container{max-width:750px;margin:0 auto;padding:100px 24px 60px;}
+.form-card{background:rgba(15,20,34,0.9);backdrop-filter:blur(10px);border-radius:32px;border:1px solid rgba(59,130,246,0.2);padding:40px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);}
+.form-title{font-size:1.8rem;font-weight:700;background:linear-gradient(135deg,#a5f3fc,#3b82f6);background-clip:text;-webkit-background-clip:text;color:transparent;text-align:center;margin-bottom:8px;}
+.form-subtitle{text-align:center;color:#94a3b8;font-size:0.9rem;margin-bottom:30px;}
+.input-group{margin-bottom:20px;}
+.input-group label{display:block;font-size:0.8rem;font-weight:500;color:#94a3b8;margin-bottom:8px;}
+.input-group label i{width:20px;color:#3b82f6;}
+.input-group input,.input-group select{width:100%;padding:14px 16px;border-radius:16px;border:1px solid #1e293b;background:#0f1420;color:#fff;font-size:0.95rem;outline:none;transition:all 0.3s;}
+.input-group input:focus,.input-group select:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.2);}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.contact-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.contact-card{background:#0f1420;border-radius:16px;padding:12px;border:1px solid #1e293b;transition:all 0.2s;}
+.contact-card.selected{border-color:#3b82f6;background:rgba(59,130,246,0.1);}
+.contact-card label{display:flex;align-items:center;gap:12px;cursor:pointer;margin:0;color:#e2e8f0;font-weight:500;}
+.contact-card input[type="radio"]{width:18px;height:18px;accent-color:#3b82f6;margin:0;}
+.contact-card i{font-size:1.2rem;width:28px;}
+.contact-card .contact-hint{font-size:0.7rem;color:#64748b;margin-top:5px;margin-left:40px;}
+.contact-value-input{margin-top:10px;padding-left:40px;}
+.contact-value-input input{width:100%;padding:10px 14px;border-radius:12px;border:1px solid #1e293b;background:#0a0f1a;color:#fff;font-size:0.9rem;}
+.btn-submit{width:100%;padding:16px;background:linear-gradient(135deg,#3b82f6,#1e40af);border:none;border-radius:40px;color:#fff;font-size:1rem;font-weight:600;cursor:pointer;transition:all 0.3s;margin-top:10px;}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 10px 25px -5px rgba(59,130,246,0.4);}
+.btn-submit:disabled{opacity:0.6;transform:none;cursor:not-allowed;}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:12px 24px;border-radius:40px;font-size:0.9rem;z-index:2000;animation:slideUp 0.3s ease;box-shadow:0 10px 25px rgba(0,0,0,0.2);}
+.toast-error{background:#ef4444;}
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+.loading-spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite;margin-right:8px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.confirmation-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(8px);z-index:3000;justify-content:center;align-items:center;}
+.confirmation-modal.active{display:flex;}
+.confirmation-content{background:#0f1420;border-radius:32px;max-width:500px;width:90%;padding:40px;text-align:center;border:1px solid #10b981;animation:fadeIn 0.3s;}
+.confirmation-content i{font-size:4rem;color:#10b981;margin-bottom:20px;}
+.confirmation-content h2{font-size:1.5rem;margin-bottom:15px;color:#fff;}
+.confirmation-content p{color:#94a3b8;margin-bottom:20px;line-height:1.6;}
+.confirmation-content .contact-info{background:#1a2332;border-radius:16px;padding:15px;margin:20px 0;text-align:left;}
+.confirmation-content .contact-info p{margin:5px 0;color:#e2e8f0;}
+.confirmation-content .contact-info i{font-size:1rem;width:25px;color:#3b82f6;}
+.confirmation-btn{padding:12px 30px;background:#3b82f6;border:none;border-radius:40px;color:#fff;font-weight:600;cursor:pointer;transition:0.2s;}
+.confirmation-btn:hover{background:#1e40af;}
+@keyframes fadeIn{from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);}}
+.footer-info{text-align:center;margin-top:30px;font-size:0.75rem;color:#475569;}
+.footer-info a{color:#3b82f6;text-decoration:none;}
+@media (max-width:560px){.container{padding:80px 16px 40px;}.form-card{padding:24px;}.input-row,.contact-row{grid-template-columns:1fr;gap:0;}.form-title{font-size:1.4rem;}}
+</style>
+</head>
+<body>
+<div class="navbar">
+<div class="logo-wrapper">
+<img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX" class="logo-img-large">
+<div class="logo-text">NeTubeX</div>
+</div>
+<a href="index.html" class="btn-home"><i class="fas fa-arrow-left"></i> Retour à l'accueil</a>
+</div>
+<div class="container">
+<div class="form-card">
+<h1 class="form-title"><i class="fas fa-user-plus"></i> Postuler chez NeTubeX</h1>
+<p class="form-subtitle">Rejoignez l'espace de rémunération digitale</p>
+<form id="candidatureForm">
+<div class="input-row">
+<div class="input-group"><label><i class="fas fa-user"></i> Nom</label><input type="text" id="nom" required placeholder="Dupont"></div>
+<div class="input-group"><label><i class="fas fa-user"></i> Post-nom</label><input type="text" id="postnom" required placeholder="Jean"></div>
+</div>
+<div class="input-group"><label><i class="fas fa-user"></i> Prénom</label><input type="text" id="prenom" required placeholder="Marc"></div>
+<div class="input-group"><label><i class="fas fa-venus-mars"></i> Sexe</label><select id="sexe" required><option value="">Sélectionner</option><option value="Homme">Homme</option><option value="Femme">Femme</option><option value="Autre">Autre</option></select></div>
+<div class="input-group"><label><i class="fas fa-home"></i> Adresse domicile</label><input type="text" id="adresse" required placeholder="12 rue de Paris, Kinshasa"></div>
+<div class="input-group"><label><i class="fas fa-envelope"></i> Adresse email</label><input type="email" id="email" required placeholder="exemple@email.com"></div>
+<div class="input-group"><label><i class="fas fa-lock"></i> Mot de passe</label><input type="password" id="password" required placeholder="Min 6 caractères" minlength="6"></div>
+
+<!-- Moyen de contact -->
+<div class="input-group"><label><i class="fas fa-phone-alt"></i> Moyen de contact pour la réponse</label></div>
+<div class="contact-row">
+<div class="contact-card" id="contactWhatsappCard" onclick="selectContactMethod('whatsapp')">
+<label><input type="radio" name="contactMethod" value="whatsapp" required> <i class="fab fa-whatsapp"></i> WhatsApp</label>
+<div class="contact-hint">Vous serez contacté par WhatsApp</div>
+<div class="contact-value-input" id="whatsappInput" style="display:none;">
+<input type="tel" id="whatsappNumber" placeholder="+243 XX XXX XXXX" pattern="^\+?[0-9]{8,15}$">
+</div>
+</div>
+<div class="contact-card" id="contactGmailCard" onclick="selectContactMethod('gmail')">
+<label><input type="radio" name="contactMethod" value="gmail" required> <i class="fab fa-google"></i> Gmail</label>
+<div class="contact-hint">Vous serez contacté par email</div>
+<div class="contact-value-input" id="gmailInput" style="display:none;">
+<input type="email" id="gmailAddress" placeholder="exemple@gmail.com">
+</div>
+</div>
+</div>
+
+<button type="submit" class="btn-submit" id="submitBtn"><i class="fas fa-paper-plane"></i> Envoyer ma candidature</button>
+</form>
+</div>
+<div class="footer-info">
+<p>© 2026 NeTubeX — Tous droits réservés | <a href="privacy.html">Confidentialité</a></p>
+</div>
+</div>
+
+<!-- Modal de confirmation -->
+<div id="confirmationModal" class="confirmation-modal">
+<div class="confirmation-content">
+<i class="fas fa-check-circle"></i>
+<h2>Candidature envoyée !</h2>
+<p>Notre équipe technique a bien reçu votre dossier.</p>
+<div class="contact-info" id="confirmationContactInfo"></div>
+<p><strong>📞 L'équipe technique vous contactera sous 48h pour finaliser votre inscription.</strong></p>
+<button class="confirmation-btn" onclick="closeConfirmationAndRedirect()">Retour à l'accueil</button>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = { 
+    apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", 
+    authDomain: "netubexmoney.firebaseapp.com", 
+    projectId: "netubexmoney", 
+    storageBucket: "netubexmoney.firebasestorage.app", 
+    messagingSenderId: "856592608176", 
+    appId: "1:856592608176:web:69f9df9cfd4f8c28630475" 
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let selectedMethod = null;
+
+function selectContactMethod(method) {
+    selectedMethod = method;
+    document.getElementById('contactWhatsappCard').classList.remove('selected');
+    document.getElementById('contactGmailCard').classList.remove('selected');
+    document.getElementById('whatsappInput').style.display = 'none';
+    document.getElementById('gmailInput').style.display = 'none';
+    
+    if(method === 'whatsapp') {
+        document.getElementById('contactWhatsappCard').classList.add('selected');
+        document.getElementById('whatsappInput').style.display = 'block';
+        document.getElementById('whatsappNumber').required = true;
+        document.getElementById('gmailAddress').required = false;
+    } else {
+        document.getElementById('contactGmailCard').classList.add('selected');
+        document.getElementById('gmailInput').style.display = 'block';
+        document.getElementById('gmailAddress').required = true;
+        document.getElementById('whatsappNumber').required = false;
+    }
+}
+
+window.selectContactMethod = selectContactMethod;
+
+function showToast(message, isError = false) {
+    const existing = document.querySelector('.toast');
+    if(existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = 'toast' + (isError ? ' toast-error' : '');
+    toast.innerHTML = (isError ? '❌ ' : '✅ ') + message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+}
+
+async function checkEmailExists(email) {
+    try {
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("email", "==", email));
+        const querySnapshot = await getDocs(q);
+        if(!querySnapshot.empty) return true;
+        
+        const candidaturesRef = collection(db, "candidatures");
+        const q2 = query(candidaturesRef, where("email", "==", email));
+        const querySnapshot2 = await getDocs(q2);
+        return !querySnapshot2.empty;
+    } catch(e) {
+        console.error("Erreur vérification email:", e);
+        return false;
+    }
+}
+
+function showConfirmationModal(contactMethod, contactValue) {
+    const modal = document.getElementById('confirmationModal');
+    const contactInfoDiv = document.getElementById('confirmationContactInfo');
+    
+    let iconHtml = contactMethod === 'whatsapp' ? '<i class="fab fa-whatsapp"></i>' : '<i class="fab fa-google"></i>';
+    let methodLabel = contactMethod === 'whatsapp' ? 'WhatsApp' : 'Gmail';
+    
+    contactInfoDiv.innerHTML = `
+        <p>${iconHtml} <strong>Moyen de contact sélectionné :</strong> ${methodLabel}</p>
+        <p><i class="fas fa-phone-alt"></i> <strong>Votre contact :</strong> ${contactValue}</p>
+        <p><i class="fas fa-clock"></i> <strong>Délai de réponse :</strong> 48h maximum</p>
+    `;
+    
+    modal.classList.add('active');
+}
+
+window.closeConfirmationAndRedirect = () => {
+    window.location.href = "index.html";
+};
+
+document.getElementById('candidatureForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.innerHTML;
+    
+    const nom = document.getElementById('nom').value.trim();
+    const postnom = document.getElementById('postnom').value.trim();
+    const prenom = document.getElementById('prenom').value.trim();
+    const sexe = document.getElementById('sexe').value;
+    const adresse = document.getElementById('adresse').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    
+    let contactValue = '';
+    if(selectedMethod === 'whatsapp') {
+        contactValue = document.getElementById('whatsappNumber').value.trim();
+        if(!contactValue) {
+            showToast("Veuillez entrer votre numéro WhatsApp", true);
+            return;
+        }
+    } else if(selectedMethod === 'gmail') {
+        contactValue = document.getElementById('gmailAddress').value.trim();
+        if(!contactValue) {
+            showToast("Veuillez entrer votre adresse Gmail", true);
+            return;
+        }
+    } else {
+        showToast("Veuillez sélectionner un moyen de contact", true);
+        return;
+    }
+    
+    if(!nom || !postnom || !prenom || !sexe || !adresse || !email || !password) {
+        showToast("Veuillez remplir tous les champs", true);
+        return;
+    }
+    if(password.length < 6) {
+        showToast("Le mot de passe doit contenir au moins 6 caractères", true);
+        return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!emailRegex.test(email)) {
+        showToast("Email invalide", true);
+        return;
+    }
+    
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="loading-spinner"></span> Envoi en cours...';
+    
+    try {
+        const emailExists = await checkEmailExists(email);
+        if(emailExists) {
+            showToast("Cet email a déjà été utilisé", true);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+            return;
+        }
+        
+        const hashedPassword = CryptoJS.SHA256(password).toString();
+        
+        const candidatureData = {
+            nom: nom,
+            postnom: postnom,
+            prenom: prenom,
+            sexe: sexe,
+            adresse: adresse,
+            email: email,
+            motDePasse: hashedPassword,
+            moyenContact: selectedMethod,
+            contactValue: contactValue,
+            statut: "en_attente",
+            dateSoumission: new Date().toISOString(),
+            source: "formulaire_postuler"
+        };
+        
+        await addDoc(collection(db, "candidatures"), candidatureData);
+        
+        showConfirmationModal(selectedMethod, contactValue);
+        document.getElementById('candidatureForm').reset();
+        selectedMethod = null;
+        
+    } catch(error) {
+        console.error("Erreur:", error);
+        showToast("Erreur lors de l'envoi: " + error.message, true);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    }
+});
+
+// Initialisation des cartes de contact
+document.getElementById('contactWhatsappCard').addEventListener('click', () => selectContactMethod('whatsapp'));
+document.getElementById('contactGmailCard').addEventListener('click', () => selectContactMethod('gmail'));
+</script>
+</body>
+</html>
