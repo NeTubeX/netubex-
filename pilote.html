@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>NETUBER | SUIVI JOURNALIER - DEO</title>
+<title>BULLETIN JOURNALIER | DEO</title>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, collection, addDoc, doc, getDoc, getDocs, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -43,9 +43,7 @@ body{font-family:'Inter','Courier New',monospace;background:#0a1a2f;height:100vh
 .tab-btn.active{background:#facc15;color:#0a1a2f;}
 .tab-content{display:none;height:100%;overflow-y:auto;flex:1;padding-right:4px;}
 .tab-content.active{display:block;}
-.header-logo{background:#0d2740;padding:10px 16px;border-radius:40px;margin-bottom:12px;border:1px solid #2d5980;text-align:center;flex-shrink:0;}
-.header-logo div{font-size:0.85rem;font-weight:500;color:#bbdefb;}
-h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:12px;background:linear-gradient(135deg,#facc15,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:12px;margin-top:5px;background:linear-gradient(135deg,#facc15,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .question-card{border-radius:24px;padding:24px 20px;margin-bottom:12px;background:linear-gradient(145deg,#0f2d45,#0a2538);border:1px solid rgba(250,204,21,0.2);}
 .question-text{font-size:1.1rem;font-weight:700;line-height:1.5;margin-bottom:20px;color:#ffffff;min-height:80px;}
 .question-meta{border-left:3px solid #facc15;padding:3px 8px;margin-bottom:10px;font-size:0.65rem;font-weight:700;color:#f1f5f9;}
@@ -72,6 +70,7 @@ button:active{transform:scale(0.97);}
 .popup-overlay.active .popup-card{transform:translateY(0);}
 .popup-title{font-size:1.2rem;font-weight:800;color:#facc15;margin-bottom:12px;}
 .popup-message{font-size:0.9rem;margin-bottom:20px;color:#e0f2fe;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;text-align:left;font-family:'Courier New',monospace;}
+.popup-message strong{color:#4ade80;font-weight:800;}
 .popup-buttons{display:flex;gap:12px;justify-content:center;}
 .popup-btn{padding:10px 22px;border-radius:60px;font-weight:700;font-size:0.8rem;border:none;cursor:pointer;}
 .popup-btn.secondary{background:#2d4e73;color:white;}
@@ -79,21 +78,23 @@ button:active{transform:scale(0.97);}
 .popup-btn.send{background:#facc15;color:#0a1a2f;}
 .toast-success{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:12px 24px;border-radius:50px;font-size:0.85rem;z-index:2000;animation:slideUp 0.3s ease;}
 @keyframes slideUp{from{transform:translateY(100%) translateX(-50%);opacity:0;}to{transform:translateY(0) translateX(-50%);opacity:1;}}
-.memorandum-list{background:#112b42;border-radius:24px;padding:20px;max-height:calc(100vh - 180px);overflow-y:auto;}
+.memorandum-list{background:#112b42;border-radius:24px;padding:20px;max-height:calc(100vh - 150px);overflow-y:auto;}
 .memorandum-item{border-bottom:1px solid #2d4e73;padding:20px 0;}
 .memorandum-item:last-child{border-bottom:none;}
-.memorandum-title{color:#facc15;font-weight:700;font-size:1rem;margin-bottom:10px;}
-.memorandum-date{font-size:0.7rem;color:#7dd3fc;margin-bottom:12px;}
-.memorandum-content{font-size:0.85rem;color:#e0f2fe;line-height:1.5;word-wrap:break-word;white-space:pre-wrap;}
+.memorandum-title{color:#facc15;font-weight:800;font-size:1rem;margin-bottom:10px;}
+.memorandum-date{font-size:0.7rem;color:#7dd3fc;margin-bottom:12px;font-weight:500;}
+.memorandum-content{font-size:0.85rem;color:#e0f2fe;line-height:1.5;word-wrap:break-word;white-space:pre-wrap;font-weight:600;}
 footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shrink:0;}
 .send-btn-special{background:linear-gradient(145deg,#e67e22,#d35400);color:white;margin-top:16px;}
-.reference-auto{background:#0a2538;border-radius:20px;padding:8px 12px;margin-bottom:12px;text-align:center;font-size:0.75rem;color:#7dd3fc;border:1px solid #2d5780;}
-.reference-auto span{color:#facc15;font-weight:700;font-family:monospace;}
+.send-btn-special.hidden{display:none;}
+.reference-manual{background:#0a2538;border-radius:20px;padding:12px 16px;margin-bottom:12px;border:1px solid #2d5780;}
+.reference-manual label{display:block;font-size:0.7rem;color:#7dd3fc;margin-bottom:6px;font-weight:600;}
+.reference-manual input{background:#1e3a5f;border:1px solid #facc15;border-radius:40px;padding:12px 16px;width:100%;font-size:0.9rem;color:white;font-family:monospace;}
+.reference-manual input:focus{outline:none;border-color:#facc15;}
 </style>
 </head>
 <body>
 <div class="app-container">
-<div class="header-logo"><div>⚡ NETUBER · SUIVI JOURNALIER<br>DEO</div></div>
 <h1>BULLETIN JOURNALIER</h1>
 
 <div class="tabs">
@@ -123,14 +124,17 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 <button id="resetBtn" class="reset-btn">🔄 Nouveau rapport</button>
 </div>
 </div>
-<div class="reference-auto" id="referenceAuto">📄 RÉFÉRENCE AUTOMATIQUE : <span id="refNumber">RPT-BLTJRNL-2026-001</span></div>
-<button id="sendReportBtn" class="send-btn-special">📤 ENVOYER À LA DEO</button>
+<div class="reference-manual">
+<label>📄 NUMÉRO DE RAPPORT (3 derniers chiffres personnalisables)</label>
+<input type="text" id="referenceNumber" placeholder="Ex: 001, 002, 025..." maxlength="3" value="001">
+</div>
+<button id="sendReportBtn" class="send-btn-special hidden">📤 ENVOYER À LA DEO</button>
 <footer>DEO · NeTubeX · Rapport journalier · données certifiées</footer>
 </div>
 
 <div id="tabMemo" class="tab-content">
 <div class="memorandum-list" id="memorandumList">
-<div style="text-align:center;padding:40px;">Chargement des mémorandums...</div>
+<div style="text-align:center;padding:40px;font-weight:600;">Chargement en cours...</div>
 </div>
 </div>
 </div>
@@ -148,7 +152,7 @@ const NETUBERS = [
 ];
 
 let currentStep=0, responses={}, questions=[], waitingYesNo=false, typewriterTimeout=null;
-let currentRefNumber=1;
+let formulaireComplete = false;
 
 const questionText=document.getElementById('questionText');
 const questionMeta=document.getElementById('questionMeta');
@@ -170,24 +174,13 @@ const popupMessageDiv=document.getElementById('popupMessage');
 const popupBtnLeft=document.getElementById('popupBtnLeft');
 const popupBtnRight=document.getElementById('popupBtnRight');
 const sendReportBtn=document.getElementById('sendReportBtn');
-const refNumberSpan=document.getElementById('refNumber');
+const referenceInput=document.getElementById('referenceNumber');
 
-function getNextReference(){
-  let lastRef = localStorage.getItem('last_report_number');
-  if(lastRef){
-    currentRefNumber = parseInt(lastRef) + 1;
-  } else {
-    currentRefNumber = 1;
-  }
-  if(currentRefNumber>999) currentRefNumber=1;
-  const padded = currentRefNumber.toString().padStart(3,'0');
-  const ref = `RPT-BLTJRNL-2026-${padded}`;
-  refNumberSpan.textContent = ref;
-  return ref;
-}
-
-function saveReferenceNumber(){
-  localStorage.setItem('last_report_number', currentRefNumber.toString());
+function getFullReference(){
+  let num = referenceInput.value.trim();
+  if(num==='') num='001';
+  num = num.padStart(3,'0').slice(0,3);
+  return `RPT-BLTJRNL-2026-${num}`;
 }
 
 function generateOptions015(){
@@ -225,11 +218,11 @@ async function loadMemorandumsFromFirebase(){
       });
       memoDiv.innerHTML=html;
     } else {
-      memoDiv.innerHTML='<div style="text-align:center;padding:40px;">📭 Aucun mémorandum récent.</div>';
+      memoDiv.innerHTML='<div style="text-align:center;padding:40px;font-weight:600;">📭 Aucun mémorandum récent.</div>';
     }
   } catch(e){
     console.error(e);
-    document.getElementById('memorandumList').innerHTML='<div style="text-align:center;padding:40px;">⚠️ Service indisponible</div>';
+    document.getElementById('memorandumList').innerHTML='<div style="text-align:center;padding:40px;font-weight:600;">⚠️ Service indisponible</div>';
   }
 }
 
@@ -270,6 +263,8 @@ function showPopup(title, msg, leftT, rightT, onConfirm, onCancel, rightClass='p
 function resetAllSilently(){
   responses={};
   currentStep=0;
+  formulaireComplete=false;
+  sendReportBtn.classList.add('hidden');
   localStorage.removeItem('pgco_rapport');
   questions=buildQuestions();
   displayCurrent();
@@ -295,8 +290,28 @@ function buildQuestions(){
   return qList;
 }
 
+function checkAllQuestionsCompleted(){
+  if(currentStep < questions.length) return false;
+  for(let n of NETUBERS){
+    if(responses[`${n.code}_present`]==='OUI'){
+      if(!responses[`${n.code}_objMensuel`]) return false;
+      if(!responses[`${n.code}_objAtteint`]) return false;
+      if(!responses[`${n.code}_nbNiveaux`]) return false;
+      if(!responses[`${n.code}_nbNiveauxAtteints`]) return false;
+      if(!responses[`${n.code}_pointsPrec`]) return false;
+      if(!responses[`${n.code}_pointsJour`]) return false;
+      if(!responses[`${n.code}_tempsPrec`]) return false;
+      if(!responses[`${n.code}_tempsJour`]) return false;
+      if(!responses[`${n.code}_forfaitGo`]) return false;
+    }
+  }
+  return true;
+}
+
 function displayCurrent(){
   if(currentStep>=questions.length){
+    formulaireComplete = true;
+    sendReportBtn.classList.remove('hidden');
     let recap = "RÉCAPITULATIF DU RAPPORT\n\n";
     for(let n of NETUBERS){
       if(responses[`${n.code}_present`]==='OUI'){
@@ -312,6 +327,8 @@ function displayCurrent(){
     choiceRow.classList.add('hidden');
     return;
   }
+  formulaireComplete = false;
+  sendReportBtn.classList.add('hidden');
   const q=questions[currentStep];
   waitingYesNo=false;
   inputRow.classList.add('hidden');
@@ -451,6 +468,11 @@ function resetAll(){
 }
 
 async function sendReportToFirebase(){
+  if(!formulaireComplete){
+    showPopup("⚠️ Formulaire incomplet","Veuillez répondre à toutes les questions avant d'envoyer.","Fermer","",()=>{},()=>{});
+    return;
+  }
+  
   let missing=[];
   for(let n of NETUBERS){
     if(responses[`${n.code}_present`]==='OUI'){
@@ -470,7 +492,11 @@ async function sendReportToFirebase(){
     return;
   }
   
-  const currentRef = refNumberSpan.textContent;
+  const currentRef = getFullReference();
+  if(currentRef.includes('undefined') || referenceInput.value.trim()===''){
+    showPopup("⚠️ Référence invalide","Veuillez saisir les 3 derniers chiffres de la référence","Fermer","",()=>{},()=>{});
+    return;
+  }
   
   showPopup("Confirmation envoi","Voudriez-vous envoyer ce rapport à la DEO ?","Annuler","Oui, envoyer",async()=>{
     const btn=sendReportBtn;
@@ -531,12 +557,11 @@ async function sendReportToFirebase(){
       const timeStr = now.toLocaleTimeString('fr-FR');
       const expediteur = responses.responsable || "Non spécifié";
       
-      const confirmationMsg = `┌─────────────────────────────────────────┐\n│ Expéditeur: ${expediteur.padEnd(35)}│\n│ Référence: ${currentRef.padEnd(35)}│\n│ Date: ${dateStr} à ${timeStr.padEnd(24)}│\n│ Destinataire: DEO${' '.repeat(33)}│\n│ Accusé: ✓ Rapport reçu avec succès${' '.repeat(12)}│\n└─────────────────────────────────────────┘`;
+      const confirmationMsg = `┌─────────────────────────────────────────┐<br>│ Expéditeur: ${expediteur.padEnd(35)}│<br>│ Référence: ${currentRef.padEnd(35)}│<br>│ Date: ${dateStr} à ${timeStr.padEnd(24)}│<br>│ Destinataire: DEO${' '.repeat(33)}│<br>│ <strong>Accusé: ✓ Rapport reçu avec succès</strong>${' '.repeat(8)}│<br>└─────────────────────────────────────────┘`;
       
       showPopup("✅ RAPPORT TRANSMIS À LA DEO", confirmationMsg, "Fermer","",()=>{
-        saveReferenceNumber();
         resetAllSilently();
-        getNextReference();
+        referenceInput.value = (parseInt(referenceInput.value) + 1).toString().padStart(3,'0');
       },()=>{},'primary');
     }catch(e){
       showPopup("❌ ERREUR D'ENVOI",`Le rapport n'a pas pu être transmis.\n\nCause: ${e.message}\n\nVeuillez réessayer ou contacter le support technique.`,"Fermer","",()=>{},()=>{},'primary');
@@ -564,7 +589,6 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
   };
 });
 
-getNextReference();
 questions=buildQuestions();
 displayCurrent();
 loadMemorandumsFromFirebase();
