@@ -243,12 +243,12 @@ function showPopup(title, msg, leftT, rightT, onConfirm, onCancel, rightClass='p
   popupBtnLeft.onclick=()=>{ popupOverlay.classList.remove('active'); if(onCancel)onCancel(); };
 }
 
-function showSuccessToast(msg){
-  const toast=document.createElement('div');
-  toast.className='toast-success';
-  toast.innerHTML='✅ '+msg;
-  document.body.appendChild(toast);
-  setTimeout(()=>toast.remove(),4000);
+function resetAllSilently(){
+  responses={};
+  currentStep=0;
+  localStorage.removeItem('pgco_rapport');
+  questions=buildQuestions();
+  displayCurrent();
 }
 
 function buildQuestions(){
@@ -430,11 +430,7 @@ function defaultNo(){
 
 function resetAll(){
   showPopup("Confirmation","⚠️ Tout recommencer ? Toutes les données seront perdues.","Annuler","Confirmer",()=>{
-    responses={};
-    currentStep=0;
-    localStorage.removeItem('pgco_rapport');
-    questions=buildQuestions();
-    displayCurrent();
+    resetAllSilently();
     showPopup("Succès","Nouveau rapport initialisé","OK","",()=>{},()=>{});
   },()=>{});
 }
@@ -517,16 +513,16 @@ async function sendReportToFirebase(){
       const timeStr = now.toLocaleTimeString('fr-FR');
       const confirmationMsg = `📋 RAPPORT ENVOYÉ AVEC SUCCÈS\n\n` +
         `┌─────────────────────────────────────┐\n` +
-        `│ ID: ${docRef.id.substring(0,8)}...\n` +
+        `│ ID Firebase: ${docRef.id}\n` +
         `│ Référence: ${responses.reference}\n` +
         `│ Date d'envoi: ${dateStr}\n` +
         `│ Heure: ${timeStr}\n` +
         `│ Destinataire: Direction des Opérations\n` +
         `│ Statut: ✓ Réceptionné\n` +
-        `└─────────────────────────────────────┘\n\n` +
-        `Un accusé de réception a été enregistré dans le système.`;
-      showPopup("✅ CONFIRMATION D'ENVOI", confirmationMsg, "Fermer","",()=>{},()=>{},'primary');
-      resetAll();
+        `└─────────────────────────────────────┘`;
+      showPopup("✅ CONFIRMATION D'ENVOI", confirmationMsg, "Fermer","",()=>{
+        resetAllSilently();
+      },()=>{},'primary');
     }catch(e){
       showPopup("❌ ERREUR D'ENVOI",`Le rapport n'a pas pu être transmis.\n\nCause: ${e.message}\n\nVeuillez réessayer ou contacter le support technique.`,"Fermer","",()=>{},()=>{},'primary');
     }finally{
