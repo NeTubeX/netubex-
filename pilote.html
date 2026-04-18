@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>NETUBER | SUIVI JOURNALIER - PILOTE</title>
+<title>NETUBER | SUIVI JOURNALIER - DEO</title>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, collection, addDoc, doc, getDoc, getDocs, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -66,11 +66,12 @@ button:active{transform:scale(0.97);}
 .nav-btn{background:rgba(255,255,255,0.12);color:white;padding:8px 16px;font-size:0.7rem;}
 .reset-btn{background:linear-gradient(145deg,#e74c3c,#c0392b);color:white;}
 .hidden{display:none;}
-.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;}
+.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;transition:visibility 0.3s ease;}
 .popup-overlay.active{visibility:visible;}
-.popup-card{background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:28px;width:90%;max-width:450px;padding:24px 20px;text-align:center;border-top:5px solid #facc15;}
+.popup-card{background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:28px 28px 20px 20px;width:92%;max-width:450px;padding:24px 20px;text-align:center;border-top:5px solid #facc15;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.2,0.9,0.4,1.1);box-shadow:0 -5px 30px rgba(0,0,0,0.5);}
+.popup-overlay.active .popup-card{transform:translateY(0);}
 .popup-title{font-size:1.2rem;font-weight:800;color:#facc15;margin-bottom:12px;}
-.popup-message{font-size:0.9rem;margin-bottom:20px;color:#e0f2fe;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;text-align:left;}
+.popup-message{font-size:0.9rem;margin-bottom:20px;color:#e0f2fe;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;text-align:left;font-family:'Courier New',monospace;}
 .popup-buttons{display:flex;gap:12px;justify-content:center;}
 .popup-btn{padding:10px 22px;border-radius:60px;font-weight:700;font-size:0.8rem;border:none;cursor:pointer;}
 .popup-btn.secondary{background:#2d4e73;color:white;}
@@ -86,11 +87,13 @@ button:active{transform:scale(0.97);}
 .memorandum-content{font-size:0.85rem;color:#e0f2fe;line-height:1.5;word-wrap:break-word;white-space:pre-wrap;}
 footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shrink:0;}
 .send-btn-special{background:linear-gradient(145deg,#e67e22,#d35400);color:white;margin-top:16px;}
+.reference-auto{background:#0a2538;border-radius:20px;padding:8px 12px;margin-bottom:12px;text-align:center;font-size:0.75rem;color:#7dd3fc;border:1px solid #2d5780;}
+.reference-auto span{color:#facc15;font-weight:700;font-family:monospace;}
 </style>
 </head>
 <body>
 <div class="app-container">
-<div class="header-logo"><div>⚡ NETUBER · SUIVI JOURNALIER<br>PILOTE</div></div>
+<div class="header-logo"><div>⚡ NETUBER · SUIVI JOURNALIER<br>DEO</div></div>
 <h1>BULLETIN JOURNALIER</h1>
 
 <div class="tabs">
@@ -120,8 +123,9 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 <button id="resetBtn" class="reset-btn">🔄 Nouveau rapport</button>
 </div>
 </div>
-<button id="sendReportBtn" class="send-btn-special">📤 ENVOYER À LA DIRECTION DES OPÉRATIONS</button>
-<footer>PILOTE · NeTubeX · Rapport journalier · données certifiées</footer>
+<div class="reference-auto" id="referenceAuto">📄 RÉFÉRENCE AUTOMATIQUE : <span id="refNumber">RPT-BLTJRNL-2026-001</span></div>
+<button id="sendReportBtn" class="send-btn-special">📤 ENVOYER À LA DEO</button>
+<footer>DEO · NeTubeX · Rapport journalier · données certifiées</footer>
 </div>
 
 <div id="tabMemo" class="tab-content">
@@ -144,6 +148,7 @@ const NETUBERS = [
 ];
 
 let currentStep=0, responses={}, questions=[], waitingYesNo=false, typewriterTimeout=null;
+let currentRefNumber=1;
 
 const questionText=document.getElementById('questionText');
 const questionMeta=document.getElementById('questionMeta');
@@ -165,6 +170,25 @@ const popupMessageDiv=document.getElementById('popupMessage');
 const popupBtnLeft=document.getElementById('popupBtnLeft');
 const popupBtnRight=document.getElementById('popupBtnRight');
 const sendReportBtn=document.getElementById('sendReportBtn');
+const refNumberSpan=document.getElementById('refNumber');
+
+function getNextReference(){
+  let lastRef = localStorage.getItem('last_report_number');
+  if(lastRef){
+    currentRefNumber = parseInt(lastRef) + 1;
+  } else {
+    currentRefNumber = 1;
+  }
+  if(currentRefNumber>999) currentRefNumber=1;
+  const padded = currentRefNumber.toString().padStart(3,'0');
+  const ref = `RPT-BLTJRNL-2026-${padded}`;
+  refNumberSpan.textContent = ref;
+  return ref;
+}
+
+function saveReferenceNumber(){
+  localStorage.setItem('last_report_number', currentRefNumber.toString());
+}
 
 function generateOptions015(){
   let opts='';
@@ -268,7 +292,6 @@ function buildQuestions(){
     qList.push({num:num++, type:"number", field:`${n.code}_tempsJour`, meta:n.code, text:`${n.code} : Quel temps a-t-il aujourd'hui (en minutes) ?`, min:0});
     qList.push({num:num++, type:"select", field:`${n.code}_forfaitGo`, meta:n.code, text:`${n.code} : Combien de Go de forfait internet reste-t-il ?`, options:OPTIONS_030});
   }
-  qList.push({num:num++, type:"text", field:"reference", meta:"Rapport", text:"Numéro du rapport (format: RPT-BLTJRNL-2026-XXX)", placeholder:"Ex: RPT-BLTJRNL-2026-001"});
   return qList;
 }
 
@@ -283,7 +306,7 @@ function displayCurrent(){
         recap += `▪ ${n.code} : points précédents ${ptsP}, points du jour ${ptsJ}, forfait restant ${forfait} Go.\n`;
       }
     }
-    recap += "\nCliquez sur \"Envoyer\" pour transmettre ce rapport à la Direction des Opérations.";
+    recap += "\nCliquez sur \"Envoyer\" pour transmettre ce rapport à la DEO.";
     typewriterEffect(questionText, recap, 25);
     inputRow.classList.add('hidden');
     choiceRow.classList.add('hidden');
@@ -326,14 +349,6 @@ function displayCurrent(){
     answerNumber.max=q.max||999;
     answerNumber.value=responses[q.field]||'';
     answerNumber.placeholder=q.placeholder||"Saisir un nombre";
-    typewriterEffect(questionText, q.text, 25);
-  }else if(q.type==="text"){
-    inputRow.classList.remove('hidden');
-    answerNumber.style.display='block';
-    answerSelect.style.display='none';
-    answerNumber.type='text';
-    answerNumber.value=responses[q.field]||'';
-    answerNumber.placeholder=q.placeholder||"Saisir...";
     typewriterEffect(questionText, q.text, 25);
   }
   progressFill.style.width=`${((currentStep+1)/questions.length)*100}%`;
@@ -393,13 +408,13 @@ function validateCurrent(){
   const q=questions[currentStep];
   if(q.type==="select"){
     handleResponse(answerSelect.value);
-  }else if(q.type==="number" || q.type==="text"){
+  }else if(q.type==="number"){
     const val=answerNumber.value.trim();
     if(val===''){
       showPopup("⚠️ Champ requis","Veuillez saisir une réponse","Fermer","",()=>{},()=>{});
       return;
     }
-    if(q.type==="number" && isNaN(parseFloat(val))){
+    if(isNaN(parseFloat(val))){
       showPopup("⚠️ Erreur","Veuillez saisir un nombre valide","Fermer","",()=>{},()=>{});
       return;
     }
@@ -437,7 +452,6 @@ function resetAll(){
 
 async function sendReportToFirebase(){
   let missing=[];
-  if(!responses.reference || responses.reference.trim()==='') missing.push("Référence du rapport");
   for(let n of NETUBERS){
     if(responses[`${n.code}_present`]==='OUI'){
       if(!responses[`${n.code}_objMensuel`]) missing.push(`${n.code} - Objectif mensuel`);
@@ -455,7 +469,10 @@ async function sendReportToFirebase(){
     showPopup("⚠️ Champs manquants",missing.join("\n"),"Fermer","",()=>{},()=>{});
     return;
   }
-  showPopup("Confirmation envoi","Voudriez-vous envoyer ce rapport à la Direction des Opérations ?","Annuler","Oui, envoyer",async()=>{
+  
+  const currentRef = refNumberSpan.textContent;
+  
+  showPopup("Confirmation envoi","Voudriez-vous envoyer ce rapport à la DEO ?","Annuler","Oui, envoyer",async()=>{
     const btn=sendReportBtn;
     const orig=btn.textContent;
     btn.textContent="⏳ Envoi...";
@@ -495,7 +512,7 @@ async function sendReportToFirebase(){
         type:"pgco_report",
         responsable:responses.responsable||"Non spécifié",
         zone:"ORG-NX-S1",
-        reference:responses.reference,
+        reference:currentRef,
         date:new Date().toLocaleDateString('fr-FR'),
         heure:new Date().toLocaleTimeString('fr-FR'),
         totalPointsPrecedents:totalPtsP,
@@ -507,21 +524,19 @@ async function sendReportToFirebase(){
         createdAt:new Date().toISOString()
       };
       const reportsRef=collection(window.db,"reports");
-      const docRef = await addDoc(reportsRef, reportData);
+      await addDoc(reportsRef, reportData);
+      
       const now = new Date();
       const dateStr = now.toLocaleDateString('fr-FR');
       const timeStr = now.toLocaleTimeString('fr-FR');
-      const confirmationMsg = `📋 RAPPORT ENVOYÉ AVEC SUCCÈS\n\n` +
-        `┌─────────────────────────────────────┐\n` +
-        `│ ID Firebase: ${docRef.id}\n` +
-        `│ Référence: ${responses.reference}\n` +
-        `│ Date d'envoi: ${dateStr}\n` +
-        `│ Heure: ${timeStr}\n` +
-        `│ Destinataire: Direction des Opérations\n` +
-        `│ Statut: ✓ Réceptionné\n` +
-        `└─────────────────────────────────────┘`;
-      showPopup("✅ CONFIRMATION D'ENVOI", confirmationMsg, "Fermer","",()=>{
+      const expediteur = responses.responsable || "Non spécifié";
+      
+      const confirmationMsg = `┌─────────────────────────────────────────┐\n│ Expéditeur: ${expediteur.padEnd(35)}│\n│ Référence: ${currentRef.padEnd(35)}│\n│ Date: ${dateStr} à ${timeStr.padEnd(24)}│\n│ Destinataire: DEO${' '.repeat(33)}│\n│ Accusé: ✓ Rapport reçu avec succès${' '.repeat(12)}│\n└─────────────────────────────────────────┘`;
+      
+      showPopup("✅ RAPPORT TRANSMIS À LA DEO", confirmationMsg, "Fermer","",()=>{
+        saveReferenceNumber();
         resetAllSilently();
+        getNextReference();
       },()=>{},'primary');
     }catch(e){
       showPopup("❌ ERREUR D'ENVOI",`Le rapport n'a pas pu être transmis.\n\nCause: ${e.message}\n\nVeuillez réessayer ou contacter le support technique.`,"Fermer","",()=>{},()=>{},'primary');
@@ -549,6 +564,7 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
   };
 });
 
+getNextReference();
 questions=buildQuestions();
 displayCurrent();
 loadMemorandumsFromFirebase();
