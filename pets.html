@@ -58,8 +58,8 @@ body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:
 .chart-container h4{font-size:13px;color:#f59e0b;margin-bottom:15px;display:flex;align-items:center;gap:8px;border-left:3px solid #f59e0b;padding-left:12px;}
 
 .table-wrapper{background:#0f1420;border-radius:20px;overflow-x:auto;border:1px solid #1e293b;max-height:500px;overflow-y:auto;}
-table{width:100%;border-collapse:collapse;min-width:800px;}
-@media (max-width:768px){table{min-width:650px;}}
+table{width:100%;border-collapse:collapse;min-width:900px;}
+@media (max-width:768px){table{min-width:750px;}}
 th{text-align:left;padding:14px 12px;font-size:11px;font-weight:700;color:#64748b;border-bottom:1px solid #1e293b;position:sticky;top:0;background:#0f1420;text-transform:uppercase;}
 td{padding:12px 12px;border-bottom:1px solid #1e293b;font-size:12px;}
 tr:hover{background:#1a2332;}
@@ -140,6 +140,9 @@ tr:hover{background:#1a2332;}
 .memorandum-text{font-size:12px;color:#e2e8f0;line-height:1.5;}
 .delete-memo-btn{background:#ef4444;border:none;color:#fff;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:10px;transition:0.2s;margin-left:10px;}
 .delete-memo-btn:hover{background:#dc2626;transform:scale(1.05);}
+
+.empty-state{text-align:center;padding:40px;color:#64748b;}
+.empty-state i{font-size:48px;margin-bottom:15px;color:#f59e0b40;}
 </style>
 </head>
 <body>
@@ -177,7 +180,19 @@ tr:hover{background:#1a2332;}
 </div>
 <div class="table-wrapper">
 <table id="netubersTable">
-<thead><tr><th>Code</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Objectif restant</th><th>Connexions</th><th>Déconnexions</th><th>Statut</th><th>Actions</th></tr></thead>
+<thead>
+<tr>
+<th>Code</th>
+<th>Objectif mensuel</th>
+<th>Objectif atteint</th>
+<th>Objectif restant</th>
+<th>Connexions</th>
+<th>Déconnexions</th>
+<th>Statut</th>
+<th>Heure connexion</th>
+<th>Actions</th>
+</tr>
+</thead>
 <tbody id="netubersTableBody"></tbody>
 </div>
 </div>
@@ -200,7 +215,7 @@ tr:hover{background:#1a2332;}
 <button class="report-subtab" onclick="switchReportCategory('actif')"><i class="fas fa-clock"></i> Actifs (Temps)</button>
 </div>
 <div class="filters">
-<input type="text" id="searchRapport" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterRapports()">
+<input type="text" id="searchRapport" placeholder="🔍 Rechercher code netuber..." class="search-input" onkeyup="filterRapports()">
 <button class="export-btn" onclick="exportRapports()"><i class="fas fa-file-excel"></i> Exporter</button>
 <button class="export-btn" onclick="openMemoModal()" style="background:#ec4899;"><i class="fas fa-envelope"></i> Mémorandum</button>
 </div>
@@ -338,6 +353,16 @@ function formatDateShort(dateStr) {
     }
 }
 
+function formatTime(dateStr) {
+    if(!dateStr) return '--:--';
+    try { 
+        const d = new Date(dateStr); 
+        return d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}); 
+    } catch(e) { 
+        return '--:--'; 
+    }
+}
+
 function showToast(msg, isError = false) { 
     const t = document.createElement('div'); 
     t.className = 'toast' + (isError ? ' toast-error' : ''); 
@@ -435,7 +460,7 @@ function updateMemorandumsList() {
     if(!container) return;
     
     if(memorandumsData.length === 0) {
-        container.innerHTML = '<div style="text-align:center;padding:30px;color:#64748b;">Aucun mémorandum envoyé</div>';
+        container.innerHTML = '<div class="empty-state"><i class="fas fa-envelope-open-text"></i><p>Aucun mémorandum envoyé</p></div>';
         return;
     }
     
@@ -594,6 +619,7 @@ function updateRealtimeCharts() {
 }
 
 function updateRapportCategories() {
+    // Suppression rapports expirés (>24h)
     const now = new Date();
     rapportsData = rapportsData.filter(r => {
         const createdAt = new Date(r.createdAt);
@@ -625,75 +651,87 @@ function updateRapportCategories() {
     const presentBody = document.getElementById('presentRapportsBody');
     if(presentBody) {
         const presents = allNetubersData.filter(n => n.presence === 'Présent');
-        presentBody.innerHTML = presents.map(n => {
-            const rendement = n.temps > 0 ? ((n.points / (n.temps / 60)).toFixed(2)) : '0';
-            return `<tr>
-                <td><strong>${escapeHtml(n.code)}</strong></td>
-                <td>${escapeHtml(n.zone)}</td>
-                <td>${escapeHtml(n.responsable)}</td>
-                <td style="color:#f59e0b;">${n.points} pts</td>
-                <td>${rendement}</td>
-                <td><small>${formatDateShort(n.date)}</small></td>
-                <td><button class="action-btn view" onclick='viewRapport("${n.rapportId}")'><i class="fas fa-eye"></i></button>
-                    <button class="action-btn delete" onclick='deleteRapport("${n.rapportId}")'><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>`;
-        }).join('');
-        if(presents.length === 0) presentBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Aucun netuber présent</td></tr>';
+        if(presents.length === 0) {
+            presentBody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i><p>Aucun netuber présent dans les rapports</p></td></tr>';
+        } else {
+            presentBody.innerHTML = presents.map(n => {
+                const rendement = n.temps > 0 ? ((n.points / (n.temps / 60)).toFixed(2)) : '0';
+                return `<tr>
+                    <td><strong>${escapeHtml(n.code)}</strong></div>
+                    <td>${escapeHtml(n.zone)}</div>
+                    <td>${escapeHtml(n.responsable)}</div>
+                    <td style="color:#f59e0b;">${n.points} pts</div>
+                    <td>${rendement}</div>
+                    <td><small>${formatDateShort(n.date)}</small></div>
+                    <td><button class="action-btn view" onclick='viewRapport("${n.rapportId}")'><i class="fas fa-eye"></i></button>
+                        <button class="action-btn delete" onclick='deleteRapport("${n.rapportId}")'><i class="fas fa-trash"></i></button>
+                     </div>
+                  </div>`;
+            }).join('');
+        }
     }
     
     const absentBody = document.getElementById('absentRapportsBody');
     if(absentBody) {
         const absents = allNetubersData.filter(n => n.presence !== 'Présent');
-        absentBody.innerHTML = absents.map(n => `<tr>
-            <td><strong>${escapeHtml(n.code)}</strong></td>
-            <td>${escapeHtml(n.zone)}</td>
-            <td>${escapeHtml(n.responsable)}</td>
-            <td><span class="badge badge-danger">${escapeHtml(n.raisonAbsence)}</span></td>
-            <td><small>${formatDateShort(n.date)}</small></td>
-            <td><button class="action-btn view" onclick='viewRapport("${n.rapportId}")'><i class="fas fa-eye"></i></button>
-                <button class="action-btn delete" onclick='deleteRapport("${n.rapportId}")'><i class="fas fa-trash"></i></button>
-            </td>
-        </tr>`).join('');
-        if(absents.length === 0) absentBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Aucun netuber absent</td></tr>';
+        if(absents.length === 0) {
+            absentBody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><p>Aucun netuber absent dans les rapports</p></td></tr>';
+        } else {
+            absentBody.innerHTML = absents.map(n => `<tr>
+                <td><strong>${escapeHtml(n.code)}</strong></div>
+                <td>${escapeHtml(n.zone)}</div>
+                <td>${escapeHtml(n.responsable)}</div>
+                <td><span class="badge badge-danger">${escapeHtml(n.raisonAbsence)}</span></div>
+                <td><small>${formatDateShort(n.date)}</small></div>
+                <td><button class="action-btn view" onclick='viewRapport("${n.rapportId}")'><i class="fas fa-eye"></i></button>
+                    <button class="action-btn delete" onclick='deleteRapport("${n.rapportId}")'><i class="fas fa-trash"></i></button>
+                 </div>
+             </div>`).join('');
+        }
     }
     
     const performantBody = document.getElementById('performantRapportsBody');
     if(performantBody) {
         const presents = allNetubersData.filter(n => n.presence === 'Présent');
         const performants = [...presents].sort((a,b) => b.points - a.points);
-        performantBody.innerHTML = performants.map((n, idx) => {
-            const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx+1}ème`));
-            return `<tr>
-                <td><span class="badge badge-warning">${medal}</span></td>
-                <td><strong>${escapeHtml(n.code)}</strong></td>
-                <td>${escapeHtml(n.zone)}</td>
-                <td style="color:#f59e0b;">${n.points} pts</td>
-                <td>${Math.floor(n.temps/60)} min</td>
-                <td><small>${formatDateShort(n.date)}</small></td>
-                <td><button class="action-btn view" onclick='viewRapport("${n.rapportId}")'><i class="fas fa-eye"></i></button></td>
-            </tr>`;
-        }).join('');
-        if(performants.length === 0) performantBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Aucun netuber performant</td></tr>';
+        if(performants.length === 0) {
+            performantBody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-chart-line"></i><p>Aucune donnée de performance disponible</p></td></tr>';
+        } else {
+            performantBody.innerHTML = performants.map((n, idx) => {
+                const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx+1}ème`));
+                return `<tr>
+                    <td><span class="badge badge-warning">${medal}</span></div>
+                    <td><strong>${escapeHtml(n.code)}</strong></div>
+                    <td>${escapeHtml(n.zone)}</div>
+                    <td style="color:#f59e0b;">${n.points} pts</div>
+                    <td>${Math.floor(n.temps/60)} min</div>
+                    <td><small>${formatDateShort(n.date)}</small></div>
+                    <td><button class="action-btn view" onclick='viewRapport("${n.rapportId}")'><i class="fas fa-eye"></i></button></div>
+                 </div>`;
+            }).join('');
+        }
     }
     
     const actifBody = document.getElementById('actifRapportsBody');
     if(actifBody) {
         const presents = allNetubersData.filter(n => n.presence === 'Présent');
         const actifs = [...presents].sort((a,b) => b.temps - a.temps);
-        actifBody.innerHTML = actifs.map((n, idx) => {
-            const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx+1}ème`));
-            return `<tr>
-                <td><span class="badge badge-info">${medal}</span></td>
-                <td><strong>${escapeHtml(n.code)}</strong></td>
-                <td>${escapeHtml(n.zone)}</td>
-                <td>${Math.floor(n.temps/60)} min</td>
-                <td style="color:#10b981;">${n.points} pts</td>
-                <td><small>${formatDateShort(n.date)}</small></td>
-                <td><button class="action-btn view" onclick='viewRapport("${n.rapportId}")'><i class="fas fa-eye"></i></button></td>
-            </tr>`;
-        }).join('');
-        if(actifs.length === 0) actifBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Aucun netuber actif</td></tr>';
+        if(actifs.length === 0) {
+            actifBody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-clock"></i><p>Aucune donnée d\'activité disponible</p></td></tr>';
+        } else {
+            actifBody.innerHTML = actifs.map((n, idx) => {
+                const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx+1}ème`));
+                return `<tr>
+                    <td><span class="badge badge-info">${medal}</span></div>
+                    <td><strong>${escapeHtml(n.code)}</strong></div>
+                    <td>${escapeHtml(n.zone)}</div>
+                    <td>${Math.floor(n.temps/60)} min</div>
+                    <td style="color:#10b981;">${n.points} pts</div>
+                    <td><small>${formatDateShort(n.date)}</small></div>
+                    <td><button class="action-btn view" onclick='viewRapport("${n.rapportId}")'><i class="fas fa-eye"></i></button></div>
+                 </div>`;
+            }).join('');
+        }
     }
     
     const totalPoints = allNetubersData.filter(n => n.presence === 'Présent').reduce((a,n) => a + n.points, 0);
@@ -725,6 +763,11 @@ function updateNetubersTable() {
         return matchSearch && matchStatus;
     });
     
+    if(filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="empty-state"><i class="fas fa-users-slash"></i><p>Aucun netuber trouvé</p></td></tr>';
+        return;
+    }
+    
     tbody.innerHTML = filtered.map(u => {
         const objMensuel = parseInt(u.objectifMensuel) || 9;
         const objAtteint = parseInt(u.objectifAtteint) || 0;
@@ -735,18 +778,28 @@ function updateNetubersTable() {
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
         let isOnline = lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT;
         let statusHtml = isOnline ? '<div class="status-spot online"><i class="fas fa-lightbulb"></i><span>Connecté</span></div>' : '<div class="status-spot offline"><i class="fas fa-lightbulb"></i><span>Déconnecté</span></div>';
+        
+        // Heure de connexion formatée
+        let heureConnexion = '--:--';
+        if(u.heureConnexion) {
+            heureConnexion = formatTime(u.heureConnexion);
+        } else if(u.lastSeen) {
+            heureConnexion = formatTime(u.lastSeen);
+        }
+        
         return `<tr>
-            <td><strong>${escapeHtml(u.code || '-')}</strong>${isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</td>
-            <td style="font-weight:600;">${objMensuel}</td>
-            <td style="color:#10b981;">${objAtteint}</td>
-            <td style="color:#f59e0b;">${objRestant}</td>
-            <td style="color:#3b82f6;">${connexions}</td>
-            <td style="color:#64748b;">${deconnexions}</td>
-            <td>${statusHtml}</td>
+            <td><strong>${escapeHtml(u.code || '-')}</strong>${isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</div>
+            <td style="font-weight:600;">${objMensuel}</div>
+            <td style="color:#10b981;">${objAtteint}</div>
+            <td style="color:#f59e0b;">${objRestant}</div>
+            <td style="color:#3b82f6;">${connexions}</div>
+            <td style="color:#64748b;">${deconnexions}</div>
+            <td>${statusHtml}</div>
+            <td><span style="font-family:monospace; font-size:11px;">${heureConnexion}</span></div>
             <td><button class="action-btn cap" onclick="openCapModal('${u.code}')"><i class="fas fa-chart-line"></i> CAP</button>
                 <button class="action-btn view" onclick="showNetuberDetails('${u.code}')"><i class="fas fa-eye"></i></button>
-            </td>
-        </tr>`;
+             </div>
+         </div>`;
     }).join('');
 }
 
@@ -778,13 +831,19 @@ function updateAnomaliesTable() {
     });
     const tbody = document.getElementById('anomaliesTableBody');
     if(!tbody) return;
+    
+    if(anomalies.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><i class="fas fa-check-circle"></i><p>Aucune anomalie détectée</p></td></tr>';
+        return;
+    }
+    
     tbody.innerHTML = anomalies.map(a => `<tr>
-        <td><strong>${escapeHtml(a.code)}</strong></td>
-        <td>${a.type}</td>
-        <td><span class="badge badge-danger">${a.count} fois</span></td>
-        <td><small>${formatDateShort(a.last)}</small></td>
-        <td><button class="action-btn view" onclick='resetAnomalies("${a.id}")'><i class="fas fa-sync"></i> Réinitialiser</button></td>
-    </tr>`).join('');
+        <td><strong>${escapeHtml(a.code)}</strong></div>
+        <td>${a.type}</div>
+        <td><span class="badge badge-danger">${a.count} fois</span></div>
+        <td><small>${formatDateShort(a.last)}</small></div>
+        <td><button class="action-btn view" onclick='resetAnomalies("${a.id}")'><i class="fas fa-sync"></i> Réinitialiser</button></div>
+    </td>`).join('');
     const totalAnomalies = anomalies.reduce((sum, a) => sum + a.count, 0);
     const totalAnomEl = document.getElementById('totalAnomalies');
     if(totalAnomEl) totalAnomEl.innerText = totalAnomalies;
@@ -793,11 +852,17 @@ function updateAnomaliesTable() {
 function updatePrivacyTab() {
     const tbody = document.getElementById('privacyEmailsBody');
     if(!tbody) return;
+    
+    if(usersData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state"><i class="fas fa-inbox"></i><p>Aucun netuber enregistré</p></td></tr>';
+        return;
+    }
+    
     tbody.innerHTML = usersData.map(u => `<tr>
-        <td><strong>${escapeHtml(u.code || '-')}</strong>${u.isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</td>
-        <td>${escapeHtml(u.email || '-')}</td>
-        <td><span class="badge ${u.isBlocked ? 'badge-danger' : 'badge-success'}">${u.isBlocked ? 'Bloqué' : 'Actif'}</span></td>
-        <td><small>${formatDateShort(u.lastSeen)}</small></td>
+        <td><strong>${escapeHtml(u.code || '-')}</strong>${u.isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</div>
+        <td>${escapeHtml(u.email || '-')}</div>
+        <td><span class="badge ${u.isBlocked ? 'badge-danger' : 'badge-success'}">${u.isBlocked ? 'Bloqué' : 'Actif'}</span></div>
+        <td><small>${formatDateShort(u.lastSeen)}</small></div>
     </tr>`).join('');
     const totalEmailsEl = document.getElementById('totalEmails');
     const totalPasswordsEl = document.getElementById('totalPasswords');
@@ -814,11 +879,17 @@ function updateCapHistory() {
     });
     const tbody = document.getElementById('capHistoryBody');
     if(!tbody) return;
+    
+    if(history.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state"><i class="fas fa-chart-line"></i><p>Aucun CAP envoyé</p></td></tr>';
+        return;
+    }
+    
     tbody.innerHTML = history.map(h => `<tr>
-        <td><strong>${escapeHtml(h.code)}</strong></td>
-        <td>${escapeHtml(h.cap)}</td>
-        <td>${h.envoyeLe ? new Date(h.envoyeLe).toLocaleString() : '-'}</td>
-        <td>${h.expiration || '-'}</td>
+        <td><strong>${escapeHtml(h.code)}</strong></div>
+        <td>${escapeHtml(h.cap)}</div>
+        <td>${h.envoyeLe ? new Date(h.envoyeLe).toLocaleString() : '-'}</div>
+        <td>${h.expiration || '-'}</div>
     </tr>`).join('');
     const totalActionsEl = document.getElementById('totalActions');
     if(totalActionsEl) totalActionsEl.innerText = history.length;
@@ -854,16 +925,22 @@ async function loadTickets() {
 function updateTicketsTable() {
     const tbody = document.getElementById('ticketsTableBody');
     if(!tbody) return;
+    
+    if(ticketsData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-ticket-alt"></i><p>Aucun ticket ouvert</p></td></tr>';
+        return;
+    }
+    
     tbody.innerHTML = ticketsData.map(t => {
         const statusClass = t.status === 'resolu' ? 'badge-success' : (t.status === 'en-cours' ? 'badge-warning' : 'badge-info');
         const statusText = t.status === 'resolu' ? 'Résolu' : (t.status === 'en-cours' ? 'En cours' : 'Ouvert');
         const priorityClass = t.priority === 'haute' ? 'badge-danger' : (t.priority === 'moyenne' ? 'badge-warning' : 'badge-info');
         return `<tr>
-            <td><strong>${escapeHtml(t.userCode)}</strong></td>
-            <td>${escapeHtml(t.category || t.subject)}</td>
-            <td><span class="badge ${priorityClass}">${t.priority}</span></td>
-            <td><span class="badge ${statusClass}">${statusText}</span></td>
-            <td><small>${new Date(t.date).toLocaleDateString()}</small></td>
+            <td><strong>${escapeHtml(t.userCode)}</strong></div>
+            <td>${escapeHtml(t.category || t.subject)}</div>
+            <td><span class="badge ${priorityClass}">${t.priority}</span></div>
+            <td><span class="badge ${statusClass}">${statusText}</span></div>
+            <td><small>${new Date(t.date).toLocaleDateString()}</small></div>
             <td>
                 <button class="action-btn reply" onclick="openReplyTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-reply"></i></button>
                 ${t.status !== 'resolu' ? `<button class="action-btn resolve" onclick="openResolveTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-check"></i></button>` : ''}
@@ -971,7 +1048,7 @@ window.showNetuberDetails = (code) => {
     modalBody.innerHTML = `
         <div class="detail-card"><h4>Identité</h4><div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${escapeHtml(user.code || '-')}</span></div><div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${escapeHtml(user.email || '-')}</span></div></div>
         <div class="detail-card"><h4>Objectifs</h4><div class="detail-row"><span class="detail-label">Mensuel</span><span class="detail-value">${user.objectifMensuel || 9}</span></div><div class="detail-row"><span class="detail-label">Atteint</span><span class="detail-value">${user.objectifAtteint || 0}</span></div><div class="detail-row"><span class="detail-label">Restant</span><span class="detail-value">${(user.objectifMensuel || 9) - (user.objectifAtteint || 0)}</span></div></div>
-        <div class="detail-card"><h4>Statistiques</h4><div class="detail-row"><span class="detail-label">Connexions</span><span class="detail-value">${user.NombreConnexions || 0}</span></div><div class="detail-row"><span class="detail-label">Déconnexions</span><span class="detail-value">${user.NombreDeconnexions || 0}</span></div><div class="detail-row"><span class="detail-label">Anomalies</span><span class="detail-value">${(user.anomaliesConnexion||0)+(user.anomaliesSysteme||0)}</span></div></div>
+        <div class="detail-card"><h4>Statistiques</h4><div class="detail-row"><span class="detail-label">Connexions</span><span class="detail-value">${user.NombreConnexions || 0}</span></div><div class="detail-row"><span class="detail-label">Déconnexions</span><span class="detail-value">${user.NombreDeconnexions || 0}</span></div><div class="detail-row"><span class="detail-label">Anomalies</span><span class="detail-value">${(user.anomaliesConnexion||0)+(user.anomaliesSysteme||0)}</span></div><div class="detail-row"><span class="detail-label">Heure connexion</span><span class="detail-value">${user.heureConnexion ? formatTime(user.heureConnexion) : (user.lastSeen ? formatTime(user.lastSeen) : '--:--')}</span></div></div>
     `;
     openModal('rapportModal');
 };
@@ -1022,7 +1099,7 @@ window.createNetuber = async () => {
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
         const now = new Date().toISOString();
         await setDoc(doc(db, "users", userCred.user.uid), { 
-            code, email, role: "netuber", isActive: true, createdAt: now, lastSeen: now,
+            code, email, role: "netuber", isActive: true, createdAt: now, lastSeen: now, heureConnexion: now,
             NombreConnexions: 1, NombreDeconnexions: 0,
             anomaliesConnexion: 0, anomaliesSysteme: 0, 
             ticketsList: [], 
@@ -1081,14 +1158,15 @@ window.openBlockModal = () => openModal('blockModal');
 window.openDeleteModal = () => openModal('deleteModal');
 
 window.exportNetubers = () => {
-    let csv = "Code,Objectif mensuel,Objectif atteint,Objectif restant,Connexions,Déconnexions,Statut,Bloqué\n";
+    let csv = "Code,Objectif mensuel,Objectif atteint,Objectif restant,Connexions,Déconnexions,Statut,Heure connexion,Bloqué\n";
     const now = new Date();
     const INACTIVITY_LIMIT = 8 * 60 * 60 * 1000;
     usersData.forEach(u => { 
         const objRestant = (u.objectifMensuel || 9) - (u.objectifAtteint || 0);
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
         let isOnline = lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT;
-        csv += `${u.code},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${u.NombreDeconnexions||0},${isOnline?'Connecté':'Déconnecté'},${u.isBlocked?'Oui':'Non'}\n`; 
+        let heureConnexion = u.heureConnexion ? formatTime(u.heureConnexion) : (u.lastSeen ? formatTime(u.lastSeen) : '--:--');
+        csv += `${u.code},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${u.NombreDeconnexions||0},${isOnline?'Connecté':'Déconnecté'},${heureConnexion},${u.isBlocked?'Oui':'Non'}\n`; 
     });
     const blob = new Blob([csv], {type:'text/csv'}); 
     const link = document.createElement('a'); 
