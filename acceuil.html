@@ -145,39 +145,125 @@ footer{background:#0f172a;padding:50px 20px 40px;margin-top:60px;border-top:1px 
 </div>
 </div>
 </footer>
-<script>
-(function(){
-// URLs de tracking (comme le bouton Connexion)
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, getDoc, updateDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// Configuration Firebase
+const firebaseConfig = { 
+    apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", 
+    authDomain: "netubexmoney.firebaseapp.com", 
+    projectId: "netubexmoney", 
+    storageBucket: "netubexmoney.firebasestorage.app", 
+    messagingSenderId: "856592608176", 
+    appId: "1:856592608176:web:69f9df9cfd4f8c28630475" 
+};
+
+// Initialisation Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ============ STATISTIQUES DE VISITE ============
+async function enregistrerVisite() {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        const statsRef = doc(db, "stats", "visites");
+        const statsSnap = await getDoc(statsRef);
+        
+        let currentData = {
+            total: 0,
+            today: 0,
+            week: 0,
+            month: 0,
+            dailyHistory: []
+        };
+        
+        if(statsSnap.exists()) {
+            currentData = statsSnap.data();
+        }
+        
+        // Mise à jour du compteur total
+        const nouveauTotal = (currentData.total || 0) + 1;
+        
+        // Mise à jour du compteur du jour
+        let nouveauToday = currentData.today || 0;
+        const lastDate = currentData.lastDate;
+        if(lastDate === today) {
+            nouveauToday++;
+        } else {
+            nouveauToday = 1;
+        }
+        
+        // Mise à jour de l'historique quotidien
+        let dailyHistory = currentData.dailyHistory || [];
+        const todayIndex = dailyHistory.findIndex(h => h.date === today);
+        if(todayIndex !== -1) {
+            dailyHistory[todayIndex].count++;
+        } else {
+            dailyHistory.push({ date: today, count: 1 });
+            // Garder seulement les 30 derniers jours
+            dailyHistory = dailyHistory.slice(-30);
+        }
+        
+        // Calcul des visites des 7 derniers jours
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        const weekStr = weekAgo.toISOString().split('T')[0];
+        const visitesSemaine = dailyHistory
+            .filter(h => h.date >= weekStr)
+            .reduce((sum, h) => sum + h.count, 0);
+        
+        // Calcul des visites des 30 derniers jours
+        const monthAgo = new Date();
+        monthAgo.setDate(monthAgo.getDate() - 30);
+        const monthStr = monthAgo.toISOString().split('T')[0];
+        const visitesMois = dailyHistory
+            .filter(h => h.date >= monthStr)
+            .reduce((sum, h) => sum + h.count, 0);
+        
+        // Sauvegarde dans Firebase
+        await setDoc(statsRef, {
+            total: nouveauTotal,
+            today: nouveauToday,
+            week: visitesSemaine,
+            month: visitesMois,
+            lastDate: today,
+            dailyHistory: dailyHistory,
+            lastUpdate: new Date().toISOString()
+        });
+        
+        console.log(`📊 Visite enregistrée - Total: ${nouveauTotal}`);
+        
+    } catch(error) {
+        console.error("Erreur lors de l'enregistrement de la visite:", error);
+    }
+}
+
+// Exécuter l'enregistrement de visite au chargement de la page
+enregistrerVisite();
+
+// ============ REDIRECTIONS ET MENU ============
 const FIRST_URL = "https://eagerdazzle.com/qja1n3nqy?key=28eed1069d8b75afeb22d3fb0db79efc";
 const SECOND_URL_LOGIN = "https://netubex.github.io/netubex-/login.html";
-
-// URL directe pour Rémunération & Nos offres
 const DIRECT_OFFER_URL = "https://eagerdazzle.com/iq1qax6rrc?key=e28a0a39f6861af4d561fd9b3b43183d";
 
-// Mapping des pages réelles pour chaque bouton (SECOND_URL)
 const pageMapping = {
   aboutLink: "https://netubex.github.io/netubex-/about.html",
   faqLink: "https://netubex.github.io/netubex-/faq.html",
   supportLink: "https://netubex.github.io/netubex-/support.html",
   privacyLink: "https://netubex.github.io/netubex-/privacy.html",
   trustpilotBtn: "https://www.trustpilot.com/evaluate/www.netubex.com",
-  postulerBtn: null // spécial WhatsApp
+  postulerBtn: null
 };
 
-// Fonction double redirection (comme connexion)
 function doubleRedirect(secondUrl) {
   window.location.href = FIRST_URL;
-  setTimeout(function() {
-    window.open(secondUrl, "_blank");
-  }, 50);
+  setTimeout(function() { window.open(secondUrl, "_blank"); }, 50);
 }
 
-// Fonction pour lien direct (Rémunération & Nos offres)
-function directRedirect(url) {
-  window.open(url, "_blank");
-}
+function directRedirect(url) { window.open(url, "_blank"); }
 
-// Gestion du menu
 const menuToggle = document.getElementById('menuToggle');
 const floatingMenu = document.getElementById('floatingMenu');
 let isAnimating = false;
@@ -196,12 +282,9 @@ function toggleMenu() {
 if(menuToggle) menuToggle.addEventListener('click', toggleMenu);
 
 function closeMenu() {
-  if(floatingMenu.classList.contains('active')) {
-    floatingMenu.classList.remove('active');
-  }
+  if(floatingMenu.classList.contains('active')) floatingMenu.classList.remove('active');
 }
 
-// === BOUTON CONNEXION (comportement original) ===
 const loginBtn = document.getElementById('loginBtn');
 if(loginBtn) {
   loginBtn.addEventListener('click', function(e) {
@@ -212,58 +295,21 @@ if(loginBtn) {
   });
 }
 
-// === BOUTONS qui utilisent la double redirection (comme connexion) ===
-// À propos
 const aboutLink = document.getElementById('aboutLink');
-if(aboutLink) {
-  aboutLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    closeMenu();
-    doubleRedirect(pageMapping.aboutLink);
-  });
-}
+if(aboutLink) aboutLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.aboutLink); });
 
-// FAQ
 const faqLink = document.getElementById('faqLink');
-if(faqLink) {
-  faqLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    closeMenu();
-    doubleRedirect(pageMapping.faqLink);
-  });
-}
+if(faqLink) faqLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.faqLink); });
 
-// Support
 const supportLink = document.getElementById('supportLink');
-if(supportLink) {
-  supportLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    closeMenu();
-    doubleRedirect(pageMapping.supportLink);
-  });
-}
+if(supportLink) supportLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.supportLink); });
 
-// Confidentialité
 const privacyLink = document.getElementById('privacyLink');
-if(privacyLink) {
-  privacyLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    closeMenu();
-    doubleRedirect(pageMapping.privacyLink);
-  });
-}
+if(privacyLink) privacyLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.privacyLink); });
 
-// Donner mon avis (Trustpilot)
 const trustpilotBtn = document.getElementById('trustpilotBtn');
-if(trustpilotBtn) {
-  trustpilotBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    closeMenu();
-    doubleRedirect(pageMapping.trustpilotBtn);
-  });
-}
+if(trustpilotBtn) trustpilotBtn.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.trustpilotBtn); });
 
-// Postuler (WhatsApp - garde le comportement original)
 const postulerBtn = document.getElementById('postulerBtn');
 if(postulerBtn) {
   postulerBtn.addEventListener('click', (e) => {
@@ -273,42 +319,17 @@ if(postulerBtn) {
   });
 }
 
-// === EXCEPTIONS : Rémunération & Nos offres (lien direct unique) ===
 const remunerationLink = document.getElementById('remunerationLink');
-if(remunerationLink) {
-  remunerationLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    closeMenu();
-    directRedirect(DIRECT_OFFER_URL);
-  });
-}
+if(remunerationLink) remunerationLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); directRedirect(DIRECT_OFFER_URL); });
 
 const offersLink = document.getElementById('offersLink');
-if(offersLink) {
-  offersLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    closeMenu();
-    directRedirect(DIRECT_OFFER_URL);
-  });
-}
+if(offersLink) offersLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); directRedirect(DIRECT_OFFER_URL); });
 
-// Footer privacy
 const privacyFooterLink = document.getElementById('privacyFooterLink');
-if(privacyFooterLink) {
-  privacyFooterLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    doubleRedirect(pageMapping.privacyLink);
-  });
-}
+if(privacyFooterLink) privacyFooterLink.addEventListener('click', (e) => { e.preventDefault(); doubleRedirect(pageMapping.privacyLink); });
 
-// Mentions légales (footer)
 const legalFooterLink = document.getElementById('legalFooterLink');
-if(legalFooterLink) {
-  legalFooterLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.open('https://netubex.github.io/netubex-/legal.html', '_blank');
-  });
-}
+if(legalFooterLink) legalFooterLink.addEventListener('click', (e) => { e.preventDefault(); window.open('https://netubex.github.io/netubex-/legal.html', '_blank'); });
 
 // Animations scroll
 const fadeElements = document.querySelectorAll('.fade-section');
@@ -352,7 +373,6 @@ cards.forEach(card => {
 });
 
 document.addEventListener('contextmenu', (e) => e.preventDefault());
-})();
 </script>
 </body>
 </html>
