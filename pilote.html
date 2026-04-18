@@ -78,7 +78,6 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .popup-btn.secondary{background:#2d4e73;color:white;}
 .popup-btn.primary{background:#27ae60;color:white;}
 .popup-btn.primary:disabled{opacity:0.5;cursor:not-allowed;}
-.popup-btn.send{background:#facc15;color:#0a1a2f;}
 .memorandum-list{background:#112b42;border-radius:24px;padding:20px;max-height:calc(100vh - 150px);overflow-y:auto;}
 .memorandum-item{border-bottom:1px solid #2d4e73;padding:20px 0;}
 .memorandum-item:last-child{border-bottom:none;}
@@ -88,10 +87,6 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shrink:0;}
 .send-btn-special{background:linear-gradient(145deg,#e67e22,#d35400);color:white;margin-top:16px;}
 .send-btn-special.hidden{display:none;}
-.reference-manual{background:#0a2538;border-radius:20px;padding:12px 16px;margin-bottom:12px;border:1px solid #2d5780;}
-.reference-manual label{display:block;font-size:0.7rem;color:#7dd3fc;margin-bottom:6px;font-weight:600;}
-.reference-manual input{background:#1e3a5f;border:1px solid #facc15;border-radius:40px;padding:12px 16px;width:100%;font-size:0.9rem;color:white;font-family:monospace;}
-.reference-manual input:focus{outline:none;border-color:#facc15;}
 </style>
 </head>
 <body>
@@ -125,10 +120,6 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 <button id="resetBtn" class="reset-btn">🔄 Nouveau rapport</button>
 </div>
 </div>
-<div class="reference-manual">
-<label>📄 NUMÉRO DE RAPPORT (3 derniers chiffres personnalisables)</label>
-<input type="text" id="referenceNumber" placeholder="Ex: 001, 002, 025..." maxlength="3" value="001">
-</div>
 <button id="sendReportBtn" class="send-btn-special hidden">📤 ENVOYER À LA DEO</button>
 <footer>DEO · NeTubeX · Rapport journalier · données certifiées</footer>
 </div>
@@ -143,6 +134,19 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 <div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
 
 <script>
+const RAISONS_ABSENCE = [
+  "Obligations familiales",
+  "Maladie",
+  "Absence non justifiée",
+  "Déplacement / voyage",
+  "Abandon",
+  "Problème de santé d'un proche",
+  "Fatigue ou repos",
+  "Rendez-vous personnel",
+  "Deuil",
+  "Engagement scolaire ou professionnel"
+];
+
 const NETUBERS = [
   {code:"MA-NX-S1-ZA-01", name:"MA-NX-S1-ZA-01"},
   {code:"MA-NX-S1-ZA-02", name:"MA-NX-S1-ZA-02"},
@@ -176,14 +180,15 @@ const popupMessageDiv=document.getElementById('popupMessage');
 const popupBtnLeft=document.getElementById('popupBtnLeft');
 const popupBtnRight=document.getElementById('popupBtnRight');
 const sendReportBtn=document.getElementById('sendReportBtn');
-const referenceInput=document.getElementById('referenceNumber');
 
-function getFullReference(){
-  let num = referenceInput.value.trim();
-  if(num==='') num='001';
-  num = num.padStart(3,'0').slice(0,3);
-  return `RPT-BLTJRNL-2026-${num}`;
+function generateRaisonOptions(){
+  let opts='';
+  for(let r of RAISONS_ABSENCE){
+    opts+=`<option value="${r}">${r}</option>`;
+  }
+  return opts;
 }
+const RAISONS_OPTIONS = generateRaisonOptions();
 
 function generateOptions015(){
   let opts='';
@@ -274,14 +279,12 @@ function showPopup(title, msg, leftT, rightT, onConfirm, onCancel, rightClass='p
 
 function showCounterPopup(onConfirmFinal){
   let counter = 0;
-  const msg = `
-    <div style="text-align:center;">
-      <div style="margin-bottom:10px;">🔐 VÉRIFICATION FINALE</div>
-      <div style="font-size:0.85rem; margin-bottom:15px;">Veuillez confirmer l'envoi du rapport à la DEO</div>
-      <div class="counter-number" id="counterValue">0</div>
-      <div style="font-size:0.7rem; color:#7dd3fc;">Attendez que le compteur atteigne 10 pour confirmer</div>
-    </div>
-  `;
+  const msg = `<div style="text-align:center;">
+    <div style="margin-bottom:10px;">🔐 VÉRIFICATION FINALE</div>
+    <div style="font-size:0.85rem; margin-bottom:15px;">Veuillez confirmer l'envoi du rapport à la DEO</div>
+    <div class="counter-number" id="counterValue">0</div>
+    <div style="font-size:0.7rem; color:#7dd3fc;">Attendez que le compteur atteigne 10 pour confirmer</div>
+  </div>`;
   
   popupTitle.textContent = "🔐 CONFIRMATION REQUISE";
   popupMessageDiv.innerHTML = msg;
@@ -304,7 +307,6 @@ function showCounterPopup(onConfirmFinal){
     }
   }, 1000);
   
-  const originalRightClick = popupBtnRight.onclick;
   popupBtnRight.onclick = () => {
     if(popupBtnRight.disabled) return;
     clearInterval(counterInterval);
@@ -335,6 +337,7 @@ function buildQuestions(){
   
   for(let n of NETUBERS){
     qList.push({num:num++, type:"yesno", field:`${n.code}_present`, meta:n.code, text:`${n.code} : Était-il présent aujourd'hui ?`});
+    qList.push({num:num++, type:"select", field:`${n.code}_raisonAbsence`, meta:n.code, text:`${n.code} : Raison de l'absence ?`, options:RAISONS_OPTIONS, dependsOnPresent:true});
     qList.push({num:num++, type:"select", field:`${n.code}_objMensuel`, meta:n.code, text:`${n.code} : Quel est son objectif mensuel ?`, options:OPTIONS_015});
     qList.push({num:num++, type:"select", field:`${n.code}_objAtteint`, meta:n.code, text:`${n.code} : Combien d'objectifs a-t-il atteints aujourd'hui ?`, options:OPTIONS_015});
     qList.push({num:num++, type:"number", field:`${n.code}_nbNiveaux`, meta:n.code, text:`${n.code} : Quel est le nombre de niveaux/événements ou mètres ?`, min:0});
@@ -345,6 +348,7 @@ function buildQuestions(){
     qList.push({num:num++, type:"number", field:`${n.code}_tempsJour`, meta:n.code, text:`${n.code} : Quel temps a-t-il aujourd'hui (en minutes) ?`, min:0});
     qList.push({num:num++, type:"select", field:`${n.code}_forfaitGo`, meta:n.code, text:`${n.code} : Combien de Go de forfait internet reste-t-il ?`, options:OPTIONS_030});
   }
+  qList.push({num:num++, type:"text", field:"referenceNumber", meta:"Rapport", text:"Numéro de rapport (3 derniers chiffres personnalisables)", placeholder:"Ex: 001, 002, 025..."});
   return qList;
 }
 
@@ -359,6 +363,9 @@ function displayCurrent(){
         const ptsJ = parseFloat(responses[`${n.code}_pointsJour`])||0;
         const forfait = responses[`${n.code}_forfaitGo`] || '0';
         recap += `▪ ${n.code} : points précédents ${ptsP}, points du jour ${ptsJ}, forfait restant ${forfait} Go.\n`;
+      } else {
+        const raison = responses[`${n.code}_raisonAbsence`] || "Non spécifiée";
+        recap += `▪ ${n.code} : ABSENT - Raison: ${raison}\n`;
       }
     }
     recap += "\nCliquez sur \"Envoyer\" pour transmettre ce rapport à la DEO.";
@@ -395,7 +402,7 @@ function displayCurrent(){
     answerNumber.style.display='none';
     answerSelect.innerHTML=q.options;
     if(responses[q.field]) answerSelect.value=responses[q.field];
-    else answerSelect.value="0";
+    else answerSelect.value=q.options.includes("Obligations familiales")?"Obligations familiales":"0";
     typewriterEffect(questionText, q.text, 25);
   }else if(q.type==="number"){
     inputRow.classList.remove('hidden');
@@ -406,6 +413,14 @@ function displayCurrent(){
     answerNumber.max=q.max||999;
     answerNumber.value=responses[q.field]||'';
     answerNumber.placeholder=q.placeholder||"Saisir un nombre";
+    typewriterEffect(questionText, q.text, 25);
+  }else if(q.type==="text"){
+    inputRow.classList.remove('hidden');
+    answerNumber.style.display='block';
+    answerSelect.style.display='none';
+    answerNumber.type='text';
+    answerNumber.value=responses[q.field]||'';
+    answerNumber.placeholder=q.placeholder||"Saisir...";
     typewriterEffect(questionText, q.text, 25);
   }
   progressFill.style.width=`${((currentStep+1)/questions.length)*100}%`;
@@ -423,8 +438,10 @@ function handleResponse(val){
     let stepsToSkip = 0;
     for(let i=currentStep+1; i<questions.length; i++){
       const nextField = questions[i].field;
-      if(nextField && nextField.includes(q.field.replace('_present',''))){
+      if(nextField && nextField.includes(q.field.replace('_present','')) && !nextField.includes('raisonAbsence')){
         stepsToSkip++;
+      } else if(nextField && nextField.includes(q.field.replace('_present','')) && nextField.includes('raisonAbsence')){
+        continue;
       } else {
         break;
       }
@@ -433,7 +450,9 @@ function handleResponse(val){
       if(currentStep < questions.length - 1){
         currentStep++;
         const skipQ = questions[currentStep];
-        responses[skipQ.field] = "0";
+        if(!skipQ.field.includes('raisonAbsence')){
+          responses[skipQ.field] = "0";
+        }
       }
     }
     if(currentStep < questions.length - 1){
@@ -476,6 +495,13 @@ function validateCurrent(){
       return;
     }
     handleResponse(val);
+  }else if(q.type==="text"){
+    const val=answerNumber.value.trim();
+    if(val===''){
+      showPopup("⚠️ Champ requis","Veuillez saisir le numéro de rapport","Fermer","",()=>{},()=>{});
+      return;
+    }
+    handleResponse(val);
   }
 }
 
@@ -507,6 +533,12 @@ function resetAll(){
   },()=>{});
 }
 
+function getFullReference(){
+  let num = responses.referenceNumber || "001";
+  num = num.toString().padStart(3,'0').slice(0,3);
+  return `RPT-BLTJRNL-2026-${num}`;
+}
+
 async function performSendToFirebase(){
   const btn=sendReportBtn;
   const orig=btn.textContent;
@@ -517,6 +549,7 @@ async function performSendToFirebase(){
     const netubersData=[];
     for(let n of NETUBERS){
       const present=responses[`${n.code}_present`]==='OUI'?'Présent':'Absent';
+      const raisonAbsence = responses[`${n.code}_raisonAbsence`] || "";
       const objM=parseInt(responses[`${n.code}_objMensuel`])||0;
       const objA=parseInt(responses[`${n.code}_objAtteint`])||0;
       const nbN=parseFloat(responses[`${n.code}_nbNiveaux`])||0;
@@ -532,6 +565,7 @@ async function performSendToFirebase(){
       netubersData.push({
         code:n.code,
         presence:present,
+        raisonAbsence:raisonAbsence,
         objectifMensuel:objM,
         objectifAtteint:objA,
         nbNiveaux:nbN,
@@ -567,13 +601,10 @@ async function performSendToFirebase(){
     const timeStr = now.toLocaleTimeString('fr-FR');
     const expediteur = responses.responsable || "Non spécifié";
     
-    const confirmationMsg = `┌─────────────────────────────────────────┐<br>│ Expéditeur: ${expediteur.padEnd(35)}│<br>│ Référence: ${currentRef.padEnd(35)}│<br>│ Date: ${dateStr} à ${timeStr.padEnd(24)}│<br>│ Destinataire: DEO${' '.repeat(33)}│<br>│ <strong>Accusé: ✓ Rapport reçu avec succès</strong>${' '.repeat(8)}│<br>└─────────────────────────────────────────┘`;
+    const confirmationMsg = `Expéditeur: ${expediteur}\nRéférence: ${currentRef}\nDate: ${dateStr} à ${timeStr}\nDestinataire: DEO\n\n✅ Accusé: Rapport reçu avec succès`;
     
     showPopup("✅ RAPPORT TRANSMIS À LA DEO", confirmationMsg, "Fermer","",()=>{
       resetAllSilently();
-      let nextNum = parseInt(referenceInput.value) + 1;
-      if(isNaN(nextNum)) nextNum = 2;
-      referenceInput.value = nextNum.toString().padStart(3,'0');
     },()=>{},'primary');
   }catch(e){
     showPopup("❌ ERREUR D'ENVOI",`Le rapport n'a pas pu être transmis.\n\nCause: ${e.message}\n\nVeuillez réessayer ou contacter le support technique.`,"Fermer","",()=>{},()=>{},'primary');
@@ -603,14 +634,9 @@ function sendReportToFirebase(){
       if(!responses[`${n.code}_forfaitGo`]) missing.push(`${n.code} - Forfait internet restant`);
     }
   }
+  if(!responses.referenceNumber || responses.referenceNumber.trim()==='') missing.push("Numéro de rapport");
   if(missing.length>0){
     showPopup("⚠️ Champs manquants",missing.join("\n"),"Fermer","",()=>{},()=>{});
-    return;
-  }
-  
-  const currentRef = getFullReference();
-  if(currentRef.includes('undefined') || referenceInput.value.trim()===''){
-    showPopup("⚠️ Référence invalide","Veuillez saisir les 3 derniers chiffres de la référence","Fermer","",()=>{},()=>{});
     return;
   }
   
