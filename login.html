@@ -41,6 +41,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 .error-toast.show{transform:translateX(0);}
 .error-toast i{font-size:1.1rem;color:#fff;}
 .error-toast span{flex:1;line-height:1.4;}
+.success-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:12px 24px;border-radius:40px;font-size:13px;z-index:10000;animation:slideUp 0.3s;box-shadow:0 4px 15px rgba(0,0,0,0.3);}
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(30px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
 .card-footer{text-align:center;margin-top:1.8rem;padding-top:1.2rem;border-top:1px solid #2a3548;}
 .card-footer p{color:#64748b;font-size:0.7rem;display:flex;align-items:center;justify-content:center;gap:6px;}
 .card-footer i{color:#38bdf8;}
@@ -48,86 +50,16 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 .login-btn.loading i{animation:spin 0.8s linear infinite;}
 @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 @media(max-width:480px){.login-card{padding:1.5rem;}.logo-icon{width:55px;height:55px;}.logo-icon i{font-size:1.8rem;}.card-header h1{font-size:1.4rem;}}
-
-/* ========== NOUVEAU : BOUTON ACCUEIL ========== */
-.home-button {
-    position: fixed;
-    top: 24px;
-    left: 24px;
-    background: rgba(15, 20, 32, 0.85);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(56, 189, 248, 0.4);
-    border-radius: 60px;
-    padding: 10px 22px;
-    color: #e2e8f0;
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    z-index: 1100;
-    transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    font-family: 'Inter', sans-serif;
-    letter-spacing: 0.3px;
-}
-.home-button i {
-    font-size: 1.1rem;
-    color: #38bdf8;
-    transition: transform 0.2s;
-}
-.home-button:hover {
-    background: #1e293b;
-    border-color: #38bdf8;
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.4);
-}
-.home-button:hover i {
-    transform: scale(1.1);
-    color: #60a5fa;
-}
-@media (max-width: 600px) {
-    .home-button { padding: 8px 18px; top: 16px; left: 16px; font-size: 0.8rem; }
-}
-
-/* ========== PROFONDEUR 3D : PERSPECTIVE + TRANSITION ========== */
-.login-container {
-    perspective: 1400px;
-    perspective-origin: 50% 50%;
-}
-
-.login-card {
-    transition: transform 0.12s cubic-bezier(0.05, 0.7, 0.2, 1), box-shadow 0.25s ease;
-    transform-style: preserve-3d;
-    will-change: transform;
-    backface-visibility: visible;
-}
-
-/* léger renfort de profondeur: ombre plus dynamique en 3D */
-.login-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 24px;
-    background: radial-gradient(circle at 30% 20%, rgba(56,189,248,0.08), transparent 70%);
-    pointer-events: none;
-    z-index: 1;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.login-container:hover .login-card::after {
-    opacity: 1;
-}
+.home-button{position:fixed;top:24px;left:24px;background:rgba(15,20,32,0.85);backdrop-filter:blur(10px);border:1px solid rgba(56,189,248,0.4);border-radius:60px;padding:10px 22px;color:#e2e8f0;font-weight:600;font-size:0.9rem;text-decoration:none;display:flex;align-items:center;gap:10px;z-index:1100;transition:all 0.25s;}
+.home-button i{font-size:1.1rem;color:#38bdf8;}
+.home-button:hover{background:#1e293b;border-color:#38bdf8;transform:translateY(-3px);}
+@media (max-width:600px){.home-button{padding:8px 18px;top:16px;left:16px;font-size:0.8rem;}}
+.login-container{perspective:1400px;animation:fadeInUp3D 0.6s cubic-bezier(0.2,0.8,0.3,1) forwards;}
+@keyframes fadeInUp3D{0%{opacity:0;transform:translateY(25px) rotateX(-8deg);}100%{opacity:1;transform:translateY(0) rotateX(0deg);}}
 </style>
 </head>
 <body>
 
-<!-- BOUTON ACCUEIL (AJOUTÉ) : Redirige vers index.html -->
 <a href="index.html" class="home-button" title="Page d'accueil">
     <i class="fas fa-home"></i>
     <span>Accueil</span>
@@ -137,7 +69,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 <div class="rainbow-border"></div>
 <div class="login-card">
 <div class="card-header">
-<!-- Icône remplacée : plus de Font Awesome, image externe conservant la taille exacte -->
 <div class="logo-icon"><img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX Icon"></div>
 <h1>NeTubeX</h1>
 <p>Espace de rémunération Digitale</p>
@@ -165,7 +96,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 <span id="registerTextLink">M'inscrire</span>
 </div>
 <div class="card-footer">
-<p><i class="fas fa-shield-alt"></i> Connexion sécurisée · Espace Digital certifié</p>
+<p><i class="fas fa-shield-alt"></i> Connexion sécurisée · 1 compte = 1 appareil</p>
 </div>
 </div>
 </div>
@@ -173,8 +104,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
@@ -200,7 +131,6 @@ const togglePassword = document.getElementById("togglePassword");
 const passwordInput = document.getElementById("password");
 let toastTimeout;
 
-// URLs pour la double redirection "M'inscrire"
 const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdmxq9EhAVNzvtLKM6JXZrwjqqiD9T8RyiqzrBwMNVlDn4pYA/viewform";
 const EAGERDAZZLE_URL = "https://eagerdazzle.com/ephd1jtvs8?key=7c6d8895fbc09844b539238f92e9d92a";
 
@@ -211,9 +141,16 @@ function showError(message) {
   toastTimeout = setTimeout(() => { errorToast.classList.remove("show"); }, 5000);
 }
 
+function showSuccessToast(message) {
+  const toast = document.createElement('div');
+  toast.className = 'success-toast';
+  toast.innerHTML = `✅ ${message}`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 4000);
+}
+
 function hideError() { errorToast.classList.remove("show"); }
 
-// Toggle password
 togglePassword.addEventListener("click", function(e) {
   e.preventDefault();
   const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
@@ -230,7 +167,97 @@ togglePassword.addEventListener("click", function(e) {
   }
 });
 
-// Gestion de la connexion
+// ============ GESTION DE L'APPAREIL UNIQUE ============
+
+// Générer ou récupérer un identifiant unique d'appareil (persistant)
+function getOrCreateDeviceId() {
+    let deviceId = localStorage.getItem('device_permanent_id');
+    
+    if (!deviceId) {
+        deviceId = sessionStorage.getItem('device_permanent_id');
+    }
+    
+    if (!deviceId) {
+        deviceId = crypto.randomUUID ? crypto.randomUUID() : 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
+        localStorage.setItem('device_permanent_id', deviceId);
+        sessionStorage.setItem('device_permanent_id', deviceId);
+        
+        document.cookie = `device_id=${deviceId}; path=/; max-age=31536000`;
+    }
+    
+    return deviceId;
+}
+
+// Enregistrer une alerte de tentative frauduleuse
+async function registerSecurityAlert(userId, userCode, attemptedDeviceId, userAgent, platform) {
+    try {
+        await addDoc(collection(db, "device_alerts"), {
+            userId: userId,
+            userCode: userCode,
+            attemptedDeviceId: attemptedDeviceId,
+            attemptedUserAgent: userAgent,
+            attemptedPlatform: platform,
+            timestamp: new Date().toISOString(),
+            status: "pending",
+            message: "Tentative de connexion depuis un appareil non autorisé"
+        });
+        console.log("Alerte sécurité enregistrée");
+    } catch(error) {
+        console.error("Erreur enregistrement alerte:", error);
+    }
+}
+
+// Vérifier si l'appareil est autorisé
+async function checkDeviceAuthorization(userId, userEmail, deviceId) {
+    try {
+        const userDeviceRef = doc(db, "user_devices", userId);
+        const userDeviceSnap = await getDoc(userDeviceRef);
+        
+        // Récupérer le code utilisateur pour les alertes
+        const userDoc = await getDoc(doc(db, "users", userId));
+        const userCode = userDoc.exists() ? userDoc.data().code : userEmail;
+        
+        if (!userDeviceSnap.exists()) {
+            // PREMIÈRE CONNEXION : on enregistre l'appareil
+            await setDoc(userDeviceRef, {
+                deviceId: deviceId,
+                firstLogin: new Date().toISOString(),
+                lastLogin: new Date().toISOString(),
+                isActive: true,
+                userAgent: navigator.userAgent,
+                platform: navigator.platform
+            });
+            return { authorized: true, isFirstLogin: true };
+        }
+        
+        const storedDeviceId = userDeviceSnap.data().deviceId;
+        
+        if (storedDeviceId !== deviceId) {
+            // TENTATIVE FRAUDULEUSE : enregistrer une alerte
+            await registerSecurityAlert(userId, userCode, deviceId, navigator.userAgent, navigator.platform);
+            return { 
+                authorized: false, 
+                isFirstLogin: false, 
+                message: "⛔ ACCÈS REFUSÉ ! Ce compte est lié à un autre téléphone. Une alerte a été envoyée à l'administrateur."
+            };
+        }
+        
+        // Mise à jour de la dernière connexion
+        await updateDoc(userDeviceRef, {
+            lastLogin: new Date().toISOString(),
+            lastUserAgent: navigator.userAgent
+        });
+        
+        return { authorized: true, isFirstLogin: false };
+        
+    } catch(error) {
+        console.error("Erreur vérification appareil:", error);
+        return { authorized: false, message: "Erreur technique. Réessayez plus tard." };
+    }
+}
+
+// ============ CONNEXION ============
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   hideError();
@@ -251,9 +278,23 @@ loginForm.addEventListener("submit", async (e) => {
   loginBtn.innerHTML = '<i class="fas fa-spinner"></i><span>Connexion...</span>';
   
   try {
+    // ÉTAPE 1 : Authentification Firebase
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     
+    // ÉTAPE 2 : Vérification de l'appareil
+    const deviceId = getOrCreateDeviceId();
+    const deviceCheck = await checkDeviceAuthorization(user.uid, email, deviceId);
+    
+    if (!deviceCheck.authorized) {
+      await signOut(auth);
+      showError(deviceCheck.message || "Appareil non autorisé");
+      loginBtn.classList.remove("loading");
+      loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i><span>Se connecter</span>';
+      return;
+    }
+    
+    // ÉTAPE 3 : Récupération des infos utilisateur
     const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
     
@@ -268,12 +309,16 @@ loginForm.addEventListener("submit", async (e) => {
     sessionStorage.setItem('firebaseUserId', user.uid);
     if(code) sessionStorage.setItem('userCode', code);
     
+    if(deviceCheck.isFirstLogin) {
+      showSuccessToast("Appareil enregistré avec succès !");
+    }
+    
     setTimeout(() => {
       if(role === "pets") window.location.href = "pets.html";
       else if(role === "pgc") window.location.href = "pgc.html";
       else if(role === "pilote") window.location.href = "pilote.html";
       else window.location.href = "dashboard.html";
-    }, 300);
+    }, 500);
     
   } catch(error) {
     let msg = "Identifiants incorrects";
@@ -292,13 +337,10 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
-// ========== M'INSCRIRE : DOUBLE REDIRECTION (inchangée) ==========
 registerTextLink.addEventListener("click", (e) => {
   e.preventDefault();
-  console.log("📝 Clic sur M'inscrire - Double redirection immédiate (inversée)");
   const newTab = window.open(GOOGLE_FORM_URL, "_blank");
   if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
-    console.warn("Popup bloqué pour le formulaire Google");
     showError("⚠️ Veuillez autoriser les popups pour ouvrir le formulaire d'inscription");
   }
   setTimeout(() => {
@@ -308,10 +350,7 @@ registerTextLink.addEventListener("click", (e) => {
 
 document.getElementById("email").addEventListener("focus", hideError);
 passwordInput.addEventListener("focus", hideError);
-</script>
 
-<!-- Service Worker existant -->
-<script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
@@ -320,143 +359,5 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
-
-<!-- ========== AJOUT : EFFET 3D (PROFONDEUR) SUR LA CARTE ========== -->
-<script>
-(function() {
-    // Éléments pour l'effet 3D depth
-    const container = document.querySelector('.login-container');
-    const card = document.querySelector('.login-card');
-    if (!container || !card) return;
-    
-    // Paramètres de l'effet (inclinaison maximale pour une profondeur réaliste)
-    const MAX_ROTATE_X = 7;    // degrés
-    const MAX_ROTATE_Y = 7;    // degrés
-    const ENABLE_TRANSLATE_Z = true;
-    const MAX_TRANSLATE_Z = 6;  // pixels
-    
-    let currentTransform = { rotateX: 0, rotateY: 0, translateZ: 0 };
-    let rafId = null;
-    
-    // Fonction d'application fluide de la transformation
-    function apply3DTransform(rotateX, rotateY, translateZ = 0) {
-        if (!card) return;
-        // Utilisation de translateZ pour accentuer la profondeur et effet "pop"
-        const translatePart = translateZ ? `translateZ(${translateZ}px)` : '';
-        const transformValue = `${translatePart} rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        card.style.transform = transformValue;
-        // Variation dynamique de l'ombre pour renforcer la sensation 3D
-        const intensity = (Math.abs(rotateX) + Math.abs(rotateY)) / (MAX_ROTATE_X + MAX_ROTATE_Y);
-        const shadowBlur = 20 + intensity * 18;
-        const shadowY = 10 + intensity * 12;
-        const shadowOpacity = 0.5 + intensity * 0.25;
-        card.style.boxShadow = `0 ${shadowY}px ${shadowBlur}px -12px rgba(0,0,0,${shadowOpacity}), 0 0 0 1px rgba(56,189,248,${0.1 + intensity * 0.2})`;
-    }
-    
-    // Réinitialisation douce (retour à plat)
-    function resetTransform() {
-        if (rafId) cancelAnimationFrame(rafId);
-        rafId = requestAnimationFrame(() => {
-            currentTransform.rotateX = 0;
-            currentTransform.rotateY = 0;
-            currentTransform.translateZ = 0;
-            apply3DTransform(0, 0, 0);
-            card.style.transition = 'transform 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.2), box-shadow 0.35s ease';
-            setTimeout(() => {
-                if (card) card.style.transition = '';
-            }, 400);
-        });
-    }
-    
-    // Gestion du mouvement de souris pour créer l'effet 3D dynamique
-    function handleMouseMove(e) {
-        if (!container || !card) return;
-        const rect = container.getBoundingClientRect();
-        if (rect.width === 0) return;
-        
-        // Coordonnées relatives au container (entre -1 et 1)
-        const mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;  // -1 (gauche) à 1 (droite)
-        const mouseY = ((e.clientY - rect.top) / rect.height) * 2 - 1; // -1 (haut) à 1 (bas)
-        
-        // Calcul des rotations : plus on va vers les bords, plus l'inclinaison est forte
-        let rotY = mouseX * MAX_ROTATE_Y;
-        let rotX = mouseY * MAX_ROTATE_X * -1;  // inversé pour un effet naturel (haut => recule, bas => avance)
-        
-        // Limites pour éviter des angles trop abrupts
-        rotX = Math.min(MAX_ROTATE_X, Math.max(-MAX_ROTATE_X, rotX));
-        rotY = Math.min(MAX_ROTATE_Y, Math.max(-MAX_ROTATE_Y, rotY));
-        
-        // Translation Z en fonction de l'intensité du mouvement (effet de profondeur supplémentaire)
-        let translateZ = 0;
-        if (ENABLE_TRANSLATE_Z) {
-            const intensity = (Math.abs(rotX) + Math.abs(rotY)) / (MAX_ROTATE_X + MAX_ROTATE_Y);
-            translateZ = intensity * MAX_TRANSLATE_Z;
-        }
-        
-        // Mise à jour fluide avec annulation de l'ancienne animation si nécessaire
-        if (rafId) cancelAnimationFrame(rafId);
-        rafId = requestAnimationFrame(() => {
-            currentTransform.rotateX = rotX;
-            currentTransform.rotateY = rotY;
-            currentTransform.translateZ = translateZ;
-            // Transition rapide pour suivre la souris en temps réel
-            card.style.transition = 'transform 0.03s linear, box-shadow 0.08s ease';
-            apply3DTransform(rotX, rotY, translateZ);
-        });
-    }
-    
-    // Réinitialisation au survol de la bordure (lorsque la souris quitte le container)
-    function handleMouseLeave() {
-        resetTransform();
-    }
-    
-    // Active l'effet uniquement sur desktop / souris, évite le lag sur mobile (optionnel)
-    function isTouchDevice() {
-        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    }
-    
-    if (!isTouchDevice()) {
-        container.addEventListener('mousemove', handleMouseMove);
-        container.addEventListener('mouseleave', handleMouseLeave);
-    } else {
-        // Sur mobile, on applique une profondeur statique légère pour ne pas nuire à l'expérience
-        // (un subtil effet 3D fixe pour garder la sensation de profondeur)
-        if (card) {
-            card.style.transform = 'translateZ(4px) rotateX(1deg) rotateY(0.5deg)';
-            card.style.transition = 'transform 0.4s ease';
-            card.style.boxShadow = '0 22px 35px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(56,189,248,0.2)';
-        }
-    }
-    
-    // Petit ajustement : s'assurer que la carte retrouve son état si la fenêtre est redimensionnée
-    window.addEventListener('resize', () => {
-        if (container && !isTouchDevice()) {
-            // Réinitialise la transformation pour éviter les décalages
-            resetTransform();
-        }
-    });
-    
-    // Évite tout conflit avec les clics et interactions
-    if (card) {
-        card.style.backfaceVisibility = 'visible';
-    }
-})();
-</script>
-
-<!-- Ajout d'un effet de profondeur visuel sur le fond avec pseudo-élément (optionnel subtil) -->
-<style>
-/* renforce la perception 3D avec une ombre portée "lointaine" sous le container */
-.login-container {
-    filter: drop-shadow(0 20px 25px -12px rgba(0,0,0,0.4));
-}
-/* animation légère d'entrée renforcée pour accentuer la 3D */
-@keyframes fadeInUp3D {
-    0% { opacity: 0; transform: translateY(25px) rotateX(-8deg); }
-    100% { opacity: 1; transform: translateY(0) rotateX(0deg); }
-}
-.login-container {
-    animation: fadeInUp3D 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
-}
-</style>
 </body>
 </html>
