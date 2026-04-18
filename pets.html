@@ -66,10 +66,14 @@ tr:hover{background:#1a2332;}
 .badge-danger{background:rgba(239,68,68,0.2);color:#ef4444;}
 .badge-warning{background:rgba(245,158,11,0.2);color:#f59e0b;}
 .badge-info{background:rgba(59,130,246,0.2);color:#3b82f6;}
-.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;}
-.online{background:#10b981;box-shadow:0 0 5px #10b981;animation:pulse 2s infinite;}
-.offline{background:#64748b;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+
+/* Spot pour le statut (ampoule) */
+.status-spot{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:30px;font-size:11px;font-weight:600;}
+.status-spot.online{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);}
+.status-spot.offline{background:rgba(100,116,139,0.15);color:#94a3b8;border:1px solid rgba(100,116,139,0.3);}
+.status-spot i{font-size:12px;}
+.status-spot.online i{color:#10b981;text-shadow:0 0 8px #10b981;}
+.status-spot.offline i{color:#64748b;}
 
 /* Modales professionnelles */
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(8px);z-index:1000;justify-content:center;align-items:center;}
@@ -137,13 +141,18 @@ tr:hover{background:#1a2332;}
 .confirm-buttons .btn-cancel{background:#1e293b;color:#fff;}
 .confirm-buttons .btn-cancel:hover{background:#334155;}
 
-/* Onglets de classement des rapports */
+/* Sous-onglets rapports */
 .report-subtabs{display:flex;gap:10px;margin-bottom:20px;border-bottom:1px solid #1e293b;padding-bottom:8px;}
 .report-subtab{padding:8px 20px;background:transparent;border:none;border-radius:20px;color:#94a3b8;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.2s;}
 .report-subtab:hover{background:#1e293b;color:#fff;}
 .report-subtab.active{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;}
 .report-category{display:none;}
 .report-category.active{display:block;}
+
+/* Onglet Confidentialité */
+.privacy-card{background:#1a2332;border-radius:16px;padding:20px;margin-bottom:20px;}
+.privacy-card h3{color:#f59e0b;margin-bottom:15px;font-size:14px;}
+.email-list{font-family:monospace;font-size:12px;}
 </style>
 </head>
 <body>
@@ -162,6 +171,7 @@ tr:hover{background:#1a2332;}
 <button class="tab" onclick="switchTab('rapports')"><i class="fas fa-file-alt"></i> Rapports PGCO</button>
 <button class="tab" onclick="switchTab('tickets')"><i class="fas fa-ticket-alt"></i> Tickets Support</button>
 <button class="tab" onclick="switchTab('anomalies')"><i class="fas fa-exclamation-triangle"></i> Anomalies</button>
+<button class="tab" onclick="switchTab('confidentialite')"><i class="fas fa-lock"></i> Confidentialité</button>
 <button class="tab" onclick="switchTab('settings')"><i class="fas fa-cog"></i> Paramètres</button>
 </div>
 
@@ -170,7 +180,7 @@ tr:hover{background:#1a2332;}
 <div class="stats-grid">
 <div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Total Netubers</div></div>
 <div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">Connectés</div></div>
-<div class="stat-card"><div class="value" id="totalAnomalies">0</div><div class="label">Anomalies détectées</div></div>
+<div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label">Déconnectés</div></div>
 <div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Comptes bloqués</div></div>
 </div>
 
@@ -182,13 +192,13 @@ tr:hover{background:#1a2332;}
 </div>
 <div class="table-wrapper">
 <table id="netubersTable">
-<thead><tr><th>Code</th><th>Email</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Objectif restant</th><th>Connexions</th><th>Anomalies</th><th>Localisation</th><th>Statut</th><th>Actions</th></tr></thead>
+<thead><tr><th>Code</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Objectif restant</th><th>Connexions</th><th>Déconnexions</th><th>Statut</th><th>Actions</th></tr></thead>
 <tbody id="netubersTableBody"></tbody>
 </table>
 </div>
 </div>
 
-<!-- Onglet Rapports PGCO avec sous-onglets -->
+<!-- Onglet Rapports PGCO -->
 <div id="rapportsTab" class="tab-content">
 <div class="stats-grid">
 <div class="stat-card"><div class="value" id="totalRapports">0</div><div class="label">Rapports reçus</div></div>
@@ -196,7 +206,6 @@ tr:hover{background:#1a2332;}
 <div class="stat-card"><div class="value" id="avgRendement">0</div><div class="label">Rendement moyen</div></div>
 </div>
 
-<!-- Sous-onglets pour classer les rapports -->
 <div class="report-subtabs">
 <button class="report-subtab active" onclick="switchReportCategory('present')"><i class="fas fa-user-check"></i> Présents</button>
 <button class="report-subtab" onclick="switchReportCategory('absent')"><i class="fas fa-user-slash"></i> Absents</button>
@@ -212,22 +221,18 @@ tr:hover{background:#1a2332;}
 <button class="export-btn" onclick="openMemoModal()" style="background:#ec4899;"><i class="fas fa-envelope"></i> Mémorandum</button>
 </div>
 
-<!-- Catégorie: Présents -->
 <div id="report-present" class="report-category active">
 <div class="table-wrapper"><table><thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Netubers présents</th><th>Points/jour</th><th>Rendement</th><th>Date</th><th>Actions</th></tr></thead><tbody id="presentRapportsBody"></tbody></table></div>
 </div>
 
-<!-- Catégorie: Absents -->
 <div id="report-absent" class="report-category">
 <div class="table-wrapper"><table><thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Netubers absents</th><th>Taux d'absence</th><th>Date</th><th>Actions</th></tr></thead><tbody id="absentRapportsBody"></tbody></table></div>
 </div>
 
-<!-- Catégorie: Performants (Points) -->
 <div id="report-performant" class="report-category">
 <div class="table-wrapper"><table><thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Points/jour</th><th>Classement</th><th>Date</th><th>Actions</th></tr></thead><tbody id="performantRapportsBody"></tbody></table></div>
 </div>
 
-<!-- Catégorie: Actifs (Temps) -->
 <div id="report-actif" class="report-category">
 <div class="table-wrapper"><table><thead><tr><th>Référence</th><th>Zone</th><th>Responsable</th><th>Temps actif (min)</th><th>Productivité</th><th>Date</th><th>Actions</th></tr></thead><tbody id="actifRapportsBody"></tbody></table></div>
 </div>
@@ -245,8 +250,32 @@ tr:hover{background:#1a2332;}
 
 <!-- Onglet Anomalies -->
 <div id="anomaliesTab" class="tab-content">
+<div class="stats-grid">
+<div class="stat-card"><div class="value" id="totalAnomalies">0</div><div class="label">Anomalies détectées</div></div>
+</div>
 <div class="chart-container"><canvas id="anomaliesChart" style="max-height:250px;"></canvas></div>
 <div class="table-wrapper"><table id="anomaliesTable"><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre</th><th>Dernière occurrence</th><th>Action</th></tr></thead><tbody id="anomaliesTableBody"></tbody></table></div>
+</div>
+
+<!-- Onglet Confidentialité -->
+<div id="confidentialiteTab" class="tab-content">
+<div class="stats-grid">
+<div class="stat-card"><div class="value" id="totalEmails">0</div><div class="label">Emails enregistrés</div></div>
+<div class="stat-card"><div class="value" id="protectedAccounts">0</div><div class="label">Comptes protégés</div></div>
+</div>
+<div class="privacy-card">
+<h3><i class="fas fa-envelope"></i> Liste des emails des Netubers</h3>
+<div class="table-wrapper">
+<table>
+<thead><tr><th>Code Netuber</th><th>Email</th><th>Statut confidentialité</th></tr></thead>
+<tbody id="privacyEmailsBody"></tbody>
+</table>
+</div>
+</div>
+<div class="privacy-card">
+<h3><i class="fas fa-shield-alt"></i> Politique de confidentialité</h3>
+<p style="font-size:12px; line-height:1.6; color:#94a3b8;">Les données personnelles des Netubers sont protégées conformément au RGPD. Les emails sont stockés de manière sécurisée et ne sont accessibles qu'aux administrateurs autorisés. Aucune donnée personnelle n'est partagée avec des tiers.</p>
+</div>
 </div>
 
 <!-- Onglet Paramètres -->
@@ -265,7 +294,7 @@ tr:hover{background:#1a2332;}
 </div>
 
 <!-- Modales -->
-<div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Code Netuber</label><input type="text" id="newCode" placeholder="Ex: NETUBER001"></div><div class="input-group"><label>Email</label><input type="email" id="newEmail" placeholder="Email professionnel"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newPassword" placeholder="Minimum 6 caractères"></div><div class="input-group"><label>Objectif mensuel</label><input type="number" id="newObjectifMensuel" value="9" placeholder="Objectif mensuel"></div></div><div class="modal-footer"><button onclick="createNetuber()" style="background:#10b981;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#64748b;">Annuler</button></div></div></div>
+<div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Code Netuber</label><input type="text" id="newCode" placeholder="Ex: NETUBER001"></div><div class="input-group"><label>Email</label><input type="email" id="newEmail" placeholder="Email professionnel"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newPassword" placeholder="Minimum 6 caractères"></div></div><div class="modal-footer"><button onclick="createNetuber()" style="background:#10b981;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
 <div id="editCodeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-edit"></i> Modifier le code Netuber</h2><button class="modal-close" onclick="closeModal('editCodeModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="editCodeSelect"></select></div><div class="input-group"><label>Nouveau code</label><input type="text" id="newCodeValue" placeholder="Nouveau code unique"></div></div><div class="modal-footer"><button onclick="updateNetuberCode()" style="background:#f59e0b;">Modifier</button><button onclick="closeModal('editCodeModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
@@ -391,20 +420,21 @@ function updateRapportCategories() {
     
     document.getElementById('presentRapportsBody').innerHTML = presentRapports.map(r => {
         const presentsCount = (r.netubers || []).filter(n => n.presence === 'Présent').length;
+        const rendementCalcule = r.totalTempsJour > 0 ? ((r.totalPointsJour || 0) / (r.totalTempsJour / 60)).toFixed(2) : '0';
         return `<tr>
             <td><strong>${r.reference || '-'}</strong></td>
-            <td>${r.zone || '-'}</td>
-            <td>${r.responsable || '-'}</td>
-            <td><span class="badge badge-success">${presentsCount}</span></td>
-            <td style="color:#f59e0b;">${r.totalPointsJour || 0} pts</td>
-            <td>${r.rendementGlobal ? parseFloat(r.rendementGlobal).toFixed(2) : '-'}</td>
-            <td><small>${formatDateShort(r.createdAt)}</small></td>
+            <td>${r.zone || '-'}</div>
+            <td>${r.responsable || '-'}</div>
+            <td><span class="badge badge-success">${presentsCount}</span></div>
+            <td style="color:#f59e0b;">${r.totalPointsJour || 0} pts</div>
+            <td>${rendementCalcule}</div>
+            <td><small>${formatDateShort(r.createdAt)}</small></div>
             <td>
                 <button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i></button>
                 <button class="action-btn delete" onclick='deleteRapport("${r.id}")'><i class="fas fa-trash"></i></button>
-            </td>
-         </tr>`;
-    }).join('') || '<tr><td colspan="8" style="text-align:center;">Aucun rapport avec présence</td></tr>';
+             </div>
+          </div>`;
+    }).join('') || '<tr><td colspan="8" style="text-align:center;">Aucun rapport avec présence</div></tr>';
     
     // Catégorie: Absents (netubers avec présence ≠ Présent)
     const absentRapports = rapportsData.filter(r => {
@@ -418,17 +448,17 @@ function updateRapportCategories() {
         const absenceRate = totalCount > 0 ? ((absentsCount / totalCount) * 100).toFixed(1) : 0;
         return `<tr>
             <td><strong>${r.reference || '-'}</strong></td>
-            <td>${r.zone || '-'}</td>
-            <td>${r.responsable || '-'}</td>
-            <td><span class="badge badge-danger">${absentsCount}</span></td>
-            <td>${absenceRate}%</td>
-            <td><small>${formatDateShort(r.createdAt)}</small></td>
+            <td>${r.zone || '-'}</div>
+            <td>${r.responsable || '-'}</div>
+            <td><span class="badge badge-danger">${absentsCount}</span></div>
+            <td>${absenceRate}%</div>
+            <td><small>${formatDateShort(r.createdAt)}</small></div>
             <td>
                 <button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i></button>
                 <button class="action-btn delete" onclick='deleteRapport("${r.id}")'><i class="fas fa-trash"></i></button>
-            </td>
-         </tr>`;
-    }).join('') || '<tr><td colspan="7" style="text-align:center;">Aucun rapport avec absence</td></tr>';
+             </div>
+          </div>`;
+    }).join('') || '<tr><td colspan="7" style="text-align:center;">Aucun rapport avec absence</div></tr>';
     
     // Catégorie: Performants (Points) - tri par points décroissants
     const performantRapports = [...rapportsData].sort((a,b) => (b.totalPointsJour || 0) - (a.totalPointsJour || 0));
@@ -437,17 +467,17 @@ function updateRapportCategories() {
         const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx+1}ème`));
         return `<tr>
             <td><strong>${r.reference || '-'}</strong></td>
-            <td>${r.zone || '-'}</td>
-            <td>${r.responsable || '-'}</td>
-            <td style="color:#f59e0b; font-weight:bold;">${r.totalPointsJour || 0} pts</td>
-            <td>${medal}</td>
-            <td><small>${formatDateShort(r.createdAt)}</small></td>
+            <td>${r.zone || '-'}</div>
+            <td>${r.responsable || '-'}</div>
+            <td style="color:#f59e0b; font-weight:bold;">${r.totalPointsJour || 0} pts</div>
+            <td>${medal}</div>
+            <td><small>${formatDateShort(r.createdAt)}</small></div>
             <td>
                 <button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i></button>
                 <button class="action-btn delete" onclick='deleteRapport("${r.id}")'><i class="fas fa-trash"></i></button>
-            </td>
-         </tr>`;
-    }).join('') || '<tr><td colspan="7" style="text-align:center;">Aucun rapport disponible</td></tr>';
+             </div>
+          </div>`;
+    }).join('') || '<tr><td colspan="7" style="text-align:center;">Aucun rapport disponible</div></tr>';
     
     // Catégorie: Actifs (Temps) - tri par temps décroissant
     const actifRapports = [...rapportsData].sort((a,b) => (b.totalTempsJour || 0) - (a.totalTempsJour || 0));
@@ -457,17 +487,27 @@ function updateRapportCategories() {
         const productClass = idx < 3 ? 'badge-success' : 'badge-info';
         return `<tr>
             <td><strong>${r.reference || '-'}</strong></td>
-            <td>${r.zone || '-'}</td>
-            <td>${r.responsable || '-'}</td>
-            <td>${tempsMinutes} min</td>
-            <td><span class="badge ${productClass}">${idx+1}ème</span></td>
-            <td><small>${formatDateShort(r.createdAt)}</small></td>
+            <td>${r.zone || '-'}</div>
+            <td>${r.responsable || '-'}</div>
+            <td>${tempsMinutes} min</div>
+            <td><span class="badge ${productClass}">${idx+1}ème</span></div>
+            <td><small>${formatDateShort(r.createdAt)}</small></div>
             <td>
                 <button class="action-btn view" onclick='viewRapport("${r.id}")'><i class="fas fa-eye"></i></button>
                 <button class="action-btn delete" onclick='deleteRapport("${r.id}")'><i class="fas fa-trash"></i></button>
-            </td>
-         </tr>`;
-    }).join('') || '<tr><td colspan="7" style="text-align:center;">Aucun rapport disponible</td></tr>';
+             </div>
+          </div>`;
+    }).join('') || '<tr><td colspan="7" style="text-align:center;">Aucun rapport disponible</div></tr>';
+    
+    // Mise à jour des statistiques globales
+    const avgPoints = rapportsData.reduce((a,r) => a + (r.totalPointsJour || 0), 0) / (rapportsData.length || 1);
+    const avgRendement = rapportsData.reduce((a,r) => {
+        const rend = r.totalTempsJour > 0 ? ((r.totalPointsJour || 0) / (r.totalTempsJour / 60)) : 0;
+        return a + rend;
+    }, 0) / (rapportsData.length || 1);
+    document.getElementById('avgPoints').innerText = Math.round(avgPoints);
+    document.getElementById('avgRendement').innerText = avgRendement.toFixed(2);
+    document.getElementById('totalRapports').innerText = rapportsData.length;
 }
 
 // ============ ÉCOUTE EN TEMPS RÉEL ============
@@ -491,6 +531,7 @@ function listenToUsersRealtime() {
             updateAnomaliesTable();
             updateStats();
             updateCapHistory();
+            updatePrivacyTab();
             loadTickets();
         }
     });
@@ -522,15 +563,15 @@ function updateTicketsTable() {
         const priorityClass = t.priority === 'haute' ? 'badge-danger' : (t.priority === 'moyenne' ? 'badge-warning' : 'badge-info');
         return `<tr>
             <td><strong>${t.userCode}</strong></td>
-            <td>${t.category || t.subject}</td>
-            <td><span class="badge ${priorityClass}">${t.priority}</span></td>
-            <td><span class="badge ${statusClass}">${statusText}</span></td>
-            <td><small>${new Date(t.date).toLocaleDateString()}</small></td>
+            <td>${t.category || t.subject}</div>
+            <td><span class="badge ${priorityClass}">${t.priority}</span></div>
+            <td><span class="badge ${statusClass}">${statusText}</span></div>
+            <td><small>${new Date(t.date).toLocaleDateString()}</small></div>
             <td>
                 <button class="action-btn reply" onclick="openReplyTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-reply"></i> Répondre</button>
                 ${t.status !== 'resolu' ? `<button class="action-btn resolve" onclick="openResolveTicketModal('${t.id}', '${t.userCode}')"><i class="fas fa-check"></i> Résoudre</button>` : ''}
                 <button class="action-btn delete" onclick="deleteTicket('${t.id}', '${t.userId}')"><i class="fas fa-trash"></i> Supprimer</button>
-             </div>
+              </div>
           </div>`;
     }).join('');
     
@@ -617,6 +658,7 @@ async function loadAllData() {
     updateCharts();
     updateSelects();
     updateCapHistory();
+    updatePrivacyTab();
     
     listenToUsersRealtime();
 }
@@ -644,13 +686,13 @@ window.viewRapport = (id) => {
         <div class="detail-card"><h4>Informations générales</h4><div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${rapport.reference || '-'}</span></div><div class="detail-row"><span class="detail-label">Zone / Site</span><span class="detail-value">${rapport.zone || '-'}</span></div><div class="detail-row"><span class="detail-label">Responsable</span><span class="detail-value">${rapport.responsable || '-'}</span></div><div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">${new Date(rapport.createdAt).toLocaleString('fr-FR')}</span></div></div>
         <div class="detail-card"><h4>Objectifs</h4><div class="detail-row"><span class="detail-label">Objectif atteint</span><span class="detail-value"><span class="badge badge-success">${rapport.goalReached || 0}/9</span></span></div><div class="detail-row"><span class="detail-label">Appels pilote</span><span class="detail-value">${rapport.piloteCallCount || 0} fois</span></div></div>
         <div class="detail-card"><h4>Performance</h4><div class="detail-row"><span class="detail-label">Points précédents</span><span class="detail-value">${rapport.totalPointsPrecedents || 0} pts</span></div><div class="detail-row"><span class="detail-label">Points du jour</span><span class="detail-value" style="color:#f59e0b;">${rapport.totalPointsJour || 0} pts</span></div><div class="detail-row"><span class="detail-label">Progression</span><div class="progress-bar-group"><div class="progress-item"><div class="progress-label">Points précédents (${Math.round(pointsPrevPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsPrevPercent}%; background:#3b82f6;"></div></div></div><div class="progress-item"><div class="progress-label">Points du jour (${Math.round(pointsJourPercent)}%)</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pointsJourPercent}%; background:#f59e0b;"></div></div></div></div></div></div>
-        <div class="detail-card"><h4>Détail des Netubers</h4><div class="table-wrapper"><table style="min-width:600px;"><thead><tr><th>Code</th><th>Présence</th><th>Points préc.</th><th>Points jour</th><th>Écart</th><th>Rendement</th></tr></thead><tbody>${(rapport.netubers || []).map(n => { const ecart = (n.pointsJour || 0) - (n.pointsPrecedents || 0); const rendement = n.tempsJour > 0 ? ((n.pointsJour || 0) / n.tempsJour).toFixed(2) : '0'; return `<tr><td>${n.code}</td><td>${n.presence === 'Présent' ? '✅ Présent' : '❌ Absent'}</td><td>${n.pointsPrecedents || 0}</td><td style="color:#f59e0b;">${n.pointsJour || 0}</td><td class="${ecart > 0 ? 'tendance-up' : 'tendance-down'}">${ecart > 0 ? '+' : ''}${ecart}</td><td>${rendement}</td>`; }).join('')}</tbody>}</div></div>
+        <div class="detail-card"><h4>Détail des Netubers</h4><div class="table-wrapper"><table style="min-width:600px;"><thead><tr><th>Code</th><th>Présence</th><th>Points préc.</th><th>Points jour</th><th>Écart</th><th>Rendement</th></tr></thead><tbody>${(rapport.netubers || []).map(n => { const ecart = (n.pointsJour || 0) - (n.pointsPrecedents || 0); const rendement = n.tempsJour > 0 ? ((n.pointsJour || 0) / n.tempsJour).toFixed(2) : '0'; return `<tr><td>${n.code}</div><td>${n.presence === 'Présent' ? '✅ Présent' : '❌ Absent'}</div><td>${n.pointsPrecedents || 0}</div><td style="color:#f59e0b;">${n.pointsJour || 0}</div><td class="${ecart > 0 ? 'tendance-up' : 'tendance-down'}">${ecart > 0 ? '+' : ''}${ecart}</div><td>${rendement}</div>`; }).join('')}</tbody>}</div></div>
         <div class="detail-card"><h4>Recommandation</h4><p style="font-size:12px; line-height:1.5; background:#1e293b; padding:12px; border-radius:12px;">${rapport.recommendation || '-'}</p></div>
     `;
     openModal('rapportModal');
 };
 
-// ============ NETUBERS AVEC STATUT CONNECTÉ/DÉCONNECTÉ ============
+// ============ NETUBERS TABLE ============
 function updateNetubersTable() {
     const tbody = document.getElementById('netubersTableBody');
     if(!tbody) return;
@@ -671,45 +713,38 @@ function updateNetubersTable() {
         return matchSearch && matchStatus;
     });
     
-    const onlineCount = usersData.filter(u => {
-        const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
-        return lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT;
-    }).length;
-    document.getElementById('totalOnline').innerText = onlineCount;
-    
     tbody.innerHTML = filtered.map(u => {
         const objMensuel = parseInt(u.objectifMensuel) || 9;
         const objAtteint = parseInt(u.objectifAtteint) || 0;
         const objRestant = objMensuel - objAtteint;
         const connexions = parseInt(u.NombreConnexions) || 0;
-        const anomalies = (parseInt(u.anomaliesConnexion)||0) + (parseInt(u.anomaliesSysteme)||0);
+        const deconnexions = parseInt(u.NombreDeconnexions) || 0;
         const isBlocked = u.isBlocked === true;
-        const anomalieClass = anomalies > 5 ? 'badge-danger' : (anomalies > 2 ? 'badge-warning' : 'badge-success');
         
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
-        let statusText = '';
+        let isOnline = false;
+        let statusHtml = '';
         
         if (!lastSeenDate || lastSeenDate.getFullYear() <= 1970) {
-            statusText = '<span class="status-dot offline"></span><span style="color:#ef4444;">Déconnecté</span>';
+            statusHtml = '<div class="status-spot offline"><i class="fas fa-lightbulb"></i><span>Déconnecté</span></div>';
         } else {
             const diffMs = now - lastSeenDate;
             if (diffMs < INACTIVITY_LIMIT) {
-                statusText = '<span class="status-dot online"></span><span style="color:#10b981;">Connecté</span>';
+                isOnline = true;
+                statusHtml = '<div class="status-spot online"><i class="fas fa-lightbulb"></i><span>Connecté</span></div>';
             } else {
-                statusText = '<span class="status-dot offline"></span><span style="color:#ef4444;">Déconnecté</span>';
+                statusHtml = '<div class="status-spot offline"><i class="fas fa-lightbulb"></i><span>Déconnecté</span></div>';
             }
         }
         
         return `<tr>
-            <td><strong>${u.code || '-'}</strong>${isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''} </div>
-            <td>${u.email || '-'}</div>
+            <td><strong>${u.code || '-'}</strong>${isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</div>
             <td style="font-weight:600;">${objMensuel}</div>
             <td style="color:#10b981; font-weight:600;">${objAtteint}</div>
             <td style="color:#f59e0b; font-weight:600;">${objRestant}</div>
             <td style="color:#3b82f6;">${connexions}</div>
-            <td><span class="badge ${anomalieClass}">${anomalies}</span></div>
-            <td><i class="fas fa-map-marker-alt"></i> ${u.localisation || '-'}</div>
-            <td>${statusText}${isBlocked ? ' 🔒' : ''}</div>
+            <td style="color:#64748b;">${deconnexions}</div>
+            <td>${statusHtml}</div>
             <td><button class="action-btn cap" onclick="openCapModal('${u.code}')"><i class="fas fa-chart-line"></i> CAP</button><button class="action-btn view" onclick="showNetuberDetails('${u.code}')"><i class="fas fa-eye"></i></button></div>
           </div>`;
     }).join('');
@@ -723,15 +758,10 @@ function updateStats() {
         const lastSeenDate = u.lastSeen ? new Date(u.lastSeen) : null;
         return lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT;
     }).length;
+    const offlineCount = usersData.length - onlineCount;
     document.getElementById('totalOnline').innerText = onlineCount;
-    const totalAnom = usersData.reduce((a,u) => a + (parseInt(u.anomaliesConnexion)||0) + (parseInt(u.anomaliesSysteme)||0), 0);
-    document.getElementById('totalAnomalies').innerText = totalAnom;
+    document.getElementById('totalOffline').innerText = offlineCount;
     document.getElementById('blockedCount').innerText = usersData.filter(u => u.isBlocked === true).length;
-    document.getElementById('totalRapports').innerText = rapportsData.length;
-    const avgPts = rapportsData.reduce((a,r) => a + (r.totalPointsJour || 0), 0) / (rapportsData.length || 1);
-    document.getElementById('avgPoints').innerText = Math.round(avgPts);
-    const avgRend = rapportsData.reduce((a,r) => a + (parseFloat(r.rendementGlobal) || 0), 0) / (rapportsData.length || 1);
-    document.getElementById('avgRendement').innerText = avgRend.toFixed(2);
 }
 
 function updateAnomaliesTable() {
@@ -753,6 +783,23 @@ function updateAnomaliesTable() {
             <td><button class="action-btn view" onclick='resetAnomalies("${a.id}")'><i class="fas fa-sync"></i> Réinitialiser</button></div>
           </tr>
     `).join('');
+    
+    const totalAnomalies = anomalies.reduce((sum, a) => sum + a.count, 0);
+    document.getElementById('totalAnomalies').innerText = totalAnomalies;
+}
+
+function updatePrivacyTab() {
+    const tbody = document.getElementById('privacyEmailsBody');
+    if(!tbody) return;
+    tbody.innerHTML = usersData.map(u => `
+        <tr>
+            <td><strong>${u.code || '-'}</strong></td>
+            <td>${u.email || '-'}</div>
+            <td><span class="badge badge-success"><i class="fas fa-shield-alt"></i> Protégé RGPD</span></div>
+          </tr>
+    `).join('');
+    document.getElementById('totalEmails').innerText = usersData.length;
+    document.getElementById('protectedAccounts').innerText = usersData.length;
 }
 
 function updateCapHistory() {
@@ -855,7 +902,7 @@ window.showNetuberDetails = (code) => {
     const user = usersData.find(u => u.code === code);
     if(!user) return;
     const modalBody = document.getElementById('rapportDetailBody');
-    modalBody.innerHTML = `<div class="detail-grid"><div class="detail-card"><h4>Identité</h4><div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${user.code || '-'}</span></div><div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${user.email || '-'}</span></div></div><div class="detail-card"><h4>Objectifs</h4><div class="detail-row"><span class="detail-label">Objectif mensuel</span><span class="detail-value">${user.objectifMensuel || 9}</span></div><div class="detail-row"><span class="detail-label">Objectif atteint</span><span class="detail-value">${user.objectifAtteint || 0}</span></div><div class="detail-row"><span class="detail-label">Objectif restant</span><span class="detail-value">${(user.objectifMensuel || 9) - (user.objectifAtteint || 0)}</span></div></div><div class="detail-card"><h4>Statistiques</h4><div class="detail-row"><span class="detail-label">Connexions</span><span class="detail-value">${user.NombreConnexions || 0}</span></div><div class="detail-row"><span class="detail-label">Déconnexions</span><span class="detail-value">${user.NombreDeconnexions || 0}</span></div><div class="detail-row"><span class="detail-label">Anomalies</span><span class="detail-value">${(user.anomaliesConnexion||0)+(user.anomaliesSysteme||0)}</span></div></div></div>`;
+    modalBody.innerHTML = `<div class="detail-grid"><div class="detail-card"><h4>Identité</h4><div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${user.code || '-'}</span></div></div><div class="detail-card"><h4>Objectifs</h4><div class="detail-row"><span class="detail-label">Objectif mensuel</span><span class="detail-value">${user.objectifMensuel || 9}</span></div><div class="detail-row"><span class="detail-label">Objectif atteint</span><span class="detail-value">${user.objectifAtteint || 0}</span></div><div class="detail-row"><span class="detail-label">Objectif restant</span><span class="detail-value">${(user.objectifMensuel || 9) - (user.objectifAtteint || 0)}</span></div></div><div class="detail-card"><h4>Statistiques</h4><div class="detail-row"><span class="detail-label">Connexions</span><span class="detail-value">${user.NombreConnexions || 0}</span></div><div class="detail-row"><span class="detail-label">Déconnexions</span><span class="detail-value">${user.NombreDeconnexions || 0}</span></div></div></div>`;
     openModal('rapportModal');
 };
 
@@ -898,7 +945,6 @@ window.createNetuber = async () => {
     const code = document.getElementById('newCode').value.trim();
     const email = document.getElementById('newEmail').value.trim();
     const password = document.getElementById('newPassword').value;
-    const objectifMensuel = parseInt(document.getElementById('newObjectifMensuel').value) || 9;
     if(!code || !email || !password) { showToast("Tous les champs sont requis", true); return; }
     if(password.length < 6) { showToast("Mot de passe (minimum 6 caractères)", true); return; }
     try {
@@ -909,7 +955,7 @@ window.createNetuber = async () => {
             NombreConnexions: 1, NombreDeconnexions: 0,
             anomaliesConnexion: 0, anomaliesSysteme: 0, 
             ticketsList: [], 
-            isBlocked: false, objectifMensuel, objectifAtteint: 0,
+            isBlocked: false, objectifMensuel: 9, objectifAtteint: 0,
             heureConnexion: now, heureDeconnexion: ""
         });
         closeModal('addNetuberModal');
@@ -960,7 +1006,7 @@ window.openBlockModal = () => openModal('blockModal');
 window.openDeleteModal = () => openModal('deleteModal');
 
 window.exportNetubers = () => {
-    let csv = "Code,Email,Objectif mensuel,Objectif atteint,Objectif restant,Connexions,Anomalies,Localisation,Statut,Bloqué\n";
+    let csv = "Code,Objectif mensuel,Objectif atteint,Objectif restant,Connexions,Déconnexions,Statut,Bloqué\n";
     const now = new Date();
     const INACTIVITY_LIMIT = 8 * 60 * 60 * 1000;
     usersData.forEach(u => { 
@@ -970,7 +1016,7 @@ window.exportNetubers = () => {
         if (lastSeenDate && lastSeenDate.getFullYear() > 1970 && (now - lastSeenDate) < INACTIVITY_LIMIT) {
             isOnline = true;
         }
-        csv += `${u.code},${u.email},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${(u.anomaliesConnexion||0)+(u.anomaliesSysteme||0)},${u.localisation||'-'},${isOnline?'Connecté':'Déconnecté'},${u.isBlocked?'Oui':'Non'}\n`; 
+        csv += `${u.code},${u.objectifMensuel || 9},${u.objectifAtteint || 0},${objRestant},${u.NombreConnexions||0},${u.NombreDeconnexions||0},${isOnline?'Connecté':'Déconnecté'},${u.isBlocked?'Oui':'Non'}\n`; 
     });
     const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `netubers_${new Date().toISOString().split('T')[0]}.csv`; link.click();
 };
@@ -979,7 +1025,8 @@ window.exportRapports = () => {
     let csv = "Référence,Zone,Responsable,Points préc.,Points jour,Écart,Temps préc.,Temps jour,Rendement,Date\n";
     rapportsData.forEach(r => { 
         const ecart = (r.totalPointsJour || 0) - (r.totalPointsPrecedents || 0);
-        csv += `${r.reference},${r.zone},${r.responsable},${r.totalPointsPrecedents||0},${r.totalPointsJour||0},${ecart},${r.totalTempsPrecedent||0},${r.totalTempsJour||0},${r.rendementGlobal||0},${new Date(r.createdAt).toLocaleDateString()}\n`; 
+        const rendementCalcule = r.totalTempsJour > 0 ? ((r.totalPointsJour || 0) / (r.totalTempsJour / 60)).toFixed(2) : '0';
+        csv += `${r.reference},${r.zone},${r.responsable},${r.totalPointsPrecedents||0},${r.totalPointsJour||0},${ecart},${r.totalTempsPrecedent||0},${r.totalTempsJour||0},${rendementCalcule},${new Date(r.createdAt).toLocaleDateString()}\n`; 
     });
     const blob = new Blob([csv], {type:'text/csv'}); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `rapports_${new Date().toISOString().split('T')[0]}.csv`; link.click();
 };
