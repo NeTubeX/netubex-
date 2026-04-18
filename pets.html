@@ -58,7 +58,6 @@ tr:hover{background:#1a2332;}
 .badge-danger{background:rgba(239,68,68,0.2);color:#ef4444;}
 .badge-warning{background:rgba(245,158,11,0.2);color:#f59e0b;}
 .badge-info{background:rgba(59,130,246,0.2);color:#3b82f6;}
-.badge-pending{background:rgba(245,158,11,0.2);color:#f59e0b;}
 
 .status-spot{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:30px;font-size:11px;font-weight:600;}
 .status-spot.online{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);}
@@ -175,7 +174,19 @@ tr:hover{background:#1a2332;}
 </div>
 <div class="table-wrapper">
 <table id="netubersTable">
-<thead><tr><th>Code</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Objectif restant</th><th>Connexions</th><th>Déconnexions</th><th>Statut</th><th>Heure connexion</th><th>Actions</th></tr></thead>
+<thead>
+<tr>
+<th>Code</th>
+<th>Objectif mensuel</th>
+<th>Objectif atteint</th>
+<th>Objectif restant</th>
+<th>Connexions</th>
+<th>Déconnexions</th>
+<th>Statut</th>
+<th>Heure connexion</th>
+<th>Actions</th>
+</tr>
+</thead>
 <tbody id="netubersTableBody"></tbody>
 </div>
 </div>
@@ -199,10 +210,50 @@ tr:hover{background:#1a2332;}
 <button class="export-btn" onclick="exportRapports()"><i class="fas fa-file-excel"></i> Exporter</button>
 <button class="export-btn" onclick="openMemoModal()" style="background:#ec4899;"><i class="fas fa-envelope"></i> Mémorandum</button>
 </div>
-<div id="report-present" class="report-category active"><div class="table-wrapper"><table><thead><tr><th>Code</th><th>Présence</th><th>Points préc.</th><th>Points jour</th><th>Temps préc.</th><th>Temps jour</th><th>Rendement</th><th>Forfait</th><th>Date</th><th>Actions</th></tr></thead><tbody id="presentRapportsBody"></tbody></table></div></div>
-<div id="report-absent" class="report-category"><div class="table-wrapper"><table><thead><tr><th>Code</th><th>Présence</th><th>Raison absence</th><th>Date</th><th>Actions</th></tr></thead><tbody id="absentRapportsBody"></tbody></table></div></div>
-<div id="report-performant" class="report-category"><div class="table-wrapper"><tr><thead><tr><th>Classement</th><th>Code</th><th>Points/jour</th><th>Temps (min)</th><th>Date</th><th>Actions</th></tr></thead><tbody id="performantRapportsBody"></tbody></table></div></div>
-<div id="report-actif" class="report-category"><div class="table-wrapper"></table><thead><tr><th>Classement</th><th>Code</th><th>Temps (min)</th><th>Points/jour</th><th>Date</th><th>Actions</th></tr></thead><tbody id="actifRapportsBody"></tbody></table></div></div>
+
+<!-- Tableau PRÉSENTS -->
+<div id="report-present" class="report-category active">
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Code</th><th>Présence</th><th>Points préc.</th><th>Points jour</th><th>Temps préc.</th><th>Temps jour</th><th>Rendement</th><th>Forfait</th><th>Date</th><th>Actions</th></tr>
+</thead>
+<tbody id="presentRapportsBody"></tbody>
+</div>
+</div>
+
+<!-- Tableau ABSENTS -->
+<div id="report-absent" class="report-category">
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Code</th><th>Présence</th><th>Raison absence</th><th>Date</th><th>Actions</th></tr>
+</thead>
+<tbody id="absentRapportsBody"></tbody>
+</div>
+</div>
+
+<!-- Tableau PERFORMANTS -->
+<div id="report-performant" class="report-category">
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Classement</th><th>Code</th><th>Points/jour</th><th>Temps (min)</th><th>Date</th><th>Actions</th></tr>
+</thead>
+<tbody id="performantRapportsBody"></tbody>
+</div>
+</div>
+
+<!-- Tableau ACTIFS -->
+<div id="report-actif" class="report-category">
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Classement</th><th>Code</th><th>Temps (min)</th><th>Points/jour</th><th>Date</th><th>Actions</th></tr>
+</thead>
+<tbody id="actifRapportsBody"></tbody>
+</div>
+</div>
 </div>
 
 <!-- Tickets -->
@@ -212,17 +263,17 @@ tr:hover{background:#1a2332;}
 <div class="stat-card"><div class="value" id="ticketsProgress">0</div><div class="label">En cours</div></div>
 <div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Résolus</div></div>
 </div>
-<div class="table-wrapper"><table id="ticketsTable"><thead><tr><th>Netuber</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody id="ticketsTableBody"></tbody></table></div>
+<div class="table-wrapper"><table id="ticketsTable"><thead><tr><th>Netuber</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody id="ticketsTableBody"></tbody></div>
 </div>
 
 <!-- Anomalies -->
 <div id="anomaliesTab" class="tab-content">
 <div class="stats-grid"><div class="stat-card"><div class="value" id="totalAnomalies">0</div><div class="label"><i class="fas fa-exclamation-triangle"></i> Anomalies détectées</div></div></div>
 <div class="chart-container"><canvas id="anomaliesChart" style="max-height:250px;"></canvas></div>
-<div class="table-wrapper"><table id="anomaliesTable"><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre</th><th>Dernière occurrence</th><th>Action</th></tr></thead><tbody id="anomaliesTableBody"></tbody></table></div>
+<div class="table-wrapper"><table id="anomaliesTable"><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre</th><th>Dernière occurrence</th><th>Action</th></tr></thead><tbody id="anomaliesTableBody"></tbody></div>
 </div>
 
-<!-- Sécurité - Alertes de tentative frauduleuse -->
+<!-- Sécurité -->
 <div id="securityTab" class="tab-content">
 <div class="stats-grid">
 <div class="stat-card"><div class="value" id="totalAlerts">0</div><div class="label"><i class="fas fa-bell"></i> Alertes sécurité</div></div>
@@ -240,13 +291,13 @@ tr:hover{background:#1a2332;}
 <div class="stat-card"><div class="value" id="totalEmails">0</div><div class="label"><i class="fas fa-envelope"></i> Emails enregistrés</div></div>
 <div class="stat-card"><div class="value" id="totalPasswords">0</div><div class="label"><i class="fas fa-key"></i> Comptes actifs</div></div>
 </div>
-<div class="detail-card"><h4><i class="fas fa-database"></i> Base des identifiants Netubers</h4><div class="table-wrapper"><table><thead><tr><th>Code Netuber</th><th>Email</th><th>Statut</th><th>Dernière connexion</th></tr></thead><tbody id="privacyEmailsBody"></tbody></table></div></div>
+<div class="detail-card"><h4><i class="fas fa-database"></i> Base des identifiants Netubers</h4><div class="table-wrapper"><table><thead><tr><th>Code Netuber</th><th>Email</th><th>Statut</th><th>Dernière connexion</th></tr></thead><tbody id="privacyEmailsBody"></tbody></div></div>
 </div>
 
 <!-- Paramètres -->
 <div id="settingsTab" class="tab-content">
 <div class="stats-grid"><div class="stat-card"><div class="value" id="totalActions">0</div><div class="label">CAP envoyés</div></div></div>
-<div class="detail-card"><h4><i class="fas fa-history"></i> Historique des CAP</h4><div class="table-wrapper"><table id="capHistoryTable"><thead><tr><th>Netuber</th><th>CAP</th><th>Date envoi</th><th>Expiration</th></tr></thead><tbody id="capHistoryBody"></tbody></table></div></div>
+<div class="detail-card"><h4><i class="fas fa-history"></i> Historique des CAP</h4><div class="table-wrapper"><table id="capHistoryTable"><thead><tr><th>Netuber</th><th>CAP</th><th>Date envoi</th><th>Expiration</th></tr></thead><tbody id="capHistoryBody"></tbody></div></div>
 <div class="detail-card"><h4><i class="fas fa-envelope"></i> Mémorandums envoyés</h4><div id="memorandumListContainer" style="max-height:300px; overflow-y:auto;"></div></div>
 <div class="detail-card"><h4><i class="fas fa-cog"></i> Administration</h4><table class="admin-table"><thead><tr><th>Action</th><th>Statut</th></tr></thead>
 <tbody>
@@ -265,7 +316,7 @@ tr:hover{background:#1a2332;}
 </div>
 </div>
 
-<!-- Modales (réduites pour la lisibilité - garder les mêmes que précédemment) -->
+<!-- Modales -->
 <div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Code Netuber</label><input type="text" id="newCode" placeholder="Ex: MA-NX-S1-ZA-01"></div><div class="input-group"><label>Email</label><input type="email" id="newEmail" placeholder="Email"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newPassword" placeholder="Min 6 caractères"></div></div><div class="modal-footer"><button onclick="createNetuber()" style="background:#10b981;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#64748b;">Annuler</button></div></div></div>
 
 <div id="editCodeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-edit"></i> Modifier le code</h2><button class="modal-close" onclick="closeModal('editCodeModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><select id="editCodeSelect"></select></div><div class="input-group"><label>Nouveau code</label><input type="text" id="newCodeValue" placeholder="Nouveau code"></div></div><div class="modal-footer"><button onclick="updateNetuberCode()" style="background:#f59e0b;">Modifier</button><button onclick="closeModal('editCodeModal')" style="background:#64748b;">Annuler</button></div></div></div>
@@ -573,77 +624,85 @@ function updateRapportCategories() {
                 tempsPrec: n.tempsPrecedent || 0,
                 tempsJour: n.tempsJour || 0,
                 forfait: n.forfaitInternet || '0',
-                objectifMensuel: n.objectifMensuel || 0,
-                objectifAtteint: n.objectifAtteint || 0,
-                nbNiveaux: n.nbNiveaux || 0,
-                nbNiveauxAtteints: n.nbNiveauxAtteints || 0,
                 rapportId: rapport.id,
                 date: rapport.createdAt
             });
         });
     });
     
-    // Présents
+    // PRÉSENTS
     const presents = allNetubersData.filter(n => n.presence === 'Présent');
-    document.getElementById('presentRapportsBody').innerHTML = presents.length ? presents.map(n => {
-        const rendement = n.tempsJour > 0 ? ((n.pointsJour / (n.tempsJour / 60)).toFixed(2)) : '0';
-        return `<tr>
-            <td><strong>${escapeHtml(n.code)}</strong></td>
-            <td><span class="badge badge-success">✅ Présent</span></td>
-            <td>${n.pointsPrec}</td>
-            <td style="color:#f59e0b;">${n.pointsJour}</div>
-            <td>${Math.floor(n.tempsPrec / 60)}h${n.tempsPrec % 60}min</div>
-            <td>${Math.floor(n.tempsJour / 60)}h${n.tempsJour % 60}min</div>
-            <td>${rendement} pts/h</div>
-            <td>${n.forfait} Go</div>
+    const presentBody = document.getElementById('presentRapportsBody');
+    if(presentBody) {
+        presentBody.innerHTML = presents.length ? presents.map(n => {
+            const rendement = n.tempsJour > 0 ? ((n.pointsJour / (n.tempsJour / 60)).toFixed(2)) : '0';
+            return `<tr>
+                <td><strong>${escapeHtml(n.code)}</strong></div>
+                <td><span class="badge badge-success">✅ Présent</span></div>
+                <td>${n.pointsPrec}</div>
+                <td style="color:#f59e0b;">${n.pointsJour}</div>
+                <td>${Math.floor(n.tempsPrec / 60)}h${n.tempsPrec % 60}min</div>
+                <td>${Math.floor(n.tempsJour / 60)}h${n.tempsJour % 60}min</div>
+                <td>${rendement} pts/h</div>
+                <td>${n.forfait} Go</div>
+                <td><small>${formatDateShort(n.date)}</small></div>
+                <td><button class="action-btn view" onclick='viewRapportDetail("${n.rapportId}", "${n.code}")'><i class="fas fa-eye"></i></button>
+                    <button class="action-btn delete" onclick='deleteRapport("${n.rapportId}")'><i class="fas fa-trash"></i></button>
+                 </div>
+              </div>`;
+        }).join('') : '<tr><td colspan="10" class="empty-state"><i class="fas fa-inbox"></i><p>Aucun netuber présent</p></td></tr>';
+    }
+    
+    // ABSENTS
+    const absents = allNetubersData.filter(n => n.presence !== 'Présent');
+    const absentBody = document.getElementById('absentRapportsBody');
+    if(absentBody) {
+        absentBody.innerHTML = absents.length ? absents.map(n => `<tr>
+            <td><strong>${escapeHtml(n.code)}</strong></div>
+            <td><span class="badge badge-danger">❌ Absent</span></div>
+            <td>${escapeHtml(n.raisonAbsence)}</div>
             <td><small>${formatDateShort(n.date)}</small></div>
             <td><button class="action-btn view" onclick='viewRapportDetail("${n.rapportId}", "${n.code}")'><i class="fas fa-eye"></i></button>
                 <button class="action-btn delete" onclick='deleteRapport("${n.rapportId}")'><i class="fas fa-trash"></i></button>
              </div>
-          </div>`;
-    }).join('') : '<tr><td colspan="10" class="empty-state"><i class="fas fa-inbox"></i><p>Aucun netuber présent</p></div></tr>';
+          </div>`).join('') : '<tr><td colspan="5" class="empty-state"><i class="fas fa-inbox"></i><p>Aucun netuber absent</p></td></tr>';
+    }
     
-    // Absents
-    const absents = allNetubersData.filter(n => n.presence !== 'Présent');
-    document.getElementById('absentRapportsBody').innerHTML = absents.length ? absents.map(n => `<tr>
-        <td><strong>${escapeHtml(n.code)}</strong></div>
-        <td><span class="badge badge-danger">❌ Absent</span></div>
-        <td>${escapeHtml(n.raisonAbsence)}</div>
-        <td><small>${formatDateShort(n.date)}</small></div>
-        <td><button class="action-btn view" onclick='viewRapportDetail("${n.rapportId}", "${n.code}")'><i class="fas fa-eye"></i></button>
-            <button class="action-btn delete" onclick='deleteRapport("${n.rapportId}")'><i class="fas fa-trash"></i></button>
-         </div>
-      </div>`).join('') : '<tr><td colspan="5" class="empty-state"><i class="fas fa-inbox"></i><p>Aucun netuber absent</p></div></tr>';
-    
-    // Performants
+    // PERFORMANTS - classement par points
     const performants = [...presents].sort((a,b) => b.pointsJour - a.pointsJour);
-    document.getElementById('performantRapportsBody').innerHTML = performants.length ? performants.map((n, idx) => {
-        const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx+1}ème`));
-        return `<tr>
-            <td><span class="badge badge-warning">${medal}</span></div>
-            <td><strong>${escapeHtml(n.code)}</strong></div>
-            <td style="color:#f59e0b;">${n.pointsJour} pts</div>
-            <td>${Math.floor(n.tempsJour / 60)}min</div>
-            <td><small>${formatDateShort(n.date)}</small></div>
-            <td><button class="action-btn view" onclick='viewRapportDetail("${n.rapportId}", "${n.code}")'><i class="fas fa-eye"></i></button>
-             </div>
-          </div>`;
-    }).join('') : '<tr><td colspan="6" class="empty-state"><i class="fas fa-chart-line"></i><p>Aucune donnée de performance</p></div></tr>';
+    const performantBody = document.getElementById('performantRapportsBody');
+    if(performantBody) {
+        performantBody.innerHTML = performants.length ? performants.map((n, idx) => {
+            const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx+1}ème`));
+            return `<td>
+                <td><span class="badge badge-warning">${medal}</span></div>
+                <td><strong>${escapeHtml(n.code)}</strong></div>
+                <td style="color:#f59e0b;">${n.pointsJour} pts</div>
+                <td>${Math.floor(n.tempsJour / 60)}min</div>
+                <td><small>${formatDateShort(n.date)}</small></div>
+                <td><button class="action-btn view" onclick='viewRapportDetail("${n.rapportId}", "${n.code}")'><i class="fas fa-eye"></i></button>
+                 </div>
+              </div>`;
+        }).join('') : '<tr><td colspan="6" class="empty-state"><i class="fas fa-chart-line"></i><p>Aucune donnée de performance</p></td></tr>';
+    }
     
-    // Actifs
+    // ACTIFS - classement par temps
     const actifs = [...presents].sort((a,b) => b.tempsJour - a.tempsJour);
-    document.getElementById('actifRapportsBody').innerHTML = actifs.length ? actifs.map((n, idx) => {
-        const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx+1}ème`));
-        return `<td>
-            <td><span class="badge badge-info">${medal}</span></div>
-            <td><strong>${escapeHtml(n.code)}</strong></div>
-            <td>${Math.floor(n.tempsJour / 60)}h${n.tempsJour % 60}min</div>
-            <td style="color:#10b981;">${n.pointsJour} pts</div>
-            <td><small>${formatDateShort(n.date)}</small></div>
-            <td><button class="action-btn view" onclick='viewRapportDetail("${n.rapportId}", "${n.code}")'><i class="fas fa-eye"></i></button>
-             </div>
-          </div>`;
-    }).join('') : '<td><td colspan="6" class="empty-state"><i class="fas fa-clock"></i><p>Aucune donnée d\'activité</p></div></tr>';
+    const actifBody = document.getElementById('actifRapportsBody');
+    if(actifBody) {
+        actifBody.innerHTML = actifs.length ? actifs.map((n, idx) => {
+            const medal = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx+1}ème`));
+            return `<tr>
+                <td><span class="badge badge-info">${medal}</span></div>
+                <td><strong>${escapeHtml(n.code)}</strong></div>
+                <td>${Math.floor(n.tempsJour / 60)}h${n.tempsJour % 60}min</div>
+                <td style="color:#10b981;">${n.pointsJour} pts</div>
+                <td><small>${formatDateShort(n.date)}</small></div>
+                <td><button class="action-btn view" onclick='viewRapportDetail("${n.rapportId}", "${n.code}")'><i class="fas fa-eye"></i></button>
+                 </div>
+              </div>`;
+        }).join('') : '<tr><td colspan="6" class="empty-state"><i class="fas fa-clock"></i><p>Aucune donnée d\'activité</p></td></tr>';
+    }
     
     const totalPoints = presents.reduce((a,n) => a + n.pointsJour, 0);
     const avgPoints = presents.length ? (totalPoints / presents.length).toFixed(1) : 0;
@@ -667,7 +726,6 @@ window.viewRapportDetail = (rapportId, netuberCode) => {
     modalBody.innerHTML = `
         <div class="detail-card"><h4>Informations du rapport</h4><div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value">${escapeHtml(rapport.reference || '-')}</span></div><div class="detail-row"><span class="detail-label">Zone</span><span class="detail-value">${escapeHtml(rapport.zone || 'ORG-NX-S1')}</span></div><div class="detail-row"><span class="detail-label">Responsable PGCO</span><span class="detail-value">${escapeHtml(rapport.responsable || '-')}</span></div><div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">${new Date(rapport.createdAt).toLocaleString()}</span></div></div>
         <div class="detail-card"><h4>Détail du Netuber</h4><div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${escapeHtml(netuber.code)}</span></div><div class="detail-row"><span class="detail-label">Présence</span><span class="detail-value">${netuber.presence === 'Présent' ? '✅ Présent' : '❌ Absent'}</span></div>${netuber.presence !== 'Présent' ? `<div class="detail-row"><span class="detail-label">Raison absence</span><span class="detail-value">${escapeHtml(netuber.raisonAbsence || '-')}</span></div>` : ''}</div>
-        <div class="detail-card"><h4>Objectifs</h4><div class="detail-row"><span class="detail-label">Mensuel</span><span class="detail-value">${netuber.objectifMensuel || 0}/15</span></div><div class="detail-row"><span class="detail-label">Atteint</span><span class="detail-value">${netuber.objectifAtteint || 0}/15</span></div><div class="detail-row"><span class="detail-label">Niveaux</span><span class="detail-value">${netuber.nbNiveaux || 0}</span></div><div class="detail-row"><span class="detail-label">Niveaux atteints</span><span class="detail-value">${netuber.nbNiveauxAtteints || 0}</span></div></div>
         <div class="detail-card"><h4>Performance</h4><div class="detail-row"><span class="detail-label">Points précédents</span><span class="detail-value">${netuber.pointsPrecedents || 0} pts</span></div><div class="detail-row"><span class="detail-label">Points jour</span><span class="detail-value">${netuber.pointsJour || 0} pts</span></div><div class="detail-row"><span class="detail-label">Temps précédent</span><span class="detail-value">${Math.floor((netuber.tempsPrecedent || 0) / 60)}h${(netuber.tempsPrecedent || 0) % 60}min</span></div><div class="detail-row"><span class="detail-label">Temps jour</span><span class="detail-value">${Math.floor((netuber.tempsJour || 0) / 60)}h${(netuber.tempsJour || 0) % 60}min</span></div><div class="detail-row"><span class="detail-label">Rendement</span><span class="detail-value">${rendement} pts/h</span></div><div class="detail-row"><span class="detail-label">Forfait internet</span><span class="detail-value">${netuber.forfaitInternet || 0} Go</span></div></div>
     `;
     openModal('rapportModal');
@@ -776,7 +834,7 @@ function updatePrivacyTab() {
         <td>${escapeHtml(u.email || '-')}</div>
         <td><span class="badge ${u.isBlocked ? 'badge-danger' : 'badge-success'}">${u.isBlocked ? 'Bloqué' : 'Actif'}</span></div>
         <td><small>${formatDateShort(u.lastSeen)}</small></div>
-      </tr>`).join('') : '<tr><td colspan="4" class="empty-state"><i class="fas fa-inbox"></i><p>Aucun netuber</p></td></tr>';
+      </tr>`).join('') : '<tr><td colspan="4" class="empty-state"><i class="fas fa-inbox"></i><p>Aucun netuber</p></div></table>';
     document.getElementById('totalEmails').innerText = usersData.length;
     document.getElementById('totalPasswords').innerText = usersData.filter(u => !u.isBlocked).length;
 }
@@ -795,7 +853,7 @@ function updateCapHistory() {
         <td>${escapeHtml(h.cap)}</div>
         <td>${h.envoyeLe ? new Date(h.envoyeLe).toLocaleString() : '-'}</div>
         <td>${h.expiration || '-'}</div>
-      </td>`).join('') : '<tr><td colspan="4" class="empty-state"><i class="fas fa-chart-line"></i><p>Aucun CAP envoyé</p></div></tr>';
+      </td>`).join('') : '<td><td colspan="4" class="empty-state"><i class="fas fa-chart-line"></i><p>Aucun CAP envoyé</p></div></td>';
     document.getElementById('totalActions').innerText = history.length;
 }
 
@@ -1076,7 +1134,7 @@ window.createNetuber = async () => {
             isBlocked: false, objectifMensuel: 9, objectifAtteint: 0
         });
         
-        // Créer un document dans user_devices (vide pour l'instant)
+        // Créer un document dans user_devices
         await setDoc(doc(db, "user_devices", userCred.user.uid), {
             deviceId: null,
             firstLogin: null,
