@@ -53,6 +53,7 @@ h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:12px;margin-
 .input-row input{flex:2;min-width:150px;padding:14px 16px;font-size:0.9rem;border-radius:60px;background:white;border:none;font-weight:500;color:#0a1a2f;}
 button{background:linear-gradient(145deg,#facc15,#e5b800);border:none;padding:14px 24px;border-radius:60px;font-weight:700;font-size:0.85rem;color:#0a1a2f;cursor:pointer;transition:0.2s;}
 button:active{transform:scale(0.97);}
+button:disabled{opacity:0.5;cursor:not-allowed;}
 .choice-row{display:flex;gap:12px;margin-top:12px;}
 .choice-btn{flex:1;text-align:center;padding:14px 0;border-radius:60px;font-weight:700;font-size:0.9rem;cursor:pointer;border:none;}
 .choice-btn.yes{background:#27ae60;color:white;}
@@ -64,20 +65,20 @@ button:active{transform:scale(0.97);}
 .nav-btn{background:rgba(255,255,255,0.12);color:white;padding:8px 16px;font-size:0.7rem;}
 .reset-btn{background:linear-gradient(145deg,#e74c3c,#c0392b);color:white;}
 .hidden{display:none;}
-.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;transition:visibility 0.3s ease;}
+.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;transition:visibility 0.3s ease;}
 .popup-overlay.active{visibility:visible;}
 .popup-card{background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:28px 28px 20px 20px;width:92%;max-width:450px;padding:24px 20px;text-align:center;border-top:5px solid #facc15;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.2,0.9,0.4,1.1);box-shadow:0 -5px 30px rgba(0,0,0,0.5);}
 .popup-overlay.active .popup-card{transform:translateY(0);}
 .popup-title{font-size:1.2rem;font-weight:800;color:#facc15;margin-bottom:12px;}
-.popup-message{font-size:0.9rem;margin-bottom:20px;color:#e0f2fe;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;text-align:left;font-family:'Courier New',monospace;}
+.popup-message{font-size:0.9rem;margin-bottom:20px;color:#e0f2fe;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;text-align:center;}
 .popup-message strong{color:#4ade80;font-weight:800;}
+.counter-number{font-size:3rem;font-weight:800;color:#facc15;margin:15px 0;font-family:monospace;}
 .popup-buttons{display:flex;gap:12px;justify-content:center;}
 .popup-btn{padding:10px 22px;border-radius:60px;font-weight:700;font-size:0.8rem;border:none;cursor:pointer;}
 .popup-btn.secondary{background:#2d4e73;color:white;}
 .popup-btn.primary{background:#27ae60;color:white;}
+.popup-btn.primary:disabled{opacity:0.5;cursor:not-allowed;}
 .popup-btn.send{background:#facc15;color:#0a1a2f;}
-.toast-success{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:12px 24px;border-radius:50px;font-size:0.85rem;z-index:2000;animation:slideUp 0.3s ease;}
-@keyframes slideUp{from{transform:translateY(100%) translateX(-50%);opacity:0;}to{transform:translateY(0) translateX(-50%);opacity:1;}}
 .memorandum-list{background:#112b42;border-radius:24px;padding:20px;max-height:calc(100vh - 150px);overflow-y:auto;}
 .memorandum-item{border-bottom:1px solid #2d4e73;padding:20px 0;}
 .memorandum-item:last-child{border-bottom:none;}
@@ -153,6 +154,7 @@ const NETUBERS = [
 
 let currentStep=0, responses={}, questions=[], waitingYesNo=false, typewriterTimeout=null;
 let formulaireComplete = false;
+let counterInterval = null;
 
 const questionText=document.getElementById('questionText');
 const questionMeta=document.getElementById('questionMeta');
@@ -249,15 +251,71 @@ function typewriterEffect(el, text, speed=25, callback){
   type();
 }
 
-function showPopup(title, msg, leftT, rightT, onConfirm, onCancel, rightClass='primary'){
+function showPopup(title, msg, leftT, rightT, onConfirm, onCancel, rightClass='primary', rightDisabled=false){
   popupTitle.textContent=title;
   popupMessageDiv.innerHTML=msg;
   popupBtnLeft.textContent=leftT;
   popupBtnRight.textContent=rightT;
   popupBtnRight.className=`popup-btn ${rightClass}`;
+  if(rightDisabled) popupBtnRight.disabled = true;
+  else popupBtnRight.disabled = false;
   popupOverlay.classList.add('active');
-  popupBtnRight.onclick=()=>{ popupOverlay.classList.remove('active'); if(onConfirm)onConfirm(); };
-  popupBtnLeft.onclick=()=>{ popupOverlay.classList.remove('active'); if(onCancel)onCancel(); };
+  popupBtnRight.onclick=()=>{ 
+    if(popupBtnRight.disabled) return;
+    popupOverlay.classList.remove('active'); 
+    if(onConfirm) onConfirm(); 
+  };
+  popupBtnLeft.onclick=()=>{ 
+    if(counterInterval) clearInterval(counterInterval);
+    popupOverlay.classList.remove('active'); 
+    if(onCancel) onCancel(); 
+  };
+}
+
+function showCounterPopup(onConfirmFinal){
+  let counter = 0;
+  const msg = `
+    <div style="text-align:center;">
+      <div style="margin-bottom:10px;">🔐 VÉRIFICATION FINALE</div>
+      <div style="font-size:0.85rem; margin-bottom:15px;">Veuillez confirmer l'envoi du rapport à la DEO</div>
+      <div class="counter-number" id="counterValue">0</div>
+      <div style="font-size:0.7rem; color:#7dd3fc;">Attendez que le compteur atteigne 10 pour confirmer</div>
+    </div>
+  `;
+  
+  popupTitle.textContent = "🔐 CONFIRMATION REQUISE";
+  popupMessageDiv.innerHTML = msg;
+  popupBtnLeft.textContent = "Annuler";
+  popupBtnRight.textContent = "CONFIRMER L'ENVOI";
+  popupBtnRight.className = "popup-btn primary";
+  popupBtnRight.disabled = true;
+  popupOverlay.classList.add('active');
+  
+  if(counterInterval) clearInterval(counterInterval);
+  counterInterval = setInterval(() => {
+    counter++;
+    const counterEl = document.getElementById('counterValue');
+    if(counterEl) counterEl.textContent = counter;
+    if(counter >= 10) {
+      clearInterval(counterInterval);
+      popupBtnRight.disabled = false;
+      const counterElFinal = document.getElementById('counterValue');
+      if(counterElFinal) counterElFinal.style.color = "#4ade80";
+    }
+  }, 1000);
+  
+  const originalRightClick = popupBtnRight.onclick;
+  popupBtnRight.onclick = () => {
+    if(popupBtnRight.disabled) return;
+    clearInterval(counterInterval);
+    popupOverlay.classList.remove('active');
+    if(onConfirmFinal) onConfirmFinal();
+  };
+  
+  popupBtnLeft.onclick = () => {
+    clearInterval(counterInterval);
+    popupOverlay.classList.remove('active');
+  };
 }
 
 function resetAllSilently(){
@@ -288,24 +346,6 @@ function buildQuestions(){
     qList.push({num:num++, type:"select", field:`${n.code}_forfaitGo`, meta:n.code, text:`${n.code} : Combien de Go de forfait internet reste-t-il ?`, options:OPTIONS_030});
   }
   return qList;
-}
-
-function checkAllQuestionsCompleted(){
-  if(currentStep < questions.length) return false;
-  for(let n of NETUBERS){
-    if(responses[`${n.code}_present`]==='OUI'){
-      if(!responses[`${n.code}_objMensuel`]) return false;
-      if(!responses[`${n.code}_objAtteint`]) return false;
-      if(!responses[`${n.code}_nbNiveaux`]) return false;
-      if(!responses[`${n.code}_nbNiveauxAtteints`]) return false;
-      if(!responses[`${n.code}_pointsPrec`]) return false;
-      if(!responses[`${n.code}_pointsJour`]) return false;
-      if(!responses[`${n.code}_tempsPrec`]) return false;
-      if(!responses[`${n.code}_tempsJour`]) return false;
-      if(!responses[`${n.code}_forfaitGo`]) return false;
-    }
-  }
-  return true;
 }
 
 function displayCurrent(){
@@ -467,7 +507,83 @@ function resetAll(){
   },()=>{});
 }
 
-async function sendReportToFirebase(){
+async function performSendToFirebase(){
+  const btn=sendReportBtn;
+  const orig=btn.textContent;
+  btn.textContent="⏳ Envoi...";
+  btn.disabled=true;
+  try{
+    let totalPtsP=0, totalPtsJ=0, totalTempsP=0, totalTempsJ=0;
+    const netubersData=[];
+    for(let n of NETUBERS){
+      const present=responses[`${n.code}_present`]==='OUI'?'Présent':'Absent';
+      const objM=parseInt(responses[`${n.code}_objMensuel`])||0;
+      const objA=parseInt(responses[`${n.code}_objAtteint`])||0;
+      const nbN=parseFloat(responses[`${n.code}_nbNiveaux`])||0;
+      const nbA=parseFloat(responses[`${n.code}_nbNiveauxAtteints`])||0;
+      const ptsP=parseFloat(responses[`${n.code}_pointsPrec`])||0;
+      const ptsJ=parseFloat(responses[`${n.code}_pointsJour`])||0;
+      const tempsP=parseFloat(responses[`${n.code}_tempsPrec`])||0;
+      const tempsJ=parseFloat(responses[`${n.code}_tempsJour`])||0;
+      const forfaitGo=responses[`${n.code}_forfaitGo`]||'0';
+      if(present==='Présent'){
+        totalPtsP+=ptsP; totalPtsJ+=ptsJ; totalTempsP+=tempsP; totalTempsJ+=tempsJ;
+      }
+      netubersData.push({
+        code:n.code,
+        presence:present,
+        objectifMensuel:objM,
+        objectifAtteint:objA,
+        nbNiveaux:nbN,
+        nbNiveauxAtteints:nbA,
+        pointsPrecedents:ptsP,
+        pointsJour:ptsJ,
+        tempsPrecedent:tempsP,
+        tempsJour:tempsJ,
+        forfaitInternet:forfaitGo
+      });
+    }
+    const currentRef = getFullReference();
+    const reportData={
+      type:"pgco_report",
+      responsable:responses.responsable||"Non spécifié",
+      zone:"ORG-NX-S1",
+      reference:currentRef,
+      date:new Date().toLocaleDateString('fr-FR'),
+      heure:new Date().toLocaleTimeString('fr-FR'),
+      totalPointsPrecedents:totalPtsP,
+      totalPointsJour:totalPtsJ,
+      totalTempsPrecedent:totalTempsP,
+      totalTempsJour:totalTempsJ,
+      netubers:netubersData,
+      status:"non_traite",
+      createdAt:new Date().toISOString()
+    };
+    const reportsRef=collection(window.db,"reports");
+    await addDoc(reportsRef, reportData);
+    
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('fr-FR');
+    const timeStr = now.toLocaleTimeString('fr-FR');
+    const expediteur = responses.responsable || "Non spécifié";
+    
+    const confirmationMsg = `┌─────────────────────────────────────────┐<br>│ Expéditeur: ${expediteur.padEnd(35)}│<br>│ Référence: ${currentRef.padEnd(35)}│<br>│ Date: ${dateStr} à ${timeStr.padEnd(24)}│<br>│ Destinataire: DEO${' '.repeat(33)}│<br>│ <strong>Accusé: ✓ Rapport reçu avec succès</strong>${' '.repeat(8)}│<br>└─────────────────────────────────────────┘`;
+    
+    showPopup("✅ RAPPORT TRANSMIS À LA DEO", confirmationMsg, "Fermer","",()=>{
+      resetAllSilently();
+      let nextNum = parseInt(referenceInput.value) + 1;
+      if(isNaN(nextNum)) nextNum = 2;
+      referenceInput.value = nextNum.toString().padStart(3,'0');
+    },()=>{},'primary');
+  }catch(e){
+    showPopup("❌ ERREUR D'ENVOI",`Le rapport n'a pas pu être transmis.\n\nCause: ${e.message}\n\nVeuillez réessayer ou contacter le support technique.`,"Fermer","",()=>{},()=>{},'primary');
+  }finally{
+    btn.textContent=orig;
+    btn.disabled=false;
+  }
+}
+
+function sendReportToFirebase(){
   if(!formulaireComplete){
     showPopup("⚠️ Formulaire incomplet","Veuillez répondre à toutes les questions avant d'envoyer.","Fermer","",()=>{},()=>{});
     return;
@@ -498,78 +614,9 @@ async function sendReportToFirebase(){
     return;
   }
   
-  showPopup("Confirmation envoi","Voudriez-vous envoyer ce rapport à la DEO ?","Annuler","Oui, envoyer",async()=>{
-    const btn=sendReportBtn;
-    const orig=btn.textContent;
-    btn.textContent="⏳ Envoi...";
-    btn.disabled=true;
-    try{
-      let totalPtsP=0, totalPtsJ=0, totalTempsP=0, totalTempsJ=0;
-      const netubersData=[];
-      for(let n of NETUBERS){
-        const present=responses[`${n.code}_present`]==='OUI'?'Présent':'Absent';
-        const objM=parseInt(responses[`${n.code}_objMensuel`])||0;
-        const objA=parseInt(responses[`${n.code}_objAtteint`])||0;
-        const nbN=parseFloat(responses[`${n.code}_nbNiveaux`])||0;
-        const nbA=parseFloat(responses[`${n.code}_nbNiveauxAtteints`])||0;
-        const ptsP=parseFloat(responses[`${n.code}_pointsPrec`])||0;
-        const ptsJ=parseFloat(responses[`${n.code}_pointsJour`])||0;
-        const tempsP=parseFloat(responses[`${n.code}_tempsPrec`])||0;
-        const tempsJ=parseFloat(responses[`${n.code}_tempsJour`])||0;
-        const forfaitGo=responses[`${n.code}_forfaitGo`]||'0';
-        if(present==='Présent'){
-          totalPtsP+=ptsP; totalPtsJ+=ptsJ; totalTempsP+=tempsP; totalTempsJ+=tempsJ;
-        }
-        netubersData.push({
-          code:n.code,
-          presence:present,
-          objectifMensuel:objM,
-          objectifAtteint:objA,
-          nbNiveaux:nbN,
-          nbNiveauxAtteints:nbA,
-          pointsPrecedents:ptsP,
-          pointsJour:ptsJ,
-          tempsPrecedent:tempsP,
-          tempsJour:tempsJ,
-          forfaitInternet:forfaitGo
-        });
-      }
-      const reportData={
-        type:"pgco_report",
-        responsable:responses.responsable||"Non spécifié",
-        zone:"ORG-NX-S1",
-        reference:currentRef,
-        date:new Date().toLocaleDateString('fr-FR'),
-        heure:new Date().toLocaleTimeString('fr-FR'),
-        totalPointsPrecedents:totalPtsP,
-        totalPointsJour:totalPtsJ,
-        totalTempsPrecedent:totalTempsP,
-        totalTempsJour:totalTempsJ,
-        netubers:netubersData,
-        status:"non_traite",
-        createdAt:new Date().toISOString()
-      };
-      const reportsRef=collection(window.db,"reports");
-      await addDoc(reportsRef, reportData);
-      
-      const now = new Date();
-      const dateStr = now.toLocaleDateString('fr-FR');
-      const timeStr = now.toLocaleTimeString('fr-FR');
-      const expediteur = responses.responsable || "Non spécifié";
-      
-      const confirmationMsg = `┌─────────────────────────────────────────┐<br>│ Expéditeur: ${expediteur.padEnd(35)}│<br>│ Référence: ${currentRef.padEnd(35)}│<br>│ Date: ${dateStr} à ${timeStr.padEnd(24)}│<br>│ Destinataire: DEO${' '.repeat(33)}│<br>│ <strong>Accusé: ✓ Rapport reçu avec succès</strong>${' '.repeat(8)}│<br>└─────────────────────────────────────────┘`;
-      
-      showPopup("✅ RAPPORT TRANSMIS À LA DEO", confirmationMsg, "Fermer","",()=>{
-        resetAllSilently();
-        referenceInput.value = (parseInt(referenceInput.value) + 1).toString().padStart(3,'0');
-      },()=>{},'primary');
-    }catch(e){
-      showPopup("❌ ERREUR D'ENVOI",`Le rapport n'a pas pu être transmis.\n\nCause: ${e.message}\n\nVeuillez réessayer ou contacter le support technique.`,"Fermer","",()=>{},()=>{},'primary');
-    }finally{
-      btn.textContent=orig;
-      btn.disabled=false;
-    }
-  },()=>{},'send');
+  showCounterPopup(() => {
+    performSendToFirebase();
+  });
 }
 
 yesBtn.onclick=defaultYes;
