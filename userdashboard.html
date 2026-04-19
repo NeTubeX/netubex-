@@ -4,50 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NeTubeX · Cartes</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  body {
-    background: #0a0f1a;
-    font-family: 'Inter', system-ui, sans-serif;
-    min-height: 100vh;
-    padding: 2rem;
-  }
-
-  .scroll-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  .cards {
-    display: inline-flex;
-    gap: 16px;
-  }
-
-  .card {
-    display: inline-block;
-    width: 150px;
-    padding: 20px 10px;
-    background: #1e293b;
-    text-align: center;
-    font-size: 1rem;
-    font-weight: 600;
-    color: white;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  .card:hover {
-    background: #f59e0b;
-    color: #0a0f1a;
-  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:#0a0f1a;font-family:Arial,sans-serif;padding:2rem;}
+  .scroll-wrapper{width:100%;overflow-x:auto;white-space:nowrap;}
+  .cards{display:inline-flex;gap:16px;}
+  .card{display:inline-block;width:150px;padding:20px 10px;background:#1e293b;text-align:center;font-size:1rem;font-weight:600;color:white;border-radius:12px;cursor:pointer;transition:0.2s;}
+  .card:hover{background:#f59e0b;color:#0a0f1a;}
 </style>
 </head>
 <body>
@@ -57,7 +20,7 @@
 </div>
 
 <script>
-  // URL de destination APRÈS la publicité (Dashboard)
+  // URL du Dashboard (s'ouvre dans un NOUVEL ONGLET)
   const DASHBOARD_URL = "https://netubex.github.io/netubex-/userdashboard.html";
 
   // Les 5 URLs publicitaires
@@ -71,79 +34,16 @@
 
   const container = document.getElementById('cardsContainer');
 
-  function redirectToAd(adUrl) {
-    // Créer une page de chargement temporaire
-    const tempHtml = `
-      <!DOCTYPE html>
-      <html lang="fr">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>NeTubeX - Chargement</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-        <style>
-          *{margin:0;padding:0;box-sizing:border-box;}
-          body{
-            background:#0a0f1a;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            min-height:100vh;
-            font-family:'Inter',system-ui,sans-serif;
-          }
-          .loader{
-            text-align:center;
-            color:#e2e8f0;
-          }
-          .loader i{
-            font-size:3rem;
-            color:#f59e0b;
-            animation:spin 1s linear infinite;
-          }
-          .loader p{
-            margin-top:20px;
-            font-size:14px;
-            color:#94a3b8;
-          }
-          @keyframes spin{
-            0%{transform:rotate(0deg);}
-            100%{transform:rotate(360deg);}
-          }
-        </style>
-      </head>
-      <body>
-        <div class="loader">
-          <i class="fas fa-spinner"></i>
-          <p>Redirection vers NeTubeX...</p>
-        </div>
-        <script>
-          const AD_URL = "${adUrl}";
-          const HOME_URL = "${DASHBOARD_URL}";
-          (function() {
-            window.open(HOME_URL, "_blank");
-            setTimeout(function() {
-              window.location.href = AD_URL;
-            }, 50);
-          })();
-        <\/script>
-      </body>
-      </html>
-    `;
-
-    // Créer un Blob avec le contenu HTML
-    const blob = new Blob([tempHtml], { type: 'text/html' });
-    const blobUrl = URL.createObjectURL(blob);
-
-    // Rediriger la page actuelle vers la page de chargement
-    window.location.href = blobUrl;
-  }
-
-  AD_URLS.forEach((url, index) => {
+  AD_URLS.forEach((adUrl, index) => {
     const card = document.createElement('div');
     card.className = 'card';
     card.textContent = `Carte ${index + 1}`;
     card.addEventListener('click', () => {
-      redirectToAd(url);
+      // 1. Ouvrir le Dashboard dans un nouvel onglet
+      window.open(DASHBOARD_URL, '_blank');
+      
+      // 2. Rediriger la page actuelle vers la publicité
+      window.location.href = adUrl;
     });
     container.appendChild(card);
   });
