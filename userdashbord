@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>NeTubeX · Mon Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;min-height:100vh;}
+.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;}
+@keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+.header{background:#0f1420;border-bottom:1px solid #1e293b;padding:0.5rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:8px;}
+.logo img{height:32px;width:auto;}
+.logo h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,#e2e8f0,#f59e0b);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.logo h1 span{color:#f59e0b;}
+.user-info{background:linear-gradient(135deg,#f59e0b,#d97706);padding:4px 16px;border-radius:40px;font-size:0.75rem;font-family:monospace;color:#fff;display:flex;align-items:center;gap:8px;font-weight:700;}
+
+/* Dashboard Stats */
+.dashboard-stats{background:linear-gradient(135deg,#0f1420,#131a2a);margin:1rem 2rem;padding:1.5rem;border-radius:24px;border:1px solid #1e293b;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem;}
+.stat-card{background:#1a2332;padding:1rem;border-radius:16px;border-left:3px solid #f59e0b;}
+.stat-card h4{font-size:0.7rem;color:#94a3b8;margin-bottom:0.5rem;text-transform:uppercase;}
+.stat-card .value{font-size:1.8rem;font-weight:800;color:#f59e0b;}
+.stat-card .value.small{font-size:1rem;}
+
+/* Historique */
+.transactions-section{background:#0f1420;margin:1rem 2rem;padding:1.5rem;border-radius:24px;border:1px solid #1e293b;}
+.section-title{display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
+.section-title i{color:#f59e0b;}
+.section-title button{margin-left:auto;background:#1e293b;border:none;padding:5px 12px;border-radius:20px;color:#fff;cursor:pointer;}
+.transactions-list{max-height:400px;overflow-y:auto;}
+.transaction-item{background:#1a2332;border-radius:12px;padding:1rem;margin-bottom:0.5rem;display:flex;justify-content:space-between;align-items:center;}
+.transaction-left{display:flex;align-items:center;gap:12px;}
+.transaction-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;}
+.transaction-icon.credit{background:#10b98120;color:#10b981;}
+.transaction-details h4{font-size:0.9rem;margin-bottom:4px;}
+.transaction-details p{font-size:0.7rem;color:#64748b;}
+.transaction-amount{font-weight:700;font-size:1.1rem;}
+.transaction-amount.credit{color:#10b981;}
+.no-transactions{text-align:center;padding:2rem;color:#64748b;}
+
+/* Floating Menu */
+.floating-group{position:fixed;bottom:30px;right:25px;display:flex;flex-direction:column;gap:12px;z-index:200;}
+.float-item{background:#0f1420;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;transition:all 0.2s;color:#94a3b8;border:1px solid #1e293b;}
+.float-item:hover{background:#1a2332;transform:scale(1.05);color:#38bdf8;}
+.float-item.logout{background:#dc2626;border:none;color:#fff;}
+
+/* Popups */
+.slide-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);backdrop-filter:blur(10px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;}
+.slide-popup.active{visibility:visible;}
+.popup-content{background:#f1f5f9;max-width:600px;width:90%;border-radius:28px 28px 0 0;padding:1.5rem;text-align:center;transform:translateY(100%);transition:transform 0.4s;}
+.slide-popup.active .popup-content{transform:translateY(0);}
+.popup-content h3{color:#0f172a;}
+.close-popup-btn{background:#e2e8f0;border:1px solid #cbd5e1;padding:10px 20px;border-radius:50px;color:#1e293b;cursor:pointer;margin-top:8px;}
+.toast-notification{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:40px;font-size:0.8rem;z-index:10000;animation:slideUp 0.3s;}
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+</style>
+</head>
+<body>
+
+<div class="rainbow-line"></div>
+
+<header class="header">
+  <div class="logo">
+    <img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX">
+    <h1>Ne<span>TubeX</span></h1>
+  </div>
+  <div class="header-right">
+    <div class="user-info"><i class="fas fa-user"></i> <span id="userCodeDisplay">Chargement...</span></div>
+  </div>
+</header>
+
+<!-- Dashboard Stats -->
+<div class="dashboard-stats">
+  <h3><i class="fas fa-chart-simple"></i> Mon Dashboard</h3>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h4><i class="fas fa-id-card"></i> User ID</h4>
+      <div class="value small" id="uid">-</div>
+    </div>
+    <div class="stat-card">
+      <h4><i class="fas fa-coins"></i> Balance</h4>
+      <div class="value" id="balance">0</div>
+      <div class="label">$ NeTubeX</div>
+    </div>
+    <div class="stat-card">
+      <h4><i class="fas fa-chart-line"></i> Total gagné</h4>
+      <div class="value" id="totalEarned">0</div>
+    </div>
+  </div>
+</div>
+
+<!-- Historique TimeWall -->
+<div class="transactions-section">
+  <div class="section-title">
+    <i class="fas fa-history"></i>
+    <h3>Gains TimeWall</h3>
+    <button id="refreshBtn"><i class="fas fa-sync-alt"></i></button>
+  </div>
+  <div id="transactionsList" class="transactions-list">
+    <div class="no-transactions">Chargement...</div>
+  </div>
+</div>
+
+<!-- Floating Menu -->
+<div class="floating-group">
+  <div class="float-item" id="profileBtn"><i class="fas fa-user-circle"></i></div>
+  <div class="float-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></div>
+</div>
+
+<!-- Popup Profil -->
+<div id="profilePopup" class="slide-popup">
+  <div class="popup-content">
+    <i class="fas fa-user-circle" style="font-size:2rem;color:#3b82f6;"></i>
+    <h3>Mon Profil</h3>
+    <div style="text-align:left;background:#fff;border-radius:16px;padding:1rem;margin:1rem 0;">
+      <p><strong>📧 Email:</strong> <span id="profileEmail">-</span></p>
+      <p><strong>💰 Balance:</strong> <span id="profileBalance">0</span> $</p>
+      <p><strong>🏆 Total gagné:</strong> <span id="profileTotal">0</span> $</p>
+    </div>
+    <button class="close-popup-btn" id="closeProfileBtn">Fermer</button>
+  </div>
+</div>
+
+<!-- Popup Confirmation -->
+<div id="confirmPopup" class="slide-popup">
+  <div class="popup-content">
+    <i class="fas fa-sign-out-alt" style="font-size:2rem;color:#ef4444;"></i>
+    <h3>Déconnexion</h3>
+    <p>Voulez-vous quitter ?</p>
+    <div style="display:flex;gap:12px;justify-content:center;">
+      <button id="confirmLogout" style="background:#ef4444;padding:10px 24px;border-radius:50px;color:#fff;border:none;cursor:pointer;">Oui</button>
+      <button id="cancelLogout" class="close-popup-btn">Non</button>
+    </div>
+  </div>
+</div>
+
+<footer style="background:#0f1420;border-top:1px solid #1e293b;padding:1rem;text-align:center;margin-top:1rem;">
+  <p style="color:#64748b;font-size:0.7rem;"><i class="fas fa-copyright"></i> NeTubeX 2026</p>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = { 
+  apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", 
+  authDomain: "netubexmoney.firebaseapp.com", 
+  projectId: "netubexmoney", 
+  storageBucket: "netubexmoney.firebasestorage.app", 
+  messagingSenderId: "856592608176", 
+  appId: "1:856592608176:web:69f9df9cfd4f8c28630475" 
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let userDocRef = null;
+
+function showToast(msg) {
+  const toast = document.createElement('div');
+  toast.className = 'toast-notification';
+  toast.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function closePopup(id) {
+  const popup = document.getElementById(id);
+  if (popup) popup.classList.remove('active');
+}
+
+function openPopup(id) {
+  const popup = document.getElementById(id);
+  if (popup) popup.classList.add('active');
+}
+
+// Afficher les transactions depuis le tableau dans le document user
+async function loadTransactions() {
+  if (!userDocRef) return;
+  
+  const snap = await getDoc(userDocRef);
+  if (!snap.exists()) return;
+  
+  const data = snap.data();
+  const transactions = data.transactions || [];
+  const balance = data.balance || 0;
+  
+  // Calculer le total gagné
+  let totalEarned = 0;
+  transactions.forEach(tx => {
+    if (tx.amount && tx.amount > 0) totalEarned += tx.amount;
+  });
+  
+  // Mettre à jour l'affichage
+  document.getElementById('balance').innerText = balance.toFixed(2);
+  document.getElementById('totalEarned').innerText = totalEarned.toFixed(2);
+  document.getElementById('profileBalance').innerText = balance.toFixed(2);
+  document.getElementById('profileTotal').innerText = totalEarned.toFixed(2);
+  
+  // Afficher la liste des transactions
+  const container = document.getElementById('transactionsList');
+  
+  if (!transactions || transactions.length === 0) {
+    container.innerHTML = `<div class="no-transactions">🎯 Aucun gain pour le moment<br><small>Complétez des offres TimeWall</small></div>`;
+    return;
+  }
+  
+  // Trier par date (plus récent en premier)
+  const sorted = [...transactions].reverse();
+  
+  container.innerHTML = sorted.map(tx => {
+    const amount = tx.amount || 0;
+    const date = tx.date ? new Date(tx.date) : new Date();
+    const txId = tx.transactionID || '';
+    
+    return `
+      <div class="transaction-item">
+        <div class="transaction-left">
+          <div class="transaction-icon credit">
+            <i class="fas fa-arrow-down"></i>
+          </div>
+          <div class="transaction-details">
+            <h4>Gain TimeWall</h4>
+            <p>${date.toLocaleDateString()} à ${date.toLocaleTimeString()}</p>
+            <p style="font-size:0.65rem;">ID: ${txId.substring(0, 15)}...</p>
+          </div>
+        </div>
+        <div class="transaction-amount credit">
+          + ${amount.toFixed(2)} $
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function loadUserData() {
+  if (!userDocRef) return;
+  const snap = await getDoc(userDocRef);
+  if (snap.exists()) {
+    const data = snap.data();
+    document.getElementById('uid').innerText = currentUser?.uid.substring(0, 12) + '...' || '-';
+    document.getElementById('userCodeDisplay').innerText = data.code || currentUser?.email?.split('@')[0] || 'NETUBER';
+    document.getElementById('profileEmail').innerText = currentUser?.email || '-';
+  }
+  await loadTransactions();
+}
+
+async function initUser(user) {
+  if (!user) return;
+  currentUser = user;
+  userDocRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userDocRef);
+  
+  if (!snap.exists()) {
+    const userCode = user.email ? user.email.split('@')[0].substring(0, 8).toUpperCase() : "NETUBER";
+    await setDoc(userDocRef, {
+      uid: user.uid,
+      email: user.email || "",
+      code: userCode,
+      balance: 0,
+      totalEarned: 0,
+      transactions: [],
+      createdAt: new Date().toISOString(),
+      lastLogin: new Date().toISOString()
+    });
+  } else {
+    await updateDoc(userDocRef, { lastLogin: new Date().toISOString() });
+  }
+  
+  await loadUserData();
+}
+
+// Événements
+document.getElementById('refreshBtn')?.addEventListener('click', async () => {
+  await loadTransactions();
+  showToast("📊 Données mises à jour");
+});
+
+document.getElementById('profileBtn')?.addEventListener('click', () => {
+  loadUserData();
+  openPopup('profilePopup');
+});
+
+document.getElementById('closeProfileBtn')?.addEventListener('click', () => closePopup('profilePopup'));
+document.getElementById('logoutBtn')?.addEventListener('click', () => openPopup('confirmPopup'));
+document.getElementById('confirmLogout')?.addEventListener('click', async () => {
+  closePopup('confirmPopup');
+  await signOut(auth);
+  window.location.href = "login.html";
+});
+document.getElementById('cancelLogout')?.addEventListener('click', () => closePopup('confirmPopup'));
+
+document.querySelectorAll('.slide-popup').forEach(popup => {
+  popup.addEventListener('click', (e) => {
+    if (e.target === popup) popup.classList.remove('active');
+  });
+});
+
+// Auth
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    await initUser(user);
+  } else {
+    window.location.href = "login.html";
+  }
+});
+</script>
+</body>
+</html>
