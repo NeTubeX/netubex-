@@ -49,7 +49,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 @media(max-width:480px){.login-card{padding:1.5rem;}.logo-icon{width:55px;height:55px;}.logo-icon i{font-size:1.8rem;}.card-header h1{font-size:1.4rem;}}
 
-/* ========== NOUVEAU : BOUTON ACCUEIL ========== */
+/* ========== BOUTON ACCUEIL ========== */
 .home-button {
     position: fixed;
     top: 24px;
@@ -91,20 +91,17 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
     .home-button { padding: 8px 18px; top: 16px; left: 16px; font-size: 0.8rem; }
 }
 
-/* ========== PROFONDEUR 3D : PERSPECTIVE + TRANSITION ========== */
+/* ========== EFFET 3D ========== */
 .login-container {
     perspective: 1400px;
     perspective-origin: 50% 50%;
 }
-
 .login-card {
     transition: transform 0.12s cubic-bezier(0.05, 0.7, 0.2, 1), box-shadow 0.25s ease;
     transform-style: preserve-3d;
     will-change: transform;
     backface-visibility: visible;
 }
-
-/* léger renfort de profondeur: ombre plus dynamique en 3D */
 .login-card::after {
     content: '';
     position: absolute;
@@ -119,15 +116,23 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
     opacity: 0;
     transition: opacity 0.3s;
 }
-
 .login-container:hover .login-card::after {
     opacity: 1;
+}
+.login-container {
+    filter: drop-shadow(0 20px 25px -12px rgba(0,0,0,0.4));
+}
+@keyframes fadeInUp3D {
+    0% { opacity: 0; transform: translateY(25px) rotateX(-8deg); }
+    100% { opacity: 1; transform: translateY(0) rotateX(0deg); }
+}
+.login-container {
+    animation: fadeInUp3D 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
 }
 </style>
 </head>
 <body>
 
-<!-- BOUTON ACCUEIL (AJOUTÉ) : Redirige vers index.html -->
 <a href="index.html" class="home-button" title="Page d'accueil">
     <i class="fas fa-home"></i>
     <span>Accueil</span>
@@ -137,7 +142,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 <div class="rainbow-border"></div>
 <div class="login-card">
 <div class="card-header">
-<!-- Icône remplacée : plus de Font Awesome, image externe conservant la taille exacte -->
 <div class="logo-icon"><img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX Icon"></div>
 <h1>NeTubeX</h1>
 <p>Espace de rémunération Digitale</p>
@@ -230,7 +234,12 @@ togglePassword.addEventListener("click", function(e) {
   }
 });
 
-// Gestion de la connexion
+// ========== NOUVELLES RÈGLES DE REDIRECTION ==========
+// admin -> Admin.html
+// pilote -> pilote.html  
+// netuber -> dashboard.html
+// pas de rôle -> userdashbord.html
+
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   hideError();
@@ -257,22 +266,29 @@ loginForm.addEventListener("submit", async (e) => {
     const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
     
-    let role = "netuber";
-    let code = null;
+    let role = null;  // Par défaut : pas de rôle
     
     if(docSnap.exists()) {
-      role = docSnap.data().role || "netuber";
-      code = docSnap.data().code || null;
+      role = docSnap.data().role || null;
     }
     
     sessionStorage.setItem('firebaseUserId', user.uid);
-    if(code) sessionStorage.setItem('userCode', code);
     
+    // ⭐ NOUVELLES REDIRECTIONS ⭐
     setTimeout(() => {
-      if(role === "pets") window.location.href = "pets.html";
-      else if(role === "pgc") window.location.href = "pgc.html";
-      else if(role === "pilote") window.location.href = "pilote.html";
-      else window.location.href = "dashboard.html";
+      if(role === "admin") {
+        window.location.href = "Admin.html";
+      } 
+      else if(role === "pilote") {
+        window.location.href = "pilote.html";
+      } 
+      else if(role === "netuber") {
+        window.location.href = "dashboard.html";
+      } 
+      else {
+        // Pas de rôle (role = null, undefined, ou autre valeur non reconnue)
+        window.location.href = "userdashbord.html";
+      }
     }, 300);
     
   } catch(error) {
@@ -292,10 +308,10 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
-// ========== M'INSCRIRE : DOUBLE REDIRECTION (inchangée) ==========
+// ========== M'INSCRIRE : DOUBLE REDIRECTION ==========
 registerTextLink.addEventListener("click", (e) => {
   e.preventDefault();
-  console.log("📝 Clic sur M'inscrire - Double redirection immédiate (inversée)");
+  console.log("📝 Clic sur M'inscrire - Double redirection");
   const newTab = window.open(GOOGLE_FORM_URL, "_blank");
   if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
     console.warn("Popup bloqué pour le formulaire Google");
@@ -310,7 +326,7 @@ document.getElementById("email").addEventListener("focus", hideError);
 passwordInput.addEventListener("focus", hideError);
 </script>
 
-<!-- Service Worker existant -->
+<!-- Service Worker -->
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -321,31 +337,26 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 
-<!-- ========== AJOUT : EFFET 3D (PROFONDEUR) SUR LA CARTE ========== -->
+<!-- Effet 3D -->
 <script>
 (function() {
-    // Éléments pour l'effet 3D depth
     const container = document.querySelector('.login-container');
     const card = document.querySelector('.login-card');
     if (!container || !card) return;
     
-    // Paramètres de l'effet (inclinaison maximale pour une profondeur réaliste)
-    const MAX_ROTATE_X = 7;    // degrés
-    const MAX_ROTATE_Y = 7;    // degrés
+    const MAX_ROTATE_X = 7;
+    const MAX_ROTATE_Y = 7;
     const ENABLE_TRANSLATE_Z = true;
-    const MAX_TRANSLATE_Z = 6;  // pixels
+    const MAX_TRANSLATE_Z = 6;
     
     let currentTransform = { rotateX: 0, rotateY: 0, translateZ: 0 };
     let rafId = null;
     
-    // Fonction d'application fluide de la transformation
     function apply3DTransform(rotateX, rotateY, translateZ = 0) {
         if (!card) return;
-        // Utilisation de translateZ pour accentuer la profondeur et effet "pop"
         const translatePart = translateZ ? `translateZ(${translateZ}px)` : '';
         const transformValue = `${translatePart} rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
         card.style.transform = transformValue;
-        // Variation dynamique de l'ombre pour renforcer la sensation 3D
         const intensity = (Math.abs(rotateX) + Math.abs(rotateY)) / (MAX_ROTATE_X + MAX_ROTATE_Y);
         const shadowBlur = 20 + intensity * 18;
         const shadowY = 10 + intensity * 12;
@@ -353,7 +364,6 @@ if ('serviceWorker' in navigator) {
         card.style.boxShadow = `0 ${shadowY}px ${shadowBlur}px -12px rgba(0,0,0,${shadowOpacity}), 0 0 0 1px rgba(56,189,248,${0.1 + intensity * 0.2})`;
     }
     
-    // Réinitialisation douce (retour à plat)
     function resetTransform() {
         if (rafId) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(() => {
@@ -368,49 +378,40 @@ if ('serviceWorker' in navigator) {
         });
     }
     
-    // Gestion du mouvement de souris pour créer l'effet 3D dynamique
     function handleMouseMove(e) {
         if (!container || !card) return;
         const rect = container.getBoundingClientRect();
         if (rect.width === 0) return;
         
-        // Coordonnées relatives au container (entre -1 et 1)
-        const mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;  // -1 (gauche) à 1 (droite)
-        const mouseY = ((e.clientY - rect.top) / rect.height) * 2 - 1; // -1 (haut) à 1 (bas)
+        const mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        const mouseY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
         
-        // Calcul des rotations : plus on va vers les bords, plus l'inclinaison est forte
         let rotY = mouseX * MAX_ROTATE_Y;
-        let rotX = mouseY * MAX_ROTATE_X * -1;  // inversé pour un effet naturel (haut => recule, bas => avance)
+        let rotX = mouseY * MAX_ROTATE_X * -1;
         
-        // Limites pour éviter des angles trop abrupts
         rotX = Math.min(MAX_ROTATE_X, Math.max(-MAX_ROTATE_X, rotX));
         rotY = Math.min(MAX_ROTATE_Y, Math.max(-MAX_ROTATE_Y, rotY));
         
-        // Translation Z en fonction de l'intensité du mouvement (effet de profondeur supplémentaire)
         let translateZ = 0;
         if (ENABLE_TRANSLATE_Z) {
             const intensity = (Math.abs(rotX) + Math.abs(rotY)) / (MAX_ROTATE_X + MAX_ROTATE_Y);
             translateZ = intensity * MAX_TRANSLATE_Z;
         }
         
-        // Mise à jour fluide avec annulation de l'ancienne animation si nécessaire
         if (rafId) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(() => {
             currentTransform.rotateX = rotX;
             currentTransform.rotateY = rotY;
             currentTransform.translateZ = translateZ;
-            // Transition rapide pour suivre la souris en temps réel
             card.style.transition = 'transform 0.03s linear, box-shadow 0.08s ease';
             apply3DTransform(rotX, rotY, translateZ);
         });
     }
     
-    // Réinitialisation au survol de la bordure (lorsque la souris quitte le container)
     function handleMouseLeave() {
         resetTransform();
     }
     
-    // Active l'effet uniquement sur desktop / souris, évite le lag sur mobile (optionnel)
     function isTouchDevice() {
         return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     }
@@ -419,8 +420,6 @@ if ('serviceWorker' in navigator) {
         container.addEventListener('mousemove', handleMouseMove);
         container.addEventListener('mouseleave', handleMouseLeave);
     } else {
-        // Sur mobile, on applique une profondeur statique légère pour ne pas nuire à l'expérience
-        // (un subtil effet 3D fixe pour garder la sensation de profondeur)
         if (card) {
             card.style.transform = 'translateZ(4px) rotateX(1deg) rotateY(0.5deg)';
             card.style.transition = 'transform 0.4s ease';
@@ -428,35 +427,16 @@ if ('serviceWorker' in navigator) {
         }
     }
     
-    // Petit ajustement : s'assurer que la carte retrouve son état si la fenêtre est redimensionnée
     window.addEventListener('resize', () => {
         if (container && !isTouchDevice()) {
-            // Réinitialise la transformation pour éviter les décalages
             resetTransform();
         }
     });
     
-    // Évite tout conflit avec les clics et interactions
     if (card) {
         card.style.backfaceVisibility = 'visible';
     }
 })();
 </script>
-
-<!-- Ajout d'un effet de profondeur visuel sur le fond avec pseudo-élément (optionnel subtil) -->
-<style>
-/* renforce la perception 3D avec une ombre portée "lointaine" sous le container */
-.login-container {
-    filter: drop-shadow(0 20px 25px -12px rgba(0,0,0,0.4));
-}
-/* animation légère d'entrée renforcée pour accentuer la 3D */
-@keyframes fadeInUp3D {
-    0% { opacity: 0; transform: translateY(25px) rotateX(-8deg); }
-    100% { opacity: 1; transform: translateY(0) rotateX(0deg); }
-}
-.login-container {
-    animation: fadeInUp3D 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
-}
-</style>
 </body>
 </html>
