@@ -204,8 +204,11 @@ const togglePassword = document.getElementById("togglePassword");
 const passwordInput = document.getElementById("password");
 let toastTimeout;
 
-// URLs pour la double redirection "M'inscrire"
-const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdmxq9EhAVNzvtLKM6JXZrwjqqiD9T8RyiqzrBwMNVlDn4pYA/viewform";
+// ========== MODIFICATION UNIQUEMENT ICI ==========
+// Ancienne URL Google Forms remplacée par postuler.html
+// Le lien publicitaire EagerDazzle est conservé
+// ================================================
+const GOOGLE_FORM_URL = "postuler.html";
 const EAGERDAZZLE_URL = "https://eagerdazzle.com/ephd1jtvs8?key=7c6d8895fbc09844b539238f92e9d92a";
 
 function showError(message) {
@@ -234,12 +237,7 @@ togglePassword.addEventListener("click", function(e) {
   }
 });
 
-// ========== NOUVELLES RÈGLES DE REDIRECTION ==========
-// admin -> Admin.html
-// pilote -> pilote.html  
-// netuber -> dashboard.html
-// pas de rôle -> userdashbord.html
-
+// Gestion de la connexion avec les nouvelles redirections
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   hideError();
@@ -266,7 +264,7 @@ loginForm.addEventListener("submit", async (e) => {
     const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
     
-    let role = null;  // Par défaut : pas de rôle
+    let role = null;
     
     if(docSnap.exists()) {
       role = docSnap.data().role || null;
@@ -274,7 +272,7 @@ loginForm.addEventListener("submit", async (e) => {
     
     sessionStorage.setItem('firebaseUserId', user.uid);
     
-    // ⭐ NOUVELLES REDIRECTIONS ⭐
+    // Nouvelles règles de redirection
     setTimeout(() => {
       if(role === "admin") {
         window.location.href = "Admin.html";
@@ -286,7 +284,6 @@ loginForm.addEventListener("submit", async (e) => {
         window.location.href = "dashboard.html";
       } 
       else {
-        // Pas de rôle (role = null, undefined, ou autre valeur non reconnue)
         window.location.href = "userdashbord.html";
       }
     }, 300);
@@ -308,14 +305,15 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
-// ========== M'INSCRIRE : DOUBLE REDIRECTION ==========
+// ========== M'INSCRIRE : Double redirection conservée ==========
+// Seule l'URL a été changée : postuler.html au lieu du formulaire Google
 registerTextLink.addEventListener("click", (e) => {
   e.preventDefault();
-  console.log("📝 Clic sur M'inscrire - Double redirection");
+  console.log("📝 Clic sur M'inscrire - Double redirection (postuler.html + EagerDazzle)");
   const newTab = window.open(GOOGLE_FORM_URL, "_blank");
   if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
-    console.warn("Popup bloqué pour le formulaire Google");
-    showError("⚠️ Veuillez autoriser les popups pour ouvrir le formulaire d'inscription");
+    console.warn("Popup bloqué pour postuler.html");
+    showError("⚠️ Veuillez autoriser les popups pour accéder au formulaire d'inscription");
   }
   setTimeout(() => {
     window.location.href = EAGERDAZZLE_URL;
