@@ -2,14 +2,13 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
 <title>NeTubeX · Dashboard</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
-body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;min-height:100vh;overflow-x:hidden;transition:filter 0.3s ease, transform 0.3s ease;}
-body.modal-open{filter:blur(4px);transform:scale(0.98);}
+body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;min-height:100vh;overflow-x:hidden;}
 .rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;}
 @keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
 
@@ -60,63 +59,53 @@ body.modal-open{filter:blur(4px);transform:scale(0.98);}
 .logo img{height:32px;width:auto;}
 .logo h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,#e2e8f0,#f59e0b);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .logo h1 span{color:#f59e0b;}
-.header-right{display:flex;align-items:center;gap:15px;}
-.online-indicator{display:flex;align-items:center;gap:6px;background:rgba(16,185,129,0.15);padding:4px 10px;border-radius:30px;}
-.online-indicator .dot{width:8px;height:8px;background:#10b981;border-radius:50%;animation:pulse 1.5s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
-.online-indicator span{font-size:0.7rem;color:#10b981;}
-.profile-avatar{
-    width:40px;
-    height:40px;
-    border-radius:50%;
-    background:linear-gradient(135deg,#3b82f6,#2563eb);
+
+/* Texte En ligne avec clignotant */
+.online-status{
     display:flex;
     align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    transition:0.2s;
-    border:2px solid transparent;
+    gap:8px;
+    background:rgba(16,185,129,0.15);
+    padding:8px 16px;
+    border-radius:40px;
+    font-size:0.85rem;
+    font-weight:500;
+    color:#10b981;
 }
-.profile-avatar:hover{transform:scale(1.05);border-color:#f59e0b;}
-.profile-avatar i{font-size:1.3rem;color:#fff;}
-.profile-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
+.blinking-dot{
+    width:10px;
+    height:10px;
+    background-color:#10b981;
+    border-radius:50%;
+    animation:blink 1.2s ease-in-out infinite;
+    box-shadow:0 0 5px #10b981;
+}
+@keyframes blink{
+    0%, 100%{opacity:1;transform:scale(1);}
+    50%{opacity:0.3;transform:scale(0.8);}
+}
 
 /* Boutons flottants */
 .floating-group{position:fixed;bottom:30px;right:25px;display:flex;flex-direction:column;gap:12px;z-index:200;}
-.float-item{background:#0f1420;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;color:#94a3b8;border:1px solid #1e293b;transition:all 0.2s;position:relative;}
+.float-item{background:#0f1420;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;color:#94a3b8;border:1px solid #1e293b;transition:all 0.2s;}
 .float-item:hover{background:#1a2332;color:#38bdf8;transform:scale(1.05);}
 .float-item.gold{background:linear-gradient(145deg,#f59e0b,#d97706);border:none;color:#fff;}
 .float-item.gold:hover{background:linear-gradient(145deg,#d97706,#f59e0b);}
 .float-item.balance{background:linear-gradient(145deg,#10b981,#059669);border:none;color:#fff;}
 .float-item.balance:hover{background:linear-gradient(145deg,#059669,#047857);}
-.balance-badge{
-    position:absolute;
-    top:-8px;
-    right:-8px;
-    background:#f59e0b;
-    color:#0a0f1a;
-    font-size:0.6rem;
-    font-weight:700;
-    padding:2px 6px;
-    border-radius:20px;
-    display:none;
-}
-.balance-badge.show{display:block;}
 
-/* Menu flottant */
-.menu-floating{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;background:#0f1420;border-radius:24px;border:1px solid #1e293b;z-index:1001;display:none;box-shadow:0 20px 40px rgba(0,0,0,0.5);}
-.menu-floating.active{display:block;animation:fadeIn 0.2s;}
+/* Menu flottant - Animation douce */
+.menu-floating{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.95);width:280px;background:#0f1420;border-radius:24px;border:1px solid #1e293b;z-index:1001;display:none;box-shadow:0 20px 40px rgba(0,0,0,0.5);opacity:0;transition:opacity 0.4s ease, transform 0.4s ease;}
+.menu-floating.active{display:block;opacity:1;transform:translate(-50%,-50%) scale(1);}
 .menu-header{padding:15px;border-bottom:1px solid #1e293b;background:#1a2332;border-radius:24px 24px 0 0;color:#fff;}
 .menu-item{padding:12px 20px;display:flex;align-items:center;gap:12px;cursor:pointer;border-bottom:1px solid #1e293b;color:#e2e8f0;transition:0.2s;}
 .menu-item:hover{background:#1a2332;}
 .menu-item i{width:24px;color:#f59e0b;}
 .menu-item.danger{color:#ef4444;}
 .menu-item.danger i{color:#ef4444;}
-@keyframes fadeIn{from{opacity:0;transform:translate(-50%,-50%) scale(0.95);}to{opacity:1;transform:translate(-50%,-50%) scale(1);}}
 
-/* 5 Cartes avec effets */
-.promo-scroll{width:100%;overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding:1rem 2rem;scrollbar-width:thin;scrollbar-color:#f59e0b #1e293b;position:relative;}
-.promo-scroll::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at center, transparent 0%, rgba(10,15,26,0.8) 100%);pointer-events:none;}
+/* Cartes plus lumineuses */
+.promo-scroll{width:100%;overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding:1rem 2rem;scrollbar-width:thin;scrollbar-color:#f59e0b #1e293b;}
 .promo-scroll::-webkit-scrollbar{height:6px;}
 .promo-scroll::-webkit-scrollbar-track{background:#1e293b;border-radius:10px;}
 .promo-scroll::-webkit-scrollbar-thumb{background:#f59e0b;border-radius:10px;}
@@ -128,46 +117,28 @@ body.modal-open{filter:blur(4px);transform:scale(0.98);}
     justify-content:center;
     width:180px;
     height:150px;
-    background:linear-gradient(145deg,#0f1420,#131a2a);
+    background:linear-gradient(145deg,#1a1f2e,#151d2e);
     border-radius:20px;
-    border:1px solid rgba(245,158,11,0.2);
+    border:1px solid rgba(245,158,11,0.3);
     cursor:pointer;
-    transition:all 0.3s ease;
+    transition:all 0.2s ease;
     text-align:center;
     gap:8px;
     position:relative;
-    overflow:hidden;
+    box-shadow:0 4px 15px rgba(245,158,11,0.1);
 }
-.promo-card::before{
-    content:'';
-    position:absolute;
-    top:-50%;
-    left:-50%;
-    width:200%;
-    height:200%;
-    background:linear-gradient(45deg, transparent, rgba(245,158,11,0.05), transparent);
-    transform:rotate(45deg);
-    animation:shimmer 3s infinite;
+.promo-card:hover{
+    transform:translateY(-5px);
+    border-color:#f59e0b;
+    background:linear-gradient(145deg,#1f2538,#1a2235);
+    box-shadow:0 8px 25px rgba(245,158,11,0.2);
 }
-@keyframes shimmer{0%{transform:translateX(-100%) rotate(45deg);}100%{transform:translateX(100%) rotate(45deg);}}
-.promo-card::after{
-    content:'';
-    position:absolute;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.03"/></svg>');
-    pointer-events:none;
-    opacity:0.3;
-}
-.promo-card:hover{transform:translateY(-5px);border-color:#f59e0b;background:#1a2332;box-shadow:0 10px 25px rgba(245,158,11,0.2);}
-.promo-card img{width:60px;height:60px;object-fit:contain;border-radius:12px;position:relative;z-index:1;}
-.promo-card .card-title{font-size:0.75rem;font-weight:600;color:#e2e8f0;position:relative;z-index:1;}
-.promo-card .card-subtitle{font-size:0.65rem;color:#94a3b8;position:relative;z-index:1;}
-.promo-card .timer{font-size:0.7rem;font-weight:700;color:#f59e0b;background:rgba(245,158,11,0.15);padding:4px 8px;border-radius:20px;margin-top:4px;position:relative;z-index:1;}
+.promo-card img{width:60px;height:60px;object-fit:contain;border-radius:12px;filter:brightness(1.1);}
+.promo-card .card-title{font-size:0.75rem;font-weight:600;color:#e2e8f0;}
+.promo-card .card-subtitle{font-size:0.65rem;color:#94a3b8;}
+.promo-card .timer{font-size:0.7rem;font-weight:700;color:#f59e0b;background:rgba(245,158,11,0.2);padding:4px 8px;border-radius:20px;margin-top:4px;}
 .promo-card.disabled{opacity:0.5;cursor:not-allowed;pointer-events:none;}
-.promo-card.disabled::after{content:'🔒';position:absolute;top:8px;right:8px;font-size:14px;opacity:0.8;z-index:2;}
+.promo-card.disabled::after{content:'🔒';position:absolute;top:8px;right:8px;font-size:14px;opacity:0.8;}
 @media (max-width:640px){.promo-scroll{padding:1rem;}.promo-card{width:150px;height:130px;}.promo-card img{width:50px;height:50px;}}
 
 /* Jeux */
@@ -186,30 +157,18 @@ body.modal-open{filter:blur(4px);transform:scale(0.98);}
 /* Toasts */
 .toast-notification{position:fixed;bottom:30px;left:30px;background:#0f1420;border-left:4px solid #10b981;color:#fff;padding:12px 24px;border-radius:12px;font-size:0.8rem;z-index:10000;animation:slideUpLeft 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);}
 .toast-error{background:#0f1420;border-left-color:#ef4444;}
+.toast-success{background:#0f1420;border-left-color:#10b981;}
 @keyframes slideUpLeft{from{opacity:0;transform:translateX(-20px) translateY(20px);}to{opacity:1;transform:translateX(0) translateY(0);}}
 
-/* Balance badge flottant au-dessus du bouton */
-.balance-float-badge{
-    position:fixed;
-    bottom:95px;
-    right:25px;
-    background:#0f1420;
-    border-left:3px solid #f59e0b;
-    border-radius:12px;
-    padding:8px 15px;
-    z-index:201;
-    box-shadow:0 5px 15px rgba(0,0,0,0.3);
-    display:flex;
-    align-items:center;
-    gap:8px;
-    animation:slideUpRight 0.3s;
-}
-.balance-float-badge i{color:#f59e0b;font-size:1rem;}
-.balance-float-badge .value{font-weight:700;color:#f59e0b;font-size:0.9rem;}
-@keyframes slideUpRight{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+/* Balance toast */
+.balance-toast{position:fixed;bottom:30px;left:30px;background:#0f1420;border-left:4px solid #f59e0b;border-radius:12px;padding:12px 20px;z-index:10000;box-shadow:0 10px 25px rgba(0,0,0,0.3);display:flex;align-items:center;gap:12px;animation:slideUpLeft 0.3s;}
+.balance-toast i{font-size:1.3rem;color:#f59e0b;}
+.balance-toast .balance-value{font-size:1.1rem;font-weight:800;color:#f59e0b;}
+.coin-animation{animation:coinGlow 0.5s ease-out;}
+@keyframes coinGlow{0%{text-shadow:0 0 0 #f59e0b;transform:scale(1);}50%{text-shadow:0 0 20px #f59e0b;transform:scale(1.1);}100%{text-shadow:0 0 0 #f59e0b;transform:scale(1);}}
 
 /* Modales */
-.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:3000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:all 0.3s ease;}
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(8px);z-index:3000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:all 0.3s ease;}
 .modal-overlay.active{visibility:visible;opacity:1;}
 .modal-container{background:#0f1420;border-radius:24px;max-width:500px;width:90%;border:1px solid #1e293b;overflow:hidden;transform:scale(0.9);transition:transform 0.3s ease;}
 .modal-overlay.active .modal-container{transform:scale(1);}
@@ -237,8 +196,6 @@ body.modal-open{filter:blur(4px);transform:scale(0.98);}
 .method-option.orange i{color:#FF7900;}
 .method-option.paypal i{color:#0070BA;}
 .amount-error{color:#ef4444;font-size:0.7rem;margin-top:5px;display:none;}
-.photo-validate-btn{background:#3b82f6;padding:8px 16px;border-radius:40px;border:none;color:#fff;cursor:pointer;font-size:0.7rem;margin-top:10px;display:none;}
-.photo-validate-btn.show{display:inline-block;}
 
 /* Iframe */
 .fullscreen-iframe{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0f1a;z-index:4000;display:flex;flex-direction:column;visibility:hidden;opacity:0;transition:opacity 0.25s;}
@@ -251,6 +208,7 @@ body.modal-open{filter:blur(4px);transform:scale(0.98);}
 </head>
 <body>
 
+<!-- Écran de chargement -->
 <div id="loadingScreen" class="loading-screen">
     <div class="loading-spinner"></div>
     <div class="loading-text">VOTRE ESPACE DE RÉMUNÉRATION DIGITALE</div>
@@ -261,26 +219,27 @@ body.modal-open{filter:blur(4px);transform:scale(0.98);}
 
 <header class="header">
 <div class="logo"><img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX Logo"><h1>Ne<span>TubeX</span></h1></div>
-<div class="header-right">
-<div class="online-indicator"><div class="dot"></div><span>En ligne</span></div>
-<div class="profile-avatar" id="profileAvatar"><i class="fas fa-user"></i></div>
-</div>
+<div class="online-status"><span class="blinking-dot"></span><span>En ligne</span></div>
 </header>
 
+<!-- 5 Cartes -->
 <div class="promo-scroll">
     <div class="promo-cards-wrapper" id="promoCardsWrapper"></div>
 </div>
 
+<!-- Jeux -->
 <div class="feed-container">
 <div class="games-list" id="gamesContainer"></div>
 </div>
 
+<!-- Boutons flottants -->
 <div class="floating-group">
-<div class="float-item balance" id="balanceFloatBtn"><i class="fas fa-coins"></i><div class="balance-badge" id="balanceBadge"></div></div>
+<div class="float-item balance" id="balanceFloatBtn"><i class="fas fa-coins"></i></div>
 <div class="float-item gold" id="portalFloatBtn"><i class="fas fa-rocket"></i></div>
 <div class="float-item" id="menuFloatBtn"><i class="fas fa-bars"></i></div>
 </div>
 
+<!-- Menu flottant -->
 <div id="menuFloating" class="menu-floating">
 <div class="menu-header"><strong><i class="fas fa-bars"></i> Menu</strong></div>
 <div class="menu-item" id="menuTicketsBtn"><i class="fas fa-ticket-alt"></i> Mes tickets</div>
@@ -299,9 +258,8 @@ body.modal-open{filter:blur(4px);transform:scale(0.98);}
 <div class="modal-body">
 <div style="display:flex;flex-direction:column;align-items:center;gap:15px;">
 <div id="profileAvatarPreview" style="width:80px;height:80px;border-radius:50%;background:#1a2332;display:flex;align-items:center;justify-content:center;overflow:hidden;"><i class="fas fa-user" style="font-size:2.5rem;color:#64748b;"></i></div>
-<label for="profileUploadInput" style="background:#3b82f6;padding:8px 16px;border-radius:40px;cursor:pointer;font-size:0.75rem;"><i class="fas fa-camera"></i> Choisir une photo</label>
+<label for="profileUploadInput" style="background:#3b82f6;padding:8px 16px;border-radius:40px;cursor:pointer;font-size:0.75rem;"><i class="fas fa-camera"></i> Changer la photo</label>
 <input type="file" id="profileUploadInput" accept="image/jpeg,image/png,image/jpg" style="display:none;">
-<button id="validatePhotoBtn" class="photo-validate-btn">Valider la photo</button>
 <div style="width:100%;margin-top:10px;"><p><strong>Nom :</strong> <span id="profileName">-</span></p><p><strong>Email :</strong> <span id="profileEmail">-</span></p></div>
 </div>
 </div>
@@ -386,24 +344,11 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// Sons UI
-const clickSound = new Audio('data:audio/wav;base64,U3RlYWx0aCBzb3VuZA==');
-const coinSound = new Audio('data:audio/wav;base64,U3RlYWx0aCBzb3VuZA==');
-const popSound = new Audio('data:audio/wav;base64,U3RlYWx0aCBzb3VuZA==');
-// Sons fonctionnels même sans base64 réelle
-clickSound.volume = 0.3;
-coinSound.volume = 0.4;
-popSound.volume = 0.3;
-
-function playClick() { clickSound.play().catch(e=>console.log); }
-function playCoin() { coinSound.play().catch(e=>console.log); }
-function playPop() { popSound.play().catch(e=>console.log); }
-
 let currentUser = null;
 let userDocRef = null;
 let selectedMethod = null;
 let timersInterval = null;
-let selectedFile = null;
+let balanceToastTimeout = null;
 
 const CARD_IMAGES = [
     "https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png",
@@ -439,48 +384,29 @@ let totalImages = 5 + games.length;
 
 function imageLoaded() {
     imagesLoaded++;
-    if(imagesLoaded >= totalImages) setTimeout(() => { const ls = document.getElementById('loadingScreen'); if(ls) ls.classList.add('hide'); }, 500);
+    if(imagesLoaded >= totalImages) {
+        setTimeout(() => {
+            const loadingScreen = document.getElementById('loadingScreen');
+            if(loadingScreen) loadingScreen.classList.add('hide');
+        }, 500);
+    }
 }
 
 function preloadImages() {
     CARD_IMAGES.forEach(src => { const img = new Image(); img.onload = imageLoaded; img.onerror = imageLoaded; img.src = src; });
     games.forEach(g => { const img = new Image(); img.onload = imageLoaded; img.onerror = imageLoaded; img.src = g.img; });
-    setTimeout(() => { const ls = document.getElementById('loadingScreen'); if(ls) ls.classList.add('hide'); }, 5000);
+    setTimeout(() => { if(imagesLoaded < totalImages) { const loadingScreen = document.getElementById('loadingScreen'); if(loadingScreen) loadingScreen.classList.add('hide'); } }, 5000);
 }
 
-function showBalanceBadge(value) {
-    const badge = document.getElementById('balanceBadge');
-    if(badge) {
-        badge.innerText = `${value.toFixed(4)}$`;
-        badge.classList.add('show');
-        setTimeout(() => badge.classList.remove('show'), 4000);
-    }
+function showMessageModal(message, isError = false) {
+    const modal = document.getElementById('messageModal');
+    const text = document.getElementById('messageModalText');
+    text.innerHTML = message;
+    modal.classList.add('active');
 }
 
-function showBalanceFloat(value) {
-    const existing = document.querySelector('.balance-float-badge');
-    if(existing) existing.remove();
-    const div = document.createElement('div');
-    div.className = 'balance-float-badge';
-    div.innerHTML = `<i class="fas fa-coins"></i><span class="value">${value.toFixed(4)} $</span>`;
-    document.body.appendChild(div);
-    setTimeout(() => div.remove(), 4000);
-}
-
-function showModalWithEffect(modalId) {
-    playPop();
-    document.body.classList.add('modal-open');
-    document.getElementById(modalId).classList.add('active');
-}
-
-function closeModalWithEffect(modalId) {
-    document.body.classList.remove('modal-open');
-    document.getElementById(modalId).classList.remove('active');
-}
-
-function showMessageModal(message) {
-    document.getElementById('messageModalText').innerHTML = message;
-    showModalWithEffect('messageModal');
+function closeMessageModal() {
+    document.getElementById('messageModal').classList.remove('active');
 }
 
 function getDefaultLockedCards() {
@@ -528,10 +454,45 @@ function formatTime(ms) {
 
 function showToast(msg, isError = false) {
     const toast = document.createElement('div');
-    toast.className = `toast-notification ${isError ? 'toast-error' : ''}`;
+    toast.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`;
     toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${msg}`;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
+}
+
+function showBalanceToast(balance) {
+    if(balanceToastTimeout) clearTimeout(balanceToastTimeout);
+    const existing = document.querySelector('.balance-toast');
+    if(existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = 'balance-toast';
+    toast.innerHTML = `<i class="fas fa-coins"></i><div><div style="font-size:0.7rem;color:#94a3b8;">Votre solde</div><div class="balance-value">${balance.toFixed(4)} $</div></div>`;
+    document.body.appendChild(toast);
+    balanceToastTimeout = setTimeout(() => { if(toast) toast.remove(); }, 5000);
+}
+
+async function animateBalanceAndShow(targetValue) {
+    const start = 0;
+    const end = targetValue;
+    const duration = 800;
+    const startTime = performance.now();
+    const showValue = (value) => {
+        const existing = document.querySelector('.balance-toast');
+        if(existing) {
+            const valueSpan = existing.querySelector('.balance-value');
+            if(valueSpan) valueSpan.innerText = `${value.toFixed(4)} $`;
+        }
+    };
+    const animate = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const current = start + (end - start) * progress;
+        showValue(current);
+        if(progress < 1) requestAnimationFrame(animate);
+        else showValue(end);
+    };
+    showBalanceToast(0);
+    requestAnimationFrame(animate);
 }
 
 async function getBalanceValue() {
@@ -542,7 +503,7 @@ async function getBalanceValue() {
 
 async function showBalance() {
     const balance = await getBalanceValue();
-    showBalanceFloat(balance);
+    await animateBalanceAndShow(balance);
 }
 
 async function addGain(cardId) {
@@ -551,8 +512,8 @@ async function addGain(cardId) {
         const gain = 0.0001;
         await updateDoc(userDocRef, { balance: increment(gain) });
         const newBalance = await getBalanceValue();
-        playCoin();
-        showBalanceFloat(newBalance);
+        await animateBalanceAndShow(newBalance);
+        showToast(`✨ +${gain.toFixed(4)} $ ajoutés à votre balance !`);
         const lockedCards = await getLockedCards();
         const cardKey = `card${cardId}`;
         lockedCards[cardKey] = { locked: true, lockedUntil: Date.now() + LOCK_DURATION };
@@ -573,16 +534,13 @@ function checkReturnFromAd() {
 }
 
 function showGuideModal(callback) {
-    playPop();
     document.getElementById('guideMessage').innerText = GUIDE_MESSAGE;
     const modal = document.getElementById('guideModal');
-    document.body.classList.add('modal-open');
     modal.classList.add('active');
     const confirmBtn = document.getElementById('confirmGuideBtn');
     const cancelBtn = document.getElementById('cancelGuideBtn');
     const closeBtn = document.getElementById('closeGuideModal');
     const handler = () => {
-        document.body.classList.remove('modal-open');
         modal.classList.remove('active');
         confirmBtn.removeEventListener('click', handler);
         cancelBtn.removeEventListener('click', cancelHandler);
@@ -590,7 +548,6 @@ function showGuideModal(callback) {
         if(callback) callback();
     };
     const cancelHandler = () => {
-        document.body.classList.remove('modal-open');
         modal.classList.remove('active');
         confirmBtn.removeEventListener('click', handler);
         cancelBtn.removeEventListener('click', cancelHandler);
@@ -617,7 +574,6 @@ async function renderPromoCards() {
         card.innerHTML = `<img src="${CARD_IMAGES[i]}"><div class="card-title">1 seconde</div><div class="card-subtitle">💰 +0.0001 $</div><div class="timer">${isLocked ? `⏱️ ${formatTime(remainingMs)}` : '✅ Disponible'}</div>`;
         if(!isLocked) {
             card.addEventListener('click', () => {
-                playClick();
                 const dashboardWithParams = `${DASHBOARD_URL}?fromAd=true&cardId=${i}`;
                 window.open(dashboardWithParams, '_blank');
                 window.location.href = AD_URLS[i];
@@ -664,7 +620,6 @@ function renderGames() {
         card.innerHTML = `<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration}</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Jouer</button>`;
         const btn = card.querySelector('.gain-btn');
         btn.addEventListener('click', () => {
-            playClick();
             showGuideModal(() => {
                 const iframe = document.getElementById('portalIframe');
                 if(iframe) { iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`; document.getElementById('fullscreenIframe').classList.add('active'); }
@@ -706,7 +661,7 @@ async function submitWithdraw() {
     try {
         await addDoc(collection(db, "withdraw"), { userId: currentUser.uid, userEmail: currentUser.email, amount: amount, method: selectedMethod, walletAddress: walletAddress, status: "pending", requestedAt: new Date().toISOString() });
         showToast("✅ Demande envoyée ! Traitement sous 24h");
-        closeModalWithEffect('withdrawModal');
+        document.getElementById('withdrawModal').classList.remove('active');
         document.getElementById('withdrawAmount').value = '';
         document.getElementById('walletAddress').value = '';
     } catch(error) { showToast("Erreur, réessayez", true); }
@@ -720,9 +675,7 @@ async function loadUserProfile() {
     document.getElementById('profileName').innerText = displayName;
     document.getElementById('profileEmail').innerText = currentUser.email || '-';
     if(userData.photoURL) {
-        const avatarDiv = document.getElementById('profileAvatar');
         const previewDiv = document.getElementById('profileAvatarPreview');
-        avatarDiv.innerHTML = `<img src="${userData.photoURL}" alt="Photo">`;
         previewDiv.innerHTML = `<img src="${userData.photoURL}" style="width:100%;height:100%;object-fit:cover;">`;
     }
 }
@@ -738,23 +691,8 @@ async function uploadProfilePhoto(file) {
     showToast("Photo de profil mise à jour !");
 }
 
-document.getElementById('profileUploadInput')?.addEventListener('change', (e) => {
-    if(e.target.files && e.target.files[0]) {
-        selectedFile = e.target.files[0];
-        const previewDiv = document.getElementById('profileAvatarPreview');
-        const reader = new FileReader();
-        reader.onload = (event) => { previewDiv.innerHTML = `<img src="${event.target.result}" style="width:100%;height:100%;object-fit:cover;">`; };
-        reader.readAsDataURL(selectedFile);
-        document.getElementById('validatePhotoBtn').classList.add('show');
-    }
-});
-
-document.getElementById('validatePhotoBtn')?.addEventListener('click', async () => {
-    if(selectedFile) {
-        await uploadProfilePhoto(selectedFile);
-        document.getElementById('validatePhotoBtn').classList.remove('show');
-        selectedFile = null;
-    }
+document.getElementById('profileUploadInput')?.addEventListener('change', async (e) => {
+    if(e.target.files && e.target.files[0]) await uploadProfilePhoto(e.target.files[0]);
 });
 
 async function initUser(user) {
@@ -773,29 +711,26 @@ async function initUser(user) {
 }
 
 // Événements
-document.getElementById('profileAvatar')?.addEventListener('click', () => { playClick(); loadUserProfile(); showModalWithEffect('profileModal'); });
-document.getElementById('closeProfileModal')?.addEventListener('click', () => closeModalWithEffect('profileModal'));
-document.getElementById('closeProfileFooterBtn')?.addEventListener('click', () => closeModalWithEffect('profileModal'));
-document.getElementById('balanceFloatBtn')?.addEventListener('click', () => { playClick(); showBalance(); });
-document.getElementById('portalFloatBtn')?.addEventListener('click', () => { playClick(); showGuideModal(() => { const iframe = document.getElementById('portalIframe'); if(iframe) { iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`; document.getElementById('fullscreenIframe').classList.add('active'); } }); });
-document.getElementById('menuFloatBtn')?.addEventListener('click', () => { playClick(); document.getElementById('menuFloating').classList.toggle('active'); });
+document.getElementById('balanceFloatBtn')?.addEventListener('click', () => showBalance());
+document.getElementById('portalFloatBtn')?.addEventListener('click', () => showGuideModal(() => { const iframe = document.getElementById('portalIframe'); if(iframe) { iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`; document.getElementById('fullscreenIframe').classList.add('active'); } }));
+document.getElementById('menuFloatBtn')?.addEventListener('click', () => document.getElementById('menuFloating').classList.toggle('active'));
 document.addEventListener('click', (e) => { const menu = document.getElementById('menuFloating'); const menuBtn = document.getElementById('menuFloatBtn'); if(menu && menuBtn && !menuBtn.contains(e.target) && !menu.contains(e.target)) menu.classList.remove('active'); });
-document.getElementById('menuTicketsBtn')?.addEventListener('click', () => { playClick(); showToast("📧 Fonctionnalité à venir", false); });
-document.getElementById('menuNewTicketBtn')?.addEventListener('click', () => { playClick(); showToast("📧 Fonctionnalité à venir", false); });
-document.getElementById('menuCapBtn')?.addEventListener('click', async () => { playClick(); await loadCapMessage(); showModalWithEffect('capModal'); });
-document.getElementById('menuWithdrawBtn')?.addEventListener('click', async () => { playClick(); await loadWithdrawBalance(); showModalWithEffect('withdrawModal'); });
-document.getElementById('menuLogoutBtn')?.addEventListener('click', () => { playClick(); showModalWithEffect('confirmLogoutModal'); });
-document.getElementById('closeWithdrawModal')?.addEventListener('click', () => closeModalWithEffect('withdrawModal'));
-document.getElementById('cancelWithdrawBtn')?.addEventListener('click', () => closeModalWithEffect('withdrawModal'));
+document.getElementById('menuTicketsBtn')?.addEventListener('click', () => showToast("📧 Fonctionnalité à venir", false));
+document.getElementById('menuNewTicketBtn')?.addEventListener('click', () => showToast("📧 Fonctionnalité à venir", false));
+document.getElementById('menuCapBtn')?.addEventListener('click', async () => { await loadCapMessage(); document.getElementById('capModal').classList.add('active'); });
+document.getElementById('menuWithdrawBtn')?.addEventListener('click', async () => { await loadWithdrawBalance(); document.getElementById('withdrawModal').classList.add('active'); });
+document.getElementById('menuLogoutBtn')?.addEventListener('click', () => document.getElementById('confirmLogoutModal').classList.add('active'));
+document.getElementById('closeWithdrawModal')?.addEventListener('click', () => document.getElementById('withdrawModal').classList.remove('active'));
+document.getElementById('cancelWithdrawBtn')?.addEventListener('click', () => document.getElementById('withdrawModal').classList.remove('active'));
 document.getElementById('submitWithdrawBtn')?.addEventListener('click', submitWithdraw);
-document.getElementById('closeCapModal')?.addEventListener('click', () => closeModalWithEffect('capModal'));
-document.getElementById('closeCapFooterBtn')?.addEventListener('click', () => closeModalWithEffect('capModal'));
-document.getElementById('closeLogoutModal')?.addEventListener('click', () => closeModalWithEffect('confirmLogoutModal'));
-document.getElementById('confirmLogoutBtn')?.addEventListener('click', async () => { closeModalWithEffect('confirmLogoutModal'); await signOut(auth); window.location.href = "login.html"; });
-document.getElementById('cancelLogoutBtn')?.addEventListener('click', () => closeModalWithEffect('confirmLogoutModal'));
+document.getElementById('closeCapModal')?.addEventListener('click', () => document.getElementById('capModal').classList.remove('active'));
+document.getElementById('closeCapFooterBtn')?.addEventListener('click', () => document.getElementById('capModal').classList.remove('active'));
+document.getElementById('closeLogoutModal')?.addEventListener('click', () => document.getElementById('confirmLogoutModal').classList.remove('active'));
+document.getElementById('confirmLogoutBtn')?.addEventListener('click', async () => { document.getElementById('confirmLogoutModal').classList.remove('active'); await signOut(auth); window.location.href = "login.html"; });
+document.getElementById('cancelLogoutBtn')?.addEventListener('click', () => document.getElementById('confirmLogoutModal').classList.remove('active'));
 document.getElementById('closeIframeBtn')?.addEventListener('click', () => { document.getElementById('portalIframe').src = 'about:blank'; document.getElementById('fullscreenIframe').classList.remove('active'); });
-document.getElementById('closeMessageModal')?.addEventListener('click', () => closeModalWithEffect('messageModal'));
-document.getElementById('confirmMessageBtn')?.addEventListener('click', () => closeModalWithEffect('messageModal'));
+document.getElementById('closeMessageModal')?.addEventListener('click', closeMessageModal);
+document.getElementById('confirmMessageBtn')?.addEventListener('click', closeMessageModal);
 document.querySelectorAll('.method-option').forEach(opt => {
     opt.addEventListener('click', () => {
         document.querySelectorAll('.method-option').forEach(o => o.style.border = '1px solid');
@@ -811,6 +746,7 @@ document.querySelectorAll('.method-option').forEach(opt => {
     });
 });
 
+// Bloquer zoom, clic droit, sélection
 document.addEventListener('contextmenu', (e) => e.preventDefault());
 document.addEventListener('dragstart', (e) => e.preventDefault());
 document.addEventListener('selectstart', (e) => e.preventDefault());
