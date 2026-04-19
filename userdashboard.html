@@ -7,60 +7,66 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
-body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;min-height:100vh;overflow-x:hidden;}
-.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;}
-@keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
-
-/* Écran de chargement */
-.loading-screen{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+    -webkit-touch-callout:none;
+}
+body{
     background:#0a0f1a;
-    z-index:10000;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    transition:opacity 0.5s ease, visibility 0.5s;
-}
-.loading-screen.hide{
-    opacity:0;
-    visibility:hidden;
-}
-.loading-spinner{
-    width:60px;
-    height:60px;
-    border:3px solid #1e293b;
-    border-top-color:#f59e0b;
-    border-radius:50%;
-    animation:spin 1s linear infinite;
-    margin-bottom:30px;
-}
-@keyframes spin{to{transform:rotate(360deg);}}
-.loading-text{
-    font-size:1.2rem;
-    font-weight:600;
-    letter-spacing:2px;
-    text-align:center;
+    font-family:'Inter',system-ui,sans-serif;
     color:#e2e8f0;
+    min-height:100vh;
+    overflow-x:hidden;
 }
-.loading-sub{
-    font-size:0.8rem;
-    color:#64748b;
-    margin-top:10px;
+.rainbow-line{
+    height:3px;
+    width:100%;
+    background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);
+    background-size:200% 100%;
+    animation:rainbowMove 3s linear infinite;
+}
+@keyframes rainbowMove{
+    0%{background-position:0% 50%;}
+    100%{background-position:200% 50%;}
 }
 
-.header{background:#0f1420;border-bottom:1px solid #1e293b;padding:0.5rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
-.logo{display:flex;align-items:center;gap:8px;cursor:default;}
-.logo img{height:32px;width:auto;}
-.logo h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,#e2e8f0,#f59e0b);-webkit-background-clip:text;background-clip:text;color:transparent;}
-.logo h1 span{color:#f59e0b;}
-
-/* Texte En ligne avec clignotant */
+/* Header */
+.header{
+    background:#0f1420;
+    border-bottom:1px solid #1e293b;
+    padding:0.5rem 2rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+.logo{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:default;
+}
+.logo img{
+    height:32px;
+    width:auto;
+}
+.logo h1{
+    font-size:1.3rem;
+    font-weight:700;
+    background:linear-gradient(135deg,#e2e8f0,#f59e0b);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+}
+.logo h1 span{
+    color:#f59e0b;
+}
 .online-status{
     display:flex;
     align-items:center;
@@ -86,30 +92,129 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 }
 
 /* Boutons flottants */
-.floating-group{position:fixed;bottom:30px;right:25px;display:flex;flex-direction:column;gap:12px;z-index:200;}
-.float-item{background:#0f1420;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;color:#94a3b8;border:1px solid #1e293b;transition:all 0.2s;}
-.float-item:hover{background:#1a2332;color:#38bdf8;transform:scale(1.05);}
-.float-item.gold{background:linear-gradient(145deg,#f59e0b,#d97706);border:none;color:#fff;}
-.float-item.gold:hover{background:linear-gradient(145deg,#d97706,#f59e0b);}
-.float-item.balance{background:linear-gradient(145deg,#10b981,#059669);border:none;color:#fff;}
-.float-item.balance:hover{background:linear-gradient(145deg,#059669,#047857);}
+.floating-group{
+    position:fixed;
+    bottom:30px;
+    right:25px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    z-index:200;
+}
+.float-item{
+    background:#0f1420;
+    width:52px;
+    height:52px;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.2rem;
+    cursor:pointer;
+    color:#94a3b8;
+    border:1px solid #1e293b;
+    transition:all 0.2s;
+}
+.float-item:hover{
+    background:#1a2332;
+    color:#38bdf8;
+    transform:scale(1.05);
+}
+.float-item.gold{
+    background:linear-gradient(145deg,#f59e0b,#d97706);
+    border:none;
+    color:#fff;
+}
+.float-item.gold:hover{
+    background:linear-gradient(145deg,#d97706,#f59e0b);
+}
+.float-item.balance{
+    background:linear-gradient(145deg,#10b981,#059669);
+    border:none;
+    color:#fff;
+}
+.float-item.balance:hover{
+    background:linear-gradient(145deg,#059669,#047857);
+}
 
-/* Menu flottant - Animation douce */
-.menu-floating{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.95);width:280px;background:#0f1420;border-radius:24px;border:1px solid #1e293b;z-index:1001;display:none;box-shadow:0 20px 40px rgba(0,0,0,0.5);opacity:0;transition:opacity 0.4s ease, transform 0.4s ease;}
-.menu-floating.active{display:block;opacity:1;transform:translate(-50%,-50%) scale(1);}
-.menu-header{padding:15px;border-bottom:1px solid #1e293b;background:#1a2332;border-radius:24px 24px 0 0;color:#fff;}
-.menu-item{padding:12px 20px;display:flex;align-items:center;gap:12px;cursor:pointer;border-bottom:1px solid #1e293b;color:#e2e8f0;transition:0.2s;}
-.menu-item:hover{background:#1a2332;}
-.menu-item i{width:24px;color:#f59e0b;}
-.menu-item.danger{color:#ef4444;}
-.menu-item.danger i{color:#ef4444;}
+/* Menu flottant */
+.menu-floating{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(0.95);
+    width:280px;
+    background:#0f1420;
+    border-radius:24px;
+    border:1px solid #1e293b;
+    z-index:1001;
+    display:none;
+    box-shadow:0 20px 40px rgba(0,0,0,0.5);
+    opacity:0;
+    transition:opacity 0.4s ease, transform 0.4s ease;
+}
+.menu-floating.active{
+    display:block;
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1);
+}
+.menu-header{
+    padding:15px;
+    border-bottom:1px solid #1e293b;
+    background:#1a2332;
+    border-radius:24px 24px 0 0;
+    color:#fff;
+}
+.menu-item{
+    padding:12px 20px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    cursor:pointer;
+    border-bottom:1px solid #1e293b;
+    color:#e2e8f0;
+    transition:0.2s;
+}
+.menu-item:hover{
+    background:#1a2332;
+}
+.menu-item i{
+    width:24px;
+    color:#f59e0b;
+}
+.menu-item.danger{
+    color:#ef4444;
+}
+.menu-item.danger i{
+    color:#ef4444;
+}
 
-/* Cartes plus lumineuses */
-.promo-scroll{width:100%;overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding:1rem 2rem;scrollbar-width:thin;scrollbar-color:#f59e0b #1e293b;}
-.promo-scroll::-webkit-scrollbar{height:6px;}
-.promo-scroll::-webkit-scrollbar-track{background:#1e293b;border-radius:10px;}
-.promo-scroll::-webkit-scrollbar-thumb{background:#f59e0b;border-radius:10px;}
-.promo-cards-wrapper{display:inline-flex;gap:16px;white-space:nowrap;}
+/* Cartes */
+.promo-scroll{
+    width:100%;
+    overflow-x:auto;
+    overflow-y:hidden;
+    white-space:nowrap;
+    padding:1rem 2rem;
+    scrollbar-width:thin;
+    scrollbar-color:#f59e0b #1e293b;
+}
+.promo-scroll::-webkit-scrollbar{
+    height:6px;
+}
+.promo-scroll::-webkit-scrollbar-track{
+    background:#1e293b;
+    border-radius:10px;
+}
+.promo-scroll::-webkit-scrollbar-thumb{
+    background:#f59e0b;
+    border-radius:10px;
+}
+.promo-cards-wrapper{
+    display:inline-flex;
+    gap:16px;
+    white-space:nowrap;
+}
 .promo-card{
     display:inline-flex;
     flex-direction:column;
@@ -133,93 +238,414 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
     background:linear-gradient(145deg,#1f2538,#1a2235);
     box-shadow:0 8px 25px rgba(245,158,11,0.2);
 }
-.promo-card img{width:60px;height:60px;object-fit:contain;border-radius:12px;filter:brightness(1.1);}
-.promo-card .card-title{font-size:0.75rem;font-weight:600;color:#e2e8f0;}
-.promo-card .card-subtitle{font-size:0.65rem;color:#94a3b8;}
-.promo-card .timer{font-size:0.7rem;font-weight:700;color:#f59e0b;background:rgba(245,158,11,0.2);padding:4px 8px;border-radius:20px;margin-top:4px;}
-.promo-card.disabled{opacity:0.5;cursor:not-allowed;pointer-events:none;}
-.promo-card.disabled::after{content:'🔒';position:absolute;top:8px;right:8px;font-size:14px;opacity:0.8;}
-@media (max-width:640px){.promo-scroll{padding:1rem;}.promo-card{width:150px;height:130px;}.promo-card img{width:50px;height:50px;}}
+.promo-card img{
+    width:60px;
+    height:60px;
+    object-fit:contain;
+    border-radius:12px;
+    filter:brightness(1.1);
+    pointer-events:none;
+}
+.promo-card .card-title{
+    font-size:0.75rem;
+    font-weight:600;
+    color:#e2e8f0;
+}
+.promo-card .card-subtitle{
+    font-size:0.65rem;
+    color:#94a3b8;
+}
+.promo-card .timer{
+    font-size:0.7rem;
+    font-weight:700;
+    color:#f59e0b;
+    background:rgba(245,158,11,0.2);
+    padding:4px 8px;
+    border-radius:20px;
+    margin-top:4px;
+}
+.promo-card.disabled{
+    opacity:0.5;
+    cursor:not-allowed;
+    pointer-events:none;
+}
+.promo-card.disabled::after{
+    content:'🔒';
+    position:absolute;
+    top:8px;
+    right:8px;
+    font-size:14px;
+    opacity:0.8;
+}
+@media (max-width:640px){
+    .promo-scroll{padding:1rem;}
+    .promo-card{width:150px;height:130px;}
+    .promo-card img{width:50px;height:50px;}
+}
 
 /* Jeux */
-.feed-container{width:100%;padding:1.5rem 0;}
-.games-list{display:flex;flex-direction:column;gap:1px;width:100%;background:#0a0f1a;}
-.post-card{background:#0f1420;overflow:hidden;width:100%;border-bottom:1px solid #1e293b;transition:0.3s;}
-.post-card:hover{background:#131a2a;}
-.post-header{display:flex;align-items:center;gap:14px;padding:1rem 2rem;background:linear-gradient(135deg,#0f1420,#131a2a);border-bottom:1px solid #1e293b;}
-.avatar{width:52px;height:52px;background:linear-gradient(135deg,#1e293b,#0f1420);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;}
-.post-meta h4{font-size:1.1rem;font-weight:800;margin-bottom:4px;}
-.post-meta span{font-size:0.7rem;color:#64748b;}
-.post-image{width:100%;height:auto;min-height:200px;object-fit:cover;display:block;}
-.gain-btn{background:linear-gradient(145deg,#2563eb,#1a4db8);border:none;padding:14px;font-weight:700;color:#fff;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;transition:0.2s;}
-.gain-btn:hover{background:linear-gradient(145deg,#3b82f6,#2563eb);}
+.feed-container{
+    width:100%;
+    padding:1.5rem 0;
+}
+.games-list{
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+    width:100%;
+    background:#0a0f1a;
+}
+.post-card{
+    background:#0f1420;
+    overflow:hidden;
+    width:100%;
+    border-bottom:1px solid #1e293b;
+    transition:0.3s;
+}
+.post-card:hover{
+    background:#131a2a;
+}
+.post-header{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:1rem 2rem;
+    background:linear-gradient(135deg,#0f1420,#131a2a);
+    border-bottom:1px solid #1e293b;
+}
+.avatar{
+    width:52px;
+    height:52px;
+    background:linear-gradient(135deg,#1e293b,#0f1420);
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.6rem;
+}
+.post-meta h4{
+    font-size:1.1rem;
+    font-weight:800;
+    margin-bottom:4px;
+}
+.post-meta span{
+    font-size:0.7rem;
+    color:#64748b;
+}
+.post-image{
+    width:100%;
+    height:auto;
+    min-height:200px;
+    object-fit:cover;
+    display:block;
+    pointer-events:none;
+}
+.gain-btn{
+    background:linear-gradient(145deg,#2563eb,#1a4db8);
+    border:none;
+    padding:14px;
+    font-weight:700;
+    color:#fff;
+    cursor:pointer;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    transition:0.2s;
+    font-size:1rem;
+}
+.gain-btn:hover{
+    background:linear-gradient(145deg,#3b82f6,#2563eb);
+    transform:scale(0.98);
+}
 
 /* Toasts */
-.toast-notification{position:fixed;bottom:30px;left:30px;background:#0f1420;border-left:4px solid #10b981;color:#fff;padding:12px 24px;border-radius:12px;font-size:0.8rem;z-index:10000;animation:slideUpLeft 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);}
-.toast-error{background:#0f1420;border-left-color:#ef4444;}
-.toast-success{background:#0f1420;border-left-color:#10b981;}
-@keyframes slideUpLeft{from{opacity:0;transform:translateX(-20px) translateY(20px);}to{opacity:1;transform:translateX(0) translateY(0);}}
+.toast-notification{
+    position:fixed;
+    bottom:30px;
+    left:30px;
+    background:#0f1420;
+    border-left:4px solid #10b981;
+    color:#fff;
+    padding:12px 24px;
+    border-radius:12px;
+    font-size:0.8rem;
+    z-index:10000;
+    animation:slideUpLeft 0.3s;
+    box-shadow:0 4px 12px rgba(0,0,0,0.3);
+}
+.toast-error{
+    background:#0f1420;
+    border-left-color:#ef4444;
+}
+.toast-success{
+    background:#0f1420;
+    border-left-color:#10b981;
+}
+@keyframes slideUpLeft{
+    from{opacity:0;transform:translateX(-20px) translateY(20px);}
+    to{opacity:1;transform:translateX(0) translateY(0);}
+}
 
 /* Balance toast */
-.balance-toast{position:fixed;bottom:30px;left:30px;background:#0f1420;border-left:4px solid #f59e0b;border-radius:12px;padding:12px 20px;z-index:10000;box-shadow:0 10px 25px rgba(0,0,0,0.3);display:flex;align-items:center;gap:12px;animation:slideUpLeft 0.3s;}
-.balance-toast i{font-size:1.3rem;color:#f59e0b;}
-.balance-toast .balance-value{font-size:1.1rem;font-weight:800;color:#f59e0b;}
-.coin-animation{animation:coinGlow 0.5s ease-out;}
-@keyframes coinGlow{0%{text-shadow:0 0 0 #f59e0b;transform:scale(1);}50%{text-shadow:0 0 20px #f59e0b;transform:scale(1.1);}100%{text-shadow:0 0 0 #f59e0b;transform:scale(1);}}
+.balance-toast{
+    position:fixed;
+    bottom:30px;
+    left:30px;
+    background:#0f1420;
+    border-left:4px solid #f59e0b;
+    border-radius:12px;
+    padding:12px 20px;
+    z-index:10000;
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    animation:slideUpLeft 0.3s;
+}
+.balance-toast i{
+    font-size:1.3rem;
+    color:#f59e0b;
+}
+.balance-toast .balance-value{
+    font-size:1.1rem;
+    font-weight:800;
+    color:#f59e0b;
+}
 
 /* Modales */
-.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(8px);z-index:3000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:all 0.3s ease;}
-.modal-overlay.active{visibility:visible;opacity:1;}
-.modal-container{background:#0f1420;border-radius:24px;max-width:500px;width:90%;border:1px solid #1e293b;overflow:hidden;transform:scale(0.9);transition:transform 0.3s ease;}
-.modal-overlay.active .modal-container{transform:scale(1);}
-.modal-header{padding:18px 22px;border-bottom:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center;}
-.modal-header h3{font-size:1.1rem;color:#f59e0b;display:flex;align-items:center;gap:8px;}
-.modal-close{background:#1e293b;border:none;width:30px;height:30px;border-radius:50%;color:#fff;cursor:pointer;transition:0.2s;}
-.modal-close:hover{background:#ef4444;}
-.modal-body{padding:22px;}
-.modal-footer{padding:15px 22px;border-top:1px solid #1e293b;display:flex;justify-content:flex-end;gap:12px;}
-.modal-footer button{padding:10px 22px;border-radius:40px;border:none;cursor:pointer;font-weight:600;transition:0.2s;}
-.modal-footer .btn-confirm{background:#10b981;color:#fff;}
-.modal-footer .btn-confirm:hover{background:#059669;}
-.modal-footer .btn-cancel{background:#1e293b;color:#fff;}
-.modal-footer .btn-cancel:hover{background:#334155;}
-.input-group{margin-bottom:15px;}
-.input-group label{display:block;color:#94a3b8;font-size:0.75rem;margin-bottom:5px;}
-.input-group input{width:100%;padding:12px;background:#1a2332;border:1px solid #1e293b;border-radius:12px;color:#fff;outline:none;}
-.input-group input:focus{border-color:#f59e0b;}
-.method-option{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;cursor:pointer;margin-bottom:8px;transition:0.2s;}
-.method-option.airtel{background:rgba(226,0,0,0.15);border:1px solid #E20000;}
-.method-option.orange{background:rgba(255,121,0,0.15);border:1px solid #FF7900;}
-.method-option.paypal{background:rgba(0,112,186,0.15);border:1px solid #0070BA;}
-.method-option i{font-size:1.2rem;}
-.method-option.airtel i{color:#E20000;}
-.method-option.orange i{color:#FF7900;}
-.method-option.paypal i{color:#0070BA;}
-.amount-error{color:#ef4444;font-size:0.7rem;margin-top:5px;display:none;}
+.modal-overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.95);
+    backdrop-filter:blur(8px);
+    z-index:3000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    visibility:hidden;
+    opacity:0;
+    transition:all 0.3s ease;
+}
+.modal-overlay.active{
+    visibility:visible;
+    opacity:1;
+}
+.modal-container{
+    background:#0f1420;
+    border-radius:24px;
+    max-width:500px;
+    width:90%;
+    border:1px solid #1e293b;
+    overflow:hidden;
+    transform:scale(0.9);
+    transition:transform 0.3s ease;
+}
+.modal-overlay.active .modal-container{
+    transform:scale(1);
+}
+.modal-header{
+    padding:18px 22px;
+    border-bottom:1px solid #1e293b;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.modal-header h3{
+    font-size:1.1rem;
+    color:#f59e0b;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+.modal-close{
+    background:#1e293b;
+    border:none;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    color:#fff;
+    cursor:pointer;
+    transition:0.2s;
+}
+.modal-close:hover{
+    background:#ef4444;
+}
+.modal-body{
+    padding:22px;
+}
+.modal-footer{
+    padding:15px 22px;
+    border-top:1px solid #1e293b;
+    display:flex;
+    justify-content:flex-end;
+    gap:12px;
+}
+.modal-footer button{
+    padding:10px 22px;
+    border-radius:40px;
+    border:none;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.2s;
+}
+.modal-footer .btn-confirm{
+    background:#10b981;
+    color:#fff;
+}
+.modal-footer .btn-confirm:hover{
+    background:#059669;
+}
+.modal-footer .btn-cancel{
+    background:#1e293b;
+    color:#fff;
+}
+.modal-footer .btn-cancel:hover{
+    background:#334155;
+}
+.input-group{
+    margin-bottom:15px;
+}
+.input-group label{
+    display:block;
+    color:#94a3b8;
+    font-size:0.75rem;
+    margin-bottom:5px;
+}
+.input-group input{
+    width:100%;
+    padding:12px;
+    background:#1a2332;
+    border:1px solid #1e293b;
+    border-radius:12px;
+    color:#fff;
+    outline:none;
+}
+.input-group input:focus{
+    border-color:#f59e0b;
+}
+.method-option{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px;
+    border-radius:12px;
+    cursor:pointer;
+    margin-bottom:8px;
+    transition:0.2s;
+}
+.method-option i{
+    font-size:1.2rem;
+}
+.method-option.selected-airtel{
+    background:rgba(226,0,0,0.25);
+    border:2px solid #E20000;
+}
+.method-option.selected-orange{
+    background:rgba(255,121,0,0.25);
+    border:2px solid #FF7900;
+}
+.method-option.selected-paypal{
+    background:rgba(0,112,186,0.25);
+    border:2px solid #0070BA;
+}
+.amount-error{
+    color:#ef4444;
+    font-size:0.7rem;
+    margin-top:5px;
+    display:none;
+}
+.typewriter-text{
+    font-family:monospace;
+    font-size:0.85rem;
+    color:#10b981;
+    background:rgba(16,185,129,0.1);
+    padding:12px;
+    border-radius:12px;
+    margin-top:10px;
+    text-align:center;
+    border-left:3px solid #10b981;
+    overflow:hidden;
+    white-space:normal;
+    animation:typing 0.5s steps(40, end);
+}
+@keyframes typing{
+    from{opacity:0;transform:translateY(10px);}
+    to{opacity:1;transform:translateY(0);}
+}
 
 /* Iframe */
-.fullscreen-iframe{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0f1a;z-index:4000;display:flex;flex-direction:column;visibility:hidden;opacity:0;transition:opacity 0.25s;}
-.fullscreen-iframe.active{visibility:visible;opacity:1;}
-.iframe-close{position:absolute;top:20px;right:20px;width:44px;height:44px;background:#ef4444;border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:4001;border:none;color:#fff;font-size:1.2rem;}
-.fullscreen-iframe iframe{width:100%;height:100%;border:none;background:#fff;}
-.footer{background:#0f1420;border-top:1px solid #1e293b;padding:1rem;text-align:center;margin-top:1rem;}
-.footer p{color:#64748b;font-size:0.7rem;}
+.fullscreen-iframe{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#0a0f1a;
+    z-index:4000;
+    display:flex;
+    flex-direction:column;
+    visibility:hidden;
+    opacity:0;
+    transition:opacity 0.25s;
+}
+.fullscreen-iframe.active{
+    visibility:visible;
+    opacity:1;
+}
+.iframe-close{
+    position:absolute;
+    top:20px;
+    right:20px;
+    width:44px;
+    height:44px;
+    background:#ef4444;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    z-index:4001;
+    border:none;
+    color:#fff;
+    font-size:1.2rem;
+}
+.fullscreen-iframe iframe{
+    width:100%;
+    height:100%;
+    border:none;
+    background:#fff;
+}
+.footer{
+    background:#0f1420;
+    border-top:1px solid #1e293b;
+    padding:1rem;
+    text-align:center;
+    margin-top:1rem;
+}
+.footer p{
+    color:#64748b;
+    font-size:0.7rem;
+}
 </style>
 </head>
 <body>
 
-<!-- Écran de chargement -->
-<div id="loadingScreen" class="loading-screen">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">VOTRE ESPACE DE RÉMUNÉRATION DIGITALE</div>
-    <div class="loading-sub">NeTubeX</div>
-</div>
-
 <div class="rainbow-line"></div>
 
 <header class="header">
-<div class="logo"><img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX Logo"><h1>Ne<span>TubeX</span></h1></div>
-<div class="online-status"><span class="blinking-dot"></span><span>En ligne</span></div>
+    <div class="logo">
+        <img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX Logo">
+        <h1>Ne<span>TubeX</span></h1>
+    </div>
+    <div class="online-status">
+        <span class="blinking-dot"></span>
+        <span>En ligne</span>
+    </div>
 </header>
 
 <!-- 5 Cartes -->
@@ -229,96 +655,100 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 
 <!-- Jeux -->
 <div class="feed-container">
-<div class="games-list" id="gamesContainer"></div>
+    <div class="games-list" id="gamesContainer"></div>
 </div>
 
 <!-- Boutons flottants -->
 <div class="floating-group">
-<div class="float-item balance" id="balanceFloatBtn"><i class="fas fa-coins"></i></div>
-<div class="float-item gold" id="portalFloatBtn"><i class="fas fa-rocket"></i></div>
-<div class="float-item" id="menuFloatBtn"><i class="fas fa-bars"></i></div>
+    <div class="float-item balance" id="balanceFloatBtn"><i class="fas fa-coins"></i></div>
+    <div class="float-item gold" id="portalFloatBtn"><i class="fas fa-rocket"></i></div>
+    <div class="float-item" id="menuFloatBtn"><i class="fas fa-bars"></i></div>
 </div>
 
 <!-- Menu flottant -->
 <div id="menuFloating" class="menu-floating">
-<div class="menu-header"><strong><i class="fas fa-bars"></i> Menu</strong></div>
-<div class="menu-item" id="menuTicketsBtn"><i class="fas fa-ticket-alt"></i> Mes tickets</div>
-<div class="menu-item" id="menuNewTicketBtn"><i class="fas fa-plus-circle"></i> Nouveau ticket</div>
-<div class="menu-item" id="menuCapBtn"><i class="fas fa-chart-line"></i> CAP du jour</div>
-<div class="menu-item" id="menuWithdrawBtn"><i class="fas fa-money-bill-wave"></i> Retirer</div>
-<div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div>
+    <div class="menu-header"><strong><i class="fas fa-bars"></i> Menu</strong></div>
+    <div class="menu-item" id="menuTicketsBtn"><i class="fas fa-ticket-alt"></i> Mes tickets</div>
+    <div class="menu-item" id="menuNewTicketBtn"><i class="fas fa-plus-circle"></i> Nouveau ticket</div>
+    <div class="menu-item" id="menuCapBtn"><i class="fas fa-chart-line"></i> CAP du jour</div>
+    <div class="menu-item" id="menuWithdrawBtn"><i class="fas fa-money-bill-wave"></i> Retirer</div>
+    <div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div>
 </div>
 
 <footer class="footer"><p><i class="fas fa-copyright"></i> NeTubeX 2026</p></footer>
 
 <!-- Popup Profil -->
 <div id="profileModal" class="modal-overlay">
-<div class="modal-container">
-<div class="modal-header"><h3><i class="fas fa-user-circle"></i> Mon profil</h3><button class="modal-close" id="closeProfileModal"><i class="fas fa-times"></i></button></div>
-<div class="modal-body">
-<div style="display:flex;flex-direction:column;align-items:center;gap:15px;">
-<div id="profileAvatarPreview" style="width:80px;height:80px;border-radius:50%;background:#1a2332;display:flex;align-items:center;justify-content:center;overflow:hidden;"><i class="fas fa-user" style="font-size:2.5rem;color:#64748b;"></i></div>
-<label for="profileUploadInput" style="background:#3b82f6;padding:8px 16px;border-radius:40px;cursor:pointer;font-size:0.75rem;"><i class="fas fa-camera"></i> Changer la photo</label>
-<input type="file" id="profileUploadInput" accept="image/jpeg,image/png,image/jpg" style="display:none;">
-<div style="width:100%;margin-top:10px;"><p><strong>Nom :</strong> <span id="profileName">-</span></p><p><strong>Email :</strong> <span id="profileEmail">-</span></p></div>
-</div>
-</div>
-<div class="modal-footer"><button class="btn-cancel" id="closeProfileFooterBtn">Fermer</button></div>
-</div>
+    <div class="modal-container">
+        <div class="modal-header"><h3><i class="fas fa-user-circle"></i> Mon profil</h3><button class="modal-close" id="closeProfileModal"><i class="fas fa-times"></i></button></div>
+        <div class="modal-body">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:15px;">
+                <div id="profileAvatarPreview" style="width:80px;height:80px;border-radius:50%;background:#1a2332;display:flex;align-items:center;justify-content:center;overflow:hidden;"><i class="fas fa-user" style="font-size:2.5rem;color:#64748b;"></i></div>
+                <label for="profileUploadInput" style="background:#3b82f6;padding:8px 16px;border-radius:40px;cursor:pointer;font-size:0.75rem;"><i class="fas fa-camera"></i> Changer la photo</label>
+                <input type="file" id="profileUploadInput" accept="image/jpeg,image/png,image/jpg" style="display:none;">
+                <div style="width:100%;margin-top:10px;"><p><strong>Nom :</strong> <span id="profileName">-</span></p><p><strong>Email :</strong> <span id="profileEmail">-</span></p></div>
+            </div>
+        </div>
+        <div class="modal-footer"><button class="btn-cancel" id="closeProfileFooterBtn">Fermer</button></div>
+    </div>
 </div>
 
 <!-- Popup Retrait -->
 <div id="withdrawModal" class="modal-overlay">
-<div class="modal-container">
-<div class="modal-header"><h3><i class="fas fa-money-bill-wave"></i> Effectuer un retrait</h3><button class="modal-close" id="closeWithdrawModal"><i class="fas fa-times"></i></button></div>
-<div class="modal-body">
-<div id="withdrawBalanceDisplay" style="background:#1a2332;padding:12px;border-radius:12px;margin-bottom:15px;text-align:center;"><span style="color:#94a3b8;">Solde actuel :</span> <strong id="currentBalanceDisplay" style="color:#f59e0b;font-size:1.2rem;">0.0000 $</strong></div>
-<div class="input-group"><label>Montant (min 3$)</label><input type="number" id="withdrawAmount" step="0.01" min="3" placeholder="Ex: 3.00"><div id="amountError" class="amount-error">Le montant minimum est de 3$</div></div>
-<div class="input-group"><label>Méthode de retrait</label>
-<div class="method-option airtel" data-method="airtel_money"><i class="fas fa-phone-alt"></i> Airtel Money</div>
-<div class="method-option orange" data-method="orange_money"><i class="fas fa-phone-alt"></i> Orange Money</div>
-<div class="method-option paypal" data-method="paypal"><i class="fab fa-paypal"></i> PayPal</div>
-</div>
-<div class="input-group" id="walletInputGroup"><label id="walletLabel">Numéro de téléphone</label><input type="text" id="walletAddress" placeholder="Ex: +243 XX XXX XXXX"></div>
-</div>
-<div class="modal-footer"><button class="btn-confirm" id="submitWithdrawBtn">Valider</button><button class="btn-cancel" id="cancelWithdrawBtn">Annuler</button></div>
-</div>
+    <div class="modal-container">
+        <div class="modal-header"><h3><i class="fas fa-money-bill-wave"></i> Effectuer un retrait</h3><button class="modal-close" id="closeWithdrawModal"><i class="fas fa-times"></i></button></div>
+        <div class="modal-body">
+            <div id="withdrawBalanceDisplay" style="background:#1a2332;padding:12px;border-radius:12px;margin-bottom:15px;text-align:center;"><span style="color:#94a3b8;">Solde actuel :</span> <strong id="currentBalanceDisplay" style="color:#f59e0b;font-size:1.2rem;">0.0000 $</strong></div>
+            <div class="input-group"><label>Montant (min 3$)</label><input type="number" id="withdrawAmount" step="0.01" min="3" placeholder="Ex: 3.00"><div id="amountError" class="amount-error">Le montant minimum est de 3$</div></div>
+            <div class="input-group"><label>Méthode de retrait</label>
+                <div class="method-option" data-method="airtel_money"><i class="fas fa-phone-alt"></i> Airtel Money</div>
+                <div class="method-option" data-method="orange_money"><i class="fas fa-phone-alt"></i> Orange Money</div>
+                <div class="method-option" data-method="paypal"><i class="fab fa-paypal"></i> PayPal</div>
+            </div>
+            <div class="input-group" id="walletInputGroup">
+                <label id="walletLabel">Numéro de téléphone</label>
+                <input type="text" id="walletAddress" placeholder="+243 9X XXX XXXX">
+                <div id="methodHint" class="typewriter-text"></div>
+            </div>
+        </div>
+        <div class="modal-footer"><button class="btn-confirm" id="submitWithdrawBtn">Valider</button><button class="btn-cancel" id="cancelWithdrawBtn">Annuler</button></div>
+    </div>
 </div>
 
 <!-- Popup CAP -->
 <div id="capModal" class="modal-overlay">
-<div class="modal-container">
-<div class="modal-header"><h3><i class="fas fa-chart-line"></i> CAP du jour</h3><button class="modal-close" id="closeCapModal"><i class="fas fa-times"></i></button></div>
-<div class="modal-body"><p id="capMessage" style="color:#e2e8f0;line-height:1.5;">Chargement...</p></div>
-<div class="modal-footer"><button class="btn-cancel" id="closeCapFooterBtn">Fermer</button></div>
-</div>
+    <div class="modal-container">
+        <div class="modal-header"><h3><i class="fas fa-chart-line"></i> CAP du jour</h3><button class="modal-close" id="closeCapModal"><i class="fas fa-times"></i></button></div>
+        <div class="modal-body"><p id="capMessage" style="color:#e2e8f0;line-height:1.5;">Chargement...</p></div>
+        <div class="modal-footer"><button class="btn-cancel" id="closeCapFooterBtn">Fermer</button></div>
+    </div>
 </div>
 
 <!-- Popup Confirmation localisation -->
 <div id="guideModal" class="modal-overlay">
-<div class="modal-container">
-<div class="modal-header"><h3><i class="fas fa-info-circle"></i> Redirection</h3><button class="modal-close" id="closeGuideModal"><i class="fas fa-times"></i></button></div>
-<div class="modal-body"><p id="guideMessage" style="color:#e2e8f0;line-height:1.5;"></p></div>
-<div class="modal-footer"><button class="btn-confirm" id="confirmGuideBtn">OK</button><button class="btn-cancel" id="cancelGuideBtn">Annuler</button></div>
-</div>
+    <div class="modal-container">
+        <div class="modal-header"><h3><i class="fas fa-info-circle"></i> Redirection</h3><button class="modal-close" id="closeGuideModal"><i class="fas fa-times"></i></button></div>
+        <div class="modal-body"><p id="guideMessage" style="color:#e2e8f0;line-height:1.5;"></p></div>
+        <div class="modal-footer"><button class="btn-confirm" id="confirmGuideBtn">OK</button><button class="btn-cancel" id="cancelGuideBtn">Annuler</button></div>
+    </div>
 </div>
 
 <!-- Popup Déconnexion -->
 <div id="confirmLogoutModal" class="modal-overlay">
-<div class="modal-container">
-<div class="modal-header"><h3><i class="fas fa-sign-out-alt"></i> Déconnexion</h3><button class="modal-close" id="closeLogoutModal"><i class="fas fa-times"></i></button></div>
-<div class="modal-body"><p style="color:#e2e8f0;">Êtes-vous sûr de vouloir quitter ?</p></div>
-<div class="modal-footer"><button class="btn-confirm" id="confirmLogoutBtn">Oui</button><button class="btn-cancel" id="cancelLogoutBtn">Non</button></div>
-</div>
+    <div class="modal-container">
+        <div class="modal-header"><h3><i class="fas fa-sign-out-alt"></i> Déconnexion</h3><button class="modal-close" id="closeLogoutModal"><i class="fas fa-times"></i></button></div>
+        <div class="modal-body"><p style="color:#e2e8f0;">Êtes-vous sûr de vouloir quitter ?</p></div>
+        <div class="modal-footer"><button class="btn-confirm" id="confirmLogoutBtn">Oui</button><button class="btn-cancel" id="cancelLogoutBtn">Non</button></div>
+    </div>
 </div>
 
 <!-- Popup Message -->
 <div id="messageModal" class="modal-overlay">
-<div class="modal-container">
-<div class="modal-header"><h3><i class="fas fa-info-circle"></i> Information</h3><button class="modal-close" id="closeMessageModal"><i class="fas fa-times"></i></button></div>
-<div class="modal-body"><p id="messageModalText" style="color:#e2e8f0;"></p></div>
-<div class="modal-footer"><button class="btn-confirm" id="confirmMessageBtn">OK</button></div>
-</div>
+    <div class="modal-container">
+        <div class="modal-header"><h3><i class="fas fa-info-circle"></i> Information</h3><button class="modal-close" id="closeMessageModal"><i class="fas fa-times"></i></button></div>
+        <div class="modal-body"><p id="messageModalText" style="color:#e2e8f0;"></p></div>
+        <div class="modal-footer"><button class="btn-confirm" id="confirmMessageBtn">OK</button></div>
+    </div>
 </div>
 
 <!-- TimeWall Iframe -->
@@ -331,12 +761,12 @@ import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where,
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
 const firebaseConfig = { 
-  apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", 
-  authDomain: "netubexmoney.firebaseapp.com", 
-  projectId: "netubexmoney", 
-  storageBucket: "netubexmoney.firebasestorage.app", 
-  messagingSenderId: "856592608176", 
-  appId: "1:856592608176:web:69f9df9cfd4f8c28630475" 
+    apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", 
+    authDomain: "netubexmoney.firebaseapp.com", 
+    projectId: "netubexmoney", 
+    storageBucket: "netubexmoney.firebasestorage.app", 
+    messagingSenderId: "856592608176", 
+    appId: "1:856592608176:web:69f9df9cfd4f8c28630475" 
 };
 
 const app = initializeApp(firebaseConfig);
@@ -378,25 +808,6 @@ const games = [
     {id:4, name:"Zombie Waves", avatar:"🧟", img:"https://i.postimg.cc/Vv9m5sTP/IMG-3470.jpg", duration:"30j"},
     {id:5, name:"Grab A Toy", avatar:"🧸", img:"https://i.postimg.cc/J05BNLgH/IMG-3465.jpg", duration:"30j"}
 ];
-
-let imagesLoaded = 0;
-let totalImages = 5 + games.length;
-
-function imageLoaded() {
-    imagesLoaded++;
-    if(imagesLoaded >= totalImages) {
-        setTimeout(() => {
-            const loadingScreen = document.getElementById('loadingScreen');
-            if(loadingScreen) loadingScreen.classList.add('hide');
-        }, 500);
-    }
-}
-
-function preloadImages() {
-    CARD_IMAGES.forEach(src => { const img = new Image(); img.onload = imageLoaded; img.onerror = imageLoaded; img.src = src; });
-    games.forEach(g => { const img = new Image(); img.onload = imageLoaded; img.onerror = imageLoaded; img.src = g.img; });
-    setTimeout(() => { if(imagesLoaded < totalImages) { const loadingScreen = document.getElementById('loadingScreen'); if(loadingScreen) loadingScreen.classList.add('hide'); } }, 5000);
-}
 
 function showMessageModal(message, isError = false) {
     const modal = document.getElementById('messageModal');
@@ -471,30 +882,6 @@ function showBalanceToast(balance) {
     balanceToastTimeout = setTimeout(() => { if(toast) toast.remove(); }, 5000);
 }
 
-async function animateBalanceAndShow(targetValue) {
-    const start = 0;
-    const end = targetValue;
-    const duration = 800;
-    const startTime = performance.now();
-    const showValue = (value) => {
-        const existing = document.querySelector('.balance-toast');
-        if(existing) {
-            const valueSpan = existing.querySelector('.balance-value');
-            if(valueSpan) valueSpan.innerText = `${value.toFixed(4)} $`;
-        }
-    };
-    const animate = (now) => {
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const current = start + (end - start) * progress;
-        showValue(current);
-        if(progress < 1) requestAnimationFrame(animate);
-        else showValue(end);
-    };
-    showBalanceToast(0);
-    requestAnimationFrame(animate);
-}
-
 async function getBalanceValue() {
     if(!userDocRef) return 0;
     const snap = await getDoc(userDocRef);
@@ -503,7 +890,7 @@ async function getBalanceValue() {
 
 async function showBalance() {
     const balance = await getBalanceValue();
-    await animateBalanceAndShow(balance);
+    showBalanceToast(balance);
 }
 
 async function addGain(cardId) {
@@ -512,7 +899,7 @@ async function addGain(cardId) {
         const gain = 0.0001;
         await updateDoc(userDocRef, { balance: increment(gain) });
         const newBalance = await getBalanceValue();
-        await animateBalanceAndShow(newBalance);
+        showBalanceToast(newBalance);
         showToast(`✨ +${gain.toFixed(4)} $ ajoutés à votre balance !`);
         const lockedCards = await getLockedCards();
         const cardKey = `card${cardId}`;
@@ -617,7 +1004,7 @@ function renderGames() {
     games.forEach(g => {
         const card = document.createElement('div');
         card.className = 'post-card';
-        card.innerHTML = `<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration}</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Jouer</button>`;
+        card.innerHTML = `<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration}</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Jouer au Jeu remunerateur</button>`;
         const btn = card.querySelector('.gain-btn');
         btn.addEventListener('click', () => {
             showGuideModal(() => {
@@ -647,23 +1034,50 @@ async function loadWithdrawBalance() {
     });
 }
 
+function validatePhoneNumber(number, method) {
+    const cleanNumber = number.replace(/[^0-9]/g, '');
+    if(method === 'orange_money' || method === 'airtel_money') {
+        if(cleanNumber.length > 11) return false;
+        const startsWith9 = cleanNumber.startsWith('9');
+        const startsWith8 = cleanNumber.startsWith('8');
+        return (startsWith9 || startsWith8);
+    }
+    return true;
+}
+
 async function submitWithdraw() {
     const amount = parseFloat(document.getElementById('withdrawAmount').value);
-    const walletAddress = document.getElementById('walletAddress').value.trim();
+    let walletAddress = document.getElementById('walletAddress').value.trim();
+    
     if(!selectedMethod) { showToast("Veuillez sélectionner une méthode", true); return; }
     if(isNaN(amount) || amount < WITHDRAWAL_MIN) { showToast(`Montant minimum ${WITHDRAWAL_MIN}$`, true); return; }
     if(!walletAddress) { showToast("Veuillez entrer vos coordonnées", true); return; }
+    
+    if(selectedMethod === 'orange_money' || selectedMethod === 'airtel_money') {
+        if(!validatePhoneNumber(walletAddress, selectedMethod)) {
+            showToast("Numéro invalide. Doit commencer par 8 ou 9 et maximum 11 chiffres", true);
+            return;
+        }
+        if(!walletAddress.startsWith('+243')) {
+            walletAddress = '+243 ' + walletAddress.replace(/[^0-9]/g, '');
+            document.getElementById('walletAddress').value = walletAddress;
+        }
+    }
+    
     const currentBalance = await getBalanceValue();
     if(amount > currentBalance) { showToast("Solde insuffisant", true); return; }
+    
     const q = query(collection(db, "withdraw"), where("userId", "==", currentUser.uid), where("status", "==", "pending"));
     const querySnapshot = await getDocs(q);
     if(!querySnapshot.empty) { showMessageModal("❌ Vous avez déjà une autre demande de retrait en attente. Veuillez patienter."); return; }
+    
     try {
         await addDoc(collection(db, "withdraw"), { userId: currentUser.uid, userEmail: currentUser.email, amount: amount, method: selectedMethod, walletAddress: walletAddress, status: "pending", requestedAt: new Date().toISOString() });
         showToast("✅ Demande envoyée ! Traitement sous 24h");
         document.getElementById('withdrawModal').classList.remove('active');
         document.getElementById('withdrawAmount').value = '';
         document.getElementById('walletAddress').value = '';
+        document.getElementById('methodHint').innerHTML = '';
     } catch(error) { showToast("Erreur, réessayez", true); }
 }
 
@@ -707,7 +1121,6 @@ async function initUser(user) {
     renderGames();
     startTimersUpdate();
     checkReturnFromAd();
-    preloadImages();
 }
 
 // Événements
@@ -731,28 +1144,65 @@ document.getElementById('cancelLogoutBtn')?.addEventListener('click', () => docu
 document.getElementById('closeIframeBtn')?.addEventListener('click', () => { document.getElementById('portalIframe').src = 'about:blank'; document.getElementById('fullscreenIframe').classList.remove('active'); });
 document.getElementById('closeMessageModal')?.addEventListener('click', closeMessageModal);
 document.getElementById('confirmMessageBtn')?.addEventListener('click', closeMessageModal);
+
+// Méthodes de paiement avec style clair
 document.querySelectorAll('.method-option').forEach(opt => {
     opt.addEventListener('click', () => {
-        document.querySelectorAll('.method-option').forEach(o => o.style.border = '1px solid');
-        opt.style.border = '2px solid';
-        if(opt.classList.contains('airtel')) opt.style.borderColor = '#E20000';
-        else if(opt.classList.contains('orange')) opt.style.borderColor = '#FF7900';
-        else if(opt.classList.contains('paypal')) opt.style.borderColor = '#0070BA';
+        document.querySelectorAll('.method-option').forEach(o => {
+            o.classList.remove('selected-airtel', 'selected-orange', 'selected-paypal');
+        });
+        
+        if(opt.classList.contains('method-option')) {
+            if(opt.dataset.method === 'airtel_money') opt.classList.add('selected-airtel');
+            else if(opt.dataset.method === 'orange_money') opt.classList.add('selected-orange');
+            else if(opt.dataset.method === 'paypal') opt.classList.add('selected-paypal');
+        }
+        
         selectedMethod = opt.dataset.method;
         const walletLabel = document.getElementById('walletLabel');
         const walletInput = document.getElementById('walletAddress');
-        if(selectedMethod === 'paypal') { walletLabel.innerText = 'Email PayPal'; walletInput.placeholder = 'exemple@email.com'; }
-        else { walletLabel.innerText = 'Numéro de téléphone'; walletInput.placeholder = 'Ex: +243 XX XXX XXXX'; }
+        const methodHint = document.getElementById('methodHint');
+        
+        if(selectedMethod === 'paypal') { 
+            walletLabel.innerText = 'Email PayPal'; 
+            walletInput.placeholder = 'exemple@email.com';
+            methodHint.innerHTML = '';
+        }
+        else if(selectedMethod === 'orange_money') { 
+            walletLabel.innerText = 'Numéro Orange Money'; 
+            walletInput.placeholder = '+243 9X XXX XXXX';
+            methodHint.innerHTML = '🔸 Doit commencer par 9 ou 8 - Maximum 11 chiffres';
+        }
+        else if(selectedMethod === 'airtel_money') { 
+            walletLabel.innerText = 'Numéro Airtel Money'; 
+            walletInput.placeholder = '+243 8X XXX XXXX';
+            methodHint.innerHTML = '🔸 Doit commencer par 9 ou 8 - Maximum 11 chiffres';
+        }
     });
 });
 
-// Bloquer zoom, clic droit, sélection
+// Bloquer zoom, clic droit, sélection, long press sur images
 document.addEventListener('contextmenu', (e) => e.preventDefault());
 document.addEventListener('dragstart', (e) => e.preventDefault());
 document.addEventListener('selectstart', (e) => e.preventDefault());
 document.addEventListener('touchstart', (e) => { if(e.touches.length > 1) e.preventDefault(); }, { passive: false });
 
-onAuthStateChanged(auth, async (user) => { if(user) await initUser(user); else window.location.href = "login.html"; });
+// Bloquer long press sur images
+document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('contextmenu', (e) => e.preventDefault());
+    img.addEventListener('touchstart', (e) => {
+        setTimeout(() => { e.preventDefault(); }, 100);
+    });
+});
+
+// Vérification Firebase et redirection si non connecté
+onAuthStateChanged(auth, async (user) => { 
+    if(user) {
+        await initUser(user);
+    } else { 
+        window.location.href = "login.html"; 
+    } 
+});
 </script>
 </body>
 </html>
