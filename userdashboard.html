@@ -16,192 +16,77 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .logo img{height:32px;width:auto;}
 .logo h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,#e2e8f0,#f59e0b);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .logo h1 span{color:#f59e0b;}
-.header-right{display:flex;gap:12px;align-items:center;}
-.balance-btn{background:linear-gradient(135deg,#10b981,#059669);padding:8px 20px;border-radius:40px;font-size:0.85rem;color:#fff;display:flex;align-items:center;gap:10px;font-weight:700;cursor:pointer;transition:0.2s;border:none;}
-.balance-btn:hover{transform:scale(1.02);background:linear-gradient(135deg,#059669,#047857);}
-.notification-btn{background:linear-gradient(135deg,#3b82f6,#2563eb);padding:8px 20px;border-radius:40px;font-size:0.85rem;color:#fff;display:flex;align-items:center;gap:10px;font-weight:700;cursor:pointer;transition:0.2s;border:none;}
-.notification-btn:hover{transform:scale(1.02);background:linear-gradient(135deg,#2563eb,#1d4ed8);}
-.logout-btn{background:#dc2626;padding:8px 20px;border-radius:40px;font-size:0.85rem;color:#fff;display:flex;align-items:center;gap:10px;font-weight:700;cursor:pointer;transition:0.2s;border:none;}
-.logout-btn:hover{transform:scale(1.02);background:#ef4444;}
 
-/* ===== 5 CARTES HORIZONTALES SCROLLABLES ===== */
-.promo-scroll{
-    width:100%;
-    overflow-x:auto;
-    overflow-y:hidden;
-    white-space:nowrap;
-    padding:1rem 2rem;
-    scrollbar-width:thin;
-    scrollbar-color:#f59e0b #1e293b;
-}
+/* Boutons flottants */
+.floating-group{position:fixed;bottom:30px;right:25px;display:flex;flex-direction:column;gap:12px;z-index:200;}
+.float-item{background:#0f1420;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;color:#94a3b8;border:1px solid #1e293b;transition:all 0.2s;}
+.float-item:hover{background:#1a2332;color:#38bdf8;transform:scale(1.05);}
+.float-item.gold{background:linear-gradient(145deg,#f59e0b,#d97706);border:none;color:#fff;}
+.float-item.gold:hover{background:linear-gradient(145deg,#d97706,#f59e0b);}
+.float-item.balance{background:linear-gradient(145deg,#10b981,#059669);border:none;color:#fff;}
+.float-item.balance:hover{background:linear-gradient(145deg,#059669,#047857);}
+
+/* Menu flottant */
+.menu-floating{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;background:#0f1420;border-radius:24px;border:1px solid #1e293b;z-index:1001;display:none;box-shadow:0 20px 40px rgba(0,0,0,0.5);}
+.menu-floating.active{display:block;animation:fadeIn 0.2s;}
+.menu-header{padding:15px;border-bottom:1px solid #1e293b;background:#1a2332;border-radius:24px 24px 0 0;color:#fff;}
+.menu-item{padding:12px 20px;display:flex;align-items:center;gap:12px;cursor:pointer;border-bottom:1px solid #1e293b;color:#e2e8f0;transition:0.2s;}
+.menu-item:hover{background:#1a2332;}
+.menu-item i{width:24px;color:#f59e0b;}
+.menu-item.danger{color:#ef4444;}
+.menu-item.danger i{color:#ef4444;}
+@keyframes fadeIn{from{opacity:0;transform:translate(-50%,-50%) scale(0.95);}to{opacity:1;transform:translate(-50%,-50%) scale(1);}}
+
+/* 5 Cartes */
+.promo-scroll{width:100%;overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding:1rem 2rem;scrollbar-width:thin;scrollbar-color:#f59e0b #1e293b;}
 .promo-scroll::-webkit-scrollbar{height:6px;}
 .promo-scroll::-webkit-scrollbar-track{background:#1e293b;border-radius:10px;}
 .promo-scroll::-webkit-scrollbar-thumb{background:#f59e0b;border-radius:10px;}
-.promo-cards-wrapper{
-    display:inline-flex;
-    gap:16px;
-    white-space:nowrap;
-}
-.promo-card{
-    display:inline-flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    width:180px;
-    height:150px;
-    background:linear-gradient(145deg,#0f1420,#131a2a);
-    border-radius:20px;
-    border:1px solid #1e293b;
-    cursor:pointer;
-    transition:all 0.2s ease;
-    text-align:center;
-    gap:8px;
-    position:relative;
-}
-.promo-card:hover{
-    transform:translateY(-5px);
-    border-color:#f59e0b;
-    background:#1a2332;
-}
-.promo-card img{
-    width:60px;
-    height:60px;
-    object-fit:contain;
-    border-radius:12px;
-}
-.promo-card .card-title{
-    font-size:0.75rem;
-    font-weight:600;
-    color:#e2e8f0;
-}
-.promo-card .card-subtitle{
-    font-size:0.65rem;
-    color:#94a3b8;
-}
-.promo-card .timer{
-    font-size:0.7rem;
-    font-weight:700;
-    color:#f59e0b;
-    background:rgba(245,158,11,0.15);
-    padding:4px 8px;
-    border-radius:20px;
-    margin-top:4px;
-}
-.promo-card.disabled{
-    opacity:0.5;
-    cursor:not-allowed;
-    pointer-events:none;
-}
-.promo-card.disabled::after{
-    content:'🔒';
-    position:absolute;
-    top:8px;
-    right:8px;
-    font-size:14px;
-    opacity:0.8;
-}
-@media (max-width:640px){
-    .promo-scroll{padding:1rem;}
-    .promo-card{width:150px;height:130px;}
-    .promo-card img{width:50px;height:50px;}
-}
+.promo-cards-wrapper{display:inline-flex;gap:16px;white-space:nowrap;}
+.promo-card{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:180px;height:150px;background:linear-gradient(145deg,#0f1420,#131a2a);border-radius:20px;border:1px solid #1e293b;cursor:pointer;transition:all 0.2s ease;text-align:center;gap:8px;position:relative;}
+.promo-card:hover{transform:translateY(-5px);border-color:#f59e0b;background:#1a2332;}
+.promo-card img{width:60px;height:60px;object-fit:contain;border-radius:12px;}
+.promo-card .card-title{font-size:0.75rem;font-weight:600;color:#e2e8f0;}
+.promo-card .card-subtitle{font-size:0.65rem;color:#94a3b8;}
+.promo-card .timer{font-size:0.7rem;font-weight:700;color:#f59e0b;background:rgba(245,158,11,0.15);padding:4px 8px;border-radius:20px;margin-top:4px;}
+.promo-card.disabled{opacity:0.5;cursor:not-allowed;pointer-events:none;}
+.promo-card.disabled::after{content:'🔒';position:absolute;top:8px;right:8px;font-size:14px;opacity:0.8;}
+@media (max-width:640px){.promo-scroll{padding:1rem;}.promo-card{width:150px;height:130px;}.promo-card img{width:50px;height:50px;}}
 
-/* Notifications flottantes */
-.notification-toast{
-    position:fixed;
-    top:20px;
-    right:-350px;
-    background:#1a2332;
-    border-left:4px solid #f59e0b;
-    border-radius:12px;
-    padding:12px 20px;
-    min-width:280px;
-    max-width:350px;
-    z-index:2000;
-    box-shadow:0 10px 25px rgba(0,0,0,0.3);
-    transition:right 0.4s cubic-bezier(0.2,0.9,0.4,1.1);
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-.notification-toast.show{
-    right:20px;
-}
-.notification-toast i{
-    font-size:1.5rem;
-    color:#10b981;
-}
-.notification-toast .content{
-    flex:1;
-}
-.notification-toast .title{
-    font-size:0.8rem;
-    font-weight:700;
-    color:#e2e8f0;
-}
-.notification-toast .message{
-    font-size:0.7rem;
-    color:#94a3b8;
-}
+/* Jeux (5 cartes) */
+.feed-container{width:100%;padding:1.5rem 0;}
+.games-list{display:flex;flex-direction:column;gap:1px;width:100%;background:#0a0f1a;}
+.post-card{background:#0f1420;overflow:hidden;width:100%;border-bottom:1px solid #1e293b;transition:0.3s;}
+.post-card:hover{background:#131a2a;}
+.post-header{display:flex;align-items:center;gap:14px;padding:1rem 2rem;background:linear-gradient(135deg,#0f1420,#131a2a);border-bottom:1px solid #1e293b;}
+.avatar{width:52px;height:52px;background:linear-gradient(135deg,#1e293b,#0f1420);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;}
+.post-meta h4{font-size:1.1rem;font-weight:800;margin-bottom:4px;}
+.post-meta span{font-size:0.7rem;color:#64748b;}
+.post-image{width:100%;height:auto;min-height:200px;object-fit:cover;display:block;}
+.gain-btn{background:linear-gradient(145deg,#2563eb,#1a4db8);border:none;padding:14px;font-weight:700;color:#fff;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;transition:0.2s;}
+.gain-btn:hover{background:linear-gradient(145deg,#3b82f6,#2563eb);}
 
-/* Popups professionnels */
-.modal-overlay{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.95);
-    backdrop-filter:blur(8px);
-    z-index:3000;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    visibility:hidden;
-    opacity:0;
-    transition:all 0.3s ease;
-}
-.modal-overlay.active{
-    visibility:visible;
-    opacity:1;
-}
-.modal-container{
-    background:#0f1420;
-    border-radius:24px;
-    max-width:450px;
-    width:90%;
-    border:1px solid #1e293b;
-    overflow:hidden;
-    transform:scale(0.9);
-    transition:transform 0.3s ease;
-}
-.modal-overlay.active .modal-container{
-    transform:scale(1);
-}
-.modal-header{
-    padding:18px 22px;
-    border-bottom:1px solid #1e293b;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-.modal-header h3{
-    font-size:1.1rem;
-    color:#f59e0b;
-    display:flex;
-    align-items:center;
-    gap:8px;
-}
-.modal-close{
-    background:#1e293b;
-    border:none;
-    width:30px;
-    height:30px;
-    border-radius:50%;
-    color:#fff;
-    cursor:pointer;
-    transition:0.2s;
-}
+/* Toast notifications */
+.toast-notification{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:12px 24px;border-radius:40px;font-size:0.8rem;z-index:10000;animation:slideUp 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.toast-error{background:#ef4444;}
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+
+/* Balance toast (temporaire) */
+.balance-toast{position:fixed;bottom:30px;right:30px;background:#0f1420;border-left:4px solid #f59e0b;border-radius:12px;padding:15px 20px;z-index:10000;box-shadow:0 10px 25px rgba(0,0,0,0.3);display:flex;align-items:center;gap:12px;animation:slideInRight 0.3s ease;}
+.balance-toast i{font-size:1.5rem;color:#f59e0b;}
+.balance-toast .balance-value{font-size:1.3rem;font-weight:800;color:#f59e0b;}
+@keyframes slideInRight{from{opacity:0;transform:translateX(100px);}to{opacity:1;transform:translateX(0);}}
+.coin-animation{animation:coinGlow 0.5s ease-out;}
+@keyframes coinGlow{0%{text-shadow:0 0 0 #f59e0b;transform:scale(1);}50%{text-shadow:0 0 20px #f59e0b;transform:scale(1.1);}100%{text-shadow:0 0 0 #f59e0b;transform:scale(1);}}
+
+/* Modales professionnelles */
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(8px);z-index:3000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:all 0.3s ease;}
+.modal-overlay.active{visibility:visible;opacity:1;}
+.modal-container{background:#0f1420;border-radius:24px;max-width:500px;width:90%;border:1px solid #1e293b;overflow:hidden;transform:scale(0.9);transition:transform 0.3s ease;}
+.modal-overlay.active .modal-container{transform:scale(1);}
+.modal-header{padding:18px 22px;border-bottom:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center;}
+.modal-header h3{font-size:1.1rem;color:#f59e0b;display:flex;align-items:center;gap:8px;}
+.modal-close{background:#1e293b;border:none;width:30px;height:30px;border-radius:50%;color:#fff;cursor:pointer;transition:0.2s;}
 .modal-close:hover{background:#ef4444;}
 .modal-body{padding:22px;}
 .modal-footer{padding:15px 22px;border-top:1px solid #1e293b;display:flex;justify-content:flex-end;gap:12px;}
@@ -210,83 +95,18 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .modal-footer .btn-confirm:hover{background:#059669;}
 .modal-footer .btn-cancel{background:#1e293b;color:#fff;}
 .modal-footer .btn-cancel:hover{background:#334155;}
+.input-group{margin-bottom:15px;}
+.input-group label{display:block;color:#94a3b8;font-size:0.75rem;margin-bottom:5px;}
+.input-group input{width:100%;padding:12px;background:#1a2332;border:1px solid #1e293b;border-radius:12px;color:#fff;outline:none;}
+.input-group input:focus{border-color:#f59e0b;}
+.method-option{display:flex;align-items:center;gap:12px;padding:12px;background:#1a2332;border-radius:12px;cursor:pointer;margin-bottom:8px;transition:0.2s;}
+.method-option:hover{background:#1e293b;}
 
-/* Balance animation */
-.balance-amount{
-    font-size:1.5rem;
-    font-weight:800;
-    color:#f59e0b;
-}
-.coin-animation{
-    animation:coinGlow 0.5s ease-out;
-}
-@keyframes coinGlow{
-    0%{text-shadow:0 0 0 #f59e0b; transform:scale(1);}
-    50%{text-shadow:0 0 20px #f59e0b; transform:scale(1.1);}
-    100%{text-shadow:0 0 0 #f59e0b; transform:scale(1);}
-}
-
-/* TimeWall iframe */
-.fullscreen-iframe{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:#0a0f1a;
-    z-index:4000;
-    display:flex;
-    flex-direction:column;
-    visibility:hidden;
-    opacity:0;
-    transition:opacity 0.25s;
-}
-.fullscreen-iframe.active{
-    visibility:visible;
-    opacity:1;
-}
-.iframe-close{
-    position:absolute;
-    top:20px;
-    right:20px;
-    width:44px;
-    height:44px;
-    background:#ef4444;
-    border-radius:14px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    z-index:4001;
-    border:none;
-    color:#fff;
-    font-size:1.2rem;
-}
-.fullscreen-iframe iframe{
-    width:100%;
-    height:100%;
-    border:none;
-    background:#fff;
-}
-
-/* Jeux */
-.feed-container{width:100%;padding:1.5rem 0;}
-.games-list{display:flex;flex-direction:column;gap:1px;width:100%;background:#0a0f1a;}
-.post-card{background:#0f1420;overflow:hidden;width:100%;border-bottom:1px solid #1e293b;}
-.post-card:hover{background:#131a2a;}
-.post-header{display:flex;align-items:center;gap:14px;padding:1rem 2rem;background:linear-gradient(135deg,#0f1420,#131a2a);border-bottom:1px solid #1e293b;}
-.avatar{width:52px;height:52px;background:linear-gradient(135deg,#1e293b,#0f1420);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;}
-.post-meta h4{font-size:1.1rem;font-weight:800;margin-bottom:4px;}
-.post-meta span{font-size:0.7rem;color:#64748b;}
-.post-image{width:100%;height:auto;min-height:200px;object-fit:cover;display:block;}
-.gain-btn{background:linear-gradient(145deg,#2563eb,#1a4db8);border:none;padding:14px;font-weight:700;color:#fff;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;}
-
-/* Bouton flottant */
-.floating-group{position:fixed;bottom:30px;right:25px;display:flex;flex-direction:column;gap:12px;z-index:200;}
-.float-item{background:#0f1420;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;color:#94a3b8;border:1px solid #1e293b;}
-.float-item:hover{background:#1a2332;color:#38bdf8;}
-.float-item.gold{background:linear-gradient(145deg,#f59e0b,#d97706);border:none;color:#fff;}
-
+/* Iframe TimeWall */
+.fullscreen-iframe{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0f1a;z-index:4000;display:flex;flex-direction:column;visibility:hidden;opacity:0;transition:opacity 0.25s;}
+.fullscreen-iframe.active{visibility:visible;opacity:1;}
+.iframe-close{position:absolute;top:20px;right:20px;width:44px;height:44px;background:#ef4444;border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:4001;border:none;color:#fff;font-size:1.2rem;}
+.fullscreen-iframe iframe{width:100%;height:100%;border:none;background:#fff;}
 .footer{background:#0f1420;border-top:1px solid #1e293b;padding:1rem;text-align:center;margin-top:1rem;}
 .footer p{color:#64748b;font-size:0.7rem;}
 </style>
@@ -297,11 +117,6 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 
 <header class="header">
 <div class="logo"><img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX Logo"><h1>Ne<span>TubeX</span></h1></div>
-<div class="header-right">
-<button class="balance-btn" id="balanceBtn"><i class="fas fa-coins"></i> <span id="balanceDisplay">0.0000</span> $</button>
-<button class="notification-btn" id="notificationBtn"><i class="fas fa-bell"></i> Notifications</button>
-<button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Quitter</button>
-</div>
 </header>
 
 <!-- 5 Cartes -->
@@ -309,51 +124,62 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
     <div class="promo-cards-wrapper" id="promoCardsWrapper"></div>
 </div>
 
-<!-- Jeux -->
+<!-- Jeux (5 cartes) -->
 <div class="feed-container">
 <div class="games-list" id="gamesContainer"></div>
 </div>
 
-<!-- Bouton flottant TimeWall -->
+<!-- Boutons flottants -->
 <div class="floating-group">
-<div class="float-item gold" id="portalBtn"><i class="fas fa-rocket"></i></div>
+<div class="float-item balance" id="balanceFloatBtn"><i class="fas fa-coins"></i></div>
+<div class="float-item gold" id="portalFloatBtn"><i class="fas fa-rocket"></i></div>
+<div class="float-item" id="menuFloatBtn"><i class="fas fa-bars"></i></div>
+</div>
+
+<!-- Menu flottant -->
+<div id="menuFloating" class="menu-floating">
+<div class="menu-header"><strong><i class="fas fa-bars"></i> Menu</strong></div>
+<div class="menu-item" id="menuTicketsBtn"><i class="fas fa-ticket-alt"></i> Mes tickets</div>
+<div class="menu-item" id="menuNewTicketBtn"><i class="fas fa-plus-circle"></i> Nouveau ticket</div>
+<div class="menu-item" id="menuCapBtn"><i class="fas fa-chart-line"></i> CAP du jour</div>
+<div class="menu-item" id="menuWithdrawBtn"><i class="fas fa-money-bill-wave"></i> Retirer</div>
+<div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div>
 </div>
 
 <footer class="footer"><p><i class="fas fa-copyright"></i> NeTubeX 2026</p></footer>
 
-<!-- Interface Retrait -->
-<div id="withdrawOverlay" class="modal-overlay">
+<!-- Popup Retrait -->
+<div id="withdrawModal" class="modal-overlay">
 <div class="modal-container">
-<div class="modal-header"><h3><i class="fas fa-money-bill-wave"></i> Effectuer un retrait</h3><button class="modal-close" id="closeWithdrawBtn"><i class="fas fa-times"></i></button></div>
+<div class="modal-header"><h3><i class="fas fa-money-bill-wave"></i> Effectuer un retrait</h3><button class="modal-close" id="closeWithdrawModal"><i class="fas fa-times"></i></button></div>
 <div class="modal-body">
-<div id="withdrawMessage" style="display:none;" class="message-box"></div>
-<div class="input-group" style="margin-bottom:15px;"><label style="color:#94a3b8;font-size:0.75rem;">Montant (min 3$)</label><input type="number" id="withdrawAmount" step="0.01" min="3" placeholder="Ex: 3.00" style="width:100%;padding:12px;background:#1a2332;border:1px solid #1e293b;border-radius:12px;color:#fff;"></div>
-<div class="input-group"><label style="color:#94a3b8;font-size:0.75rem;">Méthode de retrait</label>
-<div class="method-options" id="methodOptions">
-<div class="method-option" data-method="airtel_money" style="display:flex;align-items:center;gap:12px;padding:12px;background:#1a2332;border-radius:12px;cursor:pointer;margin-bottom:8px;"><i class="fas fa-phone-alt"></i><span>Airtel Money</span></div>
-<div class="method-option" data-method="orange_money" style="display:flex;align-items:center;gap:12px;padding:12px;background:#1a2332;border-radius:12px;cursor:pointer;margin-bottom:8px;"><i class="fas fa-phone-alt"></i><span>Orange Money</span></div>
-<div class="method-option" data-method="paypal" style="display:flex;align-items:center;gap:12px;padding:12px;background:#1a2332;border-radius:12px;cursor:pointer;"><i class="fab fa-paypal"></i><span>PayPal</span></div>
-</div></div>
-<div class="input-group" id="walletInputGroup"><label id="walletLabel" style="color:#94a3b8;font-size:0.75rem;">Numéro de téléphone</label><input type="text" id="walletAddress" placeholder="Ex: +243 XX XXX XXXX" style="width:100%;padding:12px;background:#1a2332;border:1px solid #1e293b;border-radius:12px;color:#fff;"></div>
+<div id="withdrawBalanceDisplay" style="background:#1a2332;padding:12px;border-radius:12px;margin-bottom:15px;text-align:center;"><span style="color:#94a3b8;">Solde actuel :</span> <strong id="currentBalanceDisplay" style="color:#f59e0b;font-size:1.2rem;">0.0000 $</strong></div>
+<div class="input-group"><label>Montant (min 3$)</label><input type="number" id="withdrawAmount" step="0.01" min="3" placeholder="Ex: 3.00"></div>
+<div class="input-group"><label>Méthode de retrait</label>
+<div class="method-option" data-method="airtel_money"><i class="fas fa-phone-alt"></i> Airtel Money</div>
+<div class="method-option" data-method="orange_money"><i class="fas fa-phone-alt"></i> Orange Money</div>
+<div class="method-option" data-method="paypal"><i class="fab fa-paypal"></i> PayPal</div>
 </div>
-<div class="modal-footer"><button class="btn-confirm" id="submitWithdrawBtn">Valider le retrait</button><button class="btn-cancel" id="cancelWithdrawBtn">Annuler</button></div>
+<div class="input-group" id="walletInputGroup"><label id="walletLabel">Numéro de téléphone</label><input type="text" id="walletAddress" placeholder="Ex: +243 XX XXX XXXX"></div>
+</div>
+<div class="modal-footer"><button class="btn-confirm" id="submitWithdrawBtn">Valider</button><button class="btn-cancel" id="cancelWithdrawBtn">Annuler</button></div>
 </div>
 </div>
 
-<!-- Popup Notifications -->
-<div id="notificationsModal" class="modal-overlay">
+<!-- Popup CAP du jour -->
+<div id="capModal" class="modal-overlay">
 <div class="modal-container">
-<div class="modal-header"><h3><i class="fas fa-bell"></i> Notifications</h3><button class="modal-close" id="closeNotificationsBtn"><i class="fas fa-times"></i></button></div>
-<div class="modal-body" id="notificationsList"><p style="color:#64748b;text-align:center;">Aucune notification</p></div>
-<div class="modal-footer"><button class="btn-cancel" id="closeNotificationsFooterBtn">Fermer</button></div>
+<div class="modal-header"><h3><i class="fas fa-chart-line"></i> CAP du jour</h3><button class="modal-close" id="closeCapModal"><i class="fas fa-times"></i></button></div>
+<div class="modal-body"><p id="capMessage" style="color:#e2e8f0;line-height:1.5;">Chargement...</p></div>
+<div class="modal-footer"><button class="btn-cancel" id="closeCapFooterBtn">Fermer</button></div>
 </div>
 </div>
 
-<!-- Popup Guide TimeWall -->
+<!-- Popup Confirmation (localisation) -->
 <div id="guideModal" class="modal-overlay">
 <div class="modal-container">
-<div class="modal-header"><h3><i class="fas fa-info-circle"></i> Redirection</h3><button class="modal-close" id="closeGuideBtn"><i class="fas fa-times"></i></button></div>
-<div class="modal-body"><p style="color:#e2e8f0;line-height:1.5;">Vous allez être redirigé vers des offres adaptées à votre localisation.</p></div>
+<div class="modal-header"><h3><i class="fas fa-info-circle"></i> Redirection</h3><button class="modal-close" id="closeGuideModal"><i class="fas fa-times"></i></button></div>
+<div class="modal-body"><p id="guideMessage" style="color:#e2e8f0;line-height:1.5;"></p></div>
 <div class="modal-footer"><button class="btn-confirm" id="confirmGuideBtn">OK</button><button class="btn-cancel" id="cancelGuideBtn">Annuler</button></div>
 </div>
 </div>
@@ -361,7 +187,7 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 <!-- Popup Confirmation Déconnexion -->
 <div id="confirmLogoutModal" class="modal-overlay">
 <div class="modal-container">
-<div class="modal-header"><h3><i class="fas fa-sign-out-alt"></i> Déconnexion</h3><button class="modal-close" id="closeLogoutModalBtn"><i class="fas fa-times"></i></button></div>
+<div class="modal-header"><h3><i class="fas fa-sign-out-alt"></i> Déconnexion</h3><button class="modal-close" id="closeLogoutModal"><i class="fas fa-times"></i></button></div>
 <div class="modal-body"><p style="color:#e2e8f0;">Êtes-vous sûr de vouloir quitter ?</p></div>
 <div class="modal-footer"><button class="btn-confirm" id="confirmLogoutBtn">Oui</button><button class="btn-cancel" id="cancelLogoutBtn">Non</button></div>
 </div>
@@ -392,6 +218,7 @@ let currentUser = null;
 let userDocRef = null;
 let selectedMethod = null;
 let timersInterval = null;
+let balanceToastTimeout = null;
 
 // Images et URLs
 const CARD_IMAGES = [
@@ -411,10 +238,11 @@ const AD_URLS = [
 ];
 
 const DASHBOARD_URL = window.location.href;
-const LOCK_DURATION = 2 * 60 * 60 * 1000; // 2 heures
-const WITHDRAWAL_MIN = 3; // 3$ minimum
+const LOCK_DURATION = 2 * 60 * 60 * 1000;
+const WITHDRAWAL_MIN = 3;
+const GUIDE_MESSAGE = "Vous allez être redirigé vers des offres adaptées à votre profil et à votre localisation. Une fois que vous aurez atteint 500 points, veuillez cliquer sur le bouton « Retirer » afin de convertir vos points en argent retirable sur votre dashboard.";
 
-// Jeux (limités à 5)
+// 5 jeux uniquement
 const games = [
     {id:1, name:"Dragon Down", avatar:"🐉", img:"https://i.postimg.cc/T2JyHT7x/IMG-3466.jpg", duration:"7j", totalPoints:14048},
     {id:2, name:"Love Water", avatar:"💧", img:"https://i.postimg.cc/767x8LPg/IMG-3461.gif", duration:"30j", totalPoints:173140},
@@ -424,13 +252,7 @@ const games = [
 ];
 
 function getDefaultLockedCards() {
-    return {
-        card0: { locked: false, lockedUntil: null },
-        card1: { locked: false, lockedUntil: null },
-        card2: { locked: false, lockedUntil: null },
-        card3: { locked: false, lockedUntil: null },
-        card4: { locked: false, lockedUntil: null }
-    };
+    return { card0: { locked: false, lockedUntil: null }, card1: { locked: false, lockedUntil: null }, card2: { locked: false, lockedUntil: null }, card3: { locked: false, lockedUntil: null }, card4: { locked: false, lockedUntil: null } };
 }
 
 async function getLockedCards() {
@@ -472,65 +294,58 @@ function formatTime(ms) {
     return `${hours}h ${minutes}min`;
 }
 
-function showNotificationToast(message, isSuccess = true) {
-    const existing = document.querySelector('.notification-toast');
+function showToast(msg, isError = false) {
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification' + (isError ? ' toast-error' : '');
+    toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${msg}`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+function showBalanceToast(balance) {
+    if(balanceToastTimeout) clearTimeout(balanceToastTimeout);
+    const existing = document.querySelector('.balance-toast');
     if(existing) existing.remove();
     const toast = document.createElement('div');
-    toast.className = 'notification-toast';
-    toast.innerHTML = `
-        <i class="fas ${isSuccess ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
-        <div class="content">
-            <div class="title">${isSuccess ? 'Succès' : 'Information'}</div>
-            <div class="message">${message}</div>
-        </div>
-    `;
+    toast.className = 'balance-toast';
+    toast.innerHTML = `<i class="fas fa-coins"></i><div><div style="font-size:0.7rem;color:#94a3b8;">Votre solde</div><div class="balance-value">${balance.toFixed(4)} $</div></div>`;
     document.body.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 400);
-    }, 3000);
+    balanceToastTimeout = setTimeout(() => { if(toast) toast.remove(); }, 5000);
 }
 
-function showModal(id) {
-    const modal = document.getElementById(id);
-    if(modal) modal.classList.add('active');
-}
-
-function closeModal(id) {
-    const modal = document.getElementById(id);
-    if(modal) modal.classList.remove('active');
-}
-
-async function animateBalance(targetValue) {
-    const balanceSpan = document.getElementById('balanceDisplay');
-    if(!balanceSpan) return;
-    const start = parseFloat(balanceSpan.innerText) || 0;
+async function animateBalanceAndShow(targetValue) {
+    const start = 0;
     const end = targetValue;
     const duration = 800;
     const startTime = performance.now();
+    const showValue = (value) => {
+        const existing = document.querySelector('.balance-toast');
+        if(existing) {
+            const valueSpan = existing.querySelector('.balance-value');
+            if(valueSpan) valueSpan.innerText = `${value.toFixed(4)} $`;
+        }
+    };
     const animate = (now) => {
         const elapsed = now - startTime;
         const progress = Math.min(elapsed / duration, 1);
         const current = start + (end - start) * progress;
-        balanceSpan.innerText = current.toFixed(4);
+        showValue(current);
         if(progress < 1) requestAnimationFrame(animate);
-        else balanceSpan.innerText = end.toFixed(4);
+        else showValue(end);
     };
+    showBalanceToast(0);
     requestAnimationFrame(animate);
-    const balanceAmount = document.querySelector('.balance-amount');
-    if(balanceAmount) balanceAmount.classList.add('coin-animation');
-    setTimeout(() => {
-        if(balanceAmount) balanceAmount.classList.remove('coin-animation');
-    }, 500);
 }
 
-async function updateBalanceDisplay() {
-    if(!userDocRef) return;
+async function getBalanceValue() {
+    if(!userDocRef) return 0;
     const snap = await getDoc(userDocRef);
-    const balance = snap.exists() ? (snap.data().balance || 0) : 0;
-    await animateBalance(balance);
-    return balance;
+    return snap.exists() ? (snap.data().balance || 0) : 0;
+}
+
+async function showBalance() {
+    const balance = await getBalanceValue();
+    await animateBalanceAndShow(balance);
 }
 
 async function addGain(cardId) {
@@ -538,20 +353,16 @@ async function addGain(cardId) {
     try {
         const gain = 0.0001;
         await updateDoc(userDocRef, { balance: increment(gain) });
-        await updateBalanceDisplay();
-        showNotificationToast(`✨ +${gain.toFixed(4)} $ ajoutés à votre balance !`);
-        
+        const newBalance = await getBalanceValue();
+        await animateBalanceAndShow(newBalance);
+        showToast(`✨ +${gain.toFixed(4)} $ ajoutés à votre balance !`);
         const lockedCards = await getLockedCards();
         const cardKey = `card${cardId}`;
         lockedCards[cardKey] = { locked: true, lockedUntil: Date.now() + LOCK_DURATION };
         await saveLockedCards(lockedCards);
         await renderPromoCards();
         return true;
-    } catch(error) {
-        console.error("Erreur:", error);
-        showNotificationToast("Une erreur est survenue", false);
-        return false;
-    }
+    } catch(error) { console.error(error); return false; }
 }
 
 function checkReturnFromAd() {
@@ -562,6 +373,31 @@ function checkReturnFromAd() {
         window.history.replaceState({}, document.title, window.location.pathname);
         addGain(parseInt(cardId));
     }
+}
+
+function showGuideModal(callback) {
+    document.getElementById('guideMessage').innerText = GUIDE_MESSAGE;
+    const modal = document.getElementById('guideModal');
+    modal.classList.add('active');
+    const confirmBtn = document.getElementById('confirmGuideBtn');
+    const cancelBtn = document.getElementById('cancelGuideBtn');
+    const closeBtn = document.getElementById('closeGuideModal');
+    const handler = () => {
+        modal.classList.remove('active');
+        confirmBtn.removeEventListener('click', handler);
+        cancelBtn.removeEventListener('click', cancelHandler);
+        closeBtn.removeEventListener('click', cancelHandler);
+        if(callback) callback();
+    };
+    const cancelHandler = () => {
+        modal.classList.remove('active');
+        confirmBtn.removeEventListener('click', handler);
+        cancelBtn.removeEventListener('click', cancelHandler);
+        closeBtn.removeEventListener('click', cancelHandler);
+    };
+    confirmBtn.addEventListener('click', handler);
+    cancelBtn.addEventListener('click', cancelHandler);
+    closeBtn.addEventListener('click', cancelHandler);
 }
 
 async function renderPromoCards() {
@@ -577,17 +413,14 @@ async function renderPromoCards() {
         const remainingMs = getRemainingMs(lockedUntil);
         const card = document.createElement('div');
         card.className = `promo-card${isLocked ? ' disabled' : ''}`;
-        card.innerHTML = `
-            <img src="${CARD_IMAGES[i]}" alt="Carte ${i+1}">
-            <div class="card-title">1 seconde</div>
-            <div class="card-subtitle">💰 +0.0001 $</div>
-            <div class="timer">${isLocked ? `⏱️ ${formatTime(remainingMs)}` : '✅ Disponible'}</div>
-        `;
+        card.innerHTML = `<img src="${CARD_IMAGES[i]}"><div class="card-title">1 seconde</div><div class="card-subtitle">💰 +0.0001 $</div><div class="timer">${isLocked ? `⏱️ ${formatTime(remainingMs)}` : '✅ Disponible'}</div>`;
         if(!isLocked) {
             card.addEventListener('click', () => {
-                const dashboardWithParams = `${DASHBOARD_URL}?fromAd=true&cardId=${i}`;
-                window.open(dashboardWithParams, '_blank');
-                window.location.href = AD_URLS[i];
+                showGuideModal(() => {
+                    const dashboardWithParams = `${DASHBOARD_URL}?fromAd=true&cardId=${i}`;
+                    window.open(dashboardWithParams, '_blank');
+                    window.location.href = AD_URLS[i];
+                });
             });
         }
         container.appendChild(card);
@@ -603,16 +436,10 @@ function startTimersUpdate() {
             for(let i = 0; i < 5; i++) {
                 const cardKey = `card${i}`;
                 const card = lockedCards[cardKey];
-                if(card?.locked && card?.lockedUntil) {
-                    const remaining = card.lockedUntil - Date.now();
-                    if(remaining <= 0) {
-                        anyChange = true;
-                    }
-                }
+                if(card?.locked && card?.lockedUntil && card.lockedUntil <= Date.now()) anyChange = true;
             }
-            if(anyChange) {
-                await renderPromoCards();
-            } else {
+            if(anyChange) await renderPromoCards();
+            else {
                 const cards = document.querySelectorAll('.promo-card .timer');
                 for(let i = 0; i < 5 && i < cards.length; i++) {
                     const cardKey = `card${i}`;
@@ -634,75 +461,48 @@ function renderGames() {
     games.forEach(g => {
         const card = document.createElement('div');
         card.className = 'post-card';
-        card.innerHTML = `
-            <div class="post-header">
-                <div class="avatar">${g.avatar}</div>
-                <div class="post-meta">
-                    <h4>${g.name}</h4>
-                    <span><i class="fas fa-calendar-alt"></i> ${g.duration}</span>
-                </div>
-            </div>
-            <div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div>
-            <button class="gain-btn"><i class="fas fa-star"></i> Jouer</button>
-        `;
+        card.innerHTML = `<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration}</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Jouer</button>`;
+        const btn = card.querySelector('.gain-btn');
+        btn.addEventListener('click', () => {
+            showGuideModal(() => {
+                const iframe = document.getElementById('portalIframe');
+                if(iframe) { iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`; document.getElementById('fullscreenIframe').classList.add('active'); }
+            });
+        });
         container.appendChild(card);
     });
 }
 
-async function getBalanceValue() {
-    if(!userDocRef) return 0;
+async function loadCapMessage() {
+    if(!userDocRef) return;
     const snap = await getDoc(userDocRef);
-    return snap.exists() ? (snap.data().balance || 0) : 0;
+    const cap = snap.data()?.capDuJour || "📊 Aucun CAP défini pour aujourd'hui.\n\n📌 Objectif du jour : Atteindre 100 points\n🎯 Challenge spécial : 3 jeux complétés\n⭐ Bonus : +50 points si objectif atteint";
+    document.getElementById('capMessage').innerHTML = cap.replace(/\n/g, '<br>');
 }
 
-async function showBalancePopup() {
+async function loadWithdrawBalance() {
     const balance = await getBalanceValue();
-    showNotificationToast(`💰 Votre solde est de ${balance.toFixed(4)} $`, true);
-}
-
-async function hasPendingWithdrawal() {
-    if(!currentUser) return false;
-    const q = query(collection(db, "withdraw"), where("userId", "==", currentUser.uid), where("status", "==", "pending"));
-    const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty;
+    document.getElementById('currentBalanceDisplay').innerText = `${balance.toFixed(4)} $`;
 }
 
 async function submitWithdraw() {
     const amount = parseFloat(document.getElementById('withdrawAmount').value);
     const walletAddress = document.getElementById('walletAddress').value.trim();
-    if(!selectedMethod) { showNotificationToast("Veuillez sélectionner une méthode", false); return; }
-    if(isNaN(amount) || amount < WITHDRAWAL_MIN) { showNotificationToast(`Montant minimum ${WITHDRAWAL_MIN}$`, false); return; }
-    if(!walletAddress) { showNotificationToast("Veuillez entrer vos coordonnées", false); return; }
+    if(!selectedMethod) { showToast("Veuillez sélectionner une méthode", true); return; }
+    if(isNaN(amount) || amount < WITHDRAWAL_MIN) { showToast(`Montant minimum ${WITHDRAWAL_MIN}$`, true); return; }
+    if(!walletAddress) { showToast("Veuillez entrer vos coordonnées", true); return; }
     const currentBalance = await getBalanceValue();
-    if(amount > currentBalance) { showNotificationToast(`Solde insuffisant`, false); return; }
-    const hasPending = await hasPendingWithdrawal();
-    if(hasPending) { showNotificationToast("Demande déjà en attente", false); return; }
+    if(amount > currentBalance) { showToast("Solde insuffisant", true); return; }
+    const q = query(collection(db, "withdraw"), where("userId", "==", currentUser.uid), where("status", "==", "pending"));
+    const querySnapshot = await getDocs(q);
+    if(!querySnapshot.empty) { showToast("Demande déjà en attente", true); return; }
     try {
-        await addDoc(collection(db, "withdraw"), {
-            userId: currentUser.uid, userEmail: currentUser.email, amount: amount,
-            method: selectedMethod, walletAddress: walletAddress, status: "pending", requestedAt: new Date().toISOString()
-        });
-        showNotificationToast("✅ Demande envoyée ! Traitement sous 24h", true);
-        closeModal('withdrawOverlay');
+        await addDoc(collection(db, "withdraw"), { userId: currentUser.uid, userEmail: currentUser.email, amount: amount, method: selectedMethod, walletAddress: walletAddress, status: "pending", requestedAt: new Date().toISOString() });
+        showToast("✅ Demande envoyée ! Traitement sous 24h");
+        document.getElementById('withdrawModal').classList.remove('active');
         document.getElementById('withdrawAmount').value = '';
         document.getElementById('walletAddress').value = '';
-    } catch(error) { showNotificationToast("Erreur, réessayez", false); }
-}
-
-async function loadNotifications() {
-    if(!currentUser) return;
-    const q = query(collection(db, "withdraw"), where("userId", "==", currentUser.uid));
-    const snapshot = await getDocs(q);
-    const withdrawals = [];
-    snapshot.forEach(doc => withdrawals.push({ id: doc.id, ...doc.data() }));
-    const container = document.getElementById('notificationsList');
-    if(withdrawals.length === 0) { container.innerHTML = '<p style="color:#64748b;text-align:center;">Aucune notification</p>'; return; }
-    container.innerHTML = withdrawals.map(w => `
-        <div style="background:#1a2332;border-radius:12px;padding:12px;margin-bottom:10px;">
-            <div style="display:flex;justify-content:space-between;"><strong>💰 ${w.amount} $</strong><span class="badge ${w.status === 'pending' ? 'badge-warning' : (w.status === 'approved' ? 'badge-success' : 'badge-danger')}">${w.status === 'pending' ? 'En attente' : (w.status === 'approved' ? 'Approuvé' : 'Rejeté')}</span></div>
-            <div style="font-size:0.7rem;color:#94a3b8;">${w.method === 'airtel_money' ? 'Airtel Money' : (w.method === 'orange_money' ? 'Orange Money' : 'PayPal')} • ${new Date(w.requestedAt).toLocaleString()}</div>
-        </div>
-    `).join('');
+    } catch(error) { showToast("Erreur, réessayez", true); }
 }
 
 async function initUser(user) {
@@ -710,15 +510,8 @@ async function initUser(user) {
     currentUser = user;
     userDocRef = doc(db, "users", user.uid);
     const snap = await getDoc(userDocRef);
-    if(!snap.exists()){
-        await setDoc(userDocRef, {
-            email: user.email || "", balance: 0, lockedCards: getDefaultLockedCards(),
-            createdAt: new Date().toISOString(), lastLogin: new Date().toISOString()
-        });
-    } else {
-        await updateDoc(userDocRef, { lastLogin: new Date().toISOString() });
-    }
-    await updateBalanceDisplay();
+    if(!snap.exists()) await setDoc(userDocRef, { email: user.email || "", balance: 0, lockedCards: getDefaultLockedCards(), createdAt: new Date().toISOString(), lastLogin: new Date().toISOString() });
+    else await updateDoc(userDocRef, { lastLogin: new Date().toISOString() });
     await renderPromoCards();
     renderGames();
     startTimersUpdate();
@@ -726,34 +519,24 @@ async function initUser(user) {
 }
 
 // Événements
-document.getElementById('balanceBtn')?.addEventListener('click', () => showBalancePopup());
-document.getElementById('notificationBtn')?.addEventListener('click', async () => { await loadNotifications(); showModal('notificationsModal'); });
-document.getElementById('logoutBtn')?.addEventListener('click', () => showModal('confirmLogoutModal'));
-document.getElementById('portalBtn')?.addEventListener('click', () => showModal('guideModal'));
-document.getElementById('confirmGuideBtn')?.addEventListener('click', () => {
-    closeModal('guideModal');
-    const user = auth.currentUser;
-    if(!user) { showNotificationToast("Erreur de connexion", false); return; }
-    const iframe = document.getElementById('portalIframe');
-    if(iframe) { iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${user.uid}`; document.getElementById('fullscreenIframe').classList.add('active'); }
-});
-document.getElementById('cancelGuideBtn')?.addEventListener('click', () => closeModal('guideModal'));
-document.getElementById('closeIframeBtn')?.addEventListener('click', () => {
-    document.getElementById('portalIframe').src = 'about:blank';
-    document.getElementById('fullscreenIframe').classList.remove('active');
-});
-document.getElementById('closeWithdrawBtn')?.addEventListener('click', () => closeModal('withdrawOverlay'));
-document.getElementById('cancelWithdrawBtn')?.addEventListener('click', () => closeModal('withdrawOverlay'));
+document.getElementById('balanceFloatBtn')?.addEventListener('click', () => showBalance());
+document.getElementById('portalFloatBtn')?.addEventListener('click', () => showGuideModal(() => { const iframe = document.getElementById('portalIframe'); if(iframe) { iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`; document.getElementById('fullscreenIframe').classList.add('active'); } }));
+document.getElementById('menuFloatBtn')?.addEventListener('click', () => document.getElementById('menuFloating').classList.toggle('active'));
+document.addEventListener('click', (e) => { const menu = document.getElementById('menuFloating'); const menuBtn = document.getElementById('menuFloatBtn'); if(menu && menuBtn && !menuBtn.contains(e.target) && !menu.contains(e.target)) menu.classList.remove('active'); });
+document.getElementById('menuTicketsBtn')?.addEventListener('click', () => showToast("📧 Fonctionnalité à venir", false));
+document.getElementById('menuNewTicketBtn')?.addEventListener('click', () => showToast("📧 Fonctionnalité à venir", false));
+document.getElementById('menuCapBtn')?.addEventListener('click', async () => { await loadCapMessage(); document.getElementById('capModal').classList.add('active'); });
+document.getElementById('menuWithdrawBtn')?.addEventListener('click', async () => { await loadWithdrawBalance(); document.getElementById('withdrawModal').classList.add('active'); });
+document.getElementById('menuLogoutBtn')?.addEventListener('click', () => document.getElementById('confirmLogoutModal').classList.add('active'));
+document.getElementById('closeWithdrawModal')?.addEventListener('click', () => document.getElementById('withdrawModal').classList.remove('active'));
+document.getElementById('cancelWithdrawBtn')?.addEventListener('click', () => document.getElementById('withdrawModal').classList.remove('active'));
 document.getElementById('submitWithdrawBtn')?.addEventListener('click', submitWithdraw);
-document.getElementById('closeNotificationsBtn')?.addEventListener('click', () => closeModal('notificationsModal'));
-document.getElementById('closeNotificationsFooterBtn')?.addEventListener('click', () => closeModal('notificationsModal'));
-document.getElementById('closeLogoutModalBtn')?.addEventListener('click', () => closeModal('confirmLogoutModal'));
-document.getElementById('confirmLogoutBtn')?.addEventListener('click', async () => {
-    closeModal('confirmLogoutModal');
-    await signOut(auth);
-    window.location.href = "login.html";
-});
-document.getElementById('cancelLogoutBtn')?.addEventListener('click', () => closeModal('confirmLogoutModal'));
+document.getElementById('closeCapModal')?.addEventListener('click', () => document.getElementById('capModal').classList.remove('active'));
+document.getElementById('closeCapFooterBtn')?.addEventListener('click', () => document.getElementById('capModal').classList.remove('active'));
+document.getElementById('closeLogoutModal')?.addEventListener('click', () => document.getElementById('confirmLogoutModal').classList.remove('active'));
+document.getElementById('confirmLogoutBtn')?.addEventListener('click', async () => { document.getElementById('confirmLogoutModal').classList.remove('active'); await signOut(auth); window.location.href = "login.html"; });
+document.getElementById('cancelLogoutBtn')?.addEventListener('click', () => document.getElementById('confirmLogoutModal').classList.remove('active'));
+document.getElementById('closeIframeBtn')?.addEventListener('click', () => { document.getElementById('portalIframe').src = 'about:blank'; document.getElementById('fullscreenIframe').classList.remove('active'); });
 document.querySelectorAll('.method-option').forEach(opt => {
     opt.addEventListener('click', () => {
         document.querySelectorAll('.method-option').forEach(o => o.style.border = 'none');
@@ -761,15 +544,12 @@ document.querySelectorAll('.method-option').forEach(opt => {
         selectedMethod = opt.dataset.method;
         const walletLabel = document.getElementById('walletLabel');
         const walletInput = document.getElementById('walletAddress');
-        if(selectedMethod === 'paypal') { walletLabel.innerHTML = 'Email PayPal'; walletInput.placeholder = 'exemple@email.com'; }
-        else { walletLabel.innerHTML = 'Numéro de téléphone'; walletInput.placeholder = 'Ex: +243 XX XXX XXXX'; }
+        if(selectedMethod === 'paypal') { walletLabel.innerText = 'Email PayPal'; walletInput.placeholder = 'exemple@email.com'; }
+        else { walletLabel.innerText = 'Numéro de téléphone'; walletInput.placeholder = 'Ex: +243 XX XXX XXXX'; }
     });
 });
 
-onAuthStateChanged(auth, async (user) => {
-    if(user) await initUser(user);
-    else window.location.href = "login.html";
-});
+onAuthStateChanged(auth, async (user) => { if(user) await initUser(user); else window.location.href = "login.html"; });
 </script>
 </body>
 </html>
