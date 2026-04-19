@@ -2,52 +2,799 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeTubeX · Cartes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
+<title>NeTubeX · Dashboard Netuber</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:#0a0f1a;font-family:Arial,sans-serif;padding:2rem;}
-  .scroll-wrapper{width:100%;overflow-x:auto;white-space:nowrap;}
-  .cards{display:inline-flex;gap:16px;}
-  .card{display:inline-block;width:150px;padding:20px 10px;background:#1e293b;text-align:center;font-size:1rem;font-weight:600;color:white;border-radius:12px;cursor:pointer;transition:0.2s;}
-  .card:hover{background:#f59e0b;color:#0a0f1a;}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
+body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;min-height:100vh;overflow-x:hidden;}
+.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;}
+@keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+.header{background:#0f1420;border-bottom:1px solid #1e293b;padding:0.5rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:8px;cursor:default;}
+.logo img{height:32px;width:auto;}
+.logo h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,#e2e8f0,#f59e0b);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.logo h1 span{color:#f59e0b;}
+.header-right{position:relative;}
+.profile-btn{background:linear-gradient(135deg,#3b82f6,#2563eb);padding:8px 20px;border-radius:40px;font-size:0.85rem;color:#fff;display:flex;align-items:center;gap:10px;font-weight:700;cursor:pointer;transition:0.2s;border:none;}
+.profile-btn:hover{transform:scale(1.02);background:linear-gradient(135deg,#2563eb,#1d4ed8);}
+
+/* Dropdown menu */
+.profile-dropdown{position:absolute;top:55px;right:0;background:#0f1420;border-radius:16px;border:1px solid #1e293b;width:200px;z-index:200;display:none;box-shadow:0 10px 25px rgba(0,0,0,0.5);}
+.profile-dropdown.show{display:block;}
+.dropdown-item{padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:0.2s;border-bottom:1px solid #1e293b;color:#e2e8f0;}
+.dropdown-item:last-child{border-bottom:none;}
+.dropdown-item:hover{background:#1a2332;}
+.dropdown-item i{width:24px;color:#f59e0b;}
+
+/* Popup Balance */
+.slide-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);backdrop-filter:blur(10px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;transition:visibility 0s linear 0.25s;}
+.slide-popup.active{visibility:visible;transition:visibility 0s linear 0s;}
+.popup-left{background:#f1f5f9;max-width:500px;width:90%;border-radius:28px 28px 0 0;padding:2rem;text-align:center;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.2,0.9,0.4,1.1);}
+.slide-popup.active .popup-left{transform:translateY(0);}
+.popup-left h3{color:#0f172a;margin-bottom:1rem;}
+.balance-amount{font-size:3rem;font-weight:800;color:#f59e0b;margin:1rem 0;}
+.close-popup-btn{background:#e2e8f0;border:1px solid #cbd5e1;padding:10px 24px;border-radius:50px;color:#1e293b;cursor:pointer;font-weight:600;}
+
+/* Interface Retrait - overlay plein écran */
+.withdraw-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0f1a;z-index:2000;display:none;flex-direction:column;overflow-y:auto;}
+.withdraw-overlay.show{display:flex;}
+.withdraw-header{background:#0f1420;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1e293b;}
+.withdraw-header h2{font-size:1.2rem;}
+.back-btn{background:#1e293b;border:none;padding:8px 16px;border-radius:40px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:8px;}
+.withdraw-container{max-width:500px;width:90%;margin:2rem auto;background:#0f1420;border-radius:28px;padding:2rem;border:1px solid #1e293b;}
+.withdraw-container h3{text-align:center;margin-bottom:1.5rem;}
+.input-group{margin-bottom:1.5rem;}
+.input-group label{display:block;color:#94a3b8;font-size:0.75rem;margin-bottom:0.5rem;}
+.input-group input,.input-group select{width:100%;padding:14px;background:#1a2332;border:1px solid #1e293b;border-radius:16px;color:#e2e8f0;font-size:1rem;outline:none;}
+.input-group input:focus{border-color:#f59e0b;}
+.method-options{display:flex;flex-direction:column;gap:12px;margin-bottom:1.5rem;}
+.method-option{display:flex;align-items:center;gap:12px;padding:12px;background:#1a2332;border-radius:16px;cursor:pointer;border:2px solid transparent;transition:0.2s;}
+.method-option.selected{border-color:#f59e0b;background:#1e293b;}
+.method-option i{font-size:1.5rem;width:40px;}
+.method-option .method-name{flex:1;font-weight:500;}
+.withdraw-btn{width:100%;padding:14px;background:linear-gradient(145deg,#f59e0b,#d97706);border:none;border-radius:16px;color:#fff;font-weight:700;font-size:1rem;cursor:pointer;margin-top:1rem;}
+.withdraw-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.message-box{background:#1a2332;border-radius:12px;padding:12px;margin-bottom:1rem;text-align:center;display:none;}
+.message-box.success{background:#10b98120;color:#10b981;border-left:3px solid #10b981;display:block;}
+.message-box.error{background:#ef444420;color:#ef4444;border-left:3px solid #ef4444;display:block;}
+.message-box.warning{background:#f59e0b20;color:#f59e0b;border-left:3px solid #f59e0b;display:block;}
+
+/* Dashboard content */
+.dashboard-content{transition:0.3s;}
+.dashboard-content.hide{display:none;}
+.feed-container{width:100%;padding:1.5rem 0;}
+.games-list{display:flex;flex-direction:column;gap:1px;width:100%;background:#0a0f1a;}
+.post-card{background:#0f1420;overflow:hidden;width:100%;border-bottom:1px solid #1e293b;}
+.post-card:hover{background:#131a2a;}
+.post-header{display:flex;align-items:center;gap:14px;padding:1rem 2rem;background:linear-gradient(135deg,#0f1420,#131a2a);border-bottom:1px solid #1e293b;}
+.avatar{width:52px;height:52px;background:linear-gradient(135deg,#1e293b,#0f1420);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;}
+.post-meta h4{font-size:1.1rem;font-weight:800;margin-bottom:4px;}
+.post-meta span{font-size:0.7rem;color:#64748b;}
+.post-image{width:100%;height:auto;min-height:200px;object-fit:cover;display:block;}
+.gain-btn{background:linear-gradient(145deg,#2563eb,#1a4db8);border:none;padding:14px;font-weight:700;color:#fff;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;}
+.floating-group{position:fixed;bottom:30px;right:25px;display:flex;flex-direction:column;gap:12px;z-index:200;}
+.float-item{background:#0f1420;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;color:#94a3b8;border:1px solid #1e293b;}
+.float-item:hover{background:#1a2332;color:#38bdf8;}
+.float-item.gold{background:linear-gradient(145deg,#f59e0b,#d97706);border:none;color:#fff;}
+.float-item.logout{background:#dc2626;border:none;color:#fff;}
+.float-item.menu-btn{background:linear-gradient(145deg,#3b82f6,#2563eb);border:none;color:#fff;}
+.menu-floating{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;background:#0f1420;border-radius:24px;border:1px solid #1e293b;z-index:1001;display:none;}
+.menu-floating.active{display:block;}
+.menu-header{padding:15px;border-bottom:1px solid #1e293b;background:#1a2332;border-radius:24px 24px 0 0;}
+.menu-item{padding:12px 20px;display:flex;align-items:center;gap:12px;cursor:pointer;border-bottom:1px solid #1e293b;}
+.menu-item:hover{background:#1a2332;}
+.menu-item i{width:24px;color:#f59e0b;}
+.menu-item.danger{color:#ef4444;}
+.toast-notification{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:40px;font-size:0.8rem;z-index:10000;animation:slideUp 0.3s;}
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+.footer{background:#0f1420;border-top:1px solid #1e293b;padding:1rem;text-align:center;margin-top:1rem;}
+.footer p{color:#64748b;font-size:0.7rem;}
+
+/* ===== 5 CARTES HORIZONTALES SCROLLABLES ===== */
+.promo-scroll{
+    width:100%;
+    overflow-x:auto;
+    overflow-y:hidden;
+    white-space:nowrap;
+    padding:1rem 2rem;
+    scrollbar-width:thin;
+    scrollbar-color:#f59e0b #1e293b;
+}
+.promo-scroll::-webkit-scrollbar{
+    height:6px;
+}
+.promo-scroll::-webkit-scrollbar-track{
+    background:#1e293b;
+    border-radius:10px;
+}
+.promo-scroll::-webkit-scrollbar-thumb{
+    background:#f59e0b;
+    border-radius:10px;
+}
+.promo-cards-wrapper{
+    display:inline-flex;
+    gap:16px;
+    white-space:nowrap;
+}
+.promo-card{
+    display:inline-flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    width:180px;
+    height:150px;
+    background:linear-gradient(145deg,#0f1420,#131a2a);
+    border-radius:20px;
+    border:1px solid #1e293b;
+    cursor:pointer;
+    transition:all 0.2s ease;
+    text-align:center;
+    gap:8px;
+    position:relative;
+}
+.promo-card:hover{
+    transform:translateY(-5px);
+    border-color:#f59e0b;
+    background:#1a2332;
+}
+.promo-card img{
+    width:60px;
+    height:60px;
+    object-fit:contain;
+    border-radius:12px;
+}
+.promo-card .card-title{
+    font-size:0.75rem;
+    font-weight:600;
+    color:#e2e8f0;
+}
+.promo-card .card-subtitle{
+    font-size:0.65rem;
+    color:#94a3b8;
+}
+.promo-card.disabled{
+    opacity:0.5;
+    cursor:not-allowed;
+    pointer-events:none;
+}
+.promo-card.disabled::after{
+    content:'🔒';
+    position:absolute;
+    top:8px;
+    right:8px;
+    font-size:14px;
+    opacity:0.8;
+}
+.coin-animation{
+    animation:coinGlow 0.5s ease-out;
+}
+@keyframes coinGlow{
+    0%{text-shadow:0 0 0 #f59e0b; transform:scale(1);}
+    50%{text-shadow:0 0 20px #f59e0b; transform:scale(1.1);}
+    100%{text-shadow:0 0 0 #f59e0b; transform:scale(1);}
+}
+@media (max-width:640px){
+    .promo-scroll{padding:1rem;}
+    .promo-card{width:150px;height:130px;}
+    .promo-card img{width:50px;height:50px;}
+}
 </style>
 </head>
 <body>
 
-<div class="scroll-wrapper">
-  <div class="cards" id="cardsContainer"></div>
+<div class="rainbow-line"></div>
+
+<div class="dashboard-content" id="dashboardContent">
+<header class="header">
+<div class="logo"><img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX Logo"><h1>Ne<span>TubeX</span></h1></div>
+<div class="header-right">
+<div class="profile-btn" id="profileBtn"><i class="fas fa-user-circle"></i> Profil <i class="fas fa-chevron-down"></i></div>
+<div class="profile-dropdown" id="profileDropdown">
+<div class="dropdown-item" id="balanceOption"><i class="fas fa-coins"></i> Balance</div>
+<div class="dropdown-item" id="withdrawOption"><i class="fas fa-money-bill-wave"></i> Retirer</div>
+</div>
+</div>
+</header>
+
+<!-- ===== 5 CARTES HORIZONTALES SCROLLABLES ===== -->
+<div class="promo-scroll">
+    <div class="promo-cards-wrapper" id="promoCardsWrapper"></div>
 </div>
 
-<script>
-  // URL du Dashboard (s'ouvre dans un NOUVEL ONGLET)
-  const DASHBOARD_URL = "https://netubex.github.io/netubex-/userdashboard.html";
+<div class="feed-container">
+<div class="games-list" id="gamesContainer"></div>
+</div>
 
-  // Les 5 URLs publicitaires
-  const AD_URLS = [
+<div class="floating-group">
+<div class="float-item gold" id="portalBtn"><i class="fas fa-rocket"></i></div>
+<div class="float-item menu-btn" id="menuFloatBtn"><i class="fas fa-bars"></i></div>
+<div class="float-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></div>
+</div>
+
+<div id="menuFloating" class="menu-floating">
+<div class="menu-header"><strong><i class="fas fa-bars"></i> Menu</strong></div>
+<div class="menu-item" id="menuTicketsBtn"><i class="fas fa-ticket-alt"></i> Mes tickets</div>
+<div class="menu-item" id="menuNewTicketBtn"><i class="fas fa-plus-circle"></i> Nouveau ticket</div>
+<div class="menu-item" id="menuCapBtn"><i class="fas fa-chart-line"></i> CAP du jour</div>
+<div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div>
+</div>
+
+<footer class="footer"><p><i class="fas fa-copyright"></i> NeTubeX 2026</p></footer>
+</div>
+
+<!-- Popup Balance -->
+<div id="balancePopup" class="slide-popup">
+<div class="popup-left">
+<i class="fas fa-coins" style="font-size:2rem;color:#f59e0b;"></i>
+<h3>Mon Solde</h3>
+<div class="balance-amount" id="balanceAmount">0 $</div>
+<button class="close-popup-btn" id="closeBalancePopup">Fermer</button>
+</div>
+</div>
+
+<!-- Interface Retrait -->
+<div id="withdrawOverlay" class="withdraw-overlay">
+<div class="withdraw-header">
+<button class="back-btn" id="backToDashboard"><i class="fas fa-arrow-left"></i> Retour</button>
+<h2><i class="fas fa-money-bill-wave"></i> Retrait</h2>
+<div style="width:70px;"></div>
+</div>
+<div class="withdraw-container">
+<h3>💸 Effectuer un retrait</h3>
+<div id="withdrawMessage" class="message-box"></div>
+<div class="input-group">
+<label><i class="fas fa-dollar-sign"></i> Montant (min 1$)</label>
+<input type="number" id="withdrawAmount" step="0.01" min="1" placeholder="Ex: 25.50">
+</div>
+<div class="input-group">
+<label><i class="fas fa-credit-card"></i> Méthode de retrait</label>
+<div class="method-options" id="methodOptions">
+<div class="method-option" data-method="airtel_money">
+<i class="fas fa-phone-alt"></i>
+<span class="method-name">Airtel Money</span>
+<i class="fas fa-check-circle" style="color:#f59e0b;display:none;"></i>
+</div>
+<div class="method-option" data-method="orange_money">
+<i class="fas fa-phone-alt"></i>
+<span class="method-name">Orange Money</span>
+<i class="fas fa-check-circle" style="color:#f59e0b;display:none;"></i>
+</div>
+<div class="method-option" data-method="paypal">
+<i class="fab fa-paypal"></i>
+<span class="method-name">PayPal</span>
+<i class="fas fa-check-circle" style="color:#f59e0b;display:none;"></i>
+</div>
+</div>
+</div>
+<div class="input-group" id="walletInputGroup">
+<label id="walletLabel"><i class="fas fa-phone-alt"></i> Numéro de téléphone</label>
+<input type="text" id="walletAddress" placeholder="Ex: +243 XX XXX XXXX">
+</div>
+<button class="withdraw-btn" id="submitWithdrawBtn">Valider le retrait</button>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, addDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = { 
+  apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", 
+  authDomain: "netubexmoney.firebaseapp.com", 
+  projectId: "netubexmoney", 
+  storageBucket: "netubexmoney.firebasestorage.app", 
+  messagingSenderId: "856592608176", 
+  appId: "1:856592608176:web:69f9df9cfd4f8c28630475" 
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let userDocRef = null;
+let selectedMethod = null;
+
+// URLs des images pour les cartes (à modifier plus tard)
+const CARD_IMAGES = [
+    "https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png",
+    "https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png",
+    "https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png",
+    "https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png",
+    "https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png"
+];
+
+// URLs publicitaires
+const AD_URLS = [
     "https://eagerdazzle.com/dizin681kf?key=45bffb13315a43cb3bbbd7ba4e90e7f7",
     "https://eagerdazzle.com/w9dz6cg5a2?key=550cc6298393fca3027e36eb5e108642",
     "https://eagerdazzle.com/q2ec2www4s?key=7f824c5c005e0d12913991cd2375d1d2",
     "https://eagerdazzle.com/h19vmvwg?key=a243df0e204eb52a003bd14860a3319e",
     "https://eagerdazzle.com/i3nx2tqf?key=d5e467ed2408a1b118e27eaea4cbb154"
-  ];
+];
 
-  const container = document.getElementById('cardsContainer');
+// URL du Dashboard (pour l'ouverture en nouvel onglet)
+const DASHBOARD_URL = window.location.href;
 
-  AD_URLS.forEach((adUrl, index) => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.textContent = `Carte ${index + 1}`;
-    card.addEventListener('click', () => {
-      // 1. Ouvrir le Dashboard dans un nouvel onglet
-      window.open(DASHBOARD_URL, '_blank');
-      
-      // 2. Rediriger la page actuelle vers la publicité
-      window.location.href = adUrl;
+// Délai de verrouillage en millisecondes (2 heures)
+const LOCK_DURATION = 2 * 60 * 60 * 1000;
+
+// Structure par défaut des cartes verrouillées
+function getDefaultLockedCards() {
+    return {
+        card0: { locked: false, lockedUntil: null },
+        card1: { locked: false, lockedUntil: null },
+        card2: { locked: false, lockedUntil: null },
+        card3: { locked: false, lockedUntil: null },
+        card4: { locked: false, lockedUntil: null }
+    };
+}
+
+// Récupérer l'état des cartes depuis Firebase
+async function getLockedCards() {
+    if(!userDocRef) return getDefaultLockedCards();
+    const snap = await getDoc(userDocRef);
+    if(snap.exists() && snap.data().lockedCards) {
+        return snap.data().lockedCards;
+    }
+    return getDefaultLockedCards();
+}
+
+// Sauvegarder l'état des cartes dans Firebase
+async function saveLockedCards(lockedCards) {
+    if(!userDocRef) return;
+    await updateDoc(userDocRef, { lockedCards: lockedCards });
+}
+
+// Vérifier et mettre à jour les verrouillages expirés
+async function updateExpiredLocks(lockedCards) {
+    const now = Date.now();
+    let updated = false;
+    for(let i = 0; i < 5; i++) {
+        const cardKey = `card${i}`;
+        if(lockedCards[cardKey]?.locked && lockedCards[cardKey]?.lockedUntil) {
+            if(now >= lockedCards[cardKey].lockedUntil) {
+                lockedCards[cardKey] = { locked: false, lockedUntil: null };
+                updated = true;
+            }
+        }
+    }
+    if(updated) {
+        await saveLockedCards(lockedCards);
+    }
+    return lockedCards;
+}
+
+// Calculer le temps restant en minutes
+function getRemainingMinutes(lockedUntil) {
+    if(!lockedUntil) return 0;
+    const remaining = lockedUntil - Date.now();
+    if(remaining <= 0) return 0;
+    return Math.ceil(remaining / 60000);
+}
+
+// Formater le temps restant
+function formatRemainingTime(minutes) {
+    if(minutes >= 60) {
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return `${hours}h ${mins}min`;
+    }
+    return `${minutes} min`;
+}
+
+// Afficher un toast
+function showToast(msg, isError = false) {
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${msg}`;
+    if(isError) toast.style.background = '#ef4444';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+// Animation de la balance
+function animateBalance() {
+    const balanceElement = document.getElementById('balanceAmount');
+    if(balanceElement) {
+        balanceElement.classList.add('coin-animation');
+        setTimeout(() => {
+            balanceElement.classList.remove('coin-animation');
+        }, 500);
+    }
+}
+
+// Mettre à jour l'affichage de la balance
+async function updateBalanceDisplay() {
+    if(!userDocRef) return;
+    const snap = await getDoc(userDocRef);
+    const balance = snap.exists() ? (snap.data().balance || 0) : 0;
+    const balanceElement = document.getElementById('balanceAmount');
+    if(balanceElement) {
+        balanceElement.innerHTML = `${balance.toFixed(4)} $`;
+    }
+}
+
+// Ajouter le gain à la balance
+async function addGain(cardId) {
+    if(!userDocRef) return false;
+    try {
+        const gain = 0.0001;
+        await updateDoc(userDocRef, {
+            balance: increment(gain)
+        });
+        await updateBalanceDisplay();
+        animateBalance();
+        showToast(`✨ +${gain.toFixed(4)} $ ajoutés à votre balance !`);
+        
+        // Verrouiller la carte
+        const lockedCards = await getLockedCards();
+        const cardKey = `card${cardId}`;
+        lockedCards[cardKey] = {
+            locked: true,
+            lockedUntil: Date.now() + LOCK_DURATION
+        };
+        await saveLockedCards(lockedCards);
+        
+        return true;
+    } catch(error) {
+        console.error("Erreur ajout gain:", error);
+        return false;
+    }
+}
+
+// Vérifier si on revient d'une publicité (via URL params)
+function checkReturnFromAd() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromAd = urlParams.get('fromAd');
+    const cardId = urlParams.get('cardId');
+    
+    if(fromAd === 'true' && cardId !== null) {
+        // Nettoyer l'URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+        // Ajouter le gain
+        addGain(parseInt(cardId));
+    }
+}
+
+// Générer les 5 cartes
+async function renderPromoCards() {
+    const container = document.getElementById('promoCardsWrapper');
+    if(!container) return;
+    
+    let lockedCards = await getLockedCards();
+    lockedCards = await updateExpiredLocks(lockedCards);
+    
+    container.innerHTML = '';
+    
+    for(let i = 0; i < 5; i++) {
+        const cardKey = `card${i}`;
+        const isLocked = lockedCards[cardKey]?.locked || false;
+        const lockedUntil = lockedCards[cardKey]?.lockedUntil;
+        const remainingMinutes = getRemainingMinutes(lockedUntil);
+        
+        const card = document.createElement('div');
+        card.className = `promo-card${isLocked ? ' disabled' : ''}`;
+        card.innerHTML = `
+            <img src="${CARD_IMAGES[i]}" alt="Carte ${i+1}">
+            <div class="card-title">5 secondes pour augmenter ta balance</div>
+            <div class="card-subtitle">${isLocked ? `🔒 ${formatRemainingTime(remainingMinutes)}` : '💰 +0.0001 $'}</div>
+        `;
+        
+        if(!isLocked) {
+            card.addEventListener('click', () => {
+                // Sauvegarder dans sessionStorage que cette carte a été cliquée
+                sessionStorage.setItem('pendingCardId', i);
+                
+                // Ouvrir le Dashboard dans un nouvel onglet avec les paramètres
+                const dashboardWithParams = `${DASHBOARD_URL}?fromAd=true&cardId=${i}`;
+                window.open(dashboardWithParams, '_blank');
+                
+                // Rediriger la page actuelle vers la publicité
+                window.location.href = AD_URLS[i];
+            });
+        } else {
+            card.style.cursor = 'not-allowed';
+        }
+        
+        container.appendChild(card);
+    }
+}
+
+// Vérifier périodiquement les verrouillages expirés
+function startLockChecker() {
+    setInterval(async () => {
+        if(userDocRef) {
+            let lockedCards = await getLockedCards();
+            const newLockedCards = await updateExpiredLocks(lockedCards);
+            if(JSON.stringify(lockedCards) !== JSON.stringify(newLockedCards)) {
+                await renderPromoCards();
+            }
+        }
+    }, 60000); // Vérifier chaque minute
+}
+
+const games = [
+    {id:1, name:"Dragon Down", avatar:"🐉", img:"https://i.postimg.cc/T2JyHT7x/IMG-3466.jpg", duration:"7j", totalPoints:14048, objectives:[{name:"Jouer",points:9},{name:"150 gems",points:17},{name:"1000 gems",points:123},{name:"4000 gems",points:436},{name:"10000 gems",points:871},{name:"40000 gems",points:3348},{name:"100000 gems",points:10044}]},
+    {id:2, name:"Love Water", avatar:"💧", img:"https://i.postimg.cc/767x8LPg/IMG-3461.gif", duration:"30j", totalPoints:173140, objectives:[{name:"Jouer",points:50},{name:"Event 1",points:520},{name:"Event 2",points:780},{name:"Event 5",points:2320},{name:"Event 8",points:4640},{name:"Event 12",points:7730},{name:"Event 17",points:12880},{name:"Event 23",points:30910},{name:"Event 30",points:113310}]},
+    {id:3, name:"Sky Plunger", avatar:"🪂", img:"https://i.postimg.cc/y8Y0TD7C/IMG-3468.png", duration:"30j", totalPoints:646010, objectives:[{name:"150m",points:70},{name:"250m",points:70},{name:"400m",points:630},{name:"600m",points:1540},{name:"900m",points:15120},{name:"1200m",points:69020},{name:"2000m",points:129360},{name:"5000m",points:431200}]},
+    {id:4, name:"Zombie Waves", avatar:"🧟", img:"https://i.postimg.cc/Vv9m5sTP/IMG-3470.jpg", duration:"30j", totalPoints:842060, objectives:[{name:"Niveau 3",points:490},{name:"Niveau 8",points:1470},{name:"Niveau 15",points:2450},{name:"Niveau 20",points:4900},{name:"Niveau 25",points:7350},{name:"Niveau 35",points:19600},{name:"Niveau 60",points:122500},{name:"Niveau 80",points:196000},{name:"Niveau 100",points:490000}]},
+    {id:5, name:"Grab A Toy", avatar:"🧸", img:"https://i.postimg.cc/J05BNLgH/IMG-3465.jpg", duration:"30j", totalPoints:843430, objectives:[{name:"150m",points:0},{name:"200m",points:70},{name:"400m",points:1820},{name:"600m",points:7770},{name:"900m",points:36050},{name:"1700m",points:62160},{name:"2000m",points:88760},{name:"5000m",points:646800}]},
+    {id:6, name:"Goblin Heist", avatar:"👺", img:"https://i.postimg.cc/KvQM4mty/IMG-3467.jpg", duration:"60j", totalPoints:1790272, objectives:[{name:"150m",points:71},{name:"400m",points:414},{name:"700m",points:5743},{name:"900m",points:33729},{name:"1000m",points:64086},{name:"2000m",points:337229},{name:"5000m",points:1349000}]},
+    {id:7, name:"Wild Fish", avatar:"🐟", img:"https://i.postimg.cc/637k468j/IMG-3469.png", duration:"30j", totalPoints:1778460, objectives:[{name:"100m",points:100},{name:"200m",points:340},{name:"400m",points:4730},{name:"700m",points:26440},{name:"1200m",points:94430},{name:"2000m",points:472120},{name:"5000m",points:1180300}]},
+    {id:8, name:"The Grand Mafia", avatar:"⚔️", img:"https://i.postimg.cc/1zWzqB34/IMG-3483.jpg", duration:"3j", totalPoints:1000000, objectives:[{name:"Jouer",points:9},{name:"Mansion Lv4",points:129},{name:"Mansion Lv13",points:1288},{name:"T2 Associate",points:430},{name:"Mansion Lv17",points:2576},{name:"800k Influence",points:344},{name:"Privileges",points:17168},{name:"Mansion Lv25",points:14593}]}
+];
+
+function closePopup(id) {
+    const popup = document.getElementById(id);
+    if(popup) popup.classList.remove('active');
+}
+
+function openPopup(id) {
+    const popup = document.getElementById(id);
+    if(popup) popup.classList.add('active');
+}
+
+async function getBalance() {
+    if(!userDocRef) return 0;
+    const snap = await getDoc(userDocRef);
+    return snap.exists() ? (snap.data().balance || 0) : 0;
+}
+
+async function showBalancePopup() {
+    const balance = await getBalance();
+    document.getElementById('balanceAmount').innerHTML = `${balance.toFixed(4)} $`;
+    openPopup('balancePopup');
+}
+
+async function hasPendingWithdrawal() {
+    if(!currentUser) return false;
+    const q = query(collection(db, "withdraw"), where("userId", "==", currentUser.uid), where("status", "==", "pending"));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+}
+
+async function showWithdrawInterface() {
+    const hasPending = await hasPendingWithdrawal();
+    if(hasPending) {
+        showToast("⏳ Vous avez déjà une demande de retrait en cours. Veuillez patienter.", true);
+        return;
+    }
+    
+    document.getElementById('withdrawAmount').value = '';
+    document.getElementById('walletAddress').value = '';
+    document.getElementById('withdrawMessage').className = 'message-box';
+    document.getElementById('withdrawMessage').style.display = 'none';
+    selectedMethod = null;
+    
+    document.querySelectorAll('.method-option').forEach(opt => {
+        opt.classList.remove('selected');
+        opt.querySelector('.fa-check-circle').style.display = 'none';
     });
-    container.appendChild(card);
-  });
-</script>
+    
+    document.getElementById('dashboardContent').classList.add('hide');
+    document.getElementById('withdrawOverlay').classList.add('show');
+}
 
+function updateWalletInput(method) {
+    const walletLabel = document.getElementById('walletLabel');
+    const walletInput = document.getElementById('walletAddress');
+    
+    if(method === 'paypal') {
+        walletLabel.innerHTML = '<i class="fab fa-paypal"></i> Email PayPal';
+        walletInput.placeholder = 'exemple@email.com';
+    } else {
+        walletLabel.innerHTML = '<i class="fas fa-phone-alt"></i> Numéro de téléphone';
+        walletInput.placeholder = 'Ex: +243 XX XXX XXXX';
+    }
+}
+
+async function submitWithdraw() {
+    const amount = parseFloat(document.getElementById('withdrawAmount').value);
+    const walletAddress = document.getElementById('walletAddress').value.trim();
+    const messageBox = document.getElementById('withdrawMessage');
+    
+    if(!selectedMethod) {
+        messageBox.className = 'message-box error';
+        messageBox.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Veuillez sélectionner une méthode de retrait';
+        messageBox.style.display = 'block';
+        return;
+    }
+    
+    if(isNaN(amount) || amount < 1) {
+        messageBox.className = 'message-box error';
+        messageBox.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Le montant minimum est de 1$';
+        messageBox.style.display = 'block';
+        return;
+    }
+    
+    if(!walletAddress) {
+        messageBox.className = 'message-box error';
+        messageBox.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Veuillez entrer vos coordonnées';
+        messageBox.style.display = 'block';
+        return;
+    }
+    
+    const currentBalance = await getBalance();
+    if(amount > currentBalance) {
+        messageBox.className = 'message-box error';
+        messageBox.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Solde insuffisant. Votre solde est de ${currentBalance.toFixed(4)}$`;
+        messageBox.style.display = 'block';
+        return;
+    }
+    
+    const hasPending = await hasPendingWithdrawal();
+    if(hasPending) {
+        messageBox.className = 'message-box error';
+        messageBox.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Vous avez déjà une demande en attente';
+        messageBox.style.display = 'block';
+        return;
+    }
+    
+    const submitBtn = document.getElementById('submitWithdrawBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Envoi en cours...';
+    
+    try {
+        await addDoc(collection(db, "withdraw"), {
+            userId: currentUser.uid,
+            userEmail: currentUser.email,
+            amount: amount,
+            method: selectedMethod,
+            walletAddress: walletAddress,
+            status: "pending",
+            requestedAt: new Date().toISOString()
+        });
+        
+        messageBox.className = 'message-box success';
+        messageBox.innerHTML = '<i class="fas fa-check-circle"></i> ✅ Demande envoyée ! Votre retrait sera traité sous 24h.';
+        messageBox.style.display = 'block';
+        
+        document.getElementById('withdrawAmount').value = '';
+        document.getElementById('walletAddress').value = '';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Valider le retrait';
+        
+        selectedMethod = null;
+        document.querySelectorAll('.method-option').forEach(opt => {
+            opt.classList.remove('selected');
+            opt.querySelector('.fa-check-circle').style.display = 'none';
+        });
+        
+    } catch(error) {
+        console.error("Erreur retrait:", error);
+        messageBox.className = 'message-box error';
+        messageBox.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Une erreur est survenue. Veuillez réessayer.';
+        messageBox.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Valider le retrait';
+    }
+}
+
+function closeWithdrawInterface() {
+    document.getElementById('dashboardContent').classList.remove('hide');
+    document.getElementById('withdrawOverlay').classList.remove('show');
+}
+
+document.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('profileDropdown');
+    const profileBtn = document.getElementById('profileBtn');
+    if(dropdown && profileBtn && !profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('show');
+    }
+});
+
+document.getElementById('profileBtn')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const dropdown = document.getElementById('profileDropdown');
+    dropdown.classList.toggle('show');
+});
+
+document.getElementById('balanceOption')?.addEventListener('click', () => {
+    document.getElementById('profileDropdown').classList.remove('show');
+    showBalancePopup();
+});
+
+document.getElementById('withdrawOption')?.addEventListener('click', () => {
+    document.getElementById('profileDropdown').classList.remove('show');
+    showWithdrawInterface();
+});
+
+document.getElementById('closeBalancePopup')?.addEventListener('click', () => closePopup('balancePopup'));
+
+document.querySelectorAll('.method-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+        document.querySelectorAll('.method-option').forEach(o => {
+            o.classList.remove('selected');
+            o.querySelector('.fa-check-circle').style.display = 'none';
+        });
+        opt.classList.add('selected');
+        opt.querySelector('.fa-check-circle').style.display = 'inline-block';
+        selectedMethod = opt.dataset.method;
+        updateWalletInput(selectedMethod);
+        document.getElementById('withdrawMessage').style.display = 'none';
+    });
+});
+
+document.getElementById('backToDashboard')?.addEventListener('click', closeWithdrawInterface);
+document.getElementById('submitWithdrawBtn')?.addEventListener('click', submitWithdraw);
+
+function renderGames() {
+    const container = document.getElementById('gamesContainer');
+    if(!container) return;
+    container.innerHTML = '';
+    games.forEach(g => {
+        const card = document.createElement('div');
+        card.className = 'post-card';
+        card.innerHTML = `
+            <div class="post-header">
+                <div class="avatar">${g.avatar}</div>
+                <div class="post-meta">
+                    <h4>${g.name}</h4>
+                    <span><i class="fas fa-calendar-alt"></i> ${g.duration} <i class="fas fa-star" style="margin-left:8px;color:#f59e0b;"></i> ${g.totalPoints.toLocaleString()} points</span>
+                </div>
+            </div>
+            <div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div>
+            <button class="gain-btn"><i class="fas fa-star"></i> Gagner ${g.totalPoints.toLocaleString()} points</button>
+        `;
+        container.appendChild(card);
+    });
+}
+
+async function initUser(user) {
+    if(!user) return;
+    currentUser = user;
+    userDocRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userDocRef);
+    
+    if(!snap.exists()){
+        await setDoc(userDocRef, {
+            email: user.email || "",
+            balance: 0,
+            lockedCards: getDefaultLockedCards(),
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString()
+        });
+    } else {
+        await updateDoc(userDocRef, { lastLogin: new Date().toISOString() });
+    }
+    
+    await updateBalanceDisplay();
+    await renderPromoCards();
+    renderGames();
+    startLockChecker();
+    checkReturnFromAd();
+}
+
+document.getElementById('menuFloatBtn')?.addEventListener('click', () => {
+    document.getElementById('menuFloating').classList.toggle('active');
+});
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('menuFloating');
+    const menuBtn = document.getElementById('menuFloatBtn');
+    if(menu && menuBtn && !menuBtn.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.remove('active');
+    }
+});
+document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+    await signOut(auth);
+    window.location.href = "login.html";
+});
+document.getElementById('menuLogoutBtn')?.addEventListener('click', async () => {
+    await signOut(auth);
+    window.location.href = "login.html";
+});
+
+onAuthStateChanged(auth, async (user) => {
+    if(user) {
+        await initUser(user);
+    } else {
+        window.location.href = "login.html";
+    }
+});
+</script>
 </body>
 </html>
