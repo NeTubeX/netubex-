@@ -34,7 +34,6 @@ body{
     100%{background-position:200% 50%;}
 }
 
-/* Header */
 .header{
     background:#0f1420;
     border-bottom:1px solid #1e293b;
@@ -87,11 +86,10 @@ body{
     box-shadow:0 0 5px #10b981;
 }
 @keyframes blink{
-    0%, 100%{opacity:1;transform:scale(1);}
+    0%,100%{opacity:1;transform:scale(1);}
     50%{opacity:0.3;transform:scale(0.8);}
 }
 
-/* Boutons flottants */
 .floating-group{
     position:fixed;
     bottom:30px;
@@ -125,19 +123,12 @@ body{
     border:none;
     color:#fff;
 }
-.float-item.gold:hover{
-    background:linear-gradient(145deg,#d97706,#f59e0b);
-}
 .float-item.balance{
     background:linear-gradient(145deg,#10b981,#059669);
     border:none;
     color:#fff;
 }
-.float-item.balance:hover{
-    background:linear-gradient(145deg,#059669,#047857);
-}
 
-/* Menu flottant */
 .menu-floating{
     position:fixed;
     top:50%;
@@ -189,7 +180,6 @@ body{
     color:#ef4444;
 }
 
-/* Cartes */
 .promo-scroll{
     width:100%;
     overflow-x:auto;
@@ -199,21 +189,9 @@ body{
     scrollbar-width:thin;
     scrollbar-color:#f59e0b #1e293b;
 }
-.promo-scroll::-webkit-scrollbar{
-    height:6px;
-}
-.promo-scroll::-webkit-scrollbar-track{
-    background:#1e293b;
-    border-radius:10px;
-}
-.promo-scroll::-webkit-scrollbar-thumb{
-    background:#f59e0b;
-    border-radius:10px;
-}
 .promo-cards-wrapper{
     display:inline-flex;
     gap:16px;
-    white-space:nowrap;
 }
 .promo-card{
     display:inline-flex;
@@ -230,30 +208,18 @@ body{
     text-align:center;
     gap:8px;
     position:relative;
-    box-shadow:0 4px 15px rgba(245,158,11,0.1);
 }
 .promo-card:hover{
     transform:translateY(-5px);
     border-color:#f59e0b;
     background:linear-gradient(145deg,#1f2538,#1a2235);
-    box-shadow:0 8px 25px rgba(245,158,11,0.2);
 }
 .promo-card img{
     width:60px;
     height:60px;
     object-fit:contain;
     border-radius:12px;
-    filter:brightness(1.1);
     pointer-events:none;
-}
-.promo-card .card-title{
-    font-size:0.75rem;
-    font-weight:600;
-    color:#e2e8f0;
-}
-.promo-card .card-subtitle{
-    font-size:0.65rem;
-    color:#94a3b8;
 }
 .promo-card .timer{
     font-size:0.7rem;
@@ -262,7 +228,6 @@ body{
     background:rgba(245,158,11,0.2);
     padding:4px 8px;
     border-radius:20px;
-    margin-top:4px;
 }
 .promo-card.disabled{
     opacity:0.5;
@@ -275,15 +240,8 @@ body{
     top:8px;
     right:8px;
     font-size:14px;
-    opacity:0.8;
-}
-@media (max-width:640px){
-    .promo-scroll{padding:1rem;}
-    .promo-card{width:150px;height:130px;}
-    .promo-card img{width:50px;height:50px;}
 }
 
-/* Jeux */
 .feed-container{
     width:100%;
     padding:1.5rem 0;
@@ -310,7 +268,6 @@ body{
     align-items:center;
     gap:14px;
     padding:1rem 2rem;
-    background:linear-gradient(135deg,#0f1420,#131a2a);
     border-bottom:1px solid #1e293b;
 }
 .avatar{
@@ -357,10 +314,8 @@ body{
 }
 .gain-btn:hover{
     background:linear-gradient(145deg,#3b82f6,#2563eb);
-    transform:scale(0.98);
 }
 
-/* Toasts */
 .toast-notification{
     position:fixed;
     bottom:30px;
@@ -373,22 +328,15 @@ body{
     font-size:0.8rem;
     z-index:10000;
     animation:slideUpLeft 0.3s;
-    box-shadow:0 4px 12px rgba(0,0,0,0.3);
 }
 .toast-error{
-    background:#0f1420;
     border-left-color:#ef4444;
-}
-.toast-success{
-    background:#0f1420;
-    border-left-color:#10b981;
 }
 @keyframes slideUpLeft{
     from{opacity:0;transform:translateX(-20px) translateY(20px);}
     to{opacity:1;transform:translateX(0) translateY(0);}
 }
 
-/* Balance toast */
 .balance-toast{
     position:fixed;
     bottom:30px;
@@ -398,7 +346,6 @@ body{
     border-radius:12px;
     padding:12px 20px;
     z-index:10000;
-    box-shadow:0 10px 25px rgba(0,0,0,0.3);
     display:flex;
     align-items:center;
     gap:12px;
@@ -408,13 +355,12 @@ body{
     font-size:1.3rem;
     color:#f59e0b;
 }
-.balance-toast .balance-value{
+.balance-value{
     font-size:1.1rem;
     font-weight:800;
     color:#f59e0b;
 }
 
-/* Modales */
 .modal-overlay{
     position:fixed;
     top:0;
@@ -444,6 +390,8 @@ body{
     overflow:hidden;
     transform:scale(0.9);
     transition:transform 0.3s ease;
+    max-height:90vh;
+    overflow-y:auto;
 }
 .modal-overlay.active .modal-container{
     transform:scale(1);
@@ -470,7 +418,6 @@ body{
     border-radius:50%;
     color:#fff;
     cursor:pointer;
-    transition:0.2s;
 }
 .modal-close:hover{
     background:#ef4444;
@@ -491,20 +438,19 @@ body{
     border:none;
     cursor:pointer;
     font-weight:600;
-    transition:0.2s;
 }
-.modal-footer .btn-confirm{
+.btn-confirm{
     background:#10b981;
     color:#fff;
 }
-.modal-footer .btn-confirm:hover{
+.btn-confirm:hover{
     background:#059669;
 }
-.modal-footer .btn-cancel{
+.btn-cancel{
     background:#1e293b;
     color:#fff;
 }
-.modal-footer .btn-cancel:hover{
+.btn-cancel:hover{
     background:#334155;
 }
 .input-group{
@@ -516,7 +462,7 @@ body{
     font-size:0.75rem;
     margin-bottom:5px;
 }
-.input-group input{
+.input-group input, .input-group select{
     width:100%;
     padding:12px;
     background:#1a2332;
@@ -525,7 +471,7 @@ body{
     color:#fff;
     outline:none;
 }
-.input-group input:focus{
+.input-group input:focus, .input-group select:focus{
     border-color:#f59e0b;
 }
 .method-option{
@@ -560,7 +506,7 @@ body{
     display:none;
 }
 .typewriter-text{
-    font-family:monospace;
+    font-family:'Courier New',monospace;
     font-size:0.85rem;
     color:#10b981;
     background:rgba(16,185,129,0.1);
@@ -569,16 +515,10 @@ body{
     margin-top:10px;
     text-align:center;
     border-left:3px solid #10b981;
-    overflow:hidden;
     white-space:normal;
-    animation:typing 0.5s steps(40, end);
-}
-@keyframes typing{
-    from{opacity:0;transform:translateY(10px);}
-    to{opacity:1;transform:translateY(0);}
+    overflow:hidden;
 }
 
-/* Iframe */
 .fullscreen-iframe{
     position:fixed;
     top:0;
@@ -620,6 +560,7 @@ body{
     border:none;
     background:#fff;
 }
+
 .footer{
     background:#0f1420;
     border-top:1px solid #1e293b;
@@ -648,72 +589,28 @@ body{
     </div>
 </header>
 
-<!-- 5 Cartes -->
 <div class="promo-scroll">
     <div class="promo-cards-wrapper" id="promoCardsWrapper"></div>
 </div>
 
-<!-- Jeux -->
 <div class="feed-container">
     <div class="games-list" id="gamesContainer"></div>
 </div>
 
-<!-- Boutons flottants -->
 <div class="floating-group">
     <div class="float-item balance" id="balanceFloatBtn"><i class="fas fa-coins"></i></div>
     <div class="float-item gold" id="portalFloatBtn"><i class="fas fa-rocket"></i></div>
     <div class="float-item" id="menuFloatBtn"><i class="fas fa-bars"></i></div>
 </div>
 
-<!-- Menu flottant -->
 <div id="menuFloating" class="menu-floating">
     <div class="menu-header"><strong><i class="fas fa-bars"></i> Menu</strong></div>
-    <div class="menu-item" id="menuTicketsBtn"><i class="fas fa-ticket-alt"></i> Mes tickets</div>
-    <div class="menu-item" id="menuNewTicketBtn"><i class="fas fa-plus-circle"></i> Nouveau ticket</div>
     <div class="menu-item" id="menuCapBtn"><i class="fas fa-chart-line"></i> CAP du jour</div>
     <div class="menu-item" id="menuWithdrawBtn"><i class="fas fa-money-bill-wave"></i> Retirer</div>
     <div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div>
 </div>
 
 <footer class="footer"><p><i class="fas fa-copyright"></i> NeTubeX 2026</p></footer>
-
-<!-- Popup Profil -->
-<div id="profileModal" class="modal-overlay">
-    <div class="modal-container">
-        <div class="modal-header"><h3><i class="fas fa-user-circle"></i> Mon profil</h3><button class="modal-close" id="closeProfileModal"><i class="fas fa-times"></i></button></div>
-        <div class="modal-body">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:15px;">
-                <div id="profileAvatarPreview" style="width:80px;height:80px;border-radius:50%;background:#1a2332;display:flex;align-items:center;justify-content:center;overflow:hidden;"><i class="fas fa-user" style="font-size:2.5rem;color:#64748b;"></i></div>
-                <label for="profileUploadInput" style="background:#3b82f6;padding:8px 16px;border-radius:40px;cursor:pointer;font-size:0.75rem;"><i class="fas fa-camera"></i> Changer la photo</label>
-                <input type="file" id="profileUploadInput" accept="image/jpeg,image/png,image/jpg" style="display:none;">
-                <div style="width:100%;margin-top:10px;"><p><strong>Nom :</strong> <span id="profileName">-</span></p><p><strong>Email :</strong> <span id="profileEmail">-</span></p></div>
-            </div>
-        </div>
-        <div class="modal-footer"><button class="btn-cancel" id="closeProfileFooterBtn">Fermer</button></div>
-    </div>
-</div>
-
-<!-- Popup Retrait -->
-<div id="withdrawModal" class="modal-overlay">
-    <div class="modal-container">
-        <div class="modal-header"><h3><i class="fas fa-money-bill-wave"></i> Effectuer un retrait</h3><button class="modal-close" id="closeWithdrawModal"><i class="fas fa-times"></i></button></div>
-        <div class="modal-body">
-            <div id="withdrawBalanceDisplay" style="background:#1a2332;padding:12px;border-radius:12px;margin-bottom:15px;text-align:center;"><span style="color:#94a3b8;">Solde actuel :</span> <strong id="currentBalanceDisplay" style="color:#f59e0b;font-size:1.2rem;">0.0000 $</strong></div>
-            <div class="input-group"><label>Montant (min 3$)</label><input type="number" id="withdrawAmount" step="0.01" min="3" placeholder="Ex: 3.00"><div id="amountError" class="amount-error">Le montant minimum est de 3$</div></div>
-            <div class="input-group"><label>Méthode de retrait</label>
-                <div class="method-option" data-method="airtel_money"><i class="fas fa-phone-alt"></i> Airtel Money</div>
-                <div class="method-option" data-method="orange_money"><i class="fas fa-phone-alt"></i> Orange Money</div>
-                <div class="method-option" data-method="paypal"><i class="fab fa-paypal"></i> PayPal</div>
-            </div>
-            <div class="input-group" id="walletInputGroup">
-                <label id="walletLabel">Numéro de téléphone</label>
-                <input type="text" id="walletAddress" placeholder="+243 9X XXX XXXX">
-                <div id="methodHint" class="typewriter-text"></div>
-            </div>
-        </div>
-        <div class="modal-footer"><button class="btn-confirm" id="submitWithdrawBtn">Valider</button><button class="btn-cancel" id="cancelWithdrawBtn">Annuler</button></div>
-    </div>
-</div>
 
 <!-- Popup CAP -->
 <div id="capModal" class="modal-overlay">
@@ -724,12 +621,114 @@ body{
     </div>
 </div>
 
-<!-- Popup Confirmation localisation -->
-<div id="guideModal" class="modal-overlay">
+<!-- Popup Retrait -->
+<div id="withdrawModal" class="modal-overlay">
     <div class="modal-container">
-        <div class="modal-header"><h3><i class="fas fa-info-circle"></i> Redirection</h3><button class="modal-close" id="closeGuideModal"><i class="fas fa-times"></i></button></div>
-        <div class="modal-body"><p id="guideMessage" style="color:#e2e8f0;line-height:1.5;"></p></div>
-        <div class="modal-footer"><button class="btn-confirm" id="confirmGuideBtn">OK</button><button class="btn-cancel" id="cancelGuideBtn">Annuler</button></div>
+        <div class="modal-header"><h3><i class="fas fa-money-bill-wave"></i> Effectuer un retrait</h3><button class="modal-close" id="closeWithdrawModal"><i class="fas fa-times"></i></button></div>
+        <div class="modal-body">
+            <div style="background:#1a2332;padding:12px;border-radius:12px;margin-bottom:15px;text-align:center;">
+                <span style="color:#94a3b8;">Solde actuel :</span> 
+                <strong id="currentBalanceDisplay" style="color:#f59e0b;font-size:1.2rem;">0.0000 $</strong>
+            </div>
+            
+            <div class="input-group">
+                <label>Montant (min 3$)</label>
+                <input type="number" id="withdrawAmount" step="0.01" min="3" placeholder="Ex: 3.00">
+                <div id="amountError" class="amount-error">Le montant minimum est de 3$</div>
+            </div>
+            
+            <div class="input-group">
+                <label>Méthode de retrait</label>
+                <div class="method-option" data-method="airtel_money"><i class="fas fa-phone-alt"></i> Airtel Money</div>
+                <div class="method-option" data-method="orange_money"><i class="fas fa-phone-alt"></i> Orange Money</div>
+                <div class="method-option" data-method="paypal"><i class="fab fa-paypal"></i> PayPal</div>
+            </div>
+            
+            <div class="input-group" id="countryGroup" style="display:none;">
+                <label>Pays</label>
+                <select id="countrySelect">
+                    <option value="">-- Sélectionnez votre pays --</option>
+                    <option value="Algérie">🇩🇿 Algérie</option>
+                    <option value="Angola">🇦🇴 Angola</option>
+                    <option value="Bénin">🇧🇯 Bénin</option>
+                    <option value="Botswana">🇧🇼 Botswana</option>
+                    <option value="Burkina Faso">🇧🇫 Burkina Faso</option>
+                    <option value="Burundi">🇧🇮 Burundi</option>
+                    <option value="Cabo Verde">🇨🇻 Cabo Verde</option>
+                    <option value="Cameroun">🇨🇲 Cameroun</option>
+                    <option value="République centrafricaine">🇨🇫 République centrafricaine</option>
+                    <option value="Tchad">🇹🇩 Tchad</option>
+                    <option value="Comores">🇰🇲 Comores</option>
+                    <option value="Congo">🇨🇬 Congo</option>
+                    <option value="RDC">🇨🇩 RDC</option>
+                    <option value="Côte d'Ivoire">🇨🇮 Côte d'Ivoire</option>
+                    <option value="Djibouti">🇩🇯 Djibouti</option>
+                    <option value="Égypte">🇪🇬 Égypte</option>
+                    <option value="Guinée équatoriale">🇬🇶 Guinée équatoriale</option>
+                    <option value="Érythrée">🇪🇷 Érythrée</option>
+                    <option value="Eswatini">🇸🇿 Eswatini</option>
+                    <option value="Éthiopie">🇪🇹 Éthiopie</option>
+                    <option value="Gabon">🇬🇦 Gabon</option>
+                    <option value="Gambie">🇬🇲 Gambie</option>
+                    <option value="Ghana">🇬🇭 Ghana</option>
+                    <option value="Guinée">🇬🇳 Guinée</option>
+                    <option value="Guinée-Bissau">🇬🇼 Guinée-Bissau</option>
+                    <option value="Kenya">🇰🇪 Kenya</option>
+                    <option value="Lesotho">🇱🇸 Lesotho</option>
+                    <option value="Liberia">🇱🇷 Liberia</option>
+                    <option value="Libye">🇱🇾 Libye</option>
+                    <option value="Madagascar">🇲🇬 Madagascar</option>
+                    <option value="Malawi">🇲🇼 Malawi</option>
+                    <option value="Mali">🇲🇱 Mali</option>
+                    <option value="Mauritanie">🇲🇷 Mauritanie</option>
+                    <option value="Maurice">🇲🇺 Maurice</option>
+                    <option value="Maroc">🇲🇦 Maroc</option>
+                    <option value="Mozambique">🇲🇿 Mozambique</option>
+                    <option value="Namibie">🇳🇦 Namibie</option>
+                    <option value="Niger">🇳🇪 Niger</option>
+                    <option value="Nigéria">🇳🇬 Nigéria</option>
+                    <option value="Ouganda">🇺🇬 Ouganda</option>
+                    <option value="Rwanda">🇷🇼 Rwanda</option>
+                    <option value="Sao Tomé-et-Principe">🇸🇹 Sao Tomé-et-Principe</option>
+                    <option value="Sénégal">🇸🇳 Sénégal</option>
+                    <option value="Seychelles">🇸🇨 Seychelles</option>
+                    <option value="Sierra Leone">🇸🇱 Sierra Leone</option>
+                    <option value="Somalie">🇸🇴 Somalie</option>
+                    <option value="Afrique du Sud">🇿🇦 Afrique du Sud</option>
+                    <option value="Soudan du Sud">🇸🇸 Soudan du Sud</option>
+                    <option value="Soudan">🇸🇩 Soudan</option>
+                    <option value="Tanzanie">🇹🇿 Tanzanie</option>
+                    <option value="Togo">🇹🇬 Togo</option>
+                    <option value="Tunisie">🇹🇳 Tunisie</option>
+                    <option value="Zambie">🇿🇲 Zambie</option>
+                    <option value="Zimbabwe">🇿🇼 Zimbabwe</option>
+                </select>
+            </div>
+            
+            <div class="input-group" id="walletInputGroup">
+                <label id="walletLabel">Numéro de téléphone</label>
+                <input type="text" id="walletAddress" placeholder="+243 9X XXX XXXX">
+                <div id="methodHint" class="typewriter-text"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-confirm" id="submitWithdrawBtn">Valider</button>
+            <button class="btn-cancel" id="cancelWithdrawBtn">Annuler</button>
+        </div>
+    </div>
+</div>
+
+<!-- Popup Confirmation redirection jeux (texte machine à écrire) -->
+<div id="gameRedirectModal" class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header"><h3><i class="fas fa-info-circle"></i> Redirection</h3><button class="modal-close" id="closeGameRedirectModal"><i class="fas fa-times"></i></button></div>
+        <div class="modal-body">
+            <p id="typewriterMessage" style="color:#e2e8f0;line-height:1.5;font-family:'Courier New',monospace;"></p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-confirm" id="confirmGameRedirectBtn">OK</button>
+            <button class="btn-cancel" id="cancelGameRedirectBtn">Annuler</button>
+        </div>
     </div>
 </div>
 
@@ -742,7 +741,7 @@ body{
     </div>
 </div>
 
-<!-- Popup Message -->
+<!-- Popup Message Général -->
 <div id="messageModal" class="modal-overlay">
     <div class="modal-container">
         <div class="modal-header"><h3><i class="fas fa-info-circle"></i> Information</h3><button class="modal-close" id="closeMessageModal"><i class="fas fa-times"></i></button></div>
@@ -752,13 +751,15 @@ body{
 </div>
 
 <!-- TimeWall Iframe -->
-<div id="fullscreenIframe" class="fullscreen-iframe"><button class="iframe-close" id="closeIframeBtn">✕</button><iframe id="portalIframe" src="about:blank"></iframe></div>
+<div id="fullscreenIframe" class="fullscreen-iframe">
+    <button class="iframe-close" id="closeIframeBtn">✕</button>
+    <iframe id="portalIframe" src="about:blank"></iframe>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, addDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
 const firebaseConfig = { 
     apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", 
@@ -772,13 +773,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const storage = getStorage(app);
 
 let currentUser = null;
 let userDocRef = null;
 let selectedMethod = null;
 let timersInterval = null;
-let balanceToastTimeout = null;
 
 const CARD_IMAGES = [
     "https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png",
@@ -799,7 +798,6 @@ const AD_URLS = [
 const DASHBOARD_URL = window.location.href;
 const LOCK_DURATION = 2 * 60 * 60 * 1000;
 const WITHDRAWAL_MIN = 3;
-const GUIDE_MESSAGE = "Vous allez être redirigé vers des offres adaptées à votre profil et à votre localisation. Une fois que vous aurez atteint 500 points, veuillez cliquer sur le bouton « Retirer » afin de convertir vos points en argent retirable sur votre dashboard.";
 
 const games = [
     {id:1, name:"Dragon Down", avatar:"🐉", img:"https://i.postimg.cc/T2JyHT7x/IMG-3466.jpg", duration:"7j"},
@@ -809,7 +807,16 @@ const games = [
     {id:5, name:"Grab A Toy", avatar:"🧸", img:"https://i.postimg.cc/J05BNLgH/IMG-3465.jpg", duration:"30j"}
 ];
 
-function showMessageModal(message, isError = false) {
+// ========== FONCTIONS UTILITAIRES ==========
+function showToast(msg, isError = false) {
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${isError ? 'toast-error' : ''}`;
+    toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${msg}`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+function showMessageModal(message) {
     const modal = document.getElementById('messageModal');
     const text = document.getElementById('messageModalText');
     text.innerHTML = message;
@@ -820,6 +827,61 @@ function closeMessageModal() {
     document.getElementById('messageModal').classList.remove('active');
 }
 
+// ========== ANIMATION SOLDE (0 → montant réel) ==========
+async function animateBalance(from, to, duration = 800) {
+    const startTime = performance.now();
+    
+    return new Promise((resolve) => {
+        const animate = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const currentValue = from + (to - from) * progress;
+            
+            const balanceToast = document.querySelector('.balance-toast');
+            if(balanceToast) {
+                const valueSpan = balanceToast.querySelector('.balance-value');
+                if(valueSpan) valueSpan.innerText = `${currentValue.toFixed(4)} $`;
+            }
+            
+            if(progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                resolve();
+            }
+        };
+        
+        requestAnimationFrame(animate);
+    });
+}
+
+async function showBalance() {
+    const currentBalance = await getBalanceValue();
+    
+    let toast = document.querySelector('.balance-toast');
+    if(!toast) {
+        toast = document.createElement('div');
+        toast.className = 'balance-toast';
+        toast.innerHTML = `<i class="fas fa-coins"></i><div><div style="font-size:0.7rem;color:#94a3b8;">Votre solde</div><div class="balance-value">0.0000 $</div></div>`;
+        document.body.appendChild(toast);
+    } else {
+        const valueSpan = toast.querySelector('.balance-value');
+        if(valueSpan) valueSpan.innerText = '0.0000 $';
+    }
+    
+    await animateBalance(0, currentBalance, 800);
+    
+    setTimeout(() => {
+        if(toast && toast.parentNode) toast.remove();
+    }, 5000);
+}
+
+async function getBalanceValue() {
+    if(!userDocRef) return 0;
+    const snap = await getDoc(userDocRef);
+    return snap.exists() ? (snap.data().balance || 0) : 0;
+}
+
+// ========== GESTION DES CARTES (verrouillage) ==========
 function getDefaultLockedCards() {
     return { card0: { locked: false, lockedUntil: null }, card1: { locked: false, lockedUntil: null }, card2: { locked: false, lockedUntil: null }, card3: { locked: false, lockedUntil: null }, card4: { locked: false, lockedUntil: null } };
 }
@@ -863,44 +925,14 @@ function formatTime(ms) {
     return `${hours}h ${minutes}min`;
 }
 
-function showToast(msg, isError = false) {
-    const toast = document.createElement('div');
-    toast.className = `toast-notification ${isError ? 'toast-error' : 'toast-success'}`;
-    toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${msg}`;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-}
-
-function showBalanceToast(balance) {
-    if(balanceToastTimeout) clearTimeout(balanceToastTimeout);
-    const existing = document.querySelector('.balance-toast');
-    if(existing) existing.remove();
-    const toast = document.createElement('div');
-    toast.className = 'balance-toast';
-    toast.innerHTML = `<i class="fas fa-coins"></i><div><div style="font-size:0.7rem;color:#94a3b8;">Votre solde</div><div class="balance-value">${balance.toFixed(4)} $</div></div>`;
-    document.body.appendChild(toast);
-    balanceToastTimeout = setTimeout(() => { if(toast) toast.remove(); }, 5000);
-}
-
-async function getBalanceValue() {
-    if(!userDocRef) return 0;
-    const snap = await getDoc(userDocRef);
-    return snap.exists() ? (snap.data().balance || 0) : 0;
-}
-
-async function showBalance() {
-    const balance = await getBalanceValue();
-    showBalanceToast(balance);
-}
-
 async function addGain(cardId) {
     if(!userDocRef) return false;
     try {
         const gain = 0.0001;
         await updateDoc(userDocRef, { balance: increment(gain) });
         const newBalance = await getBalanceValue();
-        showBalanceToast(newBalance);
         showToast(`✨ +${gain.toFixed(4)} $ ajoutés à votre balance !`);
+        
         const lockedCards = await getLockedCards();
         const cardKey = `card${cardId}`;
         lockedCards[cardKey] = { locked: true, lockedUntil: Date.now() + LOCK_DURATION };
@@ -918,31 +950,6 @@ function checkReturnFromAd() {
         window.history.replaceState({}, document.title, window.location.pathname);
         addGain(parseInt(cardId));
     }
-}
-
-function showGuideModal(callback) {
-    document.getElementById('guideMessage').innerText = GUIDE_MESSAGE;
-    const modal = document.getElementById('guideModal');
-    modal.classList.add('active');
-    const confirmBtn = document.getElementById('confirmGuideBtn');
-    const cancelBtn = document.getElementById('cancelGuideBtn');
-    const closeBtn = document.getElementById('closeGuideModal');
-    const handler = () => {
-        modal.classList.remove('active');
-        confirmBtn.removeEventListener('click', handler);
-        cancelBtn.removeEventListener('click', cancelHandler);
-        closeBtn.removeEventListener('click', cancelHandler);
-        if(callback) callback();
-    };
-    const cancelHandler = () => {
-        modal.classList.remove('active');
-        confirmBtn.removeEventListener('click', handler);
-        cancelBtn.removeEventListener('click', cancelHandler);
-        closeBtn.removeEventListener('click', cancelHandler);
-    };
-    confirmBtn.addEventListener('click', handler);
-    cancelBtn.addEventListener('click', cancelHandler);
-    closeBtn.addEventListener('click', cancelHandler);
 }
 
 async function renderPromoCards() {
@@ -997,6 +1004,55 @@ function startTimersUpdate() {
     }, 1000);
 }
 
+// ========== TEXTE MACHINE À ÉCRIRE ==========
+const typewriterText = "Vous allez être redirigé vers des offres adaptées à votre profil et à votre localisation. Une fois que vous aurez atteint 500 points, veuillez cliquer sur le bouton « Retirer » afin de convertir vos points en argent retirable sur votre dashboard.";
+
+function typeWriter(element, text, speed = 30, callback) {
+    let i = 0;
+    element.innerHTML = '';
+    function typing() {
+        if(i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        } else if(callback) {
+            callback();
+        }
+    }
+    typing();
+}
+
+function showGameRedirectModal(callback) {
+    const modal = document.getElementById('gameRedirectModal');
+    const messageElement = document.getElementById('typewriterMessage');
+    modal.classList.add('active');
+    typeWriter(messageElement, typewriterText, 25, () => {});
+    
+    const confirmBtn = document.getElementById('confirmGameRedirectBtn');
+    const cancelBtn = document.getElementById('cancelGameRedirectBtn');
+    const closeBtn = document.getElementById('closeGameRedirectModal');
+    
+    const handler = () => {
+        modal.classList.remove('active');
+        messageElement.innerHTML = '';
+        confirmBtn.removeEventListener('click', handler);
+        cancelBtn.removeEventListener('click', cancelHandler);
+        closeBtn.removeEventListener('click', cancelHandler);
+        if(callback) callback();
+    };
+    const cancelHandler = () => {
+        modal.classList.remove('active');
+        messageElement.innerHTML = '';
+        confirmBtn.removeEventListener('click', handler);
+        cancelBtn.removeEventListener('click', cancelHandler);
+        closeBtn.removeEventListener('click', cancelHandler);
+    };
+    confirmBtn.addEventListener('click', handler);
+    cancelBtn.addEventListener('click', cancelHandler);
+    closeBtn.addEventListener('click', cancelHandler);
+}
+
+// ========== AFFICHAGE DES JEUX ==========
 function renderGames() {
     const container = document.getElementById('gamesContainer');
     if(!container) return;
@@ -1007,15 +1063,19 @@ function renderGames() {
         card.innerHTML = `<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration}</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Jouer au Jeu remunerateur</button>`;
         const btn = card.querySelector('.gain-btn');
         btn.addEventListener('click', () => {
-            showGuideModal(() => {
+            showGameRedirectModal(() => {
                 const iframe = document.getElementById('portalIframe');
-                if(iframe) { iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`; document.getElementById('fullscreenIframe').classList.add('active'); }
+                if(iframe && currentUser) {
+                    iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`;
+                    document.getElementById('fullscreenIframe').classList.add('active');
+                }
             });
         });
         container.appendChild(card);
     });
 }
 
+// ========== CAP DU JOUR (Firestore) ==========
 async function loadCapMessage() {
     if(!userDocRef) return;
     const snap = await getDoc(userDocRef);
@@ -1023,171 +1083,207 @@ async function loadCapMessage() {
     document.getElementById('capMessage').innerHTML = cap.replace(/\n/g, '<br>');
 }
 
+// ========== RETRAIT ==========
 async function loadWithdrawBalance() {
     const balance = await getBalanceValue();
     document.getElementById('currentBalanceDisplay').innerText = `${balance.toFixed(4)} $`;
-    const amountInput = document.getElementById('withdrawAmount');
-    const amountError = document.getElementById('amountError');
-    amountInput.addEventListener('input', () => {
-        if(parseFloat(amountInput.value) < WITHDRAWAL_MIN && amountInput.value !== '') amountError.style.display = 'block';
-        else amountError.style.display = 'none';
-    });
 }
 
-function validatePhoneNumber(number, method) {
+function validatePhoneNumber(number) {
     const cleanNumber = number.replace(/[^0-9]/g, '');
-    if(method === 'orange_money' || method === 'airtel_money') {
-        if(cleanNumber.length > 11) return false;
-        const startsWith9 = cleanNumber.startsWith('9');
-        const startsWith8 = cleanNumber.startsWith('8');
-        return (startsWith9 || startsWith8);
-    }
-    return true;
+    if(cleanNumber.length > 11) return false;
+    const startsWith9 = cleanNumber.startsWith('9');
+    const startsWith8 = cleanNumber.startsWith('8');
+    return (startsWith9 || startsWith8);
 }
 
 async function submitWithdraw() {
     const amount = parseFloat(document.getElementById('withdrawAmount').value);
     let walletAddress = document.getElementById('walletAddress').value.trim();
+    const country = document.getElementById('countrySelect')?.value || '';
     
-    if(!selectedMethod) { showToast("Veuillez sélectionner une méthode", true); return; }
-    if(isNaN(amount) || amount < WITHDRAWAL_MIN) { showToast(`Montant minimum ${WITHDRAWAL_MIN}$`, true); return; }
+    if(!selectedMethod) { showToast("Veuillez sélectionner une méthode de retrait", true); return; }
+    if(isNaN(amount) || amount < WITHDRAWAL_MIN) { showToast(`Le montant minimum est de ${WITHDRAWAL_MIN}$`, true); return; }
     if(!walletAddress) { showToast("Veuillez entrer vos coordonnées", true); return; }
     
+    // Validation selon méthode
     if(selectedMethod === 'orange_money' || selectedMethod === 'airtel_money') {
-        if(!validatePhoneNumber(walletAddress, selectedMethod)) {
+        if(!validatePhoneNumber(walletAddress)) {
             showToast("Numéro invalide. Doit commencer par 8 ou 9 et maximum 11 chiffres", true);
             return;
         }
         if(!walletAddress.startsWith('+243')) {
-            walletAddress = '+243 ' + walletAddress.replace(/[^0-9]/g, '');
+            walletAddress = '+243' + walletAddress.replace(/[^0-9]/g, '');
             document.getElementById('walletAddress').value = walletAddress;
+        }
+        if(!country) {
+            showToast("Veuillez sélectionner votre pays", true);
+            return;
+        }
+    } else if(selectedMethod === 'paypal') {
+        if(!walletAddress.includes('@') || !walletAddress.includes('.')) {
+            showToast("Veuillez entrer une adresse email PayPal valide", true);
+            return;
         }
     }
     
     const currentBalance = await getBalanceValue();
     if(amount > currentBalance) { showToast("Solde insuffisant", true); return; }
     
+    // Vérifier si une demande en attente existe
     const q = query(collection(db, "withdraw"), where("userId", "==", currentUser.uid), where("status", "==", "pending"));
     const querySnapshot = await getDocs(q);
-    if(!querySnapshot.empty) { showMessageModal("❌ Vous avez déjà une autre demande de retrait en attente. Veuillez patienter."); return; }
+    if(!querySnapshot.empty) { 
+        showMessageModal("❌ Vous avez déjà une demande de retrait en cours de traitement. Veuillez patienter.");
+        return; 
+    }
     
     try {
-        await addDoc(collection(db, "withdraw"), { userId: currentUser.uid, userEmail: currentUser.email, amount: amount, method: selectedMethod, walletAddress: walletAddress, status: "pending", requestedAt: new Date().toISOString() });
-        showToast("✅ Demande envoyée ! Traitement sous 24h");
+        const withdrawData = {
+            userId: currentUser.uid,
+            userEmail: currentUser.email,
+            amount: amount,
+            method: selectedMethod,
+            walletAddress: walletAddress,
+            status: "pending",
+            requestedAt: new Date().toISOString()
+        };
+        if(country) withdrawData.country = country;
+        
+        await addDoc(collection(db, "withdraw"), withdrawData);
+        showToast("✅ Votre demande de retrait a été envoyée avec succès ! Traitement sous 24h");
         document.getElementById('withdrawModal').classList.remove('active');
         document.getElementById('withdrawAmount').value = '';
         document.getElementById('walletAddress').value = '';
-        document.getElementById('methodHint').innerHTML = '';
-    } catch(error) { showToast("Erreur, réessayez", true); }
-}
-
-async function loadUserProfile() {
-    if(!currentUser) return;
-    const snap = await getDoc(userDocRef);
-    const userData = snap.data() || {};
-    const displayName = userData.displayName || userData.nom ? `${userData.nom || ''} ${userData.prenom || ''}`.trim() : currentUser.email?.split('@')[0] || 'Utilisateur';
-    document.getElementById('profileName').innerText = displayName;
-    document.getElementById('profileEmail').innerText = currentUser.email || '-';
-    if(userData.photoURL) {
-        const previewDiv = document.getElementById('profileAvatarPreview');
-        previewDiv.innerHTML = `<img src="${userData.photoURL}" style="width:100%;height:100%;object-fit:cover;">`;
+        document.getElementById('countrySelect').value = '';
+        selectedMethod = null;
+        document.querySelectorAll('.method-option').forEach(opt => {
+            opt.classList.remove('selected-airtel', 'selected-orange', 'selected-paypal');
+        });
+    } catch(error) { 
+        console.error(error);
+        showToast("Une erreur est survenue, veuillez réessayer", true); 
     }
 }
 
-async function uploadProfilePhoto(file) {
-    if(!currentUser) return;
-    const storageRef = ref(storage, `profile_photos/${currentUser.uid}`);
-    await uploadBytes(storageRef, file);
-    const photoURL = await getDownloadURL(storageRef);
-    await updateProfile(currentUser, { photoURL: photoURL });
-    await updateDoc(userDocRef, { photoURL: photoURL });
-    await loadUserProfile();
-    showToast("Photo de profil mise à jour !");
-}
-
-document.getElementById('profileUploadInput')?.addEventListener('change', async (e) => {
-    if(e.target.files && e.target.files[0]) await uploadProfilePhoto(e.target.files[0]);
-});
-
+// ========== INITIALISATION UTILISATEUR ==========
 async function initUser(user) {
     if(!user) return;
     currentUser = user;
     userDocRef = doc(db, "users", user.uid);
     const snap = await getDoc(userDocRef);
-    if(!snap.exists()) await setDoc(userDocRef, { email: user.email || "", balance: 0, lockedCards: getDefaultLockedCards(), createdAt: new Date().toISOString(), lastLogin: new Date().toISOString(), displayName: user.displayName || "" });
-    else await updateDoc(userDocRef, { lastLogin: new Date().toISOString() });
-    await loadUserProfile();
+    if(!snap.exists()) {
+        await setDoc(userDocRef, { 
+            email: user.email || "", 
+            balance: 0, 
+            lockedCards: getDefaultLockedCards(), 
+            createdAt: new Date().toISOString(), 
+            lastLogin: new Date().toISOString(),
+            capDuJour: "📊 Bienvenue sur NeTubeX !\n\n📌 Objectif du jour : Découvrir les jeux\n🎯 Challenge : Jouer à 2 jeux\n⭐ Bonus : +10 points de bienvenue"
+        });
+    } else {
+        await updateDoc(userDocRef, { lastLogin: new Date().toISOString() });
+    }
     await renderPromoCards();
     renderGames();
     startTimersUpdate();
     checkReturnFromAd();
 }
 
-// Événements
+// ========== ÉVÉNEMENTS ==========
 document.getElementById('balanceFloatBtn')?.addEventListener('click', () => showBalance());
-document.getElementById('portalFloatBtn')?.addEventListener('click', () => showGuideModal(() => { const iframe = document.getElementById('portalIframe'); if(iframe) { iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`; document.getElementById('fullscreenIframe').classList.add('active'); } }));
+document.getElementById('portalFloatBtn')?.addEventListener('click', () => {
+    if(currentUser) {
+        showGameRedirectModal(() => {
+            const iframe = document.getElementById('portalIframe');
+            if(iframe) {
+                iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`;
+                document.getElementById('fullscreenIframe').classList.add('active');
+            }
+        });
+    }
+});
 document.getElementById('menuFloatBtn')?.addEventListener('click', () => document.getElementById('menuFloating').classList.toggle('active'));
-document.addEventListener('click', (e) => { const menu = document.getElementById('menuFloating'); const menuBtn = document.getElementById('menuFloatBtn'); if(menu && menuBtn && !menuBtn.contains(e.target) && !menu.contains(e.target)) menu.classList.remove('active'); });
-document.getElementById('menuTicketsBtn')?.addEventListener('click', () => showToast("📧 Fonctionnalité à venir", false));
-document.getElementById('menuNewTicketBtn')?.addEventListener('click', () => showToast("📧 Fonctionnalité à venir", false));
-document.getElementById('menuCapBtn')?.addEventListener('click', async () => { await loadCapMessage(); document.getElementById('capModal').classList.add('active'); });
-document.getElementById('menuWithdrawBtn')?.addEventListener('click', async () => { await loadWithdrawBalance(); document.getElementById('withdrawModal').classList.add('active'); });
-document.getElementById('menuLogoutBtn')?.addEventListener('click', () => document.getElementById('confirmLogoutModal').classList.add('active'));
+document.addEventListener('click', (e) => { 
+    const menu = document.getElementById('menuFloating'); 
+    const menuBtn = document.getElementById('menuFloatBtn'); 
+    if(menu && menuBtn && !menuBtn.contains(e.target) && !menu.contains(e.target)) menu.classList.remove('active'); 
+});
+document.getElementById('menuCapBtn')?.addEventListener('click', async () => { 
+    await loadCapMessage(); 
+    document.getElementById('capModal').classList.add('active'); 
+    document.getElementById('menuFloating').classList.remove('active');
+});
+document.getElementById('menuWithdrawBtn')?.addEventListener('click', async () => { 
+    await loadWithdrawBalance(); 
+    document.getElementById('withdrawModal').classList.add('active'); 
+    document.getElementById('menuFloating').classList.remove('active');
+});
+document.getElementById('menuLogoutBtn')?.addEventListener('click', () => { 
+    document.getElementById('menuFloating').classList.remove('active');
+    document.getElementById('confirmLogoutModal').classList.add('active'); 
+});
 document.getElementById('closeWithdrawModal')?.addEventListener('click', () => document.getElementById('withdrawModal').classList.remove('active'));
 document.getElementById('cancelWithdrawBtn')?.addEventListener('click', () => document.getElementById('withdrawModal').classList.remove('active'));
 document.getElementById('submitWithdrawBtn')?.addEventListener('click', submitWithdraw);
 document.getElementById('closeCapModal')?.addEventListener('click', () => document.getElementById('capModal').classList.remove('active'));
 document.getElementById('closeCapFooterBtn')?.addEventListener('click', () => document.getElementById('capModal').classList.remove('active'));
 document.getElementById('closeLogoutModal')?.addEventListener('click', () => document.getElementById('confirmLogoutModal').classList.remove('active'));
-document.getElementById('confirmLogoutBtn')?.addEventListener('click', async () => { document.getElementById('confirmLogoutModal').classList.remove('active'); await signOut(auth); window.location.href = "login.html"; });
+document.getElementById('confirmLogoutBtn')?.addEventListener('click', async () => { 
+    document.getElementById('confirmLogoutModal').classList.remove('active'); 
+    await signOut(auth); 
+    window.location.href = "login.html"; 
+});
 document.getElementById('cancelLogoutBtn')?.addEventListener('click', () => document.getElementById('confirmLogoutModal').classList.remove('active'));
-document.getElementById('closeIframeBtn')?.addEventListener('click', () => { document.getElementById('portalIframe').src = 'about:blank'; document.getElementById('fullscreenIframe').classList.remove('active'); });
+document.getElementById('closeIframeBtn')?.addEventListener('click', () => { 
+    document.getElementById('portalIframe').src = 'about:blank'; 
+    document.getElementById('fullscreenIframe').classList.remove('active'); 
+});
 document.getElementById('closeMessageModal')?.addEventListener('click', closeMessageModal);
 document.getElementById('confirmMessageBtn')?.addEventListener('click', closeMessageModal);
 
-// Méthodes de paiement avec style clair
+// Méthodes de paiement
 document.querySelectorAll('.method-option').forEach(opt => {
     opt.addEventListener('click', () => {
         document.querySelectorAll('.method-option').forEach(o => {
             o.classList.remove('selected-airtel', 'selected-orange', 'selected-paypal');
         });
         
-        if(opt.classList.contains('method-option')) {
-            if(opt.dataset.method === 'airtel_money') opt.classList.add('selected-airtel');
-            else if(opt.dataset.method === 'orange_money') opt.classList.add('selected-orange');
-            else if(opt.dataset.method === 'paypal') opt.classList.add('selected-paypal');
-        }
+        if(opt.dataset.method === 'airtel_money') opt.classList.add('selected-airtel');
+        else if(opt.dataset.method === 'orange_money') opt.classList.add('selected-orange');
+        else if(opt.dataset.method === 'paypal') opt.classList.add('selected-paypal');
         
         selectedMethod = opt.dataset.method;
         const walletLabel = document.getElementById('walletLabel');
         const walletInput = document.getElementById('walletAddress');
         const methodHint = document.getElementById('methodHint');
+        const countryGroup = document.getElementById('countryGroup');
         
         if(selectedMethod === 'paypal') { 
             walletLabel.innerText = 'Email PayPal'; 
-            walletInput.placeholder = 'exemple@email.com';
-            methodHint.innerHTML = '';
-        }
-        else if(selectedMethod === 'orange_money') { 
+            walletInput.placeholder = 'exemple@gmail.com';
+            methodHint.innerHTML = '🔸 Entrez votre adresse email PayPal';
+            countryGroup.style.display = 'none';
+        } else if(selectedMethod === 'orange_money') { 
             walletLabel.innerText = 'Numéro Orange Money'; 
             walletInput.placeholder = '+243 9X XXX XXXX';
-            methodHint.innerHTML = '🔸 Doit commencer par 9 ou 8 - Maximum 11 chiffres';
-        }
-        else if(selectedMethod === 'airtel_money') { 
+            methodHint.innerHTML = '🔸 Doit commencer par 8 ou 9 - Maximum 11 chiffres';
+            countryGroup.style.display = 'block';
+        } else if(selectedMethod === 'airtel_money') { 
             walletLabel.innerText = 'Numéro Airtel Money'; 
             walletInput.placeholder = '+243 8X XXX XXXX';
-            methodHint.innerHTML = '🔸 Doit commencer par 9 ou 8 - Maximum 11 chiffres';
+            methodHint.innerHTML = '🔸 Doit commencer par 8 ou 9 - Maximum 11 chiffres';
+            countryGroup.style.display = 'block';
         }
     });
 });
 
-// Bloquer zoom, clic droit, sélection, long press sur images
+// Sécurité : bloquer zoom, clic droit, sélection, long press
 document.addEventListener('contextmenu', (e) => e.preventDefault());
 document.addEventListener('dragstart', (e) => e.preventDefault());
 document.addEventListener('selectstart', (e) => e.preventDefault());
 document.addEventListener('touchstart', (e) => { if(e.touches.length > 1) e.preventDefault(); }, { passive: false });
 
-// Bloquer long press sur images
 document.querySelectorAll('img').forEach(img => {
     img.addEventListener('contextmenu', (e) => e.preventDefault());
     img.addEventListener('touchstart', (e) => {
@@ -1195,10 +1291,10 @@ document.querySelectorAll('img').forEach(img => {
     });
 });
 
-// Vérification Firebase et redirection si non connecté
+// Vérification Firebase et redirection
 onAuthStateChanged(auth, async (user) => { 
-    if(user) {
-        await initUser(user);
+    if(user) { 
+        await initUser(user); 
     } else { 
         window.location.href = "login.html"; 
     } 
