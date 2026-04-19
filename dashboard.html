@@ -81,6 +81,8 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .gain-btn{background:linear-gradient(145deg,#2563eb,#1a4db8);border:none;padding:14px;font-weight:700;font-size:0.85rem;color:#fff;cursor:pointer;width:100%;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:10px;border-top:1px solid #1e293b;border-radius:0 0 16px 16px;box-shadow:0 8px 0 #0f2a5c,0 4px 15px rgba(0,0,0,0.3);transform:translateY(-2px);}
 .gain-btn:active{transform:translateY(4px);box-shadow:0 4px 0 #0f2a5c;}
 .gain-btn:hover{background:linear-gradient(145deg,#3b82f6,#2563eb);box-shadow:0 8px 0 #1e3a5f;}
+
+/* Boutons flottants - NOUVEL ORDRE */
 .floating-group{position:fixed;bottom:30px;right:25px;display:flex;flex-direction:column;gap:12px;z-index:200;}
 .float-item{background:#0f1420;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;transition:all 0.2s;color:#94a3b8;border:1px solid #1e293b;box-shadow:0 4px 8px rgba(0,0,0,0.3);}
 .float-item:hover{background:#1a2332;transform:scale(1.05);color:#38bdf8;}
@@ -88,7 +90,41 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .float-item.logout:hover{background:#ef4444;}
 .float-item.gold{background:linear-gradient(145deg,#f59e0b,#d97706);border:none;color:#fff;box-shadow:0 4px 15px rgba(245,158,11,0.3);animation:floatGold 2s ease-in-out infinite;}
 .float-item.menu-btn{background:linear-gradient(145deg,#3b82f6,#2563eb);border:none;color:#fff;box-shadow:0 4px 8px rgba(59,130,246,0.3);}
+.float-item.objectif-btn{background:linear-gradient(145deg,#10b981,#059669);border:none;color:#fff;box-shadow:0 4px 8px rgba(16,185,129,0.3);}
 @keyframes floatGold{0%,100%{transform:translateY(0px);}50%{transform:translateY(-6px);}}
+
+/* Popup Objectifs - Style réseau social */
+.objectifs-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);backdrop-filter:blur(12px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;transition:visibility 0s linear 0.25s;}
+.objectifs-popup.active{visibility:visible;transition:visibility 0s linear 0s;}
+.objectifs-card{background:linear-gradient(145deg,#0f1420,#131a2a);max-width:450px;width:90%;border-radius:32px;padding:1.5rem;text-align:center;transform:scale(0.9);opacity:0;transition:transform 0.35s cubic-bezier(0.2,0.9,0.4,1.1), opacity 0.35s ease;box-shadow:0 20px 40px rgba(0,0,0,0.5);border:1px solid rgba(245,158,11,0.3);}
+.objectifs-popup.active .objectifs-card{transform:scale(1);opacity:1;}
+.objectifs-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding-bottom:0.8rem;border-bottom:1px solid #1e293b;}
+.objectifs-header h3{font-size:1.1rem;color:#f59e0b;display:flex;align-items:center;gap:8px;}
+.objectifs-close{background:#1e293b;border:none;width:32px;height:32px;border-radius:50%;color:#fff;cursor:pointer;font-size:0.9rem;transition:0.2s;}
+.objectifs-close:hover{background:#ef4444;}
+.objectifs-social-card{background:linear-gradient(135deg,#1a2332,#0f1420);border-radius:24px;padding:1.8rem;margin:1rem 0;border:1px solid rgba(245,158,11,0.2);}
+.objectifs-avatar{width:70px;height:70px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:2rem;color:#fff;box-shadow:0 8px 20px rgba(245,158,11,0.3);}
+.objectifs-code{font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:0.3rem;}
+.objectifs-status{display:inline-flex;align-items:center;gap:6px;font-size:0.7rem;padding:4px 12px;border-radius:40px;margin-bottom:1rem;}
+.status-present{background:rgba(16,185,129,0.2);color:#10b981;}
+.status-absent{background:rgba(239,68,68,0.2);color:#ef4444;}
+.objectifs-stats{text-align:left;margin-top:1rem;}
+.objectifs-stat-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #1e293b;}
+.objectifs-stat-label{color:#94a3b8;font-size:0.75rem;display:flex;align-items:center;gap:6px;}
+.objectifs-stat-value{font-weight:800;font-size:1.1rem;color:#f59e0b;}
+.objectifs-progress{margin:1rem 0;}
+.progress-bar-bg{background:#1e293b;border-radius:40px;height:12px;overflow:hidden;}
+.progress-bar-fill{background:linear-gradient(90deg,#f59e0b,#d97706);height:12px;border-radius:40px;transition:width 0.5s ease;}
+.progress-percent{text-align:center;margin-top:6px;font-size:0.7rem;color:#94a3b8;}
+.objectifs-footer{display:flex;justify-content:center;gap:12px;margin-top:1rem;}
+.objectifs-nav-btn{background:#1e293b;border:none;width:44px;height:44px;border-radius:50%;color:#fff;cursor:pointer;transition:0.2s;font-size:1rem;}
+.objectifs-nav-btn:hover{background:#f59e0b;color:#0f1420;}
+.objectifs-dots{display:flex;justify-content:center;gap:8px;margin-top:1rem;}
+.objectifs-dot{width:8px;height:8px;background:#1e293b;border-radius:50%;transition:0.2s;}
+.objectifs-dot.active{background:#f59e0b;width:20px;border-radius:10px;}
+.objectifs-fermer{background:#1e293b;border:none;padding:10px 24px;border-radius:40px;color:#fff;font-weight:600;cursor:pointer;margin-top:0.5rem;transition:0.2s;}
+.objectifs-fermer:hover{background:#334155;}
+
 .slide-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);backdrop-filter:blur(10px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;transition:visibility 0s linear 0.25s;}
 .slide-popup.active{visibility:visible;transition:visibility 0s linear 0s;}
 .popup-left{background:#f1f5f9;max-width:600px;width:90%;border-radius:28px 28px 0 0;padding:1.5rem 1.5rem 1.8rem;text-align:center;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.2,0.9,0.4,1.1);box-shadow:0 -12px 40px rgba(0,0,0,0.4);position:relative;max-height:85vh;overflow-y:auto;}
@@ -189,12 +225,46 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <div class="feed-container" id="feedContainer">
 <div class="games-list" id="gamesContainer"></div>
 </div>
+
+<!-- Boutons flottants - NOUVEL ORDRE : TimeWall (1er) puis Objectifs (2ème) -->
 <div class="floating-group">
 <div class="float-item gold" id="portalBtn"><i class="fas fa-rocket"></i></div>
+<div class="float-item objectif-btn" id="objectifsBtn"><i class="fas fa-chart-simple"></i></div>
 <div class="float-item" id="settingsFloatBtn"><i class="fas fa-user-lock"></i></div>
 <div class="float-item menu-btn" id="menuFloatBtn"><i class="fas fa-bars"></i></div>
 <div class="float-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></div>
 </div>
+
+<!-- Popup Objectifs - Style réseau social -->
+<div id="objectifsPopup" class="objectifs-popup">
+<div class="objectifs-card">
+<div class="objectifs-header">
+<h3><i class="fas fa-chart-simple"></i> Objectifs mensuels</h3>
+<button class="objectifs-close" id="closeObjectifsPopup"><i class="fas fa-times"></i></button>
+</div>
+<div id="objectifsSocialCard" class="objectifs-social-card">
+<div class="objectifs-avatar" id="objAvatar">👤</div>
+<div class="objectifs-code" id="objCode">Chargement...</div>
+<div class="objectifs-status" id="objStatus">🟢 Présent</div>
+<div class="objectifs-stats">
+<div class="objectifs-stat-item"><span class="objectifs-stat-label"><i class="fas fa-bullseye"></i> Objectif mensuel</span><span class="objectifs-stat-value" id="objMensuel">0</span></div>
+<div class="objectifs-stat-item"><span class="objectifs-stat-label"><i class="fas fa-check-circle"></i> Atteints aujourd'hui</span><span class="objectifs-stat-value" id="objAtteint">0</span></div>
+<div class="objectifs-stat-item"><span class="objectifs-stat-label"><i class="fas fa-hourglass-half"></i> Restants</span><span class="objectifs-stat-value" id="objRestant">0</span></div>
+</div>
+<div class="objectifs-progress">
+<div class="progress-bar-bg"><div class="progress-bar-fill" id="objProgressFill" style="width:0%"></div></div>
+<div class="progress-percent" id="objPercent">0% complété</div>
+</div>
+</div>
+<div class="objectifs-footer">
+<button class="objectifs-nav-btn" id="objPrevBtn"><i class="fas fa-chevron-left"></i></button>
+<button class="objectifs-nav-btn" id="objNextBtn"><i class="fas fa-chevron-right"></i></button>
+</div>
+<div class="objectifs-dots" id="objDots"></div>
+<button class="objectifs-fermer" id="fermerObjectifsBtn">Fermer</button>
+</div>
+</div>
+
 <div id="menuFloating" class="menu-floating">
 <div class="menu-header"><strong><i class="fas fa-bars"></i> Menu NeTubeX</strong></div>
 <div class="menu-item" id="menuTicketsBtn"><i class="fas fa-ticket-alt"></i> Mes tickets</div>
@@ -210,7 +280,6 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <div id="capPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-chart-line" style="font-size:2rem;color:#f59e0b;"></i><h3>CAP du jour</h3><div id="capContent" class="cap-content-large"><p>Chargement...</p></div><button class="close-popup-btn" id="closeCapBtn">Fermer</button></div></div>
 <div id="fullscreenIframe" class="fullscreen-iframe"><button class="iframe-close" id="closeIframeBtn">✕</button><iframe id="portalIframe" src="about:blank"></iframe></div>
 
-<!-- Overlay pour compte bloqué -->
 <div id="blockedOverlay" class="blocked-overlay">
 <div class="blocked-card">
 <i class="fas fa-ban"></i>
@@ -228,13 +297,14 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+let currentUser = null;
 let userDocRef = null;
 let startTime = Date.now();
 let lastActivity = Date.now();
@@ -242,6 +312,19 @@ let iframeOpenTime = null;
 let isUserBlocked = false;
 let heartbeatInterval = null;
 let imagesLoaded = 0;
+
+// Liste des netubers à afficher
+const NETUBER_CODES = [
+    "MA-NX-S1-ZA-01",
+    "MA-NX-S1-ZA-02",
+    "MA-NX-S1-ZB-03",
+    "MA-NX-S1-ZB-04",
+    "MA-NX-S1-ZC-05",
+    "MA-NX-S1-ZC-06"
+];
+
+let netubersData = [];
+let currentNetuberIndex = 0;
 
 const games = [
     {id:1, name:"Dragon Down", avatar:"🐉", img:"https://i.postimg.cc/T2JyHT7x/IMG-3466.jpg", duration:"7j", totalPoints:14048, objectives:[{name:"Jouer",points:9},{name:"150 gems",points:17},{name:"1000 gems",points:123},{name:"4000 gems",points:436},{name:"10000 gems",points:871},{name:"40000 gems",points:3348},{name:"100000 gems",points:10044}]},
@@ -269,6 +352,133 @@ function preloadImages() {
     setTimeout(() => { if(imagesLoaded < games.length) { const loadingScreen = document.getElementById('loadingScreen'); if(loadingScreen) loadingScreen.classList.add('hide'); } }, 5000);
 }
 
+async function loadNetubersData() {
+    try {
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("role", "==", "netuber"));
+        const snapshot = await getDocs(q);
+        
+        netubersData = [];
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const code = data.code || doc.id;
+            if (NETUBER_CODES.includes(code)) {
+                netubersData.push({
+                    id: doc.id,
+                    code: code,
+                    objectifMensuel: data.objectifMensuel || 0,
+                    objectifAtteint: data.objectifAtteint || 0,
+                    lastSeen: data.lastSeen,
+                    isActive: data.isActive !== false
+                });
+            }
+        });
+        
+        // Trier selon l'ordre défini
+        netubersData.sort((a,b) => NETUBER_CODES.indexOf(a.code) - NETUBER_CODES.indexOf(b.code));
+        
+        // Créer les dots
+        updateDots();
+        
+        // Afficher le premier netuber
+        if (netubersData.length > 0) {
+            displayNetuber(0);
+        }
+    } catch(e) {
+        console.error("Erreur chargement netubers:", e);
+    }
+}
+
+function updateDots() {
+    const dotsContainer = document.getElementById('objDots');
+    if (!dotsContainer) return;
+    
+    dotsContainer.innerHTML = '';
+    netubersData.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = `objectifs-dot ${index === currentNetuberIndex ? 'active' : ''}`;
+        dot.addEventListener('click', () => {
+            currentNetuberIndex = index;
+            displayNetuber(currentNetuberIndex);
+            updateDots();
+        });
+        dotsContainer.appendChild(dot);
+    });
+}
+
+function displayNetuber(index) {
+    if (index < 0) index = 0;
+    if (index >= netubersData.length) index = netubersData.length - 1;
+    currentNetuberIndex = index;
+    
+    const netuber = netubersData[currentNetuberIndex];
+    if (!netuber) return;
+    
+    const objMensuel = netuber.objectifMensuel || 0;
+    const objAtteint = netuber.objectifAtteint || 0;
+    const objRestant = Math.max(0, objMensuel - objAtteint);
+    const percent = objMensuel > 0 ? (objAtteint / objMensuel) * 100 : 0;
+    
+    // Déterminer le statut (présent/absent basé sur lastSeen récent)
+    let isPresent = false;
+    if (netuber.lastSeen) {
+        const lastSeenDate = new Date(netuber.lastSeen);
+        const now = new Date();
+        const hoursDiff = (now - lastSeenDate) / (1000 * 60 * 60);
+        isPresent = hoursDiff < 24; // Actif dans les dernières 24h
+    }
+    
+    document.getElementById('objCode').innerHTML = `<i class="fas fa-qrcode"></i> ${netuber.code}`;
+    document.getElementById('objMensuel').innerText = objMensuel;
+    document.getElementById('objAtteint').innerText = objAtteint;
+    document.getElementById('objRestant').innerText = objRestant;
+    document.getElementById('objProgressFill').style.width = `${percent}%`;
+    document.getElementById('objPercent').innerHTML = `${percent.toFixed(1)}% complété`;
+    
+    const statusEl = document.getElementById('objStatus');
+    if (isPresent) {
+        statusEl.innerHTML = '<i class="fas fa-circle"></i> Présent aujourd\'hui';
+        statusEl.className = 'objectifs-status status-present';
+    } else {
+        statusEl.innerHTML = '<i class="fas fa-circle"></i> Absent aujourd\'hui';
+        statusEl.className = 'objectifs-status status-absent';
+    }
+    
+    // Avatar différent selon le code
+    const avatarEl = document.getElementById('objAvatar');
+    const codeNum = netuber.code.split('-').pop();
+    const avatars = ['👤', '👨‍💻', '👩‍💻', '🧑‍🚀', '🦸', '🧙'];
+    const indexNum = parseInt(codeNum) - 1 || currentNetuberIndex;
+    avatarEl.innerHTML = avatars[indexNum % avatars.length];
+    
+    updateDots();
+}
+
+function nextNetuber() {
+    if (currentNetuberIndex < netubersData.length - 1) {
+        currentNetuberIndex++;
+        displayNetuber(currentNetuberIndex);
+    }
+}
+
+function prevNetuber() {
+    if (currentNetuberIndex > 0) {
+        currentNetuberIndex--;
+        displayNetuber(currentNetuberIndex);
+    }
+}
+
+function showObjectifsPopup() {
+    if (isUserBlocked) { showToast("❌ Compte bloqué"); return; }
+    loadNetubersData().then(() => {
+        document.getElementById('objectifsPopup').classList.add('active');
+    });
+}
+
+function closeObjectifsPopup() {
+    document.getElementById('objectifsPopup').classList.remove('active');
+}
+
 function showBlockedOverlay() {
     const overlay = document.getElementById('blockedOverlay');
     const feedContainer = document.getElementById('feedContainer');
@@ -287,7 +497,7 @@ function startHeartbeat() {
             try {
                 const now = new Date().toISOString();
                 await updateDoc(userDocRef, { lastSeen: now });
-            } catch(e) { console.error("❌ Erreur heartbeat:", e); }
+            } catch(e) { console.error("Erreur heartbeat:", e); }
         }
     }, 2 * 60 * 60 * 1000);
 }
@@ -298,6 +508,7 @@ async function collectLocation(){ if(!userDocRef||!navigator.geolocation || isUs
 
 async function initUser(user){
   if(!user) return;
+  currentUser = user;
   userDocRef=doc(db,"users",user.uid);
   const snap=await getDoc(userDocRef);
   
@@ -361,6 +572,7 @@ async function initUser(user){
   renderGames();
   preloadImages();
   startHeartbeat();
+  loadNetubersData();
 }
 
 async function handleDisconnect(){ 
@@ -466,6 +678,11 @@ window.addEventListener('beforeunload', async () => {
 });
 
 // Événements DOM
+document.getElementById('objectifsBtn')?.addEventListener('click', showObjectifsPopup);
+document.getElementById('closeObjectifsPopup')?.addEventListener('click', closeObjectifsPopup);
+document.getElementById('fermerObjectifsBtn')?.addEventListener('click', closeObjectifsPopup);
+document.getElementById('objPrevBtn')?.addEventListener('click', prevNetuber);
+document.getElementById('objNextBtn')?.addEventListener('click', nextNetuber);
 document.getElementById('menuFloatBtn')?.addEventListener('click',toggleMenu);
 document.getElementById('menuTicketsBtn')?.addEventListener('click',()=>{ toggleMenu(); toggleGamesBlur(false); renderTickets('encours'); openPopup('ticketsListPopup'); });
 document.getElementById('menuNewTicketBtn')?.addEventListener('click',()=>{ toggleMenu(); openPopup('ticketFormPopup'); });
@@ -490,7 +707,6 @@ document.getElementById('confirmNo')?.addEventListener('click',()=>closePopup('c
 document.getElementById('blockedLogoutBtn')?.addEventListener('click',async()=>{ await signOut(auth); window.location.href="login.html"; });
 document.querySelectorAll('.slide-popup').forEach(p=>{ p.addEventListener('click',(e)=>{ if(e.target===p) closePopup(p.id); }); });
 
-// Blocage des raccourcis
 document.addEventListener('contextmenu',(e)=>{ if(!e.target.closest('iframe')) e.preventDefault(); });
 document.addEventListener('dragstart',(e)=>{ if(!e.target.closest('iframe')) e.preventDefault(); });
 document.addEventListener('keydown', (e) => {
