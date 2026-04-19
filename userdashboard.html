@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Test 5 cartes</title>
+<title>NeTubeX · Cartes</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
   * {
     margin: 0;
@@ -13,24 +14,22 @@
 
   body {
     background: #0a0f1a;
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh;
     padding: 2rem;
   }
 
-  /* Zone scrollable horizontale */
   .scroll-wrapper {
     width: 100%;
     overflow-x: auto;
     white-space: nowrap;
   }
 
-  /* Conteneur des cartes */
   .cards {
     display: inline-flex;
     gap: 16px;
   }
 
-  /* Carte simple : texte uniquement */
   .card {
     display: inline-block;
     width: 150px;
@@ -43,8 +42,6 @@
     border-radius: 12px;
     cursor: pointer;
     transition: 0.2s;
-    white-space: normal;
-    word-break: break-word;
   }
 
   .card:hover {
@@ -60,8 +57,11 @@
 </div>
 
 <script>
-  // TES 5 URLs
-  const urls = [
+  // URL de destination APRÈS la publicité (Dashboard)
+  const DASHBOARD_URL = "https://netubex.github.io/netubex-/userdashboard.html";
+
+  // Les 5 URLs publicitaires
+  const AD_URLS = [
     "https://eagerdazzle.com/dizin681kf?key=45bffb13315a43cb3bbbd7ba4e90e7f7",
     "https://eagerdazzle.com/w9dz6cg5a2?key=550cc6298393fca3027e36eb5e108642",
     "https://eagerdazzle.com/q2ec2www4s?key=7f824c5c005e0d12913991cd2375d1d2",
@@ -71,12 +71,79 @@
 
   const container = document.getElementById('cardsContainer');
 
-  urls.forEach((url, index) => {
+  function redirectToAd(adUrl) {
+    // Créer une page de chargement temporaire
+    const tempHtml = `
+      <!DOCTYPE html>
+      <html lang="fr">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>NeTubeX - Chargement</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <style>
+          *{margin:0;padding:0;box-sizing:border-box;}
+          body{
+            background:#0a0f1a;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            font-family:'Inter',system-ui,sans-serif;
+          }
+          .loader{
+            text-align:center;
+            color:#e2e8f0;
+          }
+          .loader i{
+            font-size:3rem;
+            color:#f59e0b;
+            animation:spin 1s linear infinite;
+          }
+          .loader p{
+            margin-top:20px;
+            font-size:14px;
+            color:#94a3b8;
+          }
+          @keyframes spin{
+            0%{transform:rotate(0deg);}
+            100%{transform:rotate(360deg);}
+          }
+        </style>
+      </head>
+      <body>
+        <div class="loader">
+          <i class="fas fa-spinner"></i>
+          <p>Redirection vers NeTubeX...</p>
+        </div>
+        <script>
+          const AD_URL = "${adUrl}";
+          const HOME_URL = "${DASHBOARD_URL}";
+          (function() {
+            window.open(HOME_URL, "_blank");
+            setTimeout(function() {
+              window.location.href = AD_URL;
+            }, 50);
+          })();
+        <\/script>
+      </body>
+      </html>
+    `;
+
+    // Créer un Blob avec le contenu HTML
+    const blob = new Blob([tempHtml], { type: 'text/html' });
+    const blobUrl = URL.createObjectURL(blob);
+
+    // Rediriger la page actuelle vers la page de chargement
+    window.location.href = blobUrl;
+  }
+
+  AD_URLS.forEach((url, index) => {
     const card = document.createElement('div');
     card.className = 'card';
     card.textContent = `Carte ${index + 1}`;
     card.addEventListener('click', () => {
-      window.open(url, '_blank');  // Ouvre dans un nouvel onglet
+      redirectToAd(url);
     });
     container.appendChild(card);
   });
