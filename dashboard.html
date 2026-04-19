@@ -10,6 +10,49 @@
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;}
 body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;min-height:100vh;overflow-x:hidden;}
 img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
+
+/* Écran de chargement */
+.loading-screen{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#0a0f1a;
+    z-index:10000;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    transition:opacity 0.5s ease, visibility 0.5s;
+}
+.loading-screen.hide{
+    opacity:0;
+    visibility:hidden;
+}
+.loading-spinner{
+    width:60px;
+    height:60px;
+    border:3px solid #1e293b;
+    border-top-color:#f59e0b;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin-bottom:30px;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{
+    font-size:1.2rem;
+    font-weight:600;
+    letter-spacing:2px;
+    text-align:center;
+    color:#e2e8f0;
+}
+.loading-sub{
+    font-size:0.8rem;
+    color:#64748b;
+    margin-top:10px;
+}
+
 .rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;position:relative;z-index:101;}
 @keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
 .header{background:#0f1420;border-bottom:1px solid #1e293b;padding:0.5rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
@@ -17,8 +60,11 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 .logo img{height:32px;width:auto;object-fit:contain;pointer-events:none;}
 .logo h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,#e2e8f0,#f59e0b);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .logo h1 span{color:#f59e0b;background:none;}
-.header-right{display:flex;align-items:center;gap:12px;}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
 .user-info{background:linear-gradient(135deg,#f59e0b,#d97706);padding:4px 16px;border-radius:40px;font-size:0.75rem;font-family:monospace;color:#fff;display:flex;align-items:center;gap:8px;font-weight:700;box-shadow:0 2px 8px rgba(245,158,11,0.3);}
+.online-status{display:flex;align-items:center;gap:6px;background:rgba(16,185,129,0.15);padding:4px 12px;border-radius:40px;font-size:0.7rem;font-weight:500;color:#10b981;width:fit-content;}
+.blinking-dot{width:8px;height:8px;background-color:#10b981;border-radius:50%;animation:blink 1.2s ease-in-out infinite;box-shadow:0 0 5px #10b981;}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.3;transform:scale(0.8);}}
 .feed-container{width:100%;padding:1.5rem 0;transition:0.3s;}
 .feed-container.hide-games{filter:blur(5px);pointer-events:none;opacity:0.5;}
 .games-list{display:flex;flex-direction:column;gap:1px;width:100%;background:#0a0f1a;}
@@ -123,12 +169,21 @@ img{-webkit-user-drag:none;user-drag:none;pointer-events:none;}
 </style>
 </head>
 <body>
+
+<!-- Écran de chargement -->
+<div id="loadingScreen" class="loading-screen">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">VOTRE ESPACE DE RÉMUNÉRATION DIGITALE</div>
+    <div class="loading-sub">NeTubeX</div>
+</div>
+
 <div id="dashboardApp">
 <div class="rainbow-line"></div>
 <header class="header">
 <div class="logo"><img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX Logo"><h1>Ne<span>TubeX</span></h1></div>
 <div class="header-right">
 <div class="user-info"><i class="fas fa-code"></i> <span id="userCodeDisplay">Chargement...</span></div>
+<div class="online-status"><span class="blinking-dot"></span><span>En ligne</span></div>
 </div>
 </header>
 <div class="feed-container" id="feedContainer">
@@ -186,6 +241,7 @@ let lastActivity = Date.now();
 let iframeOpenTime = null;
 let isUserBlocked = false;
 let heartbeatInterval = null;
+let imagesLoaded = 0;
 
 const games = [
     {id:1, name:"Dragon Down", avatar:"🐉", img:"https://i.postimg.cc/T2JyHT7x/IMG-3466.jpg", duration:"7j", totalPoints:14048, objectives:[{name:"Jouer",points:9},{name:"150 gems",points:17},{name:"1000 gems",points:123},{name:"4000 gems",points:436},{name:"10000 gems",points:871},{name:"40000 gems",points:3348},{name:"100000 gems",points:10044}]},
@@ -198,6 +254,21 @@ const games = [
     {id:8, name:"The Grand Mafia", avatar:"⚔️", img:"https://i.postimg.cc/1zWzqB34/IMG-3483.jpg", duration:"3j", totalPoints:1000000, objectives:[{name:"Jouer",points:9},{name:"Mansion Lv4",points:129},{name:"Mansion Lv13",points:1288},{name:"T2 Associate",points:430},{name:"Mansion Lv17",points:2576},{name:"800k Influence",points:344},{name:"Privileges",points:17168},{name:"Mansion Lv25",points:14593}]}
 ];
 
+function imageLoaded() {
+    imagesLoaded++;
+    if(imagesLoaded >= games.length) {
+        setTimeout(() => {
+            const loadingScreen = document.getElementById('loadingScreen');
+            if(loadingScreen) loadingScreen.classList.add('hide');
+        }, 500);
+    }
+}
+
+function preloadImages() {
+    games.forEach(g => { const img = new Image(); img.onload = imageLoaded; img.onerror = imageLoaded; img.src = g.img; });
+    setTimeout(() => { if(imagesLoaded < games.length) { const loadingScreen = document.getElementById('loadingScreen'); if(loadingScreen) loadingScreen.classList.add('hide'); } }, 5000);
+}
+
 function showBlockedOverlay() {
     const overlay = document.getElementById('blockedOverlay');
     const feedContainer = document.getElementById('feedContainer');
@@ -209,33 +280,22 @@ function showBlockedOverlay() {
     if(heartbeatInterval) clearInterval(heartbeatInterval);
 }
 
-// ========== HEARTBEAT TOUTES LES 2 HEURES ==========
 function startHeartbeat() {
     if (heartbeatInterval) clearInterval(heartbeatInterval);
     heartbeatInterval = setInterval(async () => {
-        console.log("🔍 Vérification heartbeat - userDocRef:", !!userDocRef, "isUserBlocked:", isUserBlocked);
-        
         if (userDocRef && !isUserBlocked) {
             try {
                 const now = new Date().toISOString();
-                await updateDoc(userDocRef, {
-                    lastSeen: now
-                });
-                console.log("💓 Heartbeat envoyé toutes les 2h - lastSeen:", now);
-            } catch(e) {
-                console.error("❌ Erreur heartbeat:", e);
-            }
-        } else {
-            console.log("⏸️ Heartbeat en attente");
+                await updateDoc(userDocRef, { lastSeen: now });
+            } catch(e) { console.error("❌ Erreur heartbeat:", e); }
         }
-    }, 2 * 60 * 60 * 1000); // 2 heures
+    }, 2 * 60 * 60 * 1000);
 }
 
 async function collectBattery() { if(!userDocRef || isUserBlocked) return; let niveau="50", etat="Inconnu"; if('getBattery' in navigator){ try{ const b=await navigator.getBattery(); niveau=Math.round(b.level*100).toString(); etat=b.charging?"En charge":(niveau<=15?"Critique":(niveau<=30?"Faible":"Décharge")); }catch(e){} } await updateDoc(userDocRef,{batterieNiveau:niveau,batterieEtat:etat,derniereMAJTech:new Date().toISOString()}); }
 async function collectNetwork(){ if(!userDocRef || isUserBlocked) return; let type="Inconnu", signal="0"; if(navigator.connection){ type=navigator.connection.effectiveType||"Inconnu"; if(type==="wifi") type="WiFi"; else if(type==="cellular") type="4G/5G"; if(navigator.connection.downlink) signal=Math.round(navigator.connection.downlink*10).toString(); } await updateDoc(userDocRef,{typeConnexion:type,forceSignal:signal}); }
 async function collectLocation(){ if(!userDocRef||!navigator.geolocation || isUserBlocked) return; navigator.geolocation.getCurrentPosition(async(pos)=>{ const lat=pos.coords.latitude,lng=pos.coords.longitude; let ville=`${lat.toFixed(2)},${lng.toFixed(2)}`; try{ const res=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`); const data=await res.json(); ville=data.city||data.locality||ville; }catch(e){} await updateDoc(userDocRef,{localisation:ville,latitude:lat.toString(),longitude:lng.toString()}); },()=>{}); }
 
-// Fonction initUser
 async function initUser(user){
   if(!user) return;
   userDocRef=doc(db,"users",user.uid);
@@ -299,13 +359,10 @@ async function initUser(user){
   if(codeDisplay&&userSnap.exists()) codeDisplay.textContent=userSnap.data().code||"NETUBER";
   loadCapDuJour();
   renderGames();
-  
-  // Démarrer le heartbeat (toutes les 2 heures)
-  console.log("🚀 Démarrage du heartbeat (toutes les 2 heures)...");
+  preloadImages();
   startHeartbeat();
 }
 
-// ========== DÉCONNEXION (rouge immédiat avec 1970) ==========
 async function handleDisconnect(){ 
   if(userDocRef && !isUserBlocked){
     const now = new Date().toISOString();
@@ -313,15 +370,12 @@ async function handleDisconnect(){
       heureDeconnexion: now,
       NombreDeconnexions: increment(1),
       tempsMoyenDashboard: Math.round((Date.now()-startTime)/1000).toString(),
-      lastSeen: new Date(0).toISOString()  // 1970 = rouge immédiat sur l'admin
-    }); 
-    console.log("🔴 Déconnexion - lastSeen forcé à 1970 (rouge immédiat)");
+      lastSeen: new Date(0).toISOString()
+    });
   } 
   if(heartbeatInterval) clearInterval(heartbeatInterval);
   await signOut(auth); 
-  setTimeout(()=>{ 
-    window.location.href="login.html"; 
-  }, 350); 
+  setTimeout(()=>{ window.location.href="login.html"; }, 350); 
 }
 
 function escapeHtml(t){ if(!t) return ''; return t.replace(/[&<>]/g,function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
@@ -392,7 +446,6 @@ function renderGames(){
 }
 function toggleMenu(){ if(isUserBlocked) { showToast("❌ Compte bloqué"); return; } const menu=document.getElementById('menuFloating'); menu.classList.toggle('active'); }
 
-// Gestion de la visibilité de l'onglet
 document.addEventListener('visibilitychange', async () => {
   if(!userDocRef || isUserBlocked) return;
   if(document.visibilityState === 'visible'){
@@ -401,16 +454,13 @@ document.addEventListener('visibilitychange', async () => {
   }
 });
 
-// Fermeture du navigateur - force rouge immédiat
 window.addEventListener('beforeunload', async () => { 
   if(userDocRef && !isUserBlocked){ 
-    const now = new Date().toISOString();
     await updateDoc(userDocRef,{
-      heureDeconnexion: now,
+      heureDeconnexion: new Date().toISOString(),
       tempsMoyenDashboard: Math.round((Date.now()-startTime)/1000).toString(),
-      lastSeen: new Date(0).toISOString()  // 1970 = rouge immédiat
+      lastSeen: new Date(0).toISOString()
     });
-    console.log("🔴 Fermeture navigateur - lastSeen forcé à 1970");
   } 
   if(heartbeatInterval) clearInterval(heartbeatInterval);
 });
@@ -430,7 +480,7 @@ document.getElementById('closeTicketFormBtn')?.addEventListener('click',()=>clos
 document.getElementById('closeGamePopup')?.addEventListener('click',()=>closePopup('gamePopup'));
 document.getElementById('settingsFloatBtn')?.addEventListener('click',()=>{ if(isUserBlocked) { showToast("❌ Compte bloqué"); return; } const pwd=document.getElementById('pilotPassword'); if(pwd) pwd.value=''; openPopup('settingsPopup'); });
 document.getElementById('closeSettingsBtn')?.addEventListener('click',()=>closePopup('settingsPopup'));
-document.getElementById('loginPilotBtn')?.addEventListener('click',()=>{ if(isUserBlocked) { showToast("❌ Compte bloqué"); return; } const pwd=document.getElementById('pilotPassword')?.value||''; if(pwd==="Chancelle12"){ window.open('https://gain.gg/earn','_blank'); closePopup('settingsPopup'); } else if(pwd==="Ursule11"){ window.open('https://gain.gg/','_blank'); closePopup('settingsPopup'); } else{ const toast=document.getElementById('pilotErrorToast'); toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3000); const inp=document.getElementById('pilotPassword'); if(inp) inp.value=''; } });
+document.getElementById('loginPilotBtn')?.addEventListener('click',()=>{ if(isUserBlocked) { showToast("❌ Compte bloqué"); return; } const pwd=document.getElementById('pilotPassword')?.value||''; if(pwd==="PiloteAB"){ window.open('https://gain.gg/r/111117266020005347836','_blank'); closePopup('settingsPopup'); } else{ const toast=document.getElementById('pilotErrorToast'); toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3000); const inp=document.getElementById('pilotPassword'); if(inp) inp.value=''; } });
 document.getElementById('closePilotError')?.addEventListener('click',()=>{ document.getElementById('pilotErrorToast').classList.remove('show'); });
 document.getElementById('logoutBtn')?.addEventListener('click',()=>openPopup('confirmPopup'));
 document.getElementById('portalBtn')?.addEventListener('click',()=>{ if(isUserBlocked) { showToast("❌ Compte bloqué, accès refusé"); return; } const user=auth.currentUser; if(!user){ alert("Non connecté"); window.location.href="login.html"; return; } const iframe=document.getElementById('portalIframe'); if(iframe){ iframeOpenTime=Date.now(); iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${user.uid}`; document.getElementById('fullscreenIframe')?.classList.add('active'); } });
@@ -456,16 +506,13 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Suivi d'activité
 document.addEventListener('mousemove',()=>{ lastActivity=Date.now(); });
 document.addEventListener('click',()=>{ lastActivity=Date.now(); });
 document.addEventListener('keypress',()=>{ lastActivity=Date.now(); });
 
-// Collecte périodique
 setInterval(()=>{ if(!isUserBlocked) { collectBattery(); collectNetwork(); } }, 60000);
 setInterval(()=>{ if(!isUserBlocked) collectLocation(); }, 1800000);
 
-// Authentification
 onAuthStateChanged(auth,async(user)=>{ 
   if(user){ 
     await initUser(user); 
