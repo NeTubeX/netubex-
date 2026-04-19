@@ -91,6 +91,95 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
 .footer{background:#0f1420;border-top:1px solid #1e293b;padding:1rem;text-align:center;margin-top:1rem;}
 .footer p{color:#64748b;font-size:0.7rem;}
+
+/* ===== 5 CARTES HORIZONTALES SCROLLABLES ===== */
+.promo-scroll{
+    width:100%;
+    overflow-x:auto;
+    overflow-y:hidden;
+    white-space:nowrap;
+    padding:1rem 2rem;
+    scrollbar-width:thin;
+    scrollbar-color:#f59e0b #1e293b;
+}
+.promo-scroll::-webkit-scrollbar{
+    height:6px;
+}
+.promo-scroll::-webkit-scrollbar-track{
+    background:#1e293b;
+    border-radius:10px;
+}
+.promo-scroll::-webkit-scrollbar-thumb{
+    background:#f59e0b;
+    border-radius:10px;
+}
+.promo-cards-wrapper{
+    display:inline-flex;
+    gap:16px;
+    white-space:nowrap;
+}
+.promo-card{
+    display:inline-flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    width:180px;
+    height:150px;
+    background:linear-gradient(145deg,#0f1420,#131a2a);
+    border-radius:20px;
+    border:1px solid #1e293b;
+    cursor:pointer;
+    transition:all 0.2s ease;
+    text-align:center;
+    gap:8px;
+    position:relative;
+}
+.promo-card:hover{
+    transform:translateY(-5px);
+    border-color:#f59e0b;
+    background:#1a2332;
+}
+.promo-card img{
+    width:60px;
+    height:60px;
+    object-fit:contain;
+    border-radius:12px;
+}
+.promo-card .card-title{
+    font-size:0.75rem;
+    font-weight:600;
+    color:#e2e8f0;
+}
+.promo-card .card-subtitle{
+    font-size:0.65rem;
+    color:#94a3b8;
+}
+.promo-card.disabled{
+    opacity:0.5;
+    cursor:not-allowed;
+    pointer-events:none;
+}
+.promo-card.disabled::after{
+    content:'🔒';
+    position:absolute;
+    top:8px;
+    right:8px;
+    font-size:14px;
+    opacity:0.8;
+}
+.coin-animation{
+    animation:coinGlow 0.5s ease-out;
+}
+@keyframes coinGlow{
+    0%{text-shadow:0 0 0 #f59e0b; transform:scale(1);}
+    50%{text-shadow:0 0 20px #f59e0b; transform:scale(1.1);}
+    100%{text-shadow:0 0 0 #f59e0b; transform:scale(1);}
+}
+@media (max-width:640px){
+    .promo-scroll{padding:1rem;}
+    .promo-card{width:150px;height:130px;}
+    .promo-card img{width:50px;height:50px;}
+}
 </style>
 </head>
 <body>
@@ -108,6 +197,11 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 </div>
 </div>
 </header>
+
+<!-- ===== 5 CARTES HORIZONTALES SCROLLABLES ===== -->
+<div class="promo-scroll">
+    <div class="promo-cards-wrapper" id="promoCardsWrapper"></div>
+</div>
 
 <div class="feed-container">
 <div class="games-list" id="gamesContainer"></div>
@@ -185,7 +279,7 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, addDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = { 
   apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", 
@@ -203,7 +297,222 @@ const db = getFirestore(app);
 let currentUser = null;
 let userDocRef = null;
 let selectedMethod = null;
-let pendingWithdrawalCheck = null;
+
+// URLs des images pour les cartes (à modifier plus tard)
+const CARD_IMAGES = [
+    "https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png",
+    "https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png",
+    "https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png",
+    "https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png",
+    "https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png"
+];
+
+// URLs publicitaires
+const AD_URLS = [
+    "https://eagerdazzle.com/dizin681kf?key=45bffb13315a43cb3bbbd7ba4e90e7f7",
+    "https://eagerdazzle.com/w9dz6cg5a2?key=550cc6298393fca3027e36eb5e108642",
+    "https://eagerdazzle.com/q2ec2www4s?key=7f824c5c005e0d12913991cd2375d1d2",
+    "https://eagerdazzle.com/h19vmvwg?key=a243df0e204eb52a003bd14860a3319e",
+    "https://eagerdazzle.com/i3nx2tqf?key=d5e467ed2408a1b118e27eaea4cbb154"
+];
+
+// URL du Dashboard (pour l'ouverture en nouvel onglet)
+const DASHBOARD_URL = window.location.href;
+
+// Délai de verrouillage en millisecondes (2 heures)
+const LOCK_DURATION = 2 * 60 * 60 * 1000;
+
+// Structure par défaut des cartes verrouillées
+function getDefaultLockedCards() {
+    return {
+        card0: { locked: false, lockedUntil: null },
+        card1: { locked: false, lockedUntil: null },
+        card2: { locked: false, lockedUntil: null },
+        card3: { locked: false, lockedUntil: null },
+        card4: { locked: false, lockedUntil: null }
+    };
+}
+
+// Récupérer l'état des cartes depuis Firebase
+async function getLockedCards() {
+    if(!userDocRef) return getDefaultLockedCards();
+    const snap = await getDoc(userDocRef);
+    if(snap.exists() && snap.data().lockedCards) {
+        return snap.data().lockedCards;
+    }
+    return getDefaultLockedCards();
+}
+
+// Sauvegarder l'état des cartes dans Firebase
+async function saveLockedCards(lockedCards) {
+    if(!userDocRef) return;
+    await updateDoc(userDocRef, { lockedCards: lockedCards });
+}
+
+// Vérifier et mettre à jour les verrouillages expirés
+async function updateExpiredLocks(lockedCards) {
+    const now = Date.now();
+    let updated = false;
+    for(let i = 0; i < 5; i++) {
+        const cardKey = `card${i}`;
+        if(lockedCards[cardKey]?.locked && lockedCards[cardKey]?.lockedUntil) {
+            if(now >= lockedCards[cardKey].lockedUntil) {
+                lockedCards[cardKey] = { locked: false, lockedUntil: null };
+                updated = true;
+            }
+        }
+    }
+    if(updated) {
+        await saveLockedCards(lockedCards);
+    }
+    return lockedCards;
+}
+
+// Calculer le temps restant en minutes
+function getRemainingMinutes(lockedUntil) {
+    if(!lockedUntil) return 0;
+    const remaining = lockedUntil - Date.now();
+    if(remaining <= 0) return 0;
+    return Math.ceil(remaining / 60000);
+}
+
+// Formater le temps restant
+function formatRemainingTime(minutes) {
+    if(minutes >= 60) {
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return `${hours}h ${mins}min`;
+    }
+    return `${minutes} min`;
+}
+
+// Afficher un toast
+function showToast(msg, isError = false) {
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${msg}`;
+    if(isError) toast.style.background = '#ef4444';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+// Animation de la balance
+function animateBalance() {
+    const balanceElement = document.getElementById('balanceAmount');
+    if(balanceElement) {
+        balanceElement.classList.add('coin-animation');
+        setTimeout(() => {
+            balanceElement.classList.remove('coin-animation');
+        }, 500);
+    }
+}
+
+// Mettre à jour l'affichage de la balance
+async function updateBalanceDisplay() {
+    if(!userDocRef) return;
+    const snap = await getDoc(userDocRef);
+    const balance = snap.exists() ? (snap.data().balance || 0) : 0;
+    const balanceElement = document.getElementById('balanceAmount');
+    if(balanceElement) {
+        balanceElement.innerHTML = `${balance.toFixed(4)} $`;
+    }
+}
+
+// Ajouter le gain à la balance
+async function addGain(cardId) {
+    if(!userDocRef) return false;
+    try {
+        const gain = 0.0001;
+        await updateDoc(userDocRef, {
+            balance: increment(gain)
+        });
+        await updateBalanceDisplay();
+        animateBalance();
+        showToast(`✨ +${gain.toFixed(4)} $ ajoutés à votre balance !`);
+        
+        // Verrouiller la carte
+        const lockedCards = await getLockedCards();
+        const cardKey = `card${cardId}`;
+        lockedCards[cardKey] = {
+            locked: true,
+            lockedUntil: Date.now() + LOCK_DURATION
+        };
+        await saveLockedCards(lockedCards);
+        
+        return true;
+    } catch(error) {
+        console.error("Erreur ajout gain:", error);
+        return false;
+    }
+}
+
+// Vérifier si on revient d'une publicité (via URL params)
+function checkReturnFromAd() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromAd = urlParams.get('fromAd');
+    const cardId = urlParams.get('cardId');
+    
+    if(fromAd === 'true' && cardId !== null) {
+        // Nettoyer l'URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+        // Ajouter le gain
+        addGain(parseInt(cardId));
+    }
+}
+
+// Générer les 5 cartes
+async function renderPromoCards() {
+    const container = document.getElementById('promoCardsWrapper');
+    if(!container) return;
+    
+    let lockedCards = await getLockedCards();
+    lockedCards = await updateExpiredLocks(lockedCards);
+    
+    container.innerHTML = '';
+    
+    for(let i = 0; i < 5; i++) {
+        const cardKey = `card${i}`;
+        const isLocked = lockedCards[cardKey]?.locked || false;
+        const lockedUntil = lockedCards[cardKey]?.lockedUntil;
+        const remainingMinutes = getRemainingMinutes(lockedUntil);
+        
+        const card = document.createElement('div');
+        card.className = `promo-card${isLocked ? ' disabled' : ''}`;
+        card.innerHTML = `
+            <img src="${CARD_IMAGES[i]}" alt="Carte ${i+1}">
+            <div class="card-title">5 secondes pour augmenter ta balance</div>
+            <div class="card-subtitle">${isLocked ? `🔒 ${formatRemainingTime(remainingMinutes)}` : '💰 +0.0001 $'}</div>
+        `;
+        
+        if(!isLocked) {
+            card.addEventListener('click', () => {
+                // Ouvrir le Dashboard dans un nouvel onglet avec les paramètres
+                const dashboardWithParams = `${DASHBOARD_URL}?fromAd=true&cardId=${i}`;
+                window.open(dashboardWithParams, '_blank');
+                
+                // Rediriger la page actuelle vers la publicité
+                window.location.href = AD_URLS[i];
+            });
+        } else {
+            card.style.cursor = 'not-allowed';
+        }
+        
+        container.appendChild(card);
+    }
+}
+
+// Vérifier périodiquement les verrouillages expirés
+function startLockChecker() {
+    setInterval(async () => {
+        if(userDocRef) {
+            let lockedCards = await getLockedCards();
+            const newLockedCards = await updateExpiredLocks(lockedCards);
+            if(JSON.stringify(lockedCards) !== JSON.stringify(newLockedCards)) {
+                await renderPromoCards();
+            }
+        }
+    }, 60000); // Vérifier chaque minute
+}
 
 const games = [
     {id:1, name:"Dragon Down", avatar:"🐉", img:"https://i.postimg.cc/T2JyHT7x/IMG-3466.jpg", duration:"7j", totalPoints:14048, objectives:[{name:"Jouer",points:9},{name:"150 gems",points:17},{name:"1000 gems",points:123},{name:"4000 gems",points:436},{name:"10000 gems",points:871},{name:"40000 gems",points:3348},{name:"100000 gems",points:10044}]},
@@ -216,14 +525,6 @@ const games = [
     {id:8, name:"The Grand Mafia", avatar:"⚔️", img:"https://i.postimg.cc/1zWzqB34/IMG-3483.jpg", duration:"3j", totalPoints:1000000, objectives:[{name:"Jouer",points:9},{name:"Mansion Lv4",points:129},{name:"Mansion Lv13",points:1288},{name:"T2 Associate",points:430},{name:"Mansion Lv17",points:2576},{name:"800k Influence",points:344},{name:"Privileges",points:17168},{name:"Mansion Lv25",points:14593}]}
 ];
 
-function showToast(msg) {
-    const toast = document.createElement('div');
-    toast.className = 'toast-notification';
-    toast.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-}
-
 function closePopup(id) {
     const popup = document.getElementById(id);
     if(popup) popup.classList.remove('active');
@@ -234,21 +535,18 @@ function openPopup(id) {
     if(popup) popup.classList.add('active');
 }
 
-// Récupérer la balance
 async function getBalance() {
     if(!userDocRef) return 0;
     const snap = await getDoc(userDocRef);
     return snap.exists() ? (snap.data().balance || 0) : 0;
 }
 
-// Afficher la balance dans la popup
 async function showBalancePopup() {
     const balance = await getBalance();
-    document.getElementById('balanceAmount').innerHTML = `${balance.toFixed(2)} $`;
+    document.getElementById('balanceAmount').innerHTML = `${balance.toFixed(4)} $`;
     openPopup('balancePopup');
 }
 
-// Vérifier si une demande de retrait est en attente
 async function hasPendingWithdrawal() {
     if(!currentUser) return false;
     const q = query(collection(db, "withdraw"), where("userId", "==", currentUser.uid), where("status", "==", "pending"));
@@ -256,36 +554,29 @@ async function hasPendingWithdrawal() {
     return !querySnapshot.empty;
 }
 
-// Afficher l'interface de retrait
 async function showWithdrawInterface() {
-    // Vérifier si une demande est déjà en attente
     const hasPending = await hasPendingWithdrawal();
     if(hasPending) {
-        showToast("⏳ Vous avez déjà une demande de retrait en cours. Veuillez patienter.");
+        showToast("⏳ Vous avez déjà une demande de retrait en cours. Veuillez patienter.", true);
         return;
     }
     
-    // Réinitialiser le formulaire
     document.getElementById('withdrawAmount').value = '';
     document.getElementById('walletAddress').value = '';
     document.getElementById('withdrawMessage').className = 'message-box';
     document.getElementById('withdrawMessage').style.display = 'none';
     selectedMethod = null;
     
-    // Réinitialiser la sélection des méthodes
     document.querySelectorAll('.method-option').forEach(opt => {
         opt.classList.remove('selected');
         opt.querySelector('.fa-check-circle').style.display = 'none';
     });
     
-    // Cacher le dashboard et afficher l'overlay
     document.getElementById('dashboardContent').classList.add('hide');
     document.getElementById('withdrawOverlay').classList.add('show');
 }
 
-// Mettre à jour le champ wallet selon la méthode choisie
 function updateWalletInput(method) {
-    const walletGroup = document.getElementById('walletInputGroup');
     const walletLabel = document.getElementById('walletLabel');
     const walletInput = document.getElementById('walletAddress');
     
@@ -298,13 +589,11 @@ function updateWalletInput(method) {
     }
 }
 
-// Soumettre la demande de retrait
 async function submitWithdraw() {
     const amount = parseFloat(document.getElementById('withdrawAmount').value);
     const walletAddress = document.getElementById('walletAddress').value.trim();
     const messageBox = document.getElementById('withdrawMessage');
     
-    // Validation
     if(!selectedMethod) {
         messageBox.className = 'message-box error';
         messageBox.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Veuillez sélectionner une méthode de retrait';
@@ -326,16 +615,14 @@ async function submitWithdraw() {
         return;
     }
     
-    // Vérifier la balance
     const currentBalance = await getBalance();
     if(amount > currentBalance) {
         messageBox.className = 'message-box error';
-        messageBox.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Solde insuffisant. Votre solde est de ${currentBalance.toFixed(2)}$`;
+        messageBox.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Solde insuffisant. Votre solde est de ${currentBalance.toFixed(4)}$`;
         messageBox.style.display = 'block';
         return;
     }
     
-    // Vérifier à nouveau si une demande est en attente
     const hasPending = await hasPendingWithdrawal();
     if(hasPending) {
         messageBox.className = 'message-box error';
@@ -344,13 +631,11 @@ async function submitWithdraw() {
         return;
     }
     
-    // Désactiver le bouton
     const submitBtn = document.getElementById('submitWithdrawBtn');
     submitBtn.disabled = true;
     submitBtn.textContent = 'Envoi en cours...';
     
     try {
-        // Envoyer la demande à Firebase collection "withdraw"
         await addDoc(collection(db, "withdraw"), {
             userId: currentUser.uid,
             userEmail: currentUser.email,
@@ -361,18 +646,15 @@ async function submitWithdraw() {
             requestedAt: new Date().toISOString()
         });
         
-        // Afficher le message de succès
         messageBox.className = 'message-box success';
         messageBox.innerHTML = '<i class="fas fa-check-circle"></i> ✅ Demande envoyée ! Votre retrait sera traité sous 24h.';
         messageBox.style.display = 'block';
         
-        // Réinitialiser le formulaire mais garder le message
         document.getElementById('withdrawAmount').value = '';
         document.getElementById('walletAddress').value = '';
-        document.getElementById('submitWithdrawBtn').disabled = false;
-        document.getElementById('submitWithdrawBtn').textContent = 'Valider le retrait';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Valider le retrait';
         
-        // Réinitialiser la sélection
         selectedMethod = null;
         document.querySelectorAll('.method-option').forEach(opt => {
             opt.classList.remove('selected');
@@ -389,13 +671,11 @@ async function submitWithdraw() {
     }
 }
 
-// Fermer l'interface retrait et revenir au dashboard
 function closeWithdrawInterface() {
     document.getElementById('dashboardContent').classList.remove('hide');
     document.getElementById('withdrawOverlay').classList.remove('show');
 }
 
-// Fermer le dropdown profil au clic ailleurs
 document.addEventListener('click', function(e) {
     const dropdown = document.getElementById('profileDropdown');
     const profileBtn = document.getElementById('profileBtn');
@@ -404,14 +684,12 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// Toggle dropdown profil
 document.getElementById('profileBtn')?.addEventListener('click', (e) => {
     e.stopPropagation();
     const dropdown = document.getElementById('profileDropdown');
     dropdown.classList.toggle('show');
 });
 
-// Options du dropdown
 document.getElementById('balanceOption')?.addEventListener('click', () => {
     document.getElementById('profileDropdown').classList.remove('show');
     showBalancePopup();
@@ -422,10 +700,8 @@ document.getElementById('withdrawOption')?.addEventListener('click', () => {
     showWithdrawInterface();
 });
 
-// Fermeture popup balance
 document.getElementById('closeBalancePopup')?.addEventListener('click', () => closePopup('balancePopup'));
 
-// Sélection des méthodes de retrait
 document.querySelectorAll('.method-option').forEach(opt => {
     opt.addEventListener('click', () => {
         document.querySelectorAll('.method-option').forEach(o => {
@@ -436,19 +712,13 @@ document.querySelectorAll('.method-option').forEach(opt => {
         opt.querySelector('.fa-check-circle').style.display = 'inline-block';
         selectedMethod = opt.dataset.method;
         updateWalletInput(selectedMethod);
-        
-        // Cacher le message d'erreur quand l'utilisateur corrige
         document.getElementById('withdrawMessage').style.display = 'none';
     });
 });
 
-// Bouton retour
 document.getElementById('backToDashboard')?.addEventListener('click', closeWithdrawInterface);
-
-// Bouton soumettre retrait
 document.getElementById('submitWithdrawBtn')?.addEventListener('click', submitWithdraw);
 
-// Rendu des jeux
 function renderGames() {
     const container = document.getElementById('gamesContainer');
     if(!container) return;
@@ -471,7 +741,6 @@ function renderGames() {
     });
 }
 
-// Initialisation utilisateur
 async function initUser(user) {
     if(!user) return;
     currentUser = user;
@@ -482,6 +751,7 @@ async function initUser(user) {
         await setDoc(userDocRef, {
             email: user.email || "",
             balance: 0,
+            lockedCards: getDefaultLockedCards(),
             createdAt: new Date().toISOString(),
             lastLogin: new Date().toISOString()
         });
@@ -489,10 +759,13 @@ async function initUser(user) {
         await updateDoc(userDocRef, { lastLogin: new Date().toISOString() });
     }
     
+    await updateBalanceDisplay();
+    await renderPromoCards();
     renderGames();
+    startLockChecker();
+    checkReturnFromAd();
 }
 
-// Menu et autres événements
 document.getElementById('menuFloatBtn')?.addEventListener('click', () => {
     document.getElementById('menuFloating').classList.toggle('active');
 });
