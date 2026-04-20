@@ -102,6 +102,8 @@ tr:hover{background:#1a2332;}
 .admin-buttons{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:10px;}
 .admin-btn{background:linear-gradient(135deg,#1e293b,#0f1420);border:1px solid #334155;padding:12px 20px;border-radius:12px;color:#e2e8f0;cursor:pointer;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;}
 .admin-btn:hover{background:#334155;border-color:#f59e0b;color:#f59e0b;}
+.admin-btn-primary{background:linear-gradient(135deg,#10b981,#059669);border:none;color:#fff;}
+.admin-btn-primary:hover{background:linear-gradient(135deg,#059669,#047857);color:#fff;border-color:#10b981;}
 .counter-badge{background:#f59e0b;color:#0a0f1a;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;margin-left:10px;}
 </style>
 </head>
@@ -147,7 +149,7 @@ tr:hover{background:#1a2332;}
 <div id="netubersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Netubers</div></div><div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">Connectés</div></div><div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label">Déconnectés</div></div><div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Comptes bloqués</div></div></div><div class="filters"><input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()"><select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">Connectés</option><option value="offline">Déconnectés</option></select><button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button><button class="export-btn" onclick="openAddUserModal()" style="background:#8b5cf6;"><i class="fas fa-user-plus"></i> Ajouter</button></div><div class="table-wrapper"><table id="netubersTable"><thead><tr><th>Code Netuber</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Statut</th><th>Connexion</th><th>Actions</th></tr></thead><tbody id="netubersTableBody"></tbody></table></div></div>
 
 <!-- Onglet Retraits -->
-<div id="retraitsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalWithdrawalsPending">0</div><div class="label">En attente</div></div><div class="stat-card"><div class="value" id="totalWithdrawalsAmount">0</div><div class="label">Montant total</div></div></div><div class="filters"><select id="withdrawStatusFilter" class="filter-select" onchange="filterWithdrawals()"><option value="all">Tous</option><option value="pending">En attente</option><option value="approved">Approuvés</option><option value="rejected">Rejetés</option></select><button class="export-btn" onclick="exportWithdrawals()"><i class="fas fa-file-excel"></i> Exporter</button></div><div class="table-wrapper"><table id="withdrawalsTable"><thead><tr><th>Utilisateur</th><th>Montant</th><th>Méthode</th><th>Wallet</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="withdrawalsTableBody"></tbody></table></div></div>
+<div id="retraitsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalWithdrawalsPending">0</div><div class="label">En attente</div></div><div class="stat-card"><div class="value" id="totalWithdrawalsAmount">0</div><div class="label">Montant total</div></div></div><div class="filters"><select id="withdrawStatusFilter" class="filter-select" onchange="filterWithdrawals()"><option value="all">Tous</option><option value="pending">En attente</option><option value="approved">Approuvés</option><option value="rejected">Rejetés</option></select><button class="export-btn" onclick="exportWithdrawals()"><i class="fas fa-file-excel"></i> Exporter</button></div><div class="table-wrapper"><table id="withdrawalsTable"><thead><tr><th>Utilisateur</th><th>Montant</th><th>Méthode</th><th>Wallet</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="withdrawalsTableBody"></tbody></tr></div></div>
 
 <!-- Onglet Finance -->
 <div id="financeTab" class="tab-content"><div class="finance-buttons"><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source A</h3></div><button class="finance-btn" onclick="window.open('https://siteowner.timewall.io/','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source B</h3></div><button class="finance-btn" onclick="window.open('https://beta.partners.adsterra.com/login','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source C</h3></div><button class="finance-btn" onclick="window.open('https://gain.gg/earn','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div></div></div>
@@ -166,6 +168,14 @@ tr:hover{background:#1a2332;}
 
 <!-- Onglet Paramètres -->
 <div id="settingsTab" class="tab-content">
+    <!-- Nouvelle section: Ajout rapide de membre -->
+    <div class="settings-section">
+        <h3><i class="fas fa-user-plus"></i> Ajouter un membre</h3>
+        <div class="admin-buttons">
+            <button class="admin-btn admin-btn-primary" onclick="openAddMemberModal()"><i class="fas fa-plus-circle"></i> Ajouter un membre (Netuber/Pilote)</button>
+        </div>
+    </div>
+
     <div class="settings-section">
         <h3><i class="fas fa-envelope"></i> Suivi des CAP</h3>
         <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
@@ -196,6 +206,48 @@ tr:hover{background:#1a2332;}
 </div>
 
 <!-- MODALES -->
+<!-- Modal Ajouter Membre -->
+<div id="addMemberModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-user-plus"></i> Ajouter un membre</h2>
+            <button class="modal-close" onclick="closeModal('addMemberModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="input-group">
+                <label><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="memberEmail" placeholder="exemple@email.com" required>
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-lock"></i> Mot de passe</label>
+                <input type="password" id="memberPassword" placeholder="Minimum 6 caractères" required>
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-user-tag"></i> Rôle</label>
+                <select id="memberRole" onchange="toggleMemberCodeField()">
+                    <option value="pilote">Pilote</option>
+                    <option value="netuber">Netuber</option>
+                </select>
+            </div>
+            <div id="memberCodeGroup" style="display:none;">
+                <div class="input-group">
+                    <label><i class="fas fa-id-card"></i> Code Netuber</label>
+                    <input type="text" id="memberCode" placeholder="Ex: NX-001">
+                    <small style="color:#64748b;font-size:10px;display:block;margin-top:5px;">Format suggéré: NX-XXX</small>
+                </div>
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-user"></i> Nom complet (optionnel)</label>
+                <input type="text" id="memberFullName" placeholder="Jean Dupont">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button onclick="addNewMember()" style="background:#10b981;"><i class="fas fa-save"></i> Enregistrer</button>
+            <button onclick="closeModal('addMemberModal')">Annuler</button>
+        </div>
+    </div>
+</div>
+
 <div id="modifyCodeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-key"></i> Modifier code Netuber</h2><button class="modal-close" onclick="closeModal('modifyCodeModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="modifyCodeSelect"></select></div><div class="input-group"><label>Nouveau code</label><input type="text" id="newCode" placeholder="Ex: MA-NX-99"></div></div><div class="modal-footer"><button onclick="confirmModifyCode()" style="background:#f59e0b;">Modifier</button><button onclick="closeModal('modifyCodeModal')">Annuler</button></div></div></div>
 
 <div id="blockUnblockModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-ban"></i> Bloquer / Débloquer</h2><button class="modal-close" onclick="closeModal('blockUnblockModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="blockUnblockSelect"></select></div><div class="input-group"><label>Action</label><select id="blockAction"><option value="block">Bloquer</option><option value="unblock">Débloquer</option></select></div></div><div class="modal-footer"><button onclick="confirmBlockUnblock()" style="background:#f59e0b;">Valider</button><button onclick="closeModal('blockUnblockModal')">Annuler</button></div></div></div>
@@ -257,6 +309,105 @@ document.getElementById('logoutBtn')?.addEventListener('click',()=>showConfirm('
 document.getElementById('refreshBtn')?.addEventListener('click',()=>location.reload());
 document.getElementById('themeToggle')?.addEventListener('click',()=>{document.body.classList.toggle('dark-soft');localStorage.setItem('theme',document.body.classList.contains('dark-soft')?'dark':'dark-soft');});
 if(localStorage.getItem('theme')!=='dark-soft')document.body.classList.add('dark-soft');
+
+// Fonction pour afficher/masquer le champ code en fonction du rôle
+window.toggleMemberCodeField=()=>{
+    let role=document.getElementById('memberRole').value;
+    document.getElementById('memberCodeGroup').style.display=role==='netuber'?'block':'none';
+};
+
+// Fonction pour ouvrir le modal d'ajout de membre
+window.openAddMemberModal=()=>{
+    document.getElementById('memberEmail').value='';
+    document.getElementById('memberPassword').value='';
+    document.getElementById('memberRole').value='pilote';
+    document.getElementById('memberCode').value='';
+    document.getElementById('memberFullName').value='';
+    document.getElementById('memberCodeGroup').style.display='none';
+    openModal('addMemberModal');
+};
+
+// Fonction pour ajouter un nouveau membre (Netuber ou Pilote)
+window.addNewMember=async()=>{
+    let email=document.getElementById('memberEmail').value.trim();
+    let password=document.getElementById('memberPassword').value;
+    let role=document.getElementById('memberRole').value;
+    let code=role==='netuber'?document.getElementById('memberCode').value.trim().toUpperCase():null;
+    let fullName=document.getElementById('memberFullName').value.trim();
+    
+    // Validation
+    if(!email){showToast("L'email est requis",true);return;}
+    if(!password){showToast("Le mot de passe est requis",true);return;}
+    if(password.length<6){showToast("Le mot de passe doit contenir au moins 6 caractères",true);return;}
+    if(role==='netuber' && !code){showToast("Le code Netuber est requis",true);return;}
+    
+    // Vérifier si le code Netuber existe déjà
+    if(role==='netuber' && code){
+        let existingUser=usersData.find(u=>u.code===code);
+        if(existingUser){
+            showToast(`Le code ${code} est déjà utilisé`,true);
+            return;
+        }
+    }
+    
+    // Vérifier si l'email existe déjà
+    let existingEmail=usersData.find(u=>u.email===email);
+    if(existingEmail){
+        showToast(`L'email ${email} est déjà utilisé`,true);
+        return;
+    }
+    
+    try{
+        // Créer l'utilisateur dans Firebase Auth
+        let userCred=await createUserWithEmailAndPassword(auth,email,password);
+        let uid=userCred.user.uid;
+        
+        // Préparer les données utilisateur
+        let userData={
+            email:email,
+            role:role,
+            isActive:true,
+            createdAt:new Date().toISOString(),
+            lastSeen:new Date().toISOString(),
+            balance:0
+        };
+        
+        // Ajouter les champs spécifiques
+        if(fullName){
+            let nameParts=fullName.split(' ');
+            userData.nom=nameParts[0]||'';
+            userData.prenom=nameParts.slice(1).join(' ')||'';
+        }
+        
+        if(role==='netuber'){
+            userData.code=code;
+            userData.objectifMensuel=9;
+            userData.objectifAtteint=0;
+            userData.isBlocked=false;
+        }
+        
+        // Sauvegarder dans Firestore
+        await setDoc(doc(db,"users",uid),userData);
+        
+        showToast(`${role==='netuber'?`Netuber ${code}`:'Pilote'} créé avec succès !`);
+        closeModal('addMemberModal');
+        
+        // Recharger toutes les données
+        await loadAllData();
+        
+    }catch(error){
+        console.error("Erreur d'ajout:",error);
+        if(error.code==='auth/email-already-in-use'){
+            showToast("Cet email est déjà utilisé",true);
+        }else if(error.code==='auth/invalid-email'){
+            showToast("Email invalide",true);
+        }else if(error.code==='auth/weak-password'){
+            showToast("Mot de passe trop faible",true);
+        }else{
+            showToast("Erreur: "+error.message,true);
+        }
+    }
+};
 
 window.toggleAddCode=()=>{let role=document.getElementById('addRole').value;document.getElementById('addCodeGroup').style.display=role==='netuber'?'block':'none';};
 window.createUser=async()=>{
@@ -509,7 +660,7 @@ function updatePendingTable(){
         let fullName=`${u.nom||''} ${u.prenom||''}`.toLowerCase();
         return !searchPendingTerm||fullName.includes(searchPendingTerm)||(u.email||'').toLowerCase().includes(searchPendingTerm);
     });
-    tbody.innerHTML=filtered.map(u=>`<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${u.moyenContact==='whatsapp'?'WhatsApp':'Gmail'}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${formatDateShort(u.dateInscription)}</td><td><button class="action-btn validate" onclick='openActivateModal("${u.id}")'>Activer</button><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Rejeter</button></td></tr>`).join('');
+    tbody.innerHTML=filtered.map(u=>`<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${u.moyenContact==='whatsapp'?'WhatsApp':'Gmail'}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${formatDateShort(u.dateInscription)}</td><td><button class="action-btn validate" onclick='openActivateModal("${u.id}")'>Activer</button><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Rejeter</button></td>`).join('');
     document.getElementById('totalPending').innerText=pending.length;
     document.getElementById('totalPendingStat').innerText=pending.length;
 }
@@ -530,8 +681,7 @@ function updateActiveUsersTable(){
     tbody.innerHTML=filtered.map(u=>{
         let devices=getUserDevices(u.id);
         let d=devices[0]||{};
-        return `<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${(u.balance||0).toFixed(2)} $</td><td>${formatDateShort(u.dateActivation)}</td><td>${escapeHtml((d.deviceId||'-').substring(0,8))}</td><td>${formatDateShort(d.firstLogin)}</td><td>${d.isActive?'✅':'❌'}</td><td>${formatDateShort(d.lastLogin)}</td><td>${escapeHtml((d.lastUserAgent||'-').substring(0,20))}</td><td><button class="action-btn promote" onclick='openPromoteModal("${u.id}")'>Promouvoir</button><button class="action-btn validate" onclick='openActivateModal("${u.id}")'>Activer</button></td></tr>`;
-    }).join('');
+        return `<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${(u.balance||0).toFixed(2)} $</td><td>${formatDateShort(u.dateActivation)}</td><td>${escapeHtml((d.deviceId||'-').substring(0,8))}</td><td>${formatDateShort(d.firstLogin)}</td><td>${d.isActive?'✅':'❌'}</td><td>${formatDateShort(d.lastLogin)}</td><td>${escapeHtml((d.lastUserAgent||'-').substring(0,20))}</td><td><button class="action-btn promote" onclick='openPromoteModal("${u.id}")'>Promouvoir</button><button class="action-btn validate" onclick='openActivateModal("${u.id}")'>Activer</button></td>`).join('');
     document.getElementById('totalActiveUsers').innerText=activeUsers.length;
 }
 
@@ -545,7 +695,7 @@ async function loadTickets(){
     let tbody=document.getElementById('ticketsUsersBody');
     if(tbody){
         let userTickets=ticketsData.filter(t=>t.isNetuber===false);
-        tbody.innerHTML=userTickets.map(t=>`<tr><td>${escapeHtml(t.userEmail)}</td><td>${escapeHtml(t.subject)}</td><td><span class="badge badge-warning">${t.priority}</span></td><td><span class="badge ${t.status==='résolu'?'badge-success':(t.status==='en cours'?'badge-warning':'badge-danger')}">${t.status||'ouvert'}</span></td><td>${formatDateShort(t.date)}</td><td><button class="action-btn reply" onclick='openReplyTicketModal("${t.id}","${escapeHtml(t.userEmail)}")'>Répondre</button></td></tr>`).join('');
+        tbody.innerHTML=userTickets.map(t=>`<tr><td>${escapeHtml(t.userEmail)}</td><td>${escapeHtml(t.subject)}</td><td><span class="badge badge-warning">${t.priority}</span></td><td><span class="badge ${t.status==='résolu'?'badge-success':(t.status==='en cours'?'badge-warning':'badge-danger')}">${t.status||'ouvert'}</span></td><td>${formatDateShort(t.date)}</td><td><button class="action-btn reply" onclick='openReplyTicketModal("${t.id}","${escapeHtml(t.userEmail)}")'>Répondre</button></td>`).join('');
     }
     updateTicketsStats();
     updateAnomaliesTable();
@@ -587,7 +737,7 @@ function updateAnomaliesTable(){
     let anomalies=Object.entries(ticketCountByUser).filter(([,count])=>count>=3).map(([user,count])=>({user,count}));
     let tbody=document.getElementById('anomaliesTableBody');
     if(tbody){
-        tbody.innerHTML=anomalies.map(a=>`<tr><td>${escapeHtml(a.user)}</td><td>Tickets en masse (≥3)</td><td><span class="badge badge-danger">${a.count}</span></td><td><button class="action-btn view" onclick='viewAnomalyTickets("${escapeHtml(a.user)}")'>Voir tickets</button></td></tr>`).join('');
+        tbody.innerHTML=anomalies.map(a=>`<tr><td>${escapeHtml(a.user)}</td><td>Tickets en masse (≥3)</td><td><span class="badge badge-danger">${a.count}</span></td><td><button class="action-btn view" onclick='viewAnomalyTickets("${escapeHtml(a.user)}")'>Voir tickets</button></td>`).join('');
         document.getElementById('totalAnomalies').innerText=anomalies.length;
     }
 }
@@ -595,7 +745,7 @@ function updateAnomaliesTable(){
 function updatePrivacyTab(){
     let tbody=document.getElementById('privacyEmailsBody');
     if(tbody){
-        tbody.innerHTML=usersData.filter(u=>u.code).map(u=>`<tr><td>${escapeHtml(u.code)}</td><td>${escapeHtml(u.email)}</td><td>${formatDateShort(u.lastSeen)}</td></tr>`).join('');
+        tbody.innerHTML=usersData.filter(u=>u.code).map(u=>`<tr><td>${escapeHtml(u.code)}</td><td>${escapeHtml(u.email)}</td><td>${formatDateShort(u.lastSeen)}</td>`).join('');
     }
 }
 
