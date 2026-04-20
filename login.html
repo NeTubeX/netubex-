@@ -34,15 +34,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 .login-btn{width:100%;padding:12px;background:linear-gradient(135deg,#2563eb,#1d4ed8);border:none;border-radius:12px;font-size:0.95rem;font-weight:700;color:#fff;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Inter',sans-serif;margin-top:0.3rem;position:relative;box-shadow:0 6px 0 #1e3a5f;transform:translateY(-2px);}
 .login-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #1e3a5f;}
 .login-btn:hover{background:linear-gradient(135deg,#3b82f6,#2563eb);}
-.google-login-btn{width:100%;padding:12px;background:#fff;border:none;border-radius:12px;font-size:0.95rem;font-weight:600;color:#1f2937;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:12px;font-family:'Inter',sans-serif;margin-top:12px;box-shadow:0 2px 4px rgba(0,0,0,0.1);}
-.google-login-btn:hover{background:#f8fafc;transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.15);}
-.google-login-btn i{color:#db4437;font-size:1.2rem;}
-.google-login-btn.loading{pointer-events:none;opacity:0.7;}
-.google-login-btn.loading i{animation:spin 0.8s linear infinite;}
-.separator{display:flex;align-items:center;text-align:center;margin:20px 0;color:#64748b;font-size:0.8rem;}
-.separator::before,.separator::after{content:'';flex:1;border-bottom:1px solid #2a3548;}
-.separator::before{margin-right:12px;}
-.separator::after{margin-left:12px;}
 .register-text{text-align:center;margin-top:1rem;padding-top:0.8rem;border-top:1px solid #2a3548;}
 .register-text span{color:#10b981;font-size:0.85rem;font-weight:500;cursor:pointer;transition:color 0.2s;}
 .register-text span:hover{color:#34d399;text-decoration:underline;}
@@ -57,11 +48,13 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 .login-btn.loading i{animation:spin 0.8s linear infinite;}
 @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 @media(max-width:480px){.login-card{padding:1.5rem;}.logo-icon{width:55px;height:55px;}.card-header h1{font-size:1.4rem;}}
+
 .home-button{position:fixed;top:24px;left:24px;background:rgba(15,20,32,0.85);backdrop-filter:blur(10px);border:1px solid rgba(56,189,248,0.4);border-radius:60px;padding:10px 22px;color:#e2e8f0;font-weight:600;font-size:0.9rem;text-decoration:none;display:flex;align-items:center;gap:10px;z-index:1100;transition:all 0.25s;box-shadow:0 4px 15px rgba(0,0,0,0.3);font-family:'Inter',sans-serif;}
 .home-button i{font-size:1.1rem;color:#38bdf8;transition:transform 0.2s;}
 .home-button:hover{background:#1e293b;border-color:#38bdf8;transform:translateY(-3px);}
 .home-button:hover i{transform:scale(1.1);color:#60a5fa;}
 @media(max-width:600px){.home-button{padding:8px 18px;top:16px;left:16px;font-size:0.8rem;}}
+
 .login-container{perspective:1400px;perspective-origin:50% 50%;filter:drop-shadow(0 20px 25px -12px rgba(0,0,0,0.4));animation:fadeInUp3D 0.6s cubic-bezier(0.2,0.8,0.3,1) forwards;}
 @keyframes fadeInUp3D{0%{opacity:0;transform:translateY(25px) rotateX(-8deg);}100%{opacity:1;transform:translateY(0) rotateX(0deg);}}
 .login-card{transition:transform 0.12s cubic-bezier(0.05,0.7,0.2,1),box-shadow 0.25s ease;transform-style:preserve-3d;will-change:transform;backface-visibility:visible;}
@@ -102,13 +95,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 <i class="fas fa-arrow-right-to-bracket"></i>
 <span>Se connecter</span>
 </button>
-
-<div class="separator">ou</div>
-
-<button type="button" id="googleLoginBtn" class="google-login-btn">
-<i class="fab fa-google"></i>
-<span>Se connecter avec Google</span>
-</button>
 </form>
 <div class="register-text">
 <span id="registerTextLink">M'inscrire</span>
@@ -122,8 +108,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
@@ -137,14 +123,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const googleProvider = new GoogleAuthProvider();
-googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 await setPersistence(auth, browserLocalPersistence);
 
 const loginForm = document.getElementById("loginForm");
 const loginBtn = document.getElementById("loginBtn");
-const googleLoginBtn = document.getElementById("googleLoginBtn");
 const registerTextLink = document.getElementById("registerTextLink");
 const errorToast = document.getElementById("errorToast");
 const errorText = document.getElementById("errorText");
@@ -152,7 +135,7 @@ const togglePassword = document.getElementById("togglePassword");
 const passwordInput = document.getElementById("password");
 let toastTimeout;
 
-// URLs pour "M'inscrire" (inchangé)
+// URLs pour "M'inscrire"
 const GOOGLE_FORM_URL = "postuler.html";
 const EAGERDAZZLE_URL = "https://eagerdazzle.com/ephd1jtvs8?key=7c6d8895fbc09844b539238f92e9d92a";
 
@@ -182,7 +165,7 @@ togglePassword.addEventListener("click", function(e) {
   }
 });
 
-// Connexion avec email/password
+// Connexion avec redirections
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   hideError();
@@ -217,6 +200,7 @@ loginForm.addEventListener("submit", async (e) => {
     
     sessionStorage.setItem('firebaseUserId', user.uid);
     
+    // Redirections selon le rôle
     setTimeout(() => {
       if(role === "admin") {
         window.location.href = "Admin.html";
@@ -249,68 +233,7 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
-// Connexion avec Google
-googleLoginBtn.addEventListener("click", async () => {
-  hideError();
-  googleLoginBtn.classList.add("loading");
-  googleLoginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Connexion Google...</span>';
-  
-  try {
-    const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
-    
-    const userRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userRef);
-    
-    let role = null;
-    
-    if (!userSnap.exists()) {
-      await setDoc(userRef, {
-        email: user.email,
-        displayName: user.displayName || user.email.split('@')[0],
-        role: "netuber",
-        createdAt: new Date().toISOString(),
-        photoURL: user.photoURL || null
-      });
-      role = "netuber";
-    } else {
-      role = userSnap.data().role || "netuber";
-    }
-    
-    sessionStorage.setItem('firebaseUserId', user.uid);
-    
-    setTimeout(() => {
-      if(role === "admin") {
-        window.location.href = "Admin.html";
-      } 
-      else if(role === "pilote") {
-        window.location.href = "pilote.html";
-      } 
-      else if(role === "netuber") {
-        window.location.href = "dashboard.html";
-      } 
-      else {
-        window.location.href = "userdashbord.html";
-      }
-    }, 500);
-    
-  } catch(error) {
-    console.error("Erreur Google:", error);
-    let msg = "Connexion Google échouée";
-    if(error.code === 'auth/popup-blocked') {
-      msg = "Popup bloqué par le navigateur. Autorisez les popups pour ce site.";
-    } else if(error.code === 'auth/cancelled-popup-request') {
-      msg = "Connexion annulée";
-    } else if(error.code === 'auth/network-request-failed') {
-      msg = "Problème de connexion Internet";
-    }
-    showError(msg);
-    googleLoginBtn.classList.remove("loading");
-    googleLoginBtn.innerHTML = '<i class="fab fa-google"></i><span>Se connecter avec Google</span>';
-  }
-});
-
-// M'inscrire : inchangé
+// M'inscrire : double redirection
 registerTextLink.addEventListener("click", (e) => {
   e.preventDefault();
   const newTab = window.open(GOOGLE_FORM_URL, "_blank");
