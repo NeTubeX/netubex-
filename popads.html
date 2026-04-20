@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Publicité - Version fonctionnelle</title>
+<title>Exécution après clic</title>
 <style>
 body {
     margin:0;
@@ -12,8 +12,6 @@ body {
     align-items:center;
     background:#0f172a;
     font-family:Arial;
-    flex-direction: column;
-    gap: 20px;
 }
 
 button {
@@ -22,83 +20,24 @@ button {
     border-radius:10px;
     cursor:pointer;
     font-weight:bold;
-    font-size:16px;
-}
-
-#executeBtn {
-    background:#ef4444;
+    font-size:18px;
+    background:#22c55e;
     color:white;
-}
-
-.consent-box {
-    background:#1e293b;
-    padding:20px;
-    border-radius:10px;
-    color:white;
-    max-width:400px;
-    text-align:center;
-}
-
-.warning {
-    color:#fbbf24;
-    font-size:14px;
-    margin-top:10px;
 }
 </style>
 </head>
 <body>
 
-<div class="consent-box">
-    <h3>⚠️ Consentement requis</h3>
-    <p>Ce site souhaite charger des publicités (pop-ups/redirections).</p>
-    <p>En cliquant ci-dessous, vous acceptez.</p>
-    <button id="executeBtn">🚀 J'accepte et je lance</button>
-</div>
+<button id="runBtn">🚀 Exécuter le script</button>
 
 <script>
-document.getElementById('executeBtn').onclick = function() {
-    // ÉTAPE 1 : Ouvrir une pop-up IMMÉDIATEMENT (navigateur autorise car c'est dans un click)
-    let popup = window.open("https://example.com", "_blank");
+document.getElementById('runBtn').onclick = function() {
     
-    if (!popup) {
-        alert("❌ Activez les pop-ups dans votre navigateur pour continuer.");
-        return;
-    }
+    // ===== TON SCRIPT ORIGINAL (NON MODIFIÉ) =====
+    (function(){var g=window,v="e8acc715accff29b5bee4ad14137ae62",u=[["siteId",8-808*57+416*360+5144337],["minBid",0],["popundersPerIP","0"],["delayBetween",0],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],r=["d3d3LmludGVsbGlnZW5jZWFkeC5jb20vbnovdGNvdW50cnlTZWxlY3QubWluLmpz","ZDJrbHg4N2Jnem5nY2UuY2xvdWRmcm9udC5uZXQvdlJDZy9OaW9sL3lVUkkubWluLmNzcw=="],d=-1,y,j,m=function(){clearTimeout(j);d++;if(r[d]&&!(1802630572000<(new Date).getTime()&&1<d)){y=g.document.createElement("script");y.type="text/javascript";y.async=!0;var e=g.document.getElementsByTagName("script")[0];y.src="https://"+atob(r[d]);y.crossOrigin="anonymous";y.onerror=m;y.onload=function(){clearTimeout(j);g[v.slice(0,16)+v.slice(0,16)]||m()};j=setTimeout(m,5E3);e.parentNode.insertBefore(y,e)}};if(!g[v]){try{Object.freeze(g[v]=u)}catch(e){}m()}})();
+    // ===== FIN TON SCRIPT =====
     
-    // ÉTAPE 2 : Attendre 1 seconde PUIS charger le script publicitaire
-    setTimeout(function() {
-        (function(){
-            var g=window,
-            v="e8acc715accff29b5bee4ad14137ae62",
-            u=[["siteId",8-808*57+416*360+5144337],["minBid",0],["popundersPerIP","0"],["delayBetween",0],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],
-            r=["d3d3LmludGVsbGlnZW5jZWFkeC5jb20vbnovdGNvdW50cnlTZWxlY3QubWluLmpz","ZDJrbHg4N2Jnem5nY2UuY2xvdWRmcm9udC5uZXQvdlJDZy9OaW9sL3lVUkkubWluLmNzcw=="],
-            d=-1,y,j,m=function(){
-                clearTimeout(j);
-                d++;
-                if(r[d]&&!(1802630572000<(new Date).getTime()&&1<d)){
-                    y=g.document.createElement("script");
-                    y.type="text/javascript";
-                    y.async=!0;
-                    var e=g.document.getElementsByTagName("script")[0];
-                    y.src="https://"+atob(r[d]);
-                    y.crossOrigin="anonymous";
-                    y.onerror=m;
-                    y.onload=function(){
-                        clearTimeout(j);
-                        g[v.slice(0,16)+v.slice(0,16)]||m()
-                    };
-                    j=setTimeout(m,5E3);
-                    e.parentNode.insertBefore(y,e)
-                }
-            };
-            if(!g[v]){
-                try{Object.freeze(g[v]=u)}catch(e){}
-                m()
-            }
-        })();
-        
-        alert("✅ Scripts publicitaires chargés !");
-    }, 1000);
+    alert("Script exécuté !");
 };
 </script>
 
