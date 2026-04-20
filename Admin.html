@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -116,6 +117,7 @@ tr:hover{background:#1a2332;}
 <button class="icon-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
 </div>
 </div>
+
 <div class="tabs-wrapper"><div class="tabs">
 <button class="tab active" data-tab="statistiques"><i class="fas fa-chart-bar"></i> Statistiques</button>
 <button class="tab" data-tab="inscriptions"><i class="fas fa-user-clock"></i> Inscriptions</button>
@@ -157,7 +159,7 @@ tr:hover{background:#1a2332;}
 <div id="ticketsUsersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="ticketsUsersOpen">0</div><div class="label">Tickets ouverts</div></div><div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Tickets résolus</div></div><div class="stat-card"><div class="value" id="ticketsInProgress">0</div><div class="label">Tickets en cours</div></div></div><div class="table-wrapper"><table id="ticketsUsersTable"><thead><tr><th>Utilisateur</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody id="ticketsUsersBody"></tbody></table></div></div>
 
 <!-- Onglet Rapports -->
-<div id="rapportsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="reportCount">0</div><div class="label">Dernier rapport</div></div></div><div class="table-wrapper"><table id="rapportsTable"><thead><tr><th>Code Netuber</th><th>Présence</th><th>Raison absence</th><th>Obj.mensuel</th><th>Obj.atteint</th><th>Niveaux</th><th>Niveaux atteints</th><th>Points préc.</th><th>Points jour</th><th>Temps préc.(min)</th><th>Temps jour(min)</th><th>Forfait Go</th><th>Rendement(pts/h)</th></tr></thead><tbody id="rapportsTableBody"></tbody></table></div></div>
+<div id="rapportsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="reportCount">0</div><div class="label">Dernier rapport</div></div></div><div class="table-wrapper"><table id="rapportsTable"><thead><tr><th>Code Netuber</th><th>Présence</th><th>Raison absence</th><th>Obj.mensuel</th><th>Obj.atteint</th><th>Niveaux</th><th>Niveaux atteints</th><th>Points préc.</th><th>Points jour</th><th>Temps préc.(min)</th><th>Temps jour(min)</th><th>Forfait Go</th><th>Rendement(pts/h)</th></tr></thead><tbody id="rapportsTableBody"></tbody></td></div></div>
 
 <!-- Onglet Anomalies -->
 <div id="anomaliesTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalAnomalies">0</div><div class="label">Anomalies détectées</div></div></div><div class="table-wrapper"><table id="anomaliesTable"><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre tickets</th><th>Action</th></tr></thead><tbody id="anomaliesTableBody"></tbody></table></div></div>
@@ -251,6 +253,104 @@ tr:hover{background:#1a2332;}
         <div class="modal-footer">
             <button onclick="sendMemorandum()" style="background:#10b981;"><i class="fas fa-paper-plane"></i> Envoyer</button>
             <button onclick="closeModal('memorandumModal')">Annuler</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmation -->
+<div id="confirmModal" class="modal">
+    <div class="modal-content" style="max-width:400px;">
+        <div class="modal-body confirm-dialog">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3 id="confirmTitle">Confirmation</h3>
+            <p id="confirmMessage" style="margin:15px 0;">Êtes-vous sûr ?</p>
+            <div class="confirm-buttons">
+                <button class="btn-confirm" id="confirmOkBtn">Oui</button>
+                <button class="btn-cancel" id="confirmCancelBtn">Non</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal d'activation -->
+<div id="activateModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-check-circle"></i> Activer le compte</h2>
+            <button class="modal-close" onclick="closeModal('activateModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="input-group">
+                <label>Utilisateur</label>
+                <div id="activateName" style="padding:10px;background:#1e293b;border-radius:8px;"></div>
+            </div>
+            <div class="input-group">
+                <label>Message d'activation</label>
+                <textarea id="activateMessage" rows="4"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button onclick="confirmActivate()" style="background:#10b981;">Activer & Envoyer</button>
+            <button onclick="closeModal('activateModal')">Annuler</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de promotion -->
+<div id="promoteModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-star"></i> Promouvoir en Netuber</h2>
+            <button class="modal-close" onclick="closeModal('promoteModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="input-group">
+                <label>Utilisateur</label>
+                <div id="promoteName" style="padding:10px;background:#1e293b;border-radius:8px;"></div>
+            </div>
+            <div class="input-group">
+                <label>Code Netuber</label>
+                <input type="text" id="promoteCode" placeholder="Ex: MA-NX-001">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button onclick="confirmPromote()" style="background:#8b5cf6;">Promouvoir</button>
+            <button onclick="closeModal('promoteModal')">Annuler</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal d'ajout utilisateur -->
+<div id="addUserModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-user-plus"></i> Ajouter un utilisateur</h2>
+            <button class="modal-close" onclick="closeModal('addUserModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="addEmail" placeholder="email@exemple.com">
+            </div>
+            <div class="input-group">
+                <label>Mot de passe</label>
+                <input type="password" id="addPassword" placeholder="6 caractères min">
+            </div>
+            <div class="input-group">
+                <label>Rôle</label>
+                <select id="addRole" onchange="toggleAddCode()">
+                    <option value="pilote">Pilote</option>
+                    <option value="netuber">Netuber</option>
+                </select>
+            </div>
+            <div class="input-group" id="addCodeGroup" style="display:none;">
+                <label>Code Netuber</label>
+                <input type="text" id="addCode" placeholder="Ex: MA-NX-001">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button onclick="createUser()" style="background:#10b981;">Créer</button>
+            <button onclick="closeModal('addUserModal')">Annuler</button>
         </div>
     </div>
 </div>
@@ -399,14 +499,14 @@ window.sendMemorandum=async()=>{
     } 
     else {
         // Type PGCO - prendre le dernier rapport
-        let lastReport = await getLastReportPGCO();
-        if(!lastReport){
+        let lastReportData = await getLastReportPGCO();
+        if(!lastReportData){
             showToast("Aucun rapport PGCO trouvé", true);
             return;
         }
         memoData.destinataireType = "pgco";
-        memoData.destinataireNom = lastReport.pgcoNom;
-        memoData.rapportId = lastReport.id;
+        memoData.destinataireNom = lastReportData.pgcoNom;
+        memoData.rapportId = lastReportData.id;
     }
     
     try {
@@ -529,16 +629,14 @@ async function loadWithdrawals(){let snap=await getDocs(collection(db,"withdraw"
 function updateWithdrawalsTable(){let tbody=document.getElementById('withdrawalsTableBody');if(!tbody)return;let filtered=withdrawalsData;tbody.innerHTML=filtered.map(w=>{let u=usersData.find(u=>u.id===w.userId);let statusClass=w.status==='pending'?'badge-warning':(w.status==='approved'?'badge-success':'badge-danger');let statusText=w.status==='pending'?'En attente':(w.status==='approved'?'Approuvé':'Rejeté');return `<tr><td>${escapeHtml(u?.email||w.userId)}</td><td>${(w.amount||0).toFixed(2)} $</td><td>${w.method||'-'}</td><td>${escapeHtml(w.walletAddress||'-')}</td><td>${formatDateShort(w.requestedAt)}</td><td><span class="badge ${statusClass}">${statusText}</span></td><td>${w.status==='pending'?`<button class="action-btn approve" onclick='approveWithdraw("${w.id}")'>Approuver</button>`:(w.status==='approved'?`<button class="action-btn delete" onclick='deleteWithdraw("${w.id}")'>Supprimer</button>`:'-')}</td></tr>`;}).join('');}
 window.approveWithdraw=async(id)=>{let w=withdrawalsData.find(w=>w.id===id);if(!w)return;let userRef=doc(db,"users",w.userId);let userSnap=await getDoc(userRef);let balance=userSnap.exists()?(userSnap.data().balance||0):0;await updateDoc(userRef,{balance:balance-(w.amount||0)});await updateDoc(doc(db,"withdraw",id),{status:"approved",processedAt:new Date().toISOString()});showToast("Retrait approuvé");await loadWithdrawals();await loadAllData();};
 window.deleteWithdraw=async(id)=>{showConfirm('Suppression','Supprimer cette demande ?',async()=>{await deleteDoc(doc(db,"withdraw",id));showToast("Demande supprimée");await loadWithdrawals();});};
-window.exportWithdrawals=()=>{let csv="Utilisateur,Montant,Méthode,Wallet,Statut,Date\n";withdrawalsData.forEach(w=>{let u=usersData.find(u=>u.id===w.userId);csv+=`${u?.email||w.userId},${w.amount},${w.method},${w.walletAddress},${w.status},${w.requestedAt}\n`;});let blob=new Blob([csv]);let link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=`retraits.csv`;link.click();};
-async function loadLastReport(){try{let q=query(collection(db,"reports"),orderBy("createdAt","desc"),limit(1));let snap=await getDocs(q);if(!snap.empty){lastReport=snap.docs[0].data();let netubers=lastReport.netubers||[];let totalPtsP=netubers.reduce((s,n)=>s+(n.pointsPrecedents||0),0);let totalPtsJ=netubers.reduce((s,n)=>s+(n.pointsJour||0),0);let totalTempsP=netubers.reduce((s,n)=>s+(n.tempsPrecedent||0),0);let totalTempsJ=netubers.reduce((s,n)=>s+(n.tempsJour||0),0);let ecart=totalPtsJ-totalPtsP;let pourcentage=totalPtsP>0?((ecart/totalPtsP)*100).toFixed(1):0;let tendance=ecart>0?'📈 Hausse':(ecart<0?'📉 Baisse':'➡️ Stable');document.getElementById('pointsEcart').innerHTML=`Points préc: ${totalPtsP} | Points jour: ${totalPtsJ}<br>Écart: ${ecart>0?'+':''}${ecart} (${pourcentage}%) ${tendance}`;let tbody=document.getElementById('rapportsTableBody');if(tbody){tbody.innerHTML=netubers.map(n=>{let rendement=n.tempsJour>0?((n.pointsJour/(n.tempsJour/60)).toFixed(2)):0;return `<tr><td><strong>${escapeHtml(n.code)}</strong></td><td>${n.presence==='Présent'?'✅':'❌'}</td><td>${escapeHtml(n.raisonAbsence||'-')}</td><td>${n.objectifMensuel||0}</td><td>${n.objectifAtteint||0}</td><td>${n.nbNiveaux||0}</td><td>${n.nbNiveauxAtteints||0}</td><td>${n.pointsPrecedents||0}</td><td style="color:#f59e0b;">${n.pointsJour||0}</td><td>${n.tempsPrecedent||0}</td><td>${n.tempsJour||0}</td><td>${n.forfaitInternet||'-'}</td><td>${rendement} pts/h</td></tr>`;}).join('');}document.getElementById('reportCount').innerText=netubers.length;let ctxPoints=document.getElementById('pointsChart')?.getContext('2d');if(ctxPoints){if(pointsChart)pointsChart.destroy();pointsChart=new Chart(ctxPoints,{type:'line',data:{labels:['Points précédents','Points du jour'],datasets:[{data:[totalPtsP,totalPtsJ],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.1)',fill:true}]},options:{responsive:true}});}let ctxTemps=document.getElementById('tempsChart')?.getContext('2d');if(ctxTemps){if(tempsChart)tempsChart.destroy();tempsChart=new Chart(ctxTemps,{type:'bar',data:{labels:['Temps précédent','Temps du jour'],datasets:[{data:[totalTempsP,totalTempsJ],backgroundColor:['#64748b','#f59e0b'],borderRadius:8}]},options:{responsive:true}});}}}catch(e){}}
+window.exportWithdrawals=()=>{let csv="Utilisateur,Montant,Méthode,Wallet,Statut,Date\n";withdrawalsData.forEach(w=>{let u=usersData.find(u=>u.id===w.userId);csv+=`${u?.email||w.userId},${w.amount},${w.method},${w.walletAddress},${w.status},${w.requestedAt}\n`;});let blob=new Blob([csv]);let link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=`retraits.csv`;link.click();}; async function loadLastReport(){try{let q=query(collection(db,"reports"),orderBy("createdAt","desc"),limit(1));let snap=await getDocs(q);if(!snap.empty){lastReport=snap.docs[0].data();let netubers=lastReport.netubers||[];let totalPtsP=netubers.reduce((s,n)=>s+(n.pointsPrecedents||0),0);let totalPtsJ=netubers.reduce((s,n)=>s+(n.pointsJour||0),0);let totalTempsP=netubers.reduce((s,n)=>s+(n.tempsPrecedent||0),0);let totalTempsJ=netubers.reduce((s,n)=>s+(n.tempsJour||0),0);let ecart=totalPtsJ-totalPtsP;let pourcentage=totalPtsP>0?((ecart/totalPtsP)*100).toFixed(1):0;let tendance=ecart>0?'📈 Hausse':(ecart<0?'📉 Baisse':'➡️ Stable');document.getElementById('pointsEcart').innerHTML=`Points préc: ${totalPtsP} | Points jour: ${totalPtsJ}<br>Écart: ${ecart>0?'+':''}${ecart} (${pourcentage}%) ${tendance}`;let tbody=document.getElementById('rapportsTableBody');if(tbody){tbody.innerHTML=netubers.map(n=>{let rendement=n.tempsJour>0?((n.pointsJour/(n.tempsJour/60)).toFixed(2)):0;return `<tr><td><strong>${escapeHtml(n.code)}</strong></td><td>${n.presence==='Présent'?'✅':'❌'}</td><td>${escapeHtml(n.raisonAbsence||'-')}</td><td>${n.objectifMensuel||0}</td><td>${n.objectifAtteint||0}</td><td>${n.nbNiveaux||0}</td><td>${n.nbNiveauxAtteints||0}</td><td>${n.pointsPrecedents||0}</td><td style="color:#f59e0b;">${n.pointsJour||0}</td><td>${n.tempsPrecedent||0}</td><td>${n.tempsJour||0}</td><td>${n.forfaitInternet||'-'}</td><td>${rendement} pts/h</td></tr>`;}).join('');}document.getElementById('reportCount').innerText=netubers.length;let ctxPoints=document.getElementById('pointsChart')?.getContext('2d');if(ctxPoints){if(pointsChart)pointsChart.destroy();pointsChart=new Chart(ctxPoints,{type:'line',data:{labels:['Points précédents','Points du jour'],datasets:[{data:[totalPtsP,totalPtsJ],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.1)',fill:true}]},options:{responsive:true}});}let ctxTemps=document.getElementById('tempsChart')?.getContext('2d');if(ctxTemps){if(tempsChart)tempsChart.destroy();tempsChart=new Chart(ctxTemps,{type:'bar',data:{labels:['Temps précédent','Temps du jour'],datasets:[{data:[totalTempsP,totalTempsJ],backgroundColor:['#64748b','#f59e0b'],borderRadius:8}]},options:{responsive:true}});}}}catch(e){}}
 function updateNetubersTable(){let tbody=document.getElementById('netubersTableBody');if(!tbody)return;let now=new Date();let INACTIVITY_LIMIT=8*60*60*1000;let netuberUsers=usersData.filter(u=>u.isActive===true&&u.role!=='admin'&&u.code);let onlineCount=0;let blockedCount=0;tbody.innerHTML=netuberUsers.map(u=>{let lastSeen=u.lastSeen?new Date(u.lastSeen):null;let isOnline=lastSeen&&lastSeen.getFullYear()>1970&&(now-lastSeen)<INACTIVITY_LIMIT;if(isOnline)onlineCount++;if(u.isBlocked)blockedCount++;let minutes=lastSeen?Math.floor((now-lastSeen)/60000):null;let statusText='';if(!lastSeen||lastSeen.getFullYear()<=1970)statusText='Session >8h';else if(isOnline)statusText=`Connecté il y a ${minutes} min`;else statusText=`Déconnecté depuis ${minutes} min`;let statusHtml=isOnline?'<span class="status-spot online"><i class="fas fa-circle"></i> Connecté</span>':'<span class="status-spot offline"><i class="fas fa-circle"></i> Déconnecté</span>';let objMensuel=u.objectifMensuel||9;let objAtteint=u.objectifAtteint||0;return `<tr><td><strong>${escapeHtml(u.code)}</strong>${u.isBlocked?' <span class="badge badge-danger">Bloqué</span>':''}</td><td>${objMensuel}</td><td style="color:${objAtteint>=objMensuel?'#10b981':'#f59e0b'}">${objAtteint}</td><td>${statusHtml}</td><td><small>${statusText}</small></td><td><button class="action-btn delete" onclick='blockUser("${u.id}")'>${u.isBlocked?'Débloquer':'Bloquer'}</button></td></tr>`;}).join('');document.getElementById('totalNetubers').innerText=netuberUsers.length;document.getElementById('totalOnline').innerText=onlineCount;document.getElementById('totalOffline').innerText=netuberUsers.length-onlineCount;document.getElementById('blockedCount').innerText=blockedCount;let ctx=document.getElementById('onlineChart')?.getContext('2d');if(ctx){if(onlineChart)onlineChart.destroy();onlineChart=new Chart(ctx,{type:'doughnut',data:{labels:['Connectés','Déconnectés'],datasets:[{data:[onlineCount,netuberUsers.length-onlineCount],backgroundColor:['#10b981','#64748b']}]},options:{responsive:true}});}}
 function updateActiveUsersTable(){let tbody=document.getElementById('activeUsersTableBody');if(!tbody)return;let activeUsers=usersData.filter(u=>u.isActive===true&&u.role!=='admin'&&(!u.code||u.code===''));tbody.innerHTML=activeUsers.map(u=>{let devices=getUserDevices(u.id);let d=devices[0]||{};return `<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${(u.balance||0).toFixed(2)} $</td><td>${formatDateShort(u.dateActivation)}</td><td>${escapeHtml((d.deviceId||'-').substring(0,8))}</td><td>${formatDateShort(d.firstLogin)}</td><td>${d.isActive?'✅':'❌'}</td><td>${formatDateShort(d.lastLogin)}</td><td>${escapeHtml((d.lastUserAgent||'-').substring(0,20))}</td><td><button class="action-btn promote" onclick='openPromoteModal("${u.id}")'>Promouvoir</button><button class="action-btn validate" onclick='openActivateModal("${u.id}")'>Activer</button></td></tr>`;}).join('');document.getElementById('totalActiveUsers').innerText=activeUsers.length;}
-function updatePendingTable(){let tbody=document.getElementById('pendingTableBody');if(!tbody)return;let pending=usersData.filter(u=>u.isActive!==true&&u.role!=='admin');tbody.innerHTML=pending.map(u=>`<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${u.moyenContact==='whatsapp'?'WhatsApp':'Gmail'}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${formatDateShort(u.dateInscription)}</td><td><button class="action-btn validate" onclick='openActivateModal("${u.id}")'>Activer</button><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Rejeter</button></td></tr>`).join('');document.getElementById('totalPending').innerText=pending.length;document.getElementById('totalPendingStat').innerText=pending.length;}
-async function loadTickets(){let snap=await getDocs(collection(db,"users"));ticketsData=[];snap.forEach(doc=>{let u=doc.data();if(u.ticketsList)u.ticketsList.forEach(t=>ticketsData.push({...t,userCode:u.code,userId:doc.id,userEmail:u.email,isNetuber:!!u.code}));});let tbody=document.getElementById('ticketsUsersBody');if(tbody){let userTickets=ticketsData.filter(t=>t.isNetuber===false);tbody.innerHTML=userTickets.map(t=>`<td><td>${escapeHtml(t.userEmail)}</td><td>${escapeHtml(t.subject)}</td><td><span class="badge badge-warning">${t.priority}</span></td><td>${t.status||'ouvert'}</td><td>${formatDateShort(t.date)}</td><td><button class="action-btn reply" onclick="alert('Répondre')">Répondre</button></td></tr>`).join('');}updateTicketsStats();updateAnomaliesTable();}
+function updatePendingTable(){let tbody=document.getElementById('pendingTableBody');if(!tbody)return;let pending=usersData.filter(u=>u.isActive!==true&&u.role!=='admin');tbody.innerHTML=pending.map(u=>`<td><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${u.moyenContact==='whatsapp'?'WhatsApp':'Gmail'}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${formatDateShort(u.dateInscription)}</td><td><button class="action-btn validate" onclick='openActivateModal("${u.id}")'>Activer</button><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Rejeter</button></td></tr>`).join('');document.getElementById('totalPending').innerText=pending.length;document.getElementById('totalPendingStat').innerText=pending.length;}
+async function loadTickets(){let snap=await getDocs(collection(db,"users"));ticketsData=[];snap.forEach(doc=>{let u=doc.data();if(u.ticketsList)u.ticketsList.forEach(t=>ticketsData.push({...t,userCode:u.code,userId:doc.id,userEmail:u.email,isNetuber:!!u.code}));});let tbody=document.getElementById('ticketsUsersBody');if(tbody){let userTickets=ticketsData.filter(t=>t.isNetuber===false);tbody.innerHTML=userTickets.map(t=>`<tr><td>${escapeHtml(t.userEmail)}</td><td>${escapeHtml(t.subject)}</td><td><span class="badge badge-warning">${t.priority}</span></td><td>${t.status||'ouvert'}</td><td>${formatDateShort(t.date)}</td><td><button class="action-btn reply" onclick="alert('Répondre')">Répondre</button></td></tr>`).join('');}updateTicketsStats();updateAnomaliesTable();}
 function updateAnomaliesTable(){let ticketCountByUser={};ticketsData.forEach(t=>{if(!t.isNetuber)return;let key=t.userCode||t.userEmail;if(!ticketCountByUser[key])ticketCountByUser[key]=0;ticketCountByUser[key]++;});let anomalies=Object.entries(ticketCountByUser).filter(([,count])=>count>=3).map(([user,count])=>({user,count}));let tbody=document.getElementById('anomaliesTableBody');if(tbody){tbody.innerHTML=anomalies.map(a=>`<tr><td>${escapeHtml(a.user)}</td><td>Tickets en masse</td><td><span class="badge badge-danger">${a.count}</span></td><td><button class="action-btn view" onclick="alert('Consulter tickets')">Voir</button></td></tr>`).join('');document.getElementById('totalAnomalies').innerText=anomalies.length;}}
-function updatePrivacyTab(){let tbody=document.getElementById('privacyEmailsBody');if(tbody){tbody.innerHTML=usersData.filter(u=>u.code).map(u=>`<tr><td>${escapeHtml(u.code)}</td><td>${escapeHtml(u.email)}</td><td>${formatDateShort(u.lastSeen)}</td></tr>`).join('');}}
-function populateNetuberSelects(){let netubers=usersData.filter(u=>u.code);let modifySelect=document.getElementById('modifyCodeSelect');let blockSelect=document.getElementById('blockUnblockSelect');let deleteSelect=document.getElementById('deleteNetuberSelect');let memoSelect=document.getElementById('memoRecipient');if(modifySelect)modifySelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)} - ${escapeHtml(u.email)}</option>`).join('');if(blockSelect)blockSelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)} - ${u.isBlocked?'🔴 Bloqué':'🟢 Actif'}</option>`).join('');if(deleteSelect)deleteSelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)} - ${escapeHtml(u.email)}</option>`).join('');if(memoSelect)memoSelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)} - ${escapeHtml(u.email)}</option>`).join('');}
-window.openActivateModal=(id)=>{let u=usersData.find(u=>u.id===id);if(u){selectedActivateUser=u;document.getElementById('activateName').innerHTML=`${u.nom||''} ${u.prenom||''}<br><small>${u.email}</small><br>Contact: ${u.contactValue||'-'}`;document.getElementById('activateMessage').value=`Bonjour, votre compte NeTubeX a été activé. Cordialement.`;openModal('activateModal');}};
+function updatePrivacyTab(){let tbody=document.getElementById('privacyEmailsBody');if(tbody){tbody.innerHTML=usersData.filter(u=>u.code).map(u=>`<td><td>${escapeHtml(u.code)}</td><td>${escapeHtml(u.email)}</td><td>${formatDateShort(u.lastSeen)}</td></tr>`).join('');}}
+function populateNetuberSelects(){let netubers=usersData.filter(u=>u.code);let modifySelect=document.getElementById('modifyCodeSelect');let blockSelect=document.getElementById('blockUnblockSelect');let deleteSelect=document.getElementById('deleteNetuberSelect');let memoSelect=document.getElementById('memoRecipient');if(modifySelect)modifySelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)} - ${escapeHtml(u.email)}</option>`).join('');if(blockSelect)blockSelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)} - ${u.isBlocked?'🔴 Bloqué':'🟢 Actif'}</option>`).join('');if(deleteSelect)deleteSelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)} - ${escapeHtml(u.email)}</option>`).join('');if(memoSelect)memoSelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)} - ${escapeHtml(u.email)}</option>`).join('');} window.openActivateModal=(id)=>{let u=usersData.find(u=>u.id===id);if(u){selectedActivateUser=u;document.getElementById('activateName').innerHTML=`${u.nom||''} ${u.prenom||''}<br><small>${u.email}</small><br>Contact: ${u.contactValue||'-'}`;document.getElementById('activateMessage').value=`Bonjour, votre compte NeTubeX a été activé. Cordialement.`;openModal('activateModal');}};
 window.confirmActivate=async()=>{if(selectedActivateUser){let msg=document.getElementById('activateMessage').value;if(selectedActivateUser.moyenContact==='whatsapp'){window.open(`https://wa.me/${selectedActivateUser.contactValue}?text=${encodeURIComponent(msg)}`,'_blank');}else{window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${selectedActivateUser.contactValue}&body=${encodeURIComponent(msg)}`,'_blank');}await updateDoc(doc(db,"users",selectedActivateUser.id),{isActive:true,dateActivation:new Date().toISOString()});showToast("Compte activé");closeModal('activateModal');await loadAllData();}};
 window.openPromoteModal=(id)=>{let u=usersData.find(u=>u.id===id);if(u){selectedPromoteUser=u;document.getElementById('promoteName').innerHTML=`${u.nom||''} ${u.prenom||''}<br><small>${u.email}</small>`;document.getElementById('promoteCode').value='';openModal('promoteModal');}};
 window.confirmPromote=async()=>{if(selectedPromoteUser){let code=document.getElementById('promoteCode').value.trim().toUpperCase();if(!code){showToast("Code requis",true);return;}let existing=usersData.find(u=>u.code===code);if(existing){showToast("Code existe déjà",true);return;}await updateDoc(doc(db,"users",selectedPromoteUser.id),{code:code,role:"netuber",objectifMensuel:9,objectifAtteint:0});showToast("Promu Netuber");closeModal('promoteModal');await loadAllData();}};
@@ -578,7 +676,23 @@ async function loadAllData(){
     document.getElementById('totalNetubersStat').innerText=usersData.filter(u=>u.code).length;
     document.getElementById('totalUsersStat').innerText=usersData.filter(u=>u.isActive===true&&u.role!=='admin'&&(!u.code||u.code==='')).length;
     let ctxInscriptions=document.getElementById('inscriptionsChart')?.getContext('2d');
-    if(ctxInscriptions){if(inscriptionsChart)inscriptionsChart.destroy();inscriptionsChart=new Chart(ctxInscriptions,{type:'bar',data:{labels:['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],datasets:[{label:'Inscriptions',data:[3,5,2,4,6,1,2],backgroundColor:'#f59e0b',borderRadius:8}]},options:{responsive:true}});}
+    if(ctxInscriptions){
+        if(inscriptionsChart)inscriptionsChart.destroy();
+        inscriptionsChart=new Chart(ctxInscriptions,{
+            type:'bar',
+            data:{labels:['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],datasets:[{label:'Inscriptions',data:[3,5,2,4,6,1,2],backgroundColor:'#f59e0b',borderRadius:8}]},
+            options:{responsive:true}
+        });
+    }
+    let ctxVisites=document.getElementById('visitesChart')?.getContext('2d');
+    if(ctxVisites){
+        if(visitesChart)visitesChart.destroy();
+        visitesChart=new Chart(ctxVisites,{
+            type:'line',
+            data:{labels:['Sem 1','Sem 2','Sem 3','Sem 4'],datasets:[{label:'Visites',data:[120,135,148,162],borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.1)',fill:true}]},
+            options:{responsive:true}
+        });
+    }
 }
 
 loadAllData();
