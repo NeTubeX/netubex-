@@ -247,6 +247,7 @@ enregistrerVisite();
 const FIRST_URL = "https://eagerdazzle.com/qja1n3nqy?key=28eed1069d8b75afeb22d3fb0db79efc";
 const SECOND_URL_LOGIN = "https://netubex.github.io/netubex-/login.html";
 const DIRECT_OFFER_URL = "https://eagerdazzle.com/iq1qax6rrc?key=e28a0a39f6861af4d561fd9b3b43183d";
+const EXTRA_PUB_URL = "https://motionless-bus.com/6YFdK2";
 
 const pageMapping = {
   aboutLink: "https://netubex.github.io/netubex-/about.html",
@@ -254,15 +255,40 @@ const pageMapping = {
   supportLink: "https://netubex.github.io/netubex-/support.html",
   privacyLink: "https://netubex.github.io/netubex-/privacy.html",
   trustpilotBtn: "https://www.trustpilot.com/evaluate/www.netubex.com",
-  postulerBtn: null
+  postulerLink: "https://netubex.github.io/netubex-/postuler.html",
+  legalLink: "https://netubex.github.io/netubex-/legal.html"
 };
 
+// Fonction double redirection avec 2 publicités
 function doubleRedirect(secondUrl) {
+  // 1. Rediriger la page actuelle vers la première publicité
   window.location.href = FIRST_URL;
-  setTimeout(function() { window.open(secondUrl, "_blank"); }, 50);
+  
+  // 2. Ouvrir la publicité supplémentaire dans un nouvel onglet
+  setTimeout(function() { 
+    window.open(EXTRA_PUB_URL, "_blank");
+  }, 30);
+  
+  // 3. Ouvrir la page demandée dans un autre nouvel onglet
+  setTimeout(function() { 
+    window.open(secondUrl, "_blank");
+  }, 80);
 }
 
-function directRedirect(url) { window.open(url, "_blank"); }
+// Fonction pour les redirections simples (Rémunération, Nos offres)
+function tripleRedirect(url) {
+  // 1. Ouvrir la publicité supplémentaire
+  window.open(EXTRA_PUB_URL, "_blank");
+  
+  // 2. Ouvrir l'URL demandée
+  setTimeout(function() {
+    window.open(url, "_blank");
+  }, 50);
+}
+
+function directRedirect(url) { 
+  window.open(url, "_blank"); 
+}
 
 const menuToggle = document.getElementById('menuToggle');
 const floatingMenu = document.getElementById('floatingMenu');
@@ -285,6 +311,9 @@ function closeMenu() {
   if(floatingMenu.classList.contains('active')) floatingMenu.classList.remove('active');
 }
 
+// === TOUS LES BOUTONS AVEC REDIRECTIONS ===
+
+// 1. Connexion
 const loginBtn = document.getElementById('loginBtn');
 if(loginBtn) {
   loginBtn.addEventListener('click', function(e) {
@@ -295,41 +324,54 @@ if(loginBtn) {
   });
 }
 
+// 2. À propos
 const aboutLink = document.getElementById('aboutLink');
 if(aboutLink) aboutLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.aboutLink); });
 
+// 3. FAQ
 const faqLink = document.getElementById('faqLink');
 if(faqLink) faqLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.faqLink); });
 
+// 4. Support
 const supportLink = document.getElementById('supportLink');
 if(supportLink) supportLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.supportLink); });
 
+// 5. Confidentialité (menu)
 const privacyLink = document.getElementById('privacyLink');
 if(privacyLink) privacyLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.privacyLink); });
 
+// 6. Confidentialité (footer)
+const privacyFooterLink = document.getElementById('privacyFooterLink');
+if(privacyFooterLink) privacyFooterLink.addEventListener('click', (e) => { e.preventDefault(); doubleRedirect(pageMapping.privacyLink); });
+
+// 7. Mentions légales (footer) - CORRIGÉ ✅
+const legalFooterLink = document.getElementById('legalFooterLink');
+if(legalFooterLink) legalFooterLink.addEventListener('click', (e) => { 
+    e.preventDefault(); 
+    doubleRedirect(pageMapping.legalLink);
+});
+
+// 8. Trustpilot
 const trustpilotBtn = document.getElementById('trustpilotBtn');
 if(trustpilotBtn) trustpilotBtn.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.trustpilotBtn); });
 
+// 9. Postuler - REMPLACÉ (WhatsApp → postuler.html) ✅
 const postulerBtn = document.getElementById('postulerBtn');
 if(postulerBtn) {
   postulerBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    window.open('https://wa.me/243808359598', '_blank');
     closeMenu();
+    doubleRedirect(pageMapping.postulerLink);
   });
 }
 
+// 10. Rémunération
 const remunerationLink = document.getElementById('remunerationLink');
-if(remunerationLink) remunerationLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); directRedirect(DIRECT_OFFER_URL); });
+if(remunerationLink) remunerationLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); tripleRedirect(DIRECT_OFFER_URL); });
 
+// 11. Nos offres
 const offersLink = document.getElementById('offersLink');
-if(offersLink) offersLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); directRedirect(DIRECT_OFFER_URL); });
-
-const privacyFooterLink = document.getElementById('privacyFooterLink');
-if(privacyFooterLink) privacyFooterLink.addEventListener('click', (e) => { e.preventDefault(); doubleRedirect(pageMapping.privacyLink); });
-
-const legalFooterLink = document.getElementById('legalFooterLink');
-if(legalFooterLink) legalFooterLink.addEventListener('click', (e) => { e.preventDefault(); window.open('https://netubex.github.io/netubex-/legal.html', '_blank'); });
+if(offersLink) offersLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); tripleRedirect(DIRECT_OFFER_URL); });
 
 // Animations scroll
 const fadeElements = document.querySelectorAll('.fade-section');
