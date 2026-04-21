@@ -270,35 +270,60 @@ document.getElementById('themeToggle')?.addEventListener('click',()=>{document.b
 if(localStorage.getItem('theme')!=='dark-soft')document.body.classList.add('dark-soft');
 
 window.toggleAddCode=()=>{let role=document.getElementById('addRole').value;document.getElementById('addCodeGroup').style.display=role==='netuber'?'block':'none';};
-window.createUser=async()=>{
-    let email=document.getElementById('addEmail').value.trim();
-    let pwd=document.getElementById('addPassword').value;
-    let role=document.getElementById('addRole').value;
-    let code=role==='netuber'?document.getElementById('addCode').value.trim().toUpperCase():null;
-    if(!email||!pwd){showToast("Email et mot de passe requis",true);return;}
-    if(pwd.length<6){showToast("6 caractères min",true);return;}
-    if(role==='netuber'&&!code){showToast("Code requis",true);return;}
-    try{
-        let userCred=await createUserWithEmailAndPassword(auth,email,pwd);
-        let userData={email,role,isActive:true,createdAt:new Date().toISOString(),lastSeen:new Date().toISOString(),balance:0};
-        if(role==='netuber'){userData.code=code;userData.objectifMensuel=9;userData.objectifAtteint=0;userData.isBlocked=false;}
-        await setDoc(doc(db,"users",userCred.user.uid),userData);
-        showToast(`${role==='netuber'?'Netuber':'Pilote'} créé`);
+
+// FONCTION createUser MODIFIÉE - AJOUT DE uniqueId
+window.createUser = async () => {
+    let email = document.getElementById('addEmail').value.trim();
+    let pwd = document.getElementById('addPassword').value;
+    let role = document.getElementById('addRole').value;
+    let code = role === 'netuber' ? document.getElementById('addCode').value.trim().toUpperCase() : null;
+    
+    if (!email || !pwd) { showToast("Email et mot de passe requis", true); return; }
+    if (pwd.length < 6) { showToast("6 caractères min", true); return; }
+    if (role === 'netuber' && !code) { showToast("Code requis", true); return; }
+    
+    try {
+        let userCred = await createUserWithEmailAndPassword(auth, email, pwd);
+        
+        // GÉNÉRER UN uniqueId POUR LE NETUBER
+        const uniqueId = `${Date.now()}x${Math.floor(Math.random() * 1000000000000000000)}`;
+        
+        let userData = {
+            email: email,
+            role: role,
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            lastSeen: new Date().toISOString(),
+            balance: 0,
+            uniqueId: uniqueId  // ← AJOUT DU uniqueId
+        };
+        
+        if (role === 'netuber') {
+            userData.code = code;
+            userData.objectifMensuel = 9;
+            userData.objectifAtteint = 0;
+            userData.isBlocked = false;
+        }
+        
+        await setDoc(doc(db, "users", userCred.user.uid), userData);
+        showToast(`${role === 'netuber' ? 'Netuber' : 'Pilote'} créé avec uniqueId`);
         closeModal('addUserModal');
         await loadAllData();
-    }catch(e){showToast("Erreur: "+e.message,true);}
+    } catch (e) {
+        showToast("Erreur: " + e.message, true);
+    }
 };
 
-window.openAddUserModal=()=>{
-    if(!document.getElementById('addUserModal')){
-        let modalHtml=`<div id="addUserModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter utilisateur</h2><button class="modal-close" onclick="closeModal('addUserModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Email</label><input type="email" id="addEmail" placeholder="email@exemple.com"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="addPassword" placeholder="min 6 caractères"></div><div class="input-group"><label>Rôle</label><select id="addRole" onchange="toggleAddCode()"><option value="pilote">Pilote</option><option value="netuber">Netuber</option></select></div><div id="addCodeGroup" style="display:none;"><div class="input-group"><label>Code Netuber</label><input type="text" id="addCode" placeholder="Ex: NX-001"></div></div></div><div class="modal-footer"><button onclick="createUser()" style="background:#10b981;">Créer</button><button onclick="closeModal('addUserModal')">Annuler</button></div></div></div>`;
-        document.body.insertAdjacentHTML('beforeend',modalHtml);
+window.openAddUserModal = () => {
+    if (!document.getElementById('addUserModal')) {
+        let modalHtml = `<div id="addUserModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter utilisateur</h2><button class="modal-close" onclick="closeModal('addUserModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Email</label><input type="email" id="addEmail" placeholder="email@exemple.com"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="addPassword" placeholder="min 6 caractères"></div><div class="input-group"><label>Rôle</label><select id="addRole" onchange="toggleAddCode()"><option value="pilote">Pilote</option><option value="netuber">Netuber</option></select></div><div id="addCodeGroup" style="display:none;"><div class="input-group"><label>Code Netuber</label><input type="text" id="addCode" placeholder="Ex: NX-001"></div></div></div><div class="modal-footer"><button onclick="createUser()" style="background:#10b981;">Créer</button><button onclick="closeModal('addUserModal')">Annuler</button></div></div></div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
     }
-    document.getElementById('addEmail').value='';
-    document.getElementById('addPassword').value='';
-    document.getElementById('addCode').value='';
-    document.getElementById('addRole').value='pilote';
-    document.getElementById('addCodeGroup').style.display='none';
+    document.getElementById('addEmail').value = '';
+    document.getElementById('addPassword').value = '';
+    document.getElementById('addCode').value = '';
+    document.getElementById('addRole').value = 'pilote';
+    document.getElementById('addCodeGroup').style.display = 'none';
     openModal('addUserModal');
 };
 
@@ -405,7 +430,6 @@ window.confirmDeleteNetuber=async()=>{
     });
 };
 
-// NOUVELLE FONCTION : Supprimer un utilisateur (pas netuber)
 window.openDeleteUserModal = () => {
     populateUserSelects();
     openModal('deleteUserModal');
@@ -432,7 +456,6 @@ window.confirmDeleteUser = async () => {
     }
 };
 
-// NOUVELLE FONCTION : Supprimer un ticket résolu
 window.openDeleteTicketModal = (ticketId, userName, ticketSubject) => {
     currentDeleteTicket = ticketId;
     document.getElementById('deleteTicketInfo').innerHTML = `Ticket de: ${escapeHtml(userName)}<br>Sujet: ${escapeHtml(ticketSubject)}`;
@@ -659,7 +682,6 @@ window.openReplyTicketModal=(ticketId,userEmail)=>{
     openModal('replyTicketModal');
 };
 
-// CORRECTION FONCTION sendReply - Sauvegarde réelle dans Firestore
 window.sendReply = async () => {
     let ticketId = document.getElementById('replyTicketId').value;
     let message = document.getElementById('replyMessage').value.trim();
@@ -742,7 +764,7 @@ function updateAnomaliesTable(){
     let anomalies=Object.entries(ticketCountByUser).filter(([,count])=>count>=3).map(([user,count])=>({user,count}));
     let tbody=document.getElementById('anomaliesTableBody');
     if(tbody){
-        tbody.innerHTML=anomalies.map(a=>`<tr><td>${escapeHtml(a.user)}</td><td>Tickets en masse (≥3)</td><td><span class="badge badge-danger">${a.count}</span></td><td><button class="action-btn view" onclick='viewAnomalyTickets("${escapeHtml(a.user)}")'>Voir tickets</button></td>`).join('');
+        tbody.innerHTML=anomalies.map(a=>`<tr><td>${escapeHtml(a.user)}</td><td>Tickets en masse (≥3)</td><td><span class="badge badge-danger">${a.count}</span></td><td><button class="action-btn view" onclick='viewAnomalyTickets("${escapeHtml(a.user)}")'>Voir tickets</button></td></tr>`).join('');
         document.getElementById('totalAnomalies').innerText=anomalies.length;
     }
 }
@@ -853,8 +875,10 @@ window.confirmPromote=async()=>{
         if(!code){showToast("Code requis",true);return;}
         let existing=usersData.find(u=>u.code===code);
         if(existing){showToast("Code existe déjà",true);return;}
-        await updateDoc(doc(db,"users",selectedPromoteUser.id),{code:code,objectifMensuel:9,objectifAtteint:0});
-        showToast("Promu Netuber");
+        // GÉNÉRER UN uniqueId POUR L'UTILISATEUR PROMU
+        const uniqueId = `${Date.now()}x${Math.floor(Math.random() * 1000000000000000000)}`;
+        await updateDoc(doc(db,"users",selectedPromoteUser.id),{code:code,objectifMensuel:9,objectifAtteint:0,uniqueId:uniqueId});
+        showToast("Promu Netuber avec uniqueId");
         closeModal('promoteModal');
         await loadAllData();
     }
