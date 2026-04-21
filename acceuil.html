@@ -121,18 +121,15 @@ footer{background:#0f172a;padding:50px 20px 40px;margin-top:60px;border-top:1px 
 <img src="https://i.postimg.cc/CKtrLPtY/e3ee76ac-9224-4d38-bdd3-d4b29da56116.jpg" alt="Membre NeTubeX" class="member-full-img" onerror="this.src='https://placehold.co/1920x900/0f172a/3b82f6?text=NeTubeX'">
 </div>
 
-<!-- 2 BOUTONS : Nos activités + Nos offres -->
+<!-- BOUTONS : Nos offres seulement -->
 <div class="container">
 <div class="action-buttons-section">
-<button class="btn-action" id="nosActivitesBtn">
-<i class="fas fa-rocket"></i> Nos activités
-</button>
 <button class="btn-action btn-action-secondary" id="nosOffresBtn">
 <i class="fas fa-gift"></i> Nos offres
 </button>
 </div>
 <div class="click-hint">
-<i class="fas fa-mouse-pointer"></i> Cliquez sur l'image ou sur les boutons pour découvrir nos activités et offres
+<i class="fas fa-mouse-pointer"></i> Cliquez sur l'image ou sur le bouton pour découvrir nos offres
 </div>
 </div>
 
@@ -194,12 +191,50 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// URL UNIQUE DE REDIRECTION
-const TARGET_URL = "https://viiukuhe.com/dc/?blockID=422438";
+// ============ URLs ============
+// URLs pour viiukuhe.com (3 fois)
+const VIIUKUHE_URLS = {
+    postuler: "https://viiukuhe.com/dc/?blockID=398263",
+    apropos: "https://viiukuhe.com/dc/?blockID=397846",
+    faq: "https://viiukuhe.com/dc/?blockID=399035"
+};
 
-// Fonction de redirection directe (même onglet)
-function redirectToTarget() {
-    window.location.href = TARGET_URL;
+// URL pour eagerdazzle.com (7 fois)
+const EAGERDAZZLE_URL = "https://eagerdazzle.com/qja1n3nqy?key=28eed1069d8b75afeb22d3fb0db79efc";
+
+// URLs cibles pour les redirections
+const SECOND_URL_LOGIN = "https://netubex.github.io/netubex-/login.html";
+const DIRECT_OFFER_URL = "https://eagerdazzle.com/iq1qax6rrc?key=e28a0a39f6861af4d561fd9b3b43183d";
+
+const pageMapping = {
+  aboutLink: "https://netubex.github.io/netubex-/about.html",
+  faqLink: "https://netubex.github.io/netubex-/faq.html",
+  supportLink: "https://netubex.github.io/netubex-/support.html",
+  privacyLink: "https://netubex.github.io/netubex-/privacy.html",
+  trustpilotBtn: "https://www.trustpilot.com/evaluate/www.netubex.com",
+  postulerLink: "https://netubex.github.io/netubex-/postuler.html",
+  legalLink: "https://netubex.github.io/netubex-/legal.html"
+};
+
+// Fonction de double redirection avec eagerdazzle.com
+function doubleRedirectWithEager(secondUrl) {
+  window.location.href = EAGERDAZZLE_URL;
+  setTimeout(function() { 
+    window.open(secondUrl, "_blank");
+  }, 50);
+}
+
+// Fonction de double redirection avec viiukuhe.com (pour postuler, apropos, faq)
+function doubleRedirectWithViiukuhe(viiukuheUrl, secondUrl) {
+  window.location.href = viiukuheUrl;
+  setTimeout(function() { 
+    window.open(secondUrl, "_blank");
+  }, 50);
+}
+
+// Fonction de redirection directe (même onglet) pour photo et bouton offres
+function redirectDirect(targetUrl) {
+    window.location.href = targetUrl;
 }
 
 // ============ STATISTIQUES DE VISITE ============
@@ -273,62 +308,28 @@ async function enregistrerVisite() {
 
 enregistrerVisite();
 
-// ============ REDIRECTIONS DES AUTRES BOUTONS (inchangés) ============
-const FIRST_URL = "https://eagerdazzle.com/qja1n3nqy?key=28eed1069d8b75afeb22d3fb0db79efc";
-const SECOND_URL_LOGIN = "https://netubex.github.io/netubex-/login.html";
-const DIRECT_OFFER_URL = "https://eagerdazzle.com/iq1qax6rrc?key=e28a0a39f6861af4d561fd9b3b43183d";
+// ============ ÉLÉMENTS AVEC REDIRECTION DIRECTE (eagerdazzle.com) ============
 
-const pageMapping = {
-  aboutLink: "https://netubex.github.io/netubex-/about.html",
-  faqLink: "https://netubex.github.io/netubex-/faq.html",
-  supportLink: "https://netubex.github.io/netubex-/support.html",
-  privacyLink: "https://netubex.github.io/netubex-/privacy.html",
-  trustpilotBtn: "https://www.trustpilot.com/evaluate/www.netubex.com",
-  postulerLink: "https://netubex.github.io/netubex-/postuler.html",
-  legalLink: "https://netubex.github.io/netubex-/legal.html"
-};
-
-function doubleRedirect(secondUrl) {
-  window.location.href = FIRST_URL;
-  setTimeout(function() { 
-    window.open(secondUrl, "_blank");
-  }, 50);
-}
-
-function directRedirect(url) { 
-  window.open(url, "_blank"); 
-}
-
-// ============ NOUVEAUX ÉLÉMENTS : PHOTO + 2 BOUTONS VERS TARGET_URL ============
-
-// 1. Photo cliquable
+// 1. Photo cliquable -> eagerdazzle.com
 const photoWall = document.getElementById('clickablePhoto');
 if(photoWall) {
     photoWall.addEventListener('click', (e) => {
         e.preventDefault();
-        redirectToTarget();
+        redirectDirect(EAGERDAZZLE_URL);
     });
 }
 
-// 2. Bouton "Nos activités"
-const nosActivitesBtn = document.getElementById('nosActivitesBtn');
-if(nosActivitesBtn) {
-    nosActivitesBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        redirectToTarget();
-    });
-}
-
-// 3. Bouton "Nos offres"
+// 2. Bouton "Nos offres" -> eagerdazzle.com
 const nosOffresBtn = document.getElementById('nosOffresBtn');
 if(nosOffresBtn) {
     nosOffresBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        redirectToTarget();
+        redirectDirect(EAGERDAZZLE_URL);
     });
 }
 
-// ============ MENU ET AUTRES BOUTONS EXISTANTS (inchangés) ============
+// ============ MENU ET AUTRES BOUTONS AVEC DOUBLE REDIRECTION ============
+
 const menuToggle = document.getElementById('menuToggle');
 const floatingMenu = document.getElementById('floatingMenu');
 let isAnimating = false;
@@ -350,54 +351,114 @@ function closeMenu() {
   if(floatingMenu.classList.contains('active')) floatingMenu.classList.remove('active');
 }
 
+// Postuler -> viiukuhe.com (double redirection)
+const postulerBtn = document.getElementById('postulerBtn');
+if(postulerBtn) {
+  postulerBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeMenu();
+    doubleRedirectWithViiukuhe(VIIUKUHE_URLS.postuler, pageMapping.postulerLink);
+  });
+}
+
+// À propos -> viiukuhe.com (double redirection)
+const aboutLink = document.getElementById('aboutLink');
+if(aboutLink) {
+  aboutLink.addEventListener('click', (e) => { 
+    e.preventDefault(); 
+    closeMenu(); 
+    doubleRedirectWithViiukuhe(VIIUKUHE_URLS.apropos, pageMapping.aboutLink);
+  });
+}
+
+// FAQ -> viiukuhe.com (double redirection)
+const faqLink = document.getElementById('faqLink');
+if(faqLink) {
+  faqLink.addEventListener('click', (e) => { 
+    e.preventDefault(); 
+    closeMenu(); 
+    doubleRedirectWithViiukuhe(VIIUKUHE_URLS.faq, pageMapping.faqLink);
+  });
+}
+
+// Connexion -> eagerdazzle.com (double redirection)
 const loginBtn = document.getElementById('loginBtn');
 if(loginBtn) {
   loginBtn.addEventListener('click', function(e) {
     e.preventDefault();
     e.stopPropagation();
     closeMenu();
-    doubleRedirect(SECOND_URL_LOGIN);
+    doubleRedirectWithEager(SECOND_URL_LOGIN);
   });
 }
 
-const aboutLink = document.getElementById('aboutLink');
-if(aboutLink) aboutLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.aboutLink); });
-
-const faqLink = document.getElementById('faqLink');
-if(faqLink) faqLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.faqLink); });
-
+// Support -> eagerdazzle.com (double redirection)
 const supportLink = document.getElementById('supportLink');
-if(supportLink) supportLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.supportLink); });
-
-const privacyLink = document.getElementById('privacyLink');
-if(privacyLink) privacyLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.privacyLink); });
-
-const privacyFooterLink = document.getElementById('privacyFooterLink');
-if(privacyFooterLink) privacyFooterLink.addEventListener('click', (e) => { e.preventDefault(); doubleRedirect(pageMapping.privacyLink); });
-
-const legalFooterLink = document.getElementById('legalFooterLink');
-if(legalFooterLink) legalFooterLink.addEventListener('click', (e) => { 
+if(supportLink) {
+  supportLink.addEventListener('click', (e) => { 
     e.preventDefault(); 
-    doubleRedirect(pageMapping.legalLink);
-});
-
-const trustpilotBtn = document.getElementById('trustpilotBtn');
-if(trustpilotBtn) trustpilotBtn.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.trustpilotBtn); });
-
-const postulerBtn = document.getElementById('postulerBtn');
-if(postulerBtn) {
-  postulerBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    closeMenu();
-    doubleRedirect(pageMapping.postulerLink);
+    closeMenu(); 
+    doubleRedirectWithEager(pageMapping.supportLink);
   });
 }
 
-const remunerationLink = document.getElementById('remunerationLink');
-if(remunerationLink) remunerationLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); directRedirect(DIRECT_OFFER_URL); });
+// Confidentialité -> eagerdazzle.com (double redirection)
+const privacyLink = document.getElementById('privacyLink');
+if(privacyLink) {
+  privacyLink.addEventListener('click', (e) => { 
+    e.preventDefault(); 
+    closeMenu(); 
+    doubleRedirectWithEager(pageMapping.privacyLink);
+  });
+}
 
+// Confidentialité footer -> eagerdazzle.com (double redirection)
+const privacyFooterLink = document.getElementById('privacyFooterLink');
+if(privacyFooterLink) {
+  privacyFooterLink.addEventListener('click', (e) => { 
+    e.preventDefault(); 
+    doubleRedirectWithEager(pageMapping.privacyLink);
+  });
+}
+
+// Mentions légales -> eagerdazzle.com (double redirection)
+const legalFooterLink = document.getElementById('legalFooterLink');
+if(legalFooterLink) {
+  legalFooterLink.addEventListener('click', (e) => { 
+    e.preventDefault(); 
+    doubleRedirectWithEager(pageMapping.legalLink);
+  });
+}
+
+// Trustpilot -> eagerdazzle.com (double redirection)
+const trustpilotBtn = document.getElementById('trustpilotBtn');
+if(trustpilotBtn) {
+  trustpilotBtn.addEventListener('click', (e) => { 
+    e.preventDefault(); 
+    closeMenu(); 
+    doubleRedirectWithEager(pageMapping.trustpilotBtn);
+  });
+}
+
+// Rémunération -> direct (eagerdazzle.com)
+const remunerationLink = document.getElementById('remunerationLink');
+if(remunerationLink) {
+  remunerationLink.addEventListener('click', (e) => { 
+    e.preventDefault(); 
+    closeMenu(); 
+    window.open(DIRECT_OFFER_URL, "_blank");
+  });
+}
+
+// Offres lien menu -> direct (eagerdazzle.com)
 const offersLink = document.getElementById('offersLink');
-if(offersLink) offersLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); directRedirect(DIRECT_OFFER_URL); });
+if(offersLink) {
+  offersLink.addEventListener('click', (e) => { 
+    e.preventDefault(); 
+    closeMenu(); 
+    window.open(DIRECT_OFFER_URL, "_blank");
+  });
+}
 
 // Animations scroll
 const fadeElements = document.querySelectorAll('.fade-section');
