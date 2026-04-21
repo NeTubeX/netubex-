@@ -102,10 +102,20 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .btn-close{background:#f59e0b;color:#0a0f1a;}
 .btn-delete{background:#ef4444;color:#fff;}
 .btn-reply{background:#3b82f6;color:#fff;}
-.main-content{visibility:visible;opacity:1;}
+.loader-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0f1a;z-index:20000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;transition:opacity 0.3s;backdrop-filter:blur(2px);}
+.loader-screen.hide{opacity:0;visibility:hidden;}
+.loader-text{font-family:'Courier New',monospace;font-size:1.5rem;color:#f59e0b;letter-spacing:2px;}
+.loader-sub{font-size:0.7rem;color:#64748b;}
+.main-content{visibility:hidden;opacity:0;transition:opacity 0.3s ease;}
+.main-content.show{visibility:visible;opacity:1;}
 </style>
 </head>
 <body>
+
+<div class="loader-screen" id="loaderScreen">
+    <div class="loader-text" id="loaderText"></div>
+    <div class="loader-sub">Chargement de votre espace sécurisé...</div>
+</div>
 
 <div class="main-content">
 <div class="rainbow-line"></div>
@@ -186,6 +196,8 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 let currentUser = null, userDocRef = null, selectedMethod = null, timersInterval = null, currentTicketId = null;
+let isFirebaseReady = false;
+let isAnimationComplete = false;
 
 const CARD_IMAGES = ["https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png","https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png","https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png","https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png","https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png","https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png"];
 const AD_URLS = ["https://eagerdazzle.com/dizin681kf?key=45bffb13315a43cb3bbbd7ba4e90e7f7","https://eagerdazzle.com/w9dz6cg5a2?key=550cc6298393fca3027e36eb5e108642","https://eagerdazzle.com/q2ec2www4s?key=7f824c5c005e0d12913991cd2375d1d2","https://eagerdazzle.com/h19vmvwg?key=a243df0e204eb52a003bd14860a3319e","https://eagerdazzle.com/i3nx2tqf?key=d5e467ed2408a1b118e27eaea4cbb154","https://viiukuhe.com/dc/?blockID=422438"];
@@ -220,236 +232,42 @@ function showGameRedirectModal(cb){const m=document.getElementById('gameRedirect
 function renderGames(){const c=document.getElementById('gamesContainer');if(!c)return;c.innerHTML='';games.forEach(g=>{const card=document.createElement('div');card.className='post-card';card.innerHTML=`<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration}</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Jouer au Jeu remunerateur</button>`;card.querySelector('.gain-btn').addEventListener('click',()=>{showGameRedirectModal(()=>{const iframe=document.getElementById('portalIframe');if(iframe&&currentUser){iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`;document.getElementById('fullscreenIframe').classList.add('active');}});});c.appendChild(card);});}
 async function loadCapMessage(){if(!userDocRef)return;const snap=await getDoc(userDocRef);const cap=snap.data()?.capDuJour||"📊 Aucun CAP défini pour aujourd'hui.\n\n📌 Objectif du jour : Atteindre 100 points\n🎯 Challenge spécial : 3 jeux complétés\n⭐ Bonus : +50 points si objectif atteint";document.getElementById('capMessage').innerHTML=cap.replace(/\n/g,'<br>');}
 async function loadProfile(){const snap=await getDoc(userDocRef);const d=snap.data();document.getElementById('profileEmail').innerText=d.email||'-';document.getElementById('profileCreatedAt').innerText=d.createdAt?new Date(d.createdAt).toLocaleDateString('fr-FR'):'-';document.getElementById('profileLastLogin').innerText=d.lastLogin?new Date(d.lastLogin).toLocaleDateString('fr-FR'):'-';document.getElementById('profileNetuberCode').innerText=d.code||'Non promu';}
-async function loadBonusData(){if(!userDocRef)return;const snap=await getDoc(userDocRef);const d=snap.data();const invitationCode=d.invitationCode;if(invitationCode&&invitationCode!=='Génération...'){document.getElementById('invitationCode').value=invitationCode;document.getElementById('invitationLink').value=`${window.location.origin}/postuler.html?ref=${invitationCode}`;}else{const newCode=await generateInvitationCode(currentUser.uid);await updateDoc(userDocRef,{invitationCode:newCode});document.getElementById('invitationCode').value=newCode;document.getElementById('invitationLink').value=`${window.location.origin}/postuler.html?ref=${newCode}`;}document.getElementById('bonusEarned').innerText=`${(d.bonusEarnings||0).toFixed(4)} $`;document.getElementById('invitedCount').innerText=d.invitedCount||0;const list=d.invitedList||[];const container=document.getElementById('invitedList');if(list.length===0)container.innerHTML='<p style="text-align:center;color:#64748b;">Aucun invité pour le moment</p>';else container.innerHTML=list.map(i=>`<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #1e293b;"><span>${i.code||'Nouveau'}</span><span style="color:#f59e0b;">${(i.totalGenerated||0).toFixed(4)} $</span></div>`).join('');}
+async function loadBonusData(){if(!userDocRef)return;const snap=await getDoc(userDocRef);const d=snap.data();const invitationCode=d.invitationCode;if(invitationCode&&invitationCode!=='Génération...'){document.getElementById('invitationCode').value=invitationCode;document.getElementById('invitationLink').value=`${window.location.origin}/register.html?ref=${invitationCode}`;}else{const newCode=await generateInvitationCode(currentUser.uid);await updateDoc(userDocRef,{invitationCode:newCode});document.getElementById('invitationCode').value=newCode;document.getElementById('invitationLink').value=`${window.location.origin}/register.html?ref=${newCode}`;}document.getElementById('bonusEarned').innerText=`${(d.bonusEarnings||0).toFixed(4)} $`;document.getElementById('invitedCount').innerText=d.invitedCount||0;const list=d.invitedList||[];const container=document.getElementById('invitedList');if(list.length===0)container.innerHTML='<p style="text-align:center;color:#64748b;">Aucun invité pour le moment</p>';else container.innerHTML=list.map(i=>`<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #1e293b;"><span>${i.code||'Nouveau'}</span><span style="color:#f59e0b;">${(i.totalGenerated||0).toFixed(4)} $</span></div>`).join('');}
 async function loadTickets(){const snap=await getDoc(userDocRef);const tickets=snap.data()?.ticketsList||[];tickets.sort((a,b)=>new Date(b.date)-new Date(a.date));const container=document.getElementById('ticketsListContainer');if(tickets.length===0){container.innerHTML='<p style="text-align:center;color:#64748b;">Aucun ticket pour le moment</p>';return;}container.innerHTML=tickets.map(t=>`<div class="ticket-message ${t.status==='résolu'?'ticket-closed':''}" data-id="${t.id}"><div><strong>${escapeHtml(t.ticketType||'Sans type')}</strong> - ${t.priority||'normale'}</div><div><strong>${escapeHtml(t.subject)}</strong></div><div>Statut: ${t.status==='ouvert'?'🟡 Ouvert':(t.status==='en cours'?'🔵 En cours':'🟢 Résolu')}</div><div class="ticket-actions"><button class="btn-small" onclick="window.viewTicket('${t.id}')">Voir</button>${t.status==='résolu'?`<button class="btn-small btn-delete" onclick="window.deleteTicketConfirm('${t.id}')">Supprimer</button>`:''}</div></div>`).join('');}
-
-// Version corrigée de viewTicket - l'utilisateur ne peut répondre que si le dernier message n'est PAS du support
-window.viewTicket = async (id) => {
-    currentTicketId = id;
-    const snap = await getDoc(userDocRef);
-    const ticket = snap.data()?.ticketsList?.find(t => t.id === id);
-    if (!ticket) return;
-    
-    const messages = ticket.messages || [{ type: 'user', message: ticket.message, date: ticket.date }];
-    const container = document.getElementById('ticketDetailContent');
-    
-    container.innerHTML = `
-        <div><strong>Sujet:</strong> ${escapeHtml(ticket.subject)}</div>
-        <div><strong>Type:</strong> ${ticket.ticketType || '-'}</div>
-        <div><strong>Priorité:</strong> ${ticket.priority || 'normale'}</div>
-        <div><strong>Statut:</strong> ${ticket.status === 'ouvert' ? '🟡 Ouvert' : (ticket.status === 'en cours' ? '🔵 En cours' : '🟢 Résolu')}</div>
-        <div style="margin-top:15px;"><strong>Messages:</strong></div>
-        ${messages.map(m => `
-            <div class="ticket-message ${m.type}">
-                <div class="role">${m.type === 'user' ? '👤 Moi' : '📩 Support'}</div>
-                <div class="text">${escapeHtml(m.message)}</div>
-                <div class="date">${new Date(m.date).toLocaleString('fr-FR')}</div>
-            </div>
-        `).join('')}
-    `;
-    
-    const replyDiv = document.getElementById('replySection');
-    const actionsDiv = document.getElementById('ticketActionButtons');
-    
-    replyDiv.style.display = 'none';
-    actionsDiv.innerHTML = '';
-    
-    const lastMessage = messages[messages.length - 1];
-    const lastMessageIsFromSupport = lastMessage && lastMessage.type === 'support';
-    
-    // L'utilisateur peut répondre SEULEMENT si : ticket non résolu ET dernier message n'est PAS du support
-    if (ticket.status !== 'résolu' && !lastMessageIsFromSupport) {
-        replyDiv.style.display = 'block';
-        document.getElementById('ticketReplyMessage').value = '';
-        
-        actionsDiv.innerHTML += `<button class="btn-small btn-reply" id="sendReplyBtn">📨 Répondre</button>`;
-        actionsDiv.innerHTML += `<button class="btn-small btn-close" id="closeTicketBtn">🔒 Fermer le ticket</button>`;
-        
-        document.getElementById('sendReplyBtn').onclick = async () => {
-            const msg = document.getElementById('ticketReplyMessage').value.trim();
-            if (!msg) {
-                showToast("✏️ Veuillez écrire un message", true);
-                return;
-            }
-            
-            const freshSnap = await getDoc(userDocRef);
-            const freshTickets = freshSnap.data()?.ticketsList || [];
-            const idx = freshTickets.findIndex(t => t.id === id);
-            
-            if (idx !== -1) {
-                const updatedMessages = [...(freshTickets[idx].messages || []), {
-                    type: 'user',
-                    message: msg,
-                    date: new Date().toISOString()
-                }];
-                freshTickets[idx].messages = updatedMessages;
-                await updateDoc(userDocRef, { ticketsList: freshTickets });
-                showToast("✅ Message envoyé !");
-                document.getElementById('ticketReplyMessage').value = '';
-                window.viewTicket(id);
-            }
-        };
-        
-        if (document.getElementById('closeTicketBtn')) {
-            document.getElementById('closeTicketBtn').onclick = async () => {
-                const freshSnap = await getDoc(userDocRef);
-                const freshTickets = freshSnap.data()?.ticketsList || [];
-                const idx = freshTickets.findIndex(t => t.id === id);
-                if (idx !== -1) {
-                    freshTickets[idx].status = 'résolu';
-                    await updateDoc(userDocRef, { ticketsList: freshTickets });
-                    showToast("🔒 Ticket fermé");
-                    closeModal('ticketDetailModal');
-                    loadTickets();
-                }
-            };
+window.viewTicket=async(id)=>{currentTicketId=id;const snap=await getDoc(userDocRef);const ticket=snap.data()?.ticketsList?.find(t=>t.id===id);if(!ticket)return;const messages=ticket.messages||[{type:'user',message:ticket.message,date:ticket.date}];const container=document.getElementById('ticketDetailContent');container.innerHTML=`<div><strong>Sujet:</strong> ${escapeHtml(ticket.subject)}</div><div><strong>Type:</strong> ${ticket.ticketType||'-'}</div><div><strong>Priorité:</strong> ${ticket.priority||'normale'}</div><div><strong>Statut:</strong> ${ticket.status==='ouvert'?'🟡 Ouvert':(ticket.status==='en cours'?'🔵 En cours':'🟢 Résolu')}</div><div style="margin-top:15px;"><strong>Messages:</strong></div>${messages.map(m=>`<div class="ticket-message ${m.type}"><div class="role">${m.type==='user'?'Moi':'📩 Pôle technique et support'}</div><div class="text">${escapeHtml(m.message)}</div><div class="date">${new Date(m.date).toLocaleString('fr-FR')}</div></div>`).join('')}`;const replyDiv=document.getElementById('replySection');const actionsDiv=document.getElementById('ticketActionButtons');replyDiv.style.display='none';actionsDiv.innerHTML='';if(ticket.status!=='résolu'){replyDiv.style.display='block';actionsDiv.innerHTML+=`<button class="btn-small btn-reply" id="sendReplyBtn">Envoyer la réponse</button>`;document.getElementById('sendReplyBtn').onclick=async()=>{const msg=document.getElementById('ticketReplyMessage').value.trim();if(!msg){showToast("Message requis",true);return;}const updatedMessages=[...(ticket.messages||[{type:'user',message:ticket.message,date:ticket.date}]),{type:'user',message:msg,date:new Date().toISOString()}];const updatedTickets=(await getDoc(userDocRef)).data()?.ticketsList||[];const idx=updatedTickets.findIndex(t=>t.id===id);if(idx!==-1){updatedTickets[idx].messages=updatedMessages;await updateDoc(userDocRef,{ticketsList:updatedTickets});showToast("✅ Message ajouté");document.getElementById('ticketReplyMessage').value='';window.viewTicket(id);}};}if(ticket.status!=='résolu'){actionsDiv.innerHTML+=`<button class="btn-small btn-close" id="closeTicketBtn">Fermer le ticket</button>`;document.getElementById('closeTicketBtn').onclick=async()=>{const updatedTickets=(await getDoc(userDocRef)).data()?.ticketsList||[];const idx=updatedTickets.findIndex(t=>t.id===id);if(idx!==-1){updatedTickets[idx].status='résolu';await updateDoc(userDocRef,{ticketsList:updatedTickets});showToast("✅ Ticket fermé");closeModal('ticketDetailModal');loadTickets();}};}document.getElementById('ticketDetailModal').classList.add('active');};
+window.deleteTicketConfirm=(id)=>{currentTicketId=id;document.getElementById('confirmDeleteTicketModal').classList.add('active');};
+async function deleteTicket(){if(!currentTicketId)return;const snap=await getDoc(userDocRef);const tickets=snap.data()?.ticketsList||[];const newTickets=tickets.filter(t=>t.id!==currentTicketId);await updateDoc(userDocRef,{ticketsList:newTickets});showToast("🗑️ Ticket supprimé définitivement");closeModal('confirmDeleteTicketModal');closeModal('ticketDetailModal');loadTickets();}
+async function createTicket(type,priority,subject,msg){if(!userDocRef)return false;const snap=await getDoc(userDocRef);const tickets=snap.data()?.ticketsList||[];const openTickets=tickets.filter(t=>t.status!=='résolu');if(openTickets.length>=5){showToast("❌ Vous avez trop de tickets ouverts. Attendez qu'ils soient traités par notre pôle technique et support.",true);return false;}const ticket={id:Date.now().toString(),ticketType:type,subject:subject,priority:priority,status:'ouvert',date:new Date().toISOString(),messages:[{type:'user',message:msg,date:new Date().toISOString()}]};await updateDoc(userDocRef,{ticketsList:[...tickets,ticket]});showToast("✅ Ticket envoyé ! Le pôle technique et support vous répondra sous 24h.");return true;}
+async function loadWithdrawBalance(){const balance=await getBalanceValue();document.getElementById('currentBalanceDisplay').innerText=`${balance.toFixed(4)} $`;}
+async function submitWithdraw(){const amount=parseFloat(document.getElementById('withdrawAmount').value);let wallet=document.getElementById('walletAddress').value.trim();const countrySelect=document.getElementById('countrySelect');const selectedCountry=countrySelect.options[countrySelect.selectedIndex];const countryCode=selectedCountry?.getAttribute('data-code')||'';if(!selectedMethod){showToast("Sélectionnez une méthode",true);return;}if(isNaN(amount)||amount<WITHDRAWAL_MIN){showToast(`Minimum ${WITHDRAWAL_MIN}$`,true);return;}if(!wallet){showToast("Coordonnées requises",true);return;}if((selectedMethod==='orange_money'||selectedMethod==='airtel_money')&&!countryCode){showToast("Sélectionnez votre pays",true);return;}if(selectedMethod==='orange_money'||selectedMethod==='airtel_money'){if(!wallet.startsWith(countryCode)){wallet=countryCode+wallet.replace(/[^0-9]/g,'');document.getElementById('walletAddress').value=wallet;}}else if(selectedMethod==='paypal'){if(!wallet.includes('@')||!wallet.includes('.')){showToast("Email PayPal invalide",true);return;}}const snap=await getDoc(userDocRef);const data=snap.data();const today=new Date().toDateString();if(data.lastWithdrawReset!==today){await updateDoc(userDocRef,{dailyWithdrawals:0,lastWithdrawReset:today});}const dailyCount=data.dailyWithdrawals||0;if(dailyCount>=MAX_WITHDRAWALS_PER_DAY){showToast(`❌ Limite de ${MAX_WITHDRAWALS_PER_DAY} retraits par jour atteinte`,true);return;}const balance=data.balance||0;if(amount>balance){showToast("Solde insuffisant",true);return;}const q=query(collection(db,"withdraw"),where("userId","==",currentUser.uid),where("status","==","pending"));const existing=await getDocs(q);if(!existing.empty){showMessageModal("❌ Vous avez déjà une demande de retrait en cours.");return;}document.getElementById('confirmWithdrawMessage').innerHTML=`<strong>${amount.toFixed(2)} $</strong> par <strong>${selectedMethod}</strong><br>Confirmez-vous cette demande ?`;document.getElementById('confirmWithdrawModal').classList.add('active');}
+window.confirmWithdrawFinal=async()=>{const amount=parseFloat(document.getElementById('withdrawAmount').value);let wallet=document.getElementById('walletAddress').value.trim();const countrySelect=document.getElementById('countrySelect');const selectedCountry=countrySelect.options[countrySelect.selectedIndex];const countryCode=selectedCountry?.getAttribute('data-code')||'';const countryName=selectedCountry?.text||'';const snap=await getDoc(userDocRef);const dailyCount=snap.data()?.dailyWithdrawals||0;try{const withdrawData={userId:currentUser.uid,userEmail:currentUser.email,amount:amount,method:selectedMethod,walletAddress:wallet,status:"pending",requestedAt:new Date().toISOString()};if(countryCode)withdrawData.country=countryName;if(countryCode)withdrawData.countryCode=countryCode;await addDoc(collection(db,"withdraw"),withdrawData);await updateDoc(userDocRef,{dailyWithdrawals:dailyCount+1});showToast("✅ Votre demande de retrait a été envoyée avec succès ! Traitement sous 24h");closeModal('confirmWithdrawModal');closeModal('withdrawModal');document.getElementById('withdrawAmount').value='';document.getElementById('walletAddress').value='';document.getElementById('countrySelect').value='';selectedMethod=null;document.querySelectorAll('.method-option').forEach(o=>o.classList.remove('selected-airtel','selected-orange','selected-paypal'));}catch(e){showToast("Erreur, réessayez",true);}};
+function typeWriterLoader(element, text, speed=50, callback){
+    let i=0;
+    element.innerHTML='';
+    function typing(){
+        if(i<text.length){
+            element.innerHTML+=text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        } else {
+            if(callback) callback();
+            isAnimationComplete = true;
+            checkAndHideLoader();
         }
-    } else if (ticket.status !== 'résolu' && lastMessageIsFromSupport) {
-        actionsDiv.innerHTML += `<div style="background:#1e293b;padding:12px;border-radius:12px;color:#f59e0b;margin-bottom:10px;">
-            <i class="fas fa-info-circle"></i> ⏳ En attente de réponse du support. Un agent vous répondra sous 24h.
-        </div>`;
-        actionsDiv.innerHTML += `<button class="btn-small btn-close" id="closeTicketBtn">🔒 Fermer le ticket</button>`;
-        
-        if (document.getElementById('closeTicketBtn')) {
-            document.getElementById('closeTicketBtn').onclick = async () => {
-                const freshSnap = await getDoc(userDocRef);
-                const freshTickets = freshSnap.data()?.ticketsList || [];
-                const idx = freshTickets.findIndex(t => t.id === id);
-                if (idx !== -1) {
-                    freshTickets[idx].status = 'résolu';
-                    await updateDoc(userDocRef, { ticketsList: freshTickets });
-                    showToast("🔒 Ticket fermé");
-                    closeModal('ticketDetailModal');
-                    loadTickets();
-                }
-            };
-        }
-    } else if (ticket.status === 'résolu') {
-        actionsDiv.innerHTML += `<div style="background:#1e293b;padding:12px;border-radius:12px;color:#10b981;margin-bottom:10px;">
-            <i class="fas fa-check-circle"></i> ✅ Ce ticket est résolu.
-        </div>`;
     }
-    
-    document.getElementById('ticketDetailModal').classList.add('active');
-};
-
-window.deleteTicketConfirm = (id) => {
-    currentTicketId = id;
-    document.getElementById('confirmDeleteTicketModal').classList.add('active');
-};
-
-async function deleteTicket() {
-    if (!currentTicketId) return;
-    const snap = await getDoc(userDocRef);
-    const tickets = snap.data()?.ticketsList || [];
-    const newTickets = tickets.filter(t => t.id !== currentTicketId);
-    await updateDoc(userDocRef, { ticketsList: newTickets });
-    showToast("🗑️ Ticket supprimé");
-    closeModal('confirmDeleteTicketModal');
-    closeModal('ticketDetailModal');
-    loadTickets();
+    typing();
+}
+function checkAndHideLoader(){
+    if(isFirebaseReady && isAnimationComplete){
+        document.getElementById('loaderScreen').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('loaderScreen').classList.add('hide');
+            document.querySelector('.main-content')?.classList.add('show');
+        }, 200);
+    }
 }
 
-async function createTicket(type, priority, subject, msg) {
-    if (!userDocRef) return false;
-    const snap = await getDoc(userDocRef);
-    const tickets = snap.data()?.ticketsList || [];
-    const openTickets = tickets.filter(t => t.status !== 'résolu');
-    if (openTickets.length >= 5) {
-        showToast("❌ Trop de tickets ouverts", true);
-        return false;
-    }
-    const ticket = {
-        id: Date.now().toString(),
-        ticketType: type,
-        subject: subject,
-        priority: priority,
-        status: 'ouvert',
-        date: new Date().toISOString(),
-        messages: [{ type: 'user', message: msg, date: new Date().toISOString() }]
-    };
-    await updateDoc(userDocRef, { ticketsList: [...tickets, ticket] });
-    showToast("✅ Ticket envoyé !");
-    return true;
-}
-
-async function loadWithdrawBalance() {
-    const balance = await getBalanceValue();
-    document.getElementById('currentBalanceDisplay').innerText = `${balance.toFixed(4)} $`;
-}
-
-async function submitWithdraw() {
-    const amount = parseFloat(document.getElementById('withdrawAmount').value);
-    let wallet = document.getElementById('walletAddress').value.trim();
-    const countrySelect = document.getElementById('countrySelect');
-    const selectedCountry = countrySelect.options[countrySelect.selectedIndex];
-    const countryCode = selectedCountry?.getAttribute('data-code') || '';
-    if (!selectedMethod) { showToast("Sélectionnez une méthode", true); return; }
-    if (isNaN(amount) || amount < WITHDRAWAL_MIN) { showToast(`Minimum ${WITHDRAWAL_MIN}$`, true); return; }
-    if (!wallet) { showToast("Coordonnées requises", true); return; }
-    if ((selectedMethod === 'orange_money' || selectedMethod === 'airtel_money') && !countryCode) { showToast("Sélectionnez votre pays", true); return; }
-    if (selectedMethod === 'orange_money' || selectedMethod === 'airtel_money') {
-        if (!wallet.startsWith(countryCode)) {
-            wallet = countryCode + wallet.replace(/[^0-9]/g, '');
-            document.getElementById('walletAddress').value = wallet;
-        }
-    } else if (selectedMethod === 'paypal') {
-        if (!wallet.includes('@') || !wallet.includes('.')) { showToast("Email PayPal invalide", true); return; }
-    }
-    const snap = await getDoc(userDocRef);
-    const data = snap.data();
-    const today = new Date().toDateString();
-    if (data.lastWithdrawReset !== today) {
-        await updateDoc(userDocRef, { dailyWithdrawals: 0, lastWithdrawReset: today });
-    }
-    const dailyCount = data.dailyWithdrawals || 0;
-    if (dailyCount >= MAX_WITHDRAWALS_PER_DAY) {
-        showToast(`❌ Limite de ${MAX_WITHDRAWALS_PER_DAY} retraits par jour`, true);
-        return;
-    }
-    const balance = data.balance || 0;
-    if (amount > balance) { showToast("Solde insuffisant", true); return; }
-    const q = query(collection(db, "withdraw"), where("userId", "==", currentUser.uid), where("status", "==", "pending"));
-    const existing = await getDocs(q);
-    if (!existing.empty) { showMessageModal("❌ Vous avez déjà une demande de retrait en cours."); return; }
-    document.getElementById('confirmWithdrawMessage').innerHTML = `<strong>${amount.toFixed(2)} $</strong> par <strong>${selectedMethod}</strong><br>Confirmez-vous cette demande ?`;
-    document.getElementById('confirmWithdrawModal').classList.add('active');
-}
-
-window.confirmWithdrawFinal = async () => {
-    const amount = parseFloat(document.getElementById('withdrawAmount').value);
-    let wallet = document.getElementById('walletAddress').value.trim();
-    const countrySelect = document.getElementById('countrySelect');
-    const selectedCountry = countrySelect.options[countrySelect.selectedIndex];
-    const countryCode = selectedCountry?.getAttribute('data-code') || '';
-    const countryName = selectedCountry?.text || '';
-    const snap = await getDoc(userDocRef);
-    const dailyCount = snap.data()?.dailyWithdrawals || 0;
-    try {
-        const withdrawData = {
-            userId: currentUser.uid,
-            userEmail: currentUser.email,
-            amount: amount,
-            method: selectedMethod,
-            walletAddress: wallet,
-            status: "pending",
-            requestedAt: new Date().toISOString()
-        };
-        if (countryCode) withdrawData.country = countryName;
-        if (countryCode) withdrawData.countryCode = countryCode;
-        await addDoc(collection(db, "withdraw"), withdrawData);
-        await updateDoc(userDocRef, { dailyWithdrawals: dailyCount + 1 });
-        showToast("✅ Demande de retrait envoyée !");
-        closeModal('confirmWithdrawModal');
-        closeModal('withdrawModal');
-        document.getElementById('withdrawAmount').value = '';
-        document.getElementById('walletAddress').value = '';
-        document.getElementById('countrySelect').value = '';
-        selectedMethod = null;
-        document.querySelectorAll('.method-option').forEach(o => o.classList.remove('selected-airtel', 'selected-orange', 'selected-paypal'));
-    } catch (e) { showToast("Erreur, réessayez", true); }
-};
-
+// 🔐 NOUVELLE FONCTION DE VÉRIFICATION D'ACTIVATION
 async function checkUserActivation(user) {
     try {
         const userDoc = await getDoc(doc(db, "users", user.uid));
@@ -459,29 +277,41 @@ async function checkUserActivation(user) {
             setTimeout(() => { window.location.href = "login.html"; }, 3000);
             return false;
         }
+        
         const userData = userDoc.data();
+        
+        // Vérification isActive
         if (userData.isActive !== true) {
             await signOut(auth);
-            showMessageModal("⏳ Votre compte est en attente d'activation. Le support vous contactera sous 48h.");
+            showMessageModal("⏳ Votre compte est en attente d'activation. Le Pôle Excellence Technique et Support vous contactera sous 48h.");
             setTimeout(() => { window.location.href = "login.html"; }, 3000);
             return false;
         }
+        
+        // Vérification blocage
         if (userData.isBlocked === true) {
             await signOut(auth);
-            showMessageModal("🚫 Votre compte a été bloqué. Contactez le support.");
+            showMessageModal("🚫 Votre compte a été bloqué. Contactez le support pour plus d'informations.");
             setTimeout(() => { window.location.href = "login.html"; }, 3000);
             return false;
         }
+        
         return true;
-    } catch(e) { console.error(e); return false; }
+    } catch(e) {
+        console.error("Erreur vérification activation:", e);
+        return false;
+    }
 }
 
-async function initUser(user) {
-    if (!user) return;
+const loaderText = document.getElementById('loaderText');
+typeWriterLoader(loaderText, 'NeTubeX', 50, () => {});
+
+async function initUser(user){
+    if(!user) return;
     currentUser = user;
     userDocRef = doc(db, "users", user.uid);
     const snap = await getDoc(userDocRef);
-    if (!snap.exists()) {
+    if(!snap.exists()){
         const invitationCode = await generateInvitationCode(user.uid);
         await setDoc(userDocRef, {
             email: user.email || "",
@@ -498,11 +328,11 @@ async function initUser(user) {
             invitedCount: 0,
             dailyWithdrawals: 0,
             lastWithdrawReset: new Date().toDateString(),
-            capDuJour: "📊 Bienvenue sur NeTubeX !\n\n📌 Objectif du jour : Découvrir les jeux\n🎯 Challenge : Jouer à 2 jeux\n⭐ Bonus : +50 points"
+            capDuJour: "📊 Bienvenue sur NeTubeX !\n\n📌 Objectif du jour : Découvrir les jeux\n🎯 Challenge : Jouer à 2 jeux\n⭐ Bonus : +50 points si objectif atteint"
         });
     } else {
         const userData = snap.data();
-        if (!userData.invitationCode) {
+        if(!userData.invitationCode){
             const newCode = await generateInvitationCode(user.uid);
             await updateDoc(userDocRef, {
                 invitationCode: newCode,
@@ -517,11 +347,11 @@ async function initUser(user) {
         await updateDoc(userDocRef, { lastLogin: new Date().toISOString() });
         
         const refCode = new URLSearchParams(window.location.search).get('ref');
-        if (refCode && !userData.invitedBy) {
+        if(refCode && !userData.invitedBy){
             const codeSnap = await getDoc(doc(db, "referral_codes", refCode));
-            if (codeSnap.exists()) {
+            if(codeSnap.exists()){
                 const inviterId = codeSnap.data().userId;
-                if (inviterId !== user.uid) {
+                if(inviterId !== user.uid){
                     await updateDoc(userDocRef, { invitedBy: refCode });
                     const inviterRef = doc(db, "users", inviterId);
                     const inviterData = (await getDoc(inviterRef)).data();
@@ -536,10 +366,13 @@ async function initUser(user) {
     renderGames();
     startTimersUpdate();
     checkReturnFromAd();
+    isFirebaseReady = true;
+    checkAndHideLoader();
 }
 
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
+// 🔐 MODIFICATION DE onAuthStateChanged AVEC VÉRIFICATION
+onAuthStateChanged(auth, async(user) => {
+    if(user){
         const isActivated = await checkUserActivation(user);
         if (isActivated) {
             await initUser(user);
@@ -549,64 +382,55 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-// Event Listeners
-document.getElementById('balanceFloatBtn')?.addEventListener('click', () => showBalance());
-document.getElementById('iframeFloatBtn')?.addEventListener('click', () => {
-    if (currentUser) showGameRedirectModal(() => {
-        const iframe = document.getElementById('portalIframe');
-        if (iframe) {
-            iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`;
-            document.getElementById('fullscreenIframe').classList.add('active');
-        }
-    });
-});
-document.getElementById('menuFloatBtn')?.addEventListener('click', () => document.getElementById('menuFloating').classList.toggle('active'));
-document.addEventListener('click', (e) => { const m = document.getElementById('menuFloating'); const b = document.getElementById('menuFloatBtn'); if (m && b && !b.contains(e.target) && !m.contains(e.target)) m.classList.remove('active'); });
-document.getElementById('menuCapBtn')?.addEventListener('click', async () => { await loadCapMessage(); document.getElementById('capModal').classList.add('active'); document.getElementById('menuFloating').classList.remove('active'); });
-document.getElementById('menuProfileBtn')?.addEventListener('click', async () => { await loadProfile(); document.getElementById('profileModal').classList.add('active'); document.getElementById('menuFloating').classList.remove('active'); });
-document.getElementById('menuTicketsBtn')?.addEventListener('click', async () => { await loadTickets(); document.getElementById('ticketsModal').classList.add('active'); document.getElementById('menuFloating').classList.remove('active'); });
-document.getElementById('menuBonusBtn')?.addEventListener('click', async () => { await loadBonusData(); document.getElementById('bonusModal').classList.add('active'); document.getElementById('menuFloating').classList.remove('active'); });
-document.getElementById('menuWithdrawBtn')?.addEventListener('click', async () => { await loadWithdrawBalance(); document.getElementById('withdrawModal').classList.add('active'); document.getElementById('menuFloating').classList.remove('active'); });
-document.getElementById('menuLogoutBtn')?.addEventListener('click', () => { document.getElementById('menuFloating').classList.remove('active'); document.getElementById('confirmLogoutModal').classList.add('active'); });
-document.getElementById('closeCapModal')?.addEventListener('click', () => closeModal('capModal'));
-document.getElementById('closeCapFooterBtn')?.addEventListener('click', () => closeModal('capModal'));
-document.getElementById('closeProfileModal')?.addEventListener('click', () => closeModal('profileModal'));
-document.getElementById('cancelProfileBtn')?.addEventListener('click', () => closeModal('profileModal'));
-document.getElementById('closeTicketsModal')?.addEventListener('click', () => closeModal('ticketsModal'));
-document.getElementById('cancelTicketsBtn')?.addEventListener('click', () => closeModal('ticketsModal'));
-document.getElementById('closeNewTicketModal')?.addEventListener('click', () => closeModal('newTicketModal'));
-document.getElementById('cancelNewTicketBtn')?.addEventListener('click', () => closeModal('newTicketModal'));
-document.getElementById('closeTicketDetailModal')?.addEventListener('click', () => closeModal('ticketDetailModal'));
-document.getElementById('cancelTicketDetailBtn')?.addEventListener('click', () => closeModal('ticketDetailModal'));
-document.getElementById('closeBonusModal')?.addEventListener('click', () => closeModal('bonusModal'));
-document.getElementById('cancelBonusBtn')?.addEventListener('click', () => closeModal('bonusModal'));
-document.getElementById('closeWithdrawModal')?.addEventListener('click', () => closeModal('withdrawModal'));
-document.getElementById('cancelWithdrawBtn')?.addEventListener('click', () => closeModal('withdrawModal'));
-document.getElementById('closeConfirmWithdrawModal')?.addEventListener('click', () => closeModal('confirmWithdrawModal'));
-document.getElementById('cancelConfirmWithdrawBtn')?.addEventListener('click', () => closeModal('confirmWithdrawModal'));
-document.getElementById('closeConfirmDeleteModal')?.addEventListener('click', () => closeModal('confirmDeleteTicketModal'));
-document.getElementById('cancelDeleteTicketBtn')?.addEventListener('click', () => closeModal('confirmDeleteTicketModal'));
-document.getElementById('closeLogoutModal')?.addEventListener('click', () => closeModal('confirmLogoutModal'));
-document.getElementById('cancelLogoutBtn')?.addEventListener('click', () => closeModal('confirmLogoutModal'));
-document.getElementById('closeMessageModal')?.addEventListener('click', () => closeModal('messageModal'));
-document.getElementById('confirmMessageBtn')?.addEventListener('click', () => closeModal('messageModal'));
-document.getElementById('closeIframeBtn')?.addEventListener('click', () => { document.getElementById('portalIframe').src = 'about:blank'; document.getElementById('fullscreenIframe').classList.remove('active'); });
-document.getElementById('confirmLogoutBtn')?.addEventListener('click', async () => { closeModal('confirmLogoutModal'); await signOut(auth); window.location.href = "login.html"; });
-document.getElementById('updatePasswordBtn')?.addEventListener('click', async () => { const np = document.getElementById('newPassword').value; if (np) { if (np.length < 6) { showToast("6 caractères minimum", true); return; } try { await updatePassword(currentUser, np); showToast("Mot de passe mis à jour"); document.getElementById('newPassword').value = ''; } catch (e) { showToast("Erreur, réessayez", true); } } else { showToast("Aucun changement"); } });
-document.getElementById('newTicketBtn')?.addEventListener('click', () => document.getElementById('newTicketModal').classList.add('active'));
-document.getElementById('submitTicketBtn')?.addEventListener('click', async () => { const type = document.getElementById('ticketTypeSelect').value; const priority = document.getElementById('ticketPrioritySelect').value; const subject = document.getElementById('ticketSubject').value.trim(); const msg = document.getElementById('ticketMessage').value.trim(); if (!type) { showToast("Sélectionnez un type", true); return; } if (!subject) { showToast("Sujet requis", true); return; } if (!msg) { showToast("Message requis", true); return; } await createTicket(type, priority, subject, msg); document.getElementById('ticketTypeSelect').value = ''; document.getElementById('ticketSubject').value = ''; document.getElementById('ticketMessage').value = ''; closeModal('newTicketModal'); await loadTickets(); });
-document.getElementById('copyCodeBtn')?.addEventListener('click', () => { const c = document.getElementById('invitationCode').value; navigator.clipboard.writeText(c); showToast("Code copié !"); });
-document.getElementById('copyLinkBtn')?.addEventListener('click', () => { const l = document.getElementById('invitationLink').value; navigator.clipboard.writeText(l); showToast("Lien copié !"); });
-document.getElementById('submitWithdrawBtn')?.addEventListener('click', submitWithdraw);
-document.getElementById('finalConfirmWithdrawBtn')?.addEventListener('click', () => { if (window.confirmWithdrawFinal) window.confirmWithdrawFinal(); });
-document.getElementById('finalDeleteTicketBtn')?.addEventListener('click', deleteTicket);
-document.getElementById('countrySelect')?.addEventListener('change', function () { const selected = this.options[this.selectedIndex]; const code = selected.getAttribute('data-code') || ''; if (code) { let input = document.getElementById('walletAddress'); let current = input.value.replace(/[^0-9]/g, ''); input.value = code + current; } });
-document.querySelectorAll('.method-option').forEach(opt => { opt.addEventListener('click', () => { document.querySelectorAll('.method-option').forEach(o => o.classList.remove('selected-airtel', 'selected-orange', 'selected-paypal')); if (opt.dataset.method === 'airtel_money') opt.classList.add('selected-airtel'); else if (opt.dataset.method === 'orange_money') opt.classList.add('selected-orange'); else if (opt.dataset.method === 'paypal') opt.classList.add('selected-paypal'); selectedMethod = opt.dataset.method; const walletLabel = document.getElementById('walletLabel'); const methodHint = document.getElementById('methodHint'); const countryGroup = document.getElementById('countryGroup'); if (selectedMethod === 'paypal') { walletLabel.innerText = 'Email PayPal'; document.getElementById('walletAddress').placeholder = 'exemple@gmail.com'; methodHint.innerHTML = '🔸 Entrez votre adresse email PayPal'; countryGroup.style.display = 'none'; } else { walletLabel.innerText = 'Numéro de téléphone'; document.getElementById('walletAddress').placeholder = '+243 9X XXX XXXX'; methodHint.innerHTML = '🔸 Sélectionnez votre pays puis entrez votre numéro'; countryGroup.style.display = 'block'; } }); });
-document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('dragstart', e => e.preventDefault());
-document.addEventListener('selectstart', e => e.preventDefault());
-document.addEventListener('keydown', e => { if (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'x' || e.key === 'u' || e.key === 's' || e.key === '+' || e.key === '-')) e.preventDefault(); if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J'))) e.preventDefault(); });
-document.querySelectorAll('img').forEach(img => { img.addEventListener('contextmenu', e => e.preventDefault()); img.addEventListener('touchstart', e => { setTimeout(() => e.preventDefault(), 100); }); });
+document.getElementById('balanceFloatBtn')?.addEventListener('click',()=>showBalance());
+document.getElementById('iframeFloatBtn')?.addEventListener('click',()=>{if(currentUser)showGameRedirectModal(()=>{const iframe=document.getElementById('portalIframe');if(iframe){iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`;document.getElementById('fullscreenIframe').classList.add('active');}});});
+document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
+document.addEventListener('click',(e)=>{const m=document.getElementById('menuFloating');const b=document.getElementById('menuFloatBtn');if(m&&b&&!b.contains(e.target)&&!m.contains(e.target))m.classList.remove('active');});
+document.getElementById('menuCapBtn')?.addEventListener('click',async()=>{await loadCapMessage();document.getElementById('capModal').classList.add('active');document.getElementById('menuFloating').classList.remove('active');});
+document.getElementById('menuProfileBtn')?.addEventListener('click',async()=>{await loadProfile();document.getElementById('profileModal').classList.add('active');document.getElementById('menuFloating').classList.remove('active');});
+document.getElementById('menuTicketsBtn')?.addEventListener('click',async()=>{await loadTickets();document.getElementById('ticketsModal').classList.add('active');document.getElementById('menuFloating').classList.remove('active');});
+document.getElementById('menuBonusBtn')?.addEventListener('click',async()=>{await loadBonusData();document.getElementById('bonusModal').classList.add('active');document.getElementById('menuFloating').classList.remove('active');});
+document.getElementById('menuWithdrawBtn')?.addEventListener('click',async()=>{await loadWithdrawBalance();document.getElementById('withdrawModal').classList.add('active');document.getElementById('menuFloating').classList.remove('active');});
+document.getElementById('menuLogoutBtn')?.addEventListener('click',()=>{document.getElementById('menuFloating').classList.remove('active');document.getElementById('confirmLogoutModal').classList.add('active');});
+document.getElementById('closeCapModal')?.addEventListener('click',()=>closeModal('capModal'));
+document.getElementById('closeCapFooterBtn')?.addEventListener('click',()=>closeModal('capModal'));
+document.getElementById('closeProfileModal')?.addEventListener('click',()=>closeModal('profileModal'));
+document.getElementById('cancelProfileBtn')?.addEventListener('click',()=>closeModal('profileModal'));
+document.getElementById('closeTicketsModal')?.addEventListener('click',()=>closeModal('ticketsModal'));
+document.getElementById('cancelTicketsBtn')?.addEventListener('click',()=>closeModal('ticketsModal'));
+document.getElementById('closeNewTicketModal')?.addEventListener('click',()=>closeModal('newTicketModal'));
+document.getElementById('cancelNewTicketBtn')?.addEventListener('click',()=>closeModal('newTicketModal'));
+document.getElementById('closeTicketDetailModal')?.addEventListener('click',()=>closeModal('ticketDetailModal'));
+document.getElementById('cancelTicketDetailBtn')?.addEventListener('click',()=>closeModal('ticketDetailModal'));
+document.getElementById('closeBonusModal')?.addEventListener('click',()=>closeModal('bonusModal'));
+document.getElementById('cancelBonusBtn')?.addEventListener('click',()=>closeModal('bonusModal'));
+document.getElementById('closeWithdrawModal')?.addEventListener('click',()=>closeModal('withdrawModal'));
+document.getElementById('cancelWithdrawBtn')?.addEventListener('click',()=>closeModal('withdrawModal'));
+document.getElementById('closeConfirmWithdrawModal')?.addEventListener('click',()=>closeModal('confirmWithdrawModal'));
+document.getElementById('cancelConfirmWithdrawBtn')?.addEventListener('click',()=>closeModal('confirmWithdrawModal'));
+document.getElementById('closeConfirmDeleteModal')?.addEventListener('click',()=>closeModal('confirmDeleteTicketModal'));
+document.getElementById('cancelDeleteTicketBtn')?.addEventListener('click',()=>closeModal('confirmDeleteTicketModal'));
+document.getElementById('closeLogoutModal')?.addEventListener('click',()=>closeModal('confirmLogoutModal'));
+document.getElementById('cancelLogoutBtn')?.addEventListener('click',()=>closeModal('confirmLogoutModal'));
+document.getElementById('closeMessageModal')?.addEventListener('click',()=>closeModal('messageModal'));
+document.getElementById('confirmMessageBtn')?.addEventListener('click',()=>closeModal('messageModal'));
+document.getElementById('closeIframeBtn')?.addEventListener('click',()=>{document.getElementById('portalIframe').src='about:blank';document.getElementById('fullscreenIframe').classList.remove('active');});
+document.getElementById('confirmLogoutBtn')?.addEventListener('click',async()=>{closeModal('confirmLogoutModal');await signOut(auth);window.location.href="login.html";});
+document.getElementById('updatePasswordBtn')?.addEventListener('click',async()=>{const np=document.getElementById('newPassword').value;if(np){if(np.length<6){showToast("6 caractères minimum",true);return;}try{await updatePassword(currentUser,np);showToast("Mot de passe mis à jour");document.getElementById('newPassword').value='';}catch(e){showToast("Erreur, réessayez",true);}}else{showToast("Aucun changement");}});
+document.getElementById('newTicketBtn')?.addEventListener('click',()=>document.getElementById('newTicketModal').classList.add('active'));
+document.getElementById('submitTicketBtn')?.addEventListener('click',async()=>{const type=document.getElementById('ticketTypeSelect').value;const priority=document.getElementById('ticketPrioritySelect').value;const subject=document.getElementById('ticketSubject').value.trim();const msg=document.getElementById('ticketMessage').value.trim();if(!type){showToast("Sélectionnez un type",true);return;}if(!subject){showToast("Sujet requis",true);return;}if(!msg){showToast("Message requis",true);return;}await createTicket(type,priority,subject,msg);document.getElementById('ticketTypeSelect').value='';document.getElementById('ticketSubject').value='';document.getElementById('ticketMessage').value='';closeModal('newTicketModal');await loadTickets();});
+document.getElementById('copyCodeBtn')?.addEventListener('click',()=>{const c=document.getElementById('invitationCode').value;navigator.clipboard.writeText(c);showToast("Code copié !");});
+document.getElementById('copyLinkBtn')?.addEventListener('click',()=>{const l=document.getElementById('invitationLink').value;navigator.clipboard.writeText(l);showToast("Lien copié !");});
+document.getElementById('submitWithdrawBtn')?.addEventListener('click',submitWithdraw);
+document.getElementById('finalConfirmWithdrawBtn')?.addEventListener('click',()=>{if(window.confirmWithdrawFinal)window.confirmWithdrawFinal();});
+document.getElementById('finalDeleteTicketBtn')?.addEventListener('click',deleteTicket);
+document.getElementById('countrySelect')?.addEventListener('change',function(){const selected=this.options[this.selectedIndex];const code=selected.getAttribute('data-code')||'';if(code){let input=document.getElementById('walletAddress');let current=input.value.replace(/[^0-9]/g,'');input.value=code+current;}});
+document.querySelectorAll('.method-option').forEach(opt=>{opt.addEventListener('click',()=>{document.querySelectorAll('.method-option').forEach(o=>o.classList.remove('selected-airtel','selected-orange','selected-paypal'));if(opt.dataset.method==='airtel_money')opt.classList.add('selected-airtel');else if(opt.dataset.method==='orange_money')opt.classList.add('selected-orange');else if(opt.dataset.method==='paypal')opt.classList.add('selected-paypal');selectedMethod=opt.dataset.method;const walletLabel=document.getElementById('walletLabel');const methodHint=document.getElementById('methodHint');const countryGroup=document.getElementById('countryGroup');if(selectedMethod==='paypal'){walletLabel.innerText='Email PayPal';document.getElementById('walletAddress').placeholder='exemple@gmail.com';methodHint.innerHTML='🔸 Entrez votre adresse email PayPal';countryGroup.style.display='none';}else{walletLabel.innerText='Numéro de téléphone';document.getElementById('walletAddress').placeholder='+243 9X XXX XXXX';methodHint.innerHTML='🔸 Sélectionnez votre pays puis entrez votre numéro';countryGroup.style.display='block';}});});
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('dragstart',e=>e.preventDefault());
+document.addEventListener('selectstart',e=>e.preventDefault());
+document.addEventListener('touchstart',e=>{if(e.touches.length>1)e.preventDefault();},{passive:false});
+document.addEventListener('keydown',e=>{if(e.ctrlKey&&(e.key==='c'||e.key==='v'||e.key==='x'||e.key==='u'||e.key==='s'||e.key==='+'||e.key==='-'))e.preventDefault();if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J')))e.preventDefault();});
+document.querySelectorAll('img').forEach(img=>{img.addEventListener('contextmenu',e=>e.preventDefault());img.addEventListener('touchstart',e=>{setTimeout(()=>e.preventDefault(),100);});});
 </script>
 </body>
-</html>
