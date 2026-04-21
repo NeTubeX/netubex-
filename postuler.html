@@ -33,16 +33,24 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#0a0e1a 0%
 .password-strength.very-strong{width:100%;background:#10b981;}
 .strength-text{font-size:0.7rem;margin-top:5px;color:#94a3b8;}
 .input-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.gender-row{display:flex;gap:20px;margin-top:8px;}
+.gender-option{display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 16px;background:#0f1420;border-radius:14px;border:1px solid #1e293b;transition:all 0.2s;}
+.gender-option.selected{background:rgba(59,130,246,0.15);border-color:#3b82f6;}
+.gender-option input{width:18px;height:18px;accent-color:#3b82f6;margin:0;}
+.gender-option label{cursor:pointer;margin:0;color:#e2e8f0;font-size:0.9rem;text-transform:none;letter-spacing:normal;}
 .contact-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
-.contact-card{background:#0f1420;border-radius:16px;padding:14px;border:1px solid #1e293b;cursor:pointer;transition:all 0.2s;}
+.contact-card{background:#0f1420;border-radius:16px;padding:14px;border:1px solid #1e293b;cursor:pointer;transition:all 0.2s;width:100%;}
 .contact-card:hover{border-color:#3b82f6;background:rgba(59,130,246,0.05);}
 .contact-card.selected{border-color:#3b82f6;background:rgba(59,130,246,0.1);}
 .contact-card label{display:flex;align-items:center;gap:12px;cursor:pointer;margin:0;color:#e2e8f0;font-weight:500;}
 .contact-card input[type="radio"]{width:18px;height:18px;accent-color:#3b82f6;margin:0;}
 .contact-card i{font-size:1.2rem;width:28px;}
 .contact-hint{font-size:0.7rem;color:#64748b;margin-top:6px;margin-left:40px;}
-.contact-value-input{margin-top:10px;padding-left:40px;}
+.contact-value-input{margin-top:10px;padding-left:0;width:100%;}
 .contact-value-input input{width:100%;padding:10px 14px;border-radius:12px;border:1px solid #1e293b;background:#0a0f1a;color:#fff;font-size:0.85rem;}
+.country-select-row{display:flex;gap:10px;margin-bottom:15px;}
+.country-select-row select{flex:2;padding:12px;border-radius:12px;border:1px solid #1e293b;background:#0f1420;color:#fff;font-size:0.9rem;}
+.country-select-row input{flex:3;padding:12px;border-radius:12px;border:1px solid #1e293b;background:#0f1420;color:#fff;font-size:0.9rem;}
 .checkbox-group{margin:20px 0;display:flex;align-items:flex-start;gap:12px;}
 .checkbox-group input{width:20px;height:20px;margin-top:2px;accent-color:#3b82f6;}
 .checkbox-group label{font-size:0.8rem;color:#cbd5e1;line-height:1.4;}
@@ -51,18 +59,21 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#0a0e1a 0%
 .btn-submit{width:100%;padding:16px;background:linear-gradient(135deg,#3b82f6,#1e40af);border:none;border-radius:40px;color:#fff;font-size:1rem;font-weight:600;cursor:pointer;transition:all 0.3s;margin-top:20px;}
 .btn-submit:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 25px -5px rgba(59,130,246,0.4);}
 .btn-submit:disabled{opacity:0.6;transform:none;cursor:not-allowed;}
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:12px 24px;border-radius:40px;font-size:0.85rem;z-index:2000;animation:slideUp 0.3s;box-shadow:0 10px 25px rgba(0,0,0,0.2);}
-.toast-error{background:#ef4444;}
-@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+.modal-popup{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1e293b;border-left:4px solid #ef4444;border-radius:12px;padding:16px 24px;box-shadow:0 20px 35px -10px rgba(0,0,0,0.4);z-index:3000;animation:slideDown 0.3s ease;max-width:450px;width:90%;backdrop-filter:blur(10px);}
+.modal-popup.success{border-left-color:#10b981;}
+.modal-popup i{font-size:1.2rem;margin-right:12px;}
+.modal-popup .modal-title{font-weight:700;margin-bottom:5px;font-size:0.9rem;}
+.modal-popup .modal-message{font-size:0.8rem;color:#cbd5e1;}
+@keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-30px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
 .loading-spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:8px;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.info-message{background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:16px;padding:16px;margin-top:20px;text-align:center;}
+.info-message{background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:16px;padding:16px;margin-top:20px;text-align:center;width:100%;}
 .info-message i{color:#3b82f6;margin-right:8px;}
 .info-message p{font-size:0.8rem;color:#94a3b8;line-height:1.5;}
 .footer-info{text-align:center;margin-top:30px;font-size:0.7rem;color:#475569;}
 .footer-info a{color:#3b82f6;text-decoration:none;}
-@media (max-width:560px){.container{padding:80px 16px 40px;}.form-card{padding:24px;}.input-row,.contact-row{grid-template-columns:1fr;gap:12px;}.form-title{font-size:1.4rem;}}
-@media (max-width:480px){.form-card{padding:20px;}.contact-card{padding:12px;}}
+@media (max-width:560px){.container{padding:80px 16px 40px;}.form-card{padding:24px;}.input-row,.contact-row{grid-template-columns:1fr;gap:12px;}.gender-row{flex-wrap:wrap;}.form-title{font-size:1.4rem;}}
+@media (max-width:480px){.form-card{padding:20px;}.contact-card{padding:12px;}.country-select-row{flex-direction:column;}}
 </style>
 </head>
 <body>
@@ -81,13 +92,29 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#0a0e1a 0%
 <div class="input-row">
 <div class="input-group">
 <label><i class="fas fa-user"></i> Nom</label>
-<input type="text" id="nom" required placeholder="Dupont" aria-label="Nom">
+<input type="text" id="nom" required placeholder="Ngenda" aria-label="Nom" value="Ngenda">
 </div>
 <div class="input-group">
 <label><i class="fas fa-user"></i> Prénom</label>
-<input type="text" id="prenom" required placeholder="Jean" aria-label="Prénom">
+<input type="text" id="prenom" required placeholder="Vicky" aria-label="Prénom" value="Vicky">
 </div>
 </div>
+
+<div class="input-group">
+<label><i class="fas fa-venus-mars"></i> Sexe</label>
+<div class="gender-row" id="genderGroup">
+<div class="gender-option" id="genderMale" onclick="selectGender('homme')">
+<input type="radio" name="gender" value="homme" id="maleRadio"> 
+<label for="maleRadio"><i class="fas fa-mars"></i> Homme</label>
+</div>
+<div class="gender-option" id="genderFemale" onclick="selectGender('femme')">
+<input type="radio" name="gender" value="femme" id="femaleRadio"> 
+<label for="femaleRadio"><i class="fas fa-venus"></i> Femme</label>
+</div>
+</div>
+<div id="genderError" class="error-message" style="display:none;">Veuillez sélectionner votre sexe</div>
+</div>
+
 <div class="input-group">
 <label><i class="fas fa-envelope"></i> Email</label>
 <input type="email" id="email" required placeholder="exemple@email.com" aria-label="Adresse email">
@@ -111,7 +138,183 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#0a0e1a 0%
 <label><input type="radio" name="contactMethod" value="whatsapp" required> <i class="fab fa-whatsapp"></i> WhatsApp</label>
 <div class="contact-hint">Le Pôle Excellence Technique et Support vous contactera ici pour activer votre compte</div>
 <div class="contact-value-input" id="whatsappInput" style="display:none;">
-<input type="tel" id="whatsappNumber" placeholder="+243 XX XXX XXXX" aria-label="Numéro WhatsApp">
+<div class="country-select-row">
+<select id="countryCode" aria-label="Indicatif pays">
+<option value="+1">🇺🇸 États-Unis (+1)</option>
+<option value="+1">🇨🇦 Canada (+1)</option>
+<option value="+33">🇫🇷 France (+33)</option>
+<option value="+32">🇧🇪 Belgique (+32)</option>
+<option value="+41">🇨🇭 Suisse (+41)</option>
+<option value="+243" selected>🇨🇩 RDC (+243)</option>
+<option value="+44">🇬🇧 Royaume-Uni (+44)</option>
+<option value="+49">🇩🇪 Allemagne (+49)</option>
+<option value="+34">🇪🇸 Espagne (+34)</option>
+<option value="+39">🇮🇹 Italie (+39)</option>
+<option value="+31">🇳🇱 Pays-Bas (+31)</option>
+<option value="+46">🇸🇪 Suède (+46)</option>
+<option value="+47">🇳🇴 Norvège (+47)</option>
+<option value="+45">🇩🇰 Danemark (+45)</option>
+<option value="+358">🇫🇮 Finlande (+358)</option>
+<option value="+351">🇵🇹 Portugal (+351)</option>
+<option value="+30">🇬🇷 Grèce (+30)</option>
+<option value="+353">🇮🇪 Irlande (+353)</option>
+<option value="+43">🇦🇹 Autriche (+43)</option>
+<option value="+48">🇵🇱 Pologne (+48)</option>
+<option value="+420">🇨🇿 République tchèque (+420)</option>
+<option value="+36">🇭🇺 Hongrie (+36)</option>
+<option value="+40">🇷🇴 Roumanie (+40)</option>
+<option value="+7">🇷🇺 Russie (+7)</option>
+<option value="+380">🇺🇦 Ukraine (+380)</option>
+<option value="+55">🇧🇷 Brésil (+55)</option>
+<option value="+54">🇦🇷 Argentine (+54)</option>
+<option value="+56">🇨🇱 Chili (+56)</option>
+<option value="+57">🇨🇴 Colombie (+57)</option>
+<option value="+52">🇲🇽 Mexique (+52)</option>
+<option value="+86">🇨🇳 Chine (+86)</option>
+<option value="+81">🇯🇵 Japon (+81)</option>
+<option value="+82">🇰🇷 Corée du Sud (+82)</option>
+<option value="+91">🇮🇳 Inde (+91)</option>
+<option value="+62">🇮🇩 Indonésie (+62)</option>
+<option value="+63">🇵🇭 Philippines (+63)</option>
+<option value="+66">🇹🇭 Thaïlande (+66)</option>
+<option value="+60">🇲🇾 Malaisie (+60)</option>
+<option value="+65">🇸🇬 Singapour (+65)</option>
+<option value="+61">🇦🇺 Australie (+61)</option>
+<option value="+64">🇳🇿 Nouvelle-Zélande (+64)</option>
+<option value="+27">🇿🇦 Afrique du Sud (+27)</option>
+<option value="+20">🇪🇬 Égypte (+20)</option>
+<option value="+212">🇲🇦 Maroc (+212)</option>
+<option value="+216">🇹🇳 Tunisie (+216)</option>
+<option value="+213">🇩🇿 Algérie (+213)</option>
+<option value="+221">🇸🇳 Sénégal (+221)</option>
+<option value="+225">🇨🇮 Côte d'Ivoire (+225)</option>
+<option value="+237">🇨🇲 Cameroun (+237)</option>
+<option value="+241">🇬🇦 Gabon (+241)</option>
+<option value="+242">🇨🇬 Congo (+242)</option>
+<option value="+244">🇦🇴 Angola (+244)</option>
+<option value="+245">🇬🇼 Guinée-Bissau (+245)</option>
+<option value="+248">🇸🇨 Seychelles (+248)</option>
+<option value="+250">🇷🇼 Rwanda (+250)</option>
+<option value="+251">🇪🇹 Éthiopie (+251)</option>
+<option value="+252">🇸🇴 Somalie (+252)</option>
+<option value="+253">🇩🇯 Djibouti (+253)</option>
+<option value="+254">🇰🇪 Kenya (+254)</option>
+<option value="+255">🇹🇿 Tanzanie (+255)</option>
+<option value="+256">🇺🇬 Ouganda (+256)</option>
+<option value="+257">🇧🇮 Burundi (+257)</option>
+<option value="+258">🇲🇿 Mozambique (+258)</option>
+<option value="+260">🇿🇲 Zambie (+260)</option>
+<option value="+261">🇲🇬 Madagascar (+261)</option>
+<option value="+262">🇷🇪 Réunion (+262)</option>
+<option value="+263">🇿🇼 Zimbabwe (+263)</option>
+<option value="+264">🇳🇦 Namibie (+264)</option>
+<option value="+265">🇲🇼 Malawi (+265)</option>
+<option value="+266">🇱🇸 Lesotho (+266)</option>
+<option value="+267">🇧🇼 Botswana (+267)</option>
+<option value="+268">🇸🇿 Eswatini (+268)</option>
+<option value="+269">🇰🇲 Comores (+269)</option>
+<option value="+290">🇸🇭 Sainte-Hélène (+290)</option>
+<option value="+291">🇪🇷 Érythrée (+291)</option>
+<option value="+297">🇦🇼 Aruba (+297)</option>
+<option value="+298">🇫🇴 Îles Féroé (+298)</option>
+<option value="+299">🇬🇱 Groenland (+299)</option>
+<option value="+350">🇬🇮 Gibraltar (+350)</option>
+<option value="+352">🇱🇺 Luxembourg (+352)</option>
+<option value="+356">🇲🇹 Malte (+356)</option>
+<option value="+357">🇨🇾 Chypre (+357)</option>
+<option value="+359">🇧🇬 Bulgarie (+359)</option>
+<option value="+370">🇱🇹 Lituanie (+370)</option>
+<option value="+371">🇱🇻 Lettonie (+371)</option>
+<option value="+372">🇪🇪 Estonie (+372)</option>
+<option value="+373">🇲🇩 Moldavie (+373)</option>
+<option value="+374">🇦🇲 Arménie (+374)</option>
+<option value="+375">🇧🇾 Biélorussie (+375)</option>
+<option value="+376">🇦🇩 Andorre (+376)</option>
+<option value="+377">🇲🇨 Monaco (+377)</option>
+<option value="+378">🇸🇲 Saint-Marin (+378)</option>
+<option value="+379">🇻🇦 Vatican (+379)</option>
+<option value="+381">🇷🇸 Serbie (+381)</option>
+<option value="+382">🇲🇪 Monténégro (+382)</option>
+<option value="+383">🇽🇰 Kosovo (+383)</option>
+<option value="+385">🇭🇷 Croatie (+385)</option>
+<option value="+386">🇸🇮 Slovénie (+386)</option>
+<option value="+387">🇧🇦 Bosnie-Herzégovine (+387)</option>
+<option value="+389">🇲🇰 Macédoine du Nord (+389)</option>
+<option value="+421">🇸🇰 Slovaquie (+421)</option>
+<option value="+423">🇱🇮 Liechtenstein (+423)</option>
+<option value="+500">🇫🇰 Malouines (+500)</option>
+<option value="+501">🇧🇿 Belize (+501)</option>
+<option value="+502">🇬🇹 Guatemala (+502)</option>
+<option value="+503">🇸🇻 Salvador (+503)</option>
+<option value="+504">🇭🇳 Honduras (+504)</option>
+<option value="+505">🇳🇮 Nicaragua (+505)</option>
+<option value="+506">🇨🇷 Costa Rica (+506)</option>
+<option value="+507">🇵🇦 Panama (+507)</option>
+<option value="+508">🇵🇲 Saint-Pierre-et-Miquelon (+508)</option>
+<option value="+509">🇭🇹 Haïti (+509)</option>
+<option value="+590">🇬🇵 Guadeloupe (+590)</option>
+<option value="+591">🇧🇴 Bolivie (+591)</option>
+<option value="+592">🇬🇾 Guyana (+592)</option>
+<option value="+593">🇪🇨 Équateur (+593)</option>
+<option value="+594">🇬🇫 Guyane française (+594)</option>
+<option value="+595">🇵🇾 Paraguay (+595)</option>
+<option value="+596">🇲🇶 Martinique (+596)</option>
+<option value="+597">🇸🇷 Suriname (+597)</option>
+<option value="+598">🇺🇾 Uruguay (+598)</option>
+<option value="+599">🇧🇶 Caraïbes néerlandaises (+599)</option>
+<option value="+670">🇹🇱 Timor oriental (+670)</option>
+<option value="+672">🇦🇶 Terres australes (+672)</option>
+<option value="+673">🇧🇳 Brunei (+673)</option>
+<option value="+674">🇳🇷 Nauru (+674)</option>
+<option value="+675">🇵🇬 Papouasie-Nouvelle-Guinée (+675)</option>
+<option value="+676">🇹🇴 Tonga (+676)</option>
+<option value="+677">🇸🇧 Îles Salomon (+677)</option>
+<option value="+678">🇻🇺 Vanuatu (+678)</option>
+<option value="+679">🇫🇯 Fidji (+679)</option>
+<option value="+680">🇵🇼 Palaos (+680)</option>
+<option value="+681">🇼🇫 Wallis-et-Futuna (+681)</option>
+<option value="+682">🇨🇰 Îles Cook (+682)</option>
+<option value="+683">🇳🇺 Niue (+683)</option>
+<option value="+685">🇼🇸 Samoa (+685)</option>
+<option value="+686">🇰🇮 Kiribati (+686)</option>
+<option value="+687">🇳🇨 Nouvelle-Calédonie (+687)</option>
+<option value="+688">🇹🇻 Tuvalu (+688)</option>
+<option value="+689">🇵🇫 Polynésie française (+689)</option>
+<option value="+690">🇹🇰 Tokelau (+690)</option>
+<option value="+691">🇫🇲 Micronésie (+691)</option>
+<option value="+692">🇲🇭 Îles Marshall (+692)</option>
+<option value="+852">🇭🇰 Hong Kong (+852)</option>
+<option value="+853">🇲🇴 Macao (+853)</option>
+<option value="+855">🇰🇭 Cambodge (+855)</option>
+<option value="+856">🇱🇦 Laos (+856)</option>
+<option value="+880">🇧🇩 Bangladesh (+880)</option>
+<option value="+886">🇹🇼 Taïwan (+886)</option>
+<option value="+960">🇲🇻 Maldives (+960)</option>
+<option value="+961">🇱🇧 Liban (+961)</option>
+<option value="+962">🇯🇴 Jordanie (+962)</option>
+<option value="+963">🇸🇾 Syrie (+963)</option>
+<option value="+964">🇮🇶 Irak (+964)</option>
+<option value="+965">🇰🇼 Koweït (+965)</option>
+<option value="+966">🇸🇦 Arabie saoudite (+966)</option>
+<option value="+967">🇾🇪 Yémen (+967)</option>
+<option value="+968">🇴🇲 Oman (+968)</option>
+<option value="+970">🇵🇸 Palestine (+970)</option>
+<option value="+971">🇦🇪 Émirats arabes unis (+971)</option>
+<option value="+972">🇮🇱 Israël (+972)</option>
+<option value="+973">🇧🇭 Bahreïn (+973)</option>
+<option value="+974">🇶🇦 Qatar (+974)</option>
+<option value="+975">🇧🇹 Bhoutan (+975)</option>
+<option value="+976">🇲🇳 Mongolie (+976)</option>
+<option value="+977">🇳🇵 Népal (+977)</option>
+<option value="+992">🇹🇯 Tadjikistan (+992)</option>
+<option value="+993">🇹🇲 Turkménistan (+993)</option>
+<option value="+994">🇦🇿 Azerbaïdjan (+994)</option>
+<option value="+995">🇬🇪 Géorgie (+995)</option>
+<option value="+996">🇰🇬 Kirghizistan (+996)</option>
+<option value="+998">🇺🇿 Ouzbékistan (+998)</option>
+</select>
+<input type="tel" id="whatsappNumber" placeholder="XX XXX XXXX" aria-label="Numéro WhatsApp">
+</div>
 <div id="whatsappError" class="error-message" style="display:none;"></div>
 </div>
 </div>
@@ -160,12 +363,13 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 let selectedMethod = null;
+let selectedGender = null;
 let emailCheckTimeout = null;
 
 // Rate limiting
 const RATE_LIMIT_KEY = 'netubex_signup_attempts';
 const RATE_LIMIT_MAX = 3;
-const RATE_LIMIT_WINDOW = 3600000; // 1 heure
+const RATE_LIMIT_WINDOW = 3600000;
 
 function checkRateLimit() {
     const now = Date.now();
@@ -187,17 +391,15 @@ function addRateLimitAttempt() {
     localStorage.setItem(RATE_LIMIT_KEY, JSON.stringify(attempts));
 }
 
-// Validation WhatsApp (format international)
 function validateWhatsApp(number) {
     const clean = number.replace(/\s+/g, '');
-    const regex = /^\+[1-9]\d{1,14}$/;
+    const regex = /^[0-9]{6,12}$/;
     if (!regex.test(clean)) {
-        return { valid: false, message: "Format invalide. Utilisez +243 XXX XXX XXX" };
+        return { valid: false, message: "Numéro invalide (6 à 12 chiffres)" };
     }
     return { valid: true, message: "" };
 }
 
-// Force du mot de passe
 function checkPasswordStrength(pwd) {
     let score = 0;
     if (pwd.length >= 8) score++;
@@ -236,7 +438,6 @@ function checkPasswordStrength(pwd) {
     }
 }
 
-// Vérification email existant en direct
 async function checkEmailExists(email) {
     if (!email) return false;
     try {
@@ -270,27 +471,40 @@ function selectContactMethod(method) {
     }
 }
 
-window.selectContactMethod = selectContactMethod;
-
-function showToast(message, isError = false) {
-    const existing = document.querySelector('.toast');
-    if(existing) existing.remove();
-    const toast = document.createElement('div');
-    toast.className = 'toast' + (isError ? ' toast-error' : '');
-    toast.setAttribute('role', 'alert');
-    toast.setAttribute('aria-live', 'polite');
-    toast.innerHTML = (isError ? '❌ ' : '✅ ') + message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 5000);
+function selectGender(gender) {
+    selectedGender = gender;
+    document.getElementById('genderMale').classList.remove('selected');
+    document.getElementById('genderFemale').classList.remove('selected');
+    
+    if(gender === 'homme') {
+        document.getElementById('genderMale').classList.add('selected');
+        document.getElementById('maleRadio').checked = true;
+    } else {
+        document.getElementById('genderFemale').classList.add('selected');
+        document.getElementById('femaleRadio').checked = true;
+    }
+    document.getElementById('genderError').style.display = 'none';
 }
 
-// Event listeners
-document.getElementById('password').addEventListener('input', function() {
-    checkPasswordStrength(this.value);
-    checkPasswordMatch();
-});
+window.selectContactMethod = selectContactMethod;
+window.selectGender = selectGender;
 
-document.getElementById('confirmPassword').addEventListener('input', checkPasswordMatch);
+function showModal(message, isSuccess = false) {
+    const existing = document.querySelector('.modal-popup');
+    if(existing) existing.remove();
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-popup' + (isSuccess ? ' success' : '');
+    modal.innerHTML = `
+        <i class="fas ${isSuccess ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+        <div style="display:inline-block">
+            <div class="modal-title">${isSuccess ? 'Succès' : 'Erreur'}</div>
+            <div class="modal-message">${message}</div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    setTimeout(() => modal.remove(), 5000);
+}
 
 function checkPasswordMatch() {
     const pwd = document.getElementById('password').value;
@@ -306,6 +520,14 @@ function checkPasswordMatch() {
     }
 }
 
+// Event listeners
+document.getElementById('password').addEventListener('input', function() {
+    checkPasswordStrength(this.value);
+    checkPasswordMatch();
+});
+
+document.getElementById('confirmPassword').addEventListener('input', checkPasswordMatch);
+
 document.getElementById('email').addEventListener('input', function() {
     const emailError = document.getElementById('emailError');
     if (emailCheckTimeout) clearTimeout(emailCheckTimeout);
@@ -315,7 +537,6 @@ document.getElementById('email').addEventListener('input', function() {
         if (email && await checkEmailExists(email)) {
             emailError.textContent = 'Cet email est déjà utilisé';
             emailError.style.display = 'block';
-            emailError.classList.add('error-message');
         } else if (email && !email.includes('@')) {
             emailError.textContent = 'Email invalide';
             emailError.style.display = 'block';
@@ -336,13 +557,17 @@ document.getElementById('whatsappNumber').addEventListener('input', function() {
     }
 });
 
+document.getElementById('countryCode').addEventListener('change', function() {
+    const whatsappInput = document.getElementById('whatsappNumber');
+    whatsappInput.focus();
+});
+
 document.getElementById('registerForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Rate limiting check
     const rateCheck = checkRateLimit();
     if (!rateCheck.allowed) {
-        showToast(`Trop de tentatives. Réessayez dans ${rateCheck.waitMinutes} minutes`, true);
+        showModal(`Trop de tentatives. Réessayez dans ${rateCheck.waitMinutes} minutes`, false);
         return;
     }
     
@@ -356,45 +581,50 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     const confirmPassword = document.getElementById('confirmPassword').value;
     const acceptCgu = document.getElementById('acceptCgu').checked;
     
-    // Validation
     if(!nom || !prenom || !email || !password) {
-        showToast("Tous les champs sont requis", true);
+        showModal("Tous les champs sont requis", false);
+        return;
+    }
+    
+    if(!selectedGender) {
+        showModal("Veuillez sélectionner votre sexe", false);
         return;
     }
     
     if(password.length < 6) {
-        showToast("Mot de passe (min 6 caractères)", true);
+        showModal("Le mot de passe doit contenir au moins 6 caractères", false);
         return;
     }
     
     if(password !== confirmPassword) {
-        showToast("Les mots de passe ne correspondent pas", true);
+        showModal("Les mots de passe ne correspondent pas", false);
         return;
     }
     
     if(!acceptCgu) {
-        showToast("Vous devez accepter les CGU", true);
+        showModal("Vous devez accepter les Conditions Générales d'Utilisation", false);
         return;
     }
     
     let contactValue = '';
     if(selectedMethod === 'whatsapp') {
-        contactValue = document.getElementById('whatsappNumber').value.trim();
-        if(!contactValue) { showToast("Numéro WhatsApp requis", true); return; }
-        const validation = validateWhatsApp(contactValue);
-        if(!validation.valid) { showToast(validation.message, true); return; }
+        const countryCode = document.getElementById('countryCode').value;
+        const localNumber = document.getElementById('whatsappNumber').value.trim();
+        if(!localNumber) { showModal("Numéro WhatsApp requis", false); return; }
+        const validation = validateWhatsApp(localNumber);
+        if(!validation.valid) { showModal(validation.message, false); return; }
+        contactValue = countryCode + localNumber;
     } else if(selectedMethod === 'gmail') {
         contactValue = document.getElementById('gmailAddress').value.trim();
-        if(!contactValue) { showToast("Adresse Gmail requise", true); return; }
-        if(!contactValue.includes('@gmail.com')) { showToast("Veuillez entrer une adresse Gmail valide", true); return; }
+        if(!contactValue) { showModal("Adresse Gmail requise", false); return; }
+        if(!contactValue.includes('@gmail.com')) { showModal("Veuillez entrer une adresse Gmail valide", false); return; }
     } else {
-        showToast("Sélectionnez un moyen de contact", true);
+        showModal("Sélectionnez un moyen de contact (WhatsApp ou Gmail)", false);
         return;
     }
     
-    // Vérification finale email existant
     if(await checkEmailExists(email)) {
-        showToast("Cet email est déjà utilisé", true);
+        showModal("Cet email est déjà utilisé", false);
         return;
     }
     
@@ -409,6 +639,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
             uid: userCred.user.uid,
             nom: nom,
             prenom: prenom,
+            sexe: selectedGender,
             email: email,
             moyenContact: selectedMethod,
             contactValue: contactValue,
@@ -420,11 +651,15 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         });
         
         addRateLimitAttempt();
-        showToast("Compte créé ! Le Pôle Excellence Technique et Support vous contactera sous 48h pour l'activation.");
+        showModal("Compte créé ! Le Pôle Excellence Technique et Support vous contactera sous 48h pour l'activation.", true);
+        
         document.getElementById('registerForm').reset();
         selectedMethod = null;
+        selectedGender = null;
         document.getElementById('contactWhatsappCard').classList.remove('selected');
         document.getElementById('contactGmailCard').classList.remove('selected');
+        document.getElementById('genderMale').classList.remove('selected');
+        document.getElementById('genderFemale').classList.remove('selected');
         document.getElementById('passwordStrength').className = 'password-strength';
         document.getElementById('strengthText').textContent = '';
         
@@ -432,13 +667,15 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         
     } catch(error) {
         console.error(error);
-        let errorMsg = "Erreur lors de l'inscription";
+        let errorMsg = "Une erreur est survenue lors de la création du compte";
         if (error.code === 'auth/email-already-in-use') {
             errorMsg = "Cet email est déjà utilisé";
         } else if (error.code === 'auth/weak-password') {
-            errorMsg = "Mot de passe trop faible";
+            errorMsg = "Le mot de passe est trop faible";
+        } else if (error.code === 'auth/invalid-email') {
+            errorMsg = "L'adresse email est invalide";
         }
-        showToast(errorMsg, true);
+        showModal(errorMsg, false);
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalText;
     }
@@ -446,17 +683,6 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
 
 document.getElementById('contactWhatsappCard').addEventListener('click', () => selectContactMethod('whatsapp'));
 document.getElementById('contactGmailCard').addEventListener('click', () => selectContactMethod('gmail'));
-
-// Focus visible enhancement
-document.querySelectorAll('input, button, a').forEach(el => {
-    el.addEventListener('focus', function() {
-        this.style.outline = '2px solid #3b82f6';
-        this.style.outlineOffset = '2px';
-    });
-    el.addEventListener('blur', function() {
-        this.style.outline = 'none';
-    });
-});
 </script>
 </body>
 </html>
