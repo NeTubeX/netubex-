@@ -189,7 +189,8 @@ tr:hover{background:#1a2332;}
         <div class="admin-buttons">
             <button class="admin-btn" onclick="openModifyCodeModal()"><i class="fas fa-key"></i> Modifier code</button>
             <button class="admin-btn" onclick="openBlockUnblockModal()"><i class="fas fa-ban"></i> Bloquer / Débloquer</button>
-            <button class="admin-btn" onclick="openDeleteNetuberModal()"><i class="fas fa-trash-alt"></i> Supprimer</button>
+            <button class="admin-btn" onclick="openDeleteNetuberModal()"><i class="fas fa-trash-alt"></i> Supprimer Netuber</button>
+            <button class="admin-btn" onclick="openDeleteUserModal()"><i class="fas fa-user-times"></i> Supprimer Utilisateur</button>
             <button class="admin-btn" onclick="openMemorandumModal()"><i class="fas fa-paper-plane"></i> Mémorandum</button>
             <button class="admin-btn" onclick="cleanOldReports()"><i class="fas fa-broom"></i> Nettoyer anciens rapports</button>
         </div>
@@ -203,16 +204,21 @@ tr:hover{background:#1a2332;}
 
 <div id="deleteNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-trash-alt"></i> Supprimer Netuber</h2><button class="modal-close" onclick="closeModal('deleteNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber à supprimer</label><select id="deleteNetuberSelect"></select></div></div><div class="modal-footer"><button onclick="confirmDeleteNetuber()" style="background:#ef4444;">Supprimer</button><button onclick="closeModal('deleteNetuberModal')">Annuler</button></div></div></div>
 
+<div id="deleteUserModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-times"></i> Supprimer Utilisateur</h2><button class="modal-close" onclick="closeModal('deleteUserModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner l'utilisateur à supprimer</label><select id="deleteUserSelect"></select></div><div class="input-group"><label>⚠️ Attention : Cette action est irréversible</label></div></div><div class="modal-footer"><button onclick="confirmDeleteUser()" style="background:#ef4444;">Supprimer définitivement</button><button onclick="closeModal('deleteUserModal')">Annuler</button></div></div></div>
+
 <div id="memorandumModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-paper-plane"></i> Envoyer un mémorandum</h2><button class="modal-close" onclick="closeModal('memorandumModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Destinataire (Netuber)</label><select id="memoRecipient"></select></div><div class="input-group"><label>Titre</label><input type="text" id="memoTitle" placeholder="Titre du mémorandum"></div><div class="input-group"><label>Contenu du message</label><textarea id="memoContent" rows="4" placeholder="Votre message..."></textarea></div></div><div class="modal-footer"><button onclick="sendMemorandum()" style="background:#10b981;">Envoyer</button><button onclick="closeModal('memorandumModal')">Annuler</button></div></div></div>
 
 <!-- Modal CAP -->
 <div id="capModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-envelope"></i> Envoyer un CAP</h2><button class="modal-close" onclick="closeModal('capModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><input type="text" id="capNetuberCode" readonly style="background:#334155;"></div><div class="input-group"><label>Message CAP</label><textarea id="capMessage" rows="4" placeholder="Message à envoyer..."></textarea></div><div class="input-group"><label>Date d'expiration</label><input type="date" id="capExpiryDate"></div></div><div class="modal-footer"><button onclick="sendCAP()" style="background:#f59e0b;">Envoyer CAP</button><button onclick="closeModal('capModal')">Annuler</button></div></div></div>
 
-<!-- Modal Activation (avec choix Gmail/WhatsApp) -->
+<!-- Modal Activation -->
 <div id="activateModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-check-circle"></i> Activer le compte</h2><button class="modal-close" onclick="closeModal('activateModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><p id="activateName" style="margin-bottom:15px;"></p><div class="input-group"><label><i class="fas fa-comment"></i> Message de confirmation</label><textarea id="activateMessage" rows="6" style="width:100%; padding:10px; border-radius:10px; background:#1a2332; border:1px solid #1e293b; color:#fff;"></textarea></div><div class="input-group"><label><i class="fas fa-envelope"></i> Envoyer via</label><select id="sendVia" style="width:100%; padding:10px; border-radius:10px; background:#1a2332; border:1px solid #1e293b; color:#fff;"><option value="gmail">📧 Gmail (ouvrir compose)</option><option value="whatsapp">💬 WhatsApp (ouvrir l'application)</option></select></div></div><div class="modal-footer"><button onclick="confirmActivate()" style="background:#10b981; padding:10px 20px; border:none; border-radius:40px; color:#fff; cursor:pointer;">✅ Activer & Envoyer</button><button onclick="closeModal('activateModal')" style="background:#1e293b; padding:10px 20px; border:none; border-radius:40px; color:#fff; cursor:pointer;">Annuler</button></div></div></div>
 
 <!-- Modal Réponse Ticket -->
 <div id="replyTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-reply"></i> Répondre au ticket</h2><button class="modal-close" onclick="closeModal('replyTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="replyTicketId" readonly></div><div class="input-group"><label>Utilisateur</label><input type="text" id="replyTicketUser" readonly></div><div class="input-group"><label>Réponse</label><textarea id="replyMessage" rows="4" placeholder="Votre réponse..."></textarea></div><div class="input-group"><label>Nouveau statut</label><select id="replyStatus"><option value="en cours">En cours</option><option value="résolu">Résolu</option><option value="ouvert">Ouvert</option></select></div></div><div class="modal-footer"><button onclick="sendReply()" style="background:#06b6d4;">Envoyer</button><button onclick="closeModal('replyTicketModal')">Annuler</button></div></div></div>
+
+<!-- Modal Suppression Ticket Résolu -->
+<div id="deleteTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-trash-alt"></i> Supprimer le ticket</h2><button class="modal-close" onclick="closeModal('deleteTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><p>Êtes-vous sûr de vouloir supprimer définitivement ce ticket résolu ?</p><p id="deleteTicketInfo" style="font-size:12px;color:#64748b;margin-top:10px;"></p></div><div class="modal-footer"><button onclick="confirmDeleteTicket()" style="background:#ef4444;">Supprimer</button><button onclick="closeModal('deleteTicketModal')">Annuler</button></div></div></div>
 
 <!-- Modal Confirmation -->
 <div id="confirmModal" class="modal"><div class="modal-content" style="max-width:400px;"><div class="modal-body confirm-dialog"><i class="fas fa-exclamation-triangle"></i><h3 id="confirmTitle">Confirmation</h3><p id="confirmMessage" style="margin:15px 0;">Êtes-vous sûr ?</p><div class="confirm-buttons"><button class="btn-cancel" id="confirmCancelBtn">Annuler</button><button class="btn-confirm" id="confirmOkBtn">Confirmer</button></div></div></div></div>
@@ -231,6 +237,7 @@ let usersData=[], devicesData=[], withdrawalsData=[], ticketsData=[], capsData=[
 let onlineChart, pointsChart, tempsChart, inscriptionsChart, visitesChart;
 let selectedActivateUser=null, selectedPromoteUser=null, currentNetuberFilter="all", currentWithdrawFilter="all";
 let searchPendingTerm="", searchActiveTerm="", searchNetuberTerm="";
+let currentDeleteTicket = null;
 
 function escapeHtml(t){if(!t)return'';return String(t).replace(/[&<>]/g,m=>m==='&'?'&amp;':(m==='<'?'&lt;':'&gt;'));}
 function formatDateShort(d){if(!d)return'-';try{return new Date(d).toLocaleDateString('fr-FR');}catch(e){return'-';}}
@@ -398,6 +405,81 @@ window.confirmDeleteNetuber=async()=>{
     });
 };
 
+// NOUVELLE FONCTION : Supprimer un utilisateur (pas netuber)
+window.openDeleteUserModal = () => {
+    populateUserSelects();
+    openModal('deleteUserModal');
+};
+
+function populateUserSelects() {
+    let users = usersData.filter(u => !u.code || u.code === '');
+    let deleteUserSelect = document.getElementById('deleteUserSelect');
+    if(deleteUserSelect) {
+        deleteUserSelect.innerHTML = users.map(u => `<option value="${u.id}">${escapeHtml(u.nom || '')} ${escapeHtml(u.prenom || '')} - ${escapeHtml(u.email)}</option>`).join('');
+    }
+}
+
+window.confirmDeleteUser = async () => {
+    let userId = document.getElementById('deleteUserSelect').value;
+    let user = usersData.find(u => u.id === userId);
+    if(user) {
+        showConfirm('Suppression définitive', `Supprimer définitivement ${user.email || user.id} ?`, async() => {
+            await deleteDoc(doc(db, "users", userId));
+            showToast("Utilisateur supprimé");
+            closeModal('deleteUserModal');
+            await loadAllData();
+        });
+    }
+};
+
+// NOUVELLE FONCTION : Supprimer un ticket résolu
+window.openDeleteTicketModal = (ticketId, userName, ticketSubject) => {
+    currentDeleteTicket = ticketId;
+    document.getElementById('deleteTicketInfo').innerHTML = `Ticket de: ${escapeHtml(userName)}<br>Sujet: ${escapeHtml(ticketSubject)}`;
+    openModal('deleteTicketModal');
+};
+
+window.confirmDeleteTicket = async () => {
+    if (!currentDeleteTicket) return;
+    
+    try {
+        let userToUpdate = null;
+        let ticketIndex = -1;
+        
+        for (const user of usersData) {
+            if (user.ticketsList && Array.isArray(user.ticketsList)) {
+                const foundIndex = user.ticketsList.findIndex(t => t.id === currentDeleteTicket);
+                if (foundIndex !== -1) {
+                    userToUpdate = user;
+                    ticketIndex = foundIndex;
+                    break;
+                }
+            }
+        }
+        
+        if (!userToUpdate) {
+            showToast("Ticket non trouvé", true);
+            closeModal('deleteTicketModal');
+            return;
+        }
+        
+        const updatedTicketsList = [...userToUpdate.ticketsList];
+        updatedTicketsList.splice(ticketIndex, 1);
+        
+        await updateDoc(doc(db, "users", userToUpdate.id), {
+            ticketsList: updatedTicketsList
+        });
+        
+        showToast("✅ Ticket supprimé définitivement");
+        closeModal('deleteTicketModal');
+        await loadAllData();
+        
+    } catch (error) {
+        console.error("Erreur suppression ticket:", error);
+        showToast("Erreur lors de la suppression", true);
+    }
+};
+
 window.cleanOldReports=async()=>{
     showConfirm('Nettoyage','Supprimer les rapports de plus de 3 jours ?',async()=>{
         let threeDaysAgo=new Date();
@@ -534,7 +616,7 @@ function updateActiveUsersTable(){
     tbody.innerHTML=filtered.map(u=>{
         let devices=getUserDevices(u.id);
         let d=devices[0]||{};
-        return `<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${(u.balance||0).toFixed(2)} $</td><td>${formatDateShort(u.dateActivation)}</td><td>${escapeHtml((d.deviceId||'-').substring(0,8))}</td><td>${formatDateShort(d.firstLogin)}</td><td>${d.isActive?'✅':'❌'}</td><td>${formatDateShort(d.lastLogin)}</td><td>${escapeHtml((d.lastUserAgent||'-').substring(0,20))}</td><td><button class="action-btn promote" onclick='openPromoteModal("${u.id}")'>Promouvoir</button></td></tr>`;
+        return `<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${(u.balance||0).toFixed(2)} $</td><td>${formatDateShort(u.dateActivation)}</td><td>${escapeHtml((d.deviceId||'-').substring(0,8))}</td><td>${formatDateShort(d.firstLogin)}</td><td>${d.isActive?'✅':'❌'}</td><td>${formatDateShort(d.lastLogin)}</td><td>${escapeHtml((d.lastUserAgent||'-').substring(0,20))}</td><td><button class="action-btn promote" onclick='openPromoteModal("${u.id}")'>Promouvoir</button><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Supprimer</button></td></tr>`;
     }).join('');
     document.getElementById('totalActiveUsers').innerText=activeUsers.length;
 }
@@ -544,12 +626,26 @@ async function loadTickets(){
     ticketsData=[];
     snap.forEach(doc=>{
         let u=doc.data();
-        if(u.ticketsList)u.ticketsList.forEach(t=>ticketsData.push({...t,userCode:u.code,userId:doc.id,userEmail:u.email,isNetuber:!!u.code,id:t.id||Math.random().toString()}));
+        if(u.ticketsList)u.ticketsList.forEach(t=>ticketsData.push({...t,userCode:u.code,userId:doc.id,userEmail:u.email,userName:`${u.prenom||''} ${u.nom||''}`,isNetuber:!!u.code,id:t.id||Math.random().toString()}));
     });
     let tbody=document.getElementById('ticketsUsersBody');
     if(tbody){
         let userTickets=ticketsData.filter(t=>t.isNetuber===false);
-        tbody.innerHTML=userTickets.map(t=>`<tr><td>${escapeHtml(t.userEmail)}</td><td>${escapeHtml(t.subject)}</td><td><span class="badge badge-warning">${t.priority}</span></td><td><span class="badge ${t.status==='résolu'?'badge-success':(t.status==='en cours'?'badge-warning':'badge-danger')}">${t.status||'ouvert'}</span></td><td>${formatDateShort(t.date)}</td><td><button class="action-btn reply" onclick='openReplyTicketModal("${t.id}","${escapeHtml(t.userEmail)}")'>Répondre</button></td></tr>`).join('');
+        tbody.innerHTML=userTickets.map(t=>{
+            let statusClass = t.status==='résolu' ? 'badge-success' : (t.status==='en cours' ? 'badge-warning' : 'badge-danger');
+            let statusText = t.status==='résolu' ? 'Résolu' : (t.status==='en cours' ? 'En cours' : 'Ouvert');
+            return `<tr>
+                <td>${escapeHtml(t.userName || t.userEmail)}</td>
+                <td>${escapeHtml(t.subject)}</td>
+                <td><span class="badge badge-warning">${t.priority}</span></td>
+                <td><span class="badge ${statusClass}">${statusText}</span></td>
+                <td>${formatDateShort(t.date)}</td>
+                <td>
+                    <button class="action-btn reply" onclick='openReplyTicketModal("${t.id}","${escapeHtml(t.userEmail)}")'>Répondre</button>
+                    ${t.status === 'résolu' ? `<button class="action-btn delete" onclick='openDeleteTicketModal("${t.id}","${escapeHtml(t.userName || t.userEmail)}","${escapeHtml(t.subject)}")'>Supprimer</button>` : ''}
+                </td>
+            </tr>`;
+        }).join('');
     }
     updateTicketsStats();
     updateAnomaliesTable();
@@ -563,14 +659,69 @@ window.openReplyTicketModal=(ticketId,userEmail)=>{
     openModal('replyTicketModal');
 };
 
-window.sendReply=async()=>{
-    let ticketId=document.getElementById('replyTicketId').value;
-    let message=document.getElementById('replyMessage').value.trim();
-    let newStatus=document.getElementById('replyStatus').value;
-    if(!message){showToast("Message requis",true);return;}
-    showToast(`Réponse envoyée au ticket ${ticketId} (statut: ${newStatus})`);
-    closeModal('replyTicketModal');
-    await loadTickets();
+// CORRECTION FONCTION sendReply - Sauvegarde réelle dans Firestore
+window.sendReply = async () => {
+    let ticketId = document.getElementById('replyTicketId').value;
+    let message = document.getElementById('replyMessage').value.trim();
+    let newStatus = document.getElementById('replyStatus').value;
+    
+    if (!message) {
+        showToast("Message requis", true);
+        return;
+    }
+    
+    try {
+        let userToUpdate = null;
+        let ticketToUpdate = null;
+        let ticketIndex = -1;
+        
+        for (const user of usersData) {
+            if (user.ticketsList && Array.isArray(user.ticketsList)) {
+                const foundIndex = user.ticketsList.findIndex(t => t.id === ticketId);
+                if (foundIndex !== -1) {
+                    userToUpdate = user;
+                    ticketToUpdate = user.ticketsList[foundIndex];
+                    ticketIndex = foundIndex;
+                    break;
+                }
+            }
+        }
+        
+        if (!userToUpdate || !ticketToUpdate) {
+            showToast("Ticket non trouvé", true);
+            return;
+        }
+        
+        const replyMessage = {
+            type: 'support',
+            message: message,
+            date: new Date().toISOString()
+        };
+        
+        const existingMessages = ticketToUpdate.messages || [];
+        const updatedMessages = [...existingMessages, replyMessage];
+        
+        const updatedTicket = {
+            ...ticketToUpdate,
+            messages: updatedMessages,
+            status: newStatus
+        };
+        
+        const updatedTicketsList = [...userToUpdate.ticketsList];
+        updatedTicketsList[ticketIndex] = updatedTicket;
+        
+        await updateDoc(doc(db, "users", userToUpdate.id), {
+            ticketsList: updatedTicketsList
+        });
+        
+        showToast(`✅ Réponse envoyée au ticket ${ticketId} (statut: ${newStatus})`);
+        closeModal('replyTicketModal');
+        await loadAllData();
+        
+    } catch (error) {
+        console.error("Erreur lors de l'envoi:", error);
+        showToast("Erreur lors de l'envoi de la réponse", true);
+    }
 };
 
 window.viewAnomalyTickets=(user)=>{
@@ -591,7 +742,7 @@ function updateAnomaliesTable(){
     let anomalies=Object.entries(ticketCountByUser).filter(([,count])=>count>=3).map(([user,count])=>({user,count}));
     let tbody=document.getElementById('anomaliesTableBody');
     if(tbody){
-        tbody.innerHTML=anomalies.map(a=>`<tr><td>${escapeHtml(a.user)}</td><td>Tickets en masse (≥3)</td><td><span class="badge badge-danger">${a.count}</span></td><td><button class="action-btn view" onclick='viewAnomalyTickets("${escapeHtml(a.user)}")'>Voir tickets</button></td></tr>`).join('');
+        tbody.innerHTML=anomalies.map(a=>`<tr><td>${escapeHtml(a.user)}</td><td>Tickets en masse (≥3)</td><td><span class="badge badge-danger">${a.count}</span></td><td><button class="action-btn view" onclick='viewAnomalyTickets("${escapeHtml(a.user)}")'>Voir tickets</button></td>`).join('');
         document.getElementById('totalAnomalies').innerText=anomalies.length;
     }
 }
@@ -599,7 +750,7 @@ function updateAnomaliesTable(){
 function updatePrivacyTab(){
     let tbody=document.getElementById('privacyEmailsBody');
     if(tbody){
-        tbody.innerHTML=usersData.filter(u=>u.code).map(u=>`<tr><td>${escapeHtml(u.code)}</td><td>${escapeHtml(u.email)}</td><td>${formatDateShort(u.lastSeen)}</td></tr>`).join('');
+        tbody.innerHTML=usersData.filter(u=>u.code).map(u=>`<tr><td>${escapeHtml(u.code)}</td><td>${escapeHtml(u.email)}</td><td>${formatDateShort(u.lastSeen)}</td>`).join('');
     }
 }
 
@@ -650,13 +801,11 @@ window.confirmActivate = async () => {
     const contactValue = selectedActivateUser.contactValue;
     const email = selectedActivateUser.email;
     
-    // Activer le compte dans Firestore
     await updateDoc(doc(db, "users", selectedActivateUser.id), {
         isActive: true,
         dateActivation: new Date().toISOString()
     });
     
-    // Envoyer la confirmation selon le moyen choisi
     if (sendVia === 'whatsapp') {
         let whatsappNumber = contactValue.replace(/[^0-9]/g, '');
         if (whatsappNumber.startsWith('243') && whatsappNumber.length > 9) {
