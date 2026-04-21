@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <title>NeTubeX · DEO Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -10,7 +10,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;touch-action:pan-x pan-y;}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;}
 body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:100vh;transition:background 0.3s;}
 body.dark-soft{background:#0f1724;color:#e2e8f0;}
 body.dark-soft .header,body.dark-soft .stat-card,body.dark-soft .chart-container,body.dark-soft .table-wrapper,body.dark-soft .modal-content,body.dark-soft .detail-card,body.dark-soft .finance-card,body.dark-soft .settings-section{background:#111827;border-color:#1e293b;}
@@ -67,8 +67,7 @@ tr:hover{background:#1a2332;}
 .modal-content{background:#0f1420;border-radius:20px;max-width:500px;width:90%;border:1px solid #1e293b;}
 .modal-header{padding:15px 20px;border-bottom:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center;}
 .modal-header h2{font-size:16px;display:flex;align-items:center;gap:8px;color:#f59e0b;}
-.modal-close{background:#1e293b;border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;transition:0.2s;}
-.modal-close:hover{background:#ef4444;}
+.modal-close{background:#1e293b;border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;}
 .modal-body{padding:20px;}
 .modal-footer{padding:12px 20px;border-top:1px solid #1e293b;display:flex;justify-content:flex-end;gap:10px;}
 .input-group{margin-bottom:15px;}
@@ -142,7 +141,7 @@ tr:hover{background:#1a2332;}
 <div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"></tbody></table></div></div>
 
 <!-- Onglet Utilisateurs -->
-<div id="utilisateursTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalActiveUsers">0</div><div class="label">Utilisateurs actifs</div></div></div><div class="filters"><input type="text" id="searchActiveUsers" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterActiveUsers()"></div><div class="table-wrapper"><table id="activeUsersTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Contact</th><th>Balance</th><th>Date activation</th><th>deviceId</th><th>firstLogin</th><th>isActive</th><th>lastLogin</th><th>lastUserAgent</th><th>Actions</th></tr></thead><tbody id="activeUsersTableBody"></tbody><tr></div></div>
+<div id="utilisateursTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalActiveUsers">0</div><div class="label">Utilisateurs actifs</div></div></div><div class="filters"><input type="text" id="searchActiveUsers" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterActiveUsers()"></div><div class="table-wrapper"><table id="activeUsersTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Contact</th><th>Balance</th><th>Date activation</th><th>deviceId</th><th>firstLogin</th><th>isActive</th><th>lastLogin</th><th>lastUserAgent</th><th>Actions</th></tr></thead><tbody id="activeUsersTableBody"></tbody></table></div></div>
 
 <!-- Onglet Netubers -->
 <div id="netubersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Netubers</div></div><div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">Connectés</div></div><div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label">Déconnectés</div></div><div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Comptes bloqués</div></div></div><div class="filters"><input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()"><select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">Connectés</option><option value="offline">Déconnectés</option></select><button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button><button class="export-btn" onclick="openAddUserModal()" style="background:#8b5cf6;"><i class="fas fa-user-plus"></i> Ajouter</button></div><div class="table-wrapper"><table id="netubersTable"><thead><tr><th>Code Netuber</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Statut</th><th>Connexion</th><th>Actions</th></tr></thead><tbody id="netubersTableBody"></tbody></table></div></div>
@@ -180,7 +179,7 @@ tr:hover{background:#1a2332;}
     <div class="settings-section">
         <h3><i class="fas fa-memo"></i> Mémorandums envoyés</h3>
         <div class="table-wrapper" style="max-height:300px;">
-            <table id="memosTable"><thead><tr><th>Titre</th><th>Date d'envoi</th><th>Contenu du message</th><th>Actions</th></tr></thead><tbody id="memosBody"></tbody></td>
+            <table id="memosTable"><thead><tr><th>Titre</th><th>Date d'envoi</th><th>Contenu du message</th><th>Actions</th></tr></thead><tbody id="memosBody"></tbody></table>
         </div>
     </div>
     
@@ -203,7 +202,7 @@ tr:hover{background:#1a2332;}
 
 <div id="deleteNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-trash-alt"></i> Supprimer Netuber</h2><button class="modal-close" onclick="closeModal('deleteNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber à supprimer</label><select id="deleteNetuberSelect"></select></div></div><div class="modal-footer"><button onclick="confirmDeleteNetuber()" style="background:#ef4444;">Supprimer</button><button onclick="closeModal('deleteNetuberModal')">Annuler</button></div></div></div>
 
-<div id="memorandumModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-paper-plane"></i> Envoyer un mémorandum</h2><button class="modal-close" onclick="closeModal('memorandumModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Destinataire (PGCO)</label><select id="memoRecipient"></select></div><div class="input-group"><label>Titre</label><input type="text" id="memoTitle" placeholder="Titre du mémorandum"></div><div class="input-group"><label>Contenu du message</label><textarea id="memoContent" rows="4" placeholder="Votre message..."></textarea></div></div><div class="modal-footer"><button onclick="sendMemorandum()" style="background:#10b981;">Envoyer</button><button onclick="closeModal('memorandumModal')">Annuler</button></div></div></div>
+<div id="memorandumModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-paper-plane"></i> Envoyer un mémorandum</h2><button class="modal-close" onclick="closeModal('memorandumModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Destinataire (Netuber)</label><select id="memoRecipient"></select></div><div class="input-group"><label>Titre</label><input type="text" id="memoTitle" placeholder="Titre du mémorandum"></div><div class="input-group"><label>Contenu du message</label><textarea id="memoContent" rows="4" placeholder="Votre message..."></textarea></div></div><div class="modal-footer"><button onclick="sendMemorandum()" style="background:#10b981;">Envoyer</button><button onclick="closeModal('memorandumModal')">Annuler</button></div></div></div>
 
 <!-- Modal CAP -->
 <div id="capModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-envelope"></i> Envoyer un CAP</h2><button class="modal-close" onclick="closeModal('capModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><input type="text" id="capNetuberCode" readonly style="background:#334155;"></div><div class="input-group"><label>Message CAP</label><textarea id="capMessage" rows="4" placeholder="Message à envoyer..."></textarea></div><div class="input-group"><label>Date d'expiration</label><input type="date" id="capExpiryDate"></div></div><div class="modal-footer"><button onclick="sendCAP()" style="background:#f59e0b;">Envoyer CAP</button><button onclick="closeModal('capModal')">Annuler</button></div></div></div>
@@ -217,7 +216,7 @@ tr:hover{background:#1a2332;}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, getDoc, query, orderBy, limit, where, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
 const app = initializeApp(firebaseConfig);
@@ -234,7 +233,7 @@ function formatDateShort(d){if(!d)return'-';try{return new Date(d).toLocaleDateS
 function formatDateTime(d){if(!d)return'-';try{return new Date(d).toLocaleString('fr-FR');}catch(e){return'-';}}
 function showToast(msg,isError=false){let t=document.createElement('div');t.className='toast'+(isError?' toast-error':'');t.innerHTML=(isError?'❌ ':'✅ ')+msg;document.body.appendChild(t);setTimeout(()=>t.remove(),4000);}
 function openModal(id){document.getElementById(id).classList.add('active');}
-window.closeModal=function(id){document.getElementById(id).classList.remove('active');};
+window.closeModal=id=>document.getElementById(id).classList.remove('active');
 
 function showConfirm(title,message,onConfirm){
     document.getElementById('confirmTitle').textContent=title;
@@ -300,7 +299,7 @@ async function loadCAPs(){
     document.getElementById('totalCAPSent').innerText=capsData.length;
     let tbody=document.getElementById('capHistoryBody');
     if(tbody){
-        tbody.innerHTML=capsData.map(c=>`<tr><td><strong>${escapeHtml(c.netuberCode)}</strong></td><td colspan="2">${escapeHtml(c.message.substring(0,60))}${c.message.length>60?'...':''}</td><td>${formatDateTime(c.sentDate)}</td><td>${formatDateShort(c.expiryDate)}</td>`).join('');
+        tbody.innerHTML=capsData.map(c=>`<tr><td><strong>${escapeHtml(c.netuberCode)}</strong></td><td>${escapeHtml(c.message.substring(0,60))}${c.message.length>60?'...':''}</td><td>${formatDateTime(c.sentDate)}</td><td>${formatDateShort(c.expiryDate)}</td></tr>`).join('');
     }
 }
 
@@ -311,7 +310,7 @@ async function loadMemos(){
     snap.forEach(d=>memosData.push({id:d.id,...d.data()}));
     let tbody=document.getElementById('memosBody');
     if(tbody){
-        tbody.innerHTML=memosData.map(m=>`<tr><td><strong>${escapeHtml(m.title)}</strong></td><td>${formatDateTime(m.date)}</td><td>PGCO: ${escapeHtml(m.recipientRef)}<br>${escapeHtml(m.content.substring(0,50))}${m.content.length>50?'...':''}</td><td><button class="action-btn delete" onclick='deleteMemorandum("${m.id}")'>Supprimer</button></td></tr>`).join('');
+        tbody.innerHTML=memosData.map(m=>`<tr><td><strong>${escapeHtml(m.title)}</strong></td><td>${formatDateTime(m.sentDate)}</td><td>${escapeHtml(m.content.substring(0,50))}${m.content.length>50?'...':''}</td><td><button class="action-btn delete" onclick='deleteMemorandum("${m.id}")'>Supprimer</button></td></tr>`).join('');
     }
 }
 
@@ -323,46 +322,14 @@ window.deleteMemorandum=async(id)=>{
     });
 };
 
-// Charger les PGCO depuis les rapports
-async function loadPGCOList() {
-    const reportsSnap = await getDocs(collection(db, "reports"));
-    const pgcoMap = new Map();
-    reportsSnap.forEach(doc => {
-        const report = doc.data();
-        const pgcoRef = report.pgcoRef || report.responsable || `PGCO-${doc.id.slice(0, 6)}`;
-        const pgcoNom = report.responsable || pgcoRef;
-        if (!pgcoMap.has(pgcoRef)) pgcoMap.set(pgcoRef, { ref: pgcoRef, nom: pgcoNom });
-    });
-    return Array.from(pgcoMap.values());
-}
-
-async function populatePGCOSelects() {
-    const pgcoList = await loadPGCOList();
-    const memoSelect = document.getElementById('memoRecipient');
-    if (memoSelect) {
-        if (pgcoList.length === 0) memoSelect.innerHTML = '<option value="">Aucun PGCO trouvé</option>';
-        else memoSelect.innerHTML = pgcoList.map(p => `<option value="${escapeHtml(p.ref)}">${escapeHtml(p.ref)} - ${escapeHtml(p.nom)}</option>`).join('');
-    }
-}
-
 window.sendMemorandum=async()=>{
-    const recipientRef = document.getElementById('memoRecipient').value;
-    const title = document.getElementById('memoTitle').value.trim();
-    const content = document.getElementById('memoContent').value.trim();
-    
-    if(!recipientRef){showToast("Sélectionnez un PGCO destinataire",true);return;}
-    if(!title||!content){showToast("Tous les champs sont requis",true);return;}
-    
-    const memoData = {
-        recipientRef: recipientRef,
-        title: title,
-        content: content,
-        date: new Date().toISOString(),
-        lu: false
-    };
-    
-    await addDoc(collection(db, "memorandums"), memoData);
-    showToast(`✅ Mémorandum envoyé au PGCO ${recipientRef}`);
+    let recipient=document.getElementById('memoRecipient').value;
+    let title=document.getElementById('memoTitle').value.trim();
+    let content=document.getElementById('memoContent').value.trim();
+    if(!recipient||!title||!content){showToast("Tous les champs sont requis",true);return;}
+    let memoData={recipientCode:recipient,title:title,content:content,sentDate:new Date().toISOString()};
+    await addDoc(collection(db,"memorandums"),memoData);
+    showToast("Mémorandum envoyé");
     closeModal('memorandumModal');
     document.getElementById('memoTitle').value='';
     document.getElementById('memoContent').value='';
@@ -628,7 +595,7 @@ function updateAnomaliesTable(){
 function updatePrivacyTab(){
     let tbody=document.getElementById('privacyEmailsBody');
     if(tbody){
-        tbody.innerHTML=usersData.filter(u=>u.code).map(u=>`<tr><td>${escapeHtml(u.code)}</td><td>${escapeHtml(u.email)}</td><td>${formatDateShort(u.lastSeen)}</td>`).join('');
+        tbody.innerHTML=usersData.filter(u=>u.code).map(u=>`<tr><td>${escapeHtml(u.code)}</td><td>${escapeHtml(u.email)}</td><td>${formatDateShort(u.lastSeen)}</td></tr>`).join('');
     }
 }
 
@@ -637,9 +604,11 @@ function populateNetuberSelects(){
     let modifySelect=document.getElementById('modifyCodeSelect');
     let blockSelect=document.getElementById('blockUnblockSelect');
     let deleteSelect=document.getElementById('deleteNetuberSelect');
+    let memoSelect=document.getElementById('memoRecipient');
     if(modifySelect)modifySelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)} - ${escapeHtml(u.email)}</option>`).join('');
     if(blockSelect)blockSelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)} - ${u.isBlocked?'🔴 Bloqué':'🟢 Actif'}</option>`).join('');
     if(deleteSelect)deleteSelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)} - ${escapeHtml(u.email)}</option>`).join('');
+    if(memoSelect)memoSelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)}</option>`).join('');
 }
 
 window.openActivateModal=(id)=>{
@@ -729,7 +698,7 @@ window.exportNetubers=()=>{
 window.openModifyCodeModal=()=>{populateNetuberSelects();openModal('modifyCodeModal');};
 window.openBlockUnblockModal=()=>{populateNetuberSelects();openModal('blockUnblockModal');};
 window.openDeleteNetuberModal=()=>{populateNetuberSelects();openModal('deleteNetuberModal');};
-window.openMemorandumModal=()=>{openModal('memorandumModal');};
+window.openMemorandumModal=()=>{populateNetuberSelects();openModal('memorandumModal');};
 
 async function loadAllData(){
     let snap=await getDocs(collection(db,"users"));
@@ -742,7 +711,6 @@ async function loadAllData(){
     await loadTickets();
     await loadCAPs();
     await loadMemos();
-    await populatePGCOSelects();
     updateNetubersTable();
     updateActiveUsersTable();
     updatePendingTable();
@@ -755,24 +723,9 @@ async function loadAllData(){
 
 loadAllData();
 setInterval(()=>loadAllData(),30000);
-
-// Sécurité anti-zoom et vérification admin
-document.addEventListener('wheel', (e) => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
-document.addEventListener('keydown', (e) => { if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=')) e.preventDefault(); });
-document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('keydown', e=>{if(e.ctrlKey&&(e.key==='c'||e.key==='v'||e.key==='x'||e.key==='u'||e.key==='s'))e.preventDefault();if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J')))e.preventDefault();});
-
-// Vérification que l'admin est connecté
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists() && userDoc.data().role !== 'admin') {
-            window.location.href = "login.html";
-        }
-    } else {
-        window.location.href = "login.html";
-    }
-});
+setInterval(()=>{if(!auth.currentUser)window.location.href="login.html";},5000);
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{if(e.ctrlKey&&(e.key==='c'||e.key==='v'||e.key==='x'||e.key==='u'||e.key==='s'||e.key==='+'||e.key==='-'))e.preventDefault();if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J')))e.preventDefault();});
 
 window.toggleAddCode=window.toggleAddCode;
 window.createUser=window.createUser;
