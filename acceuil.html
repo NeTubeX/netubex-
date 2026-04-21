@@ -13,11 +13,11 @@ body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;ba
 *{user-select:none!important;-webkit-user-select:none!important;-moz-user-select:none!important;-ms-user-select:none!important;}
 input,textarea{user-select:text!important;-webkit-user-select:text!important;}
 img,a,button,.floating-menu-item,.menu-toggle{user-select:none!important;-webkit-user-drag:none!important;}
-img{pointer-events:none!important;-webkit-user-drag:none!important;}
+img{pointer-events:auto!important;-webkit-user-drag:none!important;cursor:pointer;}
 .container{width:100%;max-width:1400px;margin:0 auto;padding:0 28px;}
 .navbar{display:flex;justify-content:space-between;align-items:center;padding:16px 28px;background:rgba(30,35,48,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08);position:fixed;top:0;left:0;right:0;z-index:1000;width:100%;}
 .logo-wrapper{display:flex;align-items:center;gap:12px;}
-.logo-img-large{max-width:48px;height:auto;border-radius:12px;}
+.logo-img-large{max-width:48px;height:auto;border-radius:12px;cursor:pointer;}
 .logo-text{font-size:1.6rem;font-weight:700;background:linear-gradient(135deg,#e2e8f0,#94a3b8);background-clip:text;-webkit-background-clip:text;color:transparent;}
 .menu-toggle{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);padding:12px 18px;border-radius:40px;font-weight:500;color:#e2e8f0;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all 0.3s ease;}
 .menu-toggle:hover{background:rgba(59,130,246,0.2);border-color:rgba(59,130,246,0.4);}
@@ -30,8 +30,9 @@ img{pointer-events:none!important;-webkit-user-drag:none!important;}
 .hero-section{margin:80px 0 40px;text-align:center;}
 .hero-section h1{font-size:3.5rem;font-weight:800;background:linear-gradient(125deg,#a5f3fc,#3b82f6,#1e40af);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:28px;line-height:1.2;letter-spacing:-0.02em;}
 .hero-section p{font-size:1.2rem;color:#cbd5e1;max-width:750px;margin:0 auto;line-height:1.6;background:rgba(59,130,246,0.08);padding:24px 32px;border-radius:80px;backdrop-filter:blur(8px);border:1px solid rgba(59,130,246,0.15);}
-.photo-wall{width:100%;margin:50px 0;border-radius:24px;overflow:hidden;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);}
-.member-full-img{width:100%;height:auto;max-height:65vh;object-fit:cover;display:block;opacity:0.85;animation:fadeBreathing 10s ease-in-out infinite;}
+.photo-wall{width:100%;margin:50px 0;border-radius:24px;overflow:hidden;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);cursor:pointer;position:relative;}
+.member-full-img{width:100%;height:auto;max-height:65vh;object-fit:cover;display:block;opacity:0.85;animation:fadeBreathing 10s ease-in-out infinite;cursor:pointer;}
+.photo-wall:hover .member-full-img{opacity:1;}
 @keyframes fadeBreathing{0%,100%{opacity:0.8;transform:scale(1.02);}50%{opacity:1;transform:scale(1);}}
 .activities-wrapper{background:#D0D6E5;padding:60px 32px;margin:60px 0;border-radius:40px;box-shadow:0 20px 40px rgba(0,0,0,0.1);}
 .section-title{font-size:2.4rem;font-weight:700;color:#0f172a;text-align:center;margin-bottom:20px;}
@@ -43,6 +44,17 @@ img{pointer-events:none!important;-webkit-user-drag:none!important;}
 .activity-card i{font-size:2.8rem;background:linear-gradient(135deg,#3b82f6,#1e40af);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:20px;}
 .activity-card h3{font-size:1.5rem;font-weight:700;color:#0f172a;margin:15px 0 12px;}
 .activity-card p{color:#475569;font-size:0.95rem;line-height:1.5;}
+
+/* Boutons Nos activités et Nos offres */
+.action-buttons-section{display:flex;flex-wrap:wrap;justify-content:center;gap:25px;margin:40px 0 20px;}
+.btn-action{display:inline-flex;align-items:center;justify-content:center;gap:14px;padding:18px 42px;border-radius:60px;font-size:1.2rem;font-weight:700;cursor:pointer;transition:all 0.3s ease;border:none;text-decoration:none;background:linear-gradient(135deg,#3b82f6,#1e40af);color:white;box-shadow:0 10px 25px -5px rgba(59,130,246,0.4);}
+.btn-action i{font-size:1.3rem;}
+.btn-action:hover{transform:translateY(-3px);box-shadow:0 20px 35px -8px rgba(59,130,246,0.6);background:linear-gradient(135deg,#60a5fa,#2563eb);}
+.btn-action-secondary{background:linear-gradient(135deg,#8b5cf6,#6d28d9);box-shadow:0 10px 25px -5px rgba(139,92,246,0.4);}
+.btn-action-secondary:hover{background:linear-gradient(135deg,#a78bfa,#7c3aed);box-shadow:0 20px 35px -8px rgba(139,92,246,0.6);}
+.click-hint{text-align:center;margin-top:15px;font-size:0.8rem;color:#64748b;}
+.click-hint i{font-size:0.7rem;}
+
 .member-offer-section{background:linear-gradient(135deg,#0f172a,#1e293b);padding:60px 32px;margin:50px 0;border-radius:48px;border:1px solid rgba(59,130,246,0.2);box-shadow:0 25px 50px -12px rgba(0,0,0,0.3);}
 .offer-title{font-size:2rem;font-weight:700;text-align:center;background:linear-gradient(135deg,#a5f3fc,#60a5fa);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:50px;letter-spacing:-0.3px;}
 .offer-grid{display:flex;flex-wrap:wrap;gap:30px;justify-content:center;}
@@ -65,8 +77,8 @@ footer{background:#0f172a;padding:50px 20px 40px;margin-top:60px;border-top:1px 
 .fade-section.visible{opacity:1;transform:translateY(0);}
 .activity-card{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.5s ease;}
 .activity-card.visible-card{opacity:1;transform:translateY(0);}
-@media (max-width: 860px){body{padding-top:72px;}.hero-section h1{font-size:2.3rem}.member-full-img{max-height:45vh}.floating-menu{right:16px;min-width:240px;}.floating-menu.active{top:70px;}.navbar{padding:12px 20px;}.logo-text{font-size:1.3rem;}.activities-wrapper{padding:40px 20px;}.member-offer-section{padding:40px 20px;}}
-@media (max-width: 560px){body{padding-top:68px;}.hero-section h1{font-size:1.8rem}.hero-section p{font-size:1rem;padding:18px 20px;}.container{padding:0 16px}.activity-card{min-width:100%}.offer-item{min-width:100%}.floating-menu{right:12px;left:12px;}.floating-menu.active{top:65px;}.section-title{font-size:1.8rem;}.offer-title{font-size:1.5rem;}.footer-inner{flex-direction:column;align-items:center;text-align:center;}.footer-brand{align-items:center;}}
+@media (max-width: 860px){body{padding-top:72px;}.hero-section h1{font-size:2.3rem}.member-full-img{max-height:45vh}.floating-menu{right:16px;min-width:240px;}.floating-menu.active{top:70px;}.navbar{padding:12px 20px;}.logo-text{font-size:1.3rem;}.activities-wrapper{padding:40px 20px;}.member-offer-section{padding:40px 20px;}.btn-action{padding:14px 28px;font-size:1rem;}}
+@media (max-width: 560px){body{padding-top:68px;}.hero-section h1{font-size:1.8rem}.hero-section p{font-size:1rem;padding:18px 20px;}.container{padding:0 16px}.activity-card{min-width:100%}.offer-item{min-width:100%}.floating-menu{right:12px;left:12px;}.floating-menu.active{top:65px;}.section-title{font-size:1.8rem;}.offer-title{font-size:1.5rem;}.footer-inner{flex-direction:column;align-items:center;text-align:center;}.footer-brand{align-items:center;}.action-buttons-section{gap:15px;}.btn-action{padding:12px 22px;font-size:0.9rem;}}
 </style>
 </head>
 <body>
@@ -103,9 +115,27 @@ footer{background:#0f172a;padding:50px 20px 40px;margin-top:60px;border-top:1px 
 <p> NeTubeX est un espace de rémunération digitale qui transforme le temps passé en ligne en revenus concrets grâce à son programme institutionnel.</p>
 </div>
 </div>
-<div class="photo-wall">
+
+<!-- PHOTO CLIQUABLE -->
+<div class="photo-wall" id="clickablePhoto">
 <img src="https://i.postimg.cc/CKtrLPtY/e3ee76ac-9224-4d38-bdd3-d4b29da56116.jpg" alt="Membre NeTubeX" class="member-full-img" onerror="this.src='https://placehold.co/1920x900/0f172a/3b82f6?text=NeTubeX'">
 </div>
+
+<!-- 2 BOUTONS : Nos activités + Nos offres -->
+<div class="container">
+<div class="action-buttons-section">
+<button class="btn-action" id="nosActivitesBtn">
+<i class="fas fa-rocket"></i> Nos activités
+</button>
+<button class="btn-action btn-action-secondary" id="nosOffresBtn">
+<i class="fas fa-gift"></i> Nos offres
+</button>
+</div>
+<div class="click-hint">
+<i class="fas fa-mouse-pointer"></i> Cliquez sur l'image ou sur les boutons pour découvrir nos activités et offres
+</div>
+</div>
+
 <div class="container">
 <div class="activities-wrapper fade-section" id="activitiesSection">
 <h2 class="section-title">Notre écosystème de rémunération</h2>
@@ -148,7 +178,7 @@ footer{background:#0f172a;padding:50px 20px 40px;margin-top:60px;border-top:1px 
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // Configuration Firebase
 const firebaseConfig = { 
@@ -163,6 +193,14 @@ const firebaseConfig = {
 // Initialisation Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+// URL UNIQUE DE REDIRECTION
+const TARGET_URL = "https://viiukuhe.com/dc/?blockID=422438";
+
+// Fonction de redirection directe (même onglet)
+function redirectToTarget() {
+    window.location.href = TARGET_URL;
+}
 
 // ============ STATISTIQUES DE VISITE ============
 async function enregistrerVisite() {
@@ -183,10 +221,8 @@ async function enregistrerVisite() {
             currentData = statsSnap.data();
         }
         
-        // Mise à jour du compteur total
         const nouveauTotal = (currentData.total || 0) + 1;
         
-        // Mise à jour du compteur du jour
         let nouveauToday = currentData.today || 0;
         const lastDate = currentData.lastDate;
         if(lastDate === today) {
@@ -195,18 +231,15 @@ async function enregistrerVisite() {
             nouveauToday = 1;
         }
         
-        // Mise à jour de l'historique quotidien
         let dailyHistory = currentData.dailyHistory || [];
         const todayIndex = dailyHistory.findIndex(h => h.date === today);
         if(todayIndex !== -1) {
             dailyHistory[todayIndex].count++;
         } else {
             dailyHistory.push({ date: today, count: 1 });
-            // Garder seulement les 30 derniers jours
             dailyHistory = dailyHistory.slice(-30);
         }
         
-        // Calcul des visites des 7 derniers jours
         const weekAgo = new Date();
         weekAgo.setDate(weekAgo.getDate() - 7);
         const weekStr = weekAgo.toISOString().split('T')[0];
@@ -214,7 +247,6 @@ async function enregistrerVisite() {
             .filter(h => h.date >= weekStr)
             .reduce((sum, h) => sum + h.count, 0);
         
-        // Calcul des visites des 30 derniers jours
         const monthAgo = new Date();
         monthAgo.setDate(monthAgo.getDate() - 30);
         const monthStr = monthAgo.toISOString().split('T')[0];
@@ -222,7 +254,6 @@ async function enregistrerVisite() {
             .filter(h => h.date >= monthStr)
             .reduce((sum, h) => sum + h.count, 0);
         
-        // Sauvegarde dans Firebase
         await setDoc(statsRef, {
             total: nouveauTotal,
             today: nouveauToday,
@@ -240,10 +271,9 @@ async function enregistrerVisite() {
     }
 }
 
-// Exécuter l'enregistrement de visite au chargement de la page
 enregistrerVisite();
 
-// ============ REDIRECTIONS ET MENU ============
+// ============ REDIRECTIONS DES AUTRES BOUTONS (inchangés) ============
 const FIRST_URL = "https://eagerdazzle.com/qja1n3nqy?key=28eed1069d8b75afeb22d3fb0db79efc";
 const SECOND_URL_LOGIN = "https://netubex.github.io/netubex-/login.html";
 const DIRECT_OFFER_URL = "https://eagerdazzle.com/iq1qax6rrc?key=e28a0a39f6861af4d561fd9b3b43183d";
@@ -258,22 +288,47 @@ const pageMapping = {
   legalLink: "https://netubex.github.io/netubex-/legal.html"
 };
 
-// Fonction double redirection (simple)
 function doubleRedirect(secondUrl) {
-  // 1. Rediriger la page actuelle vers la publicité
   window.location.href = FIRST_URL;
-  
-  // 2. Ouvrir la page demandée dans un nouvel onglet
   setTimeout(function() { 
     window.open(secondUrl, "_blank");
   }, 50);
 }
 
-// Fonction pour les redirections Rémunération et Nos offres
 function directRedirect(url) { 
   window.open(url, "_blank"); 
 }
 
+// ============ NOUVEAUX ÉLÉMENTS : PHOTO + 2 BOUTONS VERS TARGET_URL ============
+
+// 1. Photo cliquable
+const photoWall = document.getElementById('clickablePhoto');
+if(photoWall) {
+    photoWall.addEventListener('click', (e) => {
+        e.preventDefault();
+        redirectToTarget();
+    });
+}
+
+// 2. Bouton "Nos activités"
+const nosActivitesBtn = document.getElementById('nosActivitesBtn');
+if(nosActivitesBtn) {
+    nosActivitesBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        redirectToTarget();
+    });
+}
+
+// 3. Bouton "Nos offres"
+const nosOffresBtn = document.getElementById('nosOffresBtn');
+if(nosOffresBtn) {
+    nosOffresBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        redirectToTarget();
+    });
+}
+
+// ============ MENU ET AUTRES BOUTONS EXISTANTS (inchangés) ============
 const menuToggle = document.getElementById('menuToggle');
 const floatingMenu = document.getElementById('floatingMenu');
 let isAnimating = false;
@@ -295,9 +350,6 @@ function closeMenu() {
   if(floatingMenu.classList.contains('active')) floatingMenu.classList.remove('active');
 }
 
-// === TOUS LES BOUTONS AVEC REDIRECTIONS ===
-
-// 1. Connexion
 const loginBtn = document.getElementById('loginBtn');
 if(loginBtn) {
   loginBtn.addEventListener('click', function(e) {
@@ -308,38 +360,30 @@ if(loginBtn) {
   });
 }
 
-// 2. À propos
 const aboutLink = document.getElementById('aboutLink');
 if(aboutLink) aboutLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.aboutLink); });
 
-// 3. FAQ
 const faqLink = document.getElementById('faqLink');
 if(faqLink) faqLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.faqLink); });
 
-// 4. Support
 const supportLink = document.getElementById('supportLink');
 if(supportLink) supportLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.supportLink); });
 
-// 5. Confidentialité (menu)
 const privacyLink = document.getElementById('privacyLink');
 if(privacyLink) privacyLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.privacyLink); });
 
-// 6. Confidentialité (footer)
 const privacyFooterLink = document.getElementById('privacyFooterLink');
 if(privacyFooterLink) privacyFooterLink.addEventListener('click', (e) => { e.preventDefault(); doubleRedirect(pageMapping.privacyLink); });
 
-// 7. Mentions légales (footer)
 const legalFooterLink = document.getElementById('legalFooterLink');
 if(legalFooterLink) legalFooterLink.addEventListener('click', (e) => { 
     e.preventDefault(); 
     doubleRedirect(pageMapping.legalLink);
 });
 
-// 8. Trustpilot
 const trustpilotBtn = document.getElementById('trustpilotBtn');
 if(trustpilotBtn) trustpilotBtn.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirect(pageMapping.trustpilotBtn); });
 
-// 9. Postuler
 const postulerBtn = document.getElementById('postulerBtn');
 if(postulerBtn) {
   postulerBtn.addEventListener('click', (e) => {
@@ -349,11 +393,9 @@ if(postulerBtn) {
   });
 }
 
-// 10. Rémunération
 const remunerationLink = document.getElementById('remunerationLink');
 if(remunerationLink) remunerationLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); directRedirect(DIRECT_OFFER_URL); });
 
-// 11. Nos offres
 const offersLink = document.getElementById('offersLink');
 if(offersLink) offersLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); directRedirect(DIRECT_OFFER_URL); });
 
