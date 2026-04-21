@@ -92,11 +92,11 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#0a0e1a 0%
 <div class="input-row">
 <div class="input-group">
 <label><i class="fas fa-user"></i> Nom</label>
-<input type="text" id="nom" required placeholder="Ngenda" aria-label="Nom" value="Ngenda">
+<input type="text" id="nom" required placeholder="Ngenda" aria-label="Nom">
 </div>
 <div class="input-group">
 <label><i class="fas fa-user"></i> Prénom</label>
-<input type="text" id="prenom" required placeholder="Vicky" aria-label="Prénom" value="Vicky">
+<input type="text" id="prenom" required placeholder="Vicky" aria-label="Prénom">
 </div>
 </div>
 
@@ -365,6 +365,14 @@ const auth = getAuth(app);
 let selectedMethod = null;
 let selectedGender = null;
 let emailCheckTimeout = null;
+
+// ===== FONCTION POUR GÉNÉRER L'ID UNIQUE POUR TIMEWALL =====
+function generateUniqueId() {
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 1000000000000000000);
+    return `${timestamp}x${random}`;
+}
+// ===== FIN DE LA FONCTION =====
 
 // Rate limiting
 const RATE_LIMIT_KEY = 'netubex_signup_attempts';
@@ -635,8 +643,11 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
         const now = new Date().toISOString();
         
-        // ✅ CORRECTION : Utilisation de setDoc avec l'UID comme ID du document
+        // GÉNÉRER L'ID UNIQUE POUR LE NOUVEL UTILISATEUR
+        const uniqueId = generateUniqueId();
+        
         await setDoc(doc(db, "users", userCred.user.uid), {
+            uniqueId: uniqueId,
             nom: nom,
             prenom: prenom,
             sexe: selectedGender,
