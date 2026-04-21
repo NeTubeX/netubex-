@@ -200,7 +200,6 @@ let isFirebaseReady = false;
 let isAnimationComplete = false;
 
 const CARD_IMAGES = ["https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png","https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png","https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png","https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png","https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png","https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png"];
-// MODIFICATION ICI : 6ème carte (index 5) remplacée par la nouvelle URL
 const AD_URLS = ["https://eagerdazzle.com/dizin681kf?key=45bffb13315a43cb3bbbd7ba4e90e7f7","https://eagerdazzle.com/w9dz6cg5a2?key=550cc6298393fca3027e36eb5e108642","https://eagerdazzle.com/q2ec2www4s?key=7f824c5c005e0d12913991cd2375d1d2","https://eagerdazzle.com/h19vmvwg?key=a243df0e204eb52a003bd14860a3319e","https://eagerdazzle.com/i3nx2tqf?key=d5e467ed2408a1b118e27eaea4cbb154","https://viiukuhe.com/dc/?blockID=422438"];
 const DASHBOARD_URL = window.location.href;
 const LOCK_DURATION = 2*60*60*1000;
@@ -267,9 +266,122 @@ function checkAndHideLoader(){
         }, 200);
     }
 }
+
+// 🔐 NOUVELLE FONCTION DE VÉRIFICATION D'ACTIVATION
+async function checkUserActivation(user) {
+    try {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (!userDoc.exists()) {
+            await signOut(auth);
+            showMessageModal("❌ Compte introuvable. Veuillez contacter le support.");
+            setTimeout(() => { window.location.href = "login.html"; }, 3000);
+            return false;
+        }
+        
+        const userData = userDoc.data();
+        
+        // Vérification isActive
+        if (userData.isActive !== true) {
+            await signOut(auth);
+            showMessageModal("⏳ Votre compte est en attente d'activation. Le Pôle Excellence Technique et Support vous contactera sous 48h.");
+            setTimeout(() => { window.location.href = "login.html"; }, 3000);
+            return false;
+        }
+        
+        // Vérification blocage
+        if (userData.isBlocked === true) {
+            await signOut(auth);
+            showMessageModal("🚫 Votre compte a été bloqué. Contactez le support pour plus d'informations.");
+            setTimeout(() => { window.location.href = "login.html"; }, 3000);
+            return false;
+        }
+        
+        return true;
+    } catch(e) {
+        console.error("Erreur vérification activation:", e);
+        return false;
+    }
+}
+
 const loaderText = document.getElementById('loaderText');
 typeWriterLoader(loaderText, 'NeTubeX', 50, () => {});
-async function initUser(user){if(!user)return;currentUser=user;userDocRef=doc(db,"users",user.uid);const snap=await getDoc(userDocRef);if(!snap.exists()){const invitationCode=await generateInvitationCode(user.uid);await setDoc(userDocRef,{email:user.email||"",balance:0,totalGains:0,lockedCards:getDefaultLockedCards(),createdAt:new Date().toISOString(),lastLogin:new Date().toISOString(),invitationCode:invitationCode,invitedBy:null,bonusEarnings:0,bonusPending:0,invitedList:[],invitedCount:0,dailyWithdrawals:0,lastWithdrawReset:new Date().toDateString(),capDuJour:"📊 Bienvenue sur NeTubeX !\n\n📌 Objectif du jour : Découvrir les jeux\n🎯 Challenge : Jouer à 2 jeux\n⭐ Bonus : +50 points si objectif atteint"});}else{const userData=snap.data();if(!userData.invitationCode){const newCode=await generateInvitationCode(user.uid);await updateDoc(userDocRef,{invitationCode:newCode,bonusEarnings:userData.bonusEarnings||0,bonusPending:userData.bonusPending||0,invitedList:userData.invitedList||[],invitedCount:userData.invitedCount||0,dailyWithdrawals:userData.dailyWithdrawals||0,lastWithdrawReset:userData.lastWithdrawReset||new Date().toDateString()});}await updateDoc(userDocRef,{lastLogin:new Date().toISOString()});const refCode=new URLSearchParams(window.location.search).get('ref');if(refCode&&!userData.invitedBy){const codeSnap=await getDoc(doc(db,"referral_codes",refCode));if(codeSnap.exists()){const inviterId=codeSnap.data().userId;if(inviterId!==user.uid){await updateDoc(userDocRef,{invitedBy:refCode});const inviterRef=doc(db,"users",inviterId);const inviterData=(await getDoc(inviterRef)).data();const newInvitedList=inviterData.invitedList||[];newInvitedList.push({userId:user.uid,code:refCode,joinedAt:new Date().toISOString(),totalGenerated:0});await updateDoc(inviterRef,{invitedList:newInvitedList,invitedCount:(inviterData.invitedCount||0)+1});}}}}await renderPromoCards();renderGames();startTimersUpdate();checkReturnFromAd();isFirebaseReady=true;checkAndHideLoader();}
+
+async function initUser(user){
+    if(!user) return;
+    currentUser = user;
+    userDocRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userDocRef);
+    if(!snap.exists()){
+        const invitationCode = await generateInvitationCode(user.uid);
+        await setDoc(userDocRef, {
+            email: user.email || "",
+            balance: 0,
+            totalGains: 0,
+            lockedCards: getDefaultLockedCards(),
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString(),
+            invitationCode: invitationCode,
+            invitedBy: null,
+            bonusEarnings: 0,
+            bonusPending: 0,
+            invitedList: [],
+            invitedCount: 0,
+            dailyWithdrawals: 0,
+            lastWithdrawReset: new Date().toDateString(),
+            capDuJour: "📊 Bienvenue sur NeTubeX !\n\n📌 Objectif du jour : Découvrir les jeux\n🎯 Challenge : Jouer à 2 jeux\n⭐ Bonus : +50 points si objectif atteint"
+        });
+    } else {
+        const userData = snap.data();
+        if(!userData.invitationCode){
+            const newCode = await generateInvitationCode(user.uid);
+            await updateDoc(userDocRef, {
+                invitationCode: newCode,
+                bonusEarnings: userData.bonusEarnings || 0,
+                bonusPending: userData.bonusPending || 0,
+                invitedList: userData.invitedList || [],
+                invitedCount: userData.invitedCount || 0,
+                dailyWithdrawals: userData.dailyWithdrawals || 0,
+                lastWithdrawReset: userData.lastWithdrawReset || new Date().toDateString()
+            });
+        }
+        await updateDoc(userDocRef, { lastLogin: new Date().toISOString() });
+        
+        const refCode = new URLSearchParams(window.location.search).get('ref');
+        if(refCode && !userData.invitedBy){
+            const codeSnap = await getDoc(doc(db, "referral_codes", refCode));
+            if(codeSnap.exists()){
+                const inviterId = codeSnap.data().userId;
+                if(inviterId !== user.uid){
+                    await updateDoc(userDocRef, { invitedBy: refCode });
+                    const inviterRef = doc(db, "users", inviterId);
+                    const inviterData = (await getDoc(inviterRef)).data();
+                    const newInvitedList = inviterData.invitedList || [];
+                    newInvitedList.push({ userId: user.uid, code: refCode, joinedAt: new Date().toISOString(), totalGenerated: 0 });
+                    await updateDoc(inviterRef, { invitedList: newInvitedList, invitedCount: (inviterData.invitedCount || 0) + 1 });
+                }
+            }
+        }
+    }
+    await renderPromoCards();
+    renderGames();
+    startTimersUpdate();
+    checkReturnFromAd();
+    isFirebaseReady = true;
+    checkAndHideLoader();
+}
+
+// 🔐 MODIFICATION DE onAuthStateChanged AVEC VÉRIFICATION
+onAuthStateChanged(auth, async(user) => {
+    if(user){
+        const isActivated = await checkUserActivation(user);
+        if (isActivated) {
+            await initUser(user);
+        }
+    } else {
+        window.location.href = "login.html";
+    }
+});
+
 document.getElementById('balanceFloatBtn')?.addEventListener('click',()=>showBalance());
 document.getElementById('iframeFloatBtn')?.addEventListener('click',()=>{if(currentUser)showGameRedirectModal(()=>{const iframe=document.getElementById('portalIframe');if(iframe){iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`;document.getElementById('fullscreenIframe').classList.add('active');}});});
 document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
@@ -320,7 +432,6 @@ document.addEventListener('selectstart',e=>e.preventDefault());
 document.addEventListener('touchstart',e=>{if(e.touches.length>1)e.preventDefault();},{passive:false});
 document.addEventListener('keydown',e=>{if(e.ctrlKey&&(e.key==='c'||e.key==='v'||e.key==='x'||e.key==='u'||e.key==='s'||e.key==='+'||e.key==='-'))e.preventDefault();if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J')))e.preventDefault();});
 document.querySelectorAll('img').forEach(img=>{img.addEventListener('contextmenu',e=>e.preventDefault());img.addEventListener('touchstart',e=>{setTimeout(()=>e.preventDefault(),100);});});
-onAuthStateChanged(auth,async(user)=>{if(user){await initUser(user);}else{window.location.href="login.html";}});
 </script>
 </body>
 </html>
