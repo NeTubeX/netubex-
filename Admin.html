@@ -64,7 +64,7 @@ tr:hover{background:#1a2332;}
 .status-spot.offline{background:rgba(100,116,139,0.15);color:#94a3b8;border:1px solid rgba(100,116,139,0.3);}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(8px);z-index:1000;justify-content:center;align-items:center;}
 .modal.active{display:flex;}
-.modal-content{background:#0f1420;border-radius:20px;max-width:500px;width:90%;border:1px solid #1e293b;}
+.modal-content{background:#0f1420;border-radius:20px;max-width:550px;width:90%;border:1px solid #1e293b;}
 .modal-header{padding:15px 20px;border-bottom:1px solid #1e293b;display:flex;justify-content:space-between;align-items:center;}
 .modal-header h2{font-size:16px;display:flex;align-items:center;gap:8px;color:#f59e0b;}
 .modal-close{background:#1e293b;border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;}
@@ -79,6 +79,7 @@ tr:hover{background:#1a2332;}
 .action-btn.delete{background:#ef4444;color:#fff;}
 .action-btn.promote{background:#8b5cf6;color:#fff;}
 .action-btn.validate{background:#10b981;color:#fff;}
+.action-btn.reject{background:#ef4444;color:#fff;}
 .action-btn.reply{background:#06b6d4;color:#fff;}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:40px;font-size:12px;z-index:10000;animation:slideUp 0.3s;}
 .toast-error{background:#ef4444;}
@@ -206,6 +207,9 @@ tr:hover{background:#1a2332;}
 
 <!-- Modal CAP -->
 <div id="capModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-envelope"></i> Envoyer un CAP</h2><button class="modal-close" onclick="closeModal('capModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><input type="text" id="capNetuberCode" readonly style="background:#334155;"></div><div class="input-group"><label>Message CAP</label><textarea id="capMessage" rows="4" placeholder="Message à envoyer..."></textarea></div><div class="input-group"><label>Date d'expiration</label><input type="date" id="capExpiryDate"></div></div><div class="modal-footer"><button onclick="sendCAP()" style="background:#f59e0b;">Envoyer CAP</button><button onclick="closeModal('capModal')">Annuler</button></div></div></div>
+
+<!-- Modal Activation (avec choix Gmail/WhatsApp) -->
+<div id="activateModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-check-circle"></i> Activer le compte</h2><button class="modal-close" onclick="closeModal('activateModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><p id="activateName" style="margin-bottom:15px;"></p><div class="input-group"><label><i class="fas fa-comment"></i> Message de confirmation</label><textarea id="activateMessage" rows="6" style="width:100%; padding:10px; border-radius:10px; background:#1a2332; border:1px solid #1e293b; color:#fff;"></textarea></div><div class="input-group"><label><i class="fas fa-envelope"></i> Envoyer via</label><select id="sendVia" style="width:100%; padding:10px; border-radius:10px; background:#1a2332; border:1px solid #1e293b; color:#fff;"><option value="gmail">📧 Gmail (ouvrir compose)</option><option value="whatsapp">💬 WhatsApp (ouvrir l'application)</option></select></div></div><div class="modal-footer"><button onclick="confirmActivate()" style="background:#10b981; padding:10px 20px; border:none; border-radius:40px; color:#fff; cursor:pointer;">✅ Activer & Envoyer</button><button onclick="closeModal('activateModal')" style="background:#1e293b; padding:10px 20px; border:none; border-radius:40px; color:#fff; cursor:pointer;">Annuler</button></div></div></div>
 
 <!-- Modal Réponse Ticket -->
 <div id="replyTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-reply"></i> Répondre au ticket</h2><button class="modal-close" onclick="closeModal('replyTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="replyTicketId" readonly></div><div class="input-group"><label>Utilisateur</label><input type="text" id="replyTicketUser" readonly></div><div class="input-group"><label>Réponse</label><textarea id="replyMessage" rows="4" placeholder="Votre réponse..."></textarea></div><div class="input-group"><label>Nouveau statut</label><select id="replyStatus"><option value="en cours">En cours</option><option value="résolu">Résolu</option><option value="ouvert">Ouvert</option></select></div></div><div class="modal-footer"><button onclick="sendReply()" style="background:#06b6d4;">Envoyer</button><button onclick="closeModal('replyTicketModal')">Annuler</button></div></div></div>
@@ -504,12 +508,12 @@ window.filterPendingUsers=()=>{
 function updatePendingTable(){
     let tbody=document.getElementById('pendingTableBody');
     if(!tbody)return;
-    let pending=usersData.filter(u=>u.isActive!==true&&u.role!=='admin');
+    let pending=usersData.filter(u=>u.isActive!==true);
     let filtered=pending.filter(u=>{
         let fullName=`${u.nom||''} ${u.prenom||''}`.toLowerCase();
         return !searchPendingTerm||fullName.includes(searchPendingTerm)||(u.email||'').toLowerCase().includes(searchPendingTerm);
     });
-    tbody.innerHTML=filtered.map(u=>`<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${u.moyenContact==='whatsapp'?'WhatsApp':'Gmail'}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${formatDateShort(u.dateInscription)}</td><td><button class="action-btn validate" onclick='openActivateModal("${u.id}")'>Activer</button><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Rejeter</button></td></tr>`).join('');
+    tbody.innerHTML=filtered.map(u=>`<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${u.moyenContact==='whatsapp'?'WhatsApp':'Gmail'}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${formatDateShort(u.dateInscription)}</td><td><button class="action-btn validate" onclick='openActivateModal("${u.id}")'>✅ Activer</button><button class="action-btn reject" onclick='rejectUser("${u.id}")'>🗑️ Rejeter</button><button class="action-btn delete" onclick='deleteUser("${u.id}")'>❌ Supprimer</button></td></tr>`).join('');
     document.getElementById('totalPending').innerText=pending.length;
     document.getElementById('totalPendingStat').innerText=pending.length;
 }
@@ -522,7 +526,7 @@ window.filterActiveUsers=()=>{
 function updateActiveUsersTable(){
     let tbody=document.getElementById('activeUsersTableBody');
     if(!tbody)return;
-    let activeUsers=usersData.filter(u=>u.isActive===true&&u.role!=='admin'&&(!u.code||u.code===''));
+    let activeUsers=usersData.filter(u=>u.isActive===true&&(!u.code||u.code===''));
     let filtered=activeUsers.filter(u=>{
         let fullName=`${u.nom||''} ${u.prenom||''}`.toLowerCase();
         return !searchActiveTerm||fullName.includes(searchActiveTerm)||(u.email||'').toLowerCase().includes(searchActiveTerm);
@@ -530,7 +534,7 @@ function updateActiveUsersTable(){
     tbody.innerHTML=filtered.map(u=>{
         let devices=getUserDevices(u.id);
         let d=devices[0]||{};
-        return `<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${(u.balance||0).toFixed(2)} $</td><td>${formatDateShort(u.dateActivation)}</td><td>${escapeHtml((d.deviceId||'-').substring(0,8))}</td><td>${formatDateShort(d.firstLogin)}</td><td>${d.isActive?'✅':'❌'}</td><td>${formatDateShort(d.lastLogin)}</td><td>${escapeHtml((d.lastUserAgent||'-').substring(0,20))}</td><td><button class="action-btn promote" onclick='openPromoteModal("${u.id}")'>Promouvoir</button><button class="action-btn validate" onclick='openActivateModal("${u.id}")'>Activer</button></td></tr>`;
+        return `<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${(u.balance||0).toFixed(2)} $</td><td>${formatDateShort(u.dateActivation)}</td><td>${escapeHtml((d.deviceId||'-').substring(0,8))}</td><td>${formatDateShort(d.firstLogin)}</td><td>${d.isActive?'✅':'❌'}</td><td>${formatDateShort(d.lastLogin)}</td><td>${escapeHtml((d.lastUserAgent||'-').substring(0,20))}</td><td><button class="action-btn promote" onclick='openPromoteModal("${u.id}")'>Promouvoir</button></td></tr>`;
     }).join('');
     document.getElementById('totalActiveUsers').innerText=activeUsers.length;
 }
@@ -615,29 +619,69 @@ window.openActivateModal=(id)=>{
     let u=usersData.find(u=>u.id===id);
     if(u){
         selectedActivateUser=u;
-        if(!document.getElementById('activateModal')){
-            let modalHtml=`<div id="activateModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-check-circle"></i> Activer le compte</h2><button class="modal-close" onclick="closeModal('activateModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><p id="activateName"></p><div class="input-group"><label>Message d'activation</label><textarea id="activateMessage" rows="4"></textarea></div></div><div class="modal-footer"><button onclick="confirmActivate()" style="background:#10b981;">Envoyer & Activer</button><button onclick="closeModal('activateModal')">Annuler</button></div></div></div>`;
-            document.body.insertAdjacentHTML('beforeend',modalHtml);
-        }
-        document.getElementById('activateName').innerHTML=`${u.nom||''} ${u.prenom||''}<br><small>${u.email}</small><br>Contact: ${u.contactValue||'-'}`;
-        document.getElementById('activateMessage').value=`Bonjour, votre compte NeTubeX a été activé. Cordialement.`;
+        const defaultMessage = `🔐 ACTIVATION DE COMPTE NETUBEX 🔐
+
+Bonjour ${u.prenom || ''} ${u.nom || ''},
+
+Votre compte NeTubeX a été activé avec succès par le Pôle Excellence Technique et Support.
+
+📧 Email de connexion : ${u.email}
+🔑 Mot de passe : Celui que vous avez choisi lors de l'inscription
+
+🌐 Accédez à votre espace : https://netubex.com/login.html
+
+Bienvenue dans la communauté NeTubeX !
+
+Cordialement,
+L'équipe NeTubeX`;
+        
+        document.getElementById('activateName').innerHTML = `<strong>${u.nom || ''} ${u.prenom || ''}</strong><br><small>📧 ${u.email}</small><br><small>📱 ${u.moyenContact === 'whatsapp' ? 'WhatsApp' : 'Gmail'} : ${u.contactValue || '-'}</small>`;
+        document.getElementById('activateMessage').value = defaultMessage;
+        document.getElementById('sendVia').value = u.moyenContact === 'whatsapp' ? 'whatsapp' : 'gmail';
         openModal('activateModal');
     }
 };
 
-window.confirmActivate=async()=>{
-    if(selectedActivateUser){
-        let msg=document.getElementById('activateMessage').value;
-        if(selectedActivateUser.moyenContact==='whatsapp'){
-            window.open(`https://wa.me/${selectedActivateUser.contactValue}?text=${encodeURIComponent(msg)}`,'_blank');
-        }else{
-            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${selectedActivateUser.contactValue}&body=${encodeURIComponent(msg)}`,'_blank');
+window.confirmActivate = async () => {
+    if (!selectedActivateUser) return;
+    
+    const message = document.getElementById('activateMessage').value;
+    const sendVia = document.getElementById('sendVia').value;
+    const contactValue = selectedActivateUser.contactValue;
+    const email = selectedActivateUser.email;
+    
+    // Activer le compte dans Firestore
+    await updateDoc(doc(db, "users", selectedActivateUser.id), {
+        isActive: true,
+        dateActivation: new Date().toISOString()
+    });
+    
+    // Envoyer la confirmation selon le moyen choisi
+    if (sendVia === 'whatsapp') {
+        let whatsappNumber = contactValue.replace(/[^0-9]/g, '');
+        if (whatsappNumber.startsWith('243') && whatsappNumber.length > 9) {
+            whatsappNumber = whatsappNumber.substring(3);
         }
-        await updateDoc(doc(db,"users",selectedActivateUser.id),{isActive:true,dateActivation:new Date().toISOString()});
-        showToast("Compte activé");
-        closeModal('activateModal');
-        await loadAllData();
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
+        window.open(whatsappUrl, '_blank');
+        showToast(`✅ Compte activé ! WhatsApp s'ouvre`);
+    } else {
+        const encodedMessage = encodeURIComponent(message);
+        window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}&body=${encodedMessage}`, '_blank');
+        showToast(`✅ Compte activé ! Email ouvert pour ${email}`);
     }
+    
+    closeModal('activateModal');
+    setTimeout(() => { loadAllData(); }, 1000);
+};
+
+window.rejectUser = async (id) => {
+    showConfirm('Rejeter inscription', 'Rejeter cette inscription ? L\'utilisateur ne pourra pas se connecter.', async () => {
+        await deleteDoc(doc(db, "users", id));
+        showToast("Inscription rejetée et supprimée");
+        await loadAllData();
+    });
 };
 
 window.openPromoteModal=(id)=>{
@@ -660,7 +704,7 @@ window.confirmPromote=async()=>{
         if(!code){showToast("Code requis",true);return;}
         let existing=usersData.find(u=>u.code===code);
         if(existing){showToast("Code existe déjà",true);return;}
-        await updateDoc(doc(db,"users",selectedPromoteUser.id),{code:code,role:"netuber",objectifMensuel:9,objectifAtteint:0});
+        await updateDoc(doc(db,"users",selectedPromoteUser.id),{code:code,objectifMensuel:9,objectifAtteint:0});
         showToast("Promu Netuber");
         closeModal('promoteModal');
         await loadAllData();
@@ -668,7 +712,7 @@ window.confirmPromote=async()=>{
 };
 
 window.deleteUser=async(id)=>{
-    showConfirm('Suppression','Supprimer cet utilisateur ?',async()=>{
+    showConfirm('Suppression','Supprimer définitivement cet utilisateur ?',async()=>{
         await deleteDoc(doc(db,"users",id));
         showToast("Utilisateur supprimé");
         await loadAllData();
@@ -716,7 +760,7 @@ async function loadAllData(){
     updatePendingTable();
     updatePrivacyTab();
     document.getElementById('totalNetubersStat').innerText=usersData.filter(u=>u.code).length;
-    document.getElementById('totalUsersStat').innerText=usersData.filter(u=>u.isActive===true&&u.role!=='admin'&&(!u.code||u.code==='')).length;
+    document.getElementById('totalUsersStat').innerText=usersData.filter(u=>u.isActive===true&&(!u.code||u.code==='')).length;
     let ctxInscriptions=document.getElementById('inscriptionsChart')?.getContext('2d');
     if(ctxInscriptions){if(inscriptionsChart)inscriptionsChart.destroy();inscriptionsChart=new Chart(ctxInscriptions,{type:'bar',data:{labels:['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],datasets:[{label:'Inscriptions',data:[3,5,2,4,6,1,2],backgroundColor:'#f59e0b',borderRadius:8}]},options:{responsive:true}});}
 }
