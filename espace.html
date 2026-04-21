@@ -231,8 +231,16 @@ const typewriterText="Vous allez être redirigé vers des offres adaptées à vo
 function typeWriter(el,text,speed=30,cb){let i=0;el.innerHTML='';function typing(){if(i<text.length){el.innerHTML+=text.charAt(i);i++;setTimeout(typing,speed);}else if(cb)cb();}typing();}
 function showGameRedirectModal(cb){const m=document.getElementById('gameRedirectModal'),me=document.getElementById('typewriterMessage');m.classList.add('active');typeWriter(me,typewriterText,25,()=>{});const conf=document.getElementById('confirmGameRedirectBtn'),cancel=document.getElementById('cancelGameRedirectBtn'),close=document.getElementById('closeGameRedirectModal');const h=()=>{m.classList.remove('active');me.innerHTML='';conf.removeEventListener('click',h);cancel.removeEventListener('click',ch);close.removeEventListener('click',ch);if(cb)cb();};const ch=()=>{m.classList.remove('active');me.innerHTML='';conf.removeEventListener('click',h);cancel.removeEventListener('click',ch);close.removeEventListener('click',ch);};conf.addEventListener('click',h);cancel.addEventListener('click',ch);close.addEventListener('click',ch);}
 
-// FONCTION CORRIGÉE POUR renderGames - Utilise auth.currentUser
-function renderGames(){const c=document.getElementById('gamesContainer');if(!c)return;c.innerHTML='';games.forEach(g=>{const card=document.createElement('div');card.className='post-card';card.innerHTML=`<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration}</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Jouer au Jeu remunerateur</button>`;card.querySelector('.gain-btn').addEventListener('click',()=>{showGameRedirectModal(()=>{const user = auth.currentUser; if(user && user.uid){ const iframe=document.getElementById('portalIframe'); if(iframe){iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${user.uid}`;document.getElementById('fullscreenIframe').classList.add('active');} } else { showToast("Utilisateur non connecté", true); } });});c.appendChild(card);});}
+// FONCTION POUR RÉCUPÉRER LE uniqueId
+async function getUserUniqueId() {
+    const user = auth.currentUser;
+    if(!user || !user.uid) return null;
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    return userDoc.data()?.uniqueId;
+}
+
+// renderGames modifiée avec uniqueId
+function renderGames(){const c=document.getElementById('gamesContainer');if(!c)return;c.innerHTML='';games.forEach(g=>{const card=document.createElement('div');card.className='post-card';card.innerHTML=`<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration}</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Jouer au Jeu remunerateur</button>`;card.querySelector('.gain-btn').addEventListener('click', async () => { const uniqueId = await getUserUniqueId(); if(uniqueId){ showGameRedirectModal(()=>{ const iframe=document.getElementById('portalIframe'); if(iframe){ iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`; document.getElementById('fullscreenIframe').classList.add('active'); } }); } else { showToast("ID unique non trouvé", true); } });c.appendChild(card);});}
 
 async function loadCapMessage(){if(!userDocRef)return;const snap=await getDoc(userDocRef);const cap=snap.data()?.capDuJour||"📊 Aucun CAP défini pour aujourd'hui.\n\n📌 Objectif du jour : Atteindre 100 points\n🎯 Challenge spécial : 3 jeux complétés\n⭐ Bonus : +50 points si objectif atteint";document.getElementById('capMessage').innerHTML=cap.replace(/\n/g,'<br>');}
 async function loadProfile(){const snap=await getDoc(userDocRef);const d=snap.data();document.getElementById('profileEmail').innerText=d.email||'-';document.getElementById('profileCreatedAt').innerText=d.createdAt?new Date(d.createdAt).toLocaleDateString('fr-FR'):'-';document.getElementById('profileLastLogin').innerText=d.lastLogin?new Date(d.lastLogin).toLocaleDateString('fr-FR'):'-';document.getElementById('profileNetuberCode').innerText=d.code||'Non promu';}
@@ -384,8 +392,8 @@ onAuthStateChanged(auth, async(user) => {
 
 document.getElementById('balanceFloatBtn')?.addEventListener('click',()=>showBalance());
 
-// BOUTON FLOTTANT CORRIGÉ - Utilise auth.currentUser
-document.getElementById('iframeFloatBtn')?.addEventListener('click',()=>{const user = auth.currentUser; if(user && user.uid){ showGameRedirectModal(()=>{const iframe=document.getElementById('portalIframe');if(iframe){iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${user.uid}`;document.getElementById('fullscreenIframe').classList.add('active');}}); } else { showToast("Utilisateur non connecté, veuillez patienter...", true); }});
+// BOUTON FLOTTANT MODIFIÉ AVEC uniqueId
+document.getElementById('iframeFloatBtn')?.addEventListener('click', async () => { const uniqueId = await getUserUniqueId(); if(uniqueId){ showGameRedirectModal(()=>{ const iframe=document.getElementById('portalIframe'); if(iframe){ iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`; document.getElementById('fullscreenIframe').classList.add('active'); } }); } else { showToast("ID unique non trouvé, veuillez patienter...", true); } });
 
 document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
 document.addEventListener('click',(e)=>{const m=document.getElementById('menuFloating');const b=document.getElementById('menuFloatBtn');if(m&&b&&!b.contains(e.target)&&!m.contains(e.target))m.classList.remove('active');});
