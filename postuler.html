@@ -346,7 +346,7 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#0a0e1a 0%
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = { 
@@ -635,9 +635,8 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
         const now = new Date().toISOString();
         
-        // ✅ SUPPRESSION DU CHAMP "role"
-        await addDoc(collection(db, "users"), {
-            uid: userCred.user.uid,
+        // ✅ CORRECTION : Utilisation de setDoc avec l'UID comme ID du document
+        await setDoc(doc(db, "users", userCred.user.uid), {
             nom: nom,
             prenom: prenom,
             sexe: selectedGender,
