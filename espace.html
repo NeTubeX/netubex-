@@ -23,6 +23,7 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .float-item{background:#0f1420;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;color:#94a3b8;border:1px solid #1e293b;transition:all 0.2s;}
 .float-item:hover{background:#1a2332;color:#38bdf8;transform:scale(1.05);}
 .float-item.iframe-btn{background:linear-gradient(145deg,#8b5cf6,#6d28d9);border:none;color:#fff;margin-bottom:0;order:-1;animation:pulse 2s infinite;box-shadow:0 0 10px rgba(139,92,246,0.5);}
+.float-item.iframe-btn.disabled{opacity:0.5;pointer-events:none;animation:none;}
 .float-item.iframe-btn:hover{background:linear-gradient(145deg,#a78bfa,#7c3aed);transform:scale(1.05);}
 .float-item.balance{background:linear-gradient(145deg,#10b981,#059669);border:none;color:#fff;}
 @keyframes pulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(139,92,246,0.7);}70%{transform:scale(1.05);box-shadow:0 0 0 10px rgba(139,92,246,0);}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(139,92,246,0);}}
@@ -85,8 +86,9 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .method-option.selected-paypal{background:rgba(0,112,186,0.25);border:2px solid #0070BA;}
 .amount-error{color:#ef4444;font-size:0.7rem;margin-top:5px;display:none;}
 .typewriter-text{font-family:'Courier New',monospace;font-size:0.85rem;color:#10b981;background:rgba(16,185,129,0.1);padding:12px;border-radius:12px;margin-top:10px;text-align:center;border-left:3px solid #10b981;white-space:normal;overflow:hidden;}
-.fullscreen-iframe{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0f1a;z-index:4000;display:flex;flex-direction:column;visibility:hidden;opacity:0;transition:opacity 0.25s;}
+.fullscreen-iframe{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0f1a;z-index:4000;visibility:hidden;opacity:0;transition:opacity 0.25s;}
 .fullscreen-iframe.active{visibility:visible;opacity:1;}
+.fullscreen-iframe iframe{width:100%;height:100%;border:none;}
 .iframe-close{position:absolute;top:20px;right:20px;width:44px;height:44px;background:#ef4444;border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:4001;border:none;color:#fff;font-size:1.2rem;}
 .footer{background:#0f1420;border-top:1px solid #1e293b;padding:1rem;text-align:center;margin-top:1rem;}
 .footer p{color:#64748b;font-size:0.7rem;}
@@ -129,7 +131,7 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 <div class="feed-container"><div class="games-list" id="gamesContainer"></div></div>
 
 <div class="floating-group">
-    <div class="float-item iframe-btn" id="iframeFloatBtn"><i class="fas fa-rocket"></i></div>
+    <div class="float-item iframe-btn disabled" id="iframeFloatBtn"><i class="fas fa-rocket"></i></div>
     <div class="float-item balance" id="balanceFloatBtn"><i class="fas fa-coins"></i></div>
     <div class="float-item" id="menuFloatBtn"><i class="fas fa-bars"></i></div>
 </div>
@@ -183,7 +185,10 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 <!-- Popup Message Général -->
 <div id="messageModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-info-circle"></i> Information</h3><button class="modal-close" id="closeMessageModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><p id="messageModalText" style="color:#e2e8f0;"></p></div><div class="modal-footer"><button class="btn-confirm" id="confirmMessageBtn">OK</button></div></div></div>
 
-<div id="fullscreenIframe" class="fullscreen-iframe"><button class="iframe-close" id="closeIframeBtn">✕</button><iframe id="portalIframe" src="about:blank"></iframe></div>
+<div id="fullscreenIframe" class="fullscreen-iframe">
+    <button class="iframe-close" id="closeIframeBtn">✕</button>
+    <iframe id="portalIframe" src="about:blank"></iframe>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -229,10 +234,25 @@ function startTimersUpdate(){if(timersInterval)clearInterval(timersInterval);tim
 const typewriterText="Vous allez être redirigé vers des offres adaptées à votre profil et à votre localisation. Une fois que vous aurez atteint 500 points, veuillez cliquer sur le bouton « Retirer » afin de convertir vos points en argent retirable sur votre dashboard.";
 function typeWriter(el,text,speed=30,cb){let i=0;el.innerHTML='';function typing(){if(i<text.length){el.innerHTML+=text.charAt(i);i++;setTimeout(typing,speed);}else if(cb)cb();}typing();}
 function showGameRedirectModal(cb){const m=document.getElementById('gameRedirectModal'),me=document.getElementById('typewriterMessage');m.classList.add('active');typeWriter(me,typewriterText,25,()=>{});const conf=document.getElementById('confirmGameRedirectBtn'),cancel=document.getElementById('cancelGameRedirectBtn'),close=document.getElementById('closeGameRedirectModal');const h=()=>{m.classList.remove('active');me.innerHTML='';conf.removeEventListener('click',h);cancel.removeEventListener('click',ch);close.removeEventListener('click',ch);if(cb)cb();};const ch=()=>{m.classList.remove('active');me.innerHTML='';conf.removeEventListener('click',h);cancel.removeEventListener('click',ch);close.removeEventListener('click',ch);};conf.addEventListener('click',h);cancel.addEventListener('click',ch);close.addEventListener('click',ch);}
-function renderGames(){const c=document.getElementById('gamesContainer');if(!c)return;c.innerHTML='';games.forEach(g=>{const card=document.createElement('div');card.className='post-card';card.innerHTML=`<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration}</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Jouer au Jeu remunerateur</button>`;card.querySelector('.gain-btn').addEventListener('click',()=>{showGameRedirectModal(()=>{const iframe=document.getElementById('portalIframe');if(iframe&&currentUser){iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`;document.getElementById('fullscreenIframe').classList.add('active');}});});c.appendChild(card);});}
+
+// Fonction unifiée pour ouvrir Timewall
+function openTimewallIframe() {
+    if (!currentUser || !currentUser.uid) {
+        showToast("Chargement en cours, veuillez patienter...", true);
+        return false;
+    }
+    const iframe = document.getElementById('portalIframe');
+    if (iframe) {
+        iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`;
+        document.getElementById('fullscreenIframe').classList.add('active');
+    }
+    return true;
+}
+
+function renderGames(){const c=document.getElementById('gamesContainer');if(!c)return;c.innerHTML='';games.forEach(g=>{const card=document.createElement('div');card.className='post-card';card.innerHTML=`<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration}</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Jouer au Jeu remunerateur</button>`;card.querySelector('.gain-btn').addEventListener('click',()=>{showGameRedirectModal(openTimewallIframe);});c.appendChild(card);});}
 async function loadCapMessage(){if(!userDocRef)return;const snap=await getDoc(userDocRef);const cap=snap.data()?.capDuJour||"📊 Aucun CAP défini pour aujourd'hui.\n\n📌 Objectif du jour : Atteindre 100 points\n🎯 Challenge spécial : 3 jeux complétés\n⭐ Bonus : +50 points si objectif atteint";document.getElementById('capMessage').innerHTML=cap.replace(/\n/g,'<br>');}
 async function loadProfile(){const snap=await getDoc(userDocRef);const d=snap.data();document.getElementById('profileEmail').innerText=d.email||'-';document.getElementById('profileCreatedAt').innerText=d.createdAt?new Date(d.createdAt).toLocaleDateString('fr-FR'):'-';document.getElementById('profileLastLogin').innerText=d.lastLogin?new Date(d.lastLogin).toLocaleDateString('fr-FR'):'-';document.getElementById('profileNetuberCode').innerText=d.code||'Non promu';}
-async function loadBonusData(){if(!userDocRef)return;const snap=await getDoc(userDocRef);const d=snap.data();const invitationCode=d.invitationCode;if(invitationCode&&invitationCode!=='Génération...'){document.getElementById('invitationCode').value=invitationCode;document.getElementById('invitationLink').value=`${window.location.origin}/register.html?ref=${invitationCode}`;}else{const newCode=await generateInvitationCode(currentUser.uid);await updateDoc(userDocRef,{invitationCode:newCode});document.getElementById('invitationCode').value=newCode;document.getElementById('invitationLink').value=`${window.location.origin}/postuler.html?ref=${newCode}`;}document.getElementById('bonusEarned').innerText=`${(d.bonusEarnings||0).toFixed(4)} $`;document.getElementById('invitedCount').innerText=d.invitedCount||0;const list=d.invitedList||[];const container=document.getElementById('invitedList');if(list.length===0)container.innerHTML='<p style="text-align:center;color:#64748b;">Aucun invité pour le moment</p>';else container.innerHTML=list.map(i=>`<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #1e293b;"><span>${i.code||'Nouveau'}</span><span style="color:#f59e0b;">${(i.totalGenerated||0).toFixed(4)} $</span></div>`).join('');}
+async function loadBonusData(){if(!userDocRef)return;const snap=await getDoc(userDocRef);const d=snap.data();const invitationCode=d.invitationCode;if(invitationCode&&invitationCode!=='Génération...'){document.getElementById('invitationCode').value=invitationCode;document.getElementById('invitationLink').value=`${window.location.origin}/register.html?ref=${invitationCode}`;}else{const newCode=await generateInvitationCode(currentUser.uid);await updateDoc(userDocRef,{invitationCode:newCode});document.getElementById('invitationCode').value=newCode;document.getElementById('invitationLink').value=`${window.location.origin}/register.html?ref=${newCode}`;}document.getElementById('bonusEarned').innerText=`${(d.bonusEarnings||0).toFixed(4)} $`;document.getElementById('invitedCount').innerText=d.invitedCount||0;const list=d.invitedList||[];const container=document.getElementById('invitedList');if(list.length===0)container.innerHTML='<p style="text-align:center;color:#64748b;">Aucun invité pour le moment</p>';else container.innerHTML=list.map(i=>`<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #1e293b;"><span>${i.code||'Nouveau'}</span><span style="color:#f59e0b;">${(i.totalGenerated||0).toFixed(4)} $</span></div>`).join('');}
 async function loadTickets(){const snap=await getDoc(userDocRef);const tickets=snap.data()?.ticketsList||[];tickets.sort((a,b)=>new Date(b.date)-new Date(a.date));const container=document.getElementById('ticketsListContainer');if(tickets.length===0){container.innerHTML='<p style="text-align:center;color:#64748b;">Aucun ticket pour le moment</p>';return;}container.innerHTML=tickets.map(t=>`<div class="ticket-message ${t.status==='résolu'?'ticket-closed':''}" data-id="${t.id}"><div><strong>${escapeHtml(t.ticketType||'Sans type')}</strong> - ${t.priority||'normale'}</div><div><strong>${escapeHtml(t.subject)}</strong></div><div>Statut: ${t.status==='ouvert'?'🟡 Ouvert':(t.status==='en cours'?'🔵 En cours':'🟢 Résolu')}</div><div class="ticket-actions"><button class="btn-small" onclick="window.viewTicket('${t.id}')">Voir</button>${t.status==='résolu'?`<button class="btn-small btn-delete" onclick="window.deleteTicketConfirm('${t.id}')">Supprimer</button>`:''}</div></div>`).join('');}
 window.viewTicket=async(id)=>{currentTicketId=id;const snap=await getDoc(userDocRef);const ticket=snap.data()?.ticketsList?.find(t=>t.id===id);if(!ticket)return;const messages=ticket.messages||[{type:'user',message:ticket.message,date:ticket.date}];const container=document.getElementById('ticketDetailContent');container.innerHTML=`<div><strong>Sujet:</strong> ${escapeHtml(ticket.subject)}</div><div><strong>Type:</strong> ${ticket.ticketType||'-'}</div><div><strong>Priorité:</strong> ${ticket.priority||'normale'}</div><div><strong>Statut:</strong> ${ticket.status==='ouvert'?'🟡 Ouvert':(ticket.status==='en cours'?'🔵 En cours':'🟢 Résolu')}</div><div style="margin-top:15px;"><strong>Messages:</strong></div>${messages.map(m=>`<div class="ticket-message ${m.type}"><div class="role">${m.type==='user'?'Moi':'📩 Pôle technique et support'}</div><div class="text">${escapeHtml(m.message)}</div><div class="date">${new Date(m.date).toLocaleString('fr-FR')}</div></div>`).join('')}`;const replyDiv=document.getElementById('replySection');const actionsDiv=document.getElementById('ticketActionButtons');replyDiv.style.display='none';actionsDiv.innerHTML='';if(ticket.status!=='résolu'){replyDiv.style.display='block';actionsDiv.innerHTML+=`<button class="btn-small btn-reply" id="sendReplyBtn">Envoyer la réponse</button>`;document.getElementById('sendReplyBtn').onclick=async()=>{const msg=document.getElementById('ticketReplyMessage').value.trim();if(!msg){showToast("Message requis",true);return;}const updatedMessages=[...(ticket.messages||[{type:'user',message:ticket.message,date:ticket.date}]),{type:'user',message:msg,date:new Date().toISOString()}];const updatedTickets=(await getDoc(userDocRef)).data()?.ticketsList||[];const idx=updatedTickets.findIndex(t=>t.id===id);if(idx!==-1){updatedTickets[idx].messages=updatedMessages;await updateDoc(userDocRef,{ticketsList:updatedTickets});showToast("✅ Message ajouté");document.getElementById('ticketReplyMessage').value='';window.viewTicket(id);}};}if(ticket.status!=='résolu'){actionsDiv.innerHTML+=`<button class="btn-small btn-close" id="closeTicketBtn">Fermer le ticket</button>`;document.getElementById('closeTicketBtn').onclick=async()=>{const updatedTickets=(await getDoc(userDocRef)).data()?.ticketsList||[];const idx=updatedTickets.findIndex(t=>t.id===id);if(idx!==-1){updatedTickets[idx].status='résolu';await updateDoc(userDocRef,{ticketsList:updatedTickets});showToast("✅ Ticket fermé");closeModal('ticketDetailModal');loadTickets();}};}document.getElementById('ticketDetailModal').classList.add('active');};
 window.deleteTicketConfirm=(id)=>{currentTicketId=id;document.getElementById('confirmDeleteTicketModal').classList.add('active');};
@@ -263,11 +283,15 @@ function checkAndHideLoader(){
         setTimeout(() => {
             document.getElementById('loaderScreen').classList.add('hide');
             document.querySelector('.main-content')?.classList.add('show');
+            // Activer le bouton iframe une fois l'utilisateur chargé
+            const iframeBtn = document.getElementById('iframeFloatBtn');
+            if(iframeBtn && currentUser && currentUser.uid) {
+                iframeBtn.classList.remove('disabled');
+            }
         }, 200);
     }
 }
 
-// 🔐 NOUVELLE FONCTION DE VÉRIFICATION D'ACTIVATION
 async function checkUserActivation(user) {
     try {
         const userDoc = await getDoc(doc(db, "users", user.uid));
@@ -280,7 +304,6 @@ async function checkUserActivation(user) {
         
         const userData = userDoc.data();
         
-        // Vérification isActive
         if (userData.isActive !== true) {
             await signOut(auth);
             showMessageModal("⏳ Votre compte est en attente d'activation. Le Pôle Excellence Technique et Support vous contactera sous 48h.");
@@ -288,7 +311,6 @@ async function checkUserActivation(user) {
             return false;
         }
         
-        // Vérification blocage
         if (userData.isBlocked === true) {
             await signOut(auth);
             showMessageModal("🚫 Votre compte a été bloqué. Contactez le support pour plus d'informations.");
@@ -370,7 +392,6 @@ async function initUser(user){
     checkAndHideLoader();
 }
 
-// 🔐 MODIFICATION DE onAuthStateChanged AVEC VÉRIFICATION
 onAuthStateChanged(auth, async(user) => {
     if(user){
         const isActivated = await checkUserActivation(user);
@@ -382,8 +403,9 @@ onAuthStateChanged(auth, async(user) => {
     }
 });
 
+// Écouteurs d'événements
 document.getElementById('balanceFloatBtn')?.addEventListener('click',()=>showBalance());
-document.getElementById('iframeFloatBtn')?.addEventListener('click',()=>{if(currentUser)showGameRedirectModal(()=>{const iframe=document.getElementById('portalIframe');if(iframe){iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`;document.getElementById('fullscreenIframe').classList.add('active');}});});
+document.getElementById('iframeFloatBtn')?.addEventListener('click', openTimewallIframe);
 document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
 document.addEventListener('click',(e)=>{const m=document.getElementById('menuFloating');const b=document.getElementById('menuFloatBtn');if(m&&b&&!b.contains(e.target)&&!m.contains(e.target))m.classList.remove('active');});
 document.getElementById('menuCapBtn')?.addEventListener('click',async()=>{await loadCapMessage();document.getElementById('capModal').classList.add('active');document.getElementById('menuFloating').classList.remove('active');});
@@ -434,3 +456,4 @@ document.addEventListener('keydown',e=>{if(e.ctrlKey&&(e.key==='c'||e.key==='v'|
 document.querySelectorAll('img').forEach(img=>{img.addEventListener('contextmenu',e=>e.preventDefault());img.addEventListener('touchstart',e=>{setTimeout(()=>e.preventDefault(),100);});});
 </script>
 </body>
+</html>
