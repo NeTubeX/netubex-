@@ -635,6 +635,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
         const now = new Date().toISOString();
         
+        // ✅ SUPPRESSION DU CHAMP "role"
         await addDoc(collection(db, "users"), {
             uid: userCred.user.uid,
             nom: nom,
@@ -645,7 +646,6 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
             contactValue: contactValue,
             isActive: false,
             isBlocked: false,
-            role: "netuber",
             dateInscription: now,
             lastSeen: now
         });
@@ -662,6 +662,8 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         document.getElementById('genderFemale').classList.remove('selected');
         document.getElementById('passwordStrength').className = 'password-strength';
         document.getElementById('strengthText').textContent = '';
+        document.getElementById('whatsappNumber').value = '';
+        document.getElementById('gmailAddress').value = '';
         
         setTimeout(() => { window.location.href = "index.html"; }, 4000);
         
