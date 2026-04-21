@@ -22,11 +22,10 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .floating-group{position:fixed;bottom:30px;right:25px;display:flex;flex-direction:column;gap:12px;z-index:200;}
 .float-item{background:#0f1420;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;color:#94a3b8;border:1px solid #1e293b;transition:all 0.2s;}
 .float-item:hover{background:#1a2332;color:#38bdf8;transform:scale(1.05);}
-.float-item.gold{background:linear-gradient(145deg,#f59e0b,#d97706);border:none;color:#fff;}
-.float-item.balance{background:linear-gradient(145deg,#10b981,#059669);border:none;color:#fff;animation:pulse 2s infinite;box-shadow:0 0 10px rgba(16,185,129,0.5);}
-@keyframes pulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(16,185,129,0.7);}70%{transform:scale(1.05);box-shadow:0 0 0 10px rgba(16,185,129,0);}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(16,185,129,0);}}
-.float-item.iframe-btn{background:linear-gradient(145deg,#8b5cf6,#6d28d9);border:none;color:#fff;margin-bottom:0;order:-1;}
+.float-item.iframe-btn{background:linear-gradient(145deg,#8b5cf6,#6d28d9);border:none;color:#fff;margin-bottom:0;order:-1;animation:pulse 2s infinite;box-shadow:0 0 10px rgba(139,92,246,0.5);}
 .float-item.iframe-btn:hover{background:linear-gradient(145deg,#a78bfa,#7c3aed);transform:scale(1.05);}
+.float-item.balance{background:linear-gradient(145deg,#10b981,#059669);border:none;color:#fff;}
+@keyframes pulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(139,92,246,0.7);}70%{transform:scale(1.05);box-shadow:0 0 0 10px rgba(139,92,246,0);}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(139,92,246,0);}}
 .menu-floating{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.95);width:280px;background:#0f1420;border-radius:24px;border:1px solid #1e293b;z-index:1001;display:none;box-shadow:0 20px 40px rgba(0,0,0,0.5);opacity:0;transition:opacity 0.4s ease, transform 0.4s ease;}
 .menu-floating.active{display:block;opacity:1;transform:translate(-50%,-50%) scale(1);}
 .menu-header{padding:15px;border-bottom:1px solid #1e293b;background:#1a2332;border-radius:24px 24px 0 0;color:#fff;}
@@ -103,10 +102,12 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .btn-close{background:#f59e0b;color:#0a0f1a;}
 .btn-delete{background:#ef4444;color:#fff;}
 .btn-reply{background:#3b82f6;color:#fff;}
-.loader-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0f1a;z-index:20000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;transition:opacity 0.5s;}
+.loader-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0f1a;z-index:20000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;transition:opacity 0.3s;backdrop-filter:blur(2px);}
 .loader-screen.hide{opacity:0;visibility:hidden;}
 .loader-text{font-family:'Courier New',monospace;font-size:1.5rem;color:#f59e0b;letter-spacing:2px;}
 .loader-sub{font-size:0.7rem;color:#64748b;}
+.main-content{visibility:hidden;opacity:0;transition:opacity 0.3s ease;}
+.main-content.show{visibility:visible;opacity:1;}
 </style>
 </head>
 <body>
@@ -116,6 +117,7 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
     <div class="loader-sub">Chargement de votre espace sécurisé...</div>
 </div>
 
+<div class="main-content">
 <div class="rainbow-line"></div>
 
 <header class="header">
@@ -143,6 +145,7 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 </div>
 
 <footer class="footer"><p><i class="fas fa-copyright"></i> NeTubeX 2026</p></footer>
+</div>
 
 <!-- Popup CAP -->
 <div id="capModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-chart-line"></i> CAP du jour</h3><button class="modal-close" id="closeCapModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><p id="capMessage" style="color:#e2e8f0;line-height:1.5;">Chargement...</p></div><div class="modal-footer"><button class="btn-cancel" id="closeCapFooterBtn">Fermer</button></div></div></div>
@@ -193,26 +196,8 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 let currentUser = null, userDocRef = null, selectedMethod = null, timersInterval = null, currentTicketId = null;
-
-// Animation machine à écrire au chargement
-function typeWriterLoader(element, text, speed=80, callback){
-    let i=0;
-    element.innerHTML='';
-    function typing(){
-        if(i<text.length){element.innerHTML+=text.charAt(i);i++;setTimeout(typing,speed);}
-        else if(callback) callback();
-    }
-    typing();
-}
-window.addEventListener('load',()=>{
-    const loaderText=document.getElementById('loaderText');
-    typeWriterLoader(loaderText,'NeTubeX',100,()=>{
-        setTimeout(()=>{
-            document.getElementById('loaderScreen').classList.add('hide');
-            document.querySelector('.main-content')?.classList.add('show');
-        },500);
-    });
-});
+let isFirebaseReady = false;
+let isAnimationComplete = false;
 
 const CARD_IMAGES = ["https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png","https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png","https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png","https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png","https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png","https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png"];
 const AD_URLS = ["https://eagerdazzle.com/dizin681kf?key=45bffb13315a43cb3bbbd7ba4e90e7f7","https://eagerdazzle.com/w9dz6cg5a2?key=550cc6298393fca3027e36eb5e108642","https://eagerdazzle.com/q2ec2www4s?key=7f824c5c005e0d12913991cd2375d1d2","https://eagerdazzle.com/h19vmvwg?key=a243df0e204eb52a003bd14860a3319e","https://eagerdazzle.com/i3nx2tqf?key=d5e467ed2408a1b118e27eaea4cbb154","https://motionless-bus.com/6YFdK2"];
@@ -254,10 +239,36 @@ window.deleteTicketConfirm=(id)=>{currentTicketId=id;document.getElementById('co
 async function deleteTicket(){if(!currentTicketId)return;const snap=await getDoc(userDocRef);const tickets=snap.data()?.ticketsList||[];const newTickets=tickets.filter(t=>t.id!==currentTicketId);await updateDoc(userDocRef,{ticketsList:newTickets});showToast("🗑️ Ticket supprimé définitivement");closeModal('confirmDeleteTicketModal');closeModal('ticketDetailModal');loadTickets();}
 async function createTicket(type,priority,subject,msg){if(!userDocRef)return false;const snap=await getDoc(userDocRef);const tickets=snap.data()?.ticketsList||[];const openTickets=tickets.filter(t=>t.status!=='résolu');if(openTickets.length>=5){showToast("❌ Vous avez trop de tickets ouverts. Attendez qu'ils soient traités par notre pôle technique et support.",true);return false;}const ticket={id:Date.now().toString(),ticketType:type,subject:subject,priority:priority,status:'ouvert',date:new Date().toISOString(),messages:[{type:'user',message:msg,date:new Date().toISOString()}]};await updateDoc(userDocRef,{ticketsList:[...tickets,ticket]});showToast("✅ Ticket envoyé ! Le pôle technique et support vous répondra sous 24h.");return true;}
 async function loadWithdrawBalance(){const balance=await getBalanceValue();document.getElementById('currentBalanceDisplay').innerText=`${balance.toFixed(4)} $`;}
-function validatePhoneNumber(number,expectedPrefix){const clean=number.replace(/[^0-9]/g,'');if(!clean.startsWith(expectedPrefix.replace('+','')))return false;return clean.length>=9&&clean.length<=12;}
-async function submitWithdraw(){const amount=parseFloat(document.getElementById('withdrawAmount').value);let wallet=document.getElementById('walletAddress').value.trim();const countrySelect=document.getElementById('countrySelect');const selectedCountry=countrySelect.options[countrySelect.selectedIndex];const countryCode=selectedCountry?.getAttribute('data-code')||'';if(!selectedMethod){showToast("Sélectionnez une méthode",true);return;}if(isNaN(amount)||amount<WITHDRAWAL_MIN){showToast(`Minimum ${WITHDRAWAL_MIN}$`,true);return;}if(!wallet){showToast("Coordonnées requises",true);return;}if((selectedMethod==='orange_money'||selectedMethod==='airtel_money')&&!countryCode){showToast("Sélectionnez votre pays",true);return;}if(selectedMethod==='orange_money'||selectedMethod==='airtel_money'){if(!wallet.startsWith(countryCode)){wallet=countryCode+wallet.replace(/[^0-9]/g,'');document.getElementById('walletAddress').value=wallet;}if(!validatePhoneNumber(wallet,countryCode)){showToast(`Numéro invalide pour ${countryCode}`,true);return;}}else if(selectedMethod==='paypal'){if(!wallet.includes('@')||!wallet.includes('.')){showToast("Email PayPal invalide",true);return;}}const snap=await getDoc(userDocRef);const data=snap.data();const today=new Date().toDateString();if(data.lastWithdrawReset!==today){await updateDoc(userDocRef,{dailyWithdrawals:0,lastWithdrawReset:today});}const dailyCount=data.dailyWithdrawals||0;if(dailyCount>=MAX_WITHDRAWALS_PER_DAY){showToast(`❌ Limite de ${MAX_WITHDRAWALS_PER_DAY} retraits par jour atteinte`,true);return;}const balance=data.balance||0;if(amount>balance){showToast("Solde insuffisant",true);return;}const q=query(collection(db,"withdraw"),where("userId","==",currentUser.uid),where("status","==","pending"));const existing=await getDocs(q);if(!existing.empty){showMessageModal("❌ Vous avez déjà une demande de retrait en cours.");return;}document.getElementById('confirmWithdrawMessage').innerHTML=`<strong>${amount.toFixed(2)} $</strong> par <strong>${selectedMethod}</strong><br>Confirmez-vous cette demande ?`;document.getElementById('confirmWithdrawModal').classList.add('active');}
+async function submitWithdraw(){const amount=parseFloat(document.getElementById('withdrawAmount').value);let wallet=document.getElementById('walletAddress').value.trim();const countrySelect=document.getElementById('countrySelect');const selectedCountry=countrySelect.options[countrySelect.selectedIndex];const countryCode=selectedCountry?.getAttribute('data-code')||'';if(!selectedMethod){showToast("Sélectionnez une méthode",true);return;}if(isNaN(amount)||amount<WITHDRAWAL_MIN){showToast(`Minimum ${WITHDRAWAL_MIN}$`,true);return;}if(!wallet){showToast("Coordonnées requises",true);return;}if((selectedMethod==='orange_money'||selectedMethod==='airtel_money')&&!countryCode){showToast("Sélectionnez votre pays",true);return;}if(selectedMethod==='orange_money'||selectedMethod==='airtel_money'){if(!wallet.startsWith(countryCode)){wallet=countryCode+wallet.replace(/[^0-9]/g,'');document.getElementById('walletAddress').value=wallet;}}else if(selectedMethod==='paypal'){if(!wallet.includes('@')||!wallet.includes('.')){showToast("Email PayPal invalide",true);return;}}const snap=await getDoc(userDocRef);const data=snap.data();const today=new Date().toDateString();if(data.lastWithdrawReset!==today){await updateDoc(userDocRef,{dailyWithdrawals:0,lastWithdrawReset:today});}const dailyCount=data.dailyWithdrawals||0;if(dailyCount>=MAX_WITHDRAWALS_PER_DAY){showToast(`❌ Limite de ${MAX_WITHDRAWALS_PER_DAY} retraits par jour atteinte`,true);return;}const balance=data.balance||0;if(amount>balance){showToast("Solde insuffisant",true);return;}const q=query(collection(db,"withdraw"),where("userId","==",currentUser.uid),where("status","==","pending"));const existing=await getDocs(q);if(!existing.empty){showMessageModal("❌ Vous avez déjà une demande de retrait en cours.");return;}document.getElementById('confirmWithdrawMessage').innerHTML=`<strong>${amount.toFixed(2)} $</strong> par <strong>${selectedMethod}</strong><br>Confirmez-vous cette demande ?`;document.getElementById('confirmWithdrawModal').classList.add('active');}
 window.confirmWithdrawFinal=async()=>{const amount=parseFloat(document.getElementById('withdrawAmount').value);let wallet=document.getElementById('walletAddress').value.trim();const countrySelect=document.getElementById('countrySelect');const selectedCountry=countrySelect.options[countrySelect.selectedIndex];const countryCode=selectedCountry?.getAttribute('data-code')||'';const countryName=selectedCountry?.text||'';const snap=await getDoc(userDocRef);const dailyCount=snap.data()?.dailyWithdrawals||0;try{const withdrawData={userId:currentUser.uid,userEmail:currentUser.email,amount:amount,method:selectedMethod,walletAddress:wallet,status:"pending",requestedAt:new Date().toISOString()};if(countryCode)withdrawData.country=countryName;if(countryCode)withdrawData.countryCode=countryCode;await addDoc(collection(db,"withdraw"),withdrawData);await updateDoc(userDocRef,{dailyWithdrawals:dailyCount+1});showToast("✅ Votre demande de retrait a été envoyée avec succès ! Traitement sous 24h");closeModal('confirmWithdrawModal');closeModal('withdrawModal');document.getElementById('withdrawAmount').value='';document.getElementById('walletAddress').value='';document.getElementById('countrySelect').value='';selectedMethod=null;document.querySelectorAll('.method-option').forEach(o=>o.classList.remove('selected-airtel','selected-orange','selected-paypal'));}catch(e){showToast("Erreur, réessayez",true);}};
-async function initUser(user){if(!user)return;currentUser=user;userDocRef=doc(db,"users",user.uid);const snap=await getDoc(userDocRef);if(!snap.exists()){const invitationCode=await generateInvitationCode(user.uid);await setDoc(userDocRef,{email:user.email||"",balance:0,totalGains:0,lockedCards:getDefaultLockedCards(),createdAt:new Date().toISOString(),lastLogin:new Date().toISOString(),invitationCode:invitationCode,invitedBy:null,bonusEarnings:0,bonusPending:0,invitedList:[],invitedCount:0,dailyWithdrawals:0,lastWithdrawReset:new Date().toDateString(),capDuJour:"📊 Bienvenue sur NeTubeX !\n\n📌 Objectif du jour : Découvrir les jeux\n🎯 Challenge : Jouer à 2 jeux\n⭐ Bonus : +50 points si objectif atteint"});}else{const userData=snap.data();if(!userData.invitationCode){const newCode=await generateInvitationCode(user.uid);await updateDoc(userDocRef,{invitationCode:newCode,bonusEarnings:userData.bonusEarnings||0,bonusPending:userData.bonusPending||0,invitedList:userData.invitedList||[],invitedCount:userData.invitedCount||0,dailyWithdrawals:userData.dailyWithdrawals||0,lastWithdrawReset:userData.lastWithdrawReset||new Date().toDateString()});}await updateDoc(userDocRef,{lastLogin:new Date().toISOString()});const refCode=new URLSearchParams(window.location.search).get('ref');if(refCode&&!userData.invitedBy){const codeSnap=await getDoc(doc(db,"referral_codes",refCode));if(codeSnap.exists()){const inviterId=codeSnap.data().userId;if(inviterId!==user.uid){await updateDoc(userDocRef,{invitedBy:refCode});const inviterRef=doc(db,"users",inviterId);const inviterData=(await getDoc(inviterRef)).data();const newInvitedList=inviterData.invitedList||[];newInvitedList.push({userId:user.uid,code:refCode,joinedAt:new Date().toISOString(),totalGenerated:0});await updateDoc(inviterRef,{invitedList:newInvitedList,invitedCount:(inviterData.invitedCount||0)+1});}}}}await renderPromoCards();renderGames();startTimersUpdate();checkReturnFromAd();}
+function typeWriterLoader(element, text, speed=50, callback){
+    let i=0;
+    element.innerHTML='';
+    function typing(){
+        if(i<text.length){
+            element.innerHTML+=text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        } else {
+            if(callback) callback();
+            isAnimationComplete = true;
+            checkAndHideLoader();
+        }
+    }
+    typing();
+}
+function checkAndHideLoader(){
+    if(isFirebaseReady && isAnimationComplete){
+        document.getElementById('loaderScreen').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('loaderScreen').classList.add('hide');
+            document.querySelector('.main-content')?.classList.add('show');
+        }, 200);
+    }
+}
+const loaderText = document.getElementById('loaderText');
+typeWriterLoader(loaderText, 'NeTubeX', 50, () => {});
+async function initUser(user){if(!user)return;currentUser=user;userDocRef=doc(db,"users",user.uid);const snap=await getDoc(userDocRef);if(!snap.exists()){const invitationCode=await generateInvitationCode(user.uid);await setDoc(userDocRef,{email:user.email||"",balance:0,totalGains:0,lockedCards:getDefaultLockedCards(),createdAt:new Date().toISOString(),lastLogin:new Date().toISOString(),invitationCode:invitationCode,invitedBy:null,bonusEarnings:0,bonusPending:0,invitedList:[],invitedCount:0,dailyWithdrawals:0,lastWithdrawReset:new Date().toDateString(),capDuJour:"📊 Bienvenue sur NeTubeX !\n\n📌 Objectif du jour : Découvrir les jeux\n🎯 Challenge : Jouer à 2 jeux\n⭐ Bonus : +50 points si objectif atteint"});}else{const userData=snap.data();if(!userData.invitationCode){const newCode=await generateInvitationCode(user.uid);await updateDoc(userDocRef,{invitationCode:newCode,bonusEarnings:userData.bonusEarnings||0,bonusPending:userData.bonusPending||0,invitedList:userData.invitedList||[],invitedCount:userData.invitedCount||0,dailyWithdrawals:userData.dailyWithdrawals||0,lastWithdrawReset:userData.lastWithdrawReset||new Date().toDateString()});}await updateDoc(userDocRef,{lastLogin:new Date().toISOString()});const refCode=new URLSearchParams(window.location.search).get('ref');if(refCode&&!userData.invitedBy){const codeSnap=await getDoc(doc(db,"referral_codes",refCode));if(codeSnap.exists()){const inviterId=codeSnap.data().userId;if(inviterId!==user.uid){await updateDoc(userDocRef,{invitedBy:refCode});const inviterRef=doc(db,"users",inviterId);const inviterData=(await getDoc(inviterRef)).data();const newInvitedList=inviterData.invitedList||[];newInvitedList.push({userId:user.uid,code:refCode,joinedAt:new Date().toISOString(),totalGenerated:0});await updateDoc(inviterRef,{invitedList:newInvitedList,invitedCount:(inviterData.invitedCount||0)+1});}}}}await renderPromoCards();renderGames();startTimersUpdate();checkReturnFromAd();isFirebaseReady=true;checkAndHideLoader();}
 document.getElementById('balanceFloatBtn')?.addEventListener('click',()=>showBalance());
 document.getElementById('iframeFloatBtn')?.addEventListener('click',()=>{if(currentUser)showGameRedirectModal(()=>{const iframe=document.getElementById('portalIframe');if(iframe){iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${currentUser.uid}`;document.getElementById('fullscreenIframe').classList.add('active');}});});
 document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
