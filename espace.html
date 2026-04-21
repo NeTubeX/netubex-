@@ -184,6 +184,7 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 <!-- Popup Message Général -->
 <div id="messageModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-info-circle"></i> Information</h3><button class="modal-close" id="closeMessageModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><p id="messageModalText" style="color:#e2e8f0;"></p></div><div class="modal-footer"><button class="btn-confirm" id="confirmMessageBtn">OK</button></div></div></div>
 
+<!-- L'iframe n'est plus utilisée mais on garde la div au cas où -->
 <div id="fullscreenIframe" class="fullscreen-iframe"><button class="iframe-close" id="closeIframeBtn">✕</button><iframe id="portalIframe" src="about:blank"></iframe></div>
 
 <script type="module">
@@ -231,7 +232,7 @@ const typewriterText="Vous allez être redirigé vers des offres adaptées à vo
 function typeWriter(el,text,speed=30,cb){let i=0;el.innerHTML='';function typing(){if(i<text.length){el.innerHTML+=text.charAt(i);i++;setTimeout(typing,speed);}else if(cb)cb();}typing();}
 function showGameRedirectModal(cb){const m=document.getElementById('gameRedirectModal'),me=document.getElementById('typewriterMessage');m.classList.add('active');typeWriter(me,typewriterText,25,()=>{});const conf=document.getElementById('confirmGameRedirectBtn'),cancel=document.getElementById('cancelGameRedirectBtn'),close=document.getElementById('closeGameRedirectModal');const h=()=>{m.classList.remove('active');me.innerHTML='';conf.removeEventListener('click',h);cancel.removeEventListener('click',ch);close.removeEventListener('click',ch);if(cb)cb();};const ch=()=>{m.classList.remove('active');me.innerHTML='';conf.removeEventListener('click',h);cancel.removeEventListener('click',ch);close.removeEventListener('click',ch);};conf.addEventListener('click',h);cancel.addEventListener('click',ch);close.addEventListener('click',ch);}
 
-// FONCTION POUR RÉCUPÉRER LE uniqueId
+// Fonction pour récupérer le uniqueId
 async function getUserUniqueId() {
     const user = auth.currentUser;
     if(!user || !user.uid) return null;
@@ -239,8 +240,13 @@ async function getUserUniqueId() {
     return userDoc.data()?.uniqueId;
 }
 
-// renderGames modifiée avec uniqueId
-function renderGames(){const c=document.getElementById('gamesContainer');if(!c)return;c.innerHTML='';games.forEach(g=>{const card=document.createElement('div');card.className='post-card';card.innerHTML=`<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration}</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Jouer au Jeu remunerateur</button>`;card.querySelector('.gain-btn').addEventListener('click', async () => { const uniqueId = await getUserUniqueId(); if(uniqueId){ showGameRedirectModal(()=>{ const iframe=document.getElementById('portalIframe'); if(iframe){ iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`; document.getElementById('fullscreenIframe').classList.add('active'); } }); } else { showToast("ID unique non trouvé", true); } });c.appendChild(card);});}
+// Fonction pour ouvrir Timewall dans un nouvel onglet
+function openTimewallInNewTab(uniqueId) {
+    window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`, '_blank');
+}
+
+// renderGames modifiée - OUVERTURE NOUVEL ONGLET
+function renderGames(){const c=document.getElementById('gamesContainer');if(!c)return;c.innerHTML='';games.forEach(g=>{const card=document.createElement('div');card.className='post-card';card.innerHTML=`<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration}</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Jouer au Jeu remunerateur</button>`;card.querySelector('.gain-btn').addEventListener('click', async () => { const uniqueId = await getUserUniqueId(); if(uniqueId){ showGameRedirectModal(()=>{ openTimewallInNewTab(uniqueId); }); } else { showToast("ID unique non trouvé", true); } });c.appendChild(card);});}
 
 async function loadCapMessage(){if(!userDocRef)return;const snap=await getDoc(userDocRef);const cap=snap.data()?.capDuJour||"📊 Aucun CAP défini pour aujourd'hui.\n\n📌 Objectif du jour : Atteindre 100 points\n🎯 Challenge spécial : 3 jeux complétés\n⭐ Bonus : +50 points si objectif atteint";document.getElementById('capMessage').innerHTML=cap.replace(/\n/g,'<br>');}
 async function loadProfile(){const snap=await getDoc(userDocRef);const d=snap.data();document.getElementById('profileEmail').innerText=d.email||'-';document.getElementById('profileCreatedAt').innerText=d.createdAt?new Date(d.createdAt).toLocaleDateString('fr-FR'):'-';document.getElementById('profileLastLogin').innerText=d.lastLogin?new Date(d.lastLogin).toLocaleDateString('fr-FR'):'-';document.getElementById('profileNetuberCode').innerText=d.code||'Non promu';}
@@ -392,8 +398,8 @@ onAuthStateChanged(auth, async(user) => {
 
 document.getElementById('balanceFloatBtn')?.addEventListener('click',()=>showBalance());
 
-// BOUTON FLOTTANT MODIFIÉ AVEC uniqueId
-document.getElementById('iframeFloatBtn')?.addEventListener('click', async () => { const uniqueId = await getUserUniqueId(); if(uniqueId){ showGameRedirectModal(()=>{ const iframe=document.getElementById('portalIframe'); if(iframe){ iframe.src=`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`; document.getElementById('fullscreenIframe').classList.add('active'); } }); } else { showToast("ID unique non trouvé, veuillez patienter...", true); } });
+// BOUTON FLOTTANT MODIFIÉ - OUVERTURE NOUVEL ONGLET
+document.getElementById('iframeFloatBtn')?.addEventListener('click', async () => { const uniqueId = await getUserUniqueId(); if(uniqueId){ showGameRedirectModal(()=>{ openTimewallInNewTab(uniqueId); }); } else { showToast("ID unique non trouvé, veuillez patienter...", true); } });
 
 document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
 document.addEventListener('click',(e)=>{const m=document.getElementById('menuFloating');const b=document.getElementById('menuFloatBtn');if(m&&b&&!b.contains(e.target)&&!m.contains(e.target))m.classList.remove('active');});
