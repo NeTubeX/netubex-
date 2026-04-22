@@ -21,6 +21,7 @@
             border-radius: 12px;
             width: 100%;
             max-width: 400px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
         h2 {
             color: white;
@@ -37,18 +38,28 @@
             color: white;
             font-size: 14px;
         }
+        input:focus {
+            outline: none;
+            border-color: #10b981;
+        }
         button {
             width: 100%;
             padding: 10px;
-            background: #dc2626;
+            background: #10b981;
             color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
+            font-weight: bold;
+            transition: background 0.2s;
         }
         button:hover {
-            background: #b91c1c;
+            background: #059669;
+        }
+        button:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
         }
         .message {
             margin-top: 15px;
@@ -73,17 +84,33 @@
             display: block;
             text-align: center;
             margin-top: 15px;
+            font-size: 14px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .info {
+            background: #3b82f6;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="box">
         <h2>➕ Ajouter un Admin</h2>
-        <input type="email" id="email" placeholder="Email de l'admin">
-        <input type="password" id="password" placeholder="Mot de passe">
+        <div class="info">
+            ⚡ Compte automatiquement activé (isActive = true)
+        </div>
+        <input type="email" id="email" placeholder="Email de l'admin" autocomplete="off">
+        <input type="password" id="password" placeholder="Mot de passe (6 caractères min)">
         <button id="addBtn">Créer l'admin</button>
         <div id="message" class="message"></div>
-        <a href="login.html">← Retour</a>
+        <a href="login.html">← Retour à la connexion</a>
     </div>
 
     <script type="module">
@@ -109,50 +136,86 @@
         const addBtn = document.getElementById("addBtn");
         const messageDiv = document.getElementById("message");
 
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            setTimeout(() => {
+                if (messageDiv.className.includes(type)) {
+                    messageDiv.style.display = 'none';
+                    messageDiv.className = 'message';
+                }
+            }, 5000);
+            messageDiv.style.display = 'block';
+        }
+
         addBtn.addEventListener("click", async () => {
             const email = emailInput.value.trim();
             const password = passwordInput.value;
 
             if (!email || !password) {
-                messageDiv.textContent = "❌ Email et mot de passe requis";
-                messageDiv.className = "message error";
+                showMessage("❌ Email et mot de passe requis", "error");
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage("❌ Le mot de passe doit contenir au moins 6 caractères", "error");
                 return;
             }
 
             addBtn.disabled = true;
-            addBtn.textContent = "Création...";
+            addBtn.textContent = "⏳ Création en cours...";
 
             try {
-                // Créer l'utilisateur dans Authentication
+                // 1. Créer l'utilisateur dans Authentication
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const uid = userCredential.user.uid;
 
-                // Ajouter le rôle admin dans Firestore
+                // 2. Ajouter le document dans Firestore avec isActive = true et isBlocked = false
                 await setDoc(doc(db, "users", uid), {
                     role: "admin",
-                    email: email
+                    email: email,
+                    isActive: true,        // ✅ Compte activé immédiatement
+                    isBlocked: false,      // ✅ Non bloqué
+                    dateCreation: new Date().toISOString(),
+                    dateActivation: new Date().toISOString()
                 });
 
-                messageDiv.textContent = "✅ Admin créé avec succès !";
-                messageDiv.className = "message success";
+                showMessage("✅ Admin créé avec succès ! Compte activé immédiatement.", "success");
                 emailInput.value = "";
                 passwordInput.value = "";
 
+                // Redirection optionnelle après 2 secondes
+                setTimeout(() => {
+                    window.location.href = "login.html";
+                }, 2000);
+
             } catch (error) {
-                let msg = "Erreur : ";
-                if (error.code === "auth/email-already-in-use") {
-                    msg = "❌ Cet email est déjà utilisé";
-                } else if (error.code === "auth/weak-password") {
-                    msg = "❌ Mot de passe trop faible (6 caractères min)";
-                } else {
-                    msg = "❌ " + error.message;
+                let msg = "";
+                switch(error.code) {
+                    case "auth/email-already-in-use":
+                        msg = "❌ Cet email est déjà utilisé";
+                        break;
+                    case "auth/weak-password":
+                        msg = "❌ Mot de passe trop faible (6 caractères min)";
+                        break;
+                    case "auth/invalid-email":
+                        msg = "❌ Email invalide";
+                        break;
+                    default:
+                        msg = "❌ Erreur : " + error.message;
                 }
-                messageDiv.textContent = msg;
-                messageDiv.className = "message error";
+                showMessage(msg, "error");
             }
 
             addBtn.disabled = false;
             addBtn.textContent = "Créer l'admin";
+        });
+
+        // Permettre la validation avec la touche Entrée
+        passwordInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                addBtn.click();
+            }
         });
     </script>
 </body>
