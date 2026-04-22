@@ -104,6 +104,9 @@ tr:hover{background:#1a2332;}
 .admin-btn{background:linear-gradient(135deg,#1e293b,#0f1420);border:1px solid #334155;padding:12px 20px;border-radius:12px;color:#e2e8f0;cursor:pointer;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;}
 .admin-btn:hover{background:#334155;border-color:#f59e0b;color:#f59e0b;}
 .counter-badge{background:#f59e0b;color:#0a0f1a;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;margin-left:10px;}
+.report-ref-badge{background:#f59e0b20;border:1px solid #f59e0b;border-radius:12px;padding:8px 15px;text-align:center;}
+.report-ref-badge .label{font-size:10px;color:#94a3b8;}
+.report-ref-badge .value{font-size:14px;font-weight:700;color:#f59e0b;font-family:monospace;}
 </style>
 </head>
 <body class="dark-soft">
@@ -131,7 +134,13 @@ tr:hover{background:#1a2332;}
 </div></div>
 
 <!-- Onglet Statistiques -->
-<div id="statistiquesTab" class="tab-content active"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalNetubersStat">0</div><div class="label"><i class="fas fa-id-card"></i> Netubers Membres Actifs</div></div><div class="stat-card"><div class="value" id="totalUsersStat">0</div><div class="label"><i class="fas fa-users"></i> Utilisateurs Actifs</div></div><div class="stat-card"><div class="value" id="totalPendingStat">0</div><div class="label"><i class="fas fa-clock"></i> Inscriptions en attente</div></div><div class="stat-card"><div class="value" id="totalWithdrawalsPendingStat">0</div><div class="label"><i class="fas fa-money-bill-wave"></i> Retraits en attente</div></div></div>
+<div id="statistiquesTab" class="tab-content active">
+<div class="stats-grid">
+<div class="stat-card"><div class="value" id="totalNetubersStat">0</div><div class="label"><i class="fas fa-id-card"></i> Netubers Membres Actifs</div></div>
+<div class="stat-card"><div class="value" id="totalUsersStat">0</div><div class="label"><i class="fas fa-users"></i> Utilisateurs Actifs</div></div>
+<div class="stat-card"><div class="value" id="totalPendingStat">0</div><div class="label"><i class="fas fa-clock"></i> Inscriptions en attente</div></div>
+<div class="stat-card"><div class="value" id="totalWithdrawalsPendingStat">0</div><div class="label"><i class="fas fa-money-bill-wave"></i> Retraits en attente</div></div>
+</div>
 <div class="visite-stats"><h3><i class="fas fa-eye"></i> Statistiques de visite - Page d'accueil</h3><div class="visite-numbers"><div class="visite-item"><div class="number" id="visitesToday">0</div><div class="label">Visites aujourd'hui</div></div><div class="visite-item"><div class="number" id="visitesWeek">0</div><div class="label">Cette semaine</div></div><div class="visite-item"><div class="number" id="visitesMonth">0</div><div class="label">Ce mois</div></div><div class="visite-item"><div class="number" id="visitesTotal">0</div><div class="label">Total visites</div></div></div></div>
 <div class="charts-row"><div class="chart-container"><canvas id="onlineChart" style="max-height:200px;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Netubers Connectés / Déconnectés</p></div><div class="chart-container"><canvas id="pointsChart" style="max-height:200px;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Points Précédents vs Points du Jour</p><div id="pointsEcart" style="text-align:center;margin-top:8px;font-size:12px;font-weight:600;"></div></div><div class="chart-container"><canvas id="tempsChart" style="max-height:200px;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Temps Précédent vs Temps du Jour (min)</p></div></div>
 <div class="chart-container"><canvas id="inscriptionsChart" style="max-height:250px;"></canvas></div>
@@ -157,7 +166,14 @@ tr:hover{background:#1a2332;}
 <div id="ticketsUsersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="ticketsUsersOpen">0</div><div class="label">Tickets ouverts</div></div><div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Tickets résolus</div></div><div class="stat-card"><div class="value" id="ticketsInProgress">0</div><div class="label">Tickets en cours</div></div></div><div class="table-wrapper"><table id="ticketsUsersTable"><thead><tr><th>Utilisateur</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead><tbody id="ticketsUsersBody"></tbody></table></div></div>
 
 <!-- Onglet Rapports -->
-<div id="rapportsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="reportCount">0</div><div class="label">Dernier rapport</div></div></div><div class="table-wrapper"><table id="rapportsTable"><thead><tr><th>Code Netuber</th><th>Présence</th><th>Raison absence</th><th>Obj.mensuel</th><th>Obj.atteint</th><th>Niveaux</th><th>Niveaux atteints</th><th>Points préc.</th><th>Points jour</th><th>Temps préc.(min)</th><th>Temps jour(min)</th><th>Forfait Go</th><th>Rendement(pts/h)</th></tr></thead><tbody id="rapportsTableBody"></tbody></table></div></div>
+<div id="rapportsTab" class="tab-content">
+<div class="stats-grid">
+<div class="stat-card"><div class="value" id="reportCount">0</div><div class="label">Netubers dans le rapport</div></div>
+<div class="stat-card report-ref-badge"><div class="label"><i class="fas fa-hashtag"></i> Référence du rapport</div><div class="value" id="reportReferenceValue">-</div></div>
+<div class="stat-card"><div class="value" id="reportDateValue">-</div><div class="label">Date du rapport</div></div>
+<div class="stat-card"><button class="export-btn" id="sendMemoFromReportBtn" style="background:#f59e0b; width:100%;"><i class="fas fa-paper-plane"></i> 📨 Envoyer mémorandum</button></div>
+</div>
+<div class="table-wrapper"><table id="rapportsTable"><thead><tr><th>Code Netuber</th><th>Présence</th><th>Raison absence</th><th>Obj.mensuel</th><th>Obj.atteint</th><th>Niveaux</th><th>Niveaux atteints</th><th>Points préc.</th><th>Points jour</th><th>Temps préc.(min)</th><th>Temps jour(min)</th><th>Forfait Go</th><th>Rendement(pts/h)</th></tr></thead><tbody id="rapportsTableBody"></tbody></table></div></div>
 
 <!-- Onglet Anomalies -->
 <div id="anomaliesTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalAnomalies">0</div><div class="label">Anomalies détectées</div></div></div><div class="table-wrapper"><table id="anomaliesTable"><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre tickets</th><th>Action</th></tr></thead><tbody id="anomaliesTableBody"></tbody></table></div></div>
@@ -180,7 +196,7 @@ tr:hover{background:#1a2332;}
     <div class="settings-section">
         <h3><i class="fas fa-memo"></i> Mémorandums envoyés</h3>
         <div class="table-wrapper" style="max-height:300px;">
-            <table id="memosTable"><thead><tr><th>Titre</th><th>Date d'envoi</th><th>Contenu du message</th><th>Actions</th></tr></thead><tbody id="memosBody"></tbody></table>
+            <table id="memosTable"><thead><tr><th>Titre</th><th>Réf. Rapport</th><th>Date d'envoi</th><th>Contenu du message</th><th>Actions</th></tr></thead><tbody id="memosBody"></tbody></table>
         </div>
     </div>
     
@@ -191,7 +207,7 @@ tr:hover{background:#1a2332;}
             <button class="admin-btn" onclick="openBlockUnblockModal()"><i class="fas fa-ban"></i> Bloquer / Débloquer</button>
             <button class="admin-btn" onclick="openDeleteNetuberModal()"><i class="fas fa-trash-alt"></i> Supprimer Netuber</button>
             <button class="admin-btn" onclick="openDeleteUserModal()"><i class="fas fa-user-times"></i> Supprimer Utilisateur</button>
-            <button class="admin-btn" onclick="openMemorandumModal()"><i class="fas fa-paper-plane"></i> Mémorandum</button>
+            <button class="admin-btn" id="memorandumMenuBtn"><i class="fas fa-paper-plane"></i> Mémorandum</button>
             <button class="admin-btn" onclick="cleanOldReports()"><i class="fas fa-broom"></i> Nettoyer anciens rapports</button>
         </div>
     </div>
@@ -206,7 +222,17 @@ tr:hover{background:#1a2332;}
 
 <div id="deleteUserModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-times"></i> Supprimer Utilisateur</h2><button class="modal-close" onclick="closeModal('deleteUserModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner l'utilisateur à supprimer</label><select id="deleteUserSelect"></select></div><div class="input-group"><label>⚠️ Attention : Cette action est irréversible</label></div></div><div class="modal-footer"><button onclick="confirmDeleteUser()" style="background:#ef4444;">Supprimer définitivement</button><button onclick="closeModal('deleteUserModal')">Annuler</button></div></div></div>
 
-<div id="memorandumModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-paper-plane"></i> Envoyer un mémorandum</h2><button class="modal-close" onclick="closeModal('memorandumModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Destinataire (Netuber)</label><select id="memoRecipient"></select></div><div class="input-group"><label>Titre</label><input type="text" id="memoTitle" placeholder="Titre du mémorandum"></div><div class="input-group"><label>Contenu du message</label><textarea id="memoContent" rows="4" placeholder="Votre message..."></textarea></div></div><div class="modal-footer"><button onclick="sendMemorandum()" style="background:#10b981;">Envoyer</button><button onclick="closeModal('memorandumModal')">Annuler</button></div></div></div>
+<!-- MODALE MÉMORANDUM CORRIGÉE -->
+<div id="memorandumModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-paper-plane"></i> Envoyer un mémorandum</h2><button class="modal-close" onclick="closeModal('memorandumModal')"><i class="fas fa-times"></i></button></div><div class="modal-body">
+    <div class="input-group" style="background:#1e293b; border-radius:12px; padding:10px; margin-bottom:15px;">
+        <label><i class="fas fa-file-alt"></i> Rapport PGCO concerné</label>
+        <div style="font-size:14px; color:#f59e0b; font-weight:600;" id="reportReferenceDisplay">-</div>
+        <input type="hidden" id="memoReportReference" value="">
+    </div>
+    <div class="input-group"><label>Titre du mémorandum</label><input type="text" id="memoTitle" placeholder="Titre du mémorandum"></div>
+    <div class="input-group"><label>Contenu du message</label><textarea id="memoContent" rows="4" placeholder="Votre message..."></textarea></div>
+    <div class="input-group"><label>Destinataire</label><input type="text" id="memoRecipient" value="DEO - Direction" readonly style="background:#334155;"></div>
+</div><div class="modal-footer"><button onclick="sendMemorandum()" style="background:#10b981;">Envoyer</button><button onclick="closeModal('memorandumModal')">Annuler</button></div></div></div>
 
 <!-- Modal CAP -->
 <div id="capModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-envelope"></i> Envoyer un CAP</h2><button class="modal-close" onclick="closeModal('capModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><input type="text" id="capNetuberCode" readonly style="background:#334155;"></div><div class="input-group"><label>Message CAP</label><textarea id="capMessage" rows="4" placeholder="Message à envoyer..."></textarea></div><div class="input-group"><label>Date d'expiration</label><input type="date" id="capExpiryDate"></div></div><div class="modal-footer"><button onclick="sendCAP()" style="background:#f59e0b;">Envoyer CAP</button><button onclick="closeModal('capModal')">Annuler</button></div></div></div>
@@ -238,6 +264,8 @@ let onlineChart, pointsChart, tempsChart, inscriptionsChart, visitesChart;
 let selectedActivateUser=null, selectedPromoteUser=null, currentNetuberFilter="all", currentWithdrawFilter="all";
 let searchPendingTerm="", searchActiveTerm="", searchNetuberTerm="";
 let currentDeleteTicket = null;
+let currentReportReference = null;
+let currentReportDate = null;
 
 function escapeHtml(t){if(!t)return'';return String(t).replace(/[&<>]/g,m=>m==='&'?'&amp;':(m==='<'?'&lt;':'&gt;'));}
 function formatDateShort(d){if(!d)return'-';try{return new Date(d).toLocaleDateString('fr-FR');}catch(e){return'-';}}
@@ -271,7 +299,6 @@ if(localStorage.getItem('theme')!=='dark-soft')document.body.classList.add('dark
 
 window.toggleAddCode=()=>{let role=document.getElementById('addRole').value;document.getElementById('addCodeGroup').style.display=role==='netuber'?'block':'none';};
 
-// FONCTION createUser MODIFIÉE - AJOUT DE uniqueId
 window.createUser = async () => {
     let email = document.getElementById('addEmail').value.trim();
     let pwd = document.getElementById('addPassword').value;
@@ -284,8 +311,6 @@ window.createUser = async () => {
     
     try {
         let userCred = await createUserWithEmailAndPassword(auth, email, pwd);
-        
-        // GÉNÉRER UN uniqueId POUR LE NETUBER
         const uniqueId = `${Date.now()}x${Math.floor(Math.random() * 1000000000000000000)}`;
         
         let userData = {
@@ -295,7 +320,7 @@ window.createUser = async () => {
             createdAt: new Date().toISOString(),
             lastSeen: new Date().toISOString(),
             balance: 0,
-            uniqueId: uniqueId  // ← AJOUT DU uniqueId
+            uniqueId: uniqueId
         };
         
         if (role === 'netuber') {
@@ -341,12 +366,13 @@ async function loadCAPs(){
 
 async function loadMemos(){
     let memosRef=collection(db,"memorandums");
-    let snap=await getDocs(memosRef);
+    let q = query(memosRef, orderBy("sentDate", "desc"));
+    let snap=await getDocs(q);
     memosData=[];
     snap.forEach(d=>memosData.push({id:d.id,...d.data()}));
     let tbody=document.getElementById('memosBody');
     if(tbody){
-        tbody.innerHTML=memosData.map(m=>`<tr><td><strong>${escapeHtml(m.title)}</strong></td><td>${formatDateTime(m.sentDate)}</td><td>${escapeHtml(m.content.substring(0,50))}${m.content.length>50?'...':''}</td><td><button class="action-btn delete" onclick='deleteMemorandum("${m.id}")'>Supprimer</button></td></tr>`).join('');
+        tbody.innerHTML=memosData.map(m=>`<tr><td><strong>${escapeHtml(m.title)}</strong></td><td><span class="badge badge-warning">${escapeHtml(m.reportReference || '-')}</span></td><td>${formatDateTime(m.sentDate)}</td><td>${escapeHtml(m.content.substring(0,50))}${m.content.length>50?'...':''}</td><td><button class="action-btn delete" onclick='deleteMemorandum("${m.id}")'>Supprimer</button></td></tr>`).join('');
     }
 }
 
@@ -358,19 +384,57 @@ window.deleteMemorandum=async(id)=>{
     });
 };
 
-window.sendMemorandum=async()=>{
-    let recipient=document.getElementById('memoRecipient').value;
-    let title=document.getElementById('memoTitle').value.trim();
-    let content=document.getElementById('memoContent').value.trim();
-    if(!recipient||!title||!content){showToast("Tous les champs sont requis",true);return;}
-    let memoData={recipientCode:recipient,title:title,content:content,sentDate:new Date().toISOString()};
-    await addDoc(collection(db,"memorandums"),memoData);
-    showToast("Mémorandum envoyé");
-    closeModal('memorandumModal');
-    document.getElementById('memoTitle').value='';
-    document.getElementById('memoContent').value='';
-    await loadMemos();
+// FONCTION SEND MEMORANDUM CORRIGÉE - Envoie à la référence du rapport
+window.sendMemorandum = async () => {
+    let reportReference = document.getElementById('memoReportReference').value;
+    let title = document.getElementById('memoTitle').value.trim();
+    let content = document.getElementById('memoContent').value.trim();
+    
+    if (!title || !content) {
+        showToast("Titre et contenu requis", true);
+        return;
+    }
+    
+    if (!reportReference) {
+        showToast("Aucune référence de rapport disponible", true);
+        return;
+    }
+    
+    let memoData = {
+        recipient: "DEO - Direction",
+        title: title,
+        content: content,
+        reportReference: reportReference,
+        sentDate: new Date().toISOString(),
+        type: "memorandum",
+        sentBy: "DEO_Dashboard"
+    };
+    
+    try {
+        await addDoc(collection(db, "memorandums"), memoData);
+        showToast(`✅ Mémorandum envoyé pour le rapport ${reportReference}`);
+        closeModal('memorandumModal');
+        document.getElementById('memoTitle').value = '';
+        document.getElementById('memoContent').value = '';
+        await loadMemos();
+    } catch (error) {
+        showToast("Erreur: " + error.message, true);
+    }
 };
+
+// Ouvrir le mémorandum avec la référence du rapport actuel
+function openMemorandumWithReportReference() {
+    if (!currentReportReference) {
+        showToast("Aucun rapport chargé. Veuillez rafraîchir.", true);
+        return;
+    }
+    
+    document.getElementById('reportReferenceDisplay').innerHTML = `<i class="fas fa-hashtag"></i> ${currentReportReference}`;
+    document.getElementById('memoReportReference').value = currentReportReference;
+    document.getElementById('memoTitle').value = `Mémorandum - Suite au rapport ${currentReportReference}`;
+    document.getElementById('memoContent').value = '';
+    openModal('memorandumModal');
+}
 
 window.sendCAP=async()=>{
     let netuberCode=document.getElementById('capNetuberCode').value;
@@ -557,7 +621,50 @@ window.approveWithdraw=async(id)=>{let w=withdrawalsData.find(w=>w.id===id);if(!
 window.rejectWithdraw=async(id)=>{await updateDoc(doc(db,"withdraw",id),{status:"rejected",processedAt:new Date().toISOString()});showToast("Retrait rejeté");await loadWithdrawals();};
 window.deleteWithdraw=async(id)=>{showConfirm('Suppression','Supprimer cette demande ?',async()=>{await deleteDoc(doc(db,"withdraw",id));showToast("Demande supprimée");await loadWithdrawals();});};
 window.exportWithdrawals=()=>{let csv="Utilisateur,Montant,Méthode,Wallet,Statut,Date\n";withdrawalsData.forEach(w=>{let u=usersData.find(u=>u.id===w.userId);csv+=`${u?.email||w.userId},${w.amount},${w.method},${w.walletAddress},${w.status},${w.requestedAt}\n`;});let blob=new Blob([csv]);let link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=`retraits.csv`;link.click();};
-async function loadLastReport(){try{let q=query(collection(db,"reports"),orderBy("createdAt","desc"),limit(1));let snap=await getDocs(q);if(!snap.empty){lastReport=snap.docs[0].data();let netubers=lastReport.netubers||[];let totalPtsP=netubers.reduce((s,n)=>s+(n.pointsPrecedents||0),0);let totalPtsJ=netubers.reduce((s,n)=>s+(n.pointsJour||0),0);let totalTempsP=netubers.reduce((s,n)=>s+(n.tempsPrecedent||0),0);let totalTempsJ=netubers.reduce((s,n)=>s+(n.tempsJour||0),0);let ecart=totalPtsJ-totalPtsP;let pourcentage=totalPtsP>0?((ecart/totalPtsP)*100).toFixed(1):0;let tendance=ecart>0?'📈 Hausse':(ecart<0?'📉 Baisse':'➡️ Stable');document.getElementById('pointsEcart').innerHTML=`Points préc: ${totalPtsP} | Points jour: ${totalPtsJ}<br>Écart: ${ecart>0?'+':''}${ecart} (${pourcentage}%) ${tendance}`;let tbody=document.getElementById('rapportsTableBody');if(tbody){tbody.innerHTML=netubers.map(n=>{let rendement=n.tempsJour>0?((n.pointsJour/(n.tempsJour/60)).toFixed(2)):0;return `<tr><td><strong>${escapeHtml(n.code)}</strong></td><td>${n.presence==='Présent'?'✅':'❌'}</td><td>${escapeHtml(n.raisonAbsence||'-')}</td><td>${n.objectifMensuel||0}</td><td>${n.objectifAtteint||0}</td><td>${n.nbNiveaux||0}</td><td>${n.nbNiveauxAtteints||0}</td><td>${n.pointsPrecedents||0}</td><td style="color:#f59e0b;">${n.pointsJour||0}</td><td>${n.tempsPrecedent||0}</td><td>${n.tempsJour||0}</td><td>${n.forfaitInternet||'-'}</td><td>${rendement} pts/h</td></tr>`;}).join('');}document.getElementById('reportCount').innerText=netubers.length;let ctxPoints=document.getElementById('pointsChart')?.getContext('2d');if(ctxPoints){if(pointsChart)pointsChart.destroy();pointsChart=new Chart(ctxPoints,{type:'line',data:{labels:['Points précédents','Points du jour'],datasets:[{data:[totalPtsP,totalPtsJ],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.1)',fill:true}]},options:{responsive:true}});}let ctxTemps=document.getElementById('tempsChart')?.getContext('2d');if(ctxTemps){if(tempsChart)tempsChart.destroy();tempsChart=new Chart(ctxTemps,{type:'bar',data:{labels:['Temps précédent','Temps du jour'],datasets:[{data:[totalTempsP,totalTempsJ],backgroundColor:['#64748b','#f59e0b'],borderRadius:8}]},options:{responsive:true}});}}}catch(e){}}
+
+// FONCTION loadLastReport MODIFIÉE - Capture la référence du rapport
+async function loadLastReport(){
+    try{
+        let q=query(collection(db,"reports"),orderBy("createdAt","desc"),limit(1));
+        let snap=await getDocs(q);
+        if(!snap.empty){
+            let reportDoc = snap.docs[0];
+            lastReport = reportDoc.data();
+            
+            // CAPTURER LA RÉFÉRENCE DU RAPPORT
+            currentReportReference = lastReport.reference || `RPT-${reportDoc.id.substring(0, 8)}`;
+            currentReportDate = lastReport.date || formatDateShort(lastReport.createdAt);
+            
+            // AFFICHER LA RÉFÉRENCE DANS L'ONGLET RAPPORTS
+            document.getElementById('reportReferenceValue').innerHTML = `<i class="fas fa-hashtag"></i> ${currentReportReference}`;
+            document.getElementById('reportDateValue').innerHTML = `<i class="fas fa-calendar"></i> ${currentReportDate}`;
+            
+            let netubers=lastReport.netubers||[];
+            let totalPtsP=netubers.reduce((s,n)=>s+(n.pointsPrecedents||0),0);
+            let totalPtsJ=netubers.reduce((s,n)=>s+(n.pointsJour||0),0);
+            let totalTempsP=netubers.reduce((s,n)=>s+(n.tempsPrecedent||0),0);
+            let totalTempsJ=netubers.reduce((s,n)=>s+(n.tempsJour||0),0);
+            let ecart=totalPtsJ-totalPtsP;
+            let pourcentage=totalPtsP>0?((ecart/totalPtsP)*100).toFixed(1):0;
+            let tendance=ecart>0?'📈 Hausse':(ecart<0?'📉 Baisse':'➡️ Stable');
+            document.getElementById('pointsEcart').innerHTML=`Points préc: ${totalPtsP} | Points jour: ${totalPtsJ}<br>Écart: ${ecart>0?'+':''}${ecart} (${pourcentage}%) ${tendance}`;
+            
+            let tbody=document.getElementById('rapportsTableBody');
+            if(tbody){
+                tbody.innerHTML=netubers.map(n=>{
+                    let rendement=n.tempsJour>0?((n.pointsJour/(n.tempsJour/60)).toFixed(2)):0;
+                    return `<tr><td><strong>${escapeHtml(n.code)}</strong></td><td>${n.presence==='Présent'?'✅':'❌'}</td><td>${escapeHtml(n.raisonAbsence||'-')}</td><td>${n.objectifMensuel||0}</td><td>${n.objectifAtteint||0}</td><td>${n.nbNiveaux||0}</td><td>${n.nbNiveauxAtteints||0}</td><td>${n.pointsPrecedents||0}</td><td style="color:#f59e0b;">${n.pointsJour||0}</td><td>${n.tempsPrecedent||0}</td><td>${n.tempsJour||0}</td><td>${n.forfaitInternet||'-'}</td><td>${rendement} pts/h</td></tr>`;
+                }).join('');
+            }
+            document.getElementById('reportCount').innerText=netubers.length;
+            
+            let ctxPoints=document.getElementById('pointsChart')?.getContext('2d');
+            if(ctxPoints){if(pointsChart)pointsChart.destroy();pointsChart=new Chart(ctxPoints,{type:'line',data:{labels:['Points précédents','Points du jour'],datasets:[{data:[totalPtsP,totalPtsJ],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.1)',fill:true}]},options:{responsive:true}});}
+            let ctxTemps=document.getElementById('tempsChart')?.getContext('2d');
+            if(ctxTemps){if(tempsChart)tempsChart.destroy();tempsChart=new Chart(ctxTemps,{type:'bar',data:{labels:['Temps précédent','Temps du jour'],datasets:[{data:[totalTempsP,totalTempsJ],backgroundColor:['#64748b','#f59e0b'],borderRadius:8}]},options:{responsive:true}});}
+        }
+    }catch(e){console.error(e);}
+}
 
 window.filterNetubers=()=>{
     searchNetuberTerm=document.getElementById('searchNetuber')?.value.toLowerCase()||'';
@@ -781,11 +888,9 @@ function populateNetuberSelects(){
     let modifySelect=document.getElementById('modifyCodeSelect');
     let blockSelect=document.getElementById('blockUnblockSelect');
     let deleteSelect=document.getElementById('deleteNetuberSelect');
-    let memoSelect=document.getElementById('memoRecipient');
     if(modifySelect)modifySelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)} - ${escapeHtml(u.email)}</option>`).join('');
     if(blockSelect)blockSelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)} - ${u.isBlocked?'🔴 Bloqué':'🟢 Actif'}</option>`).join('');
     if(deleteSelect)deleteSelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)} - ${escapeHtml(u.email)}</option>`).join('');
-    if(memoSelect)memoSelect.innerHTML=netubers.map(u=>`<option value="${escapeHtml(u.code)}">${escapeHtml(u.code)}</option>`).join('');
 }
 
 window.openActivateModal=(id)=>{
@@ -875,7 +980,6 @@ window.confirmPromote=async()=>{
         if(!code){showToast("Code requis",true);return;}
         let existing=usersData.find(u=>u.code===code);
         if(existing){showToast("Code existe déjà",true);return;}
-        // GÉNÉRER UN uniqueId POUR L'UTILISATEUR PROMU
         const uniqueId = `${Date.now()}x${Math.floor(Math.random() * 1000000000000000000)}`;
         await updateDoc(doc(db,"users",selectedPromoteUser.id),{code:code,objectifMensuel:9,objectifAtteint:0,uniqueId:uniqueId});
         showToast("Promu Netuber avec uniqueId");
@@ -915,7 +1019,15 @@ window.exportNetubers=()=>{
 window.openModifyCodeModal=()=>{populateNetuberSelects();openModal('modifyCodeModal');};
 window.openBlockUnblockModal=()=>{populateNetuberSelects();openModal('blockUnblockModal');};
 window.openDeleteNetuberModal=()=>{populateNetuberSelects();openModal('deleteNetuberModal');};
-window.openMemorandumModal=()=>{populateNetuberSelects();openModal('memorandumModal');};
+
+// Fonction pour ouvrir le mémorandum depuis le bouton de l'onglet Paramètres
+window.openMemorandumModal = () => {
+    if (!currentReportReference) {
+        showToast("Aucun rapport chargé. Veuillez rafraîchir la page.", true);
+        return;
+    }
+    openMemorandumWithReportReference();
+};
 
 async function loadAllData(){
     let snap=await getDocs(collection(db,"users"));
@@ -937,6 +1049,16 @@ async function loadAllData(){
     let ctxInscriptions=document.getElementById('inscriptionsChart')?.getContext('2d');
     if(ctxInscriptions){if(inscriptionsChart)inscriptionsChart.destroy();inscriptionsChart=new Chart(ctxInscriptions,{type:'bar',data:{labels:['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],datasets:[{label:'Inscriptions',data:[3,5,2,4,6,1,2],backgroundColor:'#f59e0b',borderRadius:8}]},options:{responsive:true}});}
 }
+
+// Initialisation des événements
+document.getElementById('sendMemoFromReportBtn')?.addEventListener('click', openMemorandumWithReportReference);
+document.getElementById('memorandumMenuBtn')?.addEventListener('click', () => {
+    if (!currentReportReference) {
+        showToast("Aucun rapport chargé. Veuillez rafraîchir.", true);
+        return;
+    }
+    openMemorandumWithReportReference();
+});
 
 loadAllData();
 setInterval(()=>loadAllData(),30000);
