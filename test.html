@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Test son</title>
+</head>
+<body>
+<button id="testBtn">🔊 Tester le son</button>
+<p id="status">Clique sur le bouton</p>
+
+<script>
+const testBtn = document.getElementById('testBtn');
+const status = document.getElementById('status');
+
+function playMelody() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioCtx.currentTime;
+    
+    // Fréquences : Do, Ré, Mi, Fa, Sol
+    const notes = [261.63, 293.66, 329.63, 349.23, 392.00];
+    
+    for (let i = 0; i < notes.length; i++) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.frequency.value = notes[i];
+      osc.type = 'sine';
+      const startTime = now + (i * 0.2);
+      gain.gain.setValueAtTime(0.1, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.15);
+      osc.start(startTime);
+      osc.stop(startTime + 0.15);
+    }
+    
+    status.innerHTML = '✅ Son joué ! Tu as entendu ?';
+    status.style.color = 'green';
+  } catch(e) {
+    status.innerHTML = '❌ Erreur : ' + e.message;
+    status.style.color = 'red';
+  }
+}
+
+testBtn.onclick = () => {
+  playMelody();
+};
+</script>
+</body>
+</html>
