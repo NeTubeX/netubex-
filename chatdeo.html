@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>DEO · Chat</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#0a1a2f;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+.container{max-width:900px;margin:0 auto;width:100%;height:100vh;display:flex;flex-direction:column;background:#0e1a2a;}
+.header{background:#075E54;padding:12px 20px;display:flex;align-items:center;gap:15px;flex-shrink:0;}
+.header-info{flex:1;}
+.header-info h3{color:white;font-size:1rem;font-weight:600;}
+.header-info p{color:rgba(255,255,255,0.8);font-size:0.7rem;}
+.badge{background:#25D366;color:white;padding:4px 10px;border-radius:20px;font-size:0.7rem;}
+.selector{background:#075E54;padding:8px 20px 12px;}
+.selector select{width:100%;padding:10px 15px;border-radius:25px;background:#1a2a3a;border:1px solid #2d4e73;color:white;font-size:0.85rem;cursor:pointer;}
+.messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:8px;}
+.row{display:flex;margin-bottom:4px;animation:fadeIn 0.2s;}
+.row.received{justify-content:flex-start;}
+.row.sent{justify-content:flex-end;}
+.bubble{max-width:70%;padding:10px 14px;border-radius:18px;font-size:0.85rem;line-height:1.4;word-wrap:break-word;}
+.bubble.received{background:#1f2c38;color:#e0e0e0;border-bottom-left-radius:4px;}
+.bubble.sent{background:#25D366;color:#0a1a2f;border-bottom-right-radius:4px;}
+.time{font-size:0.6rem;opacity:0.7;margin-top:4px;text-align:right;}
+.draft-message{opacity:0.9;}
+.draft-message .bubble{background:#1f2c38;border-left:3px solid #25D366;}
+.typing-indicator{display:flex;align-items:center;gap:8px;padding:8px 16px;background:#1f2c38;border-radius:20px;width:fit-content;margin-bottom:12px;}
+.typing-dots{display:flex;gap:4px;}
+.typing-dots span{width:8px;height:8px;background:#25D366;border-radius:50%;animation:typing 1.4s infinite;}
+.typing-dots span:nth-child(1){animation-delay:0s;}
+.typing-dots span:nth-child(2){animation-delay:0.2s;}
+.typing-dots span:nth-child(3){animation-delay:0.4s;}
+.typing-text{font-size:0.7rem;color:#8aaec0;}
+.input-area{background:#1a2a3a;padding:12px 16px;display:flex;gap:10px;align-items:center;flex-shrink:0;border-top:1px solid #2d4e73;}
+.input-area input{flex:1;background:#2d4e73;border:none;padding:12px 16px;border-radius:30px;color:white;font-size:0.85rem;outline:none;}
+.input-area input::placeholder{color:#8aaec0;}
+.input-area button{background:#25D366;border:none;width:44px;height:44px;border-radius:50%;cursor:pointer;color:white;font-size:1.2rem;}
+.empty-chat{text-align:center;padding:40px;color:#8aaec0;}
+.cursor-blink{display:inline-block;width:2px;height:1em;background:#25D366;animation:blink 1s infinite;margin-left:2px;vertical-align:middle;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes typing{0%,60%,100%{transform:translateY(0);opacity:0.4;}30%{transform:translateY(-10px);opacity:1;}}
+@keyframes blink{0%,50%{opacity:1;}51%,100%{opacity:0;}}
+.logout-btn{background:rgba(255,255,255,0.15);border:none;color:white;padding:8px 15px;border-radius:25px;cursor:pointer;font-size:0.75rem;}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<div class="header-info"><h3><i class="fas fa-comments"></i> DEO · Chat</h3><p>Supervision en temps réel</p></div>
+<span class="badge" id="connectionStatus">🟢 Connecté</span>
+<button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Quitter</button>
+</div>
+<div class="selector"><select id="reportSelect"><option value="">-- Chargement des rapports --</option></select></div>
+<div class="messages" id="messagesArea"><div class="empty-chat"><i class="fas fa-comment-dots" style="font-size:2rem;margin-bottom:10px;"></i><p>Sélectionnez un rapport</p></div></div>
+<div class="input-area"><input type="text" id="chatInput" placeholder="Écrire un message..." disabled><button id="sendBtn" disabled><i class="fas fa-paper-plane"></i></button></div>
+</div>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import{getFirestore,collection,addDoc,doc,getDocs,query,where,orderBy,onSnapshot,setDoc,updateDoc}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import{getAuth,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+const config={apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
+const app=initializeApp(config);
+const db=getFirestore(app);
+const auth=getAuth(app);
+const DEO_USER="DEO";
+let currentConvId=null,currentDraftText="",draftTimeout=null,draftUnsub=null,msgUnsub=null;
+const reportSelect=document.getElementById('reportSelect');
+const messagesArea=document.getElementById('messagesArea');
+const chatInput=document.getElementById('chatInput');
+const sendBtn=document.getElementById('sendBtn');
+const logoutBtn=document.getElementById('logoutBtn');
+function escapeHtml(t){if(!t)return'';return String(t).replace(/[&<>]/g,m=>m==='&'?'&amp;':(m==='<'?'&lt;':'&gt;'));}
+function formatTime(d){if(!d)return'';try{return new Date(d).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}catch(e){return'';}}
+function scrollBottom(){setTimeout(()=>{messagesArea.scrollTop=messagesArea.scrollHeight;},100);}
+async function loadReports(){
+const q=query(collection(db,"reports"),orderBy("createdAt","desc"));
+const snap=await getDocs(q);
+reportSelect.innerHTML='<option value="">-- Sélectionner un rapport --</option>';
+snap.forEach(d=>{const data=d.data();const ref=data.reference||`RPT-${d.id.substring(0,8)}`;const opt=document.createElement('option');opt.value=ref;opt.textContent=`${ref} - ${data.date||data.createdAt?.slice(0,10)||'N/A'} - ${data.responsable||'?'}`;reportSelect.appendChild(opt);});
+}
+async function startConversation(){
+const reportRef=reportSelect.value;
+if(!reportRef){currentConvId=null;chatInput.disabled=true;sendBtn.disabled=true;messagesArea.innerHTML='<div class="empty-chat"><i class="fas fa-comment-dots"></i><p>Sélectionnez un rapport</p></div>';return;}
+currentConvId=`rapport_${reportRef}`;
+chatInput.disabled=false;sendBtn.disabled=false;chatInput.placeholder="Écrire un message...";
+if(draftUnsub)draftUnsub();if(msgUnsub)msgUnsub();
+listenToDraft();
+loadMessages();
+}
+function loadMessages(){
+const q=query(collection(db,"chat_messages"),where("conversationId","==",currentConvId),orderBy("timestamp","asc"));
+msgUnsub=onSnapshot(q,(snap)=>{
+let html='';
+let hasMessages=false;
+snap.forEach(d=>{hasMessages=true;const m=d.data();const isSent=m.sender===DEO_USER;html+=`<div class="row ${isSent?'sent':'received'}"><div class="bubble ${isSent?'sent':'received'}"><div>${escapeHtml(m.message)}</div><div class="time">${formatTime(m.timestamp)}</div></div></div>`;});
+if(currentDraftText&&currentDraftText.trim()!==''){
+html+=`<div class="row received draft-message"><div class="bubble received"><div>✏️ PGCO écrit :<br>${escapeHtml(currentDraftText)}<span class="cursor-blink"></span></div></div></div>`;
+}
+if(!hasMessages&&!currentDraftText){html='<div class="empty-chat"><i class="fas fa-comment-dots"></i><p>Aucun message</p></div>';}
+messagesArea.innerHTML=html;
+scrollBottom();
+});
+}
+function listenToDraft(){
+const draftRef=doc(db,"chat_drafts",currentConvId);
+draftUnsub=onSnapshot(draftRef,(snap)=>{
+if(snap.exists()){const data=snap.data();currentDraftText=data.draftText||'';}else{currentDraftText='';}
+if(msgUnsub){loadMessages();}
+});
+}
+async function sendDraftUpdate(text){
+if(!currentConvId)return;
+const draftRef=doc(db,"chat_drafts",currentConvId);
+await setDoc(draftRef,{conversationId:currentConvId,draftText:text,lastWriter:PGCO_USER,lastUpdate:new Date().toISOString()},{merge:true});
+}
+async function sendMessage(){
+const message=chatInput.value.trim();
+if(!message||!currentConvId)return;
+await addDoc(collection(db,"chat_messages"),{conversationId:currentConvId,message:message,sender:DEO_USER,timestamp:new Date().toISOString()});
+const draftRef=doc(db,"chat_drafts",currentConvId);
+await setDoc(draftRef,{conversationId:currentConvId,draftText:"",lastWriter:"",lastUpdate:new Date().toISOString()});
+chatInput.value='';
+if(draftTimeout)clearTimeout(draftTimeout);
+}
+function onTyping(){
+const text=chatInput.value;
+if(draftTimeout)clearTimeout(draftTimeout);
+sendDraftUpdate(text);
+draftTimeout=setTimeout(()=>{if(chatInput.value===text)sendDraftUpdate(text);},10000);
+}
+reportSelect.addEventListener('change',startConversation);
+chatInput.addEventListener('input',onTyping);
+sendBtn.addEventListener('click',sendMessage);
+chatInput.addEventListener('keypress',(e)=>{if(e.key==='Enter')sendMessage();});
+logoutBtn.addEventListener('click',async()=>{await signOut(auth);window.location.href='login.html';});
+onAuthStateChanged(auth,(user)=>{if(!user)window.location.href='login.html';else{loadReports();}});
+const PGCO_USER="PGCO_RESPONSABLE";
+</script>
+</body>
+</html>
