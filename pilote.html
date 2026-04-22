@@ -44,7 +44,20 @@ body{font-family:'Inter','Courier New',monospace;background:#0a1a2f;height:100vh
 .tab-content{display:none;height:100%;overflow-y:auto;flex:1;padding-right:4px;}
 .tab-content.active{display:block;}
 h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:12px;margin-top:5px;background:linear-gradient(135deg,#facc15,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.question-card{border-radius:24px;padding:24px 20px;margin-bottom:12px;background:linear-gradient(145deg,#0f2d45,#0a2538);border:1px solid rgba(250,204,21,0.2);}
+.question-card{border-radius:24px;padding:24px 20px;margin-bottom:12px;border:1px solid rgba(250,204,21,0.2);transition:all 0.3s ease;}
+/* Classes de couleurs pour chaque Netuber */
+.question-card.netuber-0 { background: linear-gradient(145deg, #1a2a1a, #0f1f0f); border-color: #facc15; }
+.question-card.netuber-0 .progress-fill { background: #facc15; }
+.question-card.netuber-1 { background: linear-gradient(145deg, #1a2a3a, #0f1a2f); border-color: #06b6d4; }
+.question-card.netuber-1 .progress-fill { background: #06b6d4; }
+.question-card.netuber-2 { background: linear-gradient(145deg, #2a1a2a, #1f0f1f); border-color: #ec4899; }
+.question-card.netuber-2 .progress-fill { background: #ec4899; }
+.question-card.netuber-3 { background: linear-gradient(145deg, #1a2a2a, #0f1f1a); border-color: #22c55e; }
+.question-card.netuber-3 .progress-fill { background: #22c55e; }
+.question-card.netuber-4 { background: linear-gradient(145deg, #2a1a3a, #1a0f2f); border-color: #a855f7; }
+.question-card.netuber-4 .progress-fill { background: #a855f7; }
+/* Couleur par défaut pour les questions hors Netuber (responsable, etc.) */
+.question-card.default-card { background: linear-gradient(145deg, #0f2d45, #0a2538); border-color: rgba(250,204,21,0.2); }
 .question-text{font-size:1.1rem;font-weight:700;line-height:1.5;margin-bottom:20px;color:#ffffff;min-height:80px;}
 .question-meta{border-left:3px solid #facc15;padding:3px 8px;margin-bottom:10px;font-size:0.65rem;font-weight:700;color:#f1f5f9;}
 .question-num{display:inline-block;background:#facc15;color:#0a1a2f;border-radius:30px;padding:2px 8px;font-size:0.55rem;font-weight:800;margin-right:8px;}
@@ -59,7 +72,7 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .choice-btn.yes{background:#27ae60;color:white;}
 .choice-btn.no{background:#c0392b;color:white;}
 .progress-bar{background:rgba(255,255,255,0.15);border-radius:40px;height:4px;margin:14px 0 6px;}
-.progress-fill{background:#facc15;width:0%;height:4px;border-radius:40px;}
+.progress-fill{height:4px;border-radius:40px;transition:width 0.3s ease;}
 .step-info{display:flex;justify-content:space-between;font-size:0.6rem;color:#ccc;margin-top:4px;}
 .action-buttons{display:flex;gap:10px;margin-top:12px;}
 .nav-btn{background:rgba(255,255,255,0.12);color:white;padding:8px 16px;font-size:0.7rem;}
@@ -147,13 +160,13 @@ const RAISONS_ABSENCE = [
   "Engagement scolaire ou professionnel"
 ];
 
+// 5 NETUBERS UNIQUEMENT
 const NETUBERS = [
   {code:"MA-NX-S1-ZA-01", name:"MA-NX-S1-ZA-01"},
   {code:"MA-NX-S1-ZA-02", name:"MA-NX-S1-ZA-02"},
   {code:"MA-NX-S1-ZB-03", name:"MA-NX-S1-ZB-03"},
   {code:"MA-NX-S1-ZB-04", name:"MA-NX-S1-ZB-04"},
-  {code:"MA-NX-S1-ZC-05", name:"MA-NX-S1-ZC-05"},
-  {code:"MA-NX-S1-ZC-06", name:"MA-NX-S1-ZC-06"}
+  {code:"MA-NX-S1-ZC-05", name:"MA-NX-S1-ZC-05"}
 ];
 
 let currentStep=0, responses={}, questions=[], waitingYesNo=false, typewriterTimeout=null;
@@ -180,6 +193,7 @@ const popupMessageDiv=document.getElementById('popupMessage');
 const popupBtnLeft=document.getElementById('popupBtnLeft');
 const popupBtnRight=document.getElementById('popupBtnRight');
 const sendReportBtn=document.getElementById('sendReportBtn');
+const questionCardDiv=document.getElementById('questionCard');
 
 function generateRaisonOptions(){
   let opts='';
@@ -330,6 +344,28 @@ function resetAllSilently(){
   displayCurrent();
 }
 
+function getCurrentNetuberIndex(){
+  if(currentStep >= questions.length) return -1;
+  const q = questions[currentStep];
+  if(!q || !q.field) return -1;
+  for(let i=0; i<NETUBERS.length; i++){
+    if(q.field.includes(NETUBERS[i].code)){
+      return i;
+    }
+  }
+  return -1;
+}
+
+function updateCardColor(){
+  const netuberIndex = getCurrentNetuberIndex();
+  questionCardDiv.classList.remove('netuber-0', 'netuber-1', 'netuber-2', 'netuber-3', 'netuber-4', 'default-card');
+  if(netuberIndex >= 0 && netuberIndex < NETUBERS.length){
+    questionCardDiv.classList.add(`netuber-${netuberIndex}`);
+  } else {
+    questionCardDiv.classList.add('default-card');
+  }
+}
+
 function buildQuestions(){
   const qList=[];
   let num=0;
@@ -353,6 +389,7 @@ function buildQuestions(){
 }
 
 function displayCurrent(){
+  updateCardColor();
   if(currentStep>=questions.length){
     formulaireComplete = true;
     sendReportBtn.classList.remove('hidden');
