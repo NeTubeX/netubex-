@@ -45,7 +45,6 @@ body{font-family:'Inter','Courier New',monospace;background:#0a1a2f;height:100vh
 .tab-content.active{display:block;}
 h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:12px;margin-top:5px;background:linear-gradient(135deg,#facc15,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .question-card{border-radius:24px;padding:24px 20px;margin-bottom:12px;border:1px solid rgba(250,204,21,0.2);transition:all 0.3s ease;}
-/* Classes de couleurs pour chaque Netuber */
 .question-card.netuber-0 { background: linear-gradient(145deg, #1a2a1a, #0f1f0f); border-color: #facc15; }
 .question-card.netuber-0 .progress-fill { background: #facc15; }
 .question-card.netuber-1 { background: linear-gradient(145deg, #1a2a3a, #0f1a2f); border-color: #06b6d4; }
@@ -56,7 +55,6 @@ h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:12px;margin-
 .question-card.netuber-3 .progress-fill { background: #22c55e; }
 .question-card.netuber-4 { background: linear-gradient(145deg, #2a1a3a, #1a0f2f); border-color: #a855f7; }
 .question-card.netuber-4 .progress-fill { background: #a855f7; }
-/* Couleur par défaut pour les questions hors Netuber (responsable, etc.) */
 .question-card.default-card { background: linear-gradient(145deg, #0f2d45, #0a2538); border-color: rgba(250,204,21,0.2); }
 .question-text{font-size:1.1rem;font-weight:700;line-height:1.5;margin-bottom:20px;color:#ffffff;min-height:80px;}
 .question-meta{border-left:3px solid #facc15;padding:3px 8px;margin-bottom:10px;font-size:0.65rem;font-weight:700;color:#f1f5f9;}
@@ -147,6 +145,78 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 <div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
 
 <script>
+// ========== GESTION DES SONS ==========
+let audioCtx = null;
+
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}
+
+function playSound(type) {
+  try {
+    initAudio();
+    const now = audioCtx.currentTime;
+    
+    switch(type) {
+      case 'success': // Son succès (ding ascendant) - pour Valider/Oui/Non
+        const osc1 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        osc1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+        osc1.frequency.setValueAtTime(400, now);
+        osc1.frequency.exponentialRampToValueAtTime(800, now + 0.2);
+        gain1.gain.setValueAtTime(0.2, now);
+        gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+        osc1.start();
+        osc1.stop(now + 0.3);
+        break;
+        
+      case 'heavy': // Son lourd (thump) - pour Envoyer
+        const osc2 = audioCtx.createOscillator();
+        const gain2 = audioCtx.createGain();
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        osc2.frequency.value = 150;
+        osc2.type = 'sine';
+        gain2.gain.setValueAtTime(0.3, now);
+        gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.15);
+        osc2.start();
+        osc2.stop(now + 0.15);
+        break;
+        
+      case 'paper': // Son papier (frottement) - pour Mémorandum
+        const bufferSize = 4096;
+        const noiseNode = audioCtx.createScriptProcessor(bufferSize, 1, 1);
+        const gainPaper = audioCtx.createGain();
+        noiseNode.connect(gainPaper);
+        gainPaper.connect(audioCtx.destination);
+        
+        noiseNode.onaudioprocess = function(e) {
+          const output = e.outputBuffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            output[i] = (Math.random() - 0.5) * 0.1;
+          }
+        };
+        
+        gainPaper.gain.setValueAtTime(0.15, now);
+        gainPaper.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+        
+        setTimeout(() => {
+          noiseNode.disconnect();
+        }, 200);
+        break;
+    }
+  } catch(e) {
+    console.log("Audio non supporté", e);
+  }
+}
+// ========== FIN GESTION DES SONS ==========
+
 const RAISONS_ABSENCE = [
   "Obligations familiales",
   "Maladie",
@@ -520,6 +590,7 @@ function validateCurrent(){
   if(waitingYesNo || currentStep>=questions.length) return;
   const q=questions[currentStep];
   if(q.type==="select"){
+    playSound('success'); // SON SUCCÈS
     handleResponse(answerSelect.value);
   }else if(q.type==="number"){
     const val=answerNumber.value.trim();
@@ -531,6 +602,7 @@ function validateCurrent(){
       showPopup("⚠️ Erreur","Veuillez saisir un nombre valide","Fermer","",()=>{},()=>{});
       return;
     }
+    playSound('success'); // SON SUCCÈS
     handleResponse(val);
   }else if(q.type==="text"){
     const val=answerNumber.value.trim();
@@ -538,12 +610,14 @@ function validateCurrent(){
       showPopup("⚠️ Champ requis","Veuillez saisir le numéro de rapport","Fermer","",()=>{},()=>{});
       return;
     }
+    playSound('success'); // SON SUCCÈS
     handleResponse(val);
   }
 }
 
 function defaultYes(){
   if(waitingYesNo && currentStep<questions.length){
+    playSound('success'); // SON SUCCÈS
     const q=questions[currentStep];
     if(q.type==="choice"){
       handleResponse(yesBtn.textContent);
@@ -554,6 +628,7 @@ function defaultYes(){
 }
 function defaultNo(){
   if(waitingYesNo && currentStep<questions.length){
+    playSound('success'); // SON SUCCÈS
     const q=questions[currentStep];
     if(q.type==="choice"){
       handleResponse(noBtn.textContent);
@@ -677,42 +752,50 @@ function sendReportToFirebase(){
     return;
   }
   
+  playSound('heavy'); // SON LOURD pour Envoyer
+  
   showCounterPopup(() => {
     performSendToFirebase();
   });
 }
 
-yesBtn.onclick=defaultYes;
-noBtn.onclick=defaultNo;
-submitBtn.onclick=validateCurrent;
-prevBtn.onclick=prevQ;
-resetBtn.onclick=resetAll;
-sendReportBtn.onclick=sendReportToFirebase;
-
-document.querySelectorAll('.tab-btn').forEach(btn=>{
-  btn.onclick=()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+// Gestion des onglets avec son PAPIER
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.onclick = () => {
+    // Jouer le son papier uniquement pour le bouton Mémorandum
+    if(btn.dataset.tab === 'memo') {
+      playSound('paper');
+    }
+    
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById(`tab${btn.dataset.tab==='form'?'Form':'Memo'}`).classList.add('active');
-    if(btn.dataset.tab==='memo') loadMemorandumsFromFirebase();
+    document.getElementById(`tab${btn.dataset.tab === 'form' ? 'Form' : 'Memo'}`).classList.add('active');
+    if(btn.dataset.tab === 'memo') loadMemorandumsFromFirebase();
   };
 });
 
-questions=buildQuestions();
+// Initialisation de l'audio au premier clic n'importe où sur la page
+function initAudioOnFirstClick() {
+  initAudio();
+  document.removeEventListener('click', initAudioOnFirstClick);
+}
+document.addEventListener('click', initAudioOnFirstClick);
+
+questions = buildQuestions();
 displayCurrent();
 loadMemorandumsFromFirebase();
 
-const saved=localStorage.getItem('pgco_rapport');
+const saved = localStorage.getItem('pgco_rapport');
 if(saved){
   try{
-    const data=JSON.parse(saved);
-    if(data.responses && Object.keys(data.responses).length>0){
-      responses=data.responses;
-      currentStep=data.currentStep||0;
+    const data = JSON.parse(saved);
+    if(data.responses && Object.keys(data.responses).length > 0){
+      responses = data.responses;
+      currentStep = data.currentStep || 0;
       displayCurrent();
     }
-  }catch(e){}
+  } catch(e){}
 }
 </script>
 </body>
