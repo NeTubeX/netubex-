@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,7 +7,7 @@
 <title>BULLETIN JOURNALIER | DEO</title>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, doc, getDoc, getDocs, query, where, orderBy, limit, onSnapshot, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, doc, getDoc, getDocs, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
  
   const firebaseConfig = {
     apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
@@ -30,96 +31,92 @@
   window.where = where;
   window.orderBy = orderBy;
   window.limit = limit;
-  window.onSnapshot = onSnapshot;
-  window.updateDoc = updateDoc;
-  window.setDoc = setDoc;
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Inter',sans-serif;background:#0a1a2f;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-.app-container{max-width:800px;margin:0 auto;width:100%;height:100vh;display:flex;flex-direction:column;background:#0e1a2a;overflow:hidden;}
-.tabs{display:flex;gap:8px;margin:12px 16px;flex-shrink:0;}
-.tab-btn{background:rgba(255,255,255,0.08);color:#bbdefb;padding:10px 20px;font-size:0.85rem;font-weight:600;border:none;cursor:pointer;border-radius:40px;transition:all 0.2s;}
-.tab-btn.active{background:#25D366;color:#0a1a2f;}
-.tab-content{display:none;height:100%;overflow-y:auto;flex:1;}
-.tab-content.active{display:flex;flex-direction:column;}
-h1{font-size:1.3rem;font-weight:700;text-align:center;margin:12px 0;background:linear-gradient(135deg,#25D366,#128C7E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.question-card{border-radius:24px;padding:20px;margin:12px;border:1px solid rgba(37,211,102,0.2);background:linear-gradient(145deg,#0f2d45,#0a2538);}
-.question-text{font-size:1rem;font-weight:600;line-height:1.5;margin-bottom:20px;color:#ffffff;}
-.question-meta{border-left:3px solid #25D366;padding:3px 8px;margin-bottom:10px;font-size:0.65rem;font-weight:700;color:#f1f5f9;}
-.question-num{display:inline-block;background:#25D366;color:#0a1a2f;border-radius:30px;padding:2px 8px;font-size:0.55rem;font-weight:800;margin-right:8px;}
+body{font-family:'Inter','Courier New',monospace;background:#0a1a2f;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+.app-container{max-width:950px;margin:0 auto;width:100%;height:100vh;display:flex;flex-direction:column;padding:10px 16px;overflow:hidden;}
+.tabs{display:flex;gap:8px;margin-bottom:12px;flex-shrink:0;}
+.tab-btn{background:rgba(255,255,255,0.1);color:#bbdefb;padding:10px 20px;font-size:0.85rem;font-weight:600;border:none;cursor:pointer;border-radius:40px;transition:all 0.2s;}
+.tab-btn.active{background:#facc15;color:#0a1a2f;}
+.tab-content{display:none;height:100%;overflow-y:auto;flex:1;padding-right:4px;}
+.tab-content.active{display:block;}
+h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:12px;margin-top:5px;background:linear-gradient(135deg,#facc15,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.question-card{border-radius:24px;padding:24px 20px;margin-bottom:12px;border:1px solid rgba(250,204,21,0.2);transition:all 0.3s ease;}
+/* Classes de couleurs pour chaque Netuber */
+.question-card.netuber-0 { background: linear-gradient(145deg, #1a2a1a, #0f1f0f); border-color: #facc15; }
+.question-card.netuber-0 .progress-fill { background: #facc15; }
+.question-card.netuber-1 { background: linear-gradient(145deg, #1a2a3a, #0f1a2f); border-color: #06b6d4; }
+.question-card.netuber-1 .progress-fill { background: #06b6d4; }
+.question-card.netuber-2 { background: linear-gradient(145deg, #2a1a2a, #1f0f1f); border-color: #ec4899; }
+.question-card.netuber-2 .progress-fill { background: #ec4899; }
+.question-card.netuber-3 { background: linear-gradient(145deg, #1a2a2a, #0f1f1a); border-color: #22c55e; }
+.question-card.netuber-3 .progress-fill { background: #22c55e; }
+.question-card.netuber-4 { background: linear-gradient(145deg, #2a1a3a, #1a0f2f); border-color: #a855f7; }
+.question-card.netuber-4 .progress-fill { background: #a855f7; }
+/* Couleur par défaut pour les questions hors Netuber (responsable, etc.) */
+.question-card.default-card { background: linear-gradient(145deg, #0f2d45, #0a2538); border-color: rgba(250,204,21,0.2); }
+.question-text{font-size:1.1rem;font-weight:700;line-height:1.5;margin-bottom:20px;color:#ffffff;min-height:80px;}
+.question-meta{border-left:3px solid #facc15;padding:3px 8px;margin-bottom:10px;font-size:0.65rem;font-weight:700;color:#f1f5f9;}
+.question-num{display:inline-block;background:#facc15;color:#0a1a2f;border-radius:30px;padding:2px 8px;font-size:0.55rem;font-weight:800;margin-right:8px;}
 .input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;}
-.input-row select{flex:2;min-width:150px;padding:12px 16px;font-size:0.85rem;border-radius:60px;background:white;border:none;font-weight:500;}
-.input-row input{flex:2;min-width:150px;padding:12px 16px;font-size:0.85rem;border-radius:60px;background:white;border:none;font-weight:500;}
-button{background:linear-gradient(145deg,#25D366,#128C7E);border:none;padding:12px 20px;border-radius:60px;font-weight:700;font-size:0.85rem;color:white;cursor:pointer;transition:0.2s;}
+.input-row select{flex:2;min-width:150px;padding:14px 16px;font-size:0.9rem;border-radius:60px;background:white;border:none;font-weight:500;color:#0a1a2f;}
+.input-row input{flex:2;min-width:150px;padding:14px 16px;font-size:0.9rem;border-radius:60px;background:white;border:none;font-weight:500;color:#0a1a2f;}
+button{background:linear-gradient(145deg,#facc15,#e5b800);border:none;padding:14px 24px;border-radius:60px;font-weight:700;font-size:0.85rem;color:#0a1a2f;cursor:pointer;transition:0.2s;}
 button:active{transform:scale(0.97);}
+button:disabled{opacity:0.5;cursor:not-allowed;}
 .choice-row{display:flex;gap:12px;margin-top:12px;}
-.choice-btn{flex:1;text-align:center;padding:12px 0;border-radius:60px;font-weight:700;font-size:0.85rem;cursor:pointer;border:none;}
-.choice-btn.yes{background:#25D366;color:white;}
-.choice-btn.no{background:#dc3545;color:white;}
+.choice-btn{flex:1;text-align:center;padding:14px 0;border-radius:60px;font-weight:700;font-size:0.9rem;cursor:pointer;border:none;}
+.choice-btn.yes{background:#27ae60;color:white;}
+.choice-btn.no{background:#c0392b;color:white;}
 .progress-bar{background:rgba(255,255,255,0.15);border-radius:40px;height:4px;margin:14px 0 6px;}
-.progress-fill{height:4px;border-radius:40px;background:#25D366;transition:width 0.3s ease;}
+.progress-fill{height:4px;border-radius:40px;transition:width 0.3s ease;}
 .step-info{display:flex;justify-content:space-between;font-size:0.6rem;color:#ccc;margin-top:4px;}
 .action-buttons{display:flex;gap:10px;margin-top:12px;}
 .nav-btn{background:rgba(255,255,255,0.12);color:white;padding:8px 16px;font-size:0.7rem;}
-.reset-btn{background:#dc3545;color:white;}
+.reset-btn{background:linear-gradient(145deg,#e74c3c,#c0392b);color:white;}
 .hidden{display:none;}
-.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;}
+.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;transition:visibility 0.3s ease;}
 .popup-overlay.active{visibility:visible;}
-.popup-card{background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:28px 28px 20px 20px;width:92%;max-width:450px;padding:24px 20px;text-align:center;border-top:5px solid #25D366;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.2,0.9,0.4,1.1);}
+.popup-card{background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:28px 28px 20px 20px;width:92%;max-width:450px;padding:24px 20px;text-align:center;border-top:5px solid #facc15;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.2,0.9,0.4,1.1);box-shadow:0 -5px 30px rgba(0,0,0,0.5);}
 .popup-overlay.active .popup-card{transform:translateY(0);}
-.popup-title{font-size:1.2rem;font-weight:800;color:#25D366;margin-bottom:12px;}
-.popup-message{font-size:0.9rem;margin-bottom:20px;color:#e0f2fe;line-height:1.6;white-space:pre-wrap;}
-.counter-number{font-size:3rem;font-weight:800;color:#25D366;margin:15px 0;}
+.popup-title{font-size:1.2rem;font-weight:800;color:#facc15;margin-bottom:12px;}
+.popup-message{font-size:0.9rem;margin-bottom:20px;color:#e0f2fe;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;text-align:center;}
+.popup-message strong{color:#4ade80;font-weight:800;}
+.counter-number{font-size:3rem;font-weight:800;color:#facc15;margin:15px 0;font-family:monospace;}
 .popup-buttons{display:flex;gap:12px;justify-content:center;}
 .popup-btn{padding:10px 22px;border-radius:60px;font-weight:700;font-size:0.8rem;border:none;cursor:pointer;}
 .popup-btn.secondary{background:#2d4e73;color:white;}
-.popup-btn.primary{background:#25D366;color:white;}
-.send-btn-special{background:linear-gradient(145deg,#25D366,#128C7E);color:white;margin:16px;width:calc(100% - 32px);}
+.popup-btn.primary{background:#27ae60;color:white;}
+.popup-btn.primary:disabled{opacity:0.5;cursor:not-allowed;}
+.memorandum-list{background:#112b42;border-radius:24px;padding:20px;max-height:calc(100vh - 150px);overflow-y:auto;}
+.memorandum-item{border-bottom:1px solid #2d4e73;padding:20px 0;}
+.memorandum-item:last-child{border-bottom:none;}
+.memorandum-title{color:#facc15;font-weight:800;font-size:1rem;margin-bottom:5px;}
+.memorandum-subtitle{color:#38bdf8;font-size:0.75rem;margin-bottom:8px;font-weight:500;}
+.memorandum-date{font-size:0.7rem;color:#7dd3fc;margin-bottom:12px;font-weight:500;}
+.memorandum-content{font-size:0.85rem;color:#e0f2fe;line-height:1.5;word-wrap:break-word;white-space:pre-wrap;font-weight:600;}
+.memorandum-reply{background:rgba(250,204,21,0.1);border-left:3px solid #facc15;padding:12px;margin-top:12px;border-radius:12px;}
+.memorandum-reply .reply-title{color:#facc15;font-size:0.7rem;font-weight:700;margin-bottom:5px;}
+.memorandum-reply .reply-content{color:#bbdefb;font-size:0.8rem;line-height:1.4;}
+.badge-deo{background:#facc15;color:#0a1a2f;padding:2px 8px;border-radius:20px;font-size:0.6rem;font-weight:700;display:inline-block;margin-left:8px;}
+footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shrink:0;}
+.send-btn-special{background:linear-gradient(145deg,#e67e22,#d35400);color:white;margin-top:16px;}
 .send-btn-special.hidden{display:none;}
-footer{text-align:center;font-size:0.6rem;color:#5f748d;margin:16px;}
-
-/* STYLE WHATSAPP POUR LE CHAT */
-.chat-container{display:flex;flex-direction:column;height:100%;background:#0e1a2a;}
-.chat-header{background:#075E54;padding:12px 16px;color:white;display:flex;align-items:center;gap:12px;flex-shrink:0;}
-.chat-header h3{font-size:1rem;font-weight:600;flex:1;}
-.chat-header i{font-size:1.2rem;}
-.messages-area{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;}
-.message-row{display:flex;margin-bottom:8px;animation:fadeIn 0.3s ease;}
-.message-row.sent{justify-content:flex-end;}
-.message-row.received{justify-content:flex-start;}
-.message-bubble{max-width:75%;padding:10px 14px;border-radius:18px;position:relative;word-wrap:break-word;}
-.message-bubble.sent{background:#25D366;color:white;border-bottom-right-radius:4px;}
-.message-bubble.received{background:#1f2c38;color:#e0e0e0;border-bottom-left-radius:4px;}
-.message-text{font-size:0.85rem;line-height:1.4;}
-.message-time{font-size:0.65rem;margin-top:4px;opacity:0.7;display:flex;align-items:center;gap:4px;justify-content:flex-end;}
-.message-status{font-size:0.6rem;margin-left:4px;}
-.message-sender{font-size:0.65rem;font-weight:600;margin-bottom:4px;color:#25D366;}
-.chat-input-area{background:#1a2a3a;padding:12px 16px;display:flex;gap:10px;align-items:center;flex-shrink:0;border-top:1px solid #2d4e73;}
-.chat-input{flex:1;background:#2d4e73;border:none;padding:12px 16px;border-radius:30px;color:white;font-size:0.85rem;outline:none;}
-.chat-input::placeholder{color:#8aaec0;}
-.send-btn{background:#25D366;border:none;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:white;font-size:1.2rem;}
-.send-btn:active{transform:scale(0.95);}
-.conversation-selector{background:#075E54;padding:8px 16px;display:flex;gap:8px;overflow-x:auto;flex-shrink:0;}
-.conv-tab{background:rgba(255,255,255,0.15);border:none;padding:8px 16px;border-radius:20px;color:white;font-size:0.75rem;white-space:nowrap;cursor:pointer;}
-.conv-tab.active{background:#25D366;color:#0a1a2f;}
-.empty-chat{text-align:center;padding:40px;color:#8aaec0;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-.new-message-badge{background:#25D366;color:white;border-radius:20px;padding:2px 8px;font-size:0.7rem;margin-left:8px;}
 </style>
 </head>
 <body>
 <div class="app-container">
-<h1>📋 BULLETIN JOURNALIER</h1>
+<h1>BULLETIN JOURNALIER</h1>
 
 <div class="tabs">
-<button class="tab-btn active" data-tab="form">📝 FORMULAIRE</button>
-<button class="tab-btn" data-tab="chat">💬 CHAT DEO</button>
+<button class="tab-btn active" data-tab="form">📋 FORMULAIRE RAPPORT</button>
+<button class="tab-btn" data-tab="memo">📜 MÉMORANDUM & RÉPONSES DEO</button>
 </div>
 
-<!-- Onglet Formulaire -->
 <div id="tabForm" class="tab-content active">
 <div class="question-card" id="questionCard">
 <div id="questionMeta" class="question-meta"></div>
@@ -142,34 +139,13 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin:16px;}
 <button id="resetBtn" class="reset-btn">🔄 Nouveau rapport</button>
 </div>
 </div>
-<button id="sendReportBtn" class="send-btn-special hidden">📤 ENVOYER LE RAPPORT</button>
-<footer>DEO · NeTubeX · Rapport journalier</footer>
+<button id="sendReportBtn" class="send-btn-special hidden">📤 ENVOYER À LA DEO</button>
+<footer>DEO · NeTubeX · Rapport journalier · données certifiées</footer>
 </div>
 
-<!-- Onglet Chat WhatsApp Style -->
-<div id="tabChat" class="tab-content">
-<div class="chat-container">
-<div class="chat-header">
-<i class="fas fa-comments"></i>
-<h3>Conversation avec la DEO</h3>
-<i class="fas fa-circle" style="font-size: 0.6rem; color: #25D366;"></i>
-</div>
-<div class="conversation-selector" id="conversationSelector">
-<button class="conv-tab active" data-report="general">💬 Général</button>
-</div>
-<div class="messages-area" id="messagesArea">
-<div class="empty-chat">
-<i class="fas fa-comment-dots" style="font-size: 2rem; margin-bottom: 10px;"></i>
-<p>Aucun message</p>
-<p style="font-size: 0.75rem;">Envoyez un message à la DEO</p>
-</div>
-</div>
-<div class="chat-input-area">
-<input type="text" class="chat-input" id="chatInput" placeholder="Écrire un message...">
-<button class="send-btn" id="sendMessageBtn">
-<i class="fas fa-paper-plane"></i>
-</button>
-</div>
+<div id="tabMemo" class="tab-content">
+<div class="memorandum-list" id="memorandumList">
+<div style="text-align:center;padding:40px;font-weight:600;">Chargement en cours...</div>
 </div>
 </div>
 </div>
@@ -177,9 +153,20 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin:16px;}
 <div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
 
 <script>
-// Configuration des Netubers
-const RAISONS_ABSENCE = ["Obligations familiales", "Maladie", "Absence non justifiée", "Déplacement / voyage", "Abandon", "Problème de santé d'un proche", "Fatigue ou repos", "Rendez-vous personnel", "Deuil", "Engagement scolaire ou professionnel"];
+const RAISONS_ABSENCE = [
+  "Obligations familiales",
+  "Maladie",
+  "Absence non justifiée",
+  "Déplacement / voyage",
+  "Abandon",
+  "Problème de santé d'un proche",
+  "Fatigue ou repos",
+  "Rendez-vous personnel",
+  "Deuil",
+  "Engagement scolaire ou professionnel"
+];
 
+// 5 NETUBERS UNIQUEMENT
 const NETUBERS = [
   {code:"MA-NX-S1-ZA-01", name:"MA-NX-S1-ZA-01"},
   {code:"MA-NX-S1-ZA-02", name:"MA-NX-S1-ZA-02"},
@@ -191,40 +178,113 @@ const NETUBERS = [
 let currentStep=0, responses={}, questions=[], waitingYesNo=false, typewriterTimeout=null;
 let formulaireComplete = false;
 let counterInterval = null;
-let currentReportReference = null;
-let messagesUnsubscribe = null;
-let currentUser = "RESPONSABLE_PGCO";
 
-// Éléments DOM
-const questionText = document.getElementById('questionText');
-const questionMeta = document.getElementById('questionMeta');
-const inputRow = document.getElementById('inputRow');
-const choiceRow = document.getElementById('choiceRow');
-const answerSelect = document.getElementById('answerSelect');
-const answerNumber = document.getElementById('answerNumber');
-const submitBtn = document.getElementById('submitBtn');
-const yesBtn = document.getElementById('yesBtn');
-const noBtn = document.getElementById('noBtn');
-const progressFill = document.getElementById('progressFill');
-const stepCounterSpan = document.getElementById('stepCounter');
-const prevBtn = document.getElementById('prevBtn');
-const resetBtn = document.getElementById('resetBtn');
-const saveStatus = document.getElementById('saveStatus');
-const popupOverlay = document.getElementById('popupOverlay');
-const popupTitle = document.getElementById('popupTitle');
-const popupMessageDiv = document.getElementById('popupMessage');
-const popupBtnLeft = document.getElementById('popupBtnLeft');
-const popupBtnRight = document.getElementById('popupBtnRight');
-const sendReportBtn = document.getElementById('sendReportBtn');
-const questionCardDiv = document.getElementById('questionCard');
+const questionText=document.getElementById('questionText');
+const questionMeta=document.getElementById('questionMeta');
+const inputRow=document.getElementById('inputRow');
+const choiceRow=document.getElementById('choiceRow');
+const answerSelect=document.getElementById('answerSelect');
+const answerNumber=document.getElementById('answerNumber');
+const submitBtn=document.getElementById('submitBtn');
+const yesBtn=document.getElementById('yesBtn');
+const noBtn=document.getElementById('noBtn');
+const progressFill=document.getElementById('progressFill');
+const stepCounterSpan=document.getElementById('stepCounter');
+const prevBtn=document.getElementById('prevBtn');
+const resetBtn=document.getElementById('resetBtn');
+const saveStatus=document.getElementById('saveStatus');
+const popupOverlay=document.getElementById('popupOverlay');
+const popupTitle=document.getElementById('popupTitle');
+const popupMessageDiv=document.getElementById('popupMessage');
+const popupBtnLeft=document.getElementById('popupBtnLeft');
+const popupBtnRight=document.getElementById('popupBtnRight');
+const sendReportBtn=document.getElementById('sendReportBtn');
+const questionCardDiv=document.getElementById('questionCard');
 
-// Éléments Chat
-const messagesArea = document.getElementById('messagesArea');
-const chatInput = document.getElementById('chatInput');
-const sendMessageBtn = document.getElementById('sendMessageBtn');
-const conversationSelector = document.getElementById('conversationSelector');
+function generateRaisonOptions(){
+  let opts='';
+  for(let r of RAISONS_ABSENCE){
+    opts+=`<option value="${r}">${r}</option>`;
+  }
+  return opts;
+}
+const RAISONS_OPTIONS = generateRaisonOptions();
 
-// ============ FONCTIONS CHAT ============
+function generateOptions015(){
+  let opts='';
+  for(let i=0;i<=15;i++) opts+=`<option value="${i}">${i}</option>`;
+  return opts;
+}
+
+function generateOptions030(){
+  let opts='';
+  for(let i=0;i<=30;i++) opts+=`<option value="${i}">${i} Go</option>`;
+  return opts;
+}
+
+const OPTIONS_015=generateOptions015();
+const OPTIONS_030=generateOptions030();
+
+// FONCTION MODIFIÉE - Charge les mémorandums et leurs réponses
+async function loadMemorandumsFromFirebase(){
+  try{
+    const memosRef = collection(window.db, "memorandums");
+    const q = query(memosRef, orderBy("sentDate", "desc"), limit(20));
+    const snapshot = await getDocs(q);
+    const memoDiv = document.getElementById('memorandumList');
+    
+    if(!snapshot.empty){
+      let html = '<div style="margin-bottom:15px;"><span class="badge-deo">📨 DEO → RESPONSABLE</span> <span class="badge-deo" style="background:#38bdf8;">💬 RÉPONSES DEO</span></div>';
+      
+      snapshot.forEach(doc=>{
+        const data = doc.data();
+        const isReply = data.type === 'reply' || data.isReply === true;
+        const isFromDEO = data.sentBy === 'DEO_Dashboard' || data.recipient === 'DEO - Direction' || data.sentBy === 'DEO';
+        
+        // Pour les mémorandums envoyés par la DEO (réponses)
+        if(isFromDEO || isReply) {
+          html += `
+            <div class="memorandum-item" style="border-left-color: #38bdf8;">
+              <div class="memorandum-title">
+                📨 RÉPONSE DE LA DEO 
+                <span class="badge-deo" style="background:#38bdf8;">DEO</span>
+              </div>
+              <div class="memorandum-subtitle">📋 ${escapeHtml(data.title || 'Mémorandum')}</div>
+              <div class="memorandum-date">📅 ${new Date(data.sentDate || data.date).toLocaleString('fr-FR')}</div>
+              <div class="memorandum-content">${(data.content || '').replace(/\n/g,'<br>')}</div>
+              ${data.reportReference ? `<div style="font-size:0.65rem; color:#7dd3fc; margin-top:8px;">📎 Réf. rapport: ${escapeHtml(data.reportReference)}</div>` : ''}
+            </div>
+          `;
+        } 
+        // Pour les mémorandums envoyés par le responsable (vers DEO)
+        else {
+          html += `
+            <div class="memorandum-item">
+              <div class="memorandum-title">
+                📋 ${escapeHtml(data.title || 'Mémorandum')}
+                <span class="badge-deo">RESPONSABLE → DEO</span>
+              </div>
+              <div class="memorandum-date">📅 ${new Date(data.sentDate || data.date).toLocaleString('fr-FR')}</div>
+              <div class="memorandum-content">${(data.content || '').replace(/\n/g,'<br>')}</div>
+              ${data.reportReference ? `<div style="font-size:0.65rem; color:#7dd3fc; margin-top:8px;">📎 Réf. rapport: ${escapeHtml(data.reportReference)}</div>` : ''}
+            </div>
+          `;
+        }
+      });
+      
+      if (snapshot.size === 0) {
+        html = '<div style="text-align:center;padding:40px;font-weight:600;">📭 Aucun mémorandum ni réponse pour le moment.</div>';
+      }
+      
+      memoDiv.innerHTML = html;
+    } else {
+      memoDiv.innerHTML = '<div style="text-align:center;padding:40px;font-weight:600;">📭 Aucun mémorandum ni réponse pour le moment.</div>';
+    }
+  } catch(e){
+    console.error(e);
+    document.getElementById('memorandumList').innerHTML = '<div style="text-align:center;padding:40px;font-weight:600;">⚠️ Service indisponible</div>';
+  }
+}
 
 function escapeHtml(text) {
   if (!text) return '';
@@ -236,163 +296,57 @@ function escapeHtml(text) {
   });
 }
 
-function formatTime(date) {
-  if (!date) return '';
-  try {
-    const d = new Date(date);
-    return d.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
-  } catch(e) { return ''; }
+function saveLocal(){
+  localStorage.setItem('pgco_rapport',JSON.stringify({responses,currentStep}));
+  saveStatus.innerHTML='💾 OK';
+  setTimeout(()=>saveStatus.innerHTML='💾 Auto',1200);
 }
+function autoSave(){ saveLocal(); }
 
-function scrollToBottom() {
-  if (messagesArea) {
-    messagesArea.scrollTop = messagesArea.scrollHeight;
-  }
-}
-
-// Charger les messages d'une conversation
-function loadMessages(conversationId) {
-  if (messagesUnsubscribe) {
-    messagesUnsubscribe();
-  }
-  
-  const messagesRef = collection(window.db, "chat_messages");
-  const q = query(messagesRef, where("conversationId", "==", conversationId), orderBy("timestamp", "asc"));
-  
-  messagesUnsubscribe = onSnapshot(q, (snapshot) => {
-    if (messagesArea) {
-      if (snapshot.empty && !currentReportReference) {
-        messagesArea.innerHTML = `<div class="empty-chat">
-          <i class="fas fa-comment-dots" style="font-size: 2rem; margin-bottom: 10px;"></i>
-          <p>Aucun message</p>
-          <p style="font-size: 0.75rem;">Envoyez un message à la DEO</p>
-        </div>`;
-        return;
-      }
-      
-      let html = '';
-      snapshot.forEach(doc => {
-        const msg = doc.data();
-        const isSent = msg.sender === currentUser;
-        
-        html += `
-          <div class="message-row ${isSent ? 'sent' : 'received'}">
-            <div class="message-bubble ${isSent ? 'sent' : 'received'}">
-              ${!isSent ? `<div class="message-sender">📨 DEO</div>` : ''}
-              <div class="message-text">${escapeHtml(msg.message)}</div>
-              <div class="message-time">
-                ${formatTime(msg.timestamp)}
-                ${isSent ? '<i class="fas fa-check-double message-status"></i>' : ''}
-              </div>
-            </div>
-          </div>
-        `;
-      });
-      
-      messagesArea.innerHTML = html;
-      scrollToBottom();
+function typewriterEffect(el, text, speed=25, callback){
+  if(typewriterTimeout) clearTimeout(typewriterTimeout);
+  el.innerHTML='';
+  let i=0;
+  function type(){
+    if(i<text.length){
+      el.innerHTML = text.substring(0, i+1);
+      i++;
+      typewriterTimeout = setTimeout(type, speed);
+    } else {
+      if(callback) callback();
     }
-  });
-}
-
-// Envoyer un message
-async function sendMessage() {
-  const message = chatInput.value.trim();
-  if (!message) return;
-  if (!currentReportReference) {
-    showPopup("⚠️ Aucun rapport", "Veuillez d'abord créer et envoyer un rapport", "OK", "", () => {}, () => {});
-    return;
   }
-  
-  const conversationId = `rapport_${currentReportReference}`;
-  
-  try {
-    await addDoc(collection(window.db, "chat_messages"), {
-      conversationId: conversationId,
-      message: message,
-      sender: currentUser,
-      recipient: "DEO",
-      timestamp: new Date().toISOString(),
-      reportReference: currentReportReference,
-      read: false
-    });
-    
-    chatInput.value = '';
-    scrollToBottom();
-    
-  } catch(error) {
-    console.error("Erreur envoi message:", error);
-    showPopup("❌ Erreur", "Message non envoyé", "OK", "", () => {}, () => {});
-  }
+  type();
 }
 
-// Initialiser le chat après l'envoi du rapport
-function initChatAfterReport(reportRef) {
-  currentReportReference = reportRef;
-  const conversationId = `rapport_${reportRef}`;
-  
-  // Mettre à jour le sélecteur de conversation
-  if (conversationSelector) {
-    conversationSelector.innerHTML = `
-      <button class="conv-tab active" data-report="${reportRef}">
-        📋 ${reportRef}
-      </button>
-    `;
-  }
-  
-  loadMessages(conversationId);
-}
-
-// ============ FONCTIONS EXISTANTES ============
-
-function generateRaisonOptions() {
-  let opts = '';
-  for(let r of RAISONS_ABSENCE) opts += `<option value="${r}">${r}</option>`;
-  return opts;
-}
-const RAISONS_OPTIONS = generateRaisonOptions();
-
-function generateOptions015() {
-  let opts = '';
-  for(let i=0;i<=15;i++) opts += `<option value="${i}">${i}</option>`;
-  return opts;
-}
-function generateOptions030() {
-  let opts = '';
-  for(let i=0;i<=30;i++) opts += `<option value="${i}">${i} Go</option>`;
-  return opts;
-}
-const OPTIONS_015 = generateOptions015();
-const OPTIONS_030 = generateOptions030();
-
-function showPopup(title, msg, leftT, rightT, onConfirm, onCancel, rightClass='primary', rightDisabled=false) {
-  popupTitle.textContent = title;
-  popupMessageDiv.innerHTML = msg;
-  popupBtnLeft.textContent = leftT;
-  popupBtnRight.textContent = rightT;
-  popupBtnRight.className = `popup-btn ${rightClass}`;
-  popupBtnRight.disabled = rightDisabled;
+function showPopup(title, msg, leftT, rightT, onConfirm, onCancel, rightClass='primary', rightDisabled=false){
+  popupTitle.textContent=title;
+  popupMessageDiv.innerHTML=msg;
+  popupBtnLeft.textContent=leftT;
+  popupBtnRight.textContent=rightT;
+  popupBtnRight.className=`popup-btn ${rightClass}`;
+  if(rightDisabled) popupBtnRight.disabled = true;
+  else popupBtnRight.disabled = false;
   popupOverlay.classList.add('active');
-  
-  popupBtnRight.onclick = () => {
+  popupBtnRight.onclick=()=>{ 
     if(popupBtnRight.disabled) return;
-    popupOverlay.classList.remove('active');
-    if(onConfirm) onConfirm();
+    popupOverlay.classList.remove('active'); 
+    if(onConfirm) onConfirm(); 
   };
-  popupBtnLeft.onclick = () => {
+  popupBtnLeft.onclick=()=>{ 
     if(counterInterval) clearInterval(counterInterval);
-    popupOverlay.classList.remove('active');
-    if(onCancel) onCancel();
+    popupOverlay.classList.remove('active'); 
+    if(onCancel) onCancel(); 
   };
 }
 
-function showCounterPopup(onConfirmFinal) {
+function showCounterPopup(onConfirmFinal){
   let counter = 0;
   const msg = `<div style="text-align:center;">
     <div style="margin-bottom:10px;">🔐 VÉRIFICATION FINALE</div>
     <div style="font-size:0.85rem; margin-bottom:15px;">Veuillez confirmer l'envoi du rapport à la DEO</div>
     <div class="counter-number" id="counterValue">0</div>
-    <div style="font-size:0.7rem;">Attendez le compteur 10 pour confirmer</div>
+    <div style="font-size:0.7rem; color:#7dd3fc;">Attendez que le compteur atteigne 10 pour confirmer</div>
   </div>`;
   
   popupTitle.textContent = "🔐 CONFIRMATION REQUISE";
@@ -411,6 +365,8 @@ function showCounterPopup(onConfirmFinal) {
     if(counter >= 10) {
       clearInterval(counterInterval);
       popupBtnRight.disabled = false;
+      const counterElFinal = document.getElementById('counterValue');
+      if(counterElFinal) counterElFinal.style.color = "#4ade80";
     }
   }, 1000);
   
@@ -420,397 +376,223 @@ function showCounterPopup(onConfirmFinal) {
     popupOverlay.classList.remove('active');
     if(onConfirmFinal) onConfirmFinal();
   };
+  
   popupBtnLeft.onclick = () => {
     clearInterval(counterInterval);
     popupOverlay.classList.remove('active');
   };
 }
 
-function getFullReference() {
-  let num = responses.referenceNumber || "001";
-  num = num.toString().padStart(3,'0').slice(0,3);
-  return `RPT-BLTJRNL-2026-${num}`;
+function resetAllSilently(){
+  responses={};
+  currentStep=0;
+  formulaireComplete=false;
+  sendReportBtn.classList.add('hidden');
+  localStorage.removeItem('pgco_rapport');
+  questions=buildQuestions();
+  displayCurrent();
 }
 
-async function performSendToFirebase() {
-  const btn = sendReportBtn;
-  const orig = btn.textContent;
-  btn.textContent = "⏳ Envoi...";
-  btn.disabled = true;
-  
-  try {
-    let totalPtsP=0, totalPtsJ=0, totalTempsP=0, totalTempsJ=0;
-    const netubersData = [];
-    
-    for(let n of NETUBERS) {
-      const present = responses[`${n.code}_present`]==='OUI' ? 'Présent' : 'Absent';
-      const raisonAbsence = responses[`${n.code}_raisonAbsence`] || "";
-      const objM = parseInt(responses[`${n.code}_objMensuel`]) || 0;
-      const objA = parseInt(responses[`${n.code}_objAtteint`]) || 0;
-      const nbN = parseFloat(responses[`${n.code}_nbNiveaux`]) || 0;
-      const nbA = parseFloat(responses[`${n.code}_nbNiveauxAtteints`]) || 0;
-      const ptsP = parseFloat(responses[`${n.code}_pointsPrec`]) || 0;
-      const ptsJ = parseFloat(responses[`${n.code}_pointsJour`]) || 0;
-      const tempsP = parseFloat(responses[`${n.code}_tempsPrec`]) || 0;
-      const tempsJ = parseFloat(responses[`${n.code}_tempsJour`]) || 0;
-      const forfaitGo = responses[`${n.code}_forfaitGo`] || '0';
-      
-      if(present === 'Présent') {
-        totalPtsP += ptsP;
-        totalPtsJ += ptsJ;
-        totalTempsP += tempsP;
-        totalTempsJ += tempsJ;
-      }
-      
-      netubersData.push({
-        code: n.code,
-        presence: present,
-        raisonAbsence: raisonAbsence,
-        objectifMensuel: objM,
-        objectifAtteint: objA,
-        nbNiveaux: nbN,
-        nbNiveauxAtteints: nbA,
-        pointsPrecedents: ptsP,
-        pointsJour: ptsJ,
-        tempsPrecedent: tempsP,
-        tempsJour: tempsJ,
-        forfaitInternet: forfaitGo
-      });
-    }
-    
-    const currentRef = getFullReference();
-    const reportData = {
-      type: "pgco_report",
-      responsable: responses.responsable || "Non spécifié",
-      zone: "ORG-NX-S1",
-      reference: currentRef,
-      date: new Date().toLocaleDateString('fr-FR'),
-      heure: new Date().toLocaleTimeString('fr-FR'),
-      totalPointsPrecedents: totalPtsP,
-      totalPointsJour: totalPtsJ,
-      totalTempsPrecedent: totalTempsP,
-      totalTempsJour: totalTempsJ,
-      netubers: netubersData,
-      status: "non_traite",
-      createdAt: new Date().toISOString()
-    };
-    
-    const reportsRef = collection(window.db, "reports");
-    await addDoc(reportsRef, reportData);
-    
-    // Initialiser le chat avec la référence du rapport
-    initChatAfterReport(currentRef);
-    
-    const confirmationMsg = `✅ Rapport transmis à la DEO\nRéférence: ${currentRef}\n\n💬 Vous pouvez maintenant discuter avec la DEO dans l'onglet CHAT`;
-    
-    showPopup("✅ RAPPORT TRANSMIS", confirmationMsg, "Fermer", "Aller au chat", () => {
-      resetAllSilently();
-    }, () => {
-      document.querySelector('.tab-btn[data-tab="chat"]').click();
-    }, 'primary');
-    
-  } catch(e) {
-    showPopup("❌ ERREUR", `Le rapport n'a pas pu être transmis.\n\n${e.message}`, "Fermer", "", () => {}, () => {}, 'primary');
-  } finally {
-    btn.textContent = orig;
-    btn.disabled = false;
-  }
-}
-
-function sendReportToFirebase() {
-  if(!formulaireComplete) {
-    showPopup("⚠️ Formulaire incomplet", "Veuillez répondre à toutes les questions", "Fermer", "", () => {}, () => {});
-    return;
-  }
-  
-  let missing = [];
-  for(let n of NETUBERS) {
-    if(responses[`${n.code}_present`]==='OUI') {
-      if(!responses[`${n.code}_objMensuel`]) missing.push(`${n.code} - Objectif mensuel`);
-      if(!responses[`${n.code}_objAtteint`]) missing.push(`${n.code} - Objectif atteint`);
-      if(!responses[`${n.code}_nbNiveaux`]) missing.push(`${n.code} - Nb niveaux`);
-      if(!responses[`${n.code}_nbNiveauxAtteints`]) missing.push(`${n.code} - Nb niveaux atteints`);
-      if(!responses[`${n.code}_pointsPrec`]) missing.push(`${n.code} - Points précédents`);
-      if(!responses[`${n.code}_pointsJour`]) missing.push(`${n.code} - Points jour`);
-      if(!responses[`${n.code}_tempsPrec`]) missing.push(`${n.code} - Temps précédent`);
-      if(!responses[`${n.code}_tempsJour`]) missing.push(`${n.code} - Temps jour`);
-      if(!responses[`${n.code}_forfaitGo`]) missing.push(`${n.code} - Forfait internet`);
-    }
-  }
-  if(!responses.referenceNumber || responses.referenceNumber.trim()==='') missing.push("Numéro de rapport");
-  
-  if(missing.length > 0) {
-    showPopup("⚠️ Champs manquants", missing.join("\n"), "Fermer", "", () => {}, () => {});
-    return;
-  }
-  
-  showCounterPopup(() => {
-    performSendToFirebase();
-  });
-}
-
-// ============ FORMULAIRE ============
-function saveLocal() {
-  localStorage.setItem('pgco_rapport', JSON.stringify({responses, currentStep}));
-  saveStatus.innerHTML = '💾 OK';
-  setTimeout(()=> saveStatus.innerHTML = '💾 Auto', 1200);
-}
-function autoSave() { saveLocal(); }
-
-function typewriterEffect(el, text, speed=25, callback) {
-  if(typewriterTimeout) clearTimeout(typewriterTimeout);
-  el.innerHTML = '';
-  let i = 0;
-  function type() {
-    if(i < text.length) {
-      el.innerHTML = text.substring(0, i+1);
-      i++;
-      typewriterTimeout = setTimeout(type, speed);
-    } else if(callback) callback();
-  }
-  type();
-}
-
-function getCurrentNetuberIndex() {
+function getCurrentNetuberIndex(){
   if(currentStep >= questions.length) return -1;
   const q = questions[currentStep];
   if(!q || !q.field) return -1;
-  for(let i=0; i<NETUBERS.length; i++) {
-    if(q.field.includes(NETUBERS[i].code)) return i;
+  for(let i=0; i<NETUBERS.length; i++){
+    if(q.field.includes(NETUBERS[i].code)){
+      return i;
+    }
   }
   return -1;
 }
 
-function updateCardColor() {
+function updateCardColor(){
   const netuberIndex = getCurrentNetuberIndex();
   questionCardDiv.classList.remove('netuber-0', 'netuber-1', 'netuber-2', 'netuber-3', 'netuber-4', 'default-card');
-  if(netuberIndex >= 0 && netuberIndex < NETUBERS.length) {
+  if(netuberIndex >= 0 && netuberIndex < NETUBERS.length){
     questionCardDiv.classList.add(`netuber-${netuberIndex}`);
   } else {
     questionCardDiv.classList.add('default-card');
   }
 }
 
-function buildQuestions() {
-  const qList = [];
-  let num = 0;
+function buildQuestions(){
+  const qList=[];
+  let num=0;
   qList.push({num:num++, type:"choice", field:"responsable", meta:"Identification", text:"Qui remplit le rapport aujourd'hui ?", options:["Madame Ursule","Madame Chancelle"]});
   
-  for(let n of NETUBERS) {
+  for(let n of NETUBERS){
     qList.push({num:num++, type:"yesno", field:`${n.code}_present`, meta:n.code, text:`${n.code} : Était-il présent aujourd'hui ?`});
-    qList.push({num:num++, type:"select", field:`${n.code}_raisonAbsence`, meta:n.code, text:`${n.code} : Raison de l'absence ?`, options:RAISONS_OPTIONS});
+    qList.push({num:num++, type:"select", field:`${n.code}_raisonAbsence`, meta:n.code, text:`${n.code} : Raison de l'absence ?`, options:RAISONS_OPTIONS, dependsOnPresent:true});
     qList.push({num:num++, type:"select", field:`${n.code}_objMensuel`, meta:n.code, text:`${n.code} : Quel est son objectif mensuel ?`, options:OPTIONS_015});
-    qList.push({num:num++, type:"select", field:`${n.code}_objAtteint`, meta:n.code, text:`${n.code} : Combien d'objectifs atteints aujourd'hui ?`, options:OPTIONS_015});
-    qList.push({num:num++, type:"number", field:`${n.code}_nbNiveaux`, meta:n.code, text:`${n.code} : Nombre de niveaux/événements ?`, min:0});
-    qList.push({num:num++, type:"number", field:`${n.code}_nbNiveauxAtteints`, meta:n.code, text:`${n.code} : Niveaux/événements atteints ?`, min:0});
-    qList.push({num:num++, type:"number", field:`${n.code}_pointsPrec`, meta:n.code, text:`${n.code} : Points précédents ?`, min:0});
-    qList.push({num:num++, type:"number", field:`${n.code}_pointsJour`, meta:n.code, text:`${n.code} : Points aujourd'hui ?`, min:0});
-    qList.push({num:num++, type:"number", field:`${n.code}_tempsPrec`, meta:n.code, text:`${n.code} : Temps précédent (minutes) ?`, min:0});
-    qList.push({num:num++, type:"number", field:`${n.code}_tempsJour`, meta:n.code, text:`${n.code} : Temps aujourd'hui (minutes) ?`, min:0});
-    qList.push({num:num++, type:"select", field:`${n.code}_forfaitGo`, meta:n.code, text:`${n.code} : Forfait internet restant ?`, options:OPTIONS_030});
+    qList.push({num:num++, type:"select", field:`${n.code}_objAtteint`, meta:n.code, text:`${n.code} : Combien d'objectifs a-t-il atteints aujourd'hui ?`, options:OPTIONS_015});
+    qList.push({num:num++, type:"number", field:`${n.code}_nbNiveaux`, meta:n.code, text:`${n.code} : Quel est le nombre de niveaux/événements ou mètres ?`, min:0});
+    qList.push({num:num++, type:"number", field:`${n.code}_nbNiveauxAtteints`, meta:n.code, text:`${n.code} : Combien de niveaux/événements ou mètres a-t-il atteints ?`, min:0});
+    qList.push({num:num++, type:"number", field:`${n.code}_pointsPrec`, meta:n.code, text:`${n.code} : Combien de points avait-il précédemment ?`, min:0});
+    qList.push({num:num++, type:"number", field:`${n.code}_pointsJour`, meta:n.code, text:`${n.code} : Combien de points a-t-il aujourd'hui ?`, min:0});
+    qList.push({num:num++, type:"number", field:`${n.code}_tempsPrec`, meta:n.code, text:`${n.code} : Quel temps avait-il précédemment (en minutes) ?`, min:0});
+    qList.push({num:num++, type:"number", field:`${n.code}_tempsJour`, meta:n.code, text:`${n.code} : Quel temps a-t-il aujourd'hui (en minutes) ?`, min:0});
+    qList.push({num:num++, type:"select", field:`${n.code}_forfaitGo`, meta:n.code, text:`${n.code} : Combien de Go de forfait internet reste-t-il ?`, options:OPTIONS_030});
   }
-  qList.push({num:num++, type:"text", field:"referenceNumber", meta:"Rapport", text:"Numéro de rapport (3 chiffres)", placeholder:"Ex: 001"});
+  qList.push({num:num++, type:"text", field:"referenceNumber", meta:"Rapport", text:"Numéro de rapport (3 derniers chiffres personnalisables)", placeholder:"Ex: 001, 002, 025..."});
   return qList;
 }
 
-function handleResponse(val) {
-  if(currentStep >= questions.length) return;
-  const q = questions[currentStep];
-  responses[q.field] = val;
-  autoSave();
-  
-  if(q.field.includes('_present') && val === 'NON') {
-    let stepsToSkip = 0;
-    for(let i=currentStep+1; i<questions.length; i++) {
-      const nextField = questions[i].field;
-      if(nextField && nextField.includes(q.field.replace('_present','')) && !nextField.includes('raisonAbsence')) {
-        stepsToSkip++;
-      } else if(nextField && nextField.includes(q.field.replace('_present','')) && nextField.includes('raisonAbsence')) {
-        continue;
-      } else break;
-    }
-    for(let i=0; i<stepsToSkip; i++) {
-      if(currentStep < questions.length - 1) {
-        currentStep++;
-        const skipQ = questions[currentStep];
-        if(!skipQ.field.includes('raisonAbsence')) responses[skipQ.field] = "0";
-      }
-    }
-    if(currentStep < questions.length - 1) currentStep++;
-    displayCurrent();
-    autoSave();
-    return;
-  }
-  
-  if(currentStep < questions.length - 1) currentStep++;
-  else currentStep++;
-  displayCurrent();
-}
-
-function displayCurrent() {
+function displayCurrent(){
   updateCardColor();
-  if(currentStep >= questions.length) {
+  if(currentStep>=questions.length){
     formulaireComplete = true;
     sendReportBtn.classList.remove('hidden');
-    let recap = "📋 RÉCAPITULATIF DU RAPPORT\n\n";
-    for(let n of NETUBERS) {
-      if(responses[`${n.code}_present`] === 'OUI') {
+    let recap = "RÉCAPITULATIF DU RAPPORT\n\n";
+    for(let n of NETUBERS){
+      if(responses[`${n.code}_present`]==='OUI'){
         const ptsP = parseFloat(responses[`${n.code}_pointsPrec`])||0;
         const ptsJ = parseFloat(responses[`${n.code}_pointsJour`])||0;
         const forfait = responses[`${n.code}_forfaitGo`] || '0';
-        recap += `▪ ${n.code} : ${ptsP} → ${ptsJ} pts, ${forfait} Go\n`;
+        recap += `▪ ${n.code} : points précédents ${ptsP}, points du jour ${ptsJ}, forfait restant ${forfait} Go.\n`;
       } else {
         const raison = responses[`${n.code}_raisonAbsence`] || "Non spécifiée";
-        recap += `▪ ${n.code} : ABSENT - ${raison}\n`;
+        recap += `▪ ${n.code} : ABSENT - Raison: ${raison}\n`;
       }
     }
-    recap += "\n✅ Cliquez sur \"Envoyer\" pour transmettre le rapport";
+    recap += "\nCliquez sur \"Envoyer\" pour transmettre ce rapport à la DEO.";
     typewriterEffect(questionText, recap, 25);
     inputRow.classList.add('hidden');
     choiceRow.classList.add('hidden');
     return;
   }
-  
   formulaireComplete = false;
   sendReportBtn.classList.add('hidden');
-  const q = questions[currentStep];
-  waitingYesNo = false;
+  const q=questions[currentStep];
+  waitingYesNo=false;
   inputRow.classList.add('hidden');
   choiceRow.classList.add('hidden');
-  answerSelect.style.display = 'none';
-  answerNumber.style.display = 'none';
-  questionMeta.innerHTML = `<span class="question-num">#${q.num+1}</span> ${q.meta}`;
+  answerSelect.style.display='none';
+  answerNumber.style.display='none';
+  questionMeta.innerHTML=`<span class="question-num">#${q.num+1}</span> ${q.meta}`;
   
-  if(q.type === "choice") {
+  if(q.type==="choice"){
     choiceRow.classList.remove('hidden');
-    waitingYesNo = true;
-    yesBtn.textContent = q.options[0];
-    noBtn.textContent = q.options[1];
+    waitingYesNo=true;
+    yesBtn.textContent=q.options[0];
+    noBtn.textContent=q.options[1];
     typewriterEffect(questionText, q.text, 25);
-  } else if(q.type === "yesno") {
+  }else if(q.type==="yesno"){
     choiceRow.classList.remove('hidden');
-    waitingYesNo = true;
-    yesBtn.textContent = "✔ Oui";
-    noBtn.textContent = "✘ Non";
+    waitingYesNo=true;
+    yesBtn.textContent="✔ Oui";
+    noBtn.textContent="✘ Non";
     typewriterEffect(questionText, q.text, 25);
-  } else if(q.type === "select") {
+  }else if(q.type==="select"){
     inputRow.classList.remove('hidden');
-    answerSelect.style.display = 'block';
-    answerSelect.innerHTML = q.options;
-    if(responses[q.field]) answerSelect.value = responses[q.field];
-    else answerSelect.value = q.options.includes("Obligations familiales") ? "Obligations familiales" : "0";
+    answerSelect.style.display='block';
+    answerNumber.style.display='none';
+    answerSelect.innerHTML=q.options;
+    if(responses[q.field]) answerSelect.value=responses[q.field];
+    else answerSelect.value=q.options.includes("Obligations familiales")?"Obligations familiales":"0";
     typewriterEffect(questionText, q.text, 25);
-  } else if(q.type === "number") {
+  }else if(q.type==="number"){
     inputRow.classList.remove('hidden');
-    answerNumber.style.display = 'block';
-    answerNumber.type = 'number';
-    answerNumber.min = q.min || 0;
-    answerNumber.value = responses[q.field] || '';
+    answerNumber.style.display='block';
+    answerSelect.style.display='none';
+    answerNumber.type='number';
+    answerNumber.min=q.min||0;
+    answerNumber.max=q.max||999;
+    answerNumber.value=responses[q.field]||'';
+    answerNumber.placeholder=q.placeholder||"Saisir un nombre";
     typewriterEffect(questionText, q.text, 25);
-  } else if(q.type === "text") {
+  }else if(q.type==="text"){
     inputRow.classList.remove('hidden');
-    answerNumber.style.display = 'block';
-    answerNumber.type = 'text';
-    answerNumber.value = responses[q.field] || '';
+    answerNumber.style.display='block';
+    answerSelect.style.display='none';
+    answerNumber.type='text';
+    answerNumber.value=responses[q.field]||'';
+    answerNumber.placeholder=q.placeholder||"Saisir...";
     typewriterEffect(questionText, q.text, 25);
+  }
+  progressFill.style.width=`${((currentStep+1)/questions.length)*100}%`;
+  stepCounterSpan.innerText=`${currentStep+1} / ${questions.length}`;
+  prevBtn.classList.toggle('hidden',currentStep===0);
+}
+
+function handleResponse(val){
+  if(currentStep>=questions.length) return;
+  const q=questions[currentStep];
+  responses[q.field]=val;
+  autoSave();
+  
+  if(q.field.includes('_present') && val==='NON'){
+    let stepsToSkip = 0;
+    for(let i=currentStep+1; i<questions.length; i++){
+      const nextField = questions[i].field;
+      if(nextField && nextField.includes(q.field.replace('_present','')) && !nextField.includes('raisonAbsence')){
+        stepsToSkip++;
+      } else if(nextField && nextField.includes(q.field.replace('_present','')) && nextField.includes('raisonAbsence')){
+        continue;
+      } else {
+        break;
+      }
+    }
+    for(let i=0; i<stepsToSkip; i++){
+      if(currentStep < questions.length - 1){
+        currentStep++;
+        const skipQ = questions[currentStep];
+        if(!skipQ.field.includes('raisonAbsence')){
+          responses[skipQ.field] = "0";
+        }
+      }
+    }
+    if(currentStep < questions.length - 1){
+      currentStep++;
+    }
+    displayCurrent();
+    autoSave();
+    return;
   }
   
-  progressFill.style.width = `${((currentStep+1)/questions.length)*100}%`;
-  stepCounterSpan.innerText = `${currentStep+1} / ${questions.length}`;
-  prevBtn.classList.toggle('hidden', currentStep === 0);
-}
-
-function validateCurrent() {
-  if(waitingYesNo || currentStep >= questions.length) return;
-  const q = questions[currentStep];
-  if(q.type === "select") handleResponse(answerSelect.value);
-  else if(q.type === "number") {
-    const val = answerNumber.value.trim();
-    if(val === '') { showPopup("⚠️ Champ requis", "Veuillez saisir une réponse", "Fermer", "", () => {}, () => {}); return; }
-    if(isNaN(parseFloat(val))) { showPopup("⚠️ Erreur", "Nombre valide requis", "Fermer", "", () => {}, () => {}); return; }
-    handleResponse(val);
-  } else if(q.type === "text") {
-    const val = answerNumber.value.trim();
-    if(val === '') { showPopup("⚠️ Champ requis", "Veuillez saisir le numéro", "Fermer", "", () => {}, () => {}); return; }
-    handleResponse(val);
+  if(currentStep < questions.length - 1){
+    currentStep++;
+    displayCurrent();
+  } else {
+    currentStep++;
+    displayCurrent();
   }
 }
 
-function defaultYes() {
-  if(waitingYesNo && currentStep < questions.length) {
-    const q = questions[currentStep];
-    if(q.type === "choice") handleResponse(yesBtn.textContent);
-    else handleResponse("OUI");
-  }
-}
-function defaultNo() {
-  if(waitingYesNo && currentStep < questions.length) {
-    const q = questions[currentStep];
-    if(q.type === "choice") handleResponse(noBtn.textContent);
-    else handleResponse("NON");
-  }
-}
-
-function resetAllSilently() {
-  responses = {};
-  currentStep = 0;
-  formulaireComplete = false;
-  sendReportBtn.classList.add('hidden');
-  localStorage.removeItem('pgco_rapport');
-  questions = buildQuestions();
-  displayCurrent();
-}
-
-function resetAll() {
-  showPopup("Confirmation", "⚠️ Tout recommencer ? Les données seront perdues.", "Annuler", "Confirmer", () => {
-    resetAllSilently();
-    showPopup("Succès", "Nouveau rapport initialisé", "OK", "", () => {}, () => {});
-  }, () => {});
-}
-
-function prevQ() {
-  if(currentStep > 0) {
+function prevQ(){
+  if(currentStep>0){
     currentStep--;
     displayCurrent();
   }
 }
 
-// Événements
-yesBtn.onclick = defaultYes;
-noBtn.onclick = defaultNo;
-submitBtn.onclick = validateCurrent;
-prevBtn.onclick = prevQ;
-resetBtn.onclick = resetAll;
-sendReportBtn.onclick = sendReportToFirebase;
-sendMessageBtn.onclick = sendMessage;
-chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
-
-// Changement d'onglet
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById(`tab${btn.dataset.tab === 'form' ? 'Form' : 'Chat'}`).classList.add('active');
-  };
-});
-
-// Initialisation
-questions = buildQuestions();
-displayCurrent();
-
-// Restaurer sauvegarde
-const saved = localStorage.getItem('pgco_rapport');
-if(saved) {
-  try {
-    const data = JSON.parse(saved);
-    if(data.responses && Object.keys(data.responses).length > 0) {
-      responses = data.responses;
-      currentStep = data.currentStep || 0;
-      displayCurrent();
+function validateCurrent(){
+  if(waitingYesNo || currentStep>=questions.length) return;
+  const q=questions[currentStep];
+  if(q.type==="select"){
+    handleResponse(answerSelect.value);
+  }else if(q.type==="number"){
+    const val=answerNumber.value.trim();
+    if(val===''){
+      showPopup("⚠️ Champ requis","Veuillez saisir une réponse","Fermer","",()=>{},()=>{});
+      return;
     }
-  } catch(e) {}
+    if(isNaN(parseFloat(val))){
+      showPopup("⚠️ Erreur","Veuillez saisir un nombre valide","Fermer","",()=>{},()=>{});
+      return;
+    }
+    handleResponse(val);
+  }else if(q.type==="text"){
+    const val=answerNumber.value.trim();
+    if(val===''){
+      showPopup("⚠️ Champ requis","Veuillez saisir le numéro de rapport","Fermer","",()=>{},()=>{});
+      return;
+    }
+    handleResponse(val);
+  }
 }
-</script>
-</body>
-</html>
+
+function defaultYes(){
+  if(waitingYesNo && currentStep<questions.length){
+    const q=questions[currentStep];
+    if(q.type==="choice"){
+      handleResponse(yesBtn.textContent
