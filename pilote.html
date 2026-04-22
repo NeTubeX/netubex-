@@ -45,6 +45,7 @@ body{font-family:'Inter','Courier New',monospace;background:#0a1a2f;height:100vh
 .tab-content.active{display:block;}
 h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:12px;margin-top:5px;background:linear-gradient(135deg,#facc15,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .question-card{border-radius:24px;padding:24px 20px;margin-bottom:12px;border:1px solid rgba(250,204,21,0.2);transition:all 0.3s ease;}
+/* Classes de couleurs pour chaque Netuber */
 .question-card.netuber-0 { background: linear-gradient(145deg, #1a2a1a, #0f1f0f); border-color: #facc15; }
 .question-card.netuber-0 .progress-fill { background: #facc15; }
 .question-card.netuber-1 { background: linear-gradient(145deg, #1a2a3a, #0f1a2f); border-color: #06b6d4; }
@@ -55,6 +56,7 @@ h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:12px;margin-
 .question-card.netuber-3 .progress-fill { background: #22c55e; }
 .question-card.netuber-4 { background: linear-gradient(145deg, #2a1a3a, #1a0f2f); border-color: #a855f7; }
 .question-card.netuber-4 .progress-fill { background: #a855f7; }
+/* Couleur par défaut pour les questions hors Netuber (responsable, etc.) */
 .question-card.default-card { background: linear-gradient(145deg, #0f2d45, #0a2538); border-color: rgba(250,204,21,0.2); }
 .question-text{font-size:1.1rem;font-weight:700;line-height:1.5;margin-bottom:20px;color:#ffffff;min-height:80px;}
 .question-meta{border-left:3px solid #facc15;padding:3px 8px;margin-bottom:10px;font-size:0.65rem;font-weight:700;color:#f1f5f9;}
@@ -145,59 +147,6 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 <div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
 
 <script>
-// ========== MÉLODIE UNIQUE AU PREMIER CLIC ==========
-let melodyPlayed = false;
-let audioCtx = null;
-
-function playWelcomeMelody() {
-  if (melodyPlayed) return;
-  
-  try {
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    
-    // Reprendre le contexte s'il est suspendu
-    if (audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
-    
-    const now = audioCtx.currentTime;
-    
-    // Fréquences des notes : Do, Ré, Mi, Fa, Sol
-    const notes = [261.63, 293.66, 329.63, 349.23, 392.00];
-    const durations = [0.15, 0.15, 0.15, 0.15, 0.25];
-    
-    for (let i = 0; i < notes.length; i++) {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      
-      osc.frequency.value = notes[i];
-      osc.type = 'sine';
-      
-      const startTime = now + (i * 0.18);
-      gain.gain.setValueAtTime(0.15, startTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + durations[i]);
-      
-      osc.start(startTime);
-      osc.stop(startTime + durations[i]);
-    }
-    
-    melodyPlayed = true;
-  } catch(e) {
-    console.log("Audio non supporté", e);
-  }
-}
-
-// Attendre le premier clic n'importe où sur la page
-document.body.addEventListener('click', function firstClickHandler() {
-  playWelcomeMelody();
-  document.body.removeEventListener('click', firstClickHandler);
-});
-// ========== FIN MÉLODIE ==========
-
 const RAISONS_ABSENCE = [
   "Obligations familiales",
   "Maladie",
