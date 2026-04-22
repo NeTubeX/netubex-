@@ -595,4 +595,181 @@ function defaultYes(){
   if(waitingYesNo && currentStep<questions.length){
     const q=questions[currentStep];
     if(q.type==="choice"){
-      handleResponse(yesBtn.textContent
+      handleResponse(yesBtn.textContent);
+    }else{
+      handleResponse("OUI");
+    }
+  }
+}
+function defaultNo(){
+  if(waitingYesNo && currentStep<questions.length){
+    const q=questions[currentStep];
+    if(q.type==="choice"){
+      handleResponse(noBtn.textContent);
+    }else{
+      handleResponse("NON");
+    }
+  }
+}
+
+function resetAll(){
+  showPopup("Confirmation","⚠️ Tout recommencer ? Toutes les données seront perdues.","Annuler","Confirmer",()=>{
+    resetAllSilently();
+    showPopup("Succès","Nouveau rapport initialisé","OK","",()=>{},()=>{});
+  },()=>{});
+}
+
+function getFullReference(){
+  let num = responses.referenceNumber || "001";
+  num = num.toString().padStart(3,'0').slice(0,3);
+  return `RPT-BLTJRNL-2026-${num}`;
+}
+
+async function performSendToFirebase(){
+  const btn=sendReportBtn;
+  const orig=btn.textContent;
+  btn.textContent="⏳ Envoi...";
+  btn.disabled=true;
+  try{
+    let totalPtsP=0, totalPtsJ=0, totalTempsP=0, totalTempsJ=0;
+    const netubersData=[];
+    for(let n of NETUBERS){
+      const present=responses[`${n.code}_present`]==='OUI'?'Présent':'Absent';
+      const raisonAbsence = responses[`${n.code}_raisonAbsence`] || "";
+      const objM=parseInt(responses[`${n.code}_objMensuel`])||0;
+      const objA=parseInt(responses[`${n.code}_objAtteint`])||0;
+      const nbN=parseFloat(responses[`${n.code}_nbNiveaux`])||0;
+      const nbA=parseFloat(responses[`${n.code}_nbNiveauxAtteints`])||0;
+      const ptsP=parseFloat(responses[`${n.code}_pointsPrec`])||0;
+      const ptsJ=parseFloat(responses[`${n.code}_pointsJour`])||0;
+      const tempsP=parseFloat(responses[`${n.code}_tempsPrec`])||0;
+      const tempsJ=parseFloat(responses[`${n.code}_tempsJour`])||0;
+      const forfaitGo=responses[`${n.code}_forfaitGo`]||'0';
+      if(present==='Présent'){
+        totalPtsP+=ptsP; totalPtsJ+=ptsJ; totalTempsP+=tempsP; totalTempsJ+=tempsJ;
+      }
+      netubersData.push({
+        code:n.code,
+        presence:present,
+        raisonAbsence:raisonAbsence,
+        objectifMensuel:objM,
+        objectifAtteint:objA,
+        nbNiveaux:nbN,
+        nbNiveauxAtteints:nbA,
+        pointsPrecedents:ptsP,
+        pointsJour:ptsJ,
+        tempsPrecedent:tempsP,
+        tempsJour:tempsJ,
+        forfaitInternet:forfaitGo
+      });
+    }
+    const currentRef = getFullReference();
+    const reportData={
+      type:"pgco_report",
+      responsable:responses.responsable||"Non spécifié",
+      zone:"ORG-NX-S1",
+      reference:currentRef,
+      date:new Date().toLocaleDateString('fr-FR'),
+      heure:new Date().toLocaleTimeString('fr-FR'),
+      totalPointsPrecedents:totalPtsP,
+      totalPointsJour:totalPtsJ,
+      totalTempsPrecedent:totalTempsP,
+      totalTempsJour:totalTempsJ,
+      netubers:netubersData,
+      status:"non_traite",
+      createdAt:new Date().toISOString()
+    };
+    const reportsRef=collection(window.db,"reports");
+    await addDoc(reportsRef, reportData);
+    
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('fr-FR');
+    const timeStr = now.toLocaleTimeString('fr-FR');
+    const expediteur = responses.responsable || "Non spécifié";
+    
+    const confirmationMsg = `Expéditeur: ${expediteur}\nRéférence: ${currentRef}\nDate: ${dateStr} à ${timeStr}\nDestinataire: DEO\n\n✅ Accusé: Rapport reçu avec succès`;
+    
+    showPopup("✅ RAPPORT TRANSMIS À LA DEO", confirmationMsg, "Fermer","",()=>{
+      resetAllSilently();
+    },()=>{},'primary');
+  }catch(e){
+    showPopup("❌ ERREUR D'ENVOI",`Le rapport n'a pas pu être transmis.\n\nCause: ${e.message}\n\nVeuillez réessayer ou contacter le support technique.`,"Fermer","",()=>{},()=>{},'primary');
+  }finally{
+    btn.textContent=orig;
+    btn.disabled=false;
+  }
+}
+
+function sendReportToFirebase(){
+  if(!formulaireComplete){
+    showPopup("⚠️ Formulaire incomplet","Veuillez répondre à toutes les questions avant d'envoyer.","Fermer","",()=>{},()=>{});
+    return;
+  }
+  
+  let missing=[];
+  for(let n of NETUBERS){
+    if(responses[`${n.code}_present`]==='OUI'){
+      if(!responses[`${n.code}_objMensuel`]) missing.push(`${n.code} - Objectif mensuel`);
+      if(!responses[`${n.code}_objAtteint`]) missing.push(`${n.code} - Objectif atteint`);
+      if(!responses[`${n.code}_nbNiveaux`]) missing.push(`${n.code} - Nb niveaux/événements ou mètres`);
+      if(!responses[`${n.code}_nbNiveauxAtteints`]) missing.push(`${n.code} - Nb niveaux/événements ou mètres atteints`);
+      if(!responses[`${n.code}_pointsPrec`]) missing.push(`${n.code} - Points précédents`);
+      if(!responses[`${n.code}_pointsJour`]) missing.push(`${n.code} - Points jour`);
+      if(!responses[`${n.code}_tempsPrec`]) missing.push(`${n.code} - Temps précédent`);
+      if(!responses[`${n.code}_tempsJour`]) missing.push(`${n.code} - Temps jour`);
+      if(!responses[`${n.code}_forfaitGo`]) missing.push(`${n.code} - Forfait internet restant`);
+    }
+  }
+  if(!responses.referenceNumber || responses.referenceNumber.trim()==='') missing.push("Numéro de rapport");
+  if(missing.length>0){
+    showPopup("⚠️ Champs manquants",missing.join("\n"),"Fermer","",()=>{},()=>{});
+    return;
+  }
+  
+  showCounterPopup(() => {
+    performSendToFirebase();
+  });
+}
+
+yesBtn.onclick=defaultYes;
+noBtn.onclick=defaultNo;
+submitBtn.onclick=validateCurrent;
+prevBtn.onclick=prevQ;
+resetBtn.onclick=resetAll;
+sendReportBtn.onclick=sendReportToFirebase;
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(`tab${btn.dataset.tab==='form'?'Form':'Memo'}`).classList.add('active');
+    if(btn.dataset.tab==='memo') loadMemorandumsFromFirebase();
+  };
+});
+
+questions=buildQuestions();
+displayCurrent();
+loadMemorandumsFromFirebase();
+
+const saved=localStorage.getItem('pgco_rapport');
+if(saved){
+  try{
+    const data=JSON.parse(saved);
+    if(data.responses && Object.keys(data.responses).length>0){
+      responses=data.responses;
+      currentStep=data.currentStep||0;
+      displayCurrent();
+    }
+  }catch(e){}
+}
+
+// Rafraîchir les mémorandums toutes les 30 secondes
+setInterval(() => {
+  if (document.querySelector('.tab-btn[data-tab="memo"]').classList.contains('active')) {
+    loadMemorandumsFromFirebase();
+  }
+}, 30000);
+</script>
+</body>
+</html>
