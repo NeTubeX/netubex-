@@ -56,7 +56,7 @@ body{font-family:'Inter','Courier New',monospace;background:#0a1a2f;height:100vh
   height: 100%;
   z-index: 1000;
   background: #0a1a2f;
-  padding: 12px;
+  padding: 0;
   margin: 0;
   border-radius: 0;
 }
@@ -130,10 +130,9 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 .send-btn-special{background:linear-gradient(145deg,#e67e22,#d35400);color:white;margin-top:16px;}
 .send-btn-special.hidden{display:none;}
 
-/* STYLES CHAT DEO - STYLE WHATSAPP - VERSION PLEIN ÉCRAN */
+/* STYLES CHAT DEO - VERSION PLEIN ÉCRAN */
 .chat-container {
   background: #0e2a3a;
-  border-radius: 24px;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -154,12 +153,12 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-height: calc(100vh - 180px);
+  max-height: calc(100vh - 100px);
 }
 
 /* Mode plein écran - ajustement des messages */
 .tab-content.chat-fullscreen .chat-messages {
-  max-height: calc(100vh - 140px);
+  max-height: calc(100vh - 90px);
   padding: 24px 20px;
 }
 
@@ -171,6 +170,12 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
   word-wrap: break-word;
   font-size: 1rem;
   line-height: 1.5;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.message-bubble:active {
+  background: rgba(255,255,255,0.05);
 }
 
 /* Mode plein écran - messages plus grands */
@@ -245,14 +250,14 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
   margin-top: 8px;
   display: flex;
   gap: 12px;
-  align-items: flex-end;
+  align-items: center;
 }
 
-/* Mode plein écran - zone de saisie remontée et plus grande */
+/* Mode plein écran - zone de saisie */
 .tab-content.chat-fullscreen .chat-input-area {
-  padding: 20px 24px;
-  border-radius: 32px;
-  gap: 16px;
+  padding: 16px 24px;
+  border-radius: 0;
+  gap: 12px;
 }
 
 .chat-input-area textarea {
@@ -265,15 +270,17 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
   font-family: 'Inter', monospace;
   font-size: 1rem;
   resize: none;
-  max-height: 120px;
+  max-height: 50px;
   min-height: 50px;
+  width: 100%;
 }
 
-/* Mode plein écran - textarea plus grande */
+/* Mode plein écran - textarea en largeur */
 .tab-content.chat-fullscreen .chat-input-area textarea {
-  font-size: 1.1rem;
-  padding: 16px 20px;
-  min-height: 60px;
+  font-size: 1rem;
+  padding: 14px 18px;
+  min-height: 50px;
+  max-height: 50px;
 }
 
 .chat-input-area textarea:focus {
@@ -283,16 +290,19 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 
 .chat-input-area button {
   background: #facc15;
-  padding: 14px 24px;
+  padding: 12px 20px;
   border-radius: 40px;
   white-space: nowrap;
-  font-size: 0.95rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  min-width: 55px;
 }
 
-/* Mode plein écran - bouton plus grand */
+/* Mode plein écran - bouton envoyer icône seulement */
 .tab-content.chat-fullscreen .chat-input-area button {
-  padding: 16px 28px;
-  font-size: 1rem;
+  padding: 12px 18px;
+  font-size: 1.3rem;
+  min-width: 50px;
 }
 
 .edit-popup textarea {
@@ -339,6 +349,34 @@ body.chat-active .chat-back-btn {
 
 .chat-back-btn:hover {
   background: #facc15;
+}
+
+/* Menu emoji contextuel */
+.emoji-menu {
+  position: fixed;
+  background: #1e3a5f;
+  border-radius: 16px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  z-index: 2000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  border: 1px solid #facc15;
+  max-width: 280px;
+}
+
+.emoji-menu button {
+  background: transparent;
+  padding: 8px;
+  font-size: 1.5rem;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.emoji-menu button:hover {
+  background: rgba(250,204,21,0.3);
+  transform: scale(1.1);
 }
 </style>
 </head>
@@ -390,8 +428,8 @@ body.chat-active .chat-back-btn {
 <div class="empty-chat">💬 Aucun message. Envoyez un message à la DEO...</div>
 </div>
 <div class="chat-input-area">
-<textarea id="chatMessageInput" placeholder="Écrivez votre message à la DEO..." rows="2"></textarea>
-<button id="sendChatBtn">📤 ENVOYER</button>
+<textarea id="chatMessageInput" placeholder="Message" rows="1"></textarea>
+<button id="sendChatBtn">📤</button>
 </div>
 </div>
 </div>
@@ -474,6 +512,10 @@ const chatBackBtn = document.getElementById('chatBackBtn');
 const tabChat = document.getElementById('tabChat');
 
 let currentResponsable = "";
+let currentEmojiMenu = null;
+
+// Liste des emojis
+const EMOJIS = ["😀", "😂", "😍", "🥰", "😎", "👍", "❤️", "🔥", "🎉", "✨", "😢", "😡", "🥺", "🙏", "💪", "👏", "🤔", "😴", "🥳", "😱"];
 
 function generateRaisonOptions(){
   let opts='';
@@ -526,7 +568,7 @@ async function loadChatMessages() {
       const formattedDate = `${date.toLocaleDateString('fr-FR')} ${date.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'})}`;
       
       html += `
-        <div class="message-bubble ${isSentByMe ? 'message-sent' : 'message-received'}">
+        <div class="message-bubble ${isSentByMe ? 'message-sent' : 'message-received'}" data-message-id="${msg.id}" data-message-text="${escapeHtml(msg.message)}">
           <div>
             ${!isSentByMe ? `<span class="message-sender">📢 DEO</span>` : ''}
             ${escapeHtml(msg.message)}
@@ -548,10 +590,21 @@ async function loadChatMessages() {
     
     // Attacher les événements de modification
     document.querySelectorAll('.edit-msg-btn').forEach(btn => {
-      btn.onclick = () => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
         const id = btn.dataset.id;
         const message = btn.dataset.message;
         openEditPopup(id, message);
+      };
+    });
+    
+    // Attacher les événements de clic droit pour les emojis
+    document.querySelectorAll('.message-bubble').forEach(bubble => {
+      bubble.oncontextmenu = (e) => {
+        e.preventDefault();
+        const messageId = bubble.dataset.messageId;
+        const messageText = bubble.dataset.messageText;
+        showEmojiMenu(e.clientX, e.clientY, messageId, messageText);
       };
     });
     
@@ -561,6 +614,67 @@ async function loadChatMessages() {
   } catch(e) {
     console.error("Erreur chargement chat:", e);
     chatMessagesDiv.innerHTML = '<div class="empty-chat">⚠️ Erreur de chargement des messages</div>';
+  }
+}
+
+function showEmojiMenu(x, y, messageId, currentText) {
+  // Supprimer l'ancien menu s'il existe
+  if (currentEmojiMenu) {
+    currentEmojiMenu.remove();
+  }
+  
+  const menu = document.createElement('div');
+  menu.className = 'emoji-menu';
+  menu.style.left = x + 'px';
+  menu.style.top = y + 'px';
+  
+  EMOJIS.forEach(emoji => {
+    const btn = document.createElement('button');
+    btn.textContent = emoji;
+    btn.onclick = async () => {
+      const newText = currentText + emoji;
+      await addEmojiToMessage(messageId, newText);
+      menu.remove();
+      currentEmojiMenu = null;
+    };
+    menu.appendChild(btn);
+  });
+  
+  document.body.appendChild(menu);
+  currentEmojiMenu = menu;
+  
+  // Fermer le menu en cliquant ailleurs
+  setTimeout(() => {
+    document.addEventListener('click', function closeMenu(e) {
+      if (!menu.contains(e.target)) {
+        menu.remove();
+        currentEmojiMenu = null;
+        document.removeEventListener('click', closeMenu);
+      }
+    });
+  }, 100);
+}
+
+async function addEmojiToMessage(messageId, newMessage) {
+  try {
+    const msgRef = doc(window.db, "chat_messages", messageId);
+    const msgDoc = await getDoc(msgRef);
+    
+    if (!msgDoc.exists()) return;
+    
+    const originalData = msgDoc.data();
+    
+    await updateDoc(msgRef, {
+      message: newMessage,
+      isEdited: true,
+      editedDate: new Date().toISOString(),
+      originalMessage: originalData.message
+    });
+    
+    await loadChatMessages();
+    // Plus de popup de confirmation
+  } catch(e) {
+    console.error("Erreur ajout emoji:", e);
   }
 }
 
@@ -594,7 +708,7 @@ async function sendChatMessage() {
     await addDoc(chatRef, chatData);
     chatMessageInput.value = "";
     await loadChatMessages();
-    // PLUS DE POPUP DE CONFIRMATION
+    // Plus de popup de confirmation
   } catch(e) {
     console.error("Erreur envoi message:", e);
     showPopup("❌ Erreur", "Le message n'a pas pu être envoyé. Vérifiez votre connexion.", "Fermer", "", () => {}, () => {});
@@ -626,7 +740,7 @@ async function editChatMessage(messageId, newMessage) {
     });
     
     await loadChatMessages();
-    showPopup("✅ Message modifié", "Votre message a été mis à jour.", "Fermer", "", () => {}, () => {});
+    // Plus de popup de confirmation
     return true;
   } catch(e) {
     console.error("Erreur modification:", e);
@@ -666,10 +780,14 @@ function enableChatFullscreen() {
 function disableChatFullscreen() {
   document.body.classList.remove('chat-active');
   tabChat.classList.remove('chat-fullscreen');
+  // Retour à l'onglet formulaire (onglet par défaut)
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+  document.querySelector('.tab-btn[data-tab="form"]').classList.add('active');
+  document.getElementById('tabForm').classList.add('active');
 }
 
 function loadMemorandumsFromFirebase(){
-  // Fonction existante inchangée
   (async () => {
     try{
       const memosRef = collection(window.db, "memorandums");
