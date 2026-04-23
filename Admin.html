@@ -13,13 +13,13 @@
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;}
 body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:100vh;transition:background 0.3s, color 0.3s;}
 
-/* THEME CLAIR (GRIS CLAIR DÉGRADÉ) - ACTIF PAR DÉFAUT AU CLIC SUR LA LUNE */
+/* THEME CLAIR DOUX (luminosité réduite) */
 body.light-gradient {
-    background: linear-gradient(135deg, #e5e9f0 0%, #d1d6e0 100%);
-    color: #1a2634;
+    background: linear-gradient(135deg, #d8dee9 0%, #c8d0db 100%);
+    color: #2c3e4e;
 }
 body.light-gradient .header {
-    background: linear-gradient(135deg, #ffffff, #f0f3f8);
+    background: linear-gradient(135deg, #eef2f5, #e2e8f0);
     border-bottom-color: #f59e0b;
 }
 body.light-gradient .stat-card,
@@ -28,15 +28,15 @@ body.light-gradient .table-wrapper,
 body.light-gradient .modal-content,
 body.light-gradient .finance-card,
 body.light-gradient .settings-section {
-    background: #ffffffdd;
+    background: #eceff4cc;
     backdrop-filter: blur(2px);
-    border-color: #cbd2df;
+    border-color: #bdc4d1;
 }
 body.light-gradient .tab:not(.active) {
-    color: #2c3e50;
+    color: #3b4c5c;
 }
 body.light-gradient .tab:not(.active):hover {
-    background: #dce3ec;
+    background: #d8dee9;
 }
 body.light-gradient .tab.active {
     background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -49,11 +49,11 @@ body.light-gradient .input-group select,
 body.light-gradient .input-group textarea {
     background: #fff;
     border-color: #cbd2df;
-    color: #1a2634;
+    color: #2c3e4e;
 }
 body.light-gradient th {
     background: #eef2f7;
-    color: #2c3e50;
+    color: #2c3e4e;
 }
 body.light-gradient td {
     border-bottom-color: #e2e8f0;
@@ -70,7 +70,7 @@ body.light-gradient .visite-item {
 }
 body.light-gradient .icon-btn {
     background: #e2e8f0;
-    color: #1e293b;
+    color: #2c3e4e;
 }
 body.light-gradient .icon-btn:hover {
     background: #cbd5e1;
@@ -86,7 +86,7 @@ body.light-gradient .tabs-arrow:hover {
 body.light-gradient .admin-btn {
     background: linear-gradient(135deg, #eef2f5, #e2e8f0);
     border-color: #cbd2df;
-    color: #1e293b;
+    color: #2c3e4e;
 }
 body.light-gradient .admin-btn:hover {
     background: #cbd5e1;
@@ -104,11 +104,11 @@ body.light-gradient .chat-input-area {
 }
 body.light-gradient .chat-input-area textarea {
     background: #fff;
-    color: #1a2634;
+    color: #2c3e4e;
 }
 body.light-gradient .message-received {
     background: #fff;
-    color: #1a2634;
+    color: #2c3e4e;
 }
 body.light-gradient .message-sent {
     background: #f59e0b;
@@ -122,14 +122,14 @@ body.light-gradient .netubex-logo {
 }
 body.light-gradient .toast {
     background: #f59e0b;
-    color: #1a2634;
+    color: #2c3e4e;
 }
 body.light-gradient .toast-error {
     background: #ef4444;
     color: #fff;
 }
 
-/* THEME SOMBRE (uniquement si on veut le réactiver plus tard, mais par défaut c'est le clair) */
+/* THEME SOMBRE */
 body.dark-soft {
     background: #0f1724;
     color: #e2e8f0;
@@ -219,6 +219,8 @@ table{width:100%;border-collapse:collapse;min-width:800px;}
 th{text-align:left;padding:12px;font-size:11px;font-weight:600;color:#64748b;border-bottom:1px solid #1e293b;position:sticky;top:0;background:#0f1420;}
 td{padding:10px 12px;border-bottom:1px solid #1e293b;font-size:12px;}
 tr:hover{background:#1a2332;}
+/* Colonne code plus large */
+th:first-child, td:first-child{min-width:150px; white-space:normal; word-break:keep-all;}
 .badge{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:500;display:inline-block;}
 .badge-success{background:rgba(16,185,129,0.2);color:#10b981;}
 .badge-danger{background:rgba(239,68,68,0.2);color:#ef4444;}
@@ -302,7 +304,7 @@ tr:hover{background:#1a2332;}
 <button class="tabs-arrow" id="scrollRightArrow"><i class="fas fa-chevron-right"></i></button>
 </div>
 
-<!-- Onglet Statistiques -->
+<!-- Onglet Statistiques avec nouveaux graphiques tickets -->
 <div id="statistiquesTab" class="tab-content active">
 <div class="stats-grid">
 <div class="stat-card"><div class="value" id="totalNetubersStat">0</div><div class="label"><i class="fas fa-id-card"></i> Netubers Membres Actifs</div></div>
@@ -314,6 +316,9 @@ tr:hover{background:#1a2332;}
 <div class="charts-row"><div class="chart-container"><canvas id="onlineChart" style="max-height:200px;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Netubers Connectés / Déconnectés</p></div><div class="chart-container"><canvas id="pointsChart" style="max-height:200px;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Points Précédents vs Points du Jour</p><div id="pointsEcart" style="text-align:center;margin-top:8px;font-size:12px;font-weight:600;"></div></div><div class="chart-container"><canvas id="tempsChart" style="max-height:200px;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Temps Précédent vs Temps du Jour (min)</p></div></div>
 <div class="chart-container"><canvas id="inscriptionsChart" style="max-height:250px;"></canvas></div>
 <div class="chart-container"><canvas id="visitesChart" style="max-height:250px;"></canvas></div>
+<!-- Nouveaux graphiques tickets -->
+<div class="charts-row"><div class="chart-container"><canvas id="ticketsStatusChart" style="max-height:200px;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Tickets par statut</p></div><div class="chart-container"><canvas id="ticketsPriorityChart" style="max-height:200px;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Tickets par priorité</p></div></div>
+<div class="chart-container"><canvas id="ticketsEvolutionChart" style="max-height:250px;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Évolution des tickets (7 derniers jours)</p></div>
 </div>
 
 <!-- Onglet Inscriptions -->
@@ -393,7 +398,7 @@ tr:hover{background:#1a2332;}
     </div>
 </div>
 
-<!-- MODALES -->
+<!-- MODALES (inchangées) -->
 <div id="modifyCodeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-key"></i> Modifier code Netuber</h2><button class="modal-close" onclick="closeModal('modifyCodeModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="modifyCodeSelect"></select></div><div class="input-group"><label>Nouveau code</label><input type="text" id="newCode" placeholder="Ex: MA-NX-99"></div></div><div class="modal-footer"><button onclick="confirmModifyCode()" style="background:#f59e0b;">Modifier</button><button onclick="closeModal('modifyCodeModal')">Annuler</button></div></div></div>
 
 <div id="blockUnblockModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-ban"></i> Bloquer / Débloquer</h2><button class="modal-close" onclick="closeModal('blockUnblockModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="blockUnblockSelect"></select></div><div class="input-group"><label>Action</label><select id="blockAction"><option value="block">Bloquer</option><option value="unblock">Débloquer</option></select></div></div><div class="modal-footer"><button onclick="confirmBlockUnblock()" style="background:#f59e0b;">Valider</button><button onclick="closeModal('blockUnblockModal')">Annuler</button></div></div></div>
@@ -442,6 +447,7 @@ const auth = getAuth(app);
 
 let usersData=[], devicesData=[], withdrawalsData=[], ticketsData=[], capsData=[], memosData=[], lastReport=null;
 let onlineChart, pointsChart, tempsChart, inscriptionsChart, visitesChart;
+let ticketsStatusChart, ticketsPriorityChart, ticketsEvolutionChart;
 let selectedActivateUser=null, selectedPromoteUser=null, currentNetuberFilter="all", currentWithdrawFilter="all";
 let searchPendingTerm="", searchActiveTerm="", searchNetuberTerm="";
 let currentDeleteTicket = null;
@@ -475,7 +481,6 @@ function initTabScroll() {
     rightArrow.addEventListener('click', () => { tabsWrapper.scrollBy({ left: scrollAmount, behavior: 'smooth' }); });
 }
 
-// Gestion du thème : toggle entre light-gradient (clair) et dark-soft (sombre)
 function initTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark-soft') {
@@ -495,6 +500,71 @@ function toggleTheme() {
         document.body.classList.remove('dark-soft');
         document.body.classList.add('light-gradient');
         localStorage.setItem('theme', 'light-gradient');
+    }
+}
+
+// Mise à jour des graphiques tickets
+function updateTicketsCharts() {
+    // Graphique par statut
+    const statusCount = { ouvert: 0, 'en cours': 0, résolu: 0 };
+    ticketsData.forEach(t => {
+        const s = t.status || 'ouvert';
+        if (s === 'ouvert') statusCount.ouvert++;
+        else if (s === 'en cours') statusCount['en cours']++;
+        else if (s === 'résolu') statusCount.résolu++;
+    });
+    const ctxStatus = document.getElementById('ticketsStatusChart')?.getContext('2d');
+    if (ctxStatus) {
+        if (ticketsStatusChart) ticketsStatusChart.destroy();
+        ticketsStatusChart = new Chart(ctxStatus, {
+            type: 'doughnut',
+            data: { labels: ['Ouverts', 'En cours', 'Résolus'], datasets: [{ data: [statusCount.ouvert, statusCount['en cours'], statusCount.résolu], backgroundColor: ['#ef4444', '#f59e0b', '#10b981'] }] },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+    }
+    
+    // Graphique par priorité
+    const priorityCount = { basse: 0, moyenne: 0, haute: 0 };
+    ticketsData.forEach(t => {
+        const p = (t.priority || 'moyenne').toLowerCase();
+        if (p === 'basse') priorityCount.basse++;
+        else if (p === 'haute') priorityCount.haute++;
+        else priorityCount.moyenne++;
+    });
+    const ctxPriority = document.getElementById('ticketsPriorityChart')?.getContext('2d');
+    if (ctxPriority) {
+        if (ticketsPriorityChart) ticketsPriorityChart.destroy();
+        ticketsPriorityChart = new Chart(ctxPriority, {
+            type: 'bar',
+            data: { labels: ['Basse', 'Moyenne', 'Haute'], datasets: [{ data: [priorityCount.basse, priorityCount.moyenne, priorityCount.haute], backgroundColor: ['#10b981', '#f59e0b', '#ef4444'], borderRadius: 8 }] },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+    }
+    
+    // Graphique évolution 7 derniers jours
+    const last7Days = [];
+    const ticketsPerDay = {};
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        last7Days.push(dateStr);
+        ticketsPerDay[dateStr] = 0;
+    }
+    ticketsData.forEach(t => {
+        if (t.date) {
+            const ticketDate = new Date(t.date).toISOString().split('T')[0];
+            if (ticketsPerDay[ticketDate] !== undefined) ticketsPerDay[ticketDate]++;
+        }
+    });
+    const ctxEvo = document.getElementById('ticketsEvolutionChart')?.getContext('2d');
+    if (ctxEvo) {
+        if (ticketsEvolutionChart) ticketsEvolutionChart.destroy();
+        ticketsEvolutionChart = new Chart(ctxEvo, {
+            type: 'line',
+            data: { labels: last7Days.map(d => d.substring(5)), datasets: [{ data: last7Days.map(d => ticketsPerDay[d]), borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.3 }] },
+            options: { responsive: true, plugins: { tooltip: { callbacks: { label: (ctx) => `${ctx.raw} ticket(s)` } } } }
+        });
     }
 }
 
@@ -624,6 +694,7 @@ async function loadAllData(){
     updateActiveUsersTable();
     updatePendingTable();
     updatePrivacyTab();
+    updateTicketsCharts();
     document.getElementById('totalNetubersStat').innerText = usersData.filter(u=>u.code).length;
     document.getElementById('totalUsersStat').innerText = usersData.filter(u=>u.isActive===true&&(!u.code||u.code==='')).length;
 }
@@ -715,7 +786,7 @@ function updateNetubersTable(){
         let statusHtml=isOnline?'<span class="status-spot online"><i class="fas fa-circle"></i> Connecté</span>':'<span class="status-spot offline"><i class="fas fa-circle"></i> Déconnecté</span>';
         let objMensuel=u.objectifMensuel||9;
         let objAtteint=u.objectifAtteint||0;
-        return `<tr><td><strong>${escapeHtml(u.code)}</strong>${u.isBlocked?' <span class="badge badge-danger">Bloqué</span>':''}</td><td>${objMensuel}<td><td style="color:${objAtteint>=objMensuel?'#10b981':'#f59e0b'}">${objAtteint}</td><td>${statusHtml}</td><td><small>${statusText}</small></td><td><button class="action-btn cap" onclick='openCAPModal("${u.code}")'>CAP</button><button class="action-btn delete" onclick='blockUser("${u.id}")'>${u.isBlocked?'Débloquer':'Bloquer'}</button></td></tr>`;
+        return `<tr><td><strong>${escapeHtml(u.code)}</strong>${u.isBlocked?' <span class="badge badge-danger">Bloqué</span>':''}</td><td>${objMensuel}</td><td style="color:${objAtteint>=objMensuel?'#10b981':'#f59e0b'}">${objAtteint}</td><td>${statusHtml}</td><td><small>${statusText}</small></td><td><button class="action-btn cap" onclick='openCAPModal("${u.code}")'>CAP</button><button class="action-btn delete" onclick='blockUser("${u.id}")'>${u.isBlocked?'Débloquer':'Bloquer'}</button></td></tr>`;
     }).join('');
     document.getElementById('totalNetubers').innerText=netuberUsers.length;
     document.getElementById('totalOnline').innerText=onlineCount;
@@ -741,7 +812,7 @@ function updateActiveUsersTable(){
     tbody.innerHTML=filtered.map(u=>{
         let devices=getUserDevices(u.id);
         let d=devices[0]||{};
-        return `<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${(u.balance||0).toFixed(2)} $</td><td>${formatDateShort(u.dateActivation)}</td><td>${escapeHtml((d.deviceId||'-').substring(0,8))}<table><td>${formatDateShort(d.firstLogin)}</td><td>${d.isActive?'✅':'❌'}</td><td>${formatDateShort(d.lastLogin)}</td><td>${escapeHtml((d.lastUserAgent||'-').substring(0,20))}</td><td><button class="action-btn promote" onclick='openPromoteModal("${u.id}")'>Promouvoir</button><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Supprimer</button></td>`;
+        return `<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${(u.balance||0).toFixed(2)} $</td><td>${formatDateShort(u.dateActivation)}</td><td>${escapeHtml((d.deviceId||'-').substring(0,8))}</td><td>${formatDateShort(d.firstLogin)}</td><td>${d.isActive?'✅':'❌'}</td><td>${formatDateShort(d.lastLogin)}</td><td>${escapeHtml((d.lastUserAgent||'-').substring(0,20))}</td><td><button class="action-btn promote" onclick='openPromoteModal("${u.id}")'>Promouvoir</button><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Supprimer</button></td>`;
     }).join('');
     document.getElementById('totalActiveUsers').innerText=activeUsers.length;
 }
@@ -755,7 +826,7 @@ async function loadTickets(){
     snap.forEach(doc=>{ let u=doc.data(); if(u.ticketsList)u.ticketsList.forEach(t=>ticketsData.push({...t,userId:doc.id,userEmail:u.email,userName:`${u.prenom||''} ${u.nom||''}`})); });
     let tbody=document.getElementById('ticketsUsersBody');
     if(tbody){
-        tbody.innerHTML=ticketsData.map(t=>`<tr><td>${escapeHtml(t.userName||t.userEmail)}</td><td>${escapeHtml(t.subject)}</td><td><span class="badge badge-warning">${t.priority}</span></td><td><span class="badge ${t.status==='résolu'?'badge-success':(t.status==='en cours'?'badge-warning':'badge-danger')}">${t.status||'ouvert'}</span></td><td>${formatDateShort(t.date)}</td><td><button class="action-btn reply" onclick='openReplyTicketModal("${t.id}","${escapeHtml(t.userEmail)}")'>Répondre</button></td></tr>`).join('');
+        tbody.innerHTML=ticketsData.map(t=>`<tr><td>${escapeHtml(t.userName||t.userEmail)}<tr><td>${escapeHtml(t.subject)}</td><td><span class="badge badge-warning">${t.priority}</span></td><td><span class="badge ${t.status==='résolu'?'badge-success':(t.status==='en cours'?'badge-warning':'badge-danger')}">${t.status||'ouvert'}</span></td><td>${formatDateShort(t.date)}</td><td><button class="action-btn reply" onclick='openReplyTicketModal("${t.id}","${escapeHtml(t.userEmail)}")'>Répondre</button></td></tr>`).join('');
     }
     updateTicketsStats();
     updateAnomaliesTable();
@@ -770,7 +841,7 @@ function updateAnomaliesTable(){
     ticketsData.forEach(t=>{ let key=t.userEmail; if(!ticketCountByUser[key])ticketCountByUser[key]=0; ticketCountByUser[key]++; });
     let anomalies=Object.entries(ticketCountByUser).filter(([,count])=>count>=3).map(([user,count])=>({user,count}));
     let tbody=document.getElementById('anomaliesTableBody');
-    if(tbody){ tbody.innerHTML=anomalies.map(a=>`<tr><td>${escapeHtml(a.user)}</td><td>Tickets en masse (≥3)</td><td><span class="badge badge-danger">${a.count}</span></td><td><button class="action-btn view" onclick='viewAnomalyTickets("${escapeHtml(a.user)}")'>Voir</button></td></tr>`).join(''); document.getElementById('totalAnomalies').innerText=anomalies.length; }
+    if(tbody){ tbody.innerHTML=anomalies.map(a=>`<tr><td>${escapeHtml(a.user)}</td><td>Tickets en masse (≥3)</td><td><span class="badge badge-danger">${a.count}</span></td><td><button class="action-btn view" onclick='viewAnomalyTickets("${escapeHtml(a.user)}")'>Voir</button></tr></tr>`).join(''); document.getElementById('totalAnomalies').innerText=anomalies.length; }
 }
 async function loadCAPs(){
     let capsRef=collection(db,"caps");
