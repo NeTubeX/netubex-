@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -7,7 +6,7 @@
 <title>BULLETIN JOURNALIER | DEO</title>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, doc, getDoc, getDocs, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, doc, getDoc, getDocs, query, where, orderBy, limit, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
  
   const firebaseConfig = {
     apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
@@ -31,6 +30,8 @@
   window.where = where;
   window.orderBy = orderBy;
   window.limit = limit;
+  window.updateDoc = updateDoc;
+  window.deleteDoc = deleteDoc;
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -39,7 +40,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Inter','Courier New',monospace;background:#0a1a2f;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 .app-container{max-width:950px;margin:0 auto;width:100%;height:100vh;display:flex;flex-direction:column;padding:10px 16px;overflow:hidden;}
-.tabs{display:flex;gap:8px;margin-bottom:12px;flex-shrink:0;}
+.tabs{display:flex;gap:8px;margin-bottom:12px;flex-shrink:0;flex-wrap:wrap;}
 .tab-btn{background:rgba(255,255,255,0.1);color:#bbdefb;padding:10px 20px;font-size:0.85rem;font-weight:600;border:none;cursor:pointer;border-radius:40px;transition:all 0.2s;}
 .tab-btn.active{background:#facc15;color:#0a1a2f;}
 .tab-content{display:none;height:100%;overflow-y:auto;flex:1;padding-right:4px;}
@@ -79,10 +80,9 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 .nav-btn{background:rgba(255,255,255,0.12);color:white;padding:8px 16px;font-size:0.7rem;}
 .reset-btn{background:linear-gradient(145deg,#e74c3c,#c0392b);color:white;}
 .hidden{display:none;}
-.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;transition:visibility 0.3s ease;}
+.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;transition:visibility 0.3s ease;}
 .popup-overlay.active{visibility:visible;}
-.popup-card{background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:28px 28px 20px 20px;width:92%;max-width:450px;padding:24px 20px;text-align:center;border-top:5px solid #facc15;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.2,0.9,0.4,1.1);box-shadow:0 -5px 30px rgba(0,0,0,0.5);}
-.popup-overlay.active .popup-card{transform:translateY(0);}
+.popup-card{background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:28px;width:92%;max-width:500px;padding:24px 20px;text-align:center;border-top:5px solid #facc15;box-shadow:0 5px 30px rgba(0,0,0,0.5);}
 .popup-title{font-size:1.2rem;font-weight:800;color:#facc15;margin-bottom:12px;}
 .popup-message{font-size:0.9rem;margin-bottom:20px;color:#e0f2fe;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;text-align:center;}
 .popup-message strong{color:#4ade80;font-weight:800;}
@@ -106,6 +106,144 @@ button:disabled{opacity:0.5;cursor:not-allowed;}
 footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shrink:0;}
 .send-btn-special{background:linear-gradient(145deg,#e67e22,#d35400);color:white;margin-top:16px;}
 .send-btn-special.hidden{display:none;}
+
+/* STYLES CHAT DEO - STYLE WHATSAPP */
+.chat-container {
+  background: #0e2a3a;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: calc(100vh - 200px);
+}
+
+.message-bubble {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  position: relative;
+  word-wrap: break-word;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.message-sent {
+  align-self: flex-end;
+  background: linear-gradient(145deg, #005c4b, #004d3d);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.message-received {
+  align-self: flex-start;
+  background: #1f2c38;
+  color: #e0f2fe;
+  border-bottom-left-radius: 4px;
+}
+
+.message-info {
+  font-size: 0.65rem;
+  margin-top: 4px;
+  opacity: 0.7;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.message-sender {
+  font-weight: 600;
+  color: #facc15;
+  margin-right: 8px;
+}
+
+.message-date {
+  font-size: 0.6rem;
+}
+
+.message-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+  justify-content: flex-end;
+}
+
+.message-actions button {
+  background: transparent;
+  padding: 4px 8px;
+  font-size: 0.65rem;
+  border-radius: 20px;
+  color: #7dd3fc;
+}
+
+.message-actions button:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.chat-input-area {
+  background: #112b42;
+  padding: 12px;
+  border-radius: 24px;
+  margin-top: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.chat-input-area textarea {
+  flex: 1;
+  background: #0a2538;
+  border: 1px solid #2d4e73;
+  border-radius: 24px;
+  padding: 12px 16px;
+  color: white;
+  font-family: 'Inter', monospace;
+  font-size: 0.9rem;
+  resize: none;
+  max-height: 100px;
+}
+
+.chat-input-area textarea:focus {
+  outline: none;
+  border-color: #facc15;
+}
+
+.chat-input-area button {
+  background: #facc15;
+  padding: 12px 20px;
+  border-radius: 40px;
+  white-space: nowrap;
+}
+
+.edit-popup textarea {
+  width: 100%;
+  background: #0a2538;
+  border: 1px solid #facc15;
+  border-radius: 16px;
+  padding: 12px;
+  color: white;
+  font-family: 'Inter', monospace;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+
+.empty-chat {
+  text-align: center;
+  padding: 40px;
+  color: #7dd3fc;
+  font-weight: 500;
+}
 </style>
 </head>
 <body>
@@ -115,6 +253,7 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 <div class="tabs">
 <button class="tab-btn active" data-tab="form">📋 FORMULAIRE RAPPORT</button>
 <button class="tab-btn" data-tab="memo">📜 MÉMORANDUM & RÉPONSES DEO</button>
+<button class="tab-btn" data-tab="chat">💬 CHAT DEO</button>
 </div>
 
 <div id="tabForm" class="tab-content active">
@@ -148,9 +287,32 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 <div style="text-align:center;padding:40px;font-weight:600;">Chargement en cours...</div>
 </div>
 </div>
+
+<div id="tabChat" class="tab-content">
+<div class="chat-container">
+<div class="chat-messages" id="chatMessages">
+<div class="empty-chat">💬 Aucun message. Envoyez un message à la DEO...</div>
+</div>
+<div class="chat-input-area">
+<textarea id="chatMessageInput" placeholder="Écrivez votre message à la DEO..." rows="2"></textarea>
+<button id="sendChatBtn">📤 ENVOYER</button>
+</div>
+</div>
+</div>
 </div>
 
 <div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
+
+<div id="editPopupOverlay" class="popup-overlay">
+<div class="popup-card edit-popup">
+<div class="popup-title">✏️ Modifier le message</div>
+<textarea id="editMessageContent" rows="4" placeholder="Modifiez votre message..."></textarea>
+<div class="popup-buttons">
+<button id="cancelEditBtn" class="popup-btn secondary">Annuler</button>
+<button id="confirmEditBtn" class="popup-btn primary">Enregistrer</button>
+</div>
+</div>
+</div>
 
 <script>
 const RAISONS_ABSENCE = [
@@ -178,6 +340,7 @@ const NETUBERS = [
 let currentStep=0, responses={}, questions=[], waitingYesNo=false, typewriterTimeout=null;
 let formulaireComplete = false;
 let counterInterval = null;
+let currentEditingMessageId = null;
 
 const questionText=document.getElementById('questionText');
 const questionMeta=document.getElementById('questionMeta');
@@ -200,6 +363,17 @@ const popupBtnLeft=document.getElementById('popupBtnLeft');
 const popupBtnRight=document.getElementById('popupBtnRight');
 const sendReportBtn=document.getElementById('sendReportBtn');
 const questionCardDiv=document.getElementById('questionCard');
+
+// Éléments du chat
+const chatMessagesDiv = document.getElementById('chatMessages');
+const chatMessageInput = document.getElementById('chatMessageInput');
+const sendChatBtn = document.getElementById('sendChatBtn');
+const editPopupOverlay = document.getElementById('editPopupOverlay');
+const editMessageContent = document.getElementById('editMessageContent');
+const cancelEditBtn = document.getElementById('cancelEditBtn');
+const confirmEditBtn = document.getElementById('confirmEditBtn');
+
+let currentResponsable = "";
 
 function generateRaisonOptions(){
   let opts='';
@@ -225,65 +399,219 @@ function generateOptions030(){
 const OPTIONS_015=generateOptions015();
 const OPTIONS_030=generateOptions030();
 
-// FONCTION MODIFIÉE - Charge les mémorandums et leurs réponses
-async function loadMemorandumsFromFirebase(){
-  try{
-    const memosRef = collection(window.db, "memorandums");
-    const q = query(memosRef, orderBy("sentDate", "desc"), limit(20));
+// CHAT FUNCTIONS
+async function loadChatMessages() {
+  try {
+    const chatRef = collection(window.db, "chat_messages");
+    const q = query(chatRef, orderBy("sentDate", "desc"), limit(100));
     const snapshot = await getDocs(q);
-    const memoDiv = document.getElementById('memorandumList');
     
-    if(!snapshot.empty){
-      let html = '<div style="margin-bottom:15px;"><span class="badge-deo">📨 DEO → RESPONSABLE</span> <span class="badge-deo" style="background:#38bdf8;">💬 RÉPONSES DEO</span></div>';
-      
-      snapshot.forEach(doc=>{
-        const data = doc.data();
-        const isReply = data.type === 'reply' || data.isReply === true;
-        const isFromDEO = data.sentBy === 'DEO_Dashboard' || data.recipient === 'DEO - Direction' || data.sentBy === 'DEO';
-        
-        // Pour les mémorandums envoyés par la DEO (réponses)
-        if(isFromDEO || isReply) {
-          html += `
-            <div class="memorandum-item" style="border-left-color: #38bdf8;">
-              <div class="memorandum-title">
-                📨 RÉPONSE DE LA DEO 
-                <span class="badge-deo" style="background:#38bdf8;">DEO</span>
-              </div>
-              <div class="memorandum-subtitle">📋 ${escapeHtml(data.title || 'Mémorandum')}</div>
-              <div class="memorandum-date">📅 ${new Date(data.sentDate || data.date).toLocaleString('fr-FR')}</div>
-              <div class="memorandum-content">${(data.content || '').replace(/\n/g,'<br>')}</div>
-              ${data.reportReference ? `<div style="font-size:0.65rem; color:#7dd3fc; margin-top:8px;">📎 Réf. rapport: ${escapeHtml(data.reportReference)}</div>` : ''}
-            </div>
-          `;
-        } 
-        // Pour les mémorandums envoyés par le responsable (vers DEO)
-        else {
-          html += `
-            <div class="memorandum-item">
-              <div class="memorandum-title">
-                📋 ${escapeHtml(data.title || 'Mémorandum')}
-                <span class="badge-deo">RESPONSABLE → DEO</span>
-              </div>
-              <div class="memorandum-date">📅 ${new Date(data.sentDate || data.date).toLocaleString('fr-FR')}</div>
-              <div class="memorandum-content">${(data.content || '').replace(/\n/g,'<br>')}</div>
-              ${data.reportReference ? `<div style="font-size:0.65rem; color:#7dd3fc; margin-top:8px;">📎 Réf. rapport: ${escapeHtml(data.reportReference)}</div>` : ''}
-            </div>
-          `;
-        }
-      });
-      
-      if (snapshot.size === 0) {
-        html = '<div style="text-align:center;padding:40px;font-weight:600;">📭 Aucun mémorandum ni réponse pour le moment.</div>';
-      }
-      
-      memoDiv.innerHTML = html;
-    } else {
-      memoDiv.innerHTML = '<div style="text-align:center;padding:40px;font-weight:600;">📭 Aucun mémorandum ni réponse pour le moment.</div>';
+    if (snapshot.empty) {
+      chatMessagesDiv.innerHTML = '<div class="empty-chat">💬 Aucun message. Envoyez un message à la DEO...</div>';
+      return;
     }
-  } catch(e){
-    console.error(e);
-    document.getElementById('memorandumList').innerHTML = '<div style="text-align:center;padding:40px;font-weight:600;">⚠️ Service indisponible</div>';
+    
+    let messages = [];
+    snapshot.forEach(doc => {
+      messages.push({ id: doc.id, ...doc.data() });
+    });
+    
+    // Inverser pour afficher du plus ancien au plus récent (comme WhatsApp)
+    messages.reverse();
+    
+    let html = '';
+    for (let msg of messages) {
+      const isSentByMe = msg.senderRole === 'responsable';
+      const date = new Date(msg.sentDate);
+      const formattedDate = `${date.toLocaleDateString('fr-FR')} ${date.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'})}`;
+      
+      html += `
+        <div class="message-bubble ${isSentByMe ? 'message-sent' : 'message-received'}">
+          <div>
+            ${!isSentByMe ? `<span class="message-sender">📢 DEO</span>` : ''}
+            ${escapeHtml(msg.message)}
+          </div>
+          <div class="message-info">
+            <span>${formattedDate}</span>
+            ${msg.isEdited ? '<span>(modifié)</span>' : ''}
+          </div>
+          ${isSentByMe ? `
+            <div class="message-actions">
+              <button class="edit-msg-btn" data-id="${msg.id}" data-message="${escapeHtml(msg.message)}">✏️ Modifier</button>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+    
+    chatMessagesDiv.innerHTML = html;
+    
+    // Attacher les événements de modification
+    document.querySelectorAll('.edit-msg-btn').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.dataset.id;
+        const message = btn.dataset.message;
+        openEditPopup(id, message);
+      };
+    });
+    
+    // Scroll en bas
+    chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+    
+  } catch(e) {
+    console.error("Erreur chargement chat:", e);
+    chatMessagesDiv.innerHTML = '<div class="empty-chat">⚠️ Erreur de chargement des messages</div>';
   }
+}
+
+async function sendChatMessage() {
+  const message = chatMessageInput.value.trim();
+  if (!message) {
+    showPopup("⚠️ Message vide", "Veuillez écrire un message avant d'envoyer.", "Fermer", "", () => {}, () => {});
+    return;
+  }
+  
+  // Récupérer le responsable actuel
+  let responsable = responses.responsable || "Responsable";
+  if (!responsable || responsable === "") {
+    responsable = "Responsable non spécifié";
+  }
+  
+  const chatData = {
+    message: message,
+    sender: responsable,
+    senderRole: "responsable",
+    recipient: "DEO",
+    sentDate: new Date().toISOString(),
+    isEdited: false,
+    editedDate: null,
+    originalMessage: null,
+    status: "envoyé"
+  };
+  
+  try {
+    const chatRef = collection(window.db, "chat_messages");
+    await addDoc(chatRef, chatData);
+    chatMessageInput.value = "";
+    await loadChatMessages();
+    showPopup("✅ Message envoyé", "Votre message a été transmis à la DEO.", "Fermer", "", () => {}, () => {});
+  } catch(e) {
+    console.error("Erreur envoi message:", e);
+    showPopup("❌ Erreur", "Le message n'a pas pu être envoyé. Vérifiez votre connexion.", "Fermer", "", () => {}, () => {});
+  }
+}
+
+async function editChatMessage(messageId, newMessage) {
+  if (!newMessage.trim()) {
+    showPopup("⚠️ Message vide", "Le message ne peut pas être vide.", "Fermer", "", () => {}, () => {});
+    return false;
+  }
+  
+  try {
+    const msgRef = doc(window.db, "chat_messages", messageId);
+    const msgDoc = await getDoc(msgRef);
+    
+    if (!msgDoc.exists()) {
+      showPopup("❌ Erreur", "Message introuvable.", "Fermer", "", () => {}, () => {});
+      return false;
+    }
+    
+    const originalData = msgDoc.data();
+    
+    await updateDoc(msgRef, {
+      message: newMessage,
+      isEdited: true,
+      editedDate: new Date().toISOString(),
+      originalMessage: originalData.message
+    });
+    
+    await loadChatMessages();
+    showPopup("✅ Message modifié", "Votre message a été mis à jour.", "Fermer", "", () => {}, () => {});
+    return true;
+  } catch(e) {
+    console.error("Erreur modification:", e);
+    showPopup("❌ Erreur", "Impossible de modifier le message.", "Fermer", "", () => {}, () => {});
+    return false;
+  }
+}
+
+function openEditPopup(messageId, currentMessage) {
+  currentEditingMessageId = messageId;
+  editMessageContent.value = currentMessage;
+  editPopupOverlay.classList.add('active');
+}
+
+function closeEditPopup() {
+  editPopupOverlay.classList.remove('active');
+  currentEditingMessageId = null;
+  editMessageContent.value = "";
+}
+
+async function confirmEdit() {
+  if (currentEditingMessageId) {
+    const newMessage = editMessageContent.value.trim();
+    if (newMessage) {
+      await editChatMessage(currentEditingMessageId, newMessage);
+    }
+    closeEditPopup();
+  }
+}
+
+function loadMemorandumsFromFirebase(){
+  // Fonction existante inchangée
+  (async () => {
+    try{
+      const memosRef = collection(window.db, "memorandums");
+      const q = query(memosRef, orderBy("sentDate", "desc"), limit(20));
+      const snapshot = await getDocs(q);
+      const memoDiv = document.getElementById('memorandumList');
+      
+      if(!snapshot.empty){
+        let html = '<div style="margin-bottom:15px;"><span class="badge-deo">📨 DEO → RESPONSABLE</span> <span class="badge-deo" style="background:#38bdf8;">💬 RÉPONSES DEO</span></div>';
+        
+        snapshot.forEach(doc=>{
+          const data = doc.data();
+          const isReply = data.type === 'reply' || data.isReply === true;
+          const isFromDEO = data.sentBy === 'DEO_Dashboard' || data.recipient === 'DEO - Direction' || data.sentBy === 'DEO';
+          
+          if(isFromDEO || isReply) {
+            html += `
+              <div class="memorandum-item" style="border-left-color: #38bdf8;">
+                <div class="memorandum-title">
+                  📨 RÉPONSE DE LA DEO 
+                  <span class="badge-deo" style="background:#38bdf8;">DEO</span>
+                </div>
+                <div class="memorandum-subtitle">📋 ${escapeHtml(data.title || 'Mémorandum')}</div>
+                <div class="memorandum-date">📅 ${new Date(data.sentDate || data.date).toLocaleString('fr-FR')}</div>
+                <div class="memorandum-content">${(data.content || '').replace(/\n/g,'<br>')}</div>
+                ${data.reportReference ? `<div style="font-size:0.65rem; color:#7dd3fc; margin-top:8px;">📎 Réf. rapport: ${escapeHtml(data.reportReference)}</div>` : ''}
+              </div>
+            `;
+          } 
+          else {
+            html += `
+              <div class="memorandum-item">
+                <div class="memorandum-title">
+                  📋 ${escapeHtml(data.title || 'Mémorandum')}
+                  <span class="badge-deo">RESPONSABLE → DEO</span>
+                </div>
+                <div class="memorandum-date">📅 ${new Date(data.sentDate || data.date).toLocaleString('fr-FR')}</div>
+                <div class="memorandum-content">${(data.content || '').replace(/\n/g,'<br>')}</div>
+                ${data.reportReference ? `<div style="font-size:0.65rem; color:#7dd3fc; margin-top:8px;">📎 Réf. rapport: ${escapeHtml(data.reportReference)}</div>` : ''}
+              </div>
+            `;
+          }
+        });
+        
+        memoDiv.innerHTML = html;
+      } else {
+        memoDiv.innerHTML = '<div style="text-align:center;padding:40px;font-weight:600;">📭 Aucun mémorandum ni réponse pour le moment.</div>';
+      }
+    } catch(e){
+      console.error(e);
+      document.getElementById('memorandumList').innerHTML = '<div style="text-align:center;padding:40px;font-weight:600;">⚠️ Service indisponible</div>';
+    }
+  })();
 }
 
 function escapeHtml(text) {
@@ -421,7 +749,7 @@ function buildQuestions(){
   qList.push({num:num++, type:"choice", field:"responsable", meta:"Identification", text:"Qui remplit le rapport aujourd'hui ?", options:["Madame Ursule","Madame Chancelle"]});
   
   for(let n of NETUBERS){
-    qList.push({num:num++, type:"yesno", field:`${n.code}_present`, meta:n.code, text:`${n.code} : Était-il absent aujourd'hui ?`});
+    qList.push({num:num++, type:"yesno", field:`${n.code}_present`, meta:n.code, text:`${n.code} : Était-il présent aujourd'hui ?`});
     qList.push({num:num++, type:"select", field:`${n.code}_raisonAbsence`, meta:n.code, text:`${n.code} : Raison de l'absence ?`, options:RAISONS_OPTIONS, dependsOnPresent:true});
     qList.push({num:num++, type:"select", field:`${n.code}_objMensuel`, meta:n.code, text:`${n.code} : Quel est son objectif mensuel ?`, options:OPTIONS_015});
     qList.push({num:num++, type:"select", field:`${n.code}_objAtteint`, meta:n.code, text:`${n.code} : Combien d'objectifs a-t-il atteints aujourd'hui ?`, options:OPTIONS_015});
@@ -520,27 +848,24 @@ function handleResponse(val){
   responses[q.field]=val;
   autoSave();
   
+  // Mettre à jour le responsable pour le chat
+  if(q.field === 'responsable') {
+    currentResponsable = val;
+  }
+  
+  // Si la réponse est NON pour la présence
   if(q.field.includes('_present') && val==='NON'){
-    let stepsToSkip = 0;
-    for(let i=currentStep+1; i<questions.length; i++){
-      const nextField = questions[i].field;
-      if(nextField && nextField.includes(q.field.replace('_present','')) && !nextField.includes('raisonAbsence')){
-        stepsToSkip++;
-      } else if(nextField && nextField.includes(q.field.replace('_present','')) && nextField.includes('raisonAbsence')){
-        continue;
-      } else {
-        break;
-      }
+    // On avance d'UN SEUL PAS pour aller à la raison d'absence
+    if(currentStep < questions.length - 1){
+      currentStep++;
     }
-    for(let i=0; i<stepsToSkip; i++){
-      if(currentStep < questions.length - 1){
-        currentStep++;
-        const skipQ = questions[currentStep];
-        if(!skipQ.field.includes('raisonAbsence')){
-          responses[skipQ.field] = "0";
-        }
-      }
-    }
+    displayCurrent();  // Affiche la raison d'absence
+    autoSave();
+    return;
+  }
+  
+  // Si la réponse est OUI pour la présence, on avance normalement
+  if(q.field.includes('_present') && val==='OUI'){
     if(currentStep < questions.length - 1){
       currentStep++;
     }
@@ -549,6 +874,7 @@ function handleResponse(val){
     return;
   }
   
+  // Pour les autres types de questions
   if(currentStep < questions.length - 1){
     currentStep++;
     displayCurrent();
@@ -737,20 +1063,25 @@ submitBtn.onclick=validateCurrent;
 prevBtn.onclick=prevQ;
 resetBtn.onclick=resetAll;
 sendReportBtn.onclick=sendReportToFirebase;
+sendChatBtn.onclick=sendChatMessage;
+cancelEditBtn.onclick=closeEditPopup;
+confirmEditBtn.onclick=confirmEdit;
 
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.onclick=()=>{
     document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById(`tab${btn.dataset.tab==='form'?'Form':'Memo'}`).classList.add('active');
+    document.getElementById(`tab${btn.dataset.tab==='form'?'Form':btn.dataset.tab==='memo'?'Memo':'Chat'}`).classList.add('active');
     if(btn.dataset.tab==='memo') loadMemorandumsFromFirebase();
+    if(btn.dataset.tab==='chat') loadChatMessages();
   };
 });
 
 questions=buildQuestions();
 displayCurrent();
 loadMemorandumsFromFirebase();
+loadChatMessages();
 
 const saved=localStorage.getItem('pgco_rapport');
 if(saved){
@@ -768,6 +1099,9 @@ if(saved){
 setInterval(() => {
   if (document.querySelector('.tab-btn[data-tab="memo"]').classList.contains('active')) {
     loadMemorandumsFromFirebase();
+  }
+  if (document.querySelector('.tab-btn[data-tab="chat"]').classList.contains('active')) {
+    loadChatMessages();
   }
 }, 30000);
 </script>
