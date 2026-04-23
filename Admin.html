@@ -11,12 +11,117 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;}
-body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:100vh;transition:background 0.3s;}
+body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:100vh;transition:background 0.3s, color 0.3s;}
 body.dark-soft{background:#0f1724;color:#e2e8f0;}
 body.dark-soft .header,body.dark-soft .stat-card,body.dark-soft .chart-container,body.dark-soft .table-wrapper,body.dark-soft .modal-content,body.dark-soft .detail-card,body.dark-soft .finance-card,body.dark-soft .settings-section{background:#111827;border-color:#1e293b;}
 body.dark-soft .tab:not(.active){color:#94a3b8;}
 body.dark-soft .tab:hover{background:#1e293b;}
 body.dark-soft .search-input,body.dark-soft .filter-select,body.dark-soft .input-group input,body.dark-soft .input-group select,body.dark-soft .input-group textarea{background:#1e293b;border-color:#334155;color:#f1f5f9;}
+
+/* Nouveau thème clair dégradé (ni trop clair, ni trop sombre) */
+body.light-gradient {
+    background: linear-gradient(135deg, #d4d9e2 0%, #c0c8d4 100%);
+    color: #1e2a3a;
+}
+body.light-gradient .header {
+    background: linear-gradient(135deg, #eef2f5, #e2e8f0);
+    border-bottom-color: #f59e0b;
+}
+body.light-gradient .stat-card,
+body.light-gradient .chart-container,
+body.light-gradient .table-wrapper,
+body.light-gradient .modal-content,
+body.light-gradient .finance-card,
+body.light-gradient .settings-section {
+    background: #ffffffdd;
+    backdrop-filter: blur(2px);
+    border-color: #b9c2d0;
+}
+body.light-gradient .tab:not(.active) {
+    color: #2c3e50;
+}
+body.light-gradient .tab:not(.active):hover {
+    background: #cbd5e1;
+}
+body.light-gradient .tab.active {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+}
+body.light-gradient .search-input,
+body.light-gradient .filter-select,
+body.light-gradient .input-group input,
+body.light-gradient .input-group select,
+body.light-gradient .input-group textarea {
+    background: #fff;
+    border-color: #cbd5e1;
+    color: #1e293b;
+}
+body.light-gradient th {
+    background: #e9eef3;
+    color: #2c3e50;
+}
+body.light-gradient td {
+    border-bottom-color: #dce3ec;
+}
+body.light-gradient tr:hover {
+    background: #eef2f7;
+}
+body.light-gradient .visite-stats {
+    background: linear-gradient(135deg, #ffffffcc, #f0f4f9cc);
+    border-color: #cbd5e1;
+}
+body.light-gradient .visite-item {
+    background: #f8fafd;
+}
+body.light-gradient .icon-btn {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+body.light-gradient .icon-btn:hover {
+    background: #cbd5e1;
+}
+body.light-gradient .tabs-arrow {
+    background: #e2e8f0;
+    color: #f59e0b;
+}
+body.light-gradient .tabs-arrow:hover {
+    background: #f59e0b;
+    color: #fff;
+}
+body.light-gradient .admin-btn {
+    background: linear-gradient(135deg, #eef2f5, #e2e8f0);
+    border-color: #cbd5e1;
+    color: #1e293b;
+}
+body.light-gradient .admin-btn:hover {
+    background: #cbd5e1;
+    border-color: #f59e0b;
+}
+body.light-gradient .report-ref-badge {
+    background: #fef3c7;
+    border-color: #f59e0b;
+}
+body.light-gradient .chat-container {
+    background: #e9eef3;
+}
+body.light-gradient .chat-input-area {
+    background: #dce3ec;
+}
+body.light-gradient .chat-input-area textarea {
+    background: #fff;
+    color: #1e293b;
+}
+body.light-gradient .message-received {
+    background: #fff;
+    color: #1e293b;
+}
+body.light-gradient .message-sent {
+    background: #f59e0b;
+    color: #fff;
+}
+body.light-gradient .chat-header {
+    background: linear-gradient(135deg, #eef2f5, #e2e8f0);
+}
 .dashboard{max-width:1600px;margin:0 auto;padding:20px 30px;}
 @media (max-width:768px){.dashboard{padding:12px;}}
 .header{background:linear-gradient(135deg,#0f1420,#0a0f1a);border-bottom:2px solid #f59e0b;padding:0.8rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;margin:-20px -30px 20px -30px;padding:0.8rem 30px;flex-wrap:wrap;gap:10px;transition:background 0.3s;}
@@ -27,61 +132,16 @@ body.dark-soft .header{background:linear-gradient(135deg,#0f1724,#0a0f1a);}
 .header-right{display:flex;align-items:center;gap:12px;}
 .icon-btn{background:#1e293b;border:none;padding:8px 12px;border-radius:40px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:14px;transition:0.2s;}
 .icon-btn:hover{background:#334155;}
-
-/* Nouveau conteneur pour les onglets avec flèches */
-.tabs-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 25px;
-    position: relative;
-}
-.tabs-arrow {
-    background: #1e293b;
-    border: none;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    color: #f59e0b;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    flex-shrink: 0;
-    z-index: 10;
-}
-.tabs-arrow:hover {
-    background: #f59e0b;
-    color: #0a0f1a;
-}
-.tabs-arrow:active {
-    transform: scale(0.95);
-}
-.tabs-wrapper {
-    flex: 1;
-    overflow-x: auto;
-    white-space: nowrap;
-    scrollbar-width: thin;
-    scroll-behavior: smooth;
-}
-.tabs-wrapper::-webkit-scrollbar {
-    height: 4px;
-}
-.tabs-wrapper::-webkit-scrollbar-track {
-    background: #1e293b;
-    border-radius: 4px;
-}
-.tabs-wrapper::-webkit-scrollbar-thumb {
-    background: #f59e0b;
-    border-radius: 4px;
-}
-.tabs {
-    display: inline-flex;
-    gap: 8px;
-    padding-bottom: 5px;
-}
-.tab{padding:10px 20px;background:transparent;border:none;border-radius:30px;color:#94a3b8;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:500;}
+.tabs-container{display:flex;align-items:center;gap:8px;margin-bottom:25px;position:relative;}
+.tabs-arrow{background:#1e293b;border:none;width:32px;height:32px;border-radius:50%;color:#f59e0b;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;z-index:10;}
+.tabs-arrow:hover{background:#f59e0b;color:#0a0f1a;}
+.tabs-arrow:active{transform:scale(0.95);}
+.tabs-wrapper{flex:1;overflow-x:auto;white-space:nowrap;scrollbar-width:thin;scroll-behavior:smooth;}
+.tabs-wrapper::-webkit-scrollbar{height:4px;}
+.tabs-wrapper::-webkit-scrollbar-track{background:#1e293b;border-radius:4px;}
+.tabs-wrapper::-webkit-scrollbar-thumb{background:#f59e0b;border-radius:4px;}
+.tabs{display:inline-flex;gap:8px;padding-bottom:5px;}
+.tab{padding:10px 20px;background:transparent;border:none;border-radius:30px;color:#94a3b8;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:500;}
 .tab:hover{background:#1e293b;color:#fff;}
 .tab.active{background:linear-gradient(135deg,#f59e0b,#d97706);color:#0a0f1a;}
 .tab-content{display:none;animation:fadeIn 0.2s;}
@@ -170,8 +230,6 @@ tr:hover{background:#1a2332;}
 <button class="icon-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
 </div>
 </div>
-
-<!-- Nouveau conteneur avec flèches de scroll -->
 <div class="tabs-container">
 <button class="tabs-arrow" id="scrollLeftArrow"><i class="fas fa-chevron-left"></i></button>
 <div class="tabs-wrapper"><div class="tabs">
@@ -206,7 +264,7 @@ tr:hover{background:#1a2332;}
 </div>
 
 <!-- Onglet Inscriptions -->
-<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></td></thead><tbody id="pendingTableBody"></tbody></table></div></div>
+<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"></tbody></table></div></div>
 
 <!-- Onglet Utilisateurs -->
 <div id="utilisateursTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalActiveUsers">0</div><div class="label">Utilisateurs actifs</div></div></div><div class="filters"><input type="text" id="searchActiveUsers" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterActiveUsers()"></div><div class="table-wrapper"><table id="activeUsersTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Contact</th><th>Balance</th><th>Date activation</th><th>deviceId</th><th>firstLogin</th><th>isActive</th><th>lastLogin</th><th>lastUserAgent</th><th>Actions</th></tr></thead><tbody id="activeUsersTableBody"></tbody></table></div></div>
@@ -354,23 +412,37 @@ function showConfirm(title,message,onConfirm){
     ok.addEventListener('click',handler);cancel.addEventListener('click',cancelHandler);
 }
 
-// Fonctions de scroll pour les onglets
 function initTabScroll() {
     const tabsWrapper = document.querySelector('.tabs-wrapper');
     const leftArrow = document.getElementById('scrollLeftArrow');
     const rightArrow = document.getElementById('scrollRightArrow');
-    
     if (!tabsWrapper) return;
-    
     const scrollAmount = 200;
-    
-    leftArrow.addEventListener('click', () => {
-        tabsWrapper.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-    });
-    
-    rightArrow.addEventListener('click', () => {
-        tabsWrapper.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    });
+    leftArrow.addEventListener('click', () => { tabsWrapper.scrollBy({ left: -scrollAmount, behavior: 'smooth' }); });
+    rightArrow.addEventListener('click', () => { tabsWrapper.scrollBy({ left: scrollAmount, behavior: 'smooth' }); });
+}
+
+// Gestion du thème : bascule entre dark-soft et light-gradient
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light-gradient') {
+        document.body.classList.remove('dark-soft');
+        document.body.classList.add('light-gradient');
+    } else {
+        document.body.classList.add('dark-soft');
+        document.body.classList.remove('light-gradient');
+    }
+}
+function toggleTheme() {
+    if (document.body.classList.contains('dark-soft')) {
+        document.body.classList.remove('dark-soft');
+        document.body.classList.add('light-gradient');
+        localStorage.setItem('theme', 'light-gradient');
+    } else {
+        document.body.classList.remove('light-gradient');
+        document.body.classList.add('dark-soft');
+        localStorage.setItem('theme', 'dark-soft');
+    }
 }
 
 // STYLES CHAT
@@ -407,7 +479,6 @@ body.chat-active .rainbow-line{display:block;}
 `;
 document.head.appendChild(chatStyles);
 
-// Éléments chat
 const chatMessagesDiv = document.getElementById('chatMessages');
 const chatMessageInput = document.getElementById('chatMessageInput');
 const sendChatBtn = document.getElementById('sendChatBtn');
@@ -418,7 +489,6 @@ function enableChatFullscreen(){
     document.body.classList.add('chat-active');
     tabChat.classList.add('chat-fullscreen');
 }
-
 function disableChatFullscreen(){
     document.body.classList.remove('chat-active');
     tabChat.classList.remove('chat-fullscreen');
@@ -427,16 +497,12 @@ function disableChatFullscreen(){
     document.querySelector('.tab[data-tab="statistiques"]').classList.add('active');
     document.getElementById('statistiquesTab').classList.add('active');
 }
-
 async function loadChatMessages(){
     if(!chatMessagesDiv) return;
     try{
         const q = query(collection(db,"chat_messages"), orderBy("sentDate","desc"), limit(100));
         const s = await getDocs(q);
-        if(s.empty){
-            chatMessagesDiv.innerHTML = '<div class="empty-chat">💬 Aucun message</div>';
-            return;
-        }
+        if(s.empty){ chatMessagesDiv.innerHTML = '<div class="empty-chat">💬 Aucun message</div>'; return; }
         let msgs = [];
         s.forEach(d => msgs.push({id:d.id, ...d.data()}));
         msgs.reverse();
@@ -446,17 +512,9 @@ async function loadChatMessages(){
             const d = new Date(m.sentDate);
             const fd = d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
             if(isFromResponsable){
-                html += `<div class="message-bubble message-received">
-                    <div><span class="message-sender">${escapeHtml(m.sender)}</span>${escapeHtml(m.message)}</div>
-                    <div class="message-info"><span>${fd}</span>${m.isEdited?'<span>(modifié)</span>':''}</div>
-                    <div class="message-actions"><button class="delete-msg-btn" data-id="${m.id}">🗑️</button></div>
-                </div>`;
+                html += `<div class="message-bubble message-received"><div><span class="message-sender">${escapeHtml(m.sender)}</span>${escapeHtml(m.message)}</div><div class="message-info"><span>${fd}</span>${m.isEdited?'<span>(modifié)</span>':''}</div><div class="message-actions"><button class="delete-msg-btn" data-id="${m.id}">🗑️</button></div></div>`;
             } else {
-                html += `<div class="message-bubble message-sent">
-                    <div>${escapeHtml(m.message)}</div>
-                    <div class="message-info"><span>${fd}</span>${m.isEdited?'<span>(modifié)</span>':''}</div>
-                    <div class="message-actions"><button class="delete-msg-btn" data-id="${m.id}">🗑️</button></div>
-                </div>`;
+                html += `<div class="message-bubble message-sent"><div>${escapeHtml(m.message)}</div><div class="message-info"><span>${fd}</span>${m.isEdited?'<span>(modifié)</span>':''}</div><div class="message-actions"><button class="delete-msg-btn" data-id="${m.id}">🗑️</button></div></div>`;
             }
         }
         chatMessagesDiv.innerHTML = html;
@@ -464,52 +522,25 @@ async function loadChatMessages(){
             btn.onclick = async (e)=>{
                 e.stopPropagation();
                 const id = btn.dataset.id;
-                showConfirm('Suppression','Supprimer ce message ?',async()=>{
-                    await deleteDoc(doc(db,"chat_messages",id));
-                    await loadChatMessages();
-                });
+                showConfirm('Suppression','Supprimer ce message ?',async()=>{ await deleteDoc(doc(db,"chat_messages",id)); await loadChatMessages(); });
             };
         });
         chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
-    } catch(e){
-        console.error(e);
-        chatMessagesDiv.innerHTML = '<div class="empty-chat">⚠️ Erreur de chargement</div>';
-    }
+    } catch(e){ console.error(e); chatMessagesDiv.innerHTML = '<div class="empty-chat">⚠️ Erreur de chargement</div>'; }
 }
-
 async function sendChatMessage(){
     const msg = chatMessageInput.value.trim();
-    if(!msg){
-        showToast("Message vide", true);
-        return;
-    }
+    if(!msg){ showToast("Message vide", true); return; }
     try{
-        await addDoc(collection(db,"chat_messages"),{
-            message: msg,
-            sender: "DEO",
-            senderRole: "deo",
-            recipient: "responsable",
-            sentDate: new Date().toISOString(),
-            isEdited: false,
-            status: "envoyé"
-        });
+        await addDoc(collection(db,"chat_messages"),{ message: msg, sender: "DEO", senderRole: "deo", recipient: "responsable", sentDate: new Date().toISOString(), isEdited: false, status: "envoyé" });
         chatMessageInput.value = '';
         await loadChatMessages();
-    } catch(e){
-        showToast("Erreur envoi", true);
-    }
+    } catch(e){ showToast("Erreur envoi", true); }
 }
-
 sendChatBtn?.addEventListener('click', sendChatMessage);
-chatMessageInput?.addEventListener('keypress', (e) => {
-    if(e.key === 'Enter' && !e.shiftKey){
-        e.preventDefault();
-        sendChatMessage();
-    }
-});
+chatMessageInput?.addEventListener('keypress', (e) => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendChatMessage(); } });
 chatBackBtn?.addEventListener('click', disableChatFullscreen);
 
-// Gestion des onglets
 document.querySelectorAll('.tab').forEach(btn=>{
     btn.onclick=()=>{
         const tab = btn.getAttribute('data-tab');
@@ -521,14 +552,10 @@ document.querySelectorAll('.tab').forEach(btn=>{
             document.getElementById(tab+'Tab').classList.add('active');
             if(tab === 'memo') loadMemorandums();
         }
-        if(tab === 'chatDeo'){
-            enableChatFullscreen();
-            loadChatMessages();
-        }
+        if(tab === 'chatDeo'){ enableChatFullscreen(); loadChatMessages(); }
     };
 });
 
-// ============ FONCTIONS CHARGEMENT DONNÉES ============
 async function loadAllData(){
     let snap = await getDocs(collection(db, "users"));
     usersData = [];
@@ -547,14 +574,11 @@ async function loadAllData(){
     document.getElementById('totalNetubersStat').innerText = usersData.filter(u=>u.code).length;
     document.getElementById('totalUsersStat').innerText = usersData.filter(u=>u.isActive===true&&(!u.code||u.code==='')).length;
 }
-
 async function loadDevices(){ let snap=await getDocs(collection(db,"user_devices")); devicesData=[]; snap.forEach(d=>devicesData.push({id:d.id,...d.data()})); }
 function getUserDevices(userId){ return devicesData.filter(d=>d.userId===userId); }
-
 async function loadVisitesStats(){
     try{ let statsRef=doc(db,"stats","visites"); let statsSnap=await getDoc(statsRef); if(statsSnap.exists()){ let v=statsSnap.data(); document.getElementById('visitesToday').innerText=v.today||0; document.getElementById('visitesWeek').innerText=v.week||0; document.getElementById('visitesMonth').innerText=v.month||0; document.getElementById('visitesTotal').innerText=v.total||0; } }catch(e){}
 }
-
 async function loadWithdrawals(){
     let snap=await getDocs(collection(db,"withdraw"));
     withdrawalsData=[];
@@ -564,7 +588,6 @@ async function loadWithdrawals(){
     document.getElementById('totalWithdrawalsAmount').innerText=withdrawalsData.filter(w=>w.status==='pending').reduce((s,w)=>s+(w.amount||0),0).toFixed(2);
     document.getElementById('totalWithdrawalsPendingStat').innerText=withdrawalsData.filter(w=>w.status==='pending').length;
 }
-
 function updateWithdrawalsTable(){
     let tbody=document.getElementById('withdrawalsTableBody');
     if(!tbody)return;
@@ -576,13 +599,11 @@ function updateWithdrawalsTable(){
         return `<tr><td>${escapeHtml(u?.email||w.userId)}</td><td>${(w.amount||0).toFixed(2)} $</td><td>${w.method||'-'}</td><td>${escapeHtml(w.walletAddress||'-')}</td><td>${formatDateShort(w.requestedAt)}</td><td><span class="badge ${statusClass}">${statusText}</span></td><td>${w.status==='pending'?`<button class="action-btn approve" onclick='approveWithdraw("${w.id}")'>Approuver</button><button class="action-btn delete" onclick='rejectWithdraw("${w.id}")'>Rejeter</button>`:(w.status==='approved'?`<button class="action-btn delete" onclick='deleteWithdraw("${w.id}")'>Supprimer</button>`:'-')}</td></tr>`;
     }).join('');
 }
-
 window.filterWithdrawals=()=>{ currentWithdrawFilter=document.getElementById('withdrawStatusFilter').value; updateWithdrawalsTable(); };
 window.approveWithdraw=async(id)=>{ let w=withdrawalsData.find(w=>w.id===id); if(!w)return; let userRef=doc(db,"users",w.userId); let userSnap=await getDoc(userRef); let balance=userSnap.exists()?(userSnap.data().balance||0):0; await updateDoc(userRef,{balance:balance-(w.amount||0)}); await updateDoc(doc(db,"withdraw",id),{status:"approved",processedAt:new Date().toISOString()}); showToast("Retrait approuvé"); await loadWithdrawals(); await loadAllData(); };
 window.rejectWithdraw=async(id)=>{ await updateDoc(doc(db,"withdraw",id),{status:"rejected",processedAt:new Date().toISOString()}); showToast("Retrait rejeté"); await loadWithdrawals(); };
 window.deleteWithdraw=async(id)=>{ showConfirm('Suppression','Supprimer cette demande ?',async()=>{ await deleteDoc(doc(db,"withdraw",id)); showToast("Demande supprimée"); await loadWithdrawals(); }); };
 window.exportWithdrawals=()=>{ let csv="Utilisateur,Montant,Méthode,Wallet,Statut,Date\n"; withdrawalsData.forEach(w=>{ let u=usersData.find(u=>u.id===w.userId); csv+=`${u?.email||w.userId},${w.amount},${w.method},${w.walletAddress},${w.status},${w.requestedAt}\n`; }); let blob=new Blob([csv]); let link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=`retraits.csv`; link.click(); };
-
 async function loadLastReport(){
     try{
         let q=query(collection(db,"reports"),orderBy("createdAt","desc"),limit(1));
@@ -615,7 +636,6 @@ async function loadLastReport(){
         }
     }catch(e){console.error(e);}
 }
-
 function updateNetubersTable(){
     let tbody=document.getElementById('netubersTableBody');
     if(!tbody)return;
@@ -651,7 +671,6 @@ function updateNetubersTable(){
     let ctx=document.getElementById('onlineChart')?.getContext('2d');
     if(ctx){if(onlineChart)onlineChart.destroy();onlineChart=new Chart(ctx,{type:'doughnut',data:{labels:['Connectés','Déconnectés'],datasets:[{data:[onlineCount,netuberUsers.length-onlineCount],backgroundColor:['#10b981','#64748b']}]},options:{responsive:true}});}
 }
-
 function updatePendingTable(){
     let tbody=document.getElementById('pendingTableBody');
     if(!tbody)return;
@@ -661,7 +680,6 @@ function updatePendingTable(){
     document.getElementById('totalPending').innerText=pending.length;
     document.getElementById('totalPendingStat').innerText=pending.length;
 }
-
 function updateActiveUsersTable(){
     let tbody=document.getElementById('activeUsersTableBody');
     if(!tbody)return;
@@ -673,12 +691,10 @@ function updateActiveUsersTable(){
         return `<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${(u.balance||0).toFixed(2)} $</td><td>${formatDateShort(u.dateActivation)}</td><td>${escapeHtml((d.deviceId||'-').substring(0,8))}</td><td>${formatDateShort(d.firstLogin)}</td><td>${d.isActive?'✅':'❌'}</td><td>${formatDateShort(d.lastLogin)}</td><td>${escapeHtml((d.lastUserAgent||'-').substring(0,20))}</td><td><button class="action-btn promote" onclick='openPromoteModal("${u.id}")'>Promouvoir</button><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Supprimer</button></td>`; }).join('');
     document.getElementById('totalActiveUsers').innerText=activeUsers.length;
 }
-
 function updatePrivacyTab(){
     let tbody=document.getElementById('privacyEmailsBody');
     if(tbody){ tbody.innerHTML=usersData.filter(u=>u.code).map(u=>`<tr><td>${escapeHtml(u.code)}</td><td>${escapeHtml(u.email)}</td><td>${formatDateShort(u.lastSeen)}</td></tr>`).join(''); }
 }
-
 async function loadTickets(){
     let snap=await getDocs(collection(db,"users"));
     ticketsData=[];
@@ -690,13 +706,11 @@ async function loadTickets(){
     updateTicketsStats();
     updateAnomaliesTable();
 }
-
 function updateTicketsStats(){
     document.getElementById('ticketsUsersOpen').innerText=ticketsData.filter(t=>t.status==='ouvert'||!t.status).length;
     document.getElementById('ticketsResolved').innerText=ticketsData.filter(t=>t.status==='résolu').length;
     document.getElementById('ticketsInProgress').innerText=ticketsData.filter(t=>t.status==='en cours').length;
 }
-
 function updateAnomaliesTable(){
     let ticketCountByUser={};
     ticketsData.forEach(t=>{ let key=t.userEmail; if(!ticketCountByUser[key])ticketCountByUser[key]=0; ticketCountByUser[key]++; });
@@ -704,7 +718,6 @@ function updateAnomaliesTable(){
     let tbody=document.getElementById('anomaliesTableBody');
     if(tbody){ tbody.innerHTML=anomalies.map(a=>`<tr><td>${escapeHtml(a.user)}</td><td>Tickets en masse (≥3)</td><td><span class="badge badge-danger">${a.count}</span></td><td><button class="action-btn view" onclick='viewAnomalyTickets("${escapeHtml(a.user)}")'>Voir</button></td></tr>`).join(''); document.getElementById('totalAnomalies').innerText=anomalies.length; }
 }
-
 async function loadCAPs(){
     let capsRef=collection(db,"caps");
     let snap=await getDocs(capsRef);
@@ -713,7 +726,6 @@ async function loadCAPs(){
     let tbody=document.getElementById('capHistoryBody');
     if(tbody){ tbody.innerHTML=capsData.map(c=>`<tr><td><strong>${escapeHtml(c.netuberCode)}</strong></td><td>${escapeHtml(c.message.substring(0,60))}${c.message.length>60?'...':''}</td><td>${formatDateTime(c.sentDate)}</td><td>${formatDateShort(c.expiryDate)}</td></tr>`).join(''); }
 }
-
 async function loadMemos(){
     let memosRef=collection(db,"memorandums");
     let q=query(memosRef,orderBy("sentDate","desc"));
@@ -722,7 +734,6 @@ async function loadMemos(){
     let tbody=document.getElementById('memosBody');
     if(tbody){ tbody.innerHTML=memosData.map(m=>`<tr><td><strong>${escapeHtml(m.title)}</strong></td><td><span class="badge badge-warning">${escapeHtml(m.reportReference||'-')}</span></td><td>${formatDateTime(m.sentDate)}</td><td>${escapeHtml(m.content.substring(0,50))}${m.content.length>50?'...':''}</td><td><button class="action-btn delete" onclick='deleteMemorandum("${m.id}")'>Supprimer</button></td></tr>`).join(''); }
 }
-
 window.deleteMemorandum=async(id)=>{ showConfirm('Suppression','Supprimer ce mémorandum ?',async()=>{ await deleteDoc(doc(db,"memorandums",id)); showToast("Mémorandum supprimé"); await loadMemos(); }); };
 window.sendMemorandum = async () => { let ref=document.getElementById('memoReportReference').value; let title=document.getElementById('memoTitle').value.trim(); let content=document.getElementById('memoContent').value.trim(); if(!title||!content){showToast("Titre et contenu requis",true);return;} if(!ref){showToast("Aucune référence",true);return;} await addDoc(collection(db,"memorandums"),{recipient:"DEO - Direction",title:title,content:content,reportReference:ref,sentDate:new Date().toISOString(),type:"memorandum",sentBy:"DEO_Dashboard"}); showToast(`✅ Mémorandum envoyé`); closeModal('memorandumModal'); await loadMemos(); };
 window.sendCAP=async()=>{ let code=document.getElementById('capNetuberCode').value; let msg=document.getElementById('capMessage').value.trim(); if(!code||!msg){showToast("Message requis",true);return;} await addDoc(collection(db,"caps"),{netuberCode:code,message:msg,sentDate:new Date().toISOString()}); showToast(`CAP envoyé`); closeModal('capModal'); await loadCAPs(); };
@@ -758,12 +769,10 @@ document.getElementById('sendMemoFromReportBtn')?.addEventListener('click', ()=>
 document.getElementById('memorandumMenuBtn')?.addEventListener('click', ()=>{ if(currentReportReference) openModal('memorandumModal'); else showToast("Aucun rapport",true); });
 document.getElementById('logoutBtn')?.addEventListener('click',()=>showConfirm('Déconnexion','Quitter ?',async()=>{await signOut(auth);window.location.href="login.html";}));
 document.getElementById('refreshBtn')?.addEventListener('click',()=>location.reload());
-document.getElementById('themeToggle')?.addEventListener('click',()=>{document.body.classList.toggle('dark-soft');});
-if(localStorage.getItem('theme')!=='dark-soft')document.body.classList.add('dark-soft');
+document.getElementById('themeToggle')?.addEventListener('click',()=>toggleTheme());
 
-// Initialisation du scroll des onglets
+initTheme();
 initTabScroll();
-
 loadAllData();
 setInterval(()=>loadAllData(),30000);
 document.addEventListener('contextmenu',e=>e.preventDefault());
