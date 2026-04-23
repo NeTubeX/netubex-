@@ -421,7 +421,7 @@ function buildQuestions(){
   qList.push({num:num++, type:"choice", field:"responsable", meta:"Identification", text:"Qui remplit le rapport aujourd'hui ?", options:["Madame Ursule","Madame Chancelle"]});
   
   for(let n of NETUBERS){
-    qList.push({num:num++, type:"yesno", field:`${n.code}_present`, meta:n.code, text:`${n.code} : Était-il présent aujourd'hui ?`});
+    qList.push({num:num++, type:"yesno", field:`${n.code}_present`, meta:n.code, text:`${n.code} : Était-il absent aujourd'hui ?`});
     qList.push({num:num++, type:"select", field:`${n.code}_raisonAbsence`, meta:n.code, text:`${n.code} : Raison de l'absence ?`, options:RAISONS_OPTIONS, dependsOnPresent:true});
     qList.push({num:num++, type:"select", field:`${n.code}_objMensuel`, meta:n.code, text:`${n.code} : Quel est son objectif mensuel ?`, options:OPTIONS_015});
     qList.push({num:num++, type:"select", field:`${n.code}_objAtteint`, meta:n.code, text:`${n.code} : Combien d'objectifs a-t-il atteints aujourd'hui ?`, options:OPTIONS_015});
