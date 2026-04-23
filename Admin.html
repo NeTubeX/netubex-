@@ -27,9 +27,60 @@ body.dark-soft .header{background:linear-gradient(135deg,#0f1724,#0a0f1a);}
 .header-right{display:flex;align-items:center;gap:12px;}
 .icon-btn{background:#1e293b;border:none;padding:8px 12px;border-radius:40px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:14px;transition:0.2s;}
 .icon-btn:hover{background:#334155;}
-.tabs-wrapper{margin-bottom:25px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;}
-.tabs-wrapper::-webkit-scrollbar{display:none;}
-.tabs{display:inline-flex;gap:8px;padding-bottom:10px;border-bottom:1px solid #1e293b;width:100%;}
+
+/* Nouveau conteneur pour les onglets avec flèches */
+.tabs-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 25px;
+    position: relative;
+}
+.tabs-arrow {
+    background: #1e293b;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: #f59e0b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    z-index: 10;
+}
+.tabs-arrow:hover {
+    background: #f59e0b;
+    color: #0a0f1a;
+}
+.tabs-arrow:active {
+    transform: scale(0.95);
+}
+.tabs-wrapper {
+    flex: 1;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+}
+.tabs-wrapper::-webkit-scrollbar {
+    height: 4px;
+}
+.tabs-wrapper::-webkit-scrollbar-track {
+    background: #1e293b;
+    border-radius: 4px;
+}
+.tabs-wrapper::-webkit-scrollbar-thumb {
+    background: #f59e0b;
+    border-radius: 4px;
+}
+.tabs {
+    display: inline-flex;
+    gap: 8px;
+    padding-bottom: 5px;
+}
 .tab{padding:10px 20px;background:transparent;border:none;border-radius:30px;color:#94a3b8;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:500;}
 .tab:hover{background:#1e293b;color:#fff;}
 .tab.active{background:linear-gradient(135deg,#f59e0b,#d97706);color:#0a0f1a;}
@@ -119,6 +170,10 @@ tr:hover{background:#1a2332;}
 <button class="icon-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
 </div>
 </div>
+
+<!-- Nouveau conteneur avec flèches de scroll -->
+<div class="tabs-container">
+<button class="tabs-arrow" id="scrollLeftArrow"><i class="fas fa-chevron-left"></i></button>
 <div class="tabs-wrapper"><div class="tabs">
 <button class="tab active" data-tab="statistiques"><i class="fas fa-chart-bar"></i> Statistiques</button>
 <button class="tab" data-tab="inscriptions"><i class="fas fa-user-clock"></i> Inscriptions</button>
@@ -133,6 +188,8 @@ tr:hover{background:#1a2332;}
 <button class="tab" data-tab="confidentialite"><i class="fas fa-lock"></i> Confidentialité</button>
 <button class="tab" data-tab="settings"><i class="fas fa-cog"></i> Paramètres</button>
 </div></div>
+<button class="tabs-arrow" id="scrollRightArrow"><i class="fas fa-chevron-right"></i></button>
+</div>
 
 <!-- Onglet Statistiques -->
 <div id="statistiquesTab" class="tab-content active">
@@ -149,7 +206,7 @@ tr:hover{background:#1a2332;}
 </div>
 
 <!-- Onglet Inscriptions -->
-<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"></tbody></table></div></div>
+<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></td></thead><tbody id="pendingTableBody"></tbody></table></div></div>
 
 <!-- Onglet Utilisateurs -->
 <div id="utilisateursTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalActiveUsers">0</div><div class="label">Utilisateurs actifs</div></div></div><div class="filters"><input type="text" id="searchActiveUsers" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterActiveUsers()"></div><div class="table-wrapper"><table id="activeUsersTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Contact</th><th>Balance</th><th>Date activation</th><th>deviceId</th><th>firstLogin</th><th>isActive</th><th>lastLogin</th><th>lastUserAgent</th><th>Actions</th></tr></thead><tbody id="activeUsersTableBody"></tbody></table></div></div>
@@ -201,7 +258,7 @@ tr:hover{background:#1a2332;}
             <div class="stat-card"><div class="value" id="totalCAPSent">0</div><div class="label">Total CAP envoyés</div></div>
         </div>
         <div class="table-wrapper" style="max-height:300px;">
-            <table id="capHistoryTable"><thead><tr><th>Netuber</th><th>CAP (message)</th><th>Date d'envoi</th><th>Date d'expiration</th></tr></thead><tbody id="capHistoryBody"></tbody>｜DSML｜
+            <table id="capHistoryTable"><thead><tr><th>Netuber</th><th>CAP (message)</th><th>Date d'envoi</th><th>Date d'expiration</th></tr></thead><tbody id="capHistoryBody"></tbody></table>
         </div>
     </div>
     
@@ -297,11 +354,30 @@ function showConfirm(title,message,onConfirm){
     ok.addEventListener('click',handler);cancel.addEventListener('click',cancelHandler);
 }
 
+// Fonctions de scroll pour les onglets
+function initTabScroll() {
+    const tabsWrapper = document.querySelector('.tabs-wrapper');
+    const leftArrow = document.getElementById('scrollLeftArrow');
+    const rightArrow = document.getElementById('scrollRightArrow');
+    
+    if (!tabsWrapper) return;
+    
+    const scrollAmount = 200;
+    
+    leftArrow.addEventListener('click', () => {
+        tabsWrapper.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    });
+    
+    rightArrow.addEventListener('click', () => {
+        tabsWrapper.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    });
+}
+
 // STYLES CHAT
 const chatStyles = document.createElement('style');
 chatStyles.textContent = `
 .tab-content.chat-fullscreen{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:1000;background:#0a1a2f;padding:0;margin:0;border-radius:0;}
-body.chat-active .dashboard>.header,body.chat-active .tabs-wrapper{display:none;}
+body.chat-active .dashboard>.header,body.chat-active .tabs-container{display:none;}
 body.chat-active .tab-content.chat-fullscreen{display:block!important;}
 .chat-container{background:#0e2a3a;display:flex;flex-direction:column;height:100%;overflow:hidden;}
 .chat-messages{flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:12px;}
@@ -684,6 +760,9 @@ document.getElementById('logoutBtn')?.addEventListener('click',()=>showConfirm('
 document.getElementById('refreshBtn')?.addEventListener('click',()=>location.reload());
 document.getElementById('themeToggle')?.addEventListener('click',()=>{document.body.classList.toggle('dark-soft');});
 if(localStorage.getItem('theme')!=='dark-soft')document.body.classList.add('dark-soft');
+
+// Initialisation du scroll des onglets
+initTabScroll();
 
 loadAllData();
 setInterval(()=>loadAllData(),30000);
