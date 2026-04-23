@@ -59,7 +59,7 @@ button:active{transform:scale(0.97);}
 .choice-btn.yes{background:#27ae60;color:#fff;}
 .choice-btn.no{background:#c0392b;color:#fff;}
 .progress-bar{background:rgba(255,255,255,0.15);border-radius:40px;height:4px;margin:14px 0 6px;}
-.progress-fill{height:4px;border-radius:40px;}
+.progress-fill{height:4px;border-radius:40px;transition:width 0.3s ease;}
 .step-info{display:flex;justify-content:space-between;font-size:0.6rem;color:#ccc;margin-top:4px;}
 .action-buttons{display:flex;gap:10px;margin-top:12px;}
 .nav-btn{background:rgba(255,255,255,0.12);color:#fff;padding:8px 16px;font-size:0.7rem;}
@@ -87,24 +87,20 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;}
 .send-btn-special.hidden{display:none;}
 .chat-container{background:#0e2a3a;display:flex;flex-direction:column;height:100%;overflow:hidden;}
 .chat-messages{flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:12px;}
-.message-bubble{max-width:85%;padding:12px 18px;border-radius:20px;word-wrap:break-word;font-size:1rem;line-height:1.5;}
+.message-bubble{max-width:85%;padding:12px 18px;border-radius:20px;word-wrap:break-word;font-size:1rem;line-height:1.5;cursor:pointer;}
 .tab-content.chat-fullscreen .message-bubble{font-size:1.1rem;padding:14px 20px;max-width:80%;}
 .message-sent{align-self:flex-end;background:linear-gradient(145deg,#075e54,#054a44);color:#ffffff;font-weight:700;border-bottom-right-radius:4px;}
 .message-received{align-self:flex-start;background:#e4e6eb;color:#050505;border-bottom-left-radius:4px;}
 .message-info{font-size:0.65rem;margin-top:6px;opacity:0.7;display:flex;justify-content:flex-end;gap:8px;}
-.message-received .message-info{color:#65676b;}
-.message-sent .message-info{color:rgba(255,255,255,0.7);}
-.message-sender{font-weight:600;color:#075e54;font-size:0.75rem;display:block;margin-bottom:6px;}
-.message-received .message-content{font-weight:700;font-size:1.05rem;}
-.message-sent .message-content{font-weight:500;}
+.message-sender{font-weight:600;color:#facc15;margin-right:8px;}
 .message-actions{display:flex;gap:8px;margin-top:8px;justify-content:flex-end;}
 .message-actions button{background:transparent;padding:4px 10px;font-size:0.7rem;border-radius:20px;color:#7dd3fc;border:none;cursor:pointer;}
-.message-received .message-actions button{color:#075e54;}
 .chat-input-area{background:#112b42;padding:16px 20px;border-radius:28px;margin-top:8px;display:flex;gap:12px;align-items:center;}
 .tab-content.chat-fullscreen .chat-input-area{padding:16px 24px;border-radius:0;}
 .chat-input-area textarea{flex:1;background:#0a2538;border:1px solid #2d4e73;border-radius:28px;padding:14px 18px;color:#fff;font-family:'Inter',monospace;font-size:1rem;resize:none;max-height:50px;min-height:50px;}
 .chat-input-area textarea:focus{outline:none;border-color:#facc15;}
 .chat-input-area button{background:#facc15;padding:12px 18px;border-radius:40px;font-size:1.3rem;min-width:50px;border:none;cursor:pointer;color:#0a1a2f;}
+.edit-popup textarea{width:100%;background:#0a2538;border:1px solid #facc15;border-radius:16px;padding:12px;color:#fff;margin-bottom:16px;}
 .empty-chat{text-align:center;padding:40px;color:#7dd3fc;}
 .chat-header{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:linear-gradient(135deg,#0a1a2f,#0e2a3a);z-index:1001;border-bottom:1px solid rgba(250,204,21,0.3);}
 .chat-back-btn{background:rgba(250,204,21,0.9);color:#0a1a2f;border:none;border-radius:40px;padding:8px 16px;font-weight:700;font-size:0.85rem;cursor:pointer;display:flex;align-items:center;gap:6px;}
@@ -157,7 +153,7 @@ body.chat-active .rainbow-line{display:block;}
 </div>
 <div id="tabChat" class="tab-content">
 <div class="chat-container">
-<div class="chat-messages" id="chatMessages"></div>
+<div class="chat-messages" id="chatMessages"><div class="loading-placeholder">⏳ Chargement...</div></div>
 <div class="chat-input-area">
 <textarea id="chatMessageInput" placeholder="Message" rows="1"></textarea>
 <button id="sendChatBtn">📤</button>
@@ -180,7 +176,7 @@ const questionText=document.getElementById('questionText'),questionMeta=document
 const chatMessagesDiv=document.getElementById('chatMessages'),chatMessageInput=document.getElementById('chatMessageInput'),sendChatBtn=document.getElementById('sendChatBtn'),editPopupOverlay=document.getElementById('editPopupOverlay'),editMessageContent=document.getElementById('editMessageContent'),cancelEditBtn=document.getElementById('cancelEditBtn'),confirmEditBtn=document.getElementById('confirmEditBtn'),chatBackBtn=document.getElementById('chatBackBtn'),tabChat=document.getElementById('tabChat');
 function escapeHtml(t){if(!t)return '';return String(t).replace(/[&<>]/g,function(m){if(m==='&')return'&amp;';if(m==='<')return'&lt;';if(m==='>')return'&gt;';return m;});}
 function showPopup(t,m,l,r,onC,onCa,rc='primary',rd=false){popupTitle.textContent=t;popupMessageDiv.innerHTML=m;popupBtnLeft.textContent=l;popupBtnRight.textContent=r;popupBtnRight.className=`popup-btn ${rc}`;if(rd)popupBtnRight.disabled=true;else popupBtnRight.disabled=false;popupOverlay.classList.add('active');popupBtnRight.onclick=()=>{if(popupBtnRight.disabled)return;popupOverlay.classList.remove('active');if(onC)onC();};popupBtnLeft.onclick=()=>{if(counterInterval)clearInterval(counterInterval);popupOverlay.classList.remove('active');if(onCa)onCa();};}
-async function loadChatMessages(){try{const q=query(collection(db,"chat_messages"),orderBy("sentDate","desc"),limit(100));const s=await getDocs(q);if(s.empty){chatMessagesDiv.innerHTML='<div class="empty-chat">💬 Aucun message</div>';return;}let msgs=[];s.forEach(d=>msgs.push({id:d.id,...d.data()}));msgs.reverse();let html='';for(let m of msgs){const env=m.senderRole==='responsable';const d=new Date(m.sentDate);const fd=d.toLocaleDateString('fr-FR')+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});if(env){html+=`<div class="message-bubble message-sent"><div class="message-content">${escapeHtml(m.message)}</div><div class="message-info"><span>${fd}</span>${m.isEdited?'<span>(modifié)</span>':''}</div><div class="message-actions"><button class="edit-msg-btn" data-id="${m.id}" data-msg="${escapeHtml(m.message)}">✏️</button></div></div>`;}else{html+=`<div class="message-bubble message-received"><div><span class="message-sender">DEO</span><div class="message-content">${escapeHtml(m.message)}</div></div><div class="message-info"><span>${fd}</span>${m.isEdited?'<span>(modifié)</span>':''}</div></div>`;}}chatMessagesDiv.innerHTML=html;document.querySelectorAll('.edit-msg-btn').forEach(btn=>{btn.onclick=(e)=>{e.stopPropagation();openEditPopup(btn.dataset.id,btn.dataset.msg);};});chatMessagesDiv.scrollTop=chatMessagesDiv.scrollHeight;}catch(e){chatMessagesDiv.innerHTML='<div class="empty-chat">⚠️ Erreur de chargement</div>';}}
+async function loadChatMessages(){chatMessagesDiv.innerHTML='<div class="loading-placeholder">⏳ Chargement...</div>';try{const q=query(collection(db,"chat_messages"),orderBy("sentDate","desc"),limit(100));const s=await getDocs(q);if(s.empty){chatMessagesDiv.innerHTML='<div class="empty-chat">💬 Aucun message</div>';return;}let msgs=[];s.forEach(d=>msgs.push({id:d.id,...d.data()}));msgs.reverse();let html='';for(let m of msgs){const env=m.senderRole==='responsable';const d=new Date(m.sentDate);const fd=d.toLocaleDateString('fr-FR')+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});if(env){html+=`<div class="message-bubble message-sent"><div>${escapeHtml(m.message)}</div><div class="message-info"><span>${fd}</span>${m.isEdited?'<span>(modifié)</span>':''}</div><div class="message-actions"><button class="edit-msg-btn" data-id="${m.id}" data-msg="${escapeHtml(m.message)}">✏️</button></div></div>`;}else{html+=`<div class="message-bubble message-received"><div><span class="message-sender">DEO</span>${escapeHtml(m.message)}</div><div class="message-info"><span>${fd}</span>${m.isEdited?'<span>(modifié)</span>':''}</div><div class="message-actions"><button class="edit-msg-btn" data-id="${m.id}" data-msg="${escapeHtml(m.message)}">✏️</button></div></div>`;}}chatMessagesDiv.innerHTML=html;document.querySelectorAll('.edit-msg-btn').forEach(btn=>{btn.onclick=(e)=>{e.stopPropagation();openEditPopup(btn.dataset.id,btn.dataset.msg);};});chatMessagesDiv.scrollTop=chatMessagesDiv.scrollHeight;}catch(e){chatMessagesDiv.innerHTML='<div class="empty-chat">⚠️ Erreur de chargement</div>';}}
 async function sendChatMessage(){const msg=chatMessageInput.value.trim();if(!msg){showPopup("⚠️","Message vide","Fermer","",()=>{},()=>{});return;}let responsable=responses.responsable||"Responsable";if(!responsable||responsable==="")responsable="Responsable";try{await addDoc(collection(db,"chat_messages"),{message:msg,sender:responsable,senderRole:"responsable",recipient:"DEO",sentDate:new Date().toISOString(),isEdited:false,status:"envoyé"});chatMessageInput.value="";await loadChatMessages();}catch(e){showPopup("❌","Erreur envoi","Fermer","",()=>{},()=>{});}}
 async function editChatMessage(id,newMsg){if(!newMsg.trim()){showPopup("⚠️","Message vide","Fermer","",()=>{},()=>{});return false;}try{const ref=doc(db,"chat_messages",id);const d=await getDoc(ref);if(d.exists()){await updateDoc(ref,{message:newMsg,isEdited:true,editedDate:new Date().toISOString(),originalMessage:d.data().message});await loadChatMessages();return true;}}catch(e){showPopup("❌","Erreur","Fermer","",()=>{},()=>{});return false;}}
 function openEditPopup(id,msg){currentEditingMessageId=id;editMessageContent.value=msg;editPopupOverlay.classList.add('active');}
