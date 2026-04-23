@@ -12,19 +12,14 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;}
 body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:100vh;transition:background 0.3s, color 0.3s;}
-body.dark-soft{background:#0f1724;color:#e2e8f0;}
-body.dark-soft .header,body.dark-soft .stat-card,body.dark-soft .chart-container,body.dark-soft .table-wrapper,body.dark-soft .modal-content,body.dark-soft .detail-card,body.dark-soft .finance-card,body.dark-soft .settings-section{background:#111827;border-color:#1e293b;}
-body.dark-soft .tab:not(.active){color:#94a3b8;}
-body.dark-soft .tab:hover{background:#1e293b;}
-body.dark-soft .search-input,body.dark-soft .filter-select,body.dark-soft .input-group input,body.dark-soft .input-group select,body.dark-soft .input-group textarea{background:#1e293b;border-color:#334155;color:#f1f5f9;}
 
-/* Nouveau thème clair dégradé (ni trop clair, ni trop sombre) */
+/* THEME CLAIR (GRIS CLAIR DÉGRADÉ) - ACTIF PAR DÉFAUT AU CLIC SUR LA LUNE */
 body.light-gradient {
-    background: linear-gradient(135deg, #d4d9e2 0%, #c0c8d4 100%);
-    color: #1e2a3a;
+    background: linear-gradient(135deg, #e5e9f0 0%, #d1d6e0 100%);
+    color: #1a2634;
 }
 body.light-gradient .header {
-    background: linear-gradient(135deg, #eef2f5, #e2e8f0);
+    background: linear-gradient(135deg, #ffffff, #f0f3f8);
     border-bottom-color: #f59e0b;
 }
 body.light-gradient .stat-card,
@@ -35,13 +30,13 @@ body.light-gradient .finance-card,
 body.light-gradient .settings-section {
     background: #ffffffdd;
     backdrop-filter: blur(2px);
-    border-color: #b9c2d0;
+    border-color: #cbd2df;
 }
 body.light-gradient .tab:not(.active) {
     color: #2c3e50;
 }
 body.light-gradient .tab:not(.active):hover {
-    background: #cbd5e1;
+    background: #dce3ec;
 }
 body.light-gradient .tab.active {
     background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -53,22 +48,22 @@ body.light-gradient .input-group input,
 body.light-gradient .input-group select,
 body.light-gradient .input-group textarea {
     background: #fff;
-    border-color: #cbd5e1;
-    color: #1e293b;
+    border-color: #cbd2df;
+    color: #1a2634;
 }
 body.light-gradient th {
-    background: #e9eef3;
+    background: #eef2f7;
     color: #2c3e50;
 }
 body.light-gradient td {
-    border-bottom-color: #dce3ec;
+    border-bottom-color: #e2e8f0;
 }
 body.light-gradient tr:hover {
-    background: #eef2f7;
+    background: #eef3fc;
 }
 body.light-gradient .visite-stats {
-    background: linear-gradient(135deg, #ffffffcc, #f0f4f9cc);
-    border-color: #cbd5e1;
+    background: linear-gradient(135deg, #ffffffcc, #f0f4facc);
+    border-color: #cbd2df;
 }
 body.light-gradient .visite-item {
     background: #f8fafd;
@@ -90,7 +85,7 @@ body.light-gradient .tabs-arrow:hover {
 }
 body.light-gradient .admin-btn {
     background: linear-gradient(135deg, #eef2f5, #e2e8f0);
-    border-color: #cbd5e1;
+    border-color: #cbd2df;
     color: #1e293b;
 }
 body.light-gradient .admin-btn:hover {
@@ -102,30 +97,88 @@ body.light-gradient .report-ref-badge {
     border-color: #f59e0b;
 }
 body.light-gradient .chat-container {
-    background: #e9eef3;
+    background: #eef2f7;
 }
 body.light-gradient .chat-input-area {
-    background: #dce3ec;
+    background: #e2e8f0;
 }
 body.light-gradient .chat-input-area textarea {
     background: #fff;
-    color: #1e293b;
+    color: #1a2634;
 }
 body.light-gradient .message-received {
     background: #fff;
-    color: #1e293b;
+    color: #1a2634;
 }
 body.light-gradient .message-sent {
     background: #f59e0b;
     color: #fff;
 }
 body.light-gradient .chat-header {
-    background: linear-gradient(135deg, #eef2f5, #e2e8f0);
+    background: linear-gradient(135deg, #ffffff, #f0f3f8);
 }
+body.light-gradient .netubex-logo {
+    color: #f59e0b;
+}
+body.light-gradient .toast {
+    background: #f59e0b;
+    color: #1a2634;
+}
+body.light-gradient .toast-error {
+    background: #ef4444;
+    color: #fff;
+}
+
+/* THEME SOMBRE (uniquement si on veut le réactiver plus tard, mais par défaut c'est le clair) */
+body.dark-soft {
+    background: #0f1724;
+    color: #e2e8f0;
+}
+body.dark-soft .header,
+body.dark-soft .stat-card,
+body.dark-soft .chart-container,
+body.dark-soft .table-wrapper,
+body.dark-soft .modal-content,
+body.dark-soft .finance-card,
+body.dark-soft .settings-section {
+    background: #111827;
+    border-color: #1e293b;
+}
+body.dark-soft .tab:not(.active) {
+    color: #94a3b8;
+}
+body.dark-soft .tab:hover {
+    background: #1e293b;
+}
+body.dark-soft .search-input,
+body.dark-soft .filter-select,
+body.dark-soft .input-group input,
+body.dark-soft .input-group select,
+body.dark-soft .input-group textarea {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f1f5f9;
+}
+body.dark-soft th {
+    background: #0f1420;
+}
+body.dark-soft .icon-btn {
+    background: #1e293b;
+    color: #fff;
+}
+body.dark-soft .tabs-arrow {
+    background: #1e293b;
+    color: #f59e0b;
+}
+body.dark-soft .admin-btn {
+    background: linear-gradient(135deg, #1e293b, #0f1420);
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
 .dashboard{max-width:1600px;margin:0 auto;padding:20px 30px;}
 @media (max-width:768px){.dashboard{padding:12px;}}
 .header{background:linear-gradient(135deg,#0f1420,#0a0f1a);border-bottom:2px solid #f59e0b;padding:0.8rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;margin:-20px -30px 20px -30px;padding:0.8rem 30px;flex-wrap:wrap;gap:10px;transition:background 0.3s;}
-body.dark-soft .header{background:linear-gradient(135deg,#0f1724,#0a0f1a);}
 @media (max-width:768px){.header{padding:0.8rem 15px;margin:-12px -12px 20px -12px;}}
 .logo h1{font-size:16px;font-weight:600;color:#f59e0b;letter-spacing:1px;display:flex;align-items:center;gap:8px;}
 .logo p{font-size:9px;color:#64748b;margin-top:4px;}
@@ -220,7 +273,7 @@ tr:hover{background:#1a2332;}
 .report-ref-badge .value{font-size:14px;font-weight:700;color:#f59e0b;font-family:monospace;}
 </style>
 </head>
-<body class="dark-soft">
+<body class="light-gradient">
 <div class="dashboard">
 <div class="header">
 <div class="logo"><h1><i class="fas fa-chart-line"></i> NeTubeX · DEO-Flory Ngenda</h1><p>Espace de rémunération digitale</p></div>
@@ -422,26 +475,26 @@ function initTabScroll() {
     rightArrow.addEventListener('click', () => { tabsWrapper.scrollBy({ left: scrollAmount, behavior: 'smooth' }); });
 }
 
-// Gestion du thème : bascule entre dark-soft et light-gradient
+// Gestion du thème : toggle entre light-gradient (clair) et dark-soft (sombre)
 function initTheme() {
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light-gradient') {
-        document.body.classList.remove('dark-soft');
-        document.body.classList.add('light-gradient');
-    } else {
-        document.body.classList.add('dark-soft');
+    if (savedTheme === 'dark-soft') {
         document.body.classList.remove('light-gradient');
+        document.body.classList.add('dark-soft');
+    } else {
+        document.body.classList.add('light-gradient');
+        document.body.classList.remove('dark-soft');
     }
 }
 function toggleTheme() {
-    if (document.body.classList.contains('dark-soft')) {
-        document.body.classList.remove('dark-soft');
-        document.body.classList.add('light-gradient');
-        localStorage.setItem('theme', 'light-gradient');
-    } else {
+    if (document.body.classList.contains('light-gradient')) {
         document.body.classList.remove('light-gradient');
         document.body.classList.add('dark-soft');
         localStorage.setItem('theme', 'dark-soft');
+    } else {
+        document.body.classList.remove('dark-soft');
+        document.body.classList.add('light-gradient');
+        localStorage.setItem('theme', 'light-gradient');
     }
 }
 
@@ -662,7 +715,7 @@ function updateNetubersTable(){
         let statusHtml=isOnline?'<span class="status-spot online"><i class="fas fa-circle"></i> Connecté</span>':'<span class="status-spot offline"><i class="fas fa-circle"></i> Déconnecté</span>';
         let objMensuel=u.objectifMensuel||9;
         let objAtteint=u.objectifAtteint||0;
-        return `<tr><td><strong>${escapeHtml(u.code)}</strong>${u.isBlocked?' <span class="badge badge-danger">Bloqué</span>':''}</td><td>${objMensuel}</td><td style="color:${objAtteint>=objMensuel?'#10b981':'#f59e0b'}">${objAtteint}</td><td>${statusHtml}</td><td><small>${statusText}</small></td><td><button class="action-btn cap" onclick='openCAPModal("${u.code}")'>CAP</button><button class="action-btn delete" onclick='blockUser("${u.id}")'>${u.isBlocked?'Débloquer':'Bloquer'}</button></td></tr>`;
+        return `<tr><td><strong>${escapeHtml(u.code)}</strong>${u.isBlocked?' <span class="badge badge-danger">Bloqué</span>':''}</td><td>${objMensuel}<td><td style="color:${objAtteint>=objMensuel?'#10b981':'#f59e0b'}">${objAtteint}</td><td>${statusHtml}</td><td><small>${statusText}</small></td><td><button class="action-btn cap" onclick='openCAPModal("${u.code}")'>CAP</button><button class="action-btn delete" onclick='blockUser("${u.id}")'>${u.isBlocked?'Débloquer':'Bloquer'}</button></td></tr>`;
     }).join('');
     document.getElementById('totalNetubers').innerText=netuberUsers.length;
     document.getElementById('totalOnline').innerText=onlineCount;
@@ -688,7 +741,8 @@ function updateActiveUsersTable(){
     tbody.innerHTML=filtered.map(u=>{
         let devices=getUserDevices(u.id);
         let d=devices[0]||{};
-        return `<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${(u.balance||0).toFixed(2)} $</td><td>${formatDateShort(u.dateActivation)}</td><td>${escapeHtml((d.deviceId||'-').substring(0,8))}</td><td>${formatDateShort(d.firstLogin)}</td><td>${d.isActive?'✅':'❌'}</td><td>${formatDateShort(d.lastLogin)}</td><td>${escapeHtml((d.lastUserAgent||'-').substring(0,20))}</td><td><button class="action-btn promote" onclick='openPromoteModal("${u.id}")'>Promouvoir</button><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Supprimer</button></td>`; }).join('');
+        return `<tr><td>${escapeHtml(u.nom||'')} ${escapeHtml(u.prenom||'')}</td><td>${escapeHtml(u.email||'-')}</td><td>${escapeHtml(u.contactValue||'-')}</td><td>${(u.balance||0).toFixed(2)} $</td><td>${formatDateShort(u.dateActivation)}</td><td>${escapeHtml((d.deviceId||'-').substring(0,8))}<table><td>${formatDateShort(d.firstLogin)}</td><td>${d.isActive?'✅':'❌'}</td><td>${formatDateShort(d.lastLogin)}</td><td>${escapeHtml((d.lastUserAgent||'-').substring(0,20))}</td><td><button class="action-btn promote" onclick='openPromoteModal("${u.id}")'>Promouvoir</button><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Supprimer</button></td>`;
+    }).join('');
     document.getElementById('totalActiveUsers').innerText=activeUsers.length;
 }
 function updatePrivacyTab(){
