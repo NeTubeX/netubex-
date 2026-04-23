@@ -45,6 +45,29 @@ body{font-family:'Inter','Courier New',monospace;background:#0a1a2f;height:100vh
 .tab-btn.active{background:#facc15;color:#0a1a2f;}
 .tab-content{display:none;height:100%;overflow-y:auto;flex:1;padding-right:4px;}
 .tab-content.active{display:block;}
+/* Plein écran pour l'onglet chat */
+.tab-content.chat-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background: #0a1a2f;
+  padding: 12px;
+  margin: 0;
+  border-radius: 0;
+}
+/* Cache le header et les autres onglets quand chat est actif */
+body.chat-active .app-container > h1,
+body.chat-active .tabs {
+  display: none;
+}
+body.chat-active .tab-content.chat-fullscreen {
+  display: block !important;
+}
 h1{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:12px;margin-top:5px;background:linear-gradient(135deg,#facc15,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .question-card{border-radius:24px;padding:24px 20px;margin-bottom:12px;border:1px solid rgba(250,204,21,0.2);transition:all 0.3s ease;}
 /* Classes de couleurs pour chaque Netuber */
@@ -107,7 +130,7 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 .send-btn-special{background:linear-gradient(145deg,#e67e22,#d35400);color:white;margin-top:16px;}
 .send-btn-special.hidden{display:none;}
 
-/* STYLES CHAT DEO - STYLE WHATSAPP */
+/* STYLES CHAT DEO - STYLE WHATSAPP - VERSION PLEIN ÉCRAN */
 .chat-container {
   background: #0e2a3a;
   border-radius: 24px;
@@ -118,6 +141,12 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
   position: relative;
 }
 
+/* Mode plein écran pour le chat */
+.tab-content.chat-fullscreen .chat-container {
+  border-radius: 0;
+  height: 100vh;
+}
+
 .chat-messages {
   flex: 1;
   overflow-y: auto;
@@ -125,17 +154,30 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-height: calc(100vh - 200px);
+  max-height: calc(100vh - 180px);
+}
+
+/* Mode plein écran - ajustement des messages */
+.tab-content.chat-fullscreen .chat-messages {
+  max-height: calc(100vh - 140px);
+  padding: 24px 20px;
 }
 
 .message-bubble {
   max-width: 85%;
-  padding: 10px 14px;
-  border-radius: 18px;
+  padding: 12px 18px;
+  border-radius: 20px;
   position: relative;
   word-wrap: break-word;
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Mode plein écran - messages plus grands */
+.tab-content.chat-fullscreen .message-bubble {
+  font-size: 1.1rem;
+  padding: 14px 20px;
+  max-width: 80%;
 }
 
 .message-sent {
@@ -153,13 +195,18 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 }
 
 .message-info {
-  font-size: 0.65rem;
-  margin-top: 4px;
+  font-size: 0.7rem;
+  margin-top: 6px;
   opacity: 0.7;
   display: flex;
   justify-content: flex-end;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+/* Mode plein écran - infos plus grandes */
+.tab-content.chat-fullscreen .message-info {
+  font-size: 0.75rem;
 }
 
 .message-sender {
@@ -169,20 +216,20 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 }
 
 .message-date {
-  font-size: 0.6rem;
+  font-size: 0.65rem;
 }
 
 .message-actions {
   display: flex;
   gap: 8px;
-  margin-top: 6px;
+  margin-top: 8px;
   justify-content: flex-end;
 }
 
 .message-actions button {
   background: transparent;
-  padding: 4px 8px;
-  font-size: 0.65rem;
+  padding: 4px 10px;
+  font-size: 0.7rem;
   border-radius: 20px;
   color: #7dd3fc;
 }
@@ -193,25 +240,40 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 
 .chat-input-area {
   background: #112b42;
-  padding: 12px;
-  border-radius: 24px;
+  padding: 16px 20px;
+  border-radius: 28px;
   margin-top: 8px;
   display: flex;
-  gap: 10px;
-  align-items: center;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+/* Mode plein écran - zone de saisie remontée et plus grande */
+.tab-content.chat-fullscreen .chat-input-area {
+  padding: 20px 24px;
+  border-radius: 32px;
+  gap: 16px;
 }
 
 .chat-input-area textarea {
   flex: 1;
   background: #0a2538;
   border: 1px solid #2d4e73;
-  border-radius: 24px;
-  padding: 12px 16px;
+  border-radius: 28px;
+  padding: 14px 18px;
   color: white;
   font-family: 'Inter', monospace;
-  font-size: 0.9rem;
+  font-size: 1rem;
   resize: none;
-  max-height: 100px;
+  max-height: 120px;
+  min-height: 50px;
+}
+
+/* Mode plein écran - textarea plus grande */
+.tab-content.chat-fullscreen .chat-input-area textarea {
+  font-size: 1.1rem;
+  padding: 16px 20px;
+  min-height: 60px;
 }
 
 .chat-input-area textarea:focus {
@@ -221,9 +283,16 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 
 .chat-input-area button {
   background: #facc15;
-  padding: 12px 20px;
+  padding: 14px 24px;
   border-radius: 40px;
   white-space: nowrap;
+  font-size: 0.95rem;
+}
+
+/* Mode plein écran - bouton plus grand */
+.tab-content.chat-fullscreen .chat-input-area button {
+  padding: 16px 28px;
+  font-size: 1rem;
 }
 
 .edit-popup textarea {
@@ -243,6 +312,33 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
   padding: 40px;
   color: #7dd3fc;
   font-weight: 500;
+}
+
+/* Bouton retour pour le chat en plein écran */
+.chat-back-btn {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  background: rgba(250,204,21,0.9);
+  color: #0a1a2f;
+  border: none;
+  border-radius: 40px;
+  padding: 10px 18px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  z-index: 1001;
+  display: none;
+  align-items: center;
+  gap: 6px;
+}
+
+body.chat-active .chat-back-btn {
+  display: flex;
+}
+
+.chat-back-btn:hover {
+  background: #facc15;
 }
 </style>
 </head>
@@ -300,6 +396,8 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;flex-shr
 </div>
 </div>
 </div>
+
+<button id="chatBackBtn" class="chat-back-btn">← Retour</button>
 
 <div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
 
@@ -372,6 +470,8 @@ const editPopupOverlay = document.getElementById('editPopupOverlay');
 const editMessageContent = document.getElementById('editMessageContent');
 const cancelEditBtn = document.getElementById('cancelEditBtn');
 const confirmEditBtn = document.getElementById('confirmEditBtn');
+const chatBackBtn = document.getElementById('chatBackBtn');
+const tabChat = document.getElementById('tabChat');
 
 let currentResponsable = "";
 
@@ -494,7 +594,7 @@ async function sendChatMessage() {
     await addDoc(chatRef, chatData);
     chatMessageInput.value = "";
     await loadChatMessages();
-    showPopup("✅ Message envoyé", "Votre message a été transmis à la DEO.", "Fermer", "", () => {}, () => {});
+    // PLUS DE POPUP DE CONFIRMATION
   } catch(e) {
     console.error("Erreur envoi message:", e);
     showPopup("❌ Erreur", "Le message n'a pas pu être envoyé. Vérifiez votre connexion.", "Fermer", "", () => {}, () => {});
@@ -555,6 +655,17 @@ async function confirmEdit() {
     }
     closeEditPopup();
   }
+}
+
+// Fonction pour activer/désactiver le mode plein écran du chat
+function enableChatFullscreen() {
+  document.body.classList.add('chat-active');
+  tabChat.classList.add('chat-fullscreen');
+}
+
+function disableChatFullscreen() {
+  document.body.classList.remove('chat-active');
+  tabChat.classList.remove('chat-fullscreen');
 }
 
 function loadMemorandumsFromFirebase(){
@@ -1066,15 +1177,25 @@ sendReportBtn.onclick=sendReportToFirebase;
 sendChatBtn.onclick=sendChatMessage;
 cancelEditBtn.onclick=closeEditPopup;
 confirmEditBtn.onclick=confirmEdit;
+chatBackBtn.onclick=disableChatFullscreen;
 
+// Gestion des onglets avec plein écran pour le chat
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.onclick=()=>{
+    // Si on quitte l'onglet chat, désactiver le mode plein écran
+    if (btn.dataset.tab !== 'chat') {
+      disableChatFullscreen();
+    }
+    
     document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(`tab${btn.dataset.tab==='form'?'Form':btn.dataset.tab==='memo'?'Memo':'Chat'}`).classList.add('active');
     if(btn.dataset.tab==='memo') loadMemorandumsFromFirebase();
-    if(btn.dataset.tab==='chat') loadChatMessages();
+    if(btn.dataset.tab==='chat') {
+      loadChatMessages();
+      enableChatFullscreen();
+    }
   };
 });
 
