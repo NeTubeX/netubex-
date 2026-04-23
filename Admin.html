@@ -107,34 +107,6 @@ tr:hover{background:#1a2332;}
 .report-ref-badge{background:#f59e0b20;border:1px solid #f59e0b;border-radius:12px;padding:8px 15px;text-align:center;}
 .report-ref-badge .label{font-size:10px;color:#94a3b8;}
 .report-ref-badge .value{font-size:14px;font-weight:700;color:#f59e0b;font-family:monospace;}
-
-/* STYLES CHAT DEO - IDENTIQUE À L'APPLICATION RESPONSABLE */
-.tab-content.chat-fullscreen{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:1000;background:#0a1a2f;padding:0;margin:0;border-radius:0;}
-body.chat-active .dashboard>.header,body.chat-active .tabs-wrapper{display:none;}
-body.chat-active .tab-content.chat-fullscreen{display:block!important;}
-.chat-container{background:#0e2a3a;display:flex;flex-direction:column;height:100%;overflow:hidden;}
-.chat-messages{flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:12px;}
-.message-bubble{max-width:85%;padding:12px 18px;border-radius:20px;word-wrap:break-word;font-size:1rem;line-height:1.5;cursor:pointer;}
-.message-sent{align-self:flex-end;background:linear-gradient(145deg,#075e54,#054a44);color:#ffffff;font-weight:700;border-bottom-right-radius:4px;}
-.message-received{align-self:flex-start;background:#1f2c38;color:#e0f2fe;border-bottom-left-radius:4px;}
-.message-info{font-size:0.65rem;margin-top:6px;opacity:0.7;display:flex;justify-content:flex-end;gap:8px;}
-.message-sender{font-weight:600;color:#facc15;margin-right:8px;}
-.message-actions{display:flex;gap:8px;margin-top:8px;justify-content:flex-end;}
-.message-actions button{background:transparent;padding:4px 10px;font-size:0.7rem;border-radius:20px;color:#7dd3fc;border:none;cursor:pointer;}
-.chat-input-area{background:#112b42;padding:16px 20px;border-radius:28px;margin-top:8px;display:flex;gap:12px;align-items:center;}
-.chat-input-area textarea{flex:1;background:#0a2538;border:1px solid #2d4e73;border-radius:28px;padding:14px 18px;color:#fff;font-family:'Inter',monospace;font-size:1rem;resize:none;max-height:50px;min-height:50px;}
-.chat-input-area textarea:focus{outline:none;border-color:#facc15;}
-.chat-input-area button{background:#facc15;padding:12px 18px;border-radius:40px;font-size:1.3rem;min-width:50px;border:none;cursor:pointer;color:#0a1a2f;}
-.empty-chat{text-align:center;padding:40px;color:#7dd3fc;}
-.chat-header{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:linear-gradient(135deg,#0a1a2f,#0e2a3a);z-index:1001;border-bottom:1px solid rgba(250,204,21,0.3);}
-.chat-back-btn{background:rgba(250,204,21,0.9);color:#0a1a2f;border:none;border-radius:40px;padding:8px 16px;font-weight:700;font-size:0.85rem;cursor:pointer;display:flex;align-items:center;gap:6px;}
-.netubex-logo{font-size:1.6rem;font-weight:900;color:#facc15;letter-spacing:2px;}
-.rainbow-line{height:3px;background:linear-gradient(90deg,#ff0000,#ff8000,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);position:fixed;top:56px;left:0;right:0;z-index:1001;}
-body.chat-active .chat-header{display:flex;}
-body.chat-active .rainbow-line{display:block;}
-.chat-header{display:none;}
-.rainbow-line{display:none;}
-.loading-placeholder{text-align:center;padding:40px;color:#7dd3fc;font-weight:500;}
 </style>
 </head>
 <body class="dark-soft">
@@ -177,16 +149,16 @@ body.chat-active .rainbow-line{display:block;}
 </div>
 
 <!-- Onglet Inscriptions -->
-<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"></tbody></tr></div></div>
+<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"></tbody></table></div></div>
 
 <!-- Onglet Utilisateurs -->
-<div id="utilisateursTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalActiveUsers">0</div><div class="label">Utilisateurs actifs</div></div></div><div class="filters"><input type="text" id="searchActiveUsers" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterActiveUsers()"></div><div class="table-wrapper"><table id="activeUsersTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Contact</th><th>Balance</th><th>Date activation</th><th>deviceId</th><th>firstLogin</th><th>isActive</th><th>lastLogin</th><th>lastUserAgent</th><th>Actions</th></tr></thead><tbody id="activeUsersTableBody"></tbody><tr></div></div>
+<div id="utilisateursTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalActiveUsers">0</div><div class="label">Utilisateurs actifs</div></div></div><div class="filters"><input type="text" id="searchActiveUsers" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterActiveUsers()"></div><div class="table-wrapper"><table id="activeUsersTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Contact</th><th>Balance</th><th>Date activation</th><th>deviceId</th><th>firstLogin</th><th>isActive</th><th>lastLogin</th><th>lastUserAgent</th><th>Actions</th></tr></thead><tbody id="activeUsersTableBody"></tbody></table></div></div>
 
 <!-- Onglet Netubers -->
 <div id="netubersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Netubers</div></div><div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">Connectés</div></div><div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label">Déconnectés</div></div><div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Comptes bloqués</div></div></div><div class="filters"><input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()"><select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">Connectés</option><option value="offline">Déconnectés</option></select><button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button><button class="export-btn" onclick="openAddUserModal()" style="background:#8b5cf6;"><i class="fas fa-user-plus"></i> Ajouter</button></div><div class="table-wrapper"><table id="netubersTable"><thead><tr><th>Code Netuber</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Statut</th><th>Connexion</th><th>Actions</th></tr></thead><tbody id="netubersTableBody"></tbody></table></div></div>
 
 <!-- Onglet Retraits -->
-<div id="retraitsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalWithdrawalsPending">0</div><div class="label">En attente</div></div><div class="stat-card"><div class="value" id="totalWithdrawalsAmount">0</div><div class="label">Montant total</div></div></div><div class="filters"><select id="withdrawStatusFilter" class="filter-select" onchange="filterWithdrawals()"><option value="all">Tous</option><option value="pending">En attente</option><option value="approved">Approuvés</option><option value="rejected">Rejetés</option></select><button class="export-btn" onclick="exportWithdrawals()"><i class="fas fa-file-excel"></i> Exporter</button></div><div class="table-wrapper"><table id="withdrawalsTable"><thead><tr><th>Utilisateur</th><th>Montant</th><th>Méthode</th><th>Wallet</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="withdrawalsTableBody"></tbody></table></div></div>
+<div id="retraitsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalWithdrawalsPending">0</div><div class="label">En attente</div></div><div class="stat-card"><div class="value" id="totalWithdrawalsAmount">0</div><div class="label">Montant total</div></div></div><div class="filters"><select id="withdrawStatusFilter" class="filter-select" onchange="filterWithdrawals()"><option value="all">Tous</option><option value="pending">En attente</option><option value="approved">Approuvés</option><option value="rejected">Rejetés</option></select><button class="export-btn" onclick="exportWithdrawals()"><i class="fas fa-file-excel"></i> Exporter</button></div><div class="table-wrapper"><table id="withdrawalsTable"><thead></tr><th>Utilisateur</th><th>Montant</th><th>Méthode</th><th>Wallet</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="withdrawalsTableBody"></tbody></table></div></div>
 
 <!-- Onglet Finance -->
 <div id="financeTab" class="tab-content"><div class="finance-buttons"><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source A</h3></div><button class="finance-btn" onclick="window.open('https://siteowner.timewall.io/','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source B</h3></div><button class="finance-btn" onclick="window.open('https://beta.partners.adsterra.com/login','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source C</h3></div><button class="finance-btn" onclick="window.open('https://gain.gg/earn','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div></div></div>
@@ -204,7 +176,7 @@ body.chat-active .rainbow-line{display:block;}
 </div>
 <div class="table-wrapper"><table id="rapportsTable"><thead><tr><th>Code Netuber</th><th>Présence</th><th>Raison absence</th><th>Obj.mensuel</th><th>Obj.atteint</th><th>Niveaux</th><th>Niveaux atteints</th><th>Points préc.</th><th>Points jour</th><th>Temps préc.(min)</th><th>Temps jour(min)</th><th>Forfait Go</th><th>Rendement(pts/h)</th></tr></thead><tbody id="rapportsTableBody"></tbody></table></div></div>
 
-<!-- ONGLET CHAT DEO -->
+<!-- ONGLET CHAT DEO - IDENTIQUE À L'APPLICATION RESPONSABLE -->
 <div id="chatDeoTab" class="tab-content">
 <div class="chat-container">
 <div class="chat-messages" id="chatMessages"><div class="loading-placeholder">⏳ Chargement...</div></div>
@@ -216,7 +188,7 @@ body.chat-active .rainbow-line{display:block;}
 </div>
 
 <!-- Onglet Anomalies -->
-<div id="anomaliesTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalAnomalies">0</div><div class="label">Anomalies détectées</div></div></div><div class="table-wrapper"><table id="anomaliesTable"><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre tickets</th><th>Action</th></tr></thead><tbody id="anomaliesTableBody"></tbody></table></div></div>
+<div id="anomaliesTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalAnomalies">0</div><div class="label">Anomalies détectées</div></div></div><div class="table-wrapper"><table id="anomaliesTable"><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre tickets</th><th>Action</th></table></thead><tbody id="anomaliesTableBody"></tbody></table></div></div>
 
 <!-- Onglet Confidentialité -->
 <div id="confidentialiteTab" class="tab-content"><div class="table-wrapper"><table id="privacyTable"><thead><tr><th>Code</th><th>Email</th><th>Dernière connexion</th></tr></thead><tbody id="privacyEmailsBody"></tbody></table></div></div>
@@ -289,6 +261,13 @@ body.chat-active .rainbow-line{display:block;}
 <!-- Modal Confirmation -->
 <div id="confirmModal" class="modal"><div class="modal-content" style="max-width:400px;"><div class="modal-body confirm-dialog"><i class="fas fa-exclamation-triangle"></i><h3 id="confirmTitle">Confirmation</h3><p id="confirmMessage" style="margin:15px 0;">Êtes-vous sûr ?</p><div class="confirm-buttons"><button class="btn-cancel" id="confirmCancelBtn">Annuler</button><button class="btn-confirm" id="confirmOkBtn">Confirmer</button></div></div></div></div>
 
+<!-- HEADER CHAT (identique à l'application responsable) -->
+<div class="chat-header">
+<button id="chatBackBtn" class="chat-back-btn">← Retour</button>
+<div class="netubex-logo">NeTubeX</div>
+</div>
+<div class="rainbow-line"></div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, getDoc, query, orderBy, limit, where, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -306,7 +285,6 @@ let searchPendingTerm="", searchActiveTerm="", searchNetuberTerm="";
 let currentDeleteTicket = null;
 let currentReportReference = null;
 let currentReportDate = null;
-let chatFullscreenActive = false;
 
 function escapeHtml(t){if(!t)return'';return String(t).replace(/[&<>]/g,m=>m==='&'?'&amp;':(m==='<'?'&lt;':'&gt;'));}
 function formatDateShort(d){if(!d)return'-';try{return new Date(d).toLocaleDateString('fr-FR');}catch(e){return'-';}}
@@ -325,53 +303,65 @@ function showConfirm(title,message,onConfirm){
     ok.addEventListener('click',handler);cancel.addEventListener('click',cancelHandler);
 }
 
-// Gestion des onglets avec plein écran pour le chat
+// STYLES CHAT (ajoutés dynamiquement)
+const chatStyles = document.createElement('style');
+chatStyles.textContent = `
+.tab-content.chat-fullscreen{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:1000;background:#0a1a2f;padding:0;margin:0;border-radius:0;}
+body.chat-active .dashboard>.header,body.chat-active .tabs-wrapper{display:none;}
+body.chat-active .tab-content.chat-fullscreen{display:block!important;}
+.chat-container{background:#0e2a3a;display:flex;flex-direction:column;height:100%;overflow:hidden;}
+.chat-messages{flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:12px;}
+.message-bubble{max-width:85%;padding:12px 18px;border-radius:20px;word-wrap:break-word;font-size:1rem;line-height:1.5;cursor:pointer;}
+.message-sent{align-self:flex-end;background:linear-gradient(145deg,#075e54,#054a44);color:#ffffff;font-weight:700;border-bottom-right-radius:4px;}
+.message-received{align-self:flex-start;background:#1f2c38;color:#e0f2fe;border-bottom-left-radius:4px;}
+.message-info{font-size:0.65rem;margin-top:6px;opacity:0.7;display:flex;justify-content:flex-end;gap:8px;}
+.message-sender{font-weight:600;color:#facc15;margin-right:8px;}
+.message-actions{display:flex;gap:8px;margin-top:8px;justify-content:flex-end;}
+.message-actions button{background:transparent;padding:4px 10px;font-size:0.7rem;border-radius:20px;color:#7dd3fc;border:none;cursor:pointer;}
+.chat-input-area{background:#112b42;padding:16px 20px;border-radius:28px;margin-top:8px;display:flex;gap:12px;align-items:center;}
+.chat-input-area textarea{flex:1;background:#0a2538;border:1px solid #2d4e73;border-radius:28px;padding:14px 18px;color:#fff;font-family:'Inter',monospace;font-size:1rem;resize:none;max-height:50px;min-height:50px;}
+.chat-input-area textarea:focus{outline:none;border-color:#facc15;}
+.chat-input-area button{background:#facc15;padding:12px 18px;border-radius:40px;font-size:1.3rem;min-width:50px;border:none;cursor:pointer;color:#0a1a2f;}
+.empty-chat{text-align:center;padding:40px;color:#7dd3fc;}
+.chat-header{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:linear-gradient(135deg,#0a1a2f,#0e2a3a);z-index:1001;border-bottom:1px solid rgba(250,204,21,0.3);}
+.chat-back-btn{background:rgba(250,204,21,0.9);color:#0a1a2f;border:none;border-radius:40px;padding:8px 16px;font-weight:700;font-size:0.85rem;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.netubex-logo{font-size:1.6rem;font-weight:900;color:#facc15;letter-spacing:2px;}
+.rainbow-line{height:3px;background:linear-gradient(90deg,#ff0000,#ff8000,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);position:fixed;top:56px;left:0;right:0;z-index:1001;}
+body.chat-active .chat-header{display:flex;}
+body.chat-active .rainbow-line{display:block;}
+.chat-header{display:none;}
+.rainbow-line{display:none;}
+.loading-placeholder{text-align:center;padding:40px;color:#7dd3fc;font-weight:500;}
+`;
+document.head.appendChild(chatStyles);
+
+// Éléments chat
+const chatMessagesDiv = document.getElementById('chatMessages');
+const chatMessageInput = document.getElementById('chatMessageInput');
+const sendChatBtn = document.getElementById('sendChatBtn');
+const chatBackBtn = document.getElementById('chatBackBtn');
+const tabChat = document.getElementById('chatDeoTab');
+
 function enableChatFullscreen(){
     document.body.classList.add('chat-active');
-    document.getElementById('chatDeoTab').classList.add('chat-fullscreen');
-    chatFullscreenActive = true;
+    tabChat.classList.add('chat-fullscreen');
 }
 
 function disableChatFullscreen(){
     document.body.classList.remove('chat-active');
-    document.getElementById('chatDeoTab').classList.remove('chat-fullscreen');
-    chatFullscreenActive = false;
+    tabChat.classList.remove('chat-fullscreen');
     document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
     document.querySelector('.tab[data-tab="statistiques"]').classList.add('active');
     document.getElementById('statistiquesTab').classList.add('active');
 }
 
-document.querySelectorAll('.tab').forEach(btn=>{
-    btn.onclick=()=>{
-        const tab = btn.getAttribute('data-tab');
-        if(tab !== 'chatDeo'){
-            if(chatFullscreenActive) disableChatFullscreen();
-            document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(tab+'Tab').classList.add('active');
-        }
-        if(tab === 'chatDeo'){
-            enableChatFullscreen();
-            loadChatMessages();
-        }
-        if(tab === 'memo') loadMemorandums();
-    };
-});
-
-document.getElementById('logoutBtn')?.addEventListener('click',()=>showConfirm('Déconnexion','Quitter ?',async()=>{await signOut(auth);window.location.href="login.html";}));
-document.getElementById('refreshBtn')?.addEventListener('click',()=>location.reload());
-document.getElementById('themeToggle')?.addEventListener('click',()=>{document.body.classList.toggle('dark-soft');localStorage.setItem('theme',document.body.classList.contains('dark-soft')?'dark':'dark-soft');});
-if(localStorage.getItem('theme')!=='dark-soft')document.body.classList.add('dark-soft');
-
-// ============ CHAT DEO ============
+// Fonctions chat
 async function loadChatMessages(){
-    const chatMessagesDiv = document.getElementById('chatMessages');
     if(!chatMessagesDiv) return;
     chatMessagesDiv.innerHTML = '<div class="loading-placeholder">⏳ Chargement...</div>';
     try{
-        const q = query(collection(db,"chat_messages"),orderBy("sentDate","desc"),limit(100));
+        const q = query(collection(db,"chat_messages"), orderBy("sentDate","desc"), limit(100));
         const s = await getDocs(q);
         if(s.empty){
             chatMessagesDiv.innerHTML = '<div class="empty-chat">💬 Aucun message</div>';
@@ -411,7 +401,7 @@ async function loadChatMessages(){
 }
 
 async function sendChatMessage(){
-    const msg = document.getElementById('chatMessageInput').value.trim();
+    const msg = chatMessageInput.value.trim();
     if(!msg){
         showToast("Message vide", true);
         return;
@@ -426,22 +416,42 @@ async function sendChatMessage(){
             isEdited: false,
             status: "envoyé"
         });
-        document.getElementById('chatMessageInput').value = '';
+        chatMessageInput.value = '';
         await loadChatMessages();
     } catch(e){
         showToast("Erreur envoi", true);
     }
 }
 
-document.getElementById('sendChatBtn')?.addEventListener('click', sendChatMessage);
-document.getElementById('chatMessageInput')?.addEventListener('keypress', (e) => {
+sendChatBtn?.addEventListener('click', sendChatMessage);
+chatMessageInput?.addEventListener('keypress', (e) => {
     if(e.key === 'Enter' && !e.shiftKey){
         e.preventDefault();
         sendChatMessage();
     }
 });
+chatBackBtn?.addEventListener('click', disableChatFullscreen);
 
-// ============ FONCTIONS EXISTANTES ============
+// Gestion des onglets
+document.querySelectorAll('.tab').forEach(btn=>{
+    btn.onclick=()=>{
+        const tab = btn.getAttribute('data-tab');
+        if(tab !== 'chatDeo'){
+            if(document.body.classList.contains('chat-active')) disableChatFullscreen();
+            document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(tab+'Tab').classList.add('active');
+        }
+        if(tab === 'chatDeo'){
+            enableChatFullscreen();
+            loadChatMessages();
+        }
+        if(tab === 'memo') loadMemorandums();
+    };
+});
+
+// ============ FONCTIONS EXISTANTES (conservées intactes) ============
 window.toggleAddCode=()=>{let role=document.getElementById('addRole').value;document.getElementById('addCodeGroup').style.display=role==='netuber'?'block':'none';};
 window.createUser = async () => {
     let email = document.getElementById('addEmail').value.trim();
@@ -599,7 +609,7 @@ function updateWithdrawalsTable(){
     let tbody=document.getElementById('withdrawalsTableBody');
     if(!tbody)return;
     let filtered=withdrawalsData.filter(w=>currentWithdrawFilter==='all'||w.status===currentWithdrawFilter);
-    tbody.innerHTML=filtered.map(w=>{ let u=usersData.find(u=>u.id===w.userId); let statusClass=w.status==='pending'?'badge-warning':(w.status==='approved'?'badge-success':'badge-danger'); let statusText=w.status==='pending'?'En attente':(w.status==='approved'?'Approuvé':'Rejeté'); return `</table><td>${escapeHtml(u?.email||w.userId)}</td><td>${(w.amount||0).toFixed(2)} $</td><td>${w.method||'-'}</td><td>${escapeHtml(w.walletAddress||'-')}</td><td>${formatDateShort(w.requestedAt)}</td><td><span class="badge ${statusClass}">${statusText}</span></td><td>${w.status==='pending'?`<button class="action-btn approve" onclick='approveWithdraw("${w.id}")'>Approuver</button><button class="action-btn delete" onclick='rejectWithdraw("${w.id}")'>Rejeter</button>`:(w.status==='approved'?`<button class="action-btn delete" onclick='deleteWithdraw("${w.id}")'>Supprimer</button>`:'-')}</td></tr>`; }).join('');
+    tbody.innerHTML=filtered.map(w=>{ let u=usersData.find(u=>u.id===w.userId); let statusClass=w.status==='pending'?'badge-warning':(w.status==='approved'?'badge-success':'badge-danger'); let statusText=w.status==='pending'?'En attente':(w.status==='approved'?'Approuvé':'Rejeté'); return `<tr><td>${escapeHtml(u?.email||w.userId)}</td><td>${(w.amount||0).toFixed(2)} $</td><td>${w.method||'-'}</td><td>${escapeHtml(w.walletAddress||'-')}</td><td>${formatDateShort(w.requestedAt)}</td><td><span class="badge ${statusClass}">${statusText}</span></td><td>${w.status==='pending'?`<button class="action-btn approve" onclick='approveWithdraw("${w.id}")'>Approuver</button><button class="action-btn delete" onclick='rejectWithdraw("${w.id}")'>Rejeter</button>`:(w.status==='approved'?`<button class="action-btn delete" onclick='deleteWithdraw("${w.id}")'>Supprimer</button>`:'-')}</td></tr>`; }).join('');
 }
 window.approveWithdraw=async(id)=>{ let w=withdrawalsData.find(w=>w.id===id); if(!w)return; let userRef=doc(db,"users",w.userId); let userSnap=await getDoc(userRef); let balance=userSnap.exists()?(userSnap.data().balance||0):0; await updateDoc(userRef,{balance:balance-(w.amount||0)}); await updateDoc(doc(db,"withdraw",id),{status:"approved",processedAt:new Date().toISOString()}); showToast("Retrait approuvé"); await loadWithdrawals(); await loadAllData(); };
 window.rejectWithdraw=async(id)=>{ await updateDoc(doc(db,"withdraw",id),{status:"rejected",processedAt:new Date().toISOString()}); showToast("Retrait rejeté"); await loadWithdrawals(); };
@@ -797,6 +807,10 @@ async function loadAllData(){
 }
 document.getElementById('sendMemoFromReportBtn')?.addEventListener('click', openMemorandumWithReportReference);
 document.getElementById('memorandumMenuBtn')?.addEventListener('click', () => { if (!currentReportReference) { showToast("Aucun rapport chargé", true); return; } openMemorandumWithReportReference(); });
+document.getElementById('logoutBtn')?.addEventListener('click',()=>showConfirm('Déconnexion','Quitter ?',async()=>{await signOut(auth);window.location.href="login.html";}));
+document.getElementById('refreshBtn')?.addEventListener('click',()=>location.reload());
+document.getElementById('themeToggle')?.addEventListener('click',()=>{document.body.classList.toggle('dark-soft');localStorage.setItem('theme',document.body.classList.contains('dark-soft')?'dark':'dark-soft');});
+if(localStorage.getItem('theme')!=='dark-soft')document.body.classList.add('dark-soft');
 loadAllData();
 setInterval(()=>loadAllData(),30000);
 setInterval(()=>{if(!auth.currentUser)window.location.href="login.html";},5000);
