@@ -25,7 +25,7 @@ window.deleteDoc=deleteDoc;
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Inter','Courier New',monospace;background:#0a1a2f;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
@@ -102,12 +102,14 @@ footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;}
 .chat-input-area button{background:#facc15;padding:12px 18px;border-radius:40px;font-size:1.3rem;min-width:50px;}
 .edit-popup textarea{width:100%;background:#0a2538;border:1px solid #facc15;border-radius:16px;padding:12px;color:#fff;margin-bottom:16px;}
 .empty-chat{text-align:center;padding:40px;color:#7dd3fc;}
-.chat-header{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:linear-gradient(135deg,#0a1a2f,#0e2a3a);z-index:1001;border-bottom:1px solid rgba(250,204,21,0.3);backdrop-filter:blur(10px);}
+.chat-header{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:linear-gradient(135deg,#0a1a2f,#0e2a3a);z-index:1001;border-bottom:1px solid rgba(250,204,21,0.3);}
 .chat-back-btn{background:rgba(250,204,21,0.9);color:#0a1a2f;border:none;border-radius:40px;padding:8px 16px;font-weight:700;font-size:0.85rem;cursor:pointer;display:flex;align-items:center;gap:6px;}
-.netubex-logo{font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,#facc15,#38bdf8,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:1px;text-shadow:0 0 20px rgba(250,204,21,0.3);animation:magicGlow 2s ease-in-out infinite;}
-@keyframes magicGlow{0%,100%{opacity:0.8;text-shadow:0 0 10px rgba(250,204,21,0.3);}50%{opacity:1;text-shadow:0 0 25px rgba(250,204,21,0.6),0 0 5px rgba(56,189,248,0.4);}}
+.netubex-logo{font-size:1.6rem;font-weight:900;color:#facc15;letter-spacing:2px;}
+.rainbow-line{height:3px;background:linear-gradient(90deg,#ff0000,#ff8000,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);position:fixed;top:60px;left:0;right:0;z-index:1001;}
 body.chat-active .chat-header{display:flex;}
+body.chat-active .rainbow-line{display:block;}
 .chat-header{display:none;}
+.rainbow-line{display:none;}
 .memorandum-footer{text-align:center;font-size:0.55rem;color:#5f748d;margin-top:16px;padding-top:12px;border-top:1px solid #2d4e73;}
 </style>
 </head>
@@ -162,6 +164,7 @@ body.chat-active .chat-header{display:flex;}
 <button id="chatBackBtn" class="chat-back-btn">← Retour</button>
 <div class="netubex-logo">NeTubeX</div>
 </div>
+<div class="rainbow-line"></div>
 <div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
 <div id="editPopupOverlay" class="popup-overlay"><div class="popup-card edit-popup"><div class="popup-title">✏️ Modifier</div><textarea id="editMessageContent" rows="4"></textarea><div class="popup-buttons"><button id="cancelEditBtn" class="popup-btn secondary">Annuler</button><button id="confirmEditBtn" class="popup-btn primary">OK</button></div></div></div>
 <script>
