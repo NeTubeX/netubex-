@@ -12,11 +12,9 @@
 html,body{height:100%;}
 body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#e4e6eb;min-height:100vh;overflow-x:hidden;padding-top:60px;}
 
-/* Rainbow line */
 .rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;position:fixed;top:0;left:0;right:0;z-index:101;}
 @keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
 
-/* Header */
 .header{position:fixed;top:3px;left:0;right:0;background:#242526;border-bottom:1px solid #3e4042;padding:0.5rem 1rem;display:flex;justify-content:space-between;align-items:center;z-index:100;transform:translateY(0);transition:transform 0.25s ease;}
 .header.hide{transform:translateY(-100%);}
 .logo{display:flex;align-items:center;gap:10px;cursor:default;}
@@ -25,52 +23,38 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .logo h1 span{color:#f59e0b;}
 .header-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
 .user-info{background:#3a3b3c;padding:4px 14px;border-radius:20px;font-size:0.7rem;color:#e4e6eb;display:flex;align-items:center;gap:8px;font-weight:600;}
-.online-status{display:flex;align-items:center;gap:6px;background:rgba(16,185,129,0.15);padding:3px 10px;border-radius:20px;font-size:0.65rem;font-weight:500;color:#10b981;width:fit-content;}
+.online-status{display:flex;align-items:center;gap:6px;background:rgba(16,185,129,0.15);padding:3px 10px;border-radius:20px;font-size:0.65rem;color:#10b981;width:fit-content;}
 .blinking-dot{width:7px;height:7px;background-color:#10b981;border-radius:50%;animation:blink 1.2s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.3;transform:scale(0.8);}}
 
-/* Feed */
 .feed-container{max-width:680px;margin:0 auto;padding:0 0 1rem 0;}
 .games-list{display:flex;flex-direction:column;gap:8px;width:100%;}
 
-/* Carte post */
 .post-card{background:#242526;border-radius:8px;overflow:hidden;transition:background-color 0.2s ease;position:relative;}
 .post-card:hover{background:#3a3b3c;}
 .post-card:active{background:#4e4f50;transition:0.05s;}
 
-/* Badge NOUVEAU */
-.badge-new{position:absolute;top:12px;right:12px;background:#f59e0b;color:#0f172a;font-size:0.65rem;font-weight:700;padding:4px 10px;border-radius:20px;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+.badge-new{position:absolute;top:12px;right:12px;background:#f59e0b;color:#0f172a;font-size:0.65rem;font-weight:700;padding:4px 10px;border-radius:20px;z-index:5;}
 
-/* Post header */
 .post-header{padding:12px 16px;display:flex;gap:12px;cursor:pointer;}
 .avatar{position:relative;width:40px;height:40px;background:#3a3b3c;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
-.avatar::after{content:'';position:absolute;bottom:-2px;right:-2px;width:12px;height:12px;background-color:#3b82f6;border-radius:50%;border:2px solid #242526;z-index:1;}
+.avatar::after{content:'';position:absolute;bottom:-2px;right:-2px;width:12px;height:12px;background-color:#3b82f6;border-radius:50%;border:2px solid #242526;}
 .post-meta{flex:1;}
 .post-meta h4{font-size:0.9375rem;font-weight:600;color:#e4e6eb;margin-bottom:2px;}
-.post-meta .game-description{font-size:0.875rem;color:#cacfd8;line-height:1.333;margin-bottom:4px;}
+.post-meta .game-description{font-size:0.875rem;color:#cacfd8;line-height:1.4;margin-bottom:4px;}
 
-/* Separator */
 .post-separator{height:1px;background:#3e4042;margin:0 12px;}
 
-/* Image wrapper */
-.image-wrapper{width:100%;display:block;line-height:0;background:#18191A;cursor:pointer;position:relative;}
-.post-image{width:100%;height:auto;min-height:200px;object-fit:cover;display:block;transition:opacity 0.2s ease;}
+.image-wrapper{width:100%;display:block;line-height:0;background:#18191A;cursor:pointer;}
+.post-image{width:100%;height:auto;min-height:200px;object-fit:cover;display:block;}
 .image-wrapper:hover .post-image{opacity:0.95;}
 
-/* Stats footer */
 .post-stats{padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #3e4042;}
 .post-stats .duration{font-size:0.75rem;color:#a8aaaf;display:flex;align-items:center;gap:4px;}
 .post-stats .earning{font-size:0.85rem;font-weight:600;color:#f59e0b;display:flex;align-items:center;gap:5px;}
 
-/* Iframe plein écran */
-.fullscreen-iframe{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:10000;display:flex;flex-direction:column;visibility:hidden;opacity:0;transition:opacity 0.25s;z-index:9999;}
-.fullscreen-iframe.active{visibility:visible;opacity:1;}
-.fullscreen-iframe iframe{width:100%;height:100%;border:none;}
-.iframe-close{position:absolute;top:20px;right:20px;width:44px;height:44px;background:#dc2626;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10001;border:none;color:#fff;font-size:1.2rem;}
-
-/* Boutons flottants */
 .floating-group{position:fixed;bottom:30px;right:25px;display:flex;flex-direction:column;gap:12px;z-index:200;}
-.float-item{background:#242526;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;transition:all 0.2s;color:#b0b3b8;border:1px solid #3e4042;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.float-item{background:#242526;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;transition:all 0.2s;color:#b0b3b8;border:1px solid #3e4042;}
 .float-item:hover{background:#3a3b3c;transform:scale(1.05);color:#e4e6eb;}
 .float-item.logout{background:#dc2626;border:none;color:#fff;}
 .float-item.logout:hover{background:#ef4444;}
@@ -78,29 +62,25 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .float-item.menu-btn{background:linear-gradient(145deg,#3b82f6,#2563eb);border:none;color:#fff;}
 @keyframes floatGold{0%,100%{transform:translateY(0px);}50%{transform:translateY(-6px);}}
 
-/* Popup */
-.slide-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);z-index:2000;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;transition:visibility 0s linear 0.25s;}
+.slide-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;transition:visibility 0s linear 0.25s;}
 .slide-popup.active{visibility:visible;transition:visibility 0s linear 0s;}
-.popup-left{background:#242526;max-width:600px;width:90%;border-radius:28px 28px 0 0;padding:1.5rem;text-align:center;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.2,0.9,0.4,1.1);max-height:85vh;overflow-y:auto;}
+.popup-left{background:#242526;max-width:600px;width:90%;border-radius:28px 28px 0 0;padding:1.5rem;text-align:center;transform:translateY(100%);transition:transform 0.4s ease;max-height:85vh;overflow-y:auto;}
 .slide-popup.active .popup-left{transform:translateY(0);}
 .slide-popup.closing .popup-left{transform:translateY(100%);}
-.popup-left h3{color:#e4e6eb;margin:0.5rem 0 0.3rem;font-size:1.3rem;font-weight:700;}
+.popup-left h3{color:#e4e6eb;font-size:1.3rem;font-weight:700;}
 .close-popup-btn{background:#3a3b3c;border:1px solid #3e4042;padding:10px 20px;border-radius:50px;color:#e4e6eb;cursor:pointer;margin-top:8px;font-weight:600;}
 .game-stats{background:#18191A;border-radius:16px;padding:0.8rem;margin:1rem 0;text-align:left;max-height:280px;overflow-y:auto;}
-.game-stats p{margin:4px 0;display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;padding:8px 8px;border-bottom:1px solid #3e4042;}
-.game-stats p:hover{background:#3a3b3c;border-radius:10px;}
+.game-stats p{margin:4px 0;display:flex;justify-content:space-between;font-size:0.8rem;padding:8px;border-bottom:1px solid #3e4042;}
 .game-stats .label{color:#b0b3b8;}
 .game-stats .value{color:#f59e0b;font-weight:800;}
-
-/* Autres popups */
-.menu-floating{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;background:#242526;border-radius:16px;border:1px solid #3e4042;z-index:1001;display:none;box-shadow:0 12px 28px rgba(0,0,0,0.5);}
+.menu-floating{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;background:#242526;border-radius:16px;border:1px solid #3e4042;z-index:1001;display:none;}
 .menu-floating.active{display:block;}
 .menu-header{padding:15px;border-bottom:1px solid #3e4042;color:#e4e6eb;}
 .menu-item{padding:12px 20px;display:flex;align-items:center;gap:12px;cursor:pointer;border-bottom:1px solid #3e4042;color:#e4e6eb;}
 .menu-item:hover{background:#3a3b3c;}
 .menu-item i{width:24px;color:#f59e0b;}
 .menu-item.danger{color:#ef4444;}
-.footer{background:#242526;border-top:1px solid #3e4042;padding:1rem;text-align:center;margin-top:1rem;}
+.footer{background:#242526;border-top:1px solid #3e4042;padding:1rem;text-align:center;}
 .footer p{color:#b0b3b8;font-size:0.7rem;}
 .toast-notification{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:40px;font-size:0.8rem;z-index:10000;}
 @media (max-width:640px){.post-image{min-height:180px;}.feed-container{max-width:100%;}.logo h1{font-size:1.2rem;}body{padding-top:56px;}}
@@ -117,7 +97,7 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 </div>
 </header>
 
-<div class="feed-container" id="feedContainer">
+<div class="feed-container">
 <div class="games-list" id="gamesContainer"></div>
 </div>
 
@@ -128,11 +108,6 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 <div class="float-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></div>
 </div>
 
-<div id="fullscreenIframe" class="fullscreen-iframe">
-<button class="iframe-close" id="closeIframeBtn">✕</button>
-<iframe id="portalIframe" src="about:blank"></iframe>
-</div>
-
 <div id="menuFloating" class="menu-floating">
 <div class="menu-header"><strong>Menu NeTubeX</strong></div>
 <div class="menu-item" id="menuTicketsBtn"><i class="fas fa-ticket-alt"></i> Mes tickets</div>
@@ -141,19 +116,19 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 <div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div>
 </div>
 
-<div id="ticketFormPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i><h3>Ouvrir un ticket</h3><div class="input-group"><select id="ticketCategory"><option value="">-- Type de problème --</option><option value="🔌 Problème de connexion">🔌 Problème de connexion</option><option value="🔋 Problème de batterie">🔋 Problème de batterie</option><option value="🎮 Jeux inaccessibles">🎮 Jeux inaccessibles</option><option value="💰 Gains non attribués">💰 Gains non attribués</option></select></div><div class="input-group"><select id="ticketPriority"><option value="basse">🟢 Basse</option><option value="moyenne" selected>🟠 Moyenne</option><option value="haute">🔴 Haute - Urgent</option></select></div><div class="confirm-buttons"><button class="close-popup-btn" id="submitTicketBtn">Envoyer</button><button class="close-popup-btn" id="closeTicketFormBtn">Annuler</button></div></div></div>
+<div id="ticketFormPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i><h3>Ouvrir un ticket</h3><select id="ticketCategory"><option value="">-- Type de problème --</option><option value="🔌 Problème de connexion">🔌 Problème de connexion</option><option value="🎮 Jeux inaccessibles">🎮 Jeux inaccessibles</option><option value="💰 Gains non attribués">💰 Gains non attribués</option></select><select id="ticketPriority"><option value="basse">🟢 Basse</option><option value="moyenne" selected>🟠 Moyenne</option><option value="haute">🔴 Haute</option></select><div class="confirm-buttons"><button class="close-popup-btn" id="submitTicketBtn">Envoyer</button><button class="close-popup-btn" id="closeTicketFormBtn">Annuler</button></div></div></div>
 
-<div id="ticketsListPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i><h3>Mes tickets support</h3><div class="tickets-popup-tabs"><button class="tickets-tab active" data-tab="encours">📩 En cours</button><button class="tickets-tab" data-tab="resolus">✅ Résolus</button></div><div id="ticketsListContainer" class="tickets-list"></div><button class="close-popup-btn" id="closeTicketsPopupBtn">Fermer</button></div></div>
+<div id="ticketsListPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i><h3>Mes tickets</h3><div class="tickets-popup-tabs"><button class="tickets-tab active" data-tab="encours">📩 En cours</button><button class="tickets-tab" data-tab="resolus">✅ Résolus</button></div><div id="ticketsListContainer" class="game-stats" style="max-height:400px;"><p style="text-align:center;">Aucun ticket</p></div><button class="close-popup-btn" id="closeTicketsPopupBtn">Fermer</button></div></div>
 
-<div id="settingsPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-shield-alt" style="font-size:2rem;color:#3b82f6;"></i><h3>Accès Pilote</h3><input type="password" id="pilotPassword" placeholder="Code d'accès"><button class="close-popup-btn" id="loginPilotBtn">Authentifier</button><button class="close-popup-btn" id="closeSettingsBtn">Annuler</button></div></div>
+<div id="settingsPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-shield-alt" style="font-size:2rem;color:#3b82f6;"></i><h3>Code pilote</h3><input type="password" id="pilotPassword" placeholder="Code d'accès"><button class="close-popup-btn" id="loginPilotBtn">Valider</button><button class="close-popup-btn" id="closeSettingsBtn">Fermer</button></div></div>
 
 <div id="gamePopup" class="slide-popup"><div class="popup-left"><i class="fas fa-star" style="font-size:2rem;color:#f59e0b;"></i><h3 id="gamePopupTitle"></h3><div class="game-stats" id="gamePopupStats"></div><button class="close-popup-btn" id="closeGamePopupBtn">Fermer</button></div></div>
 
-<div id="confirmPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-sign-out-alt" style="font-size:2rem;color:#ef4444;"></i><h3>Déconnexion</h3><p>Quitter votre session ?</p><div class="confirm-buttons"><button class="close-popup-btn" id="confirmYes">Oui</button><button class="close-popup-btn" id="confirmNo">Non</button></div></div></div>
+<div id="confirmPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-sign-out-alt" style="font-size:2rem;color:#ef4444;"></i><h3>Déconnexion</h3><p>Quitter ?</p><div class="confirm-buttons"><button class="close-popup-btn" id="confirmYes">Oui</button><button class="close-popup-btn" id="confirmNo">Non</button></div></div></div>
 
 <div id="capPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-chart-line" style="font-size:2rem;color:#f59e0b;"></i><h3>CAP du jour</h3><div id="capContent" class="game-stats"><p>Chargement...</p></div><button class="close-popup-btn" id="closeCapBtn">Fermer</button></div></div>
 
-<footer class="footer"><p>© Ne<span style="color:#f59e0b;">TubeX</span> 2026 — Tous droits réservés</p></footer>
+<footer class="footer"><p>© Ne<span style="color:#f59e0b;">TubeX</span> 2026</p></footer>
 
 <script>
 // Header cachable
@@ -178,11 +153,11 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
     });
 })();
 
-// Protections
+// Protections silencieuses
 (function(){
     document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});
     document.querySelectorAll('img').forEach(img=>{
-        img.addEventListener('contextmenu',function(e){e.preventDefault();e.stopPropagation();return false;});
+        img.addEventListener('contextmenu',function(e){e.preventDefault();return false;});
         img.addEventListener('dragstart',function(e){e.preventDefault();return false;});
     });
     document.addEventListener('keydown',function(e){
@@ -191,10 +166,7 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
         if(e.ctrlKey&&e.key==='u'){e.preventDefault();return false;}
         if(e.ctrlKey&&e.key==='s'){e.preventDefault();return false;}
         if(e.ctrlKey&&e.key==='p'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.key==='r'){e.preventDefault();return false;}
         if(e.key==='F5'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.key==='F5'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.shiftKey&&e.key==='F5'){e.preventDefault();return false;}
     });
 })();
 </script>
@@ -220,28 +192,28 @@ async function getUserUniqueId() {
     return userDoc.data()?.uniqueId;
 }
 
-function openTimewallInIframe(uniqueId) {
-    const iframe = document.getElementById('portalIframe');
-    const container = document.getElementById('fullscreenIframe');
-    iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`;
-    container.classList.add('active');
+function openTimewallInNewTab(uniqueId) {
+    window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`, '_blank');
 }
 
 const games = [
-    {id:1, name:"The Grand Mafia", avatar:"⚔️", img:"https://netubex.github.io/netubex-/the-grand-mafia.webp", duration:"30j", totalEarning:"217.18", description:"Devenez le parrain de la ville. Construisez votre empire criminel.", objectives:[{name:"Ouvrir le jeu !",gains:"0.01"},{name:"Atteindre le niveau 4 du manoir",gains:"0.10"},{name:"Atteindre le niveau 13 du manoir",gains:"0.99"},{name:"Débloquer un associé T2",gains:"0.33"},{name:"Atteindre le niveau 17 du manoir",gains:"1.99"},{name:"Atteindre 800k d'influence",gains:"0.27"},{name:"Atteindre le niveau 25 du manoir",gains:"11.27"},{name:"Cellule d'otage niveau 25",gains:"29.84"},{name:"Centre d'investissement niv 25",gains:"53.04"},{name:"Associé T4",gains:"119.35"}], isNew:true},
-    {id:2, name:"Love Water", avatar:"💧", img:"https://netubex.github.io/netubex-/love-water.gif", duration:"30j", totalEarning:"13.37", description:"Plongez dans une aventure aquatique rafraîchissante.", objectives:[{name:"Ouvrir le jeu",gains:"0.00"},{name:"Événement 1",gains:"0.04"},{name:"Événement 2",gains:"0.06"},{name:"Événement 5",gains:"0.18"},{name:"Événement 8",gains:"0.36"},{name:"Événement 12",gains:"0.60"},{name:"Événement 17",gains:"0.99"},{name:"Événement 23",gains:"2.39"},{name:"Événement 30",gains:"8.75"}], isNew:false},
-    {id:3, name:"Grab A Toy", avatar:"🧸", img:"https://netubex.github.io/netubex-/grab-a-toy.png", duration:"30j", totalEarning:"142.66", description:"Attrapez un maximum de jouets dans cette machine infernale.", objectives:[{name:"150 mètres",gains:"0.00"},{name:"200 mètres",gains:"0.01"},{name:"400 mètres",gains:"0.31"},{name:"600 mètres",gains:"1.31"},{name:"900 mètres",gains:"6.10"},{name:"1700 mètres",gains:"10.51"},{name:"2000 mètres",gains:"15.02"},{name:"5000 mètres",gains:"109.40"}], isNew:false},
-    {id:4, name:"Wild Fish Explorer", avatar:"🐟", img:"https://netubex.github.io/netubex-/wild-fish.png", duration:"30j", totalEarning:"137.37", description:"Explorez les océans à la recherche des poissons les plus rares.", objectives:[{name:"100 mètres",gains:"0.01"},{name:"200 mètres",gains:"0.03"},{name:"400 mètres",gains:"0.36"},{name:"700 mètres",gains:"2.04"},{name:"1200 mètres",gains:"7.29"},{name:"2000 mètres",gains:"36.47"},{name:"5000 mètres",gains:"91.17"}], isNew:false},
-    {id:5, name:"Goblin Heist", avatar:"👺", img:"https://netubex.github.io/netubex-/goblin-heist.jpg", duration:"60j", totalEarning:"96.79", description:"Infiltrez-vous dans les repaires de gobelins.", objectives:[{name:"150 mètres",gains:"0.00"},{name:"400 mètres",gains:"0.02"},{name:"700 mètres",gains:"0.31"},{name:"900 mètres",gains:"1.82"},{name:"1000 mètres",gains:"3.46"},{name:"2000 mètres",gains:"18.23"},{name:"5000 mètres",gains:"72.93"}], isNew:false},
-    {id:6, name:"Sky Plunger", avatar:"🪂", img:"https://netubex.github.io/netubex-/sky-plunger.png", duration:"30j", totalEarning:"109.42", description:"Sautez dans le vide et défiez les lois de l'apesanteur.", objectives:[{name:"150 mètres",gains:"0.01"},{name:"250 mètres",gains:"0.01"},{name:"400 mètres",gains:"0.11"},{name:"600 mètres",gains:"0.26"},{name:"900 mètres",gains:"2.55"},{name:"1200 mètres",gains:"11.67"},{name:"2000 mètres",gains:"21.88"},{name:"5000 mètres",gains:"72.93"}], isNew:false},
-    {id:7, name:"Survivor Idle Run", avatar:"🏃", img:"https://netubex.github.io/netubex-/survivor-idle-run.png", duration:"7j", totalEarning:"65.03", description:"Courez sans vous arrêter pour survivre.", objectives:[{name:"Quête #020",gains:"0.01"},{name:"Quête #050",gains:"0.01"},{name:"Quête #080",gains:"0.04"},{name:"Quête #100",gains:"0.09"},{name:"Quête #150",gains:"0.22"},{name:"Quête #250",gains:"0.72"},{name:"Quête #350",gains:"3.46"},{name:"Quête #500",gains:"10.08"},{name:"Quête #700",gains:"15.84"},{name:"Quête #1000",gains:"34.56"}], isNew:false},
-    {id:8, name:"Time Master", avatar:"⏰", img:"https://netubex.github.io/netubex-/zombie-waves.jpg", duration:"30j", totalEarning:"58.35", description:"Maîtrisez le temps et les vagues de zombies.", objectives:[{name:"Zone 150",gains:"1.44"},{name:"Zone 200",gains:"1.73"},{name:"Zone 250",gains:"2.88"},{name:"Zone 300",gains:"4.32"},{name:"Zone 400",gains:"5.76"},{name:"Zone 500",gains:"1.15"},{name:"Zone 600",gains:"8.64"},{name:"Zone 750",gains:"11.52"},{name:"Zone 1000",gains:"17.28"}], isNew:false},
-    {id:9, name:"Dragon Farm", avatar:"🐉", img:"https://netubex.github.io/netubex-/dragon-farm.webp", duration:"30j", totalEarning:"28.45", description:"Élevez des dragons légendaires et faites prospérer votre ferme.", objectives:[{name:"Niv utilisateur 10",gains:"0.06"},{name:"Niv utilisateur 15",gains:"0.12"},{name:"Niv utilisateur 20",gains:"0.35"},{name:"Niv utilisateur 25",gains:"0.72"},{name:"Niv utilisateur 30",gains:"1.01"},{name:"Niv utilisateur 35",gains:"1.73"},{name:"Niv utilisateur 40",gains:"2.88"},{name:"Niv utilisateur 50",gains:"4.32"},{name:"Niv utilisateur 60",gains:"5.76"},{name:"Niv utilisateur 75",gains:"11.52"}], isNew:true}
+    {id:1, name:"The Grand Mafia", avatar:"⚔️", img:"https://netubex.github.io/netubex-/the-grand-mafia.webp", duration:"30j", totalEarning:"217.18", description:"Devenez le parrain de la ville. Construisez votre empire criminel.", objectives:[{name:"Ouvrir le jeu",gains:"0.01"},{name:"Niveau 4 manoir",gains:"0.10"},{name:"Niveau 13 manoir",gains:"0.99"},{name:"Associé T2",gains:"0.33"},{name:"Niveau 17 manoir",gains:"1.99"},{name:"800k influence",gains:"0.27"},{name:"Niveau 25 manoir",gains:"11.27"},{name:"Cellule otage niv25",gains:"29.84"},{name:"Centre invest niv25",gains:"53.04"},{name:"Associé T4",gains:"119.35"}], isNew:true},
+    {id:2, name:"Love Water", avatar:"💧", img:"https://netubex.github.io/netubex-/love-water.gif", duration:"30j", totalEarning:"13.37", description:"Plongez dans une aventure aquatique rafraîchissante.", objectives:[{name:"Jouer",gains:"0.00"},{name:"Event 1",gains:"0.04"},{name:"Event 2",gains:"0.06"},{name:"Event 5",gains:"0.18"},{name:"Event 8",gains:"0.36"},{name:"Event 12",gains:"0.60"},{name:"Event 17",gains:"0.99"},{name:"Event 23",gains:"2.39"},{name:"Event 30",gains:"8.75"}], isNew:false},
+    {id:3, name:"Grab A Toy", avatar:"🧸", img:"https://netubex.github.io/netubex-/grab-a-toy.png", duration:"30j", totalEarning:"142.66", description:"Attrapez un maximum de jouets.", objectives:[{name:"150m",gains:"0.00"},{name:"200m",gains:"0.01"},{name:"400m",gains:"0.31"},{name:"600m",gains:"1.31"},{name:"900m",gains:"6.10"},{name:"1700m",gains:"10.51"},{name:"2000m",gains:"15.02"},{name:"5000m",gains:"109.40"}], isNew:false},
+    {id:4, name:"Wild Fish Explorer", avatar:"🐟", img:"https://netubex.github.io/netubex-/wild-fish.png", duration:"30j", totalEarning:"137.37", description:"Explorez les océans.", objectives:[{name:"100m",gains:"0.01"},{name:"200m",gains:"0.03"},{name:"400m",gains:"0.36"},{name:"700m",gains:"2.04"},{name:"1200m",gains:"7.29"},{name:"2000m",gains:"36.47"},{name:"5000m",gains:"91.17"}], isNew:false},
+    {id:5, name:"Goblin Heist", avatar:"👺", img:"https://netubex.github.io/netubex-/goblin-heist.jpg", duration:"60j", totalEarning:"96.79", description:"Infiltrez les gobelins.", objectives:[{name:"150m",gains:"0.00"},{name:"400m",gains:"0.02"},{name:"700m",gains:"0.31"},{name:"900m",gains:"1.82"},{name:"1000m",gains:"3.46"},{name:"2000m",gains:"18.23"},{name:"5000m",gains:"72.93"}], isNew:false},
+    {id:6, name:"Sky Plunger", avatar:"🪂", img:"https://netubex.github.io/netubex-/sky-plunger.png", duration:"30j", totalEarning:"109.42", description:"Sautez dans le vide.", objectives:[{name:"150m",gains:"0.01"},{name:"250m",gains:"0.01"},{name:"400m",gains:"0.11"},{name:"600m",gains:"0.26"},{name:"900m",gains:"2.55"},{name:"1200m",gains:"11.67"},{name:"2000m",gains:"21.88"},{name:"5000m",gains:"72.93"}], isNew:false},
+    {id:7, name:"Survivor Idle Run", avatar:"🏃", img:"https://netubex.github.io/netubex-/survivor-idle-run.png", duration:"7j", totalEarning:"65.03", description:"Courez pour survivre.", objectives:[{name:"Quête 20",gains:"0.01"},{name:"Quête 50",gains:"0.01"},{name:"Quête 80",gains:"0.04"},{name:"Quête 100",gains:"0.09"},{name:"Quête 150",gains:"0.22"},{name:"Quête 250",gains:"0.72"},{name:"Quête 350",gains:"3.46"},{name:"Quête 500",gains:"10.08"},{name:"Quête 700",gains:"15.84"},{name:"Quête 1000",gains:"34.56"}], isNew:false},
+    {id:8, name:"Time Master", avatar:"⏰", img:"https://netubex.github.io/netubex-/zombie-waves.jpg", duration:"30j", totalEarning:"58.35", description:"Maîtrisez le temps.", objectives:[{name:"Zone 150",gains:"1.44"},{name:"Zone 200",gains:"1.73"},{name:"Zone 250",gains:"2.88"},{name:"Zone 300",gains:"4.32"},{name:"Zone 400",gains:"5.76"},{name:"Zone 500",gains:"1.15"},{name:"Zone 600",gains:"8.64"},{name:"Zone 750",gains:"11.52"},{name:"Zone 1000",gains:"17.28"}], isNew:false},
+    {id:9, name:"Dragon Farm", avatar:"🐉", img:"https://netubex.github.io/netubex-/dragon-farm.webp", duration:"30j", totalEarning:"28.45", description:"Élevez des dragons.", objectives:[{name:"Niv 10",gains:"0.06"},{name:"Niv 15",gains:"0.12"},{name:"Niv 20",gains:"0.35"},{name:"Niv 25",gains:"0.72"},{name:"Niv 30",gains:"1.01"},{name:"Niv 35",gains:"1.73"},{name:"Niv 40",gains:"2.88"},{name:"Niv 50",gains:"4.32"},{name:"Niv 60",gains:"5.76"},{name:"Niv 75",gains:"11.52"}], isNew:true}
 ];
+
+function closePopup(id){ const p=document.getElementById(id); if(p) p.classList.remove('active'); }
+function showToast(msg){ const t=document.createElement('div'); t.className='toast-notification'; t.innerHTML=`💰 ${msg}`; document.body.appendChild(t); setTimeout(()=>t.remove(),3000); }
 
 function showGameDetails(game){
     document.getElementById('gamePopupTitle').innerHTML=`${game.avatar} ${game.name}`;
-    const statsHtml=`<p><span class="label">💰 Gain total :</span><span class="value">${game.totalEarning}$</span></p><p style="font-weight:700;margin-top:8px;">🎯 Objectifs :</p>${game.objectives.map(obj=>`<p><span class="label">➜ ${obj.name}</span><span class="value">+${obj.gains}$</span></p>`).join('')}`;
+    const statsHtml=`<p><span class="label">💰 Gain total :</span><span class="value">${game.totalEarning}$</span></p><p style="margin-top:8px;">🎯 Objectifs :</p>${game.objectives.map(obj=>`<p><span class="label">➜ ${obj.name}</span><span class="value">+${obj.gains}$</span></p>`).join('')}`;
     document.getElementById('gamePopupStats').innerHTML=statsHtml;
     document.getElementById('gamePopup').classList.add('active');
 }
@@ -253,7 +225,7 @@ function renderGames(){
     games.forEach(g=>{
         const card=document.createElement('div');
         card.className='post-card';
-        let badgeHtml = g.isNew ? '<span class="badge-new">NOUVEAU</span>' : '';
+        const badgeHtml = g.isNew ? '<span class="badge-new">NOUVEAU</span>' : '';
         card.innerHTML=`
             ${badgeHtml}
             <div class="post-header">
@@ -277,28 +249,6 @@ function renderGames(){
     });
 }
 
-function closePopup(id){ const p=document.getElementById(id); if(p) p.classList.remove('active'); }
-function showToast(msg){ const t=document.createElement('div'); t.className='toast-notification'; t.innerHTML=`<i class="fas fa-check-circle"></i> ${msg}`; document.body.appendChild(t); setTimeout(()=>t.remove(),3000); }
-
-document.getElementById('closeGamePopupBtn')?.addEventListener('click',()=>closePopup('gamePopup'));
-document.getElementById('closeIframeBtn')?.addEventListener('click',()=>{ document.getElementById('portalIframe').src='about:blank'; document.getElementById('fullscreenIframe').classList.remove('active'); });
-document.getElementById('portalBtn')?.addEventListener('click', async () => { const uid=await getUserUniqueId(); if(uid){ openTimewallInIframe(uid); } else { showToast("ID unique non trouvé"); } });
-document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
-document.getElementById('menuLogoutBtn')?.addEventListener('click',()=>document.getElementById('confirmPopup').classList.add('active'));
-document.getElementById('confirmYes')?.addEventListener('click',async()=>{ await signOut(auth); window.location.href="login.html"; });
-document.getElementById('confirmNo')?.addEventListener('click',()=>closePopup('confirmPopup'));
-document.getElementById('closeTicketsPopupBtn')?.addEventListener('click',()=>closePopup('ticketsListPopup'));
-document.getElementById('closeTicketFormBtn')?.addEventListener('click',()=>closePopup('ticketFormPopup'));
-document.getElementById('closeSettingsBtn')?.addEventListener('click',()=>closePopup('settingsPopup'));
-document.getElementById('closeCapBtn')?.addEventListener('click',()=>closePopup('capPopup'));
-document.getElementById('settingsFloatBtn')?.addEventListener('click',()=>document.getElementById('settingsPopup').classList.add('active'));
-document.getElementById('menuTicketsBtn')?.addEventListener('click',()=>{ document.getElementById('menuFloating').classList.remove('active'); document.getElementById('ticketsListPopup').classList.add('active'); });
-document.getElementById('menuNewTicketBtn')?.addEventListener('click',()=>{ document.getElementById('menuFloating').classList.remove('active'); document.getElementById('ticketFormPopup').classList.add('active'); });
-document.getElementById('menuCapBtn')?.addEventListener('click',()=>{ document.getElementById('menuFloating').classList.remove('active'); document.getElementById('capContent').innerHTML='📊 CAP du jour : Atteindre 10$ aujourd'hui'; document.getElementById('capPopup').classList.add('active'); });
-document.getElementById('loginPilotBtn')?.addEventListener('click',()=>{ const pwd=document.getElementById('pilotPassword')?.value; if(pwd==="PiloteAB"){ window.open('https://gain.gg/r/111117266020005347836','_blank'); closePopup('settingsPopup'); } else{ alert('Code invalide'); } });
-document.getElementById('submitTicketBtn')?.addEventListener('click',()=>{ showToast("✅ Ticket envoyé !"); closePopup('ticketFormPopup'); });
-document.querySelectorAll('.tickets-tab').forEach(tab=>{ tab.addEventListener('click',()=>{ document.querySelectorAll('.tickets-tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active'); const container=document.getElementById('ticketsListContainer'); if(tab.dataset.tab==='encours') container.innerHTML='<p style="text-align:center;color:#b0b3b8;">Aucun ticket en cours</p>'; else container.innerHTML='<p style="text-align:center;color:#b0b3b8;">Aucun ticket résolu</p>'; }); });
-
 async function initUser(user){
     if(!user) return;
     userDocRef=doc(db,"users",user.uid);
@@ -310,6 +260,24 @@ async function initUser(user){
     if(codeDisplay) codeDisplay.textContent=(await getDoc(userDocRef)).data().code||"NETUBER";
     renderGames();
 }
+
+document.getElementById('closeGamePopupBtn')?.addEventListener('click',()=>closePopup('gamePopup'));
+document.getElementById('portalBtn')?.addEventListener('click', async () => { const uid=await getUserUniqueId(); if(uid){ openTimewallInNewTab(uid); } else { showToast("ID unique non trouvé"); } });
+document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
+document.getElementById('menuLogoutBtn')?.addEventListener('click',()=>document.getElementById('confirmPopup').classList.add('active'));
+document.getElementById('confirmYes')?.addEventListener('click',async()=>{ await signOut(auth); window.location.href="login.html"; });
+document.getElementById('confirmNo')?.addEventListener('click',()=>closePopup('confirmPopup'));
+document.getElementById('closeTicketsPopupBtn')?.addEventListener('click',()=>closePopup('ticketsListPopup'));
+document.getElementById('closeTicketFormBtn')?.addEventListener('click',()=>closePopup('ticketFormPopup'));
+document.getElementById('closeSettingsBtn')?.addEventListener('click',()=>closePopup('settingsPopup'));
+document.getElementById('closeCapBtn')?.addEventListener('click',()=>closePopup('capPopup'));
+document.getElementById('settingsFloatBtn')?.addEventListener('click',()=>document.getElementById('settingsPopup').classList.add('active'));
+document.getElementById('menuTicketsBtn')?.addEventListener('click',()=>{ document.getElementById('menuFloating').classList.remove('active'); document.getElementById('ticketsListPopup').classList.add('active'); });
+document.getElementById('menuNewTicketBtn')?.addEventListener('click',()=>{ document.getElementById('menuFloating').classList.remove('active'); document.getElementById('ticketFormPopup').classList.add('active'); });
+document.getElementById('menuCapBtn')?.addEventListener('click',()=>{ document.getElementById('menuFloating').classList.remove('active'); document.getElementById('capPopup').classList.add('active'); });
+document.getElementById('loginPilotBtn')?.addEventListener('click',()=>{ const pwd=document.getElementById('pilotPassword')?.value; if(pwd==="PiloteAB"){ window.open('https://gain.gg/r/111117266020005347836','_blank'); closePopup('settingsPopup'); } else{ const toast=document.getElementById('pilotErrorToast'); if(toast) toast.style.display='block'; setTimeout(()=>{ if(toast) toast.style.display='none'; },2000); } });
+document.getElementById('submitTicketBtn')?.addEventListener('click',()=>{ showToast("Ticket envoyé"); closePopup('ticketFormPopup'); });
+document.querySelectorAll('.tickets-tab').forEach(tab=>{ tab.addEventListener('click',()=>{ document.querySelectorAll('.tickets-tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active'); const container=document.getElementById('ticketsListContainer'); container.innerHTML='<p style="text-align:center;">Aucun ticket</p>'; }); });
 
 onAuthStateChanged(auth,async(user)=>{ if(user){ await initUser(user); }else{ window.location.href="login.html"; } });
 </script>
