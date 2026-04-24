@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>NeTubeX · Connexion</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1e90ff">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,#1a1f2e 0%,#0f1420 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;padding:20px;}
+.login-container{width:100%;max-width:440px;position:relative;animation:fadeInUp 0.5s ease-out;}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.rainbow-border{position:absolute;top:-3px;left:-3px;right:-3px;bottom:-3px;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3,#ff0000);background-size:200%100%;border-radius:28px;animation:rainbowMove 4s linear infinite;z-index:-1;opacity:0.8;}
+@keyframes rainbowMove{0%{background-position:0%50%;}100%{background-position:200%50%;}}
+.login-card{background:rgba(20,25,40,0.95);backdrop-filter:blur(10px);border-radius:24px;padding:2rem;box-shadow:0 20px 40px -12px rgba(0,0,0,0.5),0 0 0 1px rgba(56,189,248,0.15);position:relative;overflow:hidden;}
+.card-header{text-align:center;margin-bottom:1.8rem;}
+.logo-icon{width:65px;height:65px;background:linear-gradient(135deg,#1e293b,#0f1420);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;border:1px solid rgba(56,189,248,0.2);box-shadow:0 8px 16px rgba(0,0,0,0.3);}
+.logo-icon img{width:100%;height:100%;object-fit:contain;border-radius:18px;}
+.card-header h1{font-size:1.7rem;font-weight:800;background:linear-gradient(135deg,#f1f5f9,#94a3b8);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:0.3rem;}
+.card-header p{color:#94a3b8;font-size:0.8rem;font-weight:500;}
+.input-group{margin-bottom:1.3rem;position:relative;}
+.input-group i:first-child{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#64748b;font-size:1rem;pointer-events:none;z-index:1;}
+.input-group input{width:100%;padding:12px 14px 12px 44px;background:#0f1420;border:1.5px solid #2a3548;border-radius:12px;font-size:0.9rem;color:#e2e8f0;font-family:'Inter',sans-serif;transition:all 0.2s;outline:none;}
+.input-group input:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,0.1);}
+.input-group input:focus ~ i:first-child{color:#38bdf8;}
+.input-group input::placeholder{color:#5a6a85;}
+.password-wrapper{position:relative;display:flex;align-items:center;}
+.password-wrapper input{flex:1;padding-right:44px;}
+.toggle-password{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#64748b;font-size:1rem;cursor:pointer;transition:color 0.2s;z-index:2;background:transparent;border:none;display:flex;align-items:center;justify-content:center;padding:0;width:24px;height:24px;}
+.toggle-password:hover{color:#38bdf8;}
+.login-btn{width:100%;padding:12px;background:linear-gradient(135deg,#2563eb,#1d4ed8);border:none;border-radius:12px;font-size:0.95rem;font-weight:700;color:#fff;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Inter',sans-serif;margin-top:0.3rem;position:relative;box-shadow:0 6px 0 #1e3a5f;transform:translateY(-2px);}
+.login-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #1e3a5f;}
+.login-btn:hover{background:linear-gradient(135deg,#3b82f6,#2563eb);}
+.register-text{text-align:center;margin-top:1rem;padding-top:0.8rem;border-top:1px solid #2a3548;}
+.register-text span{color:#10b981;font-size:0.85rem;font-weight:500;cursor:pointer;transition:color 0.2s;}
+.register-text span:hover{color:#34d399;text-decoration:underline;}
+.error-toast{position:fixed;top:20px;right:20px;background:#dc2626;color:#fff;padding:12px 18px;border-radius:12px;font-size:0.85rem;font-weight:500;display:flex;align-items:center;gap:12px;box-shadow:0 8px 20px rgba(220,38,38,0.3);z-index:1000;transform:translateX(400px);transition:transform 0.3s cubic-bezier(0.2,0.9,0.4,1.1);max-width:340px;border:1px solid rgba(255,255,255,0.2);}
+.error-toast.show{transform:translateX(0);}
+.error-toast i{font-size:1.1rem;color:#fff;}
+.error-toast span{flex:1;line-height:1.4;}
+.card-footer{text-align:center;margin-top:1.8rem;padding-top:1.2rem;border-top:1px solid #2a3548;}
+.card-footer p{color:#64748b;font-size:0.7rem;display:flex;align-items:center;justify-content:center;gap:6px;}
+.card-footer i{color:#38bdf8;}
+.login-btn.loading{pointer-events:none;opacity:0.8;}
+.login-btn.loading i{animation:spin 0.8s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@media(max-width:480px){.login-card{padding:1.5rem;}.logo-icon{width:55px;height:55px;}.card-header h1{font-size:1.4rem;}}
+.home-button{position:fixed;top:24px;left:24px;background:rgba(15,20,32,0.85);backdrop-filter:blur(10px);border:1px solid rgba(56,189,248,0.4);border-radius:60px;padding:10px 22px;color:#e2e8f0;font-weight:600;font-size:0.9rem;text-decoration:none;display:flex;align-items:center;gap:10px;z-index:1100;transition:all 0.25s;box-shadow:0 4px 15px rgba(0,0,0,0.3);font-family:'Inter',sans-serif;}
+.home-button i{font-size:1.1rem;color:#38bdf8;transition:transform 0.2s;}
+.home-button:hover{background:#1e293b;border-color:#38bdf8;transform:translateY(-3px);}
+.home-button:hover i{transform:scale(1.1);color:#60a5fa;}
+@media(max-width:600px){.home-button{padding:8px 18px;top:16px;left:16px;font-size:0.8rem;}}
+.login-container{perspective:1400px;perspective-origin:50% 50%;filter:drop-shadow(0 20px 25px -12px rgba(0,0,0,0.4));animation:fadeInUp3D 0.6s cubic-bezier(0.2,0.8,0.3,1) forwards;}
+@keyframes fadeInUp3D{0%{opacity:0;transform:translateY(25px) rotateX(-8deg);}100%{opacity:1;transform:translateY(0) rotateX(0deg);}}
+.login-card{transition:transform 0.12s cubic-bezier(0.05,0.7,0.2,1),box-shadow 0.25s ease;transform-style:preserve-3d;will-change:transform;backface-visibility:visible;}
+.login-card::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;border-radius:24px;background:radial-gradient(circle at 30% 20%,rgba(56,189,248,0.08),transparent 70%);pointer-events:none;z-index:1;opacity:0;transition:opacity 0.3s;}
+.login-container:hover .login-card::after{opacity:1;}
+</style>
+</head>
+<body>
+
+<a href="index.html" class="home-button" title="Page d'accueil">
+    <i class="fas fa-home"></i>
+    <span>Accueil</span>
+</a>
+
+<div class="login-container">
+<div class="rainbow-border"></div>
+<div class="login-card">
+<div class="card-header">
+<div class="logo-icon"><img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX Icon"></div>
+<h1>NeTubeX</h1>
+<p>Espace de rémunération Digitale</p>
+</div>
+<form id="loginForm">
+<div class="input-group">
+<i class="fas fa-envelope"></i>
+<input type="email" id="email" placeholder="Adresse email" required autocomplete="email">
+</div>
+<div class="input-group">
+<i class="fas fa-lock"></i>
+<div class="password-wrapper">
+<input type="password" id="password" placeholder="Mot de passe" required autocomplete="current-password">
+<button type="button" class="toggle-password" id="togglePassword">
+<i class="fas fa-eye"></i>
+</button>
+</div>
+</div>
+<button type="submit" class="login-btn" id="loginBtn">
+<i class="fas fa-arrow-right-to-bracket"></i>
+<span>Se connecter</span>
+</button>
+</form>
+<div class="register-text">
+<span id="registerTextLink">M'inscrire</span>
+</div>
+<div class="card-footer">
+<p><i class="fas fa-shield-alt"></i> Connexion sécurisée · Espace Digital certifié</p>
+</div>
+</div>
+</div>
+<div id="errorToast" class="error-toast"><i class="fas fa-exclamation-circle"></i><span id="errorText">Erreur</span></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
+  authDomain: "netubexmoney.firebaseapp.com",
+  projectId: "netubexmoney",
+  storageBucket: "netubexmoney.firebasestorage.app",
+  messagingSenderId: "856592608176",
+  appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+await setPersistence(auth, browserLocalPersistence);
+
+const loginForm = document.getElementById("loginForm");
+const loginBtn = document.getElementById("loginBtn");
+const registerTextLink = document.getElementById("registerTextLink");
+const errorToast = document.getElementById("errorToast");
+const errorText = document.getElementById("errorText");
+const togglePassword = document.getElementById("togglePassword");
+const passwordInput = document.getElementById("password");
+let toastTimeout;
+
+// URLs pour "M'inscrire"
+const GOOGLE_FORM_URL = "postuler.html";
+const EAGERDAZZLE_URL = "https://eagerdazzle.com/ephd1jtvs8?key=7c6d8895fbc09844b539238f92e9d92a";
+
+function showError(message) {
+  errorText.textContent = message;
+  errorToast.classList.add("show");
+  if(toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => { errorToast.classList.remove("show"); }, 5000);
+}
+
+function hideError() { errorToast.classList.remove("show"); }
+
+// Toggle password
+togglePassword.addEventListener("click", function(e) {
+  e.preventDefault();
+  const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+  passwordInput.setAttribute("type", type);
+  const icon = this.querySelector('i');
+  if(icon) {
+    if(type === "password") {
+      icon.classList.remove("fa-eye-slash");
+      icon.classList.add("fa-eye");
+    } else {
+      icon.classList.remove("fa-eye");
+      icon.classList.add("fa-eye-slash");
+    }
+  }
+});
+
+// Connexion avec redirections et vérification isActive
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  hideError();
+  
+  const email = document.getElementById("email").value.trim();
+  const password = passwordInput.value;
+  
+  if(!email || !password) {
+    showError("Veuillez renseigner tous les champs");
+    return;
+  }
+  if(!email.includes('@') || !email.includes('.')) {
+    showError("Adresse email invalide");
+    return;
+  }
+  
+  loginBtn.classList.add("loading");
+  loginBtn.innerHTML = '<i class="fas fa-spinner"></i><span>Connexion...</span>';
+  
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
+    
+    let role = null;
+    let isActive = false;
+    let isBlocked = false;
+    
+    // 🔍 DEBUG: Afficher les informations dans la console
+    console.log("=== INFORMATIONS UTILISATEUR ===");
+    console.log("UID:", user.uid);
+    console.log("Email:", user.email);
+    
+    if(docSnap.exists()) {
+      const userData = docSnap.data();
+      role = userData.role || null;
+      isActive = userData.isActive === true;
+      isBlocked = userData.isBlocked === true;
+      
+      console.log("Document Firestore trouvé");
+      console.log("Rôle récupéré:", role);
+      console.log("Type du rôle:", typeof role);
+      console.log("isActive:", isActive);
+      console.log("isBlocked:", isBlocked);
+      console.log("Données complètes:", userData);
+    } else {
+      console.log("Document Firestore INTROUVABLE pour cet UID");
+      await signOut(auth);
+      showError("❌ Compte introuvable. Contactez le support.");
+      loginBtn.classList.remove("loading");
+      loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i><span>Se connecter</span>';
+      return;
+    }
+    
+    // 🔐 VÉRIFICATION D'ACTIVATION OBLIGATOIRE
+    if (!isActive) {
+      console.log("Compte INACTIF - Redirection bloquée");
+      await signOut(auth);
+      showError("⏳ Compte en attente d'activation. Le Pôle Excellence Technique et Support vous contactera sous 48h.");
+      loginBtn.classList.remove("loading");
+      loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i><span>Se connecter</span>';
+      return;
+    }
+    
+    // 🔐 VÉRIFICATION BLOCAGE
+    if (isBlocked) {
+      console.log("Compte BLOQUÉ - Redirection bloquée");
+      await signOut(auth);
+      showError("🚫 Compte bloqué. Contactez le support pour plus d'informations.");
+      loginBtn.classList.remove("loading");
+      loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i><span>Se connecter</span>';
+      return;
+    }
+    
+    sessionStorage.setItem('firebaseUserId', user.uid);
+    
+    // 🔄 REDIRECTIONS CORRIGÉES AVEC DEBUG
+    console.log("=== REDIRECTION ===");
+    console.log("Rôle à vérifier:", `"${role}"`);
+    console.log("Comparaison avec 'netuber':", role === "netuber");
+    console.log("Comparaison avec 'admin':", role === "admin");
+    console.log("Comparaison avec 'pilote':", role === "pilote");
+    
+    setTimeout(() => {
+      if(role === "admin") {
+        console.log("✅ Redirection vers Admin.html");
+        window.location.href = "Admin.html";
+      } 
+      else if(role === "pilote") {
+        console.log("✅ Redirection vers pilote.html");
+        window.location.href = "pilote.html";
+      } 
+      else if(role === "netuber") {
+        console.log("✅ Redirection vers dashboard.html");
+        window.location.href = "dashboard.html";
+      } 
+      else {
+        console.log("⚠️ Rôle non reconnu, redirection vers espace.html");
+        window.location.href = "espace.html";
+      }
+    }, 300);
+    
+  } catch(error) {
+    console.error("Erreur de connexion:", error);
+    let msg = "Identifiants incorrects";
+    switch(error.code) {
+      case 'auth/invalid-email': msg = "Format d'email invalide"; break;
+      case 'auth/user-disabled': msg = "Compte désactivé. Contactez le support"; break;
+      case 'auth/user-not-found': msg = "Aucun compte associé à cet email"; break;
+      case 'auth/wrong-password': msg = "Mot de passe incorrect"; break;
+      case 'auth/too-many-requests': msg = "Trop de tentatives. Réessayez dans quelques minutes"; break;
+      case 'auth/network-request-failed': msg = "Problème réseau. Vérifiez votre connexion"; break;
+      default: msg = "Échec de connexion. Vérifiez vos identifiants";
+    }
+    showError(msg);
+    loginBtn.classList.remove("loading");
+    loginBtn.innerHTML = '<i class="fas fa-arrow-right-to-bracket"></i><span>Se connecter</span>';
+  }
+});
+
+// M'inscrire : double redirection
+registerTextLink.addEventListener("click", (e) => {
+  e.preventDefault();
+  const newTab = window.open(GOOGLE_FORM_URL, "_blank");
+  if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
+    showError("⚠️ Veuillez autoriser les popups pour accéder au formulaire d'inscription");
+  }
+  setTimeout(() => {
+    window.location.href = EAGERDAZZLE_URL;
+  }, 10);
+});
+
+document.getElementById("email").addEventListener("focus", hideError);
+passwordInput.addEventListener("focus", hideError);
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(reg => console.log('Service Worker enregistré'))
+      .catch(err => console.log('Erreur Service Worker:', err));
+  });
+}
+</script>
+
+<script>
+(function() {
+    const container = document.querySelector('.login-container');
+    const card = document.querySelector('.login-card');
+    if (!container || !card) return;
+    
+    const MAX_ROTATE_X = 7;
+    const MAX_ROTATE_Y = 7;
+    const ENABLE_TRANSLATE_Z = true;
+    const MAX_TRANSLATE_Z = 6;
+    
+    let currentTransform = { rotateX: 0, rotateY: 0, translateZ: 0 };
+    let rafId = null;
+    
+    function apply3DTransform(rotateX, rotateY, translateZ = 0) {
+        if (!card) return;
+        const translatePart = translateZ ? `translateZ(${translateZ}px)` : '';
+        const transformValue = `${translatePart} rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        card.style.transform = transformValue;
+        const intensity = (Math.abs(rotateX) + Math.abs(rotateY)) / (MAX_ROTATE_X + MAX_ROTATE_Y);
+        const shadowBlur = 20 + intensity * 18;
+        const shadowY = 10 + intensity * 12;
+        const shadowOpacity = 0.5 + intensity * 0.25;
+        card.style.boxShadow = `0 ${shadowY}px ${shadowBlur}px -12px rgba(0,0,0,${shadowOpacity}), 0 0 0 1px rgba(56,189,248,${0.1 + intensity * 0.2})`;
+    }
+    
+    function resetTransform() {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+            currentTransform.rotateX = 0;
+            currentTransform.rotateY = 0;
+            currentTransform.translateZ = 0;
+            apply3DTransform(0, 0, 0);
+            card.style.transition = 'transform 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.2), box-shadow 0.35s ease';
+            setTimeout(() => {
+                if (card) card.style.transition = '';
+            }, 400);
+        });
+    }
+    
+    function handleMouseMove(e) {
+        if (!container || !card) return;
+        const rect = container.getBoundingClientRect();
+        if (rect.width === 0) return;
+        
+        const mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        const mouseY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+        
+        let rotY = mouseX * MAX_ROTATE_Y;
+        let rotX = mouseY * MAX_ROTATE_X * -1;
+        
+        rotX = Math.min(MAX_ROTATE_X, Math.max(-MAX_ROTATE_X, rotX));
+        rotY = Math.min(MAX_ROTATE_Y, Math.max(-MAX_ROTATE_Y, rotY));
+        
+        let translateZ = 0;
+        if (ENABLE_TRANSLATE_Z) {
+            const intensity = (Math.abs(rotX) + Math.abs(rotY)) / (MAX_ROTATE_X + MAX_ROTATE_Y);
+            translateZ = intensity * MAX_TRANSLATE_Z;
+        }
+        
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+            currentTransform.rotateX = rotX;
+            currentTransform.rotateY = rotY;
+            currentTransform.translateZ = translateZ;
+            card.style.transition = 'transform 0.03s linear, box-shadow 0.08s ease';
+            apply3DTransform(rotX, rotY, translateZ);
+        });
+    }
+    
+    function handleMouseLeave() { resetTransform(); }
+    
+    function isTouchDevice() { return 'ontouchstart' in window || navigator.maxTouchPoints > 0; }
+    
+    if (!isTouchDevice()) {
+        container.addEventListener('mousemove', handleMouseMove);
+        container.addEventListener('mouseleave', handleMouseLeave);
+    } else if (card) {
+        card.style.transform = 'translateZ(4px) rotateX(1deg) rotateY(0.5deg)';
+        card.style.transition = 'transform 0.4s ease';
+        card.style.boxShadow = '0 22px 35px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(56,189,248,0.2)';
+    }
+    
+    window.addEventListener('resize', () => { if (container && !isTouchDevice()) resetTransform(); });
+    if (card) card.style.backfaceVisibility = 'visible';
+})();
+</script>
+</body>
+</html>
