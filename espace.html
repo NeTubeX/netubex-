@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
 <title>NeTubeX · Dashboard</title>
+<link rel="icon" type="image/png" href="https://netubex.github.io/netubex-/favicon.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -122,7 +123,7 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 <div class="rainbow-line"></div>
 
 <header class="header">
-    <div class="logo"><img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX Logo"><h1>Ne<span>TubeX</span></h1></div>
+    <div class="logo"><img src="https://netubex.github.io/netubex-/favicon.png" alt="NeTubeX Logo"><h1>Ne<span>TubeX</span></h1></div>
     <div class="online-status"><span class="blinking-dot"></span><span>En ligne</span></div>
 </header>
 
@@ -184,7 +185,7 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 <!-- Popup Message Général -->
 <div id="messageModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-info-circle"></i> Information</h3><button class="modal-close" id="closeMessageModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><p id="messageModalText" style="color:#e2e8f0;"></p></div><div class="modal-footer"><button class="btn-confirm" id="confirmMessageBtn">OK</button></div></div></div>
 
-<!-- L'iframe n'est plus utilisée mais on garde la div au cas où -->
+<!-- L'iframe -->
 <div id="fullscreenIframe" class="fullscreen-iframe"><button class="iframe-close" id="closeIframeBtn">✕</button><iframe id="portalIframe" src="about:blank"></iframe></div>
 
 <script type="module">
@@ -207,7 +208,19 @@ const DASHBOARD_URL = window.location.href;
 const LOCK_DURATION = 2*60*60*1000;
 const WITHDRAWAL_MIN = 3;
 const MAX_WITHDRAWALS_PER_DAY = 3;
-const games = [{id:1,name:"Dragon Down",avatar:"🐉",img:"https://i.postimg.cc/T2JyHT7x/IMG-3466.jpg",duration:"7j"},{id:2,name:"Love Water",avatar:"💧",img:"https://i.postimg.cc/767x8LPg/IMG-3461.gif",duration:"30j"},{id:3,name:"Sky Plunger",avatar:"🪂",img:"https://i.postimg.cc/y8Y0TD7C/IMG-3468.png",duration:"30j"},{id:4,name:"Zombie Waves",avatar:"🧟",img:"https://i.postimg.cc/Vv9m5sTP/IMG-3470.jpg",duration:"30j"},{id:5,name:"Grab A Toy",avatar:"🧸",img:"https://i.postimg.cc/J05BNLgH/IMG-3465.jpg",duration:"30j"}];
+
+// NOUVELLE LISTE DES JEUX AVEC LES IMAGES DEPUIS GITHUB PAGES
+const games = [
+  {id:1, name:"Survivor Idle Run", avatar:"🏃", img:"https://netubex.github.io/netubex-/Games/survivor-idle-run.png", duration:"7j"},
+  {id:2, name:"Sky Plunger", avatar:"🪂", img:"https://netubex.github.io/netubex-/Games/sky-plunger.png", duration:"30j"},
+  {id:3, name:"Goblin Heist", avatar:"👺", img:"https://netubex.github.io/netubex-/Games/goblin-heist.jpg", duration:"30j"},
+  {id:4, name:"Wild Fish", avatar:"🐟", img:"https://netubex.github.io/netubex-/Games/wild-fish.png", duration:"30j"},
+  {id:5, name:"Grab A Toy", avatar:"🧸", img:"https://netubex.github.io/netubex-/Games/grab-a-toy.png", duration:"30j"},
+  {id:6, name:"Love Water", avatar:"💧", img:"https://netubex.github.io/netubex-/Games/love-water.gif", duration:"30j"},
+  {id:7, name:"Zombie Waves", avatar:"🧟", img:"https://netubex.github.io/netubex-/Games/zombie-waves.jpg", duration:"30j"},
+  {id:8, name:"The Grand Mafia", avatar:"👑", img:"https://netubex.github.io/netubex-/Games/the-grand-mafia.webp", duration:"30j"},
+  {id:9, name:"Dragon Farm", avatar:"🐉", img:"https://netubex.github.io/netubex-/Games/dragon-farm.webp", duration:"30j"}
+];
 
 function showToast(msg,isError=false){let t=document.createElement('div');t.className=`toast-notification ${isError?'toast-error':''}`;t.innerHTML=`<i class="fas ${isError?'fa-exclamation-triangle':'fa-check-circle'}"></i> ${msg}`;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);}
 function showMessageModal(msg){document.getElementById('messageModalText').innerHTML=msg;document.getElementById('messageModal').classList.add('active');}
@@ -232,7 +245,6 @@ const typewriterText="Vous allez être redirigé vers des offres adaptées à vo
 function typeWriter(el,text,speed=30,cb){let i=0;el.innerHTML='';function typing(){if(i<text.length){el.innerHTML+=text.charAt(i);i++;setTimeout(typing,speed);}else if(cb)cb();}typing();}
 function showGameRedirectModal(cb){const m=document.getElementById('gameRedirectModal'),me=document.getElementById('typewriterMessage');m.classList.add('active');typeWriter(me,typewriterText,25,()=>{});const conf=document.getElementById('confirmGameRedirectBtn'),cancel=document.getElementById('cancelGameRedirectBtn'),close=document.getElementById('closeGameRedirectModal');const h=()=>{m.classList.remove('active');me.innerHTML='';conf.removeEventListener('click',h);cancel.removeEventListener('click',ch);close.removeEventListener('click',ch);if(cb)cb();};const ch=()=>{m.classList.remove('active');me.innerHTML='';conf.removeEventListener('click',h);cancel.removeEventListener('click',ch);close.removeEventListener('click',ch);};conf.addEventListener('click',h);cancel.addEventListener('click',ch);close.addEventListener('click',ch);}
 
-// Fonction pour récupérer le uniqueId
 async function getUserUniqueId() {
     const user = auth.currentUser;
     if(!user || !user.uid) return null;
@@ -240,12 +252,10 @@ async function getUserUniqueId() {
     return userDoc.data()?.uniqueId;
 }
 
-// Fonction pour ouvrir Timewall dans un nouvel onglet
 function openTimewallInNewTab(uniqueId) {
     window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`, '_blank');
 }
 
-// renderGames modifiée - OUVERTURE NOUVEL ONGLET
 function renderGames(){const c=document.getElementById('gamesContainer');if(!c)return;c.innerHTML='';games.forEach(g=>{const card=document.createElement('div');card.className='post-card';card.innerHTML=`<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration}</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-star"></i> Jouer au Jeu remunerateur</button>`;card.querySelector('.gain-btn').addEventListener('click', async () => { const uniqueId = await getUserUniqueId(); if(uniqueId){ showGameRedirectModal(()=>{ openTimewallInNewTab(uniqueId); }); } else { showToast("ID unique non trouvé", true); } });c.appendChild(card);});}
 
 async function loadCapMessage(){if(!userDocRef)return;const snap=await getDoc(userDocRef);const cap=snap.data()?.capDuJour||"📊 Aucun CAP défini pour aujourd'hui.\n\n📌 Objectif du jour : Atteindre 100 points\n🎯 Challenge spécial : 3 jeux complétés\n⭐ Bonus : +50 points si objectif atteint";document.getElementById('capMessage').innerHTML=cap.replace(/\n/g,'<br>');}
@@ -397,10 +407,7 @@ onAuthStateChanged(auth, async(user) => {
 });
 
 document.getElementById('balanceFloatBtn')?.addEventListener('click',()=>showBalance());
-
-// BOUTON FLOTTANT MODIFIÉ - OUVERTURE NOUVEL ONGLET
 document.getElementById('iframeFloatBtn')?.addEventListener('click', async () => { const uniqueId = await getUserUniqueId(); if(uniqueId){ showGameRedirectModal(()=>{ openTimewallInNewTab(uniqueId); }); } else { showToast("ID unique non trouvé, veuillez patienter...", true); } });
-
 document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
 document.addEventListener('click',(e)=>{const m=document.getElementById('menuFloating');const b=document.getElementById('menuFloatBtn');if(m&&b&&!b.contains(e.target)&&!m.contains(e.target))m.classList.remove('active');});
 document.getElementById('menuCapBtn')?.addEventListener('click',async()=>{await loadCapMessage();document.getElementById('capModal').classList.add('active');document.getElementById('menuFloating').classList.remove('active');});
