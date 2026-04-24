@@ -10,20 +10,21 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#0a0e1a 0%,#0f1629 50%,#0a0f1f 100%);color:#e4e6eb;min-height:100vh;overflow-x:hidden;user-select:none;line-height:1.5;padding-top:80px;}
 @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap');
-*{user-select:none!important;-webkit-user-select:none!important;-moz-user-select:none!important;-ms-user-select:none!important;}
+*{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
+*:not(input):not(textarea){user-select:none!important;-webkit-user-select:none!important;-moz-user-select:none!important;-ms-user-select:none!important;}
 input,textarea{user-select:text!important;-webkit-user-select:text!important;}
-img,a,button,.floating-menu-item,.menu-toggle{user-select:none!important;-webkit-user-drag:none!important;}
+img,a,button,.floating-menu-item,.menu-toggle,.logo-img-large,.member-full-img,.activity-card,.offer-item{user-select:none!important;-webkit-user-drag:none!important;user-drag:none;}
 img{pointer-events:auto!important;-webkit-user-drag:none!important;cursor:pointer;}
 .container{width:100%;max-width:1400px;margin:0 auto;padding:0 28px;}
-.navbar{display:flex;justify-content:space-between;align-items:center;padding:16px 28px;background:rgba(30,35,48,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08);position:fixed;top:0;left:0;right:0;z-index:1000;width:100%;}
-.logo-wrapper{display:flex;align-items:center;gap:12px;}
-.logo-img-large{max-width:48px;height:auto;border-radius:12px;cursor:pointer;}
-.logo-text{font-size:1.6rem;font-weight:700;background:linear-gradient(135deg,#e2e8f0,#94a3b8);background-clip:text;-webkit-background-clip:text;color:transparent;}
-.menu-toggle{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);padding:12px 18px;border-radius:40px;font-weight:500;color:#e2e8f0;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all 0.3s ease;}
-.menu-toggle:hover{background:rgba(59,130,246,0.2);border-color:rgba(59,130,246,0.4);}
-.floating-menu{position:fixed;top:-500px;right:28px;background:rgba(25,30,42,0.98);backdrop-filter:blur(20px);border-radius:24px;padding:12px;min-width:260px;box-shadow:0 20px 40px rgba(0,0,0,0.4);transition:top 0.4s cubic-bezier(0.2,0.9,0.4,1.1);z-index:1001;opacity:0;visibility:hidden;}
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:16px 32px;background:rgba(15,23,42,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(59,130,246,0.4);position:fixed;top:0;left:0;right:0;z-index:1000;width:100%;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.logo-wrapper{display:flex;align-items:center;gap:14px;}
+.logo-img-large{width:48px;height:48px;border-radius:14px;object-fit:cover;box-shadow:0 4px 12px rgba(59,130,246,0.3);}
+.logo-text{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#ffffff,#60a5fa,#3b82f6);background-clip:text;-webkit-background-clip:text;color:transparent;letter-spacing:-0.5px;}
+.menu-toggle{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.4);padding:12px 22px;border-radius:40px;font-weight:600;color:#e2e8f0;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all 0.3s ease;backdrop-filter:blur(8px);}
+.menu-toggle:hover{background:rgba(59,130,246,0.3);border-color:#3b82f6;transform:scale(1.02);}
+.floating-menu{position:fixed;top:-500px;right:28px;background:rgba(25,30,42,0.98);backdrop-filter:blur(20px);border-radius:24px;padding:12px;min-width:260px;box-shadow:0 20px 40px rgba(0,0,0,0.4);transition:top 0.45s cubic-bezier(0.2,0.9,0.4,1.1);z-index:1001;opacity:0;visibility:hidden;}
 .floating-menu.active{top:80px;opacity:1;visibility:visible;}
-.floating-menu-item{display:flex;align-items:center;gap:14px;padding:14px 18px;margin:4px 0;border-radius:16px;color:#e2e8f0;text-decoration:none;font-size:0.95rem;font-weight:500;cursor:pointer;transition:all 0.2s ease;user-select:none!important;-webkit-user-select:none!important;}
+.floating-menu-item{display:flex;align-items:center;gap:14px;padding:14px 18px;margin:4px 0;border-radius:16px;color:#e2e8f0;text-decoration:none;font-size:0.95rem;font-weight:500;cursor:pointer;transition:all 0.2s ease;}
 .floating-menu-item:hover{background:rgba(59,130,246,0.2);color:#60a5fa;transform:translateX(4px);}
 .floating-menu-item i{width:24px;color:#60a5fa;pointer-events:none;}
 .floating-divider{height:1px;background:rgba(255,255,255,0.08);margin:8px 12px;}
@@ -31,7 +32,7 @@ img{pointer-events:auto!important;-webkit-user-drag:none!important;cursor:pointe
 .hero-section h1{font-size:3.5rem;font-weight:800;background:linear-gradient(125deg,#a5f3fc,#3b82f6,#1e40af);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:28px;line-height:1.2;letter-spacing:-0.02em;}
 .hero-section p{font-size:1.2rem;color:#cbd5e1;max-width:750px;margin:0 auto;line-height:1.6;background:rgba(59,130,246,0.08);padding:24px 32px;border-radius:80px;backdrop-filter:blur(8px);border:1px solid rgba(59,130,246,0.15);}
 .photo-wall{width:100%;margin:50px 0;border-radius:24px;overflow:hidden;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);cursor:pointer;position:relative;}
-.member-full-img{width:100%;height:auto;max-height:65vh;object-fit:cover;display:block;opacity:0.85;animation:fadeBreathing 10s ease-in-out infinite;cursor:pointer;}
+.member-full-img{width:100%;height:auto;max-height:70vh;object-fit:cover;display:block;opacity:0.85;animation:fadeBreathing 10s ease-in-out infinite;cursor:pointer;}
 .photo-wall:hover .member-full-img{opacity:1;}
 @keyframes fadeBreathing{0%,100%{opacity:0.8;transform:scale(1.02);}50%{opacity:1;transform:scale(1);}}
 .activities-wrapper{background:#D0D6E5;padding:60px 32px;margin:60px 0;border-radius:40px;box-shadow:0 20px 40px rgba(0,0,0,0.1);}
@@ -44,8 +45,11 @@ img{pointer-events:auto!important;-webkit-user-drag:none!important;cursor:pointe
 .activity-card i{font-size:2.8rem;background:linear-gradient(135deg,#3b82f6,#1e40af);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:20px;}
 .activity-card h3{font-size:1.5rem;font-weight:700;color:#0f172a;margin:15px 0 12px;}
 .activity-card p{color:#475569;font-size:0.95rem;line-height:1.5;}
-
-/* Boutons Nos activités et Nos offres */
+.games-slider{width:100%;overflow:hidden;background:rgba(0,0,0,0.2);padding:25px 0;margin:40px 0;border-radius:20px;position:relative;}
+.slider-track{display:flex;animation:slideInfinite 30s linear infinite;width:fit-content;}
+.slider-track img{width:140px;height:100px;object-fit:cover;border-radius:16px;margin:0 8px;transition:transform 0.3s;cursor:pointer;}
+.slider-track img:hover{transform:scale(1.05);}
+@keyframes slideInfinite{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
 .action-buttons-section{display:flex;flex-wrap:wrap;justify-content:center;gap:25px;margin:40px 0 20px;}
 .btn-action{display:inline-flex;align-items:center;justify-content:center;gap:14px;padding:18px 42px;border-radius:60px;font-size:1.2rem;font-weight:700;cursor:pointer;transition:all 0.3s ease;border:none;text-decoration:none;background:linear-gradient(135deg,#3b82f6,#1e40af);color:white;box-shadow:0 10px 25px -5px rgba(59,130,246,0.4);}
 .btn-action i{font-size:1.3rem;}
@@ -54,7 +58,6 @@ img{pointer-events:auto!important;-webkit-user-drag:none!important;cursor:pointe
 .btn-action-secondary:hover{background:linear-gradient(135deg,#a78bfa,#7c3aed);box-shadow:0 20px 35px -8px rgba(139,92,246,0.6);}
 .click-hint{text-align:center;margin-top:15px;font-size:0.8rem;color:#64748b;}
 .click-hint i{font-size:0.7rem;}
-
 .member-offer-section{background:linear-gradient(135deg,#0f172a,#1e293b);padding:60px 32px;margin:50px 0;border-radius:48px;border:1px solid rgba(59,130,246,0.2);box-shadow:0 25px 50px -12px rgba(0,0,0,0.3);}
 .offer-title{font-size:2rem;font-weight:700;text-align:center;background:linear-gradient(135deg,#a5f3fc,#60a5fa);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:50px;letter-spacing:-0.3px;}
 .offer-grid{display:flex;flex-wrap:wrap;gap:30px;justify-content:center;}
@@ -63,7 +66,7 @@ img{pointer-events:auto!important;-webkit-user-drag:none!important;cursor:pointe
 .offer-item i{font-size:2.5rem;background:linear-gradient(145deg,#6ee7ff,#3b82f6);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:20px;}
 .offer-item h4{font-size:1.2rem;font-weight:600;color:#e2e8f0;margin-bottom:12px;}
 .offer-item p{color:#94a3b8;font-size:0.9rem;line-height:1.5;}
-footer{background:#0f172a;padding:50px 20px 40px;margin-top:60px;border-top:1px solid rgba(59,130,246,0.15);}
+footer{background:#0f172a;padding:50px 20px 40px;margin-top:60px;border-top:1px solid rgba(59,130,246,0.2);}
 .footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:30px;align-items:flex-end;}
 .footer-brand{display:flex;flex-direction:column;gap:8px;}
 .footer-logo{display:flex;align-items:center;gap:12px;}
@@ -77,7 +80,7 @@ footer{background:#0f172a;padding:50px 20px 40px;margin-top:60px;border-top:1px 
 .fade-section.visible{opacity:1;transform:translateY(0);}
 .activity-card{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.5s ease;}
 .activity-card.visible-card{opacity:1;transform:translateY(0);}
-@media (max-width: 860px){body{padding-top:72px;}.hero-section h1{font-size:2.3rem}.member-full-img{max-height:45vh}.floating-menu{right:16px;min-width:240px;}.floating-menu.active{top:70px;}.navbar{padding:12px 20px;}.logo-text{font-size:1.3rem;}.activities-wrapper{padding:40px 20px;}.member-offer-section{padding:40px 20px;}.btn-action{padding:14px 28px;font-size:1rem;}}
+@media (max-width: 860px){body{padding-top:72px;}.hero-section h1{font-size:2.3rem}.member-full-img{max-height:50vh}.floating-menu{right:16px;min-width:240px;}.floating-menu.active{top:70px;}.navbar{padding:12px 20px;}.logo-text{font-size:1.3rem;}.activities-wrapper{padding:40px 20px;}.member-offer-section{padding:40px 20px;}.btn-action{padding:14px 28px;font-size:1rem;}.slider-track img{width:100px;height:70px;}}
 @media (max-width: 560px){body{padding-top:68px;}.hero-section h1{font-size:1.8rem}.hero-section p{font-size:1rem;padding:18px 20px;}.container{padding:0 16px}.activity-card{min-width:100%}.offer-item{min-width:100%}.floating-menu{right:12px;left:12px;}.floating-menu.active{top:65px;}.section-title{font-size:1.8rem;}.offer-title{font-size:1.5rem;}.footer-inner{flex-direction:column;align-items:center;text-align:center;}.footer-brand{align-items:center;}.action-buttons-section{gap:15px;}.btn-action{padding:12px 22px;font-size:0.9rem;}}
 </style>
 </head>
@@ -112,16 +115,12 @@ footer{background:#0f172a;padding:50px 20px 40px;margin-top:60px;border-top:1px 
 <div class="container">
 <div class="hero-section fade-section">
 <h1>Transformez votre présence digitale<br>en revenus durables</h1>
-<p> NeTubeX est un espace de rémunération digitale qui transforme le temps passé en ligne en revenus concrets grâce à son programme institutionnel.</p>
+<p>NeTubeX est un espace de rémunération digitale qui transforme le temps passé en ligne en revenus concrets grâce à son programme institutionnel.</p>
 </div>
 </div>
-
-<!-- PHOTO CLIQUABLE -->
 <div class="photo-wall" id="clickablePhoto">
-<img src="https://i.postimg.cc/CKtrLPtY/e3ee76ac-9224-4d38-bdd3-d4b29da56116.jpg" alt="Membre NeTubeX" class="member-full-img" onerror="this.src='https://placehold.co/1920x900/0f172a/3b82f6?text=NeTubeX'">
+<img src="vicky.jpg" alt="Membre NeTubeX" class="member-full-img" onerror="this.src='https://placehold.co/1920x900/0f172a/3b82f6?text=NeTubeX'">
 </div>
-
-<!-- BOUTONS : Nos offres seulement -->
 <div class="container">
 <div class="action-buttons-section">
 <button class="btn-action btn-action-secondary" id="nosOffresBtn">
@@ -132,7 +131,19 @@ footer{background:#0f172a;padding:50px 20px 40px;margin-top:60px;border-top:1px 
 <i class="fas fa-mouse-pointer"></i> Cliquez sur l'image ou sur le bouton pour découvrir nos offres
 </div>
 </div>
-
+<div class="games-slider">
+<div class="slider-track" id="sliderTrack">
+<img src="https://netubex.github.io/netubex-/Games/survivor-idle-run.png" alt="Survivor Idle Run" onerror="this.src='https://placehold.co/140x100/1e293b/3b82f6?text=Game'">
+<img src="https://netubex.github.io/netubex-/Games/sky-plunger.png" alt="Sky Plunger" onerror="this.src='https://placehold.co/140x100/1e293b/3b82f6?text=Game'">
+<img src="https://netubex.github.io/netubex-/Games/goblin-heist.jpg" alt="Goblin Heist" onerror="this.src='https://placehold.co/140x100/1e293b/3b82f6?text=Game'">
+<img src="https://netubex.github.io/netubex-/Games/wild-fish.png" alt="Wild Fish" onerror="this.src='https://placehold.co/140x100/1e293b/3b82f6?text=Game'">
+<img src="https://netubex.github.io/netubex-/Games/grab-a-toy.png" alt="Grab A Toy" onerror="this.src='https://placehold.co/140x100/1e293b/3b82f6?text=Game'">
+<img src="https://netubex.github.io/netubex-/Games/love-water.gif" alt="Love Water" onerror="this.src='https://placehold.co/140x100/1e293b/3b82f6?text=Game'">
+<img src="https://netubex.github.io/netubex-/Games/zombie-waves.jpg" alt="Zombie Waves" onerror="this.src='https://placehold.co/140x100/1e293b/3b82f6?text=Game'">
+<img src="https://netubex.github.io/netubex-/Games/the-grand-mafia.webp" alt="The Grand Mafia" onerror="this.src='https://placehold.co/140x100/1e293b/3b82f6?text=Game'">
+<img src="https://netubex.github.io/netubex-/Games/dragon-farm.webp" alt="Dragon Farm" onerror="this.src='https://placehold.co/140x100/1e293b/3b82f6?text=Game'">
+</div>
+</div>
 <div class="container">
 <div class="activities-wrapper fade-section" id="activitiesSection">
 <h2 class="section-title">Notre écosystème de rémunération</h2>
@@ -166,342 +177,150 @@ footer{background:#0f172a;padding:50px 20px 40px;margin-top:60px;border-top:1px 
 <div class="footer-info">
 <div class="footer-copyright">© 2026 NeTubeX — Tous droits réservés</div>
 <div class="footer-legal">
-<a href="#" id="privacyFooterLink">Confidentialité</a> • 
-<a href="#" id="legalFooterLink">Mentions légales</a>
+<a href="#" id="privacyFooterLink">Confidentialité</a> • <a href="#" id="legalFooterLink">Mentions légales</a>
 </div>
 </div>
 </div>
 </footer>
-
+<script>
+(function() {
+    // Blocage silencieux du clic droit sur toute la page
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    // Blocage sélectif mais silencieux sur les images
+    document.querySelectorAll('img').forEach(img => {
+        img.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+        img.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+    });
+    // Blocage des raccourcis clavier dangereux (silencieux)
+    document.addEventListener('keydown', function(e) {
+        // F12
+        if(e.key === 'F12') { e.preventDefault(); return false; }
+        // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
+        if(e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) { e.preventDefault(); return false; }
+        // Ctrl+U
+        if(e.ctrlKey && e.key === 'u') { e.preventDefault(); return false; }
+        // Ctrl+S
+        if(e.ctrlKey && e.key === 's') { e.preventDefault(); return false; }
+        // Ctrl+P
+        if(e.ctrlKey && e.key === 'p') { e.preventDefault(); return false; }
+        // Ctrl+Shift+R
+        if(e.ctrlKey && e.shiftKey && e.key === 'R') { e.preventDefault(); return false; }
+        // Ctrl+R
+        if(e.ctrlKey && e.key === 'r') { e.preventDefault(); return false; }
+        // Ctrl+E, Ctrl+F
+        if(e.ctrlKey && (e.key === 'e' || e.key === 'f')) { e.preventDefault(); return false; }
+        // Ctrl+Shift+K (console Firefox)
+        if(e.ctrlKey && e.shiftKey && e.key === 'K') { e.preventDefault(); return false; }
+        // Ctrl+Shift+E (console Firefox)
+        if(e.ctrlKey && e.shiftKey && e.key === 'E') { e.preventDefault(); return false; }
+        // Ctrl+Shift+O (inspector Firefox)
+        if(e.ctrlKey && e.shiftKey && e.key === 'O') { e.preventDefault(); return false; }
+        // Ctrl+Shift+X (inspector Edge)
+        if(e.ctrlKey && e.shiftKey && e.key === 'X') { e.preventDefault(); return false; }
+        // Ctrl+Shift+M (responsive mode)
+        if(e.ctrlKey && e.shiftKey && e.key === 'M') { e.preventDefault(); return false; }
+        // Ctrl+Shift+L (performance)
+        if(e.ctrlKey && e.shiftKey && e.key === 'L') { e.preventDefault(); return false; }
+        // Ctrl+Shift+P (command palette)
+        if(e.ctrlKey && e.shiftKey && e.key === 'P') { e.preventDefault(); return false; }
+        // Ctrl+Shift+W (close window)
+        if(e.ctrlKey && e.shiftKey && e.key === 'W') { e.preventDefault(); return false; }
+        // Ctrl+W (close tab)
+        if(e.ctrlKey && e.key === 'w') { e.preventDefault(); return false; }
+        // Ctrl+Tab (cycle tabs)
+        if(e.ctrlKey && e.key === 'Tab') { e.preventDefault(); return false; }
+        // Ctrl+Shift+Tab
+        if(e.ctrlKey && e.shiftKey && e.key === 'Tab') { e.preventDefault(); return false; }
+        // Ctrl+T (new tab)
+        if(e.ctrlKey && e.key === 't') { e.preventDefault(); return false; }
+        // Ctrl+N (new window)
+        if(e.ctrlKey && e.key === 'n') { e.preventDefault(); return false; }
+        // Ctrl+H (history)
+        if(e.ctrlKey && e.key === 'h') { e.preventDefault(); return false; }
+        // Ctrl+J (downloads)
+        if(e.ctrlKey && e.key === 'j') { e.preventDefault(); return false; }
+        // Ctrl+D (bookmark)
+        if(e.ctrlKey && e.key === 'd') { e.preventDefault(); return false; }
+        // F5 (refresh)
+        if(e.key === 'F5') { e.preventDefault(); return false; }
+        // Ctrl+F5 (hard refresh)
+        if(e.ctrlKey && e.key === 'F5') { e.preventDefault(); return false; }
+        // Ctrl+Shift+F5 (hard refresh)
+        if(e.ctrlKey && e.shiftKey && e.key === 'F5') { e.preventDefault(); return false; }
+        // Alt+Left (back)
+        if(e.altKey && e.key === 'ArrowLeft') { e.preventDefault(); return false; }
+        // Alt+Right (forward)
+        if(e.altKey && e.key === 'ArrowRight') { e.preventDefault(); return false; }
+        // Ctrl+Plus / Ctrl+Minus (zoom)
+        if(e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=')) { e.preventDefault(); return false; }
+        // Ctrl+0 (reset zoom)
+        if(e.ctrlKey && e.key === '0') { e.preventDefault(); return false; }
+        // F3 (find)
+        if(e.key === 'F3') { e.preventDefault(); return false; }
+        // Shift+F10 (context menu)
+        if(e.shiftKey && e.key === 'F10') { e.preventDefault(); return false; }
+    });
+    // Blocage silencieux de la sélection de texte
+    document.addEventListener('selectstart', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    // Blocage du drag global
+    document.addEventListener('dragstart', function(e) {
+        if(e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+            return false;
+        }
+    });
+})();
+</script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-// Configuration Firebase
-const firebaseConfig = { 
-    apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", 
-    authDomain: "netubexmoney.firebaseapp.com", 
-    projectId: "netubexmoney", 
-    storageBucket: "netubexmoney.firebasestorage.app", 
-    messagingSenderId: "856592608176", 
-    appId: "1:856592608176:web:69f9df9cfd4f8c28630475" 
-};
-
-// Initialisation Firebase
+const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-// ============ URLs ============
-// URLs pour viiukuhe.com (3 fois)
-const VIIUKUHE_URLS = {
-    postuler: "https://viiukuhe.com/dc/?blockID=398263",
-    apropos: "https://viiukuhe.com/dc/?blockID=397846",
-    faq: "https://viiukuhe.com/dc/?blockID=399035"
-};
-
-// URL pour eagerdazzle.com (7 fois)
+const VIIUKUHE_URLS = { postuler: "https://viiukuhe.com/dc/?blockID=398263", apropos: "https://viiukuhe.com/dc/?blockID=397846", faq: "https://viiukuhe.com/dc/?blockID=399035" };
 const EAGERDAZZLE_URL = "https://eagerdazzle.com/qja1n3nqy?key=28eed1069d8b75afeb22d3fb0db79efc";
-
-// URLs cibles pour les redirections
 const SECOND_URL_LOGIN = "https://netubex.github.io/netubex-/login.html";
 const DIRECT_OFFER_URL = "https://eagerdazzle.com/iq1qax6rrc?key=e28a0a39f6861af4d561fd9b3b43183d";
-
-const pageMapping = {
-  aboutLink: "https://netubex.github.io/netubex-/about.html",
-  faqLink: "https://netubex.github.io/netubex-/faq.html",
-  supportLink: "https://netubex.github.io/netubex-/support.html",
-  privacyLink: "https://netubex.github.io/netubex-/privacy.html",
-  trustpilotBtn: "https://www.trustpilot.com/evaluate/www.netubex.com",
-  postulerLink: "https://netubex.github.io/netubex-/postuler.html",
-  legalLink: "https://netubex.github.io/netubex-/legal.html"
-};
-
-// Fonction de double redirection avec eagerdazzle.com
-function doubleRedirectWithEager(secondUrl) {
-  window.location.href = EAGERDAZZLE_URL;
-  setTimeout(function() { 
-    window.open(secondUrl, "_blank");
-  }, 50);
-}
-
-// Fonction de double redirection avec viiukuhe.com (pour postuler, apropos, faq)
-function doubleRedirectWithViiukuhe(viiukuheUrl, secondUrl) {
-  window.location.href = viiukuheUrl;
-  setTimeout(function() { 
-    window.open(secondUrl, "_blank");
-  }, 50);
-}
-
-// Fonction de redirection directe (même onglet) pour photo et bouton offres
-function redirectDirect(targetUrl) {
-    window.location.href = targetUrl;
-}
-
-// ============ STATISTIQUES DE VISITE ============
+const pageMapping = { aboutLink: "https://netubex.github.io/netubex-/about.html", faqLink: "https://netubex.github.io/netubex-/faq.html", supportLink: "https://netubex.github.io/netubex-/support.html", privacyLink: "https://netubex.github.io/netubex-/privacy.html", trustpilotBtn: "https://www.trustpilot.com/evaluate/www.netubex.com", postulerLink: "https://netubex.github.io/netubex-/postuler.html", legalLink: "https://netubex.github.io/netubex-/legal.html" };
+function doubleRedirectWithEager(secondUrl) { window.location.href = EAGERDAZZLE_URL; setTimeout(function() { window.open(secondUrl, "_blank"); }, 50); }
+function doubleRedirectWithViiukuhe(viiukuheUrl, secondUrl) { window.location.href = viiukuheUrl; setTimeout(function() { window.open(secondUrl, "_blank"); }, 50); }
+function redirectDirect(targetUrl) { window.location.href = targetUrl; }
 async function enregistrerVisite() {
-    try {
-        const today = new Date().toISOString().split('T')[0];
-        const statsRef = doc(db, "stats", "visites");
-        const statsSnap = await getDoc(statsRef);
-        
-        let currentData = {
-            total: 0,
-            today: 0,
-            week: 0,
-            month: 0,
-            dailyHistory: []
-        };
-        
-        if(statsSnap.exists()) {
-            currentData = statsSnap.data();
-        }
-        
-        const nouveauTotal = (currentData.total || 0) + 1;
-        
-        let nouveauToday = currentData.today || 0;
-        const lastDate = currentData.lastDate;
-        if(lastDate === today) {
-            nouveauToday++;
-        } else {
-            nouveauToday = 1;
-        }
-        
-        let dailyHistory = currentData.dailyHistory || [];
-        const todayIndex = dailyHistory.findIndex(h => h.date === today);
-        if(todayIndex !== -1) {
-            dailyHistory[todayIndex].count++;
-        } else {
-            dailyHistory.push({ date: today, count: 1 });
-            dailyHistory = dailyHistory.slice(-30);
-        }
-        
-        const weekAgo = new Date();
-        weekAgo.setDate(weekAgo.getDate() - 7);
-        const weekStr = weekAgo.toISOString().split('T')[0];
-        const visitesSemaine = dailyHistory
-            .filter(h => h.date >= weekStr)
-            .reduce((sum, h) => sum + h.count, 0);
-        
-        const monthAgo = new Date();
-        monthAgo.setDate(monthAgo.getDate() - 30);
-        const monthStr = monthAgo.toISOString().split('T')[0];
-        const visitesMois = dailyHistory
-            .filter(h => h.date >= monthStr)
-            .reduce((sum, h) => sum + h.count, 0);
-        
-        await setDoc(statsRef, {
-            total: nouveauTotal,
-            today: nouveauToday,
-            week: visitesSemaine,
-            month: visitesMois,
-            lastDate: today,
-            dailyHistory: dailyHistory,
-            lastUpdate: new Date().toISOString()
-        });
-        
-        console.log(`📊 Visite enregistrée - Total: ${nouveauTotal}`);
-        
-    } catch(error) {
-        console.error("Erreur lors de l'enregistrement de la visite:", error);
-    }
-}
-
+    try { const today = new Date().toISOString().split('T')[0]; const statsRef = doc(db, "stats", "visites"); const statsSnap = await getDoc(statsRef); let currentData = { total: 0, today: 0, week: 0, month: 0, dailyHistory: [] }; if(statsSnap.exists()) currentData = statsSnap.data(); const nouveauTotal = (currentData.total || 0) + 1; let nouveauToday = currentData.today || 0; const lastDate = currentData.lastDate; if(lastDate === today) nouveauToday++; else nouveauToday = 1; let dailyHistory = currentData.dailyHistory || []; const todayIndex = dailyHistory.findIndex(h => h.date === today); if(todayIndex !== -1) dailyHistory[todayIndex].count++; else dailyHistory.push({ date: today, count: 1 }); dailyHistory = dailyHistory.slice(-30); const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7); const weekStr = weekAgo.toISOString().split('T')[0]; const visitesSemaine = dailyHistory.filter(h => h.date >= weekStr).reduce((sum, h) => sum + h.count, 0); const monthAgo = new Date(); monthAgo.setDate(monthAgo.getDate() - 30); const monthStr = monthAgo.toISOString().split('T')[0]; const visitesMois = dailyHistory.filter(h => h.date >= monthStr).reduce((sum, h) => sum + h.count, 0); await setDoc(statsRef, { total: nouveauTotal, today: nouveauToday, week: visitesSemaine, month: visitesMois, lastDate: today, dailyHistory: dailyHistory, lastUpdate: new Date().toISOString() }); } catch(error) { console.error("Erreur:", error); } }
 enregistrerVisite();
-
-// ============ ÉLÉMENTS AVEC REDIRECTION DIRECTE (eagerdazzle.com) ============
-
-// 1. Photo cliquable -> eagerdazzle.com
-const photoWall = document.getElementById('clickablePhoto');
-if(photoWall) {
-    photoWall.addEventListener('click', (e) => {
-        e.preventDefault();
-        redirectDirect(EAGERDAZZLE_URL);
-    });
-}
-
-// 2. Bouton "Nos offres" -> eagerdazzle.com
-const nosOffresBtn = document.getElementById('nosOffresBtn');
-if(nosOffresBtn) {
-    nosOffresBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        redirectDirect(EAGERDAZZLE_URL);
-    });
-}
-
-// ============ MENU ET AUTRES BOUTONS AVEC DOUBLE REDIRECTION ============
-
-const menuToggle = document.getElementById('menuToggle');
-const floatingMenu = document.getElementById('floatingMenu');
-let isAnimating = false;
-
-function toggleMenu() {
-  if(isAnimating) return;
-  isAnimating = true;
-  if(floatingMenu.classList.contains('active')) {
-    floatingMenu.classList.remove('active');
-    setTimeout(() => { isAnimating = false; }, 400);
-  } else {
-    floatingMenu.classList.add('active');
-    setTimeout(() => { isAnimating = false; }, 400);
-  }
-}
+const photoWall = document.getElementById('clickablePhoto'); if(photoWall) { photoWall.addEventListener('click', (e) => { e.preventDefault(); redirectDirect(EAGERDAZZLE_URL); }); }
+const nosOffresBtn = document.getElementById('nosOffresBtn'); if(nosOffresBtn) { nosOffresBtn.addEventListener('click', (e) => { e.preventDefault(); redirectDirect(EAGERDAZZLE_URL); }); }
+const menuToggle = document.getElementById('menuToggle'); const floatingMenu = document.getElementById('floatingMenu'); let isAnimating = false;
+function toggleMenu() { if(isAnimating) return; isAnimating = true; if(floatingMenu.classList.contains('active')) { floatingMenu.classList.remove('active'); setTimeout(() => { isAnimating = false; }, 450); } else { floatingMenu.classList.add('active'); setTimeout(() => { isAnimating = false; }, 450); } }
 if(menuToggle) menuToggle.addEventListener('click', toggleMenu);
-
-function closeMenu() {
-  if(floatingMenu.classList.contains('active')) floatingMenu.classList.remove('active');
-}
-
-// Postuler -> viiukuhe.com (double redirection)
-const postulerBtn = document.getElementById('postulerBtn');
-if(postulerBtn) {
-  postulerBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    closeMenu();
-    doubleRedirectWithViiukuhe(VIIUKUHE_URLS.postuler, pageMapping.postulerLink);
-  });
-}
-
-// À propos -> viiukuhe.com (double redirection)
-const aboutLink = document.getElementById('aboutLink');
-if(aboutLink) {
-  aboutLink.addEventListener('click', (e) => { 
-    e.preventDefault(); 
-    closeMenu(); 
-    doubleRedirectWithViiukuhe(VIIUKUHE_URLS.apropos, pageMapping.aboutLink);
-  });
-}
-
-// FAQ -> viiukuhe.com (double redirection)
-const faqLink = document.getElementById('faqLink');
-if(faqLink) {
-  faqLink.addEventListener('click', (e) => { 
-    e.preventDefault(); 
-    closeMenu(); 
-    doubleRedirectWithViiukuhe(VIIUKUHE_URLS.faq, pageMapping.faqLink);
-  });
-}
-
-// Connexion -> eagerdazzle.com (double redirection)
-const loginBtn = document.getElementById('loginBtn');
-if(loginBtn) {
-  loginBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    closeMenu();
-    doubleRedirectWithEager(SECOND_URL_LOGIN);
-  });
-}
-
-// Support -> eagerdazzle.com (double redirection)
-const supportLink = document.getElementById('supportLink');
-if(supportLink) {
-  supportLink.addEventListener('click', (e) => { 
-    e.preventDefault(); 
-    closeMenu(); 
-    doubleRedirectWithEager(pageMapping.supportLink);
-  });
-}
-
-// Confidentialité -> eagerdazzle.com (double redirection)
-const privacyLink = document.getElementById('privacyLink');
-if(privacyLink) {
-  privacyLink.addEventListener('click', (e) => { 
-    e.preventDefault(); 
-    closeMenu(); 
-    doubleRedirectWithEager(pageMapping.privacyLink);
-  });
-}
-
-// Confidentialité footer -> eagerdazzle.com (double redirection)
-const privacyFooterLink = document.getElementById('privacyFooterLink');
-if(privacyFooterLink) {
-  privacyFooterLink.addEventListener('click', (e) => { 
-    e.preventDefault(); 
-    doubleRedirectWithEager(pageMapping.privacyLink);
-  });
-}
-
-// Mentions légales -> eagerdazzle.com (double redirection)
-const legalFooterLink = document.getElementById('legalFooterLink');
-if(legalFooterLink) {
-  legalFooterLink.addEventListener('click', (e) => { 
-    e.preventDefault(); 
-    doubleRedirectWithEager(pageMapping.legalLink);
-  });
-}
-
-// Trustpilot -> eagerdazzle.com (double redirection)
-const trustpilotBtn = document.getElementById('trustpilotBtn');
-if(trustpilotBtn) {
-  trustpilotBtn.addEventListener('click', (e) => { 
-    e.preventDefault(); 
-    closeMenu(); 
-    doubleRedirectWithEager(pageMapping.trustpilotBtn);
-  });
-}
-
-// Rémunération -> direct (eagerdazzle.com)
-const remunerationLink = document.getElementById('remunerationLink');
-if(remunerationLink) {
-  remunerationLink.addEventListener('click', (e) => { 
-    e.preventDefault(); 
-    closeMenu(); 
-    window.open(DIRECT_OFFER_URL, "_blank");
-  });
-}
-
-// Offres lien menu -> direct (eagerdazzle.com)
-const offersLink = document.getElementById('offersLink');
-if(offersLink) {
-  offersLink.addEventListener('click', (e) => { 
-    e.preventDefault(); 
-    closeMenu(); 
-    window.open(DIRECT_OFFER_URL, "_blank");
-  });
-}
-
-// Animations scroll
-const fadeElements = document.querySelectorAll('.fade-section');
-function checkFadeIn() {
-  const winH = window.innerHeight;
-  fadeElements.forEach(el => {
-    const rect = el.getBoundingClientRect();
-    if(rect.top < winH - 70 && rect.bottom > 20) el.classList.add('visible');
-  });
-}
-const activityCards = document.querySelectorAll('.activity-card');
-function checkCardsVisibility() {
-  const winH = window.innerHeight;
-  activityCards.forEach((card, idx) => {
-    const rect = card.getBoundingClientRect();
-    if(rect.top < winH - 50 && rect.bottom > 20) {
-      setTimeout(() => card.classList.add('visible-card'), idx * 150);
-    }
-  });
-}
-window.addEventListener('scroll', () => { checkFadeIn(); checkCardsVisibility(); });
-window.addEventListener('resize', () => { checkFadeIn(); checkCardsVisibility(); });
-setTimeout(() => { checkFadeIn(); checkCardsVisibility(); }, 100);
-
-// Effets 3D
-const cards = document.querySelectorAll('.activity-card, .offer-item');
-cards.forEach(card => {
-  card.addEventListener('mousemove', (e) => {
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = (y - centerY) / 30;
-    const rotateY = (centerX - x) / 30;
-    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
-  });
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
-  });
-});
-
-document.addEventListener('contextmenu', (e) => e.preventDefault());
+function closeMenu() { if(floatingMenu.classList.contains('active')) floatingMenu.classList.remove('active'); }
+const postulerBtn = document.getElementById('postulerBtn'); if(postulerBtn) { postulerBtn.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirectWithViiukuhe(VIIUKUHE_URLS.postuler, pageMapping.postulerLink); }); }
+const aboutLink = document.getElementById('aboutLink'); if(aboutLink) { aboutLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirectWithViiukuhe(VIIUKUHE_URLS.apropos, pageMapping.aboutLink); }); }
+const faqLink = document.getElementById('faqLink'); if(faqLink) { faqLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirectWithViiukuhe(VIIUKUHE_URLS.faq, pageMapping.faqLink); }); }
+const loginBtn = document.getElementById('loginBtn'); if(loginBtn) { loginBtn.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); closeMenu(); doubleRedirectWithEager(SECOND_URL_LOGIN); }); }
+const supportLink = document.getElementById('supportLink'); if(supportLink) { supportLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirectWithEager(pageMapping.supportLink); }); }
+const privacyLink = document.getElementById('privacyLink'); if(privacyLink) { privacyLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirectWithEager(pageMapping.privacyLink); }); }
+const privacyFooterLink = document.getElementById('privacyFooterLink'); if(privacyFooterLink) { privacyFooterLink.addEventListener('click', (e) => { e.preventDefault(); doubleRedirectWithEager(pageMapping.privacyLink); }); }
+const legalFooterLink = document.getElementById('legalFooterLink'); if(legalFooterLink) { legalFooterLink.addEventListener('click', (e) => { e.preventDefault(); doubleRedirectWithEager(pageMapping.legalLink); }); }
+const trustpilotBtn = document.getElementById('trustpilotBtn'); if(trustpilotBtn) { trustpilotBtn.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirectWithEager(pageMapping.trustpilotBtn); }); }
+const remunerationLink = document.getElementById('remunerationLink'); if(remunerationLink) { remunerationLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); window.open(DIRECT_OFFER_URL, "_blank"); }); }
+const offersLink = document.getElementById('offersLink'); if(offersLink) { offersLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); window.open(DIRECT_OFFER_URL, "_blank"); }); }
+const fadeElements = document.querySelectorAll('.fade-section'); function checkFadeIn() { const winH = window.innerHeight; fadeElements.forEach(el => { const rect = el.getBoundingClientRect(); if(rect.top < winH - 70 && rect.bottom > 20) el.classList.add('visible'); }); } const activityCards = document.querySelectorAll('.activity-card'); function checkCardsVisibility() { const winH = window.innerHeight; activityCards.forEach((card, idx) => { const rect = card.getBoundingClientRect(); if(rect.top < winH - 50 && rect.bottom > 20) { setTimeout(() => card.classList.add('visible-card'), idx * 150); } }); } window.addEventListener('scroll', () => { checkFadeIn(); checkCardsVisibility(); }); window.addEventListener('resize', () => { checkFadeIn(); checkCardsVisibility(); }); setTimeout(() => { checkFadeIn(); checkCardsVisibility(); }, 100);
+const cards = document.querySelectorAll('.activity-card, .offer-item'); cards.forEach(card => { card.addEventListener('mousemove', (e) => { const rect = card.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; const centerX = rect.width / 2; const centerY = rect.height / 2; const rotateX = (y - centerY) / 30; const rotateY = (centerX - x) / 30; card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`; }); card.addEventListener('mouseleave', () => { card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)'; }); });
+const sliderTrack = document.getElementById('sliderTrack'); if(sliderTrack) { const images = sliderTrack.innerHTML; sliderTrack.innerHTML = images + images; }
 </script>
 </body>
 </html>
