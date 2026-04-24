@@ -175,43 +175,777 @@ body.chat-active .rainbow-line{display:block;}
 <script>
 const RAISONS_ABSENCE=["Obligations familiales","Maladie","Absence non justifiée","Déplacement/voyage","Abandon","Problème de santé","Fatigue","Rendez-vous","Deuil","Engagement scolaire"];
 const NETUBERS=[{code:"MA-NX-S1-ZA-01"},{code:"MA-NX-S1-ZA-02"},{code:"MA-NX-S1-ZB-03"},{code:"MA-NX-S1-ZB-04"},{code:"MA-NX-S1-ZC-05"}];
-let currentStep=0,responses={},questions=[],waitingYesNo=false,typewriterTimeout=null,formulaireComplete=false,counterInterval=null,currentEditingMessageId=null;
-const questionText=document.getElementById('questionText'),questionMeta=document.getElementById('questionMeta'),inputRow=document.getElementById('inputRow'),choiceRow=document.getElementById('choiceRow'),answerSelect=document.getElementById('answerSelect'),answerNumber=document.getElementById('answerNumber'),submitBtn=document.getElementById('submitBtn'),yesBtn=document.getElementById('yesBtn'),noBtn=document.getElementById('noBtn'),progressFill=document.getElementById('progressFill'),stepCounterSpan=document.getElementById('stepCounter'),prevBtn=document.getElementById('prevBtn'),resetBtn=document.getElementById('resetBtn'),saveStatus=document.getElementById('saveStatus'),popupOverlay=document.getElementById('popupOverlay'),popupTitle=document.getElementById('popupTitle'),popupMessageDiv=document.getElementById('popupMessage'),popupBtnLeft=document.getElementById('popupBtnLeft'),popupBtnRight=document.getElementById('popupBtnRight'),sendReportBtn=document.getElementById('sendReportBtn'),questionCardDiv=document.getElementById('questionCard');
-const chatMessagesDiv=document.getElementById('chatMessages'),chatMessageInput=document.getElementById('chatMessageInput'),sendChatBtn=document.getElementById('sendChatBtn'),editPopupOverlay=document.getElementById('editPopupOverlay'),editMessageContent=document.getElementById('editMessageContent'),cancelEditBtn=document.getElementById('cancelEditBtn'),confirmEditBtn=document.getElementById('confirmEditBtn'),chatBackBtn=document.getElementById('chatBackBtn'),tabChat=document.getElementById('tabChat');
+let currentStep=0,responses={},questions=[],waitingYesNo=false,typewriterTimeout=null,formulaireComplete=false;
+let currentEditingMessageId=null;
+
+const questionText=document.getElementById('questionText');
+const questionMeta=document.getElementById('questionMeta');
+const inputRow=document.getElementById('inputRow');
+const choiceRow=document.getElementById('choiceRow');
+const answerSelect=document.getElementById('answerSelect');
+const answerNumber=document.getElementById('answerNumber');
+const submitBtn=document.getElementById('submitBtn');
+const yesBtn=document.getElementById('yesBtn');
+const noBtn=document.getElementById('noBtn');
+const progressFill=document.getElementById('progressFill');
+const stepCounterSpan=document.getElementById('stepCounter');
+const prevBtn=document.getElementById('prevBtn');
+const resetBtn=document.getElementById('resetBtn');
+const saveStatus=document.getElementById('saveStatus');
+const popupOverlay=document.getElementById('popupOverlay');
+const popupTitle=document.getElementById('popupTitle');
+const popupMessageDiv=document.getElementById('popupMessage');
+const popupBtnLeft=document.getElementById('popupBtnLeft');
+const popupBtnRight=document.getElementById('popupBtnRight');
+const sendReportBtn=document.getElementById('sendReportBtn');
+const questionCardDiv=document.getElementById('questionCard');
+const chatMessagesDiv=document.getElementById('chatMessages');
+const chatMessageInput=document.getElementById('chatMessageInput');
+const sendChatBtn=document.getElementById('sendChatBtn');
+const editPopupOverlay=document.getElementById('editPopupOverlay');
+const editMessageContent=document.getElementById('editMessageContent');
+const cancelEditBtn=document.getElementById('cancelEditBtn');
+const confirmEditBtn=document.getElementById('confirmEditBtn');
+const chatBackBtn=document.getElementById('chatBackBtn');
+const tabChat=document.getElementById('tabChat');
+
 function escapeHtml(t){if(!t)return '';return String(t).replace(/[&<>]/g,function(m){if(m==='&')return'&amp;';if(m==='<')return'&lt;';if(m==='>')return'&gt;';return m;});}
-function showPopup(t,m,l,r,onC,onCa,rc='primary',rd=false){popupTitle.textContent=t;popupMessageDiv.innerHTML=m;popupBtnLeft.textContent=l;popupBtnRight.textContent=r;popupBtnRight.className=`popup-btn ${rc}`;if(rd)popupBtnRight.disabled=true;else popupBtnRight.disabled=false;popupOverlay.classList.add('active');popupBtnRight.onclick=()=>{if(popupBtnRight.disabled)return;popupOverlay.classList.remove('active');if(onC)onC();};popupBtnLeft.onclick=()=>{if(counterInterval)clearInterval(counterInterval);popupOverlay.classList.remove('active');if(onCa)onCa();};}
-async function loadChatMessages(){try{const q=query(collection(db,"chat_messages"),orderBy("sentDate","desc"),limit(100));const s=await getDocs(q);if(s.empty){chatMessagesDiv.innerHTML='<div class="empty-chat">💬 Aucun message</div>';return;}let msgs=[];s.forEach(d=>msgs.push({id:d.id,...d.data()}));msgs.reverse();let html='';for(let m of msgs){const env=m.senderRole==='responsable';const d=new Date(m.sentDate);const fd=d.toLocaleDateString('fr-FR')+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});if(env){html+=`<div class="message-bubble message-sent"><div class="message-content">${escapeHtml(m.message)}</div><div class="message-info"><span>${fd}</span>${m.isEdited?'<span>(modifié)</span>':''}</div><div class="message-actions"><button class="edit-msg-btn" data-id="${m.id}" data-msg="${escapeHtml(m.message)}">✏️</button></div></div>`;}else{html+=`<div class="message-bubble message-received"><div><span class="message-sender">DEO</span><div class="message-content">${escapeHtml(m.message)}</div></div><div class="message-info"><span>${fd}</span>${m.isEdited?'<span>(modifié)</span>':''}</div></div>`;}}chatMessagesDiv.innerHTML=html;document.querySelectorAll('.edit-msg-btn').forEach(btn=>{btn.onclick=(e)=>{e.stopPropagation();openEditPopup(btn.dataset.id,btn.dataset.msg);};});chatMessagesDiv.scrollTop=chatMessagesDiv.scrollHeight;}catch(e){chatMessagesDiv.innerHTML='<div class="empty-chat">⚠️ Erreur de chargement</div>';}}
-async function sendChatMessage(){const msg=chatMessageInput.value.trim();if(!msg){showPopup("⚠️","Message vide","Fermer","",()=>{},()=>{});return;}let responsable=responses.responsable||"Responsable";if(!responsable||responsable==="")responsable="Responsable";try{await addDoc(collection(db,"chat_messages"),{message:msg,sender:responsable,senderRole:"responsable",recipient:"DEO",sentDate:new Date().toISOString(),isEdited:false,status:"envoyé"});chatMessageInput.value="";await loadChatMessages();}catch(e){showPopup("❌","Erreur envoi","Fermer","",()=>{},()=>{});}}
-async function editChatMessage(id,newMsg){if(!newMsg.trim()){showPopup("⚠️","Message vide","Fermer","",()=>{},()=>{});return false;}try{const ref=doc(db,"chat_messages",id);const d=await getDoc(ref);if(d.exists()){await updateDoc(ref,{message:newMsg,isEdited:true,editedDate:new Date().toISOString(),originalMessage:d.data().message});await loadChatMessages();return true;}}catch(e){showPopup("❌","Erreur","Fermer","",()=>{},()=>{});return false;}}
-function openEditPopup(id,msg){currentEditingMessageId=id;editMessageContent.value=msg;editPopupOverlay.classList.add('active');}
-function closeEditPopup(){editPopupOverlay.classList.remove('active');currentEditingMessageId=null;editMessageContent.value="";}
-async function confirmEdit(){if(currentEditingMessageId){const nm=editMessageContent.value.trim();if(nm)await editChatMessage(currentEditingMessageId,nm);closeEditPopup();}}
-function enableChatFullscreen(){document.body.classList.add('chat-active');tabChat.classList.add('chat-fullscreen');}
-function disableChatFullscreen(){document.body.classList.remove('chat-active');tabChat.classList.remove('chat-fullscreen');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.querySelector('.tab-btn[data-tab="form"]').classList.add('active');document.getElementById('tabForm').classList.add('active');}
-async function loadMemorandums(){const div=document.getElementById('memorandumList');div.innerHTML='<div class="loading-placeholder">⏳ Chargement...</div>';try{const q=query(collection(db,"memorandums"),orderBy("sentDate","desc"),limit(20));const s=await getDocs(q);const footer=document.getElementById('memorandumFooter');const today=new Date();const dateFooter=today.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});if(!s.empty){let h='';s.forEach(d=>{const data=d.data();const sentDate=data.sentDate||data.date;const formattedDate=new Date(sentDate).toLocaleString('fr-FR',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});h+=`<div class="memorandum-item"><div class="memorandum-title">📋 ${escapeHtml(data.title||'Mémorandum')}</div><div class="memorandum-content">${(data.content||'').replace(/\n/g,'<br>')}</div><div class="memorandum-date-bottom">📅 ${formattedDate}</div></div>`;});div.innerHTML=h;}else div.innerHTML='<div class="empty-chat">📭 Aucun mémorandum</div>';footer.innerHTML=`📅 ${dateFooter} · DEO · NeTubeX`;}catch(e){div.innerHTML='<div class="empty-chat">⚠️ Erreur de chargement</div>';}}
-function saveLocal(){localStorage.setItem('pgco_rapport',JSON.stringify({responses,currentStep}));saveStatus.innerHTML='💾 OK';setTimeout(()=>saveStatus.innerHTML='💾 Auto',1200);}
-function buildQuestions(){const q=[];let n=0;q.push({num:n++,type:"choice",field:"responsable",meta:"Identification",text:"Qui remplit le rapport aujourd'hui ?",options:["Madame Ursule","Madame Chancelle"]});for(let nu of NETUBERS){q.push({num:n++,type:"yesno",field:`${nu.code}_present`,meta:nu.code,text:`${nu.code} : Était-il présent aujourd'hui ?`});q.push({num:n++,type:"select",field:`${nu.code}_raisonAbsence`,meta:nu.code,text:`${nu.code} : Raison de l'absence ?`,options:RAISONS_ABSENCE.map(r=>`<option value="${r}">${r}</option>`).join('')});q.push({num:n++,type:"select",field:`${nu.code}_objMensuel`,meta:nu.code,text:`${nu.code} : Quel est son objectif mensuel ?`,options:[...Array(16).keys()].map(i=>`<option value="${i}">${i}</option>`).join('')});q.push({num:n++,type:"select",field:`${nu.code}_objAtteint`,meta:nu.code,text:`${nu.code} : Combien d'objectifs a-t-il atteints aujourd'hui ?`,options:[...Array(16).keys()].map(i=>`<option value="${i}">${i}</option>`).join('')});q.push({num:n++,type:"number",field:`${nu.code}_nbNiveaux`,meta:nu.code,text:`${nu.code} : Quel est le nombre de niveaux/événements ou mètres ?`,min:0});q.push({num:n++,type:"number",field:`${nu.code}_nbNiveauxAtteints`,meta:nu.code,text:`${nu.code} : Combien de niveaux/événements ou mètres a-t-il atteints ?`,min:0});q.push({num:n++,type:"number",field:`${nu.code}_pointsPrec`,meta:nu.code,text:`${nu.code} : Combien de points avait-il précédemment ?`,min:0});q.push({num:n++,type:"number",field:`${nu.code}_pointsJour`,meta:nu.code,text:`${nu.code} : Combien de points a-t-il aujourd'hui ?`,min:0});q.push({num:n++,type:"number",field:`${nu.code}_tempsPrec`,meta:nu.code,text:`${nu.code} : Quel temps avait-il précédemment (en minutes) ?`,min:0});q.push({num:n++,type:"number",field:`${nu.code}_tempsJour`,meta:nu.code,text:`${nu.code} : Quel temps a-t-il aujourd'hui (en minutes) ?`,min:0});q.push({num:n++,type:"select",field:`${nu.code}_forfaitGo`,meta:nu.code,text:`${nu.code} : Combien de Go de forfait internet reste-t-il ?`,options:[...Array(31).keys()].map(i=>`<option value="${i}">${i} Go</option>`).join('')});}q.push({num:n++,type:"text",field:"referenceNumber",meta:"Rapport",text:"Numéro de rapport (3 derniers chiffres personnalisables)",placeholder:"Ex: 001"});return q;}
-function displayCurrent(){updateCardColor();if(currentStep>=questions.length){formulaireComplete=true;sendReportBtn.classList.remove('hidden');let recap="RÉCAPITULATIF DU RAPPORT\n\n";for(let n of NETUBERS){if(responses[`${n.code}_present`]==='OUI'){const ptsP=parseFloat(responses[`${n.code}_pointsPrec`])||0;const ptsJ=parseFloat(responses[`${n.code}_pointsJour`])||0;const forfait=responses[`${n.code}_forfaitGo`]||'0';recap+=`▪ ${n.code} : points précédents ${ptsP}, points du jour ${ptsJ}, forfait restant ${forfait} Go.\n`;}else{const raison=responses[`${n.code}_raisonAbsence`]||"Non spécifiée";recap+=`▪ ${n.code} : ABSENT - Raison: ${raison}\n`;}}recap+="\nCliquez sur \"Envoyer\" pour transmettre ce rapport à la DEO.";typewriterEffect(questionText,recap,25);inputRow.classList.add('hidden');choiceRow.classList.add('hidden');return;}formulaireComplete=false;sendReportBtn.classList.add('hidden');const q=questions[currentStep];waitingYesNo=false;inputRow.classList.add('hidden');choiceRow.classList.add('hidden');answerSelect.style.display='none';answerNumber.style.display='none';questionMeta.innerHTML=`<span class="question-num">#${q.num+1}</span> ${q.meta}`;if(q.type==="choice"){choiceRow.classList.remove('hidden');waitingYesNo=true;yesBtn.textContent=q.options[0];noBtn.textContent=q.options[1];typewriterEffect(questionText,q.text,25);}else if(q.type==="yesno"){choiceRow.classList.remove('hidden');waitingYesNo=true;yesBtn.textContent="✔ Oui";noBtn.textContent="✘ Non";typewriterEffect(questionText,q.text,25);}else if(q.type==="select"){inputRow.classList.remove('hidden');answerSelect.style.display='block';answerNumber.style.display='none';answerSelect.innerHTML=q.options;if(responses[q.field])answerSelect.value=responses[q.field];else answerSelect.value="0";typewriterEffect(questionText,q.text,25);}else if(q.type==="number"){inputRow.classList.remove('hidden');answerNumber.style.display='block';answerSelect.style.display='none';answerNumber.type='number';answerNumber.min=q.min||0;answerNumber.value=responses[q.field]||'';answerNumber.placeholder=q.placeholder||"Saisir un nombre";typewriterEffect(questionText,q.text,25);}else if(q.type==="text"){inputRow.classList.remove('hidden');answerNumber.style.display='block';answerSelect.style.display='none';answerNumber.type='text';answerNumber.value=responses[q.field]||'';answerNumber.placeholder=q.placeholder||"Saisir...";typewriterEffect(questionText,q.text,25);}progressFill.style.width=`${((currentStep+1)/questions.length)*100}%`;stepCounterSpan.innerText=`${currentStep+1}/${questions.length}`;prevBtn.classList.toggle('hidden',currentStep===0);}
-function updateCardColor(){const idx=getCurrentNetuberIndex();questionCardDiv.classList.remove('netuber-0','netuber-1','netuber-2','netuber-3','netuber-4','default-card');if(idx>=0&&idx<NETUBERS.length)questionCardDiv.classList.add(`netuber-${idx}`);else questionCardDiv.classList.add('default-card');}
-function getCurrentNetuberIndex(){if(currentStep>=questions.length)return-1;const q=questions[currentStep];if(!q||!q.field)return-1;for(let i=0;i<NETUBERS.length;i++)if(q.field.includes(NETUBERS[i].code))return i;return-1;}
-function typewriterEffect(el,txt,speed=25,cb){if(typewriterTimeout)clearTimeout(typewriterTimeout);el.innerHTML='';let i=0;function type(){if(i<txt.length){el.innerHTML=txt.substring(0,i+1);i++;typewriterTimeout=setTimeout(type,speed);}else{if(cb)cb();}}type();}
-function handleResponse(val){if(currentStep>=questions.length)return;const q=questions[currentStep];responses[q.field]=val;autoSave();if(q.field.includes('_present')&&val==='NON'){if(currentStep<questions.length-1)currentStep++;displayCurrent();autoSave();return;}if(q.field.includes('_present')&&val==='OUI'){if(currentStep<questions.length-1)currentStep++;displayCurrent();autoSave();return;}if(currentStep<questions.length-1){currentStep++;displayCurrent();}else{currentStep++;displayCurrent();}}
-function prevQ(){if(currentStep>0){currentStep--;displayCurrent();}}
-function validateCurrent(){if(waitingYesNo||currentStep>=questions.length)return;const q=questions[currentStep];if(q.type==="select"){handleResponse(answerSelect.value);}else if(q.type==="number"){const val=answerNumber.value.trim();if(val===''){showPopup("⚠️","Veuillez saisir une réponse","Fermer","",()=>{},()=>{});return;}if(isNaN(parseFloat(val))){showPopup("⚠️","Nombre valide requis","Fermer","",()=>{},()=>{});return;}handleResponse(val);}else if(q.type==="text"){const val=answerNumber.value.trim();if(val===''){showPopup("⚠️","Champ requis","Fermer","",()=>{},()=>{});return;}handleResponse(val);}}
-function defaultYes(){if(waitingYesNo&&currentStep<questions.length){const q=questions[currentStep];if(q.type==="choice")handleResponse(yesBtn.textContent);else handleResponse("OUI");}}
-function defaultNo(){if(waitingYesNo&&currentStep<questions.length){const q=questions[currentStep];if(q.type==="choice")handleResponse(noBtn.textContent);else handleResponse("NON");}}
-function resetAllSilently(){responses={};currentStep=0;formulaireComplete=false;sendReportBtn.classList.add('hidden');localStorage.removeItem('pgco_rapport');questions=buildQuestions();displayCurrent();}
-function resetAll(){showPopup("Confirmation","⚠️ Tout recommencer ?","Annuler","Confirmer",()=>{resetAllSilently();showPopup("Succès","Nouveau rapport initialisé","OK","",()=>{},()=>{});},()=>{});}
-function getFullReference(){let num=responses.referenceNumber||"001";num=num.toString().padStart(3,'0').slice(0,3);return`RPT-BLTJRNL-2026-${num}`;}
-async function performSendToFirebase(){const btn=sendReportBtn;const orig=btn.textContent;btn.textContent="⏳ Envoi...";btn.disabled=true;try{let totalPtsP=0,totalPtsJ=0,totalTempsP=0,totalTempsJ=0;const netubersData=[];for(let n of NETUBERS){const present=responses[`${n.code}_present`]==='OUI'?'Présent':'Absent';const raisonAbsence=responses[`${n.code}_raisonAbsence`]||"";const objM=parseInt(responses[`${n.code}_objMensuel`])||0;const objA=parseInt(responses[`${n.code}_objAtteint`])||0;const nbN=parseFloat(responses[`${n.code}_nbNiveaux`])||0;const nbA=parseFloat(responses[`${n.code}_nbNiveauxAtteints`])||0;const ptsP=parseFloat(responses[`${n.code}_pointsPrec`])||0;const ptsJ=parseFloat(responses[`${n.code}_pointsJour`])||0;const tempsP=parseFloat(responses[`${n.code}_tempsPrec`])||0;const tempsJ=parseFloat(responses[`${n.code}_tempsJour`])||0;const forfaitGo=responses[`${n.code}_forfaitGo`]||'0';if(present==='Présent'){totalPtsP+=ptsP;totalPtsJ+=ptsJ;totalTempsP+=tempsP;totalTempsJ+=tempsJ;}netubersData.push({code:n.code,presence:present,raisonAbsence:raisonAbsence,objectifMensuel:objM,objectifAtteint:objA,nbNiveaux:nbN,nbNiveauxAtteints:nbA,pointsPrecedents:ptsP,pointsJour:ptsJ,tempsPrecedent:tempsP,tempsJour:tempsJ,forfaitInternet:forfaitGo});}const currentRef=getFullReference();const reportData={type:"pgco_report",responsable:responses.responsable||"Non spécifié",zone:"ORG-NX-S1",reference:currentRef,date:new Date().toLocaleDateString('fr-FR'),heure:new Date().toLocaleTimeString('fr-FR'),totalPointsPrecedents:totalPtsP,totalPointsJour:totalPtsJ,totalTempsPrecedent:totalTempsP,totalTempsJour:totalTempsJ,netubers:netubersData,status:"non_traite",createdAt:new Date().toISOString()};const reportsRef=collection(db,"reports");await addDoc(reportsRef,reportData);const confirmationMsg=`Expéditeur: ${responses.responsable||"Non spécifié"}\nRéférence: ${currentRef}\n\n✅ Rapport reçu avec succès`;showPopup("✅ RAPPORT TRANSMIS",confirmationMsg,"Fermer","",()=>{resetAllSilently();},()=>{},'primary');}catch(e){showPopup("❌ ERREUR",`Erreur: ${e.message}`,"Fermer","",()=>{},()=>{},'primary');}finally{btn.textContent=orig;btn.disabled=false;}}
-function sendReportToFirebase(){if(!formulaireComplete){showPopup("⚠️","Formulaire incomplet","Fermer","",()=>{},()=>{});return;}let missing=[];for(let n of NETUBERS){if(responses[`${n.code}_present`]==='OUI'){if(!responses[`${n.code}_objMensuel`])missing.push(`${n.code} - Objectif mensuel`);if(!responses[`${n.code}_objAtteint`])missing.push(`${n.code} - Objectif atteint`);if(!responses[`${n.code}_nbNiveaux`])missing.push(`${n.code} - Nb niveaux`);if(!responses[`${n.code}_nbNiveauxAtteints`])missing.push(`${n.code} - Nb niveaux atteints`);if(!responses[`${n.code}_pointsPrec`])missing.push(`${n.code} - Points précédents`);if(!responses[`${n.code}_pointsJour`])missing.push(`${n.code} - Points jour`);if(!responses[`${n.code}_tempsPrec`])missing.push(`${n.code} - Temps précédent`);if(!responses[`${n.code}_tempsJour`])missing.push(`${n.code} - Temps jour`);if(!responses[`${n.code}_forfaitGo`])missing.push(`${n.code} - Forfait internet`);}}if(!responses.referenceNumber||responses.referenceNumber.trim()==='')missing.push("Numéro de rapport");if(missing.length>0){showPopup("⚠️ Champs manquants",missing.join("\n"),"Fermer","",()=>{},()=>{});return;}performSendToFirebase();}
-function autoSave(){saveLocal();}
-yesBtn.onclick=defaultYes;noBtn.onclick=defaultNo;submitBtn.onclick=validateCurrent;prevBtn.onclick=prevQ;resetBtn.onclick=resetAll;sendReportBtn.onclick=sendReportToFirebase;sendChatBtn.onclick=sendChatMessage;cancelEditBtn.onclick=closeEditPopup;confirmEditBtn.onclick=confirmEdit;chatBackBtn.onclick=disableChatFullscreen;
-document.querySelectorAll('.tab-btn').forEach(btn=>{btn.onclick=()=>{if(btn.dataset.tab!=='chat')disableChatFullscreen();document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));btn.classList.add('active');document.getElementById(`tab${btn.dataset.tab==='form'?'Form':btn.dataset.tab==='memo'?'Memo':'Chat'}`).classList.add('active');if(btn.dataset.tab==='memo')loadMemorandums();if(btn.dataset.tab==='chat'){loadChatMessages();enableChatFullscreen();}};});
-questions=buildQuestions();displayCurrent();loadMemorandums();loadChatMessages();
-const saved=localStorage.getItem('pgco_rapport');if(saved){try{const d=JSON.parse(saved);if(d.responses&&Object.keys(d.responses).length>0){responses=d.responses;currentStep=d.currentStep||0;displayCurrent();}}catch(e){}}
-setInterval(()=>{if(document.querySelector('.tab-btn[data-tab="memo"]').classList.contains('active'))loadMemorandums();if(document.querySelector('.tab-btn[data-tab="chat"]').classList.contains('active'))loadChatMessages();},30000);
-setInterval(async()=>{const seuil=new Date(Date.now()-24*60*60*1000);const q=query(collection(db,"chat_messages"),where("sentDate","<",seuil.toISOString()));const s=await getDocs(q);s.forEach(async(d)=>{await deleteDoc(doc(db,"chat_messages",d.id));});},3600000);
+
+function showPopup(t,m,l,r,onC,onCa,rc='primary',rd=false){
+    popupTitle.textContent=t;
+    popupMessageDiv.innerHTML=m;
+    popupBtnLeft.textContent=l;
+    popupBtnRight.textContent=r;
+    popupBtnRight.className=`popup-btn ${rc}`;
+    if(rd)popupBtnRight.disabled=true;
+    else popupBtnRight.disabled=false;
+    popupOverlay.classList.add('active');
+    popupBtnRight.onclick=()=>{
+        if(popupBtnRight.disabled)return;
+        popupOverlay.classList.remove('active');
+        if(onC)onC();
+    };
+    popupBtnLeft.onclick=()=>{
+        popupOverlay.classList.remove('active');
+        if(onCa)onCa();
+    };
+}
+
+async function loadChatMessages(){
+    try{
+        const q=query(collection(db,"chat_messages"),orderBy("sentDate","desc"),limit(100));
+        const s=await getDocs(q);
+        if(s.empty){
+            chatMessagesDiv.innerHTML='<div class="empty-chat">💬 Aucun message</div>';
+            return;
+        }
+        let msgs=[];
+        s.forEach(d=>msgs.push({id:d.id,...d.data()}));
+        msgs.reverse();
+        let html='';
+        for(let m of msgs){
+            const env=m.senderRole==='responsable';
+            const d=new Date(m.sentDate);
+            const fd=d.toLocaleDateString('fr-FR')+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+            if(env){
+                html+=`<div class="message-bubble message-sent"><div class="message-content">${escapeHtml(m.message)}</div><div class="message-info"><span>${fd}</span>${m.isEdited?'<span>(modifié)</span>':''}</div><div class="message-actions"><button class="edit-msg-btn" data-id="${m.id}" data-msg="${escapeHtml(m.message)}">✏️</button></div></div>`;
+            }else{
+                html+=`<div class="message-bubble message-received"><div><span class="message-sender">DEO</span><div class="message-content">${escapeHtml(m.message)}</div></div><div class="message-info"><span>${fd}</span>${m.isEdited?'<span>(modifié)</span>':''}</div></div>`;
+            }
+        }
+        chatMessagesDiv.innerHTML=html;
+        document.querySelectorAll('.edit-msg-btn').forEach(btn=>{
+            btn.onclick=(e)=>{
+                e.stopPropagation();
+                openEditPopup(btn.dataset.id,btn.dataset.msg);
+            };
+        });
+        chatMessagesDiv.scrollTop=chatMessagesDiv.scrollHeight;
+    }catch(e){
+        chatMessagesDiv.innerHTML='<div class="empty-chat">⚠️ Erreur de chargement</div>';
+    }
+}
+
+async function sendChatMessage(){
+    const msg=chatMessageInput.value.trim();
+    if(!msg){
+        showPopup("⚠️","Message vide","Fermer","",()=>{},()=>{});
+        return;
+    }
+    let responsable=responses.responsable||"Responsable";
+    if(!responsable||responsable==="")responsable="Responsable";
+    try{
+        await addDoc(collection(db,"chat_messages"),{
+            message:msg,
+            sender:responsable,
+            senderRole:"responsable",
+            recipient:"DEO",
+            sentDate:new Date().toISOString(),
+            isEdited:false,
+            status:"envoyé"
+        });
+        chatMessageInput.value="";
+        await loadChatMessages();
+    }catch(e){
+        showPopup("❌","Erreur envoi","Fermer","",()=>{},()=>{});
+    }
+}
+
+async function editChatMessage(id,newMsg){
+    if(!newMsg.trim()){
+        showPopup("⚠️","Message vide","Fermer","",()=>{},()=>{});
+        return false;
+    }
+    try{
+        const ref=doc(db,"chat_messages",id);
+        const d=await getDoc(ref);
+        if(d.exists()){
+            await updateDoc(ref,{
+                message:newMsg,
+                isEdited:true,
+                editedDate:new Date().toISOString(),
+                originalMessage:d.data().message
+            });
+            await loadChatMessages();
+            return true;
+        }
+    }catch(e){
+        showPopup("❌","Erreur","Fermer","",()=>{},()=>{});
+        return false;
+    }
+}
+
+function openEditPopup(id,msg){
+    currentEditingMessageId=id;
+    editMessageContent.value=msg;
+    editPopupOverlay.classList.add('active');
+}
+
+function closeEditPopup(){
+    editPopupOverlay.classList.remove('active');
+    currentEditingMessageId=null;
+    editMessageContent.value="";
+}
+
+async function confirmEdit(){
+    if(currentEditingMessageId){
+        const nm=editMessageContent.value.trim();
+        if(nm)await editChatMessage(currentEditingMessageId,nm);
+        closeEditPopup();
+    }
+}
+
+function enableChatFullscreen(){
+    document.body.classList.add('chat-active');
+    tabChat.classList.add('chat-fullscreen');
+}
+
+function disableChatFullscreen(){
+    document.body.classList.remove('chat-active');
+    tabChat.classList.remove('chat-fullscreen');
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="form"]').classList.add('active');
+    document.getElementById('tabForm').classList.add('active');
+}
+
+async function loadMemorandums(){
+    const div=document.getElementById('memorandumList');
+    div.innerHTML='<div class="loading-placeholder">⏳ Chargement...</div>';
+    try{
+        const q=query(collection(db,"memorandums"),orderBy("sentDate","desc"),limit(20));
+        const s=await getDocs(q);
+        const footer=document.getElementById('memorandumFooter');
+        const today=new Date();
+        const dateFooter=today.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+        if(!s.empty){
+            let h='';
+            s.forEach(d=>{
+                const data=d.data();
+                const sentDate=data.sentDate||data.date;
+                const formattedDate=new Date(sentDate).toLocaleString('fr-FR',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+                h+=`<div class="memorandum-item"><div class="memorandum-title">📋 ${escapeHtml(data.title||'Mémorandum')}</div><div class="memorandum-content">${(data.content||'').replace(/\n/g,'<br>')}</div><div class="memorandum-date-bottom">📅 ${formattedDate}</div></div>`;
+            });
+            div.innerHTML=h;
+        }else div.innerHTML='<div class="empty-chat">📭 Aucun mémorandum</div>';
+        footer.innerHTML=`📅 ${dateFooter} · DEO · NeTubeX`;
+    }catch(e){
+        div.innerHTML='<div class="empty-chat">⚠️ Erreur de chargement</div>';
+    }
+}
+
+function saveLocal(){
+    localStorage.setItem('pgco_rapport',JSON.stringify({responses,currentStep}));
+    saveStatus.innerHTML='💾 OK';
+    setTimeout(()=>saveStatus.innerHTML='💾 Auto',1200);
+}
+
+// ============ CONSTRUCTION CORRIGÉE DES QUESTIONS ============
+function buildQuestions(){
+    const q=[];
+    let n=0;
+    
+    // Question responsable
+    q.push({
+        num:n++,
+        type:"choice",
+        field:"responsable",
+        meta:"Identification",
+        text:"Qui remplit le rapport aujourd'hui ?",
+        options:["Madame Ursule","Madame Chancelle"]
+    });
+    
+    // Pour chaque Netuber
+    for(let nu of NETUBERS){
+        // Question 1: Présent ? (toujours posée)
+        q.push({
+            num:n++,
+            type:"yesno",
+            field:`${nu.code}_present`,
+            meta:nu.code,
+            text:`${nu.code} : Était-il présent aujourd'hui ?`
+        });
+        
+        // Question 2: Raison d'absence (posée à TOUS, mais logique différente selon réponse)
+        q.push({
+            num:n++,
+            type:"select",
+            field:`${nu.code}_raisonAbsence`,
+            meta:nu.code,
+            text:`${nu.code} : Raison de l'absence ? (si absent)`,
+            options:RAISONS_ABSENCE.map(r=>`<option value="${r}">${r}</option>`).join('')
+        });
+        
+        // Les questions suivantes ne seront posées que si présent
+        const questionsPresent = [
+            {type:"select", field:`${nu.code}_objMensuel`, text:`${nu.code} : Quel est son objectif mensuel ?`, options:[...Array(16).keys()].map(i=>`<option value="${i}">${i}</option>`).join('')},
+            {type:"select", field:`${nu.code}_objAtteint`, text:`${nu.code} : Combien d'objectifs a-t-il atteints aujourd'hui ?`, options:[...Array(16).keys()].map(i=>`<option value="${i}">${i}</option>`).join('')},
+            {type:"number", field:`${nu.code}_nbNiveaux`, text:`${nu.code} : Quel est le nombre de niveaux/événements ou mètres ?`, min:0},
+            {type:"number", field:`${nu.code}_nbNiveauxAtteints`, text:`${nu.code} : Combien de niveaux/événements ou mètres a-t-il atteints ?`, min:0},
+            {type:"number", field:`${nu.code}_pointsPrec`, text:`${nu.code} : Combien de points avait-il précédemment ?`, min:0},
+            {type:"number", field:`${nu.code}_pointsJour`, text:`${nu.code} : Combien de points a-t-il aujourd'hui ?`, min:0},
+            {type:"number", field:`${nu.code}_tempsPrec`, text:`${nu.code} : Quel temps avait-il précédemment (en minutes) ?`, min:0},
+            {type:"number", field:`${nu.code}_tempsJour`, text:`${nu.code} : Quel temps a-t-il aujourd'hui (en minutes) ?`, min:0},
+            {type:"select", field:`${nu.code}_forfaitGo`, text:`${nu.code} : Combien de Go de forfait internet reste-t-il ?`, options:[...Array(31).keys()].map(i=>`<option value="${i}">${i} Go</option>`).join('')}
+        ];
+        
+        for(let pq of questionsPresent){
+            q.push({
+                num:n++,
+                type:pq.type,
+                field:pq.field,
+                meta:nu.code,
+                text:pq.text,
+                options:pq.options,
+                min:pq.min,
+                requiresPresent:true  // Marqueur pour indiquer que cette question nécessite présence
+            });
+        }
+    }
+    
+    // Question finale numéro de rapport
+    q.push({
+        num:n++,
+        type:"text",
+        field:"referenceNumber",
+        meta:"Rapport",
+        text:"Numéro de rapport (3 derniers chiffres personnalisables)",
+        placeholder:"Ex: 001"
+    });
+    
+    return q;
+}
+
+// Vérifie si on doit afficher la question courante (gère le skip si absent)
+function shouldShowQuestion(q){
+    if(!q.requiresPresent) return true;
+    
+    // Extraire le code Netuber du champ
+    const codeMatch = q.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/);
+    if(!codeMatch) return true;
+    
+    const netuberCode = codeMatch[1];
+    const presenceResponse = responses[`${netuberCode}_present`];
+    
+    // Si la réponse de présence est "NON" (absent), on masque les questions qui nécessitent présence
+    return presenceResponse === "OUI";
+}
+
+function updateCardColor(){
+    if(currentStep>=questions.length){
+        questionCardDiv.classList.add('default-card');
+        return;
+    }
+    const q=questions[currentStep];
+    if(!q) return;
+    const idx=getCurrentNetuberIndex();
+    questionCardDiv.classList.remove('netuber-0','netuber-1','netuber-2','netuber-3','netuber-4','default-card');
+    if(idx>=0&&idx<NETUBERS.length) questionCardDiv.classList.add(`netuber-${idx}`);
+    else questionCardDiv.classList.add('default-card');
+}
+
+function getCurrentNetuberIndex(){
+    if(currentStep>=questions.length) return -1;
+    const q=questions[currentStep];
+    if(!q||!q.field) return -1;
+    for(let i=0;i<NETUBERS.length;i++)
+        if(q.field.includes(NETUBERS[i].code)) return i;
+    return -1;
+}
+
+function typewriterEffect(el,txt,speed=25,cb){
+    if(typewriterTimeout) clearTimeout(typewriterTimeout);
+    el.innerHTML='';
+    let i=0;
+    function type(){
+        if(i<txt.length){
+            el.innerHTML=txt.substring(0,i+1);
+            i++;
+            typewriterTimeout=setTimeout(type,speed);
+        }else{
+            if(cb)cb();
+        }
+    }
+    type();
+}
+
+// Fonction pour trouver la prochaine question valide (qui doit être affichée)
+function findNextValidStep(currentStep){
+    let next = currentStep + 1;
+    while(next < questions.length){
+        if(shouldShowQuestion(questions[next])){
+            return next;
+        }
+        next++;
+    }
+    return questions.length; // Fin du formulaire
+}
+
+// Fonction pour trouver la précédente question valide
+function findPrevValidStep(currentStep){
+    let prev = currentStep - 1;
+    while(prev >= 0){
+        if(shouldShowQuestion(questions[prev])){
+            return prev;
+        }
+        prev--;
+    }
+    return -1;
+}
+
+function displayCurrent(){
+    updateCardColor();
+    
+    if(currentStep >= questions.length){
+        formulaireComplete=true;
+        sendReportBtn.classList.remove('hidden');
+        let recap="RÉCAPITULATIF DU RAPPORT\n\n";
+        for(let n of NETUBERS){
+            if(responses[`${n.code}_present`]==='OUI'){
+                const ptsP=parseFloat(responses[`${n.code}_pointsPrec`])||0;
+                const ptsJ=parseFloat(responses[`${n.code}_pointsJour`])||0;
+                const forfait=responses[`${n.code}_forfaitGo`]||'0';
+                recap+=`▪ ${n.code} : points précédents ${ptsP}, points du jour ${ptsJ}, forfait restant ${forfait} Go.\n`;
+            }else{
+                const raison=responses[`${n.code}_raisonAbsence`]||"Non spécifiée";
+                recap+=`▪ ${n.code} : ABSENT - Raison: ${raison}\n`;
+            }
+        }
+        recap+="\nCliquez sur \"Envoyer\" pour transmettre ce rapport à la DEO.";
+        typewriterEffect(questionText,recap,25);
+        inputRow.classList.add('hidden');
+        choiceRow.classList.add('hidden');
+        return;
+    }
+    
+    formulaireComplete=false;
+    sendReportBtn.classList.add('hidden');
+    
+    // Si la question courante ne doit pas être affichée, passer à la suivante
+    if(!shouldShowQuestion(questions[currentStep])){
+        currentStep = findNextValidStep(currentStep);
+        displayCurrent();
+        return;
+    }
+    
+    const q=questions[currentStep];
+    waitingYesNo=false;
+    inputRow.classList.add('hidden');
+    choiceRow.classList.add('hidden');
+    answerSelect.style.display='none';
+    answerNumber.style.display='none';
+    
+    questionMeta.innerHTML=`<span class="question-num">#${q.num+1}</span> ${q.meta}`;
+    
+    // Adaptation du texte pour la raison d'absence
+    let displayText = q.text;
+    if(q.field.includes('_raisonAbsence')){
+        const netuberCode = q.field.replace('_raisonAbsence','');
+        if(responses[`${netuberCode}_present`] === 'OUI'){
+            displayText = `${netuberCode} : Cette question n'est pas applicable (présent). Cliquez sur Suivant.`;
+        }
+    }
+    
+    if(q.type==="choice"){
+        choiceRow.classList.remove('hidden');
+        waitingYesNo=true;
+        yesBtn.textContent=q.options[0];
+        noBtn.textContent=q.options[1];
+        typewriterEffect(questionText,displayText,25);
+    }else if(q.type==="yesno"){
+        choiceRow.classList.remove('hidden');
+        waitingYesNo=true;
+        yesBtn.textContent="✔ Oui";
+        noBtn.textContent="✘ Non";
+        typewriterEffect(questionText,displayText,25);
+    }else if(q.type==="select"){
+        inputRow.classList.remove('hidden');
+        answerSelect.style.display='block';
+        answerNumber.style.display='none';
+        answerSelect.innerHTML=q.options;
+        if(responses[q.field]) answerSelect.value=responses[q.field];
+        else answerSelect.value="0";
+        typewriterEffect(questionText,displayText,25);
+    }else if(q.type==="number"){
+        inputRow.classList.remove('hidden');
+        answerNumber.style.display='block';
+        answerSelect.style.display='none';
+        answerNumber.type='number';
+        answerNumber.min=q.min||0;
+        answerNumber.value=responses[q.field]||'';
+        answerNumber.placeholder=q.placeholder||"Saisir un nombre";
+        typewriterEffect(questionText,displayText,25);
+    }else if(q.type==="text"){
+        inputRow.classList.remove('hidden');
+        answerNumber.style.display='block';
+        answerSelect.style.display='none';
+        answerNumber.type='text';
+        answerNumber.value=responses[q.field]||'';
+        answerNumber.placeholder=q.placeholder||"Saisir...";
+        typewriterEffect(questionText,displayText,25);
+    }
+    
+    const totalVisibleQuestions = questions.filter((_,idx) => {
+        let step = idx;
+        const qTemp = questions[step];
+        if(step === 0) return true;
+        if(qTemp.requiresPresent){
+            const codeMatch = qTemp.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/);
+            if(codeMatch){
+                return responses[`${codeMatch[1]}_present`] === "OUI";
+            }
+        }
+        return true;
+    }).length;
+    
+    const currentVisibleIndex = questions.filter((_,idx) => {
+        if(idx >= currentStep) return false;
+        const qTemp = questions[idx];
+        if(qTemp.requiresPresent){
+            const codeMatch = qTemp.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/);
+            if(codeMatch){
+                return responses[`${codeMatch[1]}_present`] === "OUI";
+            }
+        }
+        return true;
+    }).length;
+    
+    progressFill.style.width=`${((currentVisibleIndex+1)/totalVisibleQuestions)*100}%`;
+    stepCounterSpan.innerText=`${currentVisibleIndex+1}/${totalVisibleQuestions}`;
+    
+    const prevValid = findPrevValidStep(currentStep);
+    prevBtn.classList.toggle('hidden', prevValid === -1);
+}
+
+// Gestion des réponses avec skip intelligent
+function handleResponse(val){
+    if(currentStep>=questions.length) return;
+    
+    const q=questions[currentStep];
+    responses[q.field]=val;
+    
+    // Si c'est la question de présence
+    if(q.field.includes('_present')){
+        if(val === 'NON'){
+            // Absent : on passe à la raison d'absence (qui sera adaptée)
+            currentStep++;
+            displayCurrent();
+            autoSave();
+            return;
+        }else if(val === 'OUI'){
+            // Présent : on passe à la question suivante (qui est la raison d'absence, mais elle sera masquée automatiquement)
+            currentStep++;
+            displayCurrent();
+            autoSave();
+            return;
+        }
+    }
+    
+    // Pour la raison d'absence quand la réponse est "OUI" à présent, on skip automatiquement
+    if(q.field.includes('_raisonAbsence')){
+        const netuberCode = q.field.replace('_raisonAbsence','');
+        if(responses[`${netuberCode}_present`] === 'OUI'){
+            // Ne pas enregistrer la raison d'absence pour un présent
+            delete responses[q.field];
+            // Passer à la question suivante
+            currentStep = findNextValidStep(currentStep);
+            displayCurrent();
+            autoSave();
+            return;
+        }
+    }
+    
+    // Pour toutes les autres questions
+    let nextStep = findNextValidStep(currentStep);
+    currentStep = nextStep;
+    displayCurrent();
+    autoSave();
+}
+
+function prevQ(){
+    const prevValid = findPrevValidStep(currentStep);
+    if(prevValid !== -1){
+        currentStep = prevValid;
+        displayCurrent();
+    }
+}
+
+function validateCurrent(){
+    if(waitingYesNo || currentStep>=questions.length) return;
+    const q=questions[currentStep];
+    
+    // Cas spécial : raison d'absence pour un présent (bouton "Suivant" virtuel)
+    if(q.field.includes('_raisonAbsence')){
+        const netuberCode = q.field.replace('_raisonAbsence','');
+        if(responses[`${netuberCode}_present`] === 'OUI'){
+            // Passer automatiquement
+            let nextStep = findNextValidStep(currentStep);
+            currentStep = nextStep;
+            displayCurrent();
+            return;
+        }
+    }
+    
+    if(q.type==="select"){
+        handleResponse(answerSelect.value);
+    }else if(q.type==="number"){
+        const val=answerNumber.value.trim();
+        if(val===''){
+            showPopup("⚠️","Veuillez saisir une réponse","Fermer","",()=>{},()=>{});
+            return;
+        }
+        if(isNaN(parseFloat(val))){
+            showPopup("⚠️","Nombre valide requis","Fermer","",()=>{},()=>{});
+            return;
+        }
+        handleResponse(val);
+    }else if(q.type==="text"){
+        const val=answerNumber.value.trim();
+        if(val===''){
+            showPopup("⚠️","Champ requis","Fermer","",()=>{},()=>{});
+            return;
+        }
+        handleResponse(val);
+    }
+}
+
+function defaultYes(){
+    if(waitingYesNo && currentStep<questions.length){
+        const q=questions[currentStep];
+        if(q.type==="choice") handleResponse(yesBtn.textContent);
+        else handleResponse("OUI");
+    }
+}
+
+function defaultNo(){
+    if(waitingYesNo && currentStep<questions.length){
+        const q=questions[currentStep];
+        if(q.type==="choice") handleResponse(noBtn.textContent);
+        else handleResponse("NON");
+    }
+}
+
+function resetAllSilently(){
+    responses={};
+    currentStep=0;
+    formulaireComplete=false;
+    sendReportBtn.classList.add('hidden');
+    localStorage.removeItem('pgco_rapport');
+    questions=buildQuestions();
+    displayCurrent();
+}
+
+function resetAll(){
+    showPopup("Confirmation","⚠️ Tout recommencer ?","Annuler","Confirmer",()=>{
+        resetAllSilently();
+        showPopup("Succès","Nouveau rapport initialisé","OK","",()=>{},()=>{});
+    },()=>{});
+}
+
+function getFullReference(){
+    let num=responses.referenceNumber||"001";
+    num=num.toString().padStart(3,'0').slice(0,3);
+    return`RPT-BLTJRNL-2026-${num}`;
+}
+
+async function performSendToFirebase(){
+    const btn=sendReportBtn;
+    const orig=btn.textContent;
+    btn.textContent="⏳ Envoi...";
+    btn.disabled=true;
+    try{
+        let totalPtsP=0,totalPtsJ=0,totalTempsP=0,totalTempsJ=0;
+        const netubersData=[];
+        for(let n of NETUBERS){
+            const present=responses[`${n.code}_present`]==='OUI'?'Présent':'Absent';
+            const raisonAbsence=responses[`${n.code}_raisonAbsence`]||"";
+            const objM=parseInt(responses[`${n.code}_objMensuel`])||0;
+            const objA=parseInt(responses[`${n.code}_objAtteint`])||0;
+            const nbN=parseFloat(responses[`${n.code}_nbNiveaux`])||0;
+            const nbA=parseFloat(responses[`${n.code}_nbNiveauxAtteints`])||0;
+            const ptsP=parseFloat(responses[`${n.code}_pointsPrec`])||0;
+            const ptsJ=parseFloat(responses[`${n.code}_pointsJour`])||0;
+            const tempsP=parseFloat(responses[`${n.code}_tempsPrec`])||0;
+            const tempsJ=parseFloat(responses[`${n.code}_tempsJour`])||0;
+            const forfaitGo=responses[`${n.code}_forfaitGo`]||'0';
+            if(present==='Présent'){
+                totalPtsP+=ptsP;
+                totalPtsJ+=ptsJ;
+                totalTempsP+=tempsP;
+                totalTempsJ+=tempsJ;
+            }
+            netubersData.push({
+                code:n.code,
+                presence:present,
+                raisonAbsence:raisonAbsence,
+                objectifMensuel:objM,
+                objectifAtteint:objA,
+                nbNiveaux:nbN,
+                nbNiveauxAtteints:nbA,
+                pointsPrecedents:ptsP,
+                pointsJour:ptsJ,
+                tempsPrecedent:tempsP,
+                tempsJour:tempsJ,
+                forfaitInternet:forfaitGo
+            });
+        }
+        const currentRef=getFullReference();
+        const reportData={
+            type:"pgco_report",
+            responsable:responses.responsable||"Non spécifié",
+            zone:"ORG-NX-S1",
+            reference:currentRef,
+            date:new Date().toLocaleDateString('fr-FR'),
+            heure:new Date().toLocaleTimeString('fr-FR'),
+            totalPointsPrecedents:totalPtsP,
+            totalPointsJour:totalPtsJ,
+            totalTempsPrecedent:totalTempsP,
+            totalTempsJour:totalTempsJ,
+            netubers:netubersData,
+            status:"non_traite",
+            createdAt:new Date().toISOString()
+        };
+        const reportsRef=collection(db,"reports");
+        await addDoc(reportsRef,reportData);
+        const confirmationMsg=`Expéditeur: ${responses.responsable||"Non spécifié"}\nRéférence: ${currentRef}\n\n✅ Rapport reçu avec succès`;
+        showPopup("✅ RAPPORT TRANSMIS",confirmationMsg,"Fermer","",()=>{
+            resetAllSilently();
+        },()=>{},'primary');
+    }catch(e){
+        showPopup("❌ ERREUR",`Erreur: ${e.message}`,"Fermer","",()=>{},()=>{},'primary');
+    }finally{
+        btn.textContent=orig;
+        btn.disabled=false;
+    }
+}
+
+function sendReportToFirebase(){
+    if(!formulaireComplete){
+        showPopup("⚠️","Formulaire incomplet","Fermer","",()=>{},()=>{});
+        return;
+    }
+    let missing=[];
+    for(let n of NETUBERS){
+        if(responses[`${n.code}_present`]==='OUI'){
+            if(!responses[`${n.code}_objMensuel`]) missing.push(`${n.code} - Objectif mensuel`);
+            if(!responses[`${n.code}_objAtteint`]) missing.push(`${n.code} - Objectif atteint`);
+            if(!responses[`${n.code}_nbNiveaux`]) missing.push(`${n.code} - Nb niveaux`);
+            if(!responses[`${n.code}_nbNiveauxAtteints`]) missing.push(`${n.code} - Nb niveaux atteints`);
+            if(!responses[`${n.code}_pointsPrec`]) missing.push(`${n.code} - Points précédents`);
+            if(!responses[`${n.code}_pointsJour`]) missing.push(`${n.code} - Points jour`);
+            if(!responses[`${n.code}_tempsPrec`]) missing.push(`${n.code} - Temps précédent`);
+            if(!responses[`${n.code}_tempsJour`]) missing.push(`${n.code} - Temps jour`);
+            if(!responses[`${n.code}_forfaitGo`]) missing.push(`${n.code} - Forfait internet`);
+        }
+    }
+    if(!responses.referenceNumber||responses.referenceNumber.trim()==='') missing.push("Numéro de rapport");
+    if(missing.length>0){
+        showPopup("⚠️ Champs manquants",missing.join("\n"),"Fermer","",()=>{},()=>{});
+        return;
+    }
+    performSendToFirebase();
+}
+
+function autoSave(){
+    saveLocal();
+}
+
+yesBtn.onclick=defaultYes;
+noBtn.onclick=defaultNo;
+submitBtn.onclick=validateCurrent;
+prevBtn.onclick=prevQ;
+resetBtn.onclick=resetAll;
+sendReportBtn.onclick=sendReportToFirebase;
+sendChatBtn.onclick=sendChatMessage;
+cancelEditBtn.onclick=closeEditPopup;
+confirmEditBtn.onclick=confirmEdit;
+chatBackBtn.onclick=disableChatFullscreen;
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.onclick=()=>{
+        if(btn.dataset.tab!=='chat') disableChatFullscreen();
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(`tab${btn.dataset.tab==='form'?'Form':btn.dataset.tab==='memo'?'Memo':'Chat'}`).classList.add('active');
+        if(btn.dataset.tab==='memo') loadMemorandums();
+        if(btn.dataset.tab==='chat'){
+            loadChatMessages();
+            enableChatFullscreen();
+        }
+    };
+});
+
+questions=buildQuestions();
+displayCurrent();
+loadMemorandums();
+loadChatMessages();
+
+const saved=localStorage.getItem('pgco_rapport');
+if(saved){
+    try{
+        const d=JSON.parse(saved);
+        if(d.responses&&Object.keys(d.responses).length>0){
+            responses=d.responses;
+            currentStep=d.currentStep||0;
+            displayCurrent();
+        }
+    }catch(e){}
+}
+
+setInterval(()=>{
+    if(document.querySelector('.tab-btn[data-tab="memo"]').classList.contains('active')) loadMemorandums();
+    if(document.querySelector('.tab-btn[data-tab="chat"]').classList.contains('active')) loadChatMessages();
+},30000);
+
+setInterval(async()=>{
+    const seuil=new Date(Date.now()-24*60*60*1000);
+    const q=query(collection(db,"chat_messages"),where("sentDate","<",seuil.toISOString()));
+    const s=await getDocs(q);
+    s.forEach(async(d)=>{
+        await deleteDoc(doc(db,"chat_messages",d.id));
+    });
+},3600000);
 </script>
 </body>
 </html>
