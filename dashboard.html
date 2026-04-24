@@ -2,21 +2,23 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0, user-scalable=no">
 <title>NeTubeX · Dashboard Netuber</title>
 <link rel="icon" type="image/png" href="favicon.png.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
-body{background:#18191A;font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#e4e6eb;min-height:100vh;overflow-x:hidden;}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;touch-action:pan-y pinch-zoom;}
+html,body{height:100%;}
+body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#e4e6eb;min-height:100vh;overflow-x:hidden;padding-top:60px;}
 
 /* Rainbow line */
-.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;}
+.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;position:fixed;top:0;left:0;right:0;z-index:101;}
 @keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
 
-/* Header style Facebook */
-.header{background:#242526;border-bottom:1px solid #3e4042;padding:0.5rem 1rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+/* Header style Facebook avec cache au scroll */
+.header{position:fixed;top:3px;left:0;right:0;background:#242526;border-bottom:1px solid #3e4042;padding:0.5rem 1rem;display:flex;justify-content:space-between;align-items:center;z-index:100;transform:translateY(0);transition:transform 0.25s ease;box-shadow:0 1px 0 #3e4042;}
+.header.hide{transform:translateY(-100%);}
 .logo{display:flex;align-items:center;gap:10px;cursor:default;}
 .logo img{height:34px;width:auto;object-fit:contain;}
 .logo h1{font-size:1.5rem;font-weight:700;color:#e4e6eb;letter-spacing:-0.3px;}
@@ -40,8 +42,8 @@ body{background:#18191A;font-family:'Inter',system-ui,-apple-system,BlinkMacSyst
 .avatar{width:40px;height:40px;background:#3a3b3c;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
 .post-meta{flex:1;}
 .post-meta h4{font-size:0.9375rem;font-weight:600;color:#e4e6eb;margin-bottom:2px;}
-.post-meta .game-description{font-size:0.8125rem;color:#b0b3b8;line-height:1.4;margin-bottom:6px;}
-.post-meta .game-earning{font-size:0.8125rem;color:#b0b3b8;display:flex;align-items:center;gap:4px;}
+.post-meta .game-description{font-size:0.8125rem;color:#8a8d91;line-height:1.333;margin-bottom:6px;}
+.post-meta .game-earning{font-size:0.8125rem;color:#a8aaaf;display:flex;align-items:center;gap:4px;}
 .post-meta .game-earning i{color:#f59e0b;font-size:0.75rem;}
 
 /* Separator */
@@ -54,7 +56,7 @@ body{background:#18191A;font-family:'Inter',system-ui,-apple-system,BlinkMacSyst
 
 /* Stats footer (durée + gain) */
 .post-stats{padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #3e4042;margin-top:0;}
-.post-stats .duration{font-size:0.75rem;color:#b0b3b8;display:flex;align-items:center;gap:4px;}
+.post-stats .duration{font-size:0.75rem;color:#a8aaaf;display:flex;align-items:center;gap:4px;}
 .post-stats .earning{font-size:0.85rem;font-weight:600;color:#f59e0b;display:flex;align-items:center;gap:5px;}
 .post-stats .earning i{font-size:0.75rem;}
 
@@ -134,13 +136,13 @@ body{background:#18191A;font-family:'Inter',system-ui,-apple-system,BlinkMacSyst
 .blocked-card h2{color:#ef4444;margin-bottom:0.5rem;}
 .blocked-card p{color:#b0b3b8;margin-bottom:1rem;line-height:1.5;}
 .blocked-card .logout-btn-blocked{background:#ef4444;border:none;padding:12px 24px;border-radius:40px;color:#fff;font-weight:700;cursor:pointer;margin-top:1rem;}
-@media (max-width:640px){.post-image{min-height:180px;}.header{padding:0.5rem 0.75rem;}.feed-container{max-width:100%;}.logo h1{font-size:1.2rem;}}
+@media (max-width:640px){.post-image{min-height:180px;}.header{padding:0.5rem 0.75rem;}.feed-container{max-width:100%;}.logo h1{font-size:1.2rem;}body{padding-top:56px;}}
 </style>
 </head>
 <body>
 
 <div class="rainbow-line"></div>
-<header class="header">
+<header class="header" id="mainHeader">
 <div class="logo"><img src="favicon.png.png" alt="NeTubeX Logo"><h1>Ne<span>TubeX</span></h1></div>
 <div class="header-right">
 <div class="user-info"><i class="fas fa-code"></i> <span id="userCodeDisplay">Chargement...</span></div>
@@ -194,6 +196,31 @@ body{background:#18191A;font-family:'Inter',system-ui,-apple-system,BlinkMacSyst
 <div id="pilotErrorToast" class="pilot-error-toast"><i class="fas fa-lock"></i><div>Code invalide</div><button class="error-close" id="closePilotError"><i class="fas fa-times"></i></button></div>
 
 <script>
+// Comportement header cachable au scroll (comme Facebook)
+(function(){
+    let lastScrollTop = 0;
+    const header = document.getElementById('mainHeader');
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            requestAnimationFrame(function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > 60) {
+                    // Scroll vers le BAS - cacher header
+                    header.classList.add('hide');
+                } else if (scrollTop < lastScrollTop) {
+                    // Scroll vers le HAUT - montrer header
+                    header.classList.remove('hide');
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+})();
+
+// Protections
 (function(){
     document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});
     document.querySelectorAll('img').forEach(img=>{
