@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
 <title>NeTubeX · Dashboard Netuber</title>
 <link rel="icon" type="image/png" href="favicon.png.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -16,35 +16,38 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;position:fixed;top:0;left:0;right:0;z-index:101;}
 @keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
 
-/* Header style Facebook avec cache au scroll */
-.header{position:fixed;top:3px;left:0;right:0;background:#242526;border-bottom:1px solid #3e4042;padding:0.5rem 1rem;display:flex;justify-content:space-between;align-items:center;z-index:100;transform:translateY(0);transition:transform 0.25s ease;box-shadow:0 1px 0 #3e4042;}
+/* Header */
+.header{position:fixed;top:3px;left:0;right:0;background:#242526;border-bottom:1px solid #3e4042;padding:0.5rem 1rem;display:flex;justify-content:space-between;align-items:center;z-index:100;transform:translateY(0);transition:transform 0.25s ease;}
 .header.hide{transform:translateY(-100%);}
 .logo{display:flex;align-items:center;gap:10px;cursor:default;}
 .logo img{height:34px;width:auto;object-fit:contain;}
-.logo h1{font-size:1.5rem;font-weight:700;color:#e4e6eb;letter-spacing:-0.3px;}
+.logo h1{font-size:1.5rem;font-weight:700;color:#e4e6eb;}
 .logo h1 span{color:#f59e0b;}
 .header-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
-.user-info{background:#3a3b3c;padding:4px 14px;border-radius:20px;font-size:0.7rem;font-family:monospace;color:#e4e6eb;display:flex;align-items:center;gap:8px;font-weight:600;}
+.user-info{background:#3a3b3c;padding:4px 14px;border-radius:20px;font-size:0.7rem;color:#e4e6eb;display:flex;align-items:center;gap:8px;font-weight:600;}
 .online-status{display:flex;align-items:center;gap:6px;background:rgba(16,185,129,0.15);padding:3px 10px;border-radius:20px;font-size:0.65rem;font-weight:500;color:#10b981;width:fit-content;}
-.blinking-dot{width:7px;height:7px;background-color:#10b981;border-radius:50%;animation:blink 1.2s ease-in-out infinite;box-shadow:0 0 5px #10b981;}
+.blinking-dot{width:7px;height:7px;background-color:#10b981;border-radius:50%;animation:blink 1.2s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.3;transform:scale(0.8);}}
 
-/* Container feed style Facebook */
+/* Feed */
 .feed-container{max-width:680px;margin:0 auto;padding:0 0 1rem 0;}
 .games-list{display:flex;flex-direction:column;gap:8px;width:100%;}
 
-/* Carte post style Facebook */
-.post-card{background:#242526;border-radius:8px;overflow:hidden;transition:background-color 0.2s ease;}
+/* Carte post */
+.post-card{background:#242526;border-radius:8px;overflow:hidden;transition:background-color 0.2s ease;position:relative;}
 .post-card:hover{background:#3a3b3c;}
+.post-card:active{background:#4e4f50;transition:0.05s;}
+
+/* Badge NOUVEAU */
+.badge-new{position:absolute;top:12px;right:12px;background:#f59e0b;color:#0f172a;font-size:0.65rem;font-weight:700;padding:4px 10px;border-radius:20px;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
 
 /* Post header */
 .post-header{padding:12px 16px;display:flex;gap:12px;cursor:pointer;}
-.avatar{width:40px;height:40px;background:#3a3b3c;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.avatar{position:relative;width:40px;height:40px;background:#3a3b3c;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.avatar::after{content:'';position:absolute;bottom:-2px;right:-2px;width:12px;height:12px;background-color:#3b82f6;border-radius:50%;border:2px solid #242526;z-index:1;}
 .post-meta{flex:1;}
 .post-meta h4{font-size:0.9375rem;font-weight:600;color:#e4e6eb;margin-bottom:2px;}
-.post-meta .game-description{font-size:0.8125rem;color:#8a8d91;line-height:1.333;margin-bottom:6px;}
-.post-meta .game-earning{font-size:0.8125rem;color:#a8aaaf;display:flex;align-items:center;gap:4px;}
-.post-meta .game-earning i{color:#f59e0b;font-size:0.75rem;}
+.post-meta .game-description{font-size:0.875rem;color:#cacfd8;line-height:1.333;margin-bottom:4px;}
 
 /* Separator */
 .post-separator{height:1px;background:#3e4042;margin:0 12px;}
@@ -54,89 +57,53 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .post-image{width:100%;height:auto;min-height:200px;object-fit:cover;display:block;transition:opacity 0.2s ease;}
 .image-wrapper:hover .post-image{opacity:0.95;}
 
-/* Stats footer (durée + gain) */
-.post-stats{padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #3e4042;margin-top:0;}
+/* Stats footer */
+.post-stats{padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #3e4042;}
 .post-stats .duration{font-size:0.75rem;color:#a8aaaf;display:flex;align-items:center;gap:4px;}
 .post-stats .earning{font-size:0.85rem;font-weight:600;color:#f59e0b;display:flex;align-items:center;gap:5px;}
-.post-stats .earning i{font-size:0.75rem;}
+
+/* Iframe plein écran */
+.fullscreen-iframe{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:10000;display:flex;flex-direction:column;visibility:hidden;opacity:0;transition:opacity 0.25s;z-index:9999;}
+.fullscreen-iframe.active{visibility:visible;opacity:1;}
+.fullscreen-iframe iframe{width:100%;height:100%;border:none;}
+.iframe-close{position:absolute;top:20px;right:20px;width:44px;height:44px;background:#dc2626;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10001;border:none;color:#fff;font-size:1.2rem;}
 
 /* Boutons flottants */
 .floating-group{position:fixed;bottom:30px;right:25px;display:flex;flex-direction:column;gap:12px;z-index:200;}
 .float-item{background:#242526;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;transition:all 0.2s;color:#b0b3b8;border:1px solid #3e4042;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
 .float-item:hover{background:#3a3b3c;transform:scale(1.05);color:#e4e6eb;}
-.float-item.logout{background:#dc2626;border:none;color:#fff;box-shadow:0 4px 8px rgba(220,38,38,0.3);}
+.float-item.logout{background:#dc2626;border:none;color:#fff;}
 .float-item.logout:hover{background:#ef4444;}
-.float-item.gold{background:linear-gradient(145deg,#f59e0b,#d97706);border:none;color:#fff;box-shadow:0 4px 15px rgba(245,158,11,0.3);animation:floatGold 2s ease-in-out infinite;}
-.float-item.menu-btn{background:linear-gradient(145deg,#3b82f6,#2563eb);border:none;color:#fff;box-shadow:0 4px 8px rgba(59,130,246,0.3);}
+.float-item.gold{background:linear-gradient(145deg,#f59e0b,#d97706);border:none;color:#fff;animation:floatGold 2s ease-in-out infinite;}
+.float-item.menu-btn{background:linear-gradient(145deg,#3b82f6,#2563eb);border:none;color:#fff;}
 @keyframes floatGold{0%,100%{transform:translateY(0px);}50%{transform:translateY(-6px);}}
 
-/* Popups */
-.slide-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);backdrop-filter:blur(10px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;transition:visibility 0s linear 0.25s;}
+/* Popup */
+.slide-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);z-index:2000;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;transition:visibility 0s linear 0.25s;}
 .slide-popup.active{visibility:visible;transition:visibility 0s linear 0s;}
 .popup-left{background:#242526;max-width:600px;width:90%;border-radius:28px 28px 0 0;padding:1.5rem;text-align:center;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.2,0.9,0.4,1.1);max-height:85vh;overflow-y:auto;}
 .slide-popup.active .popup-left{transform:translateY(0);}
-.slide-popup.closing .popup-left{transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.6,1);}
+.slide-popup.closing .popup-left{transform:translateY(100%);}
 .popup-left h3{color:#e4e6eb;margin:0.5rem 0 0.3rem;font-size:1.3rem;font-weight:700;}
-.popup-left p{color:#b0b3b8;font-size:0.8rem;margin-bottom:1rem;}
-.popup-btn{background:linear-gradient(145deg,#3b82f6,#2563eb);border:none;padding:12px 24px;border-radius:50px;font-weight:700;cursor:pointer;color:#fff;margin-top:8px;font-size:0.85rem;width:auto;}
-.close-popup-btn{background:#3a3b3c;border:1px solid #3e4042;padding:10px 20px;border-radius:50px;color:#e4e6eb;cursor:pointer;margin-top:8px;font-weight:600;width:auto;}
-.input-group select{width:100%;padding:12px 16px;border-radius:50px;border:1px solid #3e4042;background:#242526;color:#e4e6eb;margin:8px 0;}
+.close-popup-btn{background:#3a3b3c;border:1px solid #3e4042;padding:10px 20px;border-radius:50px;color:#e4e6eb;cursor:pointer;margin-top:8px;font-weight:600;}
 .game-stats{background:#18191A;border-radius:16px;padding:0.8rem;margin:1rem 0;text-align:left;max-height:280px;overflow-y:auto;}
 .game-stats p{margin:4px 0;display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;padding:8px 8px;border-bottom:1px solid #3e4042;}
 .game-stats p:hover{background:#3a3b3c;border-radius:10px;}
-.game-stats .label{color:#b0b3b8;font-weight:500;text-align:left;}
+.game-stats .label{color:#b0b3b8;}
 .game-stats .value{color:#f59e0b;font-weight:800;}
-.confirm-buttons{display:flex;gap:12px;justify-content:center;margin-top:1rem;}
-.confirm-yes{background:#dc2626;border:none;padding:10px 24px;border-radius:50px;color:#fff;font-weight:700;cursor:pointer;}
-.confirm-no{background:#3a3b3c;border:1px solid #3e4042;padding:10px 24px;border-radius:50px;color:#e4e6eb;font-weight:600;cursor:pointer;}
-.footer{background:#242526;border-top:1px solid #3e4042;padding:1rem;text-align:center;margin-top:1rem;}
-.footer p{color:#b0b3b8;font-size:0.7rem;}
-.toast-notification{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:40px;font-size:0.8rem;z-index:10000;animation:slideUp 0.3s ease;}
-@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
-.pilot-error-toast{position:fixed;top:20px;right:20px;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;padding:12px 18px;border-radius:14px;font-size:0.8rem;display:flex;align-items:center;gap:12px;z-index:3000;transform:translateX(450px);transition:transform 0.3s;}
-.pilot-error-toast.show{transform:translateX(0);}
-.pilot-error-toast i{font-size:1.1rem;}
-.pilot-error-toast .error-close{background:rgba(255,255,255,0.2);border:none;color:#fff;cursor:pointer;padding:4px;border-radius:8px;}
-.tickets-popup-tabs{display:flex;gap:10px;margin-bottom:15px;border-bottom:1px solid #3e4042;padding-bottom:10px;}
-.tickets-tab{flex:1;padding:10px;background:#3a3b3c;border:none;border-radius:12px;cursor:pointer;font-weight:600;color:#b0b3b8;transition:0.2s;font-size:0.9rem;}
-.tickets-tab.active{background:#f59e0b;color:#fff;}
-.tickets-list{max-height:500px;overflow-y:auto;text-align:left;}
-.ticket-item{background:#242526;border-radius:12px;padding:15px;margin-bottom:12px;border-left:4px solid #3b82f6;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
-.ticket-item.priority-haute{border-left-color:#ef4444;}
-.ticket-item.priority-moyenne{border-left-color:#f59e0b;}
-.ticket-item.resolu{opacity:0.75;}
-.ticket-header{display:flex;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;}
-.ticket-category{font-weight:700;color:#e4e6eb;font-size:0.9rem;}
-.ticket-date{font-size:0.7rem;color:#b0b3b8;}
-.ticket-status{font-size:0.7rem;padding:3px 10px;border-radius:20px;display:inline-block;margin-right:8px;}
-.status-ouvert{background:#1e3a5f;color:#60a5fa;}
-.status-en-cours{background:#5c3d1a;color:#f59e0b;}
-.status-resolu{background:#1a5c3a;color:#10b981;}
-.ticket-priority{font-size:0.7rem;}
-.ticket-reponse{background:#18191A;border-radius:10px;padding:10px;margin-top:10px;font-size:0.75rem;color:#b0b3b8;}
-.ticket-reponse.admin{background:#5c3d1a;border-left:3px solid #f59e0b;}
-.delete-ticket-btn{background:#dc2626;border:none;padding:5px 14px;border-radius:20px;color:#fff;cursor:pointer;font-size:0.7rem;margin-top:10px;transition:0.2s;}
-.delete-ticket-btn:hover{background:#ef4444;}
-.delete-all-btn{background:#dc2626;border:none;padding:8px 16px;border-radius:25px;color:#fff;cursor:pointer;font-size:0.75rem;margin-bottom:15px;display:flex;align-items:center;gap:8px;margin-left:auto;}
-.delete-all-btn:hover{background:#ef4444;}
+
+/* Autres popups */
 .menu-floating{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;background:#242526;border-radius:16px;border:1px solid #3e4042;z-index:1001;display:none;box-shadow:0 12px 28px rgba(0,0,0,0.5);}
-.menu-floating.active{display:block;animation:fadeIn 0.2s;}
-.menu-header{padding:15px;border-bottom:1px solid #3e4042;background:#242526;border-radius:16px 16px 0 0;color:#e4e6eb;}
-.menu-item{padding:12px 20px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:0.2s;border-bottom:1px solid #3e4042;color:#e4e6eb;}
+.menu-floating.active{display:block;}
+.menu-header{padding:15px;border-bottom:1px solid #3e4042;color:#e4e6eb;}
+.menu-item{padding:12px 20px;display:flex;align-items:center;gap:12px;cursor:pointer;border-bottom:1px solid #3e4042;color:#e4e6eb;}
 .menu-item:hover{background:#3a3b3c;}
 .menu-item i{width:24px;color:#f59e0b;}
 .menu-item.danger{color:#ef4444;}
-.menu-item.danger i{color:#ef4444;}
-@keyframes fadeIn{from{opacity:0;transform:translate(-50%,-50%) scale(0.95);}to{opacity:1;transform:translate(-50%,-50%) scale(1);}}
-.cap-content-large{padding:20px;font-size:1.1rem;line-height:1.6;color:#e4e6eb;background:#18191A;border-radius:16px;margin:10px 0;text-align:center;}
-.blocked-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);z-index:9999;display:flex;align-items:center;justify-content:center;visibility:hidden;}
-.blocked-overlay.active{visibility:visible;}
-.blocked-card{background:#242526;border-radius:28px;padding:2rem;max-width:450px;width:90%;text-align:center;border:1px solid #ef4444;box-shadow:0 0 40px rgba(239,68,68,0.2);}
-.blocked-card i{font-size:4rem;color:#ef4444;margin-bottom:1rem;}
-.blocked-card h2{color:#ef4444;margin-bottom:0.5rem;}
-.blocked-card p{color:#b0b3b8;margin-bottom:1rem;line-height:1.5;}
-.blocked-card .logout-btn-blocked{background:#ef4444;border:none;padding:12px 24px;border-radius:40px;color:#fff;font-weight:700;cursor:pointer;margin-top:1rem;}
-@media (max-width:640px){.post-image{min-height:180px;}.header{padding:0.5rem 0.75rem;}.feed-container{max-width:100%;}.logo h1{font-size:1.2rem;}body{padding-top:56px;}}
+.footer{background:#242526;border-top:1px solid #3e4042;padding:1rem;text-align:center;margin-top:1rem;}
+.footer p{color:#b0b3b8;font-size:0.7rem;}
+.toast-notification{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:40px;font-size:0.8rem;z-index:10000;}
+@media (max-width:640px){.post-image{min-height:180px;}.feed-container{max-width:100%;}.logo h1{font-size:1.2rem;}body{padding-top:56px;}}
 </style>
 </head>
 <body>
@@ -161,42 +128,35 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 <div class="float-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></div>
 </div>
 
+<div id="fullscreenIframe" class="fullscreen-iframe">
+<button class="iframe-close" id="closeIframeBtn">✕</button>
+<iframe id="portalIframe" src="about:blank"></iframe>
+</div>
+
 <div id="menuFloating" class="menu-floating">
-<div class="menu-header"><strong><i class="fas fa-bars"></i> Menu NeTubeX</strong></div>
+<div class="menu-header"><strong>Menu NeTubeX</strong></div>
 <div class="menu-item" id="menuTicketsBtn"><i class="fas fa-ticket-alt"></i> Mes tickets</div>
 <div class="menu-item" id="menuNewTicketBtn"><i class="fas fa-plus-circle"></i> Nouveau ticket</div>
 <div class="menu-item" id="menuCapBtn"><i class="fas fa-chart-line"></i> Voir le CAP du jour</div>
 <div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div>
 </div>
 
-<div id="ticketFormPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i><h3>Ouvrir un ticket</h3><p>Sélectionnez votre problème</p><div class="input-group"><select id="ticketCategory"><option value="">-- Type de problème --</option><option value="🔌 Problème de connexion">🔌 Problème de connexion</option><option value="🔋 Problème de batterie">🔋 Problème de batterie</option><option value="🌡️ Surchauffe">🌡️ Surchauffe</option><option value="🐢 Terminal lent">🐢 Terminal lent</option><option value="📡 Hors signal">📡 Hors signal</option><option value="💥 Terminal tombé">💥 Terminal tombé</option><option value="🔨 Terminal cassé">🔨 Terminal cassé</option><option value="⚠️ Dysfonctionnement">⚠️ Dysfonctionnement</option><option value="🎮 Jeux inaccessibles">🎮 Jeux inaccessibles</option><option value="🚫 Jeux bloqués">🚫 Jeux bloqués</option><option value="💰 Points non attribués">💰 Points non attribués</option></select></div><div class="input-group"><select id="ticketPriority"><option value="basse">🟢 Basse</option><option value="moyenne" selected>🟠 Moyenne</option><option value="haute">🔴 Haute - Urgent</option></select></div><div class="confirm-buttons"><button class="popup-btn" id="submitTicketBtn"><i class="fas fa-paper-plane"></i> Envoyer</button><button class="close-popup-btn" id="closeTicketFormBtn">Annuler</button></div></div></div>
+<div id="ticketFormPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i><h3>Ouvrir un ticket</h3><div class="input-group"><select id="ticketCategory"><option value="">-- Type de problème --</option><option value="🔌 Problème de connexion">🔌 Problème de connexion</option><option value="🔋 Problème de batterie">🔋 Problème de batterie</option><option value="🎮 Jeux inaccessibles">🎮 Jeux inaccessibles</option><option value="💰 Gains non attribués">💰 Gains non attribués</option></select></div><div class="input-group"><select id="ticketPriority"><option value="basse">🟢 Basse</option><option value="moyenne" selected>🟠 Moyenne</option><option value="haute">🔴 Haute - Urgent</option></select></div><div class="confirm-buttons"><button class="close-popup-btn" id="submitTicketBtn">Envoyer</button><button class="close-popup-btn" id="closeTicketFormBtn">Annuler</button></div></div></div>
 
-<div id="ticketsListPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i><h3>Mes tickets support</h3><div class="tickets-popup-tabs"><button class="tickets-tab active" data-tab="encours">📩 En cours</button><button class="tickets-tab" data-tab="resolus">✅ Résolus</button><button id="deleteAllResolvedBtn" class="delete-all-btn" style="display:none;"><i class="fas fa-trash-alt"></i> Tout supprimer</button></div><div id="ticketsListContainer" class="tickets-list"></div><button class="close-popup-btn" id="closeTicketsPopupBtn">Fermer</button></div></div>
+<div id="ticketsListPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i><h3>Mes tickets support</h3><div class="tickets-popup-tabs"><button class="tickets-tab active" data-tab="encours">📩 En cours</button><button class="tickets-tab" data-tab="resolus">✅ Résolus</button></div><div id="ticketsListContainer" class="tickets-list"></div><button class="close-popup-btn" id="closeTicketsPopupBtn">Fermer</button></div></div>
 
-<div id="settingsPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-shield-alt" style="font-size:2rem;color:#3b82f6;"></i><h3>Accès Pilote</h3><p>Code d'authentification</p><div class="input-group"><input type="password" id="pilotPassword" placeholder="Code d'accès" autocomplete="off"></div><button class="popup-btn" id="loginPilotBtn"><i class="fas fa-unlock-alt"></i> Authentifier</button><button class="close-popup-btn" id="closeSettingsBtn">Annuler</button></div></div>
+<div id="settingsPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-shield-alt" style="font-size:2rem;color:#3b82f6;"></i><h3>Accès Pilote</h3><input type="password" id="pilotPassword" placeholder="Code d'accès"><button class="close-popup-btn" id="loginPilotBtn">Authentifier</button><button class="close-popup-btn" id="closeSettingsBtn">Annuler</button></div></div>
 
 <div id="gamePopup" class="slide-popup"><div class="popup-left"><i class="fas fa-star" style="font-size:2rem;color:#f59e0b;"></i><h3 id="gamePopupTitle"></h3><div class="game-stats" id="gamePopupStats"></div><button class="close-popup-btn" id="closeGamePopupBtn">Fermer</button></div></div>
 
-<div id="confirmPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-sign-out-alt" style="font-size:2rem;color:#ef4444;"></i><h3>Déconnexion</h3><p>Quitter votre session ?</p><div class="confirm-buttons"><button class="confirm-yes" id="confirmYes">Oui</button><button class="confirm-no" id="confirmNo">Non</button></div></div></div>
+<div id="confirmPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-sign-out-alt" style="font-size:2rem;color:#ef4444;"></i><h3>Déconnexion</h3><p>Quitter votre session ?</p><div class="confirm-buttons"><button class="close-popup-btn" id="confirmYes">Oui</button><button class="close-popup-btn" id="confirmNo">Non</button></div></div></div>
 
-<div id="capPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-chart-line" style="font-size:2rem;color:#f59e0b;"></i><h3>CAP du jour</h3><div id="capContent" class="cap-content-large"><p>Chargement...</p></div><button class="close-popup-btn" id="closeCapBtn">Fermer</button></div></div>
+<div id="capPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-chart-line" style="font-size:2rem;color:#f59e0b;"></i><h3>CAP du jour</h3><div id="capContent" class="game-stats"><p>Chargement...</p></div><button class="close-popup-btn" id="closeCapBtn">Fermer</button></div></div>
 
-<div id="blockedOverlay" class="blocked-overlay">
-<div class="blocked-card">
-<i class="fas fa-ban"></i>
-<h2>⚠️ Accès bloqué</h2>
-<p>Votre session n'est pas encore activée par le<br><strong>Pôle Excellence Technique et Support</strong>.</p>
-<p>Veuillez signaler le pilote pour plus d'informations.</p>
-<button class="logout-btn-blocked" id="blockedLogoutBtn"><i class="fas fa-sign-out-alt"></i> Se déconnecter</button>
-</div>
-</div>
-
-<footer class="footer"><p><i class="fas fa-copyright"></i> Ne<span style="color:#f59e0b;">TubeX</span> 2026 — Tous droits réservés</p></footer>
-
-<div id="pilotErrorToast" class="pilot-error-toast"><i class="fas fa-lock"></i><div>Code invalide</div><button class="error-close" id="closePilotError"><i class="fas fa-times"></i></button></div>
+<footer class="footer"><p>© Ne<span style="color:#f59e0b;">TubeX</span> 2026 — Tous droits réservés</p></footer>
 
 <script>
-// Comportement header cachable au scroll (comme Facebook)
+// Header cachable
 (function(){
     let lastScrollTop = 0;
     const header = document.getElementById('mainHeader');
@@ -206,10 +166,8 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
             requestAnimationFrame(function() {
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                 if (scrollTop > lastScrollTop && scrollTop > 60) {
-                    // Scroll vers le BAS - cacher header
                     header.classList.add('hide');
                 } else if (scrollTop < lastScrollTop) {
-                    // Scroll vers le HAUT - montrer header
                     header.classList.remove('hide');
                 }
                 lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
@@ -227,42 +185,16 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
         img.addEventListener('contextmenu',function(e){e.preventDefault();e.stopPropagation();return false;});
         img.addEventListener('dragstart',function(e){e.preventDefault();return false;});
     });
-    document.addEventListener('dragstart',function(e){if(e.target.tagName!=='INPUT'&&e.target.tagName!=='TEXTAREA'){e.preventDefault();return false;}});
-    document.addEventListener('selectstart',function(e){e.preventDefault();return false;});
     document.addEventListener('keydown',function(e){
         if(e.key==='F12'){e.preventDefault();return false;}
         if(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C')){e.preventDefault();return false;}
         if(e.ctrlKey&&e.key==='u'){e.preventDefault();return false;}
         if(e.ctrlKey&&e.key==='s'){e.preventDefault();return false;}
         if(e.ctrlKey&&e.key==='p'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.shiftKey&&e.key==='R'){e.preventDefault();return false;}
         if(e.ctrlKey&&e.key==='r'){e.preventDefault();return false;}
-        if(e.ctrlKey&&(e.key==='e'||e.key==='f')){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.shiftKey&&e.key==='K'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.shiftKey&&e.key==='E'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.shiftKey&&e.key==='O'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.shiftKey&&e.key==='X'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.shiftKey&&e.key==='M'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.shiftKey&&e.key==='L'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.shiftKey&&e.key==='P'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.shiftKey&&e.key==='W'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.key==='w'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.key==='Tab'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.shiftKey&&e.key==='Tab'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.key==='t'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.key==='n'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.key==='h'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.key==='j'){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.key==='d'){e.preventDefault();return false;}
         if(e.key==='F5'){e.preventDefault();return false;}
         if(e.ctrlKey&&e.key==='F5'){e.preventDefault();return false;}
         if(e.ctrlKey&&e.shiftKey&&e.key==='F5'){e.preventDefault();return false;}
-        if(e.altKey&&e.key==='ArrowLeft'){e.preventDefault();return false;}
-        if(e.altKey&&e.key==='ArrowRight'){e.preventDefault();return false;}
-        if(e.ctrlKey&&(e.key==='+'||e.key==='-'||e.key==='=')){e.preventDefault();return false;}
-        if(e.ctrlKey&&e.key==='0'){e.preventDefault();return false;}
-        if(e.key==='F3'){e.preventDefault();return false;}
-        if(e.shiftKey&&e.key==='F10'){e.preventDefault();return false;}
     });
 })();
 </script>
@@ -270,7 +202,7 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
 const app = initializeApp(firebaseConfig);
@@ -279,10 +211,7 @@ const db = getFirestore(app);
 
 let currentUser = null;
 let userDocRef = null;
-let startTime = Date.now();
-let lastActivity = Date.now();
 let isUserBlocked = false;
-let heartbeatInterval = null;
 
 async function getUserUniqueId() {
     const user = auth.currentUser;
@@ -291,300 +220,98 @@ async function getUserUniqueId() {
     return userDoc.data()?.uniqueId;
 }
 
-function openTimewallInNewTab(uniqueId) {
-    window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`, '_blank');
+function openTimewallInIframe(uniqueId) {
+    const iframe = document.getElementById('portalIframe');
+    const container = document.getElementById('fullscreenIframe');
+    iframe.src = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`;
+    container.classList.add('active');
 }
 
 const games = [
-    {id:1, name:"The Grand Mafia", avatar:"⚔️", img:"https://netubex.github.io/netubex-/the-grand-mafia.webp", duration:"30j", totalEarning:"217.18", description:"Devenez le parrain de la ville. Construisez votre empire criminel, recrutez des associés et dominez le marché noir.", objectives:[{name:"Ouvrir le jeu !",gains:"0.01"},{name:"Atteindre le niveau 4 du manoir facilement !",gains:"0.10"},{name:"Atteindre le niveau 13 du manoir pour augmenter ton influence !",gains:"0.99"},{name:"Débloquer un associé de type T2 !",gains:"0.33"},{name:"Atteindre le niveau 17 du manoir en 7 jours !",gains:"1.99"},{name:"Atteindre 800k d'influence en 14 jours",gains:"0.27"},{name:"Atteindre le niveau 25 du manoir en 10 jours !",gains:"11.27"},{name:"Améliorer la cellule d'otage au niveau 25 en 30 jours !",gains:"29.84"},{name:"Améliorer le centre d'investissement au niveau 25 en 30 jours !",gains:"53.04"},{name:"Débloquer un associé de type T4 en 30 jours !",gains:"119.35"}]},
-    {id:2, name:"Love Water", avatar:"💧", img:"https://netubex.github.io/netubex-/love-water.gif", duration:"30j", totalEarning:"13.37", description:"Plongez dans une aventure aquatique rafraîchissante. Gérez des cascades et créez des oasis pour gagner des récompenses.", objectives:[{name:"Ouvrir et jouer au jeu",gains:"0.00"},{name:"Terminer l'événement 1",gains:"0.04"},{name:"Terminer l'événement 2",gains:"0.06"},{name:"Terminer l'événement 5",gains:"0.18"},{name:"Terminer l'événement 8",gains:"0.36"},{name:"Terminer l'événement 12",gains:"0.60"},{name:"Terminer l'événement 17",gains:"0.99"},{name:"Terminer l'événement 23",gains:"2.39"},{name:"Terminer l'événement 30",gains:"8.75"}]},
-    {id:3, name:"Grab A Toy", avatar:"🧸", img:"https://netubex.github.io/netubex-/grab-a-toy.png", duration:"30j", totalEarning:"142.66", description:"Attrapez un maximum de jouets dans cette machine infernale. Adrénaline et réflexes seront vos meilleurs alliés.", objectives:[{name:"Atteindre 150 mètres",gains:"0.00"},{name:"Atteindre 200 mètres",gains:"0.01"},{name:"Atteindre 400 mètres",gains:"0.31"},{name:"Atteindre 600 mètres",gains:"1.31"},{name:"Atteindre 900 mètres",gains:"6.10"},{name:"Atteindre 1700 mètres",gains:"10.51"},{name:"Atteindre 2000 mètres",gains:"15.02"},{name:"Atteindre 5000 mètres",gains:"109.40"}]},
-    {id:4, name:"Wild Fish Explorer", avatar:"🐟", img:"https://netubex.github.io/netubex-/wild-fish.png", duration:"30j", totalEarning:"137.37", description:"Explorez les océans à la recherche des poissons les plus rares. Chaque découverte vous rapportera des gains exceptionnels.", objectives:[{name:"Atteindre 100 mètres",gains:"0.01"},{name:"Atteindre 200 mètres",gains:"0.03"},{name:"Atteindre 400 mètres",gains:"0.36"},{name:"Atteindre 700 mètres",gains:"2.04"},{name:"Atteindre 1200 mètres",gains:"7.29"},{name:"Atteindre 2000 mètres",gains:"36.47"},{name:"Atteindre 5000 mètres",gains:"91.17"}]},
-    {id:5, name:"Goblin Heist", avatar:"👺", img:"https://netubex.github.io/netubex-/goblin-heist.jpg", duration:"60j", totalEarning:"96.79", description:"Infiltrez-vous dans les repaires de gobelins pour dérober leurs trésors. Un jeu furtif aux récompenses alléchantes.", objectives:[{name:"Atteindre 150 mètres",gains:"0.00"},{name:"Atteindre 400 mètres",gains:"0.02"},{name:"Atteindre 700 mètres",gains:"0.31"},{name:"Atteindre 900 mètres",gains:"1.82"},{name:"Atteindre 1000 mètres",gains:"3.46"},{name:"Atteindre 2000 mètres",gains:"18.23"},{name:"Atteindre 5000 mètres",gains:"72.93"}]},
-    {id:6, name:"Sky Plunger", avatar:"🪂", img:"https://netubex.github.io/netubex-/sky-plunger.png", duration:"30j", totalEarning:"109.42", description:"Sautez dans le vide et défiez les lois de l'apesanteur. Plus vous tombez loin, plus vos gains sont importants.", objectives:[{name:"Atteindre 150 mètres",gains:"0.01"},{name:"Atteindre 250 mètres",gains:"0.01"},{name:"Atteindre 400 mètres",gains:"0.11"},{name:"Atteindre 600 mètres",gains:"0.26"},{name:"Atteindre 900 mètres",gains:"2.55"},{name:"Atteindre 1200 mètres",gains:"11.67"},{name:"Atteindre 2000 mètres",gains:"21.88"},{name:"Atteindre 5000 mètres",gains:"72.93"}]},
-    {id:7, name:"Survivor Idle Run", avatar:"🏃", img:"https://netubex.github.io/netubex-/survivor-idle-run.png", duration:"7j", totalEarning:"65.03", description:"Courez sans vous arrêter pour survivre. Un jeu idle où chaque mètre parcouru vous fait gagner de l'argent.", objectives:[{name:"Terminer la quête #020",gains:"0.01"},{name:"Terminer la quête #050",gains:"0.01"},{name:"Terminer la quête #080",gains:"0.04"},{name:"Terminer la quête #100",gains:"0.09"},{name:"Terminer la quête #150",gains:"0.22"},{name:"Terminer la quête #250 en 20 jours",gains:"0.72"},{name:"Terminer la quête #350 en 20 jours",gains:"3.46"},{name:"Terminer la quête #500",gains:"10.08"},{name:"Terminer la quête #700",gains:"15.84"},{name:"Terminer la quête #1000",gains:"34.56"}]},
-    {id:8, name:"Time Master", avatar:"⏰", img:"https://netubex.github.io/netubex-/zombie-waves.jpg", duration:"30j", totalEarning:"58.35", description:"Maîtrisez le temps et les vagues de zombies. Un jeu stratégique où chaque zone franchie débloque des récompenses.", objectives:[{name:"Terminer la zone 150",gains:"1.44"},{name:"Terminer la zone 200",gains:"1.73"},{name:"Terminer la zone 250",gains:"2.88"},{name:"Terminer la zone 300",gains:"4.32"},{name:"Terminer la zone 400",gains:"5.76"},{name:"Terminer la zone 500",gains:"1.15"},{name:"Terminer la zone 400",gains:"5.76"},{name:"Terminer la zone 500",gains:"7.20"},{name:"Terminer la zone 600",gains:"8.64"},{name:"Terminer la zone 750",gains:"11.52"},{name:"Terminer la zone 1000",gains:"17.28"}]},
-    {id:9, name:"Dragon Farm", avatar:"🐉", img:"https://netubex.github.io/netubex-/dragon-farm.webp", duration:"30j", totalEarning:"28.45", description:"Élevez des dragons légendaires et faites prospérer votre ferme. Chaque niveau atteint vous rapporte de l'argent.", objectives:[{name:"Atteindre le niveau utilisateur 10 en 5 jours",gains:"0.06"},{name:"Atteindre le niveau utilisateur 15 en 7 jours",gains:"0.12"},{name:"Atteindre le niveau utilisateur 20 en 10 jours",gains:"0.35"},{name:"Atteindre le niveau utilisateur 25 en 20 jours",gains:"0.72"},{name:"Atteindre le niveau utilisateur 30 en 20 jours",gains:"1.01"},{name:"Atteindre le niveau utilisateur 35 en 20 jours",gains:"1.73"},{name:"Atteindre le niveau utilisateur 40 en 20 jours",gains:"2.88"},{name:"Atteindre le niveau utilisateur 50 en 20 jours",gains:"4.32"},{name:"Atteindre le niveau utilisateur 60 en 30 jours",gains:"5.76"},{name:"Atteindre le niveau utilisateur 75 en 30 jours",gains:"11.52"}]}
+    {id:1, name:"The Grand Mafia", avatar:"⚔️", img:"https://netubex.github.io/netubex-/the-grand-mafia.webp", duration:"30j", totalEarning:"217.18", description:"Devenez le parrain de la ville. Construisez votre empire criminel.", objectives:[{name:"Ouvrir le jeu !",gains:"0.01"},{name:"Atteindre le niveau 4 du manoir",gains:"0.10"},{name:"Atteindre le niveau 13 du manoir",gains:"0.99"},{name:"Débloquer un associé T2",gains:"0.33"},{name:"Atteindre le niveau 17 du manoir",gains:"1.99"},{name:"Atteindre 800k d'influence",gains:"0.27"},{name:"Atteindre le niveau 25 du manoir",gains:"11.27"},{name:"Cellule d'otage niveau 25",gains:"29.84"},{name:"Centre d'investissement niv 25",gains:"53.04"},{name:"Associé T4",gains:"119.35"}], isNew:true},
+    {id:2, name:"Love Water", avatar:"💧", img:"https://netubex.github.io/netubex-/love-water.gif", duration:"30j", totalEarning:"13.37", description:"Plongez dans une aventure aquatique rafraîchissante.", objectives:[{name:"Ouvrir le jeu",gains:"0.00"},{name:"Événement 1",gains:"0.04"},{name:"Événement 2",gains:"0.06"},{name:"Événement 5",gains:"0.18"},{name:"Événement 8",gains:"0.36"},{name:"Événement 12",gains:"0.60"},{name:"Événement 17",gains:"0.99"},{name:"Événement 23",gains:"2.39"},{name:"Événement 30",gains:"8.75"}], isNew:false},
+    {id:3, name:"Grab A Toy", avatar:"🧸", img:"https://netubex.github.io/netubex-/grab-a-toy.png", duration:"30j", totalEarning:"142.66", description:"Attrapez un maximum de jouets dans cette machine infernale.", objectives:[{name:"150 mètres",gains:"0.00"},{name:"200 mètres",gains:"0.01"},{name:"400 mètres",gains:"0.31"},{name:"600 mètres",gains:"1.31"},{name:"900 mètres",gains:"6.10"},{name:"1700 mètres",gains:"10.51"},{name:"2000 mètres",gains:"15.02"},{name:"5000 mètres",gains:"109.40"}], isNew:false},
+    {id:4, name:"Wild Fish Explorer", avatar:"🐟", img:"https://netubex.github.io/netubex-/wild-fish.png", duration:"30j", totalEarning:"137.37", description:"Explorez les océans à la recherche des poissons les plus rares.", objectives:[{name:"100 mètres",gains:"0.01"},{name:"200 mètres",gains:"0.03"},{name:"400 mètres",gains:"0.36"},{name:"700 mètres",gains:"2.04"},{name:"1200 mètres",gains:"7.29"},{name:"2000 mètres",gains:"36.47"},{name:"5000 mètres",gains:"91.17"}], isNew:false},
+    {id:5, name:"Goblin Heist", avatar:"👺", img:"https://netubex.github.io/netubex-/goblin-heist.jpg", duration:"60j", totalEarning:"96.79", description:"Infiltrez-vous dans les repaires de gobelins.", objectives:[{name:"150 mètres",gains:"0.00"},{name:"400 mètres",gains:"0.02"},{name:"700 mètres",gains:"0.31"},{name:"900 mètres",gains:"1.82"},{name:"1000 mètres",gains:"3.46"},{name:"2000 mètres",gains:"18.23"},{name:"5000 mètres",gains:"72.93"}], isNew:false},
+    {id:6, name:"Sky Plunger", avatar:"🪂", img:"https://netubex.github.io/netubex-/sky-plunger.png", duration:"30j", totalEarning:"109.42", description:"Sautez dans le vide et défiez les lois de l'apesanteur.", objectives:[{name:"150 mètres",gains:"0.01"},{name:"250 mètres",gains:"0.01"},{name:"400 mètres",gains:"0.11"},{name:"600 mètres",gains:"0.26"},{name:"900 mètres",gains:"2.55"},{name:"1200 mètres",gains:"11.67"},{name:"2000 mètres",gains:"21.88"},{name:"5000 mètres",gains:"72.93"}], isNew:false},
+    {id:7, name:"Survivor Idle Run", avatar:"🏃", img:"https://netubex.github.io/netubex-/survivor-idle-run.png", duration:"7j", totalEarning:"65.03", description:"Courez sans vous arrêter pour survivre.", objectives:[{name:"Quête #020",gains:"0.01"},{name:"Quête #050",gains:"0.01"},{name:"Quête #080",gains:"0.04"},{name:"Quête #100",gains:"0.09"},{name:"Quête #150",gains:"0.22"},{name:"Quête #250",gains:"0.72"},{name:"Quête #350",gains:"3.46"},{name:"Quête #500",gains:"10.08"},{name:"Quête #700",gains:"15.84"},{name:"Quête #1000",gains:"34.56"}], isNew:false},
+    {id:8, name:"Time Master", avatar:"⏰", img:"https://netubex.github.io/netubex-/zombie-waves.jpg", duration:"30j", totalEarning:"58.35", description:"Maîtrisez le temps et les vagues de zombies.", objectives:[{name:"Zone 150",gains:"1.44"},{name:"Zone 200",gains:"1.73"},{name:"Zone 250",gains:"2.88"},{name:"Zone 300",gains:"4.32"},{name:"Zone 400",gains:"5.76"},{name:"Zone 500",gains:"1.15"},{name:"Zone 600",gains:"8.64"},{name:"Zone 750",gains:"11.52"},{name:"Zone 1000",gains:"17.28"}], isNew:false},
+    {id:9, name:"Dragon Farm", avatar:"🐉", img:"https://netubex.github.io/netubex-/dragon-farm.webp", duration:"30j", totalEarning:"28.45", description:"Élevez des dragons légendaires et faites prospérer votre ferme.", objectives:[{name:"Niv utilisateur 10",gains:"0.06"},{name:"Niv utilisateur 15",gains:"0.12"},{name:"Niv utilisateur 20",gains:"0.35"},{name:"Niv utilisateur 25",gains:"0.72"},{name:"Niv utilisateur 30",gains:"1.01"},{name:"Niv utilisateur 35",gains:"1.73"},{name:"Niv utilisateur 40",gains:"2.88"},{name:"Niv utilisateur 50",gains:"4.32"},{name:"Niv utilisateur 60",gains:"5.76"},{name:"Niv utilisateur 75",gains:"11.52"}], isNew:true}
 ];
 
-function showBlockedOverlay() {
-    const overlay = document.getElementById('blockedOverlay');
-    const feedContainer = document.getElementById('feedContainer');
-    if(overlay) {
-        overlay.classList.add('active');
-        if(feedContainer) feedContainer.style.opacity = '0.5';
-    }
-    isUserBlocked = true;
-    if(heartbeatInterval) clearInterval(heartbeatInterval);
-}
-
-function startHeartbeat() {
-    if (heartbeatInterval) clearInterval(heartbeatInterval);
-    heartbeatInterval = setInterval(async () => {
-        if (userDocRef && !isUserBlocked) {
-            try {
-                const now = new Date().toISOString();
-                await updateDoc(userDocRef, { lastSeen: now });
-            } catch(e) { console.error("Erreur heartbeat:", e); }
-        }
-    }, 2 * 60 * 60 * 1000);
-}
-
-async function collectBattery() { if(!userDocRef || isUserBlocked) return; let niveau="50", etat="Inconnu"; if('getBattery' in navigator){ try{ const b=await navigator.getBattery(); niveau=Math.round(b.level*100).toString(); etat=b.charging?"En charge":(niveau<=15?"Critique":(niveau<=30?"Faible":"Décharge")); }catch(e){} } await updateDoc(userDocRef,{batterieNiveau:niveau,batterieEtat:etat,derniereMAJTech:new Date().toISOString()}); }
-async function collectNetwork(){ if(!userDocRef || isUserBlocked) return; let type="Inconnu", signal="0"; if(navigator.connection){ type=navigator.connection.effectiveType||"Inconnu"; if(type==="wifi") type="WiFi"; else if(type==="cellular") type="4G/5G"; if(navigator.connection.downlink) signal=Math.round(navigator.connection.downlink*10).toString(); } await updateDoc(userDocRef,{typeConnexion:type,forceSignal:signal}); }
-async function collectLocation(){ if(!userDocRef||!navigator.geolocation || isUserBlocked) return; navigator.geolocation.getCurrentPosition(async(pos)=>{ const lat=pos.coords.latitude,lng=pos.coords.longitude; let ville=`${lat.toFixed(2)},${lng.toFixed(2)}`; try{ const res=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`); const data=await res.json(); ville=data.city||data.locality||ville; }catch(e){} await updateDoc(userDocRef,{localisation:ville,latitude:lat.toString(),longitude:lng.toString()}); },()=>{}); }
-
-async function initUser(user){
-  if(!user) return;
-  userDocRef=doc(db,"users",user.uid);
-  const snap=await getDoc(userDocRef);
-  
-  const userData = snap.data();
-  if(userData && userData.isBlocked === true) {
-    showBlockedOverlay();
-    return;
-  }
-  
-  const now = new Date().toISOString();
-  
-  if(!snap.exists()){
-    const uniqueId = `${Date.now()}x${Math.floor(Math.random() * 1000000000000000000)}`;
-    
-    await setDoc(userDocRef,{
-      uniqueId: uniqueId,
-      code:user.email?user.email.split('@')[0].substring(0,8).toUpperCase():"NETUBER",
-      email:user.email||"",
-      role:"netuber",
-      isActive:true,
-      createdAt:now,
-      lastSeen:now,
-      NombreConnexions:1,
-      NombreDeconnexions:0,
-      heureConnexion:now,
-      heureDeconnexion:"",
-      tempsTotalTerminal:"0",
-      anomaliesConnexion:0,
-      anomaliesSysteme:0,
-      anomalieRecurentes:"",
-      niveauAlerte:"vert",
-      batterieNiveau:"100",
-      batterieEtat:"Inconnu",
-      localisation:"",
-      site:"",
-      zone:"",
-      ticketsOuverts:0,
-      ticketsEnCours:0,
-      ticketsResolus:0,
-      ticketsList:[],
-      pageActuelle:window.location.pathname,
-      tempsMoyenDashboard:"0",
-      historique:[],
-      isBlocked:false,
-      objectifMensuel:9,
-      objectifAtteint:0
-    });
-  } else { 
-    await updateDoc(userDocRef,{
-      NombreConnexions:increment(1),
-      heureConnexion:now,
-      lastSeen:now
-    }); 
-  }
-  
-  await collectBattery(); 
-  await collectNetwork(); 
-  await collectLocation();
-  
-  const userSnap=await getDoc(userDocRef);
-  const codeDisplay=document.getElementById('userCodeDisplay');
-  if(codeDisplay&&userSnap.exists()) codeDisplay.textContent=userSnap.data().code||"NETUBER";
-  loadCapDuJour();
-  renderGames();
-  startHeartbeat();
-}
-
-async function handleDisconnect(){ 
-  if(userDocRef && !isUserBlocked){
-    const now = new Date().toISOString();
-    await updateDoc(userDocRef,{
-      heureDeconnexion: now,
-      NombreDeconnexions: increment(1),
-      tempsMoyenDashboard: Math.round((Date.now()-startTime)/1000).toString(),
-      lastSeen: new Date(0).toISOString()
-    });
-  } 
-  if(heartbeatInterval) clearInterval(heartbeatInterval);
-  await signOut(auth); 
-  setTimeout(()=>{ window.location.href="login.html"; }, 350); 
-}
-
-function escapeHtml(t){ if(!t) return ''; return t.replace(/[&<>]/g,function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-function renderTickets(activeTab){
-  if(!userDocRef || isUserBlocked) return;
-  getDoc(userDocRef).then(snap=>{
-    const tickets=snap.data().ticketsList||[];
-    tickets.sort((a,b)=>new Date(b.date)-new Date(a.date));
-    const filtered=tickets.filter(t=>activeTab==='encours'?t.status!=='resolu':t.status==='resolu');
-    const container=document.getElementById('ticketsListContainer');
-    const deleteAllBtn=document.getElementById('deleteAllResolvedBtn');
-    if(activeTab==='resolus' && filtered.length>0){ deleteAllBtn.style.display='flex'; }else{ deleteAllBtn.style.display='none'; }
-    if(filtered.length===0){ container.innerHTML=`<p style="text-align:center;color:#b0b3b8;padding:20px;">Aucun ticket ${activeTab==='encours'?'en cours':'résolu'}</p>`; return; }
-    container.innerHTML=filtered.map(t=>{
-      const statusText=t.status==='ouvert'?'En attente':(t.status==='en-cours'?'En cours':'Résolu');
-      const statusClass=t.status==='ouvert'?'status-ouvert':(t.status==='en-cours'?'status-en-cours':'status-resolu');
-      const priorityClass=t.priority==='haute'?'priority-haute':(t.priority==='moyenne'?'priority-moyenne':'priority-basse');
-      const reponsesHtml=(t.reponses||[]).map(r=>`<div class="ticket-reponse ${r.admin?'admin':''}"><strong>${r.admin?'📢 Support technique':'👤 Moi'}</strong><br>${escapeHtml(r.message)}<br><small>${new Date(r.date).toLocaleString()}</small></div>`).join('');
-      return `<div class="ticket-item ${priorityClass} ${t.status==='resolu'?'resolu':''}"><div class="ticket-header"><span class="ticket-category">${escapeHtml(t.category||t.subject)}</span><span class="ticket-date">${new Date(t.date).toLocaleDateString()}</span></div><div><span class="ticket-status ${statusClass}">${statusText}</span><span class="ticket-priority">${t.priority==='haute'?'🔴 Urgent':t.priority==='moyenne'?'🟠 Moyen':'🟢 Bas'}</span></div>${reponsesHtml}${t.status==='resolu'?`<button class="delete-ticket-btn" onclick='deleteTicket("${t.id}")'><i class="fas fa-trash"></i> Supprimer</button>`:''}</div>`;
-    }).join('');
-  });
-}
-window.deleteTicket=async(ticketId)=>{
-  if(!userDocRef||!confirm("Supprimer ce ticket ?") || isUserBlocked) return;
-  const snap=await getDoc(userDocRef);
-  const tickets=snap.data().ticketsList||[];
-  const newTickets=tickets.filter(t=>t.id!==ticketId);
-  await updateDoc(userDocRef,{ticketsList:newTickets});
-  const activeTab=document.querySelector('.tickets-tab.active')?.dataset.tab||'encours';
-  renderTickets(activeTab);
-  showToast("✅ Ticket supprimé");
-};
-window.deleteAllResolvedTickets=async()=>{
-  if(!userDocRef||!confirm("Supprimer TOUS les tickets résolus ?") || isUserBlocked) return;
-  const snap=await getDoc(userDocRef);
-  const tickets=snap.data().ticketsList||[];
-  const newTickets=tickets.filter(t=>t.status!=='resolu');
-  await updateDoc(userDocRef,{ticketsList:newTickets});
-  renderTickets('resolus');
-  showToast("✅ Tous les tickets résolus ont été supprimés");
-};
-async function loadCapDuJour(){
-  if(!userDocRef || isUserBlocked) return;
-  const snap=await getDoc(userDocRef);
-  const cap=snap.data().capDuJour||"📊 Aucun CAP défini pour aujourd'hui.\n\n📌 Objectif du jour : Atteindre 10$\n🎯 Challenge spécial : 3 jeux complétés\n⭐ Bonus : +5$ si objectif atteint";
-  document.getElementById('capContent').innerHTML=`<p style="white-space:pre-line;">${cap}</p>`;
-}
-async function submitTicket(){
-  if(isUserBlocked) { showToast("❌ Compte bloqué, impossible d'ouvrir un ticket"); return; }
-  const category=document.getElementById('ticketCategory')?.value;
-  const priority=document.getElementById('ticketPriority')?.value;
-  if(!category){ showToast("Sélectionnez un type de problème"); return; }
-  const newTicket={ id:`TKT${Date.now()}`, category, subject:category, message:"", priority, status:"ouvert", date:new Date().toISOString(), reponses:[] };
-  const snap=await getDoc(userDocRef);
-  const currentTickets=snap.data().ticketsList||[];
-  await updateDoc(userDocRef,{ ticketsList:[...currentTickets,newTicket], ticketsOuverts:(snap.data().ticketsOuverts||0)+1, dernierTicketDate:new Date().toISOString(), dernierTicketSujet:category });
-  closePopup('ticketFormPopup');
-  showToast("✅ Ticket envoyé !");
-}
-function showToast(msg){ const t=document.createElement('div'); t.className='toast-notification'; t.innerHTML=`<i class="fas fa-check-circle"></i> ${msg}`; document.body.appendChild(t); setTimeout(()=>t.remove(),4000); }
-function closePopup(id){ const p=document.getElementById(id); if(p){ p.classList.add('closing'); setTimeout(()=>p.classList.remove('active','closing'),350); } }
-function openPopup(id){ if(isUserBlocked) { showToast("❌ Compte bloqué, action impossible"); return; } const p=document.getElementById(id); if(p){ p.classList.remove('closing'); p.classList.add('active'); } }
-
 function showGameDetails(game){
-  if(isUserBlocked){ showToast("❌ Compte bloqué"); return; }
-  document.getElementById('gamePopupTitle').innerHTML=`${game.avatar} ${game.name}`;
-  const statsHtml=`<p><span class="label">💰 Gain total possible :</span><span class="value">${game.totalEarning}$</span></p><p style="font-weight:700;margin-top:8px;">🎯 Objectifs rémunérateurs :</p>${game.objectives.map(obj=>`<p><span class="label">➜ ${obj.name}</span><span class="value">+${obj.gains}$</span></p>`).join('')}`;
-  document.getElementById('gamePopupStats').innerHTML=statsHtml;
-  openPopup('gamePopup');
-  window.currentGame=game;
+    document.getElementById('gamePopupTitle').innerHTML=`${game.avatar} ${game.name}`;
+    const statsHtml=`<p><span class="label">💰 Gain total :</span><span class="value">${game.totalEarning}$</span></p><p style="font-weight:700;margin-top:8px;">🎯 Objectifs :</p>${game.objectives.map(obj=>`<p><span class="label">➜ ${obj.name}</span><span class="value">+${obj.gains}$</span></p>`).join('')}`;
+    document.getElementById('gamePopupStats').innerHTML=statsHtml;
+    document.getElementById('gamePopup').classList.add('active');
 }
 
 function renderGames(){
-  if(isUserBlocked) return;
-  const container=document.getElementById('gamesContainer'); if(!container) return;
-  container.innerHTML='';
-  games.forEach((g, index)=>{
-    const card=document.createElement('div');
-    card.className='post-card';
-    card.innerHTML=`
-      <div class="post-header">
-        <div class="avatar">${g.avatar}</div>
-        <div class="post-meta">
-          <h4>${g.name}</h4>
-          <div class="game-description">${g.description}</div>
-          <div class="game-earning"><i class="fas fa-dollar-sign"></i> ${g.totalEarning}$</div>
-        </div>
-      </div>
-      <div class="post-separator"></div>
-      <div class="image-wrapper">
-        <img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy">
-      </div>
-      <div class="post-stats">
-        <span class="duration"><i class="fas fa-calendar-alt"></i> ${g.duration}</span>
-        <span class="earning"><i class="fas fa-coins"></i> ${g.totalEarning}$</span>
-      </div>
-    `;
-    container.appendChild(card);
-    const imgWrapper = card.querySelector('.image-wrapper');
-    imgWrapper.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      if(isUserBlocked){ showToast("❌ Compte bloqué"); return; }
-      showGameDetails(g);
+    const container=document.getElementById('gamesContainer');
+    if(!container) return;
+    container.innerHTML='';
+    games.forEach(g=>{
+        const card=document.createElement('div');
+        card.className='post-card';
+        let badgeHtml = g.isNew ? '<span class="badge-new">NOUVEAU</span>' : '';
+        card.innerHTML=`
+            ${badgeHtml}
+            <div class="post-header">
+                <div class="avatar">${g.avatar}</div>
+                <div class="post-meta">
+                    <h4>${g.name}</h4>
+                    <div class="game-description">${g.description}</div>
+                </div>
+            </div>
+            <div class="post-separator"></div>
+            <div class="image-wrapper">
+                <img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy">
+            </div>
+            <div class="post-stats">
+                <span class="duration"><i class="fas fa-calendar-alt"></i> ${g.duration}</span>
+                <span class="earning"><i class="fas fa-coins"></i> ${g.totalEarning}$</span>
+            </div>
+        `;
+        container.appendChild(card);
+        card.querySelector('.image-wrapper').addEventListener('click', () => showGameDetails(g));
     });
-  });
 }
 
-function toggleMenu(){ if(isUserBlocked) { showToast("❌ Compte bloqué"); return; } const menu=document.getElementById('menuFloating'); menu.classList.toggle('active'); }
+function closePopup(id){ const p=document.getElementById(id); if(p) p.classList.remove('active'); }
+function showToast(msg){ const t=document.createElement('div'); t.className='toast-notification'; t.innerHTML=`<i class="fas fa-check-circle"></i> ${msg}`; document.body.appendChild(t); setTimeout(()=>t.remove(),3000); }
 
-document.getElementById('closeGamePopupBtn')?.addEventListener('click',()=>{ closePopup('gamePopup'); });
-
-document.addEventListener('visibilitychange', async () => {
-  if(!userDocRef || isUserBlocked) return;
-  if(document.visibilityState === 'visible'){
-    await updateDoc(userDocRef, { lastSeen: new Date().toISOString() });
-    startTime = Date.now();
-  }
-});
-
-window.addEventListener('beforeunload', async () => { 
-  if(userDocRef && !isUserBlocked){ 
-    await updateDoc(userDocRef,{
-      heureDeconnexion: new Date().toISOString(),
-      tempsMoyenDashboard: Math.round((Date.now()-startTime)/1000).toString(),
-      lastSeen: new Date(0).toISOString()
-    });
-  } 
-  if(heartbeatInterval) clearInterval(heartbeatInterval);
-});
-
-document.getElementById('menuFloatBtn')?.addEventListener('click',toggleMenu);
-document.getElementById('menuTicketsBtn')?.addEventListener('click',()=>{ toggleMenu(); renderTickets('encours'); openPopup('ticketsListPopup'); });
-document.getElementById('menuNewTicketBtn')?.addEventListener('click',()=>{ toggleMenu(); openPopup('ticketFormPopup'); });
-document.getElementById('menuCapBtn')?.addEventListener('click',()=>{ toggleMenu(); loadCapDuJour(); openPopup('capPopup'); });
-document.getElementById('menuLogoutBtn')?.addEventListener('click',()=>{ toggleMenu(); openPopup('confirmPopup'); });
-document.getElementById('closeTicketsPopupBtn')?.addEventListener('click',()=>{ closePopup('ticketsListPopup'); });
-document.getElementById('deleteAllResolvedBtn')?.addEventListener('click',()=>{ deleteAllResolvedTickets(); });
-document.querySelectorAll('.tickets-tab').forEach(tab=>{ tab.addEventListener('click',()=>{ document.querySelectorAll('.tickets-tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active'); renderTickets(tab.dataset.tab); }); });
-document.getElementById('closeCapBtn')?.addEventListener('click',()=>closePopup('capPopup'));
-document.getElementById('submitTicketBtn')?.addEventListener('click',submitTicket);
-document.getElementById('closeTicketFormBtn')?.addEventListener('click',()=>closePopup('ticketFormPopup'));
-document.getElementById('settingsFloatBtn')?.addEventListener('click',()=>{ if(isUserBlocked) { showToast("❌ Compte bloqué"); return; } const pwd=document.getElementById('pilotPassword'); if(pwd) pwd.value=''; openPopup('settingsPopup'); });
-document.getElementById('closeSettingsBtn')?.addEventListener('click',()=>closePopup('settingsPopup'));
-document.getElementById('loginPilotBtn')?.addEventListener('click',()=>{ if(isUserBlocked) { showToast("❌ Compte bloqué"); return; } const pwd=document.getElementById('pilotPassword')?.value||''; if(pwd==="PiloteAB"){ window.open('https://gain.gg/r/111117266020005347836','_blank'); closePopup('settingsPopup'); } else{ const toast=document.getElementById('pilotErrorToast'); toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3000); const inp=document.getElementById('pilotPassword'); if(inp) inp.value=''; } });
-document.getElementById('closePilotError')?.addEventListener('click',()=>{ document.getElementById('pilotErrorToast').classList.remove('show'); });
-document.getElementById('logoutBtn')?.addEventListener('click',()=>openPopup('confirmPopup'));
-
-document.getElementById('portalBtn')?.addEventListener('click', async () => { 
-    if(isUserBlocked) { showToast("❌ Compte bloqué, accès refusé"); return; } 
-    const uniqueId = await getUserUniqueId(); 
-    if(uniqueId){ openTimewallInNewTab(uniqueId); } 
-    else { showToast("ID unique non trouvé", true); } 
-});
-
-document.getElementById('confirmYes')?.addEventListener('click',()=>{ closePopup('confirmPopup'); handleDisconnect(); });
+document.getElementById('closeGamePopupBtn')?.addEventListener('click',()=>closePopup('gamePopup'));
+document.getElementById('closeIframeBtn')?.addEventListener('click',()=>{ document.getElementById('portalIframe').src='about:blank'; document.getElementById('fullscreenIframe').classList.remove('active'); });
+document.getElementById('portalBtn')?.addEventListener('click', async () => { const uid=await getUserUniqueId(); if(uid){ openTimewallInIframe(uid); } else { showToast("ID unique non trouvé"); } });
+document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
+document.getElementById('menuLogoutBtn')?.addEventListener('click',()=>document.getElementById('confirmPopup').classList.add('active'));
+document.getElementById('confirmYes')?.addEventListener('click',async()=>{ await signOut(auth); window.location.href="login.html"; });
 document.getElementById('confirmNo')?.addEventListener('click',()=>closePopup('confirmPopup'));
-document.getElementById('blockedLogoutBtn')?.addEventListener('click',async()=>{ await signOut(auth); window.location.href="login.html"; });
-document.querySelectorAll('.slide-popup').forEach(p=>{ p.addEventListener('click',(e)=>{ if(e.target===p) closePopup(p.id); }); });
+document.getElementById('closeTicketsPopupBtn')?.addEventListener('click',()=>closePopup('ticketsListPopup'));
+document.getElementById('closeTicketFormBtn')?.addEventListener('click',()=>closePopup('ticketFormPopup'));
+document.getElementById('closeSettingsBtn')?.addEventListener('click',()=>closePopup('settingsPopup'));
+document.getElementById('closeCapBtn')?.addEventListener('click',()=>closePopup('capPopup'));
+document.getElementById('settingsFloatBtn')?.addEventListener('click',()=>document.getElementById('settingsPopup').classList.add('active'));
+document.getElementById('menuTicketsBtn')?.addEventListener('click',()=>{ document.getElementById('menuFloating').classList.remove('active'); document.getElementById('ticketsListPopup').classList.add('active'); });
+document.getElementById('menuNewTicketBtn')?.addEventListener('click',()=>{ document.getElementById('menuFloating').classList.remove('active'); document.getElementById('ticketFormPopup').classList.add('active'); });
+document.getElementById('menuCapBtn')?.addEventListener('click',()=>{ document.getElementById('menuFloating').classList.remove('active'); document.getElementById('capContent').innerHTML='📊 CAP du jour : Atteindre 10$ aujourd'hui'; document.getElementById('capPopup').classList.add('active'); });
+document.getElementById('loginPilotBtn')?.addEventListener('click',()=>{ const pwd=document.getElementById('pilotPassword')?.value; if(pwd==="PiloteAB"){ window.open('https://gain.gg/r/111117266020005347836','_blank'); closePopup('settingsPopup'); } else{ alert('Code invalide'); } });
+document.getElementById('submitTicketBtn')?.addEventListener('click',()=>{ showToast("✅ Ticket envoyé !"); closePopup('ticketFormPopup'); });
+document.querySelectorAll('.tickets-tab').forEach(tab=>{ tab.addEventListener('click',()=>{ document.querySelectorAll('.tickets-tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active'); const container=document.getElementById('ticketsListContainer'); if(tab.dataset.tab==='encours') container.innerHTML='<p style="text-align:center;color:#b0b3b8;">Aucun ticket en cours</p>'; else container.innerHTML='<p style="text-align:center;color:#b0b3b8;">Aucun ticket résolu</p>'; }); });
 
-setInterval(()=>{ if(!isUserBlocked) { collectBattery(); collectNetwork(); } }, 60000);
-setInterval(()=>{ if(!isUserBlocked) collectLocation(); }, 1800000);
+async function initUser(user){
+    if(!user) return;
+    userDocRef=doc(db,"users",user.uid);
+    const snap=await getDoc(userDocRef);
+    if(!snap.exists()){
+        await setDoc(userDocRef,{ email:user.email, code:user.email.split('@')[0].substring(0,8).toUpperCase(), role:"netuber", isActive:true });
+    }
+    const codeDisplay=document.getElementById('userCodeDisplay');
+    if(codeDisplay) codeDisplay.textContent=(await getDoc(userDocRef)).data().code||"NETUBER";
+    renderGames();
+}
 
-onAuthStateChanged(auth,async(user)=>{ 
-  if(user){ 
-    await initUser(user); 
-  }else{ 
-    window.location.href="login.html"; 
-  } 
-});
+onAuthStateChanged(auth,async(user)=>{ if(user){ await initUser(user); }else{ window.location.href="login.html"; } });
 </script>
 </body>
 </html>
