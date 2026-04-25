@@ -8,86 +8,68 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;color:#1c1e21;min-height:100vh;overflow-x:hidden;user-select:none;line-height:1.5;padding-top:0;}
-@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap');
+body{font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#18191a;color:#e4e6eb;min-height:100vh;overflow-x:hidden;user-select:none;line-height:1.5;padding-top:0;}
 *{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
 *:not(input):not(textarea){user-select:none!important;-webkit-user-select:none!important;}
 input,textarea{user-select:text!important;-webkit-user-select:text!important;}
-img,a,button,.floating-menu-item,.menu-toggle,.logo-img-large,.member-full-img,.activity-card,.offer-item{user-select:none!important;-webkit-user-drag:none!important;}
+img,a,button,.floating-menu-item,.menu-toggle,.logo-img-large,.member-full-img,.facebook-post{user-select:none!important;-webkit-user-drag:none!important;}
 img{pointer-events:auto!important;-webkit-user-drag:none!important;cursor:pointer;}
-.container{width:100%;max-width:1400px;margin:0 auto;padding:0 28px;}
-.navbar{display:flex;justify-content:space-between;align-items:center;padding:12px 32px;background:#ffffff;border-bottom:1px solid #e4e6eb;position:fixed;top:0;left:0;right:0;z-index:1000;width:100%;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:transform 0.3s ease;transform:translateY(0);}
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:#242526;position:fixed;top:0;left:0;right:0;z-index:1000;width:100%;transition:transform 0.3s ease;transform:translateY(0);}
 .navbar.hide{transform:translateY(-100%);}
-.logo-wrapper{display:flex;align-items:center;gap:12px;}
-.logo-img-large{width:40px;height:40px;object-fit:contain;background:transparent;}
-.logo-text{font-size:1.6rem;font-weight:700;color:#1877f2;letter-spacing:-0.5px;}
-.menu-toggle{background:#e4e6eb;border:none;padding:10px 20px;border-radius:40px;font-weight:600;color:#1c1e21;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all 0.3s ease;}
-.menu-toggle:hover{background:#d8dadf;}
-.floating-menu{position:fixed;top:-500px;right:28px;background:#ffffff;border-radius:12px;padding:8px;min-width:260px;box-shadow:0 12px 28px rgba(0,0,0,0.2);transition:top 0.45s cubic-bezier(0.2,0.9,0.4,1.1);z-index:1001;opacity:0;visibility:hidden;border:1px solid #e4e6eb;}
-.floating-menu.active{top:70px;opacity:1;visibility:visible;}
-.floating-menu-item{display:flex;align-items:center;gap:14px;padding:10px 16px;margin:2px 0;border-radius:8px;color:#1c1e21;text-decoration:none;font-size:0.9rem;font-weight:500;cursor:pointer;transition:all 0.2s ease;}
-.floating-menu-item:hover{background:#f0f2f5;}
-.floating-menu-item i{width:24px;color:#1877f2;pointer-events:none;}
-.floating-divider{height:1px;background:#e4e6eb;margin:8px 12px;}
-.content-wrapper{padding-top:70px;}
-.facebook-card{background:#ffffff;border-radius:12px;padding:16px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.08);border:1px solid #e4e6eb;}
-.card-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-.card-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1877f2,#0e5a9e);display:flex;align-items:center;justify-content:center;color:white;font-size:1.1rem;font-weight:600;}
-.card-author{font-weight:700;color:#1c1e21;font-size:0.95rem;}
-.card-time{font-size:0.7rem;color:#65676b;margin-top:2px;}
-.card-divider{height:1px;background:#e4e6eb;margin:14px 0;}
-.card-content{font-size:0.95rem;color:#1c1e21;line-height:1.5;}
-.card-title{font-size:1.3rem;font-weight:700;color:#1c1e21;margin-bottom:10px;}
-.card-text{color:#3e4042;}
-.hero-section{margin:0 0 20px;text-align:center;}
-.hero-section h1{font-size:2.5rem;font-weight:800;color:#1c1e21;margin-bottom:16px;line-height:1.2;}
-.hero-section p{font-size:1rem;color:#65676b;max-width:750px;margin:0 auto;line-height:1.5;}
-.photo-wall{margin:0 0 20px;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08);cursor:pointer;border:1px solid #e4e6eb;}
-.member-full-img{width:100%;height:auto;max-height:60vh;object-fit:cover;display:block;cursor:pointer;}
-.activities-wrapper{background:transparent;padding:0;margin:20px 0;}
-.section-title{font-size:1.8rem;font-weight:700;color:#1c1e21;text-align:center;margin-bottom:8px;}
-.section-title:after{content:'';display:block;width:60px;height:3px;background:#1877f2;margin:12px auto 0;border-radius:3px;}
-.section-subtitle{text-align:center;color:#65676b;font-size:0.9rem;margin-bottom:25px;}
-.activities-grid{display:flex;flex-wrap:wrap;gap:20px;margin-top:15px;justify-content:center;}
-.activity-card{background:white;border-radius:12px;padding:24px 20px;flex:1;min-width:250px;max-width:350px;text-align:center;cursor:pointer;transition:all 0.3s ease;box-shadow:0 1px 3px rgba(0,0,0,0.08);border:1px solid #e4e6eb;}
-.activity-card:hover{transform:translateY(-3px);box-shadow:0 4px 12px rgba(0,0,0,0.15);}
-.activity-card i{font-size:2.2rem;background:linear-gradient(135deg,#1877f2,#0e5a9e);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:15px;}
-.activity-card h3{font-size:1.2rem;font-weight:700;color:#1c1e21;margin:12px 0 8px;}
-.activity-card p{color:#65676b;font-size:0.85rem;line-height:1.4;}
-.games-slider{width:100%;overflow:hidden;background:#ffffff;padding:16px 0;margin:20px 0;border-radius:12px;border:1px solid #e4e6eb;}
-.slider-track{display:flex;animation:slideInfinite 30s linear infinite;width:fit-content;}
-.slider-track img{width:130px;height:90px;object-fit:cover;border-radius:10px;margin:0 6px;transition:transform 0.3s;cursor:pointer;}
-.slider-track img:hover{transform:scale(1.03);}
+.logo-wrapper{display:flex;align-items:center;gap:10px;}
+.logo-img-large{width:40px;height:40px;object-fit:contain;background:transparent;border-radius:50%;}
+.logo-text{font-size:1.5rem;font-weight:700;color:#e4e6eb;letter-spacing:-0.5px;}
+.menu-toggle{background:#3a3b3c;border:none;padding:8px 14px;border-radius:20px;font-weight:600;color:#e4e6eb;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s ease;font-size:0.9rem;}
+.menu-toggle:hover{background:#4e4f50;}
+.floating-menu{position:fixed;top:-500px;right:12px;background:#242526;border-radius:12px;padding:8px;min-width:260px;box-shadow:0 12px 28px rgba(0,0,0,0.4);transition:top 0.45s cubic-bezier(0.2,0.9,0.4,1.1);z-index:1001;opacity:0;visibility:hidden;border:1px solid #3e4042;}
+.floating-menu.active{top:60px;opacity:1;visibility:visible;}
+.floating-menu-item{display:flex;align-items:center;gap:14px;padding:10px 16px;margin:2px 0;border-radius:8px;color:#e4e6eb;text-decoration:none;font-size:0.9rem;font-weight:500;cursor:pointer;transition:all 0.2s ease;}
+.floating-menu-item:hover{background:#3a3b3c;}
+.floating-menu-item i{width:24px;color:#e4e6eb;pointer-events:none;}
+.floating-divider{height:1px;background:#3e4042;margin:8px 12px;}
+.content-wrapper{padding-top:56px;width:100%;display:flex;justify-content:center;}
+.posts-container{width:100%;max-width:500px;margin:0 auto;padding:8px 12px 20px 12px;}
+.facebook-post{background:#242526;border-radius:8px;margin-bottom:12px;overflow:hidden;}
+.post-header{display:flex;align-items:center;gap:12px;padding:12px 16px 8px 16px;}
+.post-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#1877f2,#0e5a9e);display:flex;align-items:center;justify-content:center;color:white;font-size:1rem;font-weight:600;flex-shrink:0;}
+.post-author-info{flex:1;}
+.post-author{font-weight:700;color:#e4e6eb;font-size:0.95rem;}
+.post-time{font-size:0.7rem;color:#b0b3b8;margin-top:2px;}
+.post-content{padding:0 16px 12px 16px;}
+.post-title{font-size:1.3rem;font-weight:700;color:#e4e6eb;margin-bottom:10px;line-height:1.3;}
+.post-text{color:#e4e6eb;font-size:0.95rem;line-height:1.5;}
+.post-media{margin:8px 0 0 0;background:#1c1e21;border-radius:8px;overflow:hidden;}
+.post-media img{width:100%;height:auto;display:block;object-fit:cover;}
+.post-divider{height:1px;background:#3e4042;margin:0 16px;}
+.hero-post .post-title{font-size:1.5rem;margin-bottom:12px;}
+.hero-post .post-text{font-size:1rem;color:#e4e6eb;}
+.btn-action{background:#1877f2;border:none;padding:10px 20px;border-radius:6px;font-weight:600;color:white;cursor:pointer;display:inline-flex;align-items:center;gap:10px;font-size:0.9rem;transition:background 0.2s;margin-top:12px;width:100%;justify-content:center;}
+.btn-action:hover{background:#1b6fe0;}
+.btn-action-secondary{background:#3a3b3c;color:#e4e6eb;}
+.btn-action-secondary:hover{background:#4e4f50;}
+.click-hint{text-align:center;margin-top:10px;margin-bottom:5px;font-size:0.7rem;color:#b0b3b8;}
+.games-slider{background:#242526;border-radius:8px;margin-bottom:12px;overflow:hidden;padding:8px 0;}
+.slider-track{display:flex;animation:slideInfinite 30s linear infinite;width:fit-content;padding:0 8px;}
+.slider-track img{width:120px;height:80px;object-fit:cover;border-radius:8px;margin:0 4px;cursor:pointer;}
 @keyframes slideInfinite{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-.action-buttons-section{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;margin:15px 0 10px;}
-.btn-action{display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:14px 35px;border-radius:40px;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.3s ease;border:none;text-decoration:none;background:linear-gradient(135deg,#1877f2,#0e5a9e);color:white;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
-.btn-action i{font-size:1.1rem;}
-.btn-action:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,0.15);background:linear-gradient(135deg,#1b6fe0,#0c4f8a);}
-.btn-action-secondary{background:linear-gradient(135deg,#8b5cf6,#6d28d9);}
-.btn-action-secondary:hover{background:linear-gradient(135deg,#9b6ef7,#7c3aed);}
-.click-hint{text-align:center;margin-top:8px;margin-bottom:15px;font-size:0.7rem;color:#65676b;}
-.member-offer-section{background:#ffffff;padding:20px 24px;margin:20px 0;border-radius:12px;border:1px solid #e4e6eb;}
-.offer-title{font-size:1.5rem;font-weight:700;text-align:center;color:#1c1e21;margin-bottom:25px;}
-.offer-grid{display:flex;flex-wrap:wrap;gap:20px;justify-content:center;}
-.offer-item{background:#f9f9fb;border-radius:12px;padding:20px 18px;flex:1;min-width:200px;max-width:260px;transition:all 0.3s ease;border:1px solid #e4e6eb;text-align:center;}
-.offer-item:hover{transform:translateY(-3px);background:#ffffff;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
-.offer-item i{font-size:2rem;background:linear-gradient(145deg,#1877f2,#0e5a9e);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:12px;}
-.offer-item h4{font-size:1rem;font-weight:600;color:#1c1e21;margin-bottom:8px;}
-.offer-item p{color:#65676b;font-size:0.8rem;line-height:1.4;}
-footer{background:#ffffff;padding:25px 20px;margin-top:30px;border-top:1px solid #e4e6eb;}
-.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;align-items:center;}
-.footer-brand{display:flex;flex-direction:column;gap:5px;}
+.offer-item{background:#2d2e30;border-radius:8px;padding:16px;margin-bottom:8px;text-align:center;}
+.offer-item:last-child{margin-bottom:0;}
+.offer-item i{font-size:1.8rem;color:#1877f2;margin-bottom:10px;}
+.offer-item h4{font-size:0.95rem;font-weight:600;color:#e4e6eb;margin-bottom:6px;}
+.offer-item p{color:#b0b3b8;font-size:0.8rem;line-height:1.4;}
+footer{background:#242526;border-top:1px solid #3e4042;padding:20px 16px;margin-top:8px;}
+.footer-inner{max-width:500px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center;}
+.footer-brand{display:flex;flex-direction:column;gap:4px;}
 .footer-logo{display:flex;align-items:center;gap:8px;}
-.footer-logo img{max-width:32px;height:auto;}
-.footer-logo span{font-size:1rem;font-weight:600;color:#1c1e21;}
-.footer-tagline{color:#65676b;font-size:0.7rem;}
-.footer-copyright{color:#65676b;font-size:0.7rem;}
-.footer-legal a{color:#65676b;text-decoration:none;margin:0 6px;font-size:0.7rem;}
+.footer-logo img{max-width:28px;height:auto;border-radius:50%;}
+.footer-logo span{font-size:0.9rem;font-weight:600;color:#e4e6eb;}
+.footer-tagline{color:#b0b3b8;font-size:0.65rem;}
+.footer-copyright{color:#b0b3b8;font-size:0.65rem;}
+.footer-legal a{color:#b0b3b8;text-decoration:none;margin:0 6px;font-size:0.65rem;}
 .footer-legal a:hover{color:#1877f2;}
-.fade-section{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.6s ease;}
+.fade-section{opacity:0;transform:translateY(20px);transition:opacity 0.5s ease,transform 0.5s ease;}
 .fade-section.visible{opacity:1;transform:translateY(0);}
-@media (max-width:860px){.navbar{padding:10px 20px;}.logo-text{font-size:1.3rem;}.hero-section h1{font-size:1.8rem;}.container{padding:0 16px;}.content-wrapper{padding-top:62px;}.floating-menu.active{top:62px;}}
-@media (max-width:560px){.navbar{padding:8px 16px;}.hero-section h1{font-size:1.5rem;}.member-full-img{max-height:40vh;}.activity-card{min-width:100%;}.offer-item{min-width:100%;}.btn-action{padding:10px 22px;font-size:0.85rem;}}
+@media (max-width:560px){.posts-container{padding:8px 8px 20px 8px;}.post-avatar{width:36px;height:36px;}.post-header{padding:10px 12px 6px 12px;}.post-content{padding:0 12px 10px 12px;}.post-title{font-size:1.1rem;}.post-text{font-size:0.9rem;}}
 </style>
 </head>
 <body>
@@ -98,13 +80,12 @@ footer{background:#ffffff;padding:25px 20px;margin-top:30px;border-top:1px solid
 </div>
 <button class="menu-toggle" id="menuToggle">
 <i class="fas fa-bars"></i> Menu
-<i class="fas fa-chevron-down" style="font-size:0.75rem;"></i>
 </button>
 </div>
 <div class="floating-menu" id="floatingMenu">
-<div style="display:flex; align-items:center; gap:12px; padding:12px 18px; margin-bottom:6px; border-bottom:1px solid #e4e6eb;">
-<img src="favicon.png.png" alt="NeTubeX" style="width:32px; height:32px; pointer-events:none;">
-<span style="font-weight:600; color:#1c1e21;">NeTubeX</span>
+<div style="display:flex; align-items:center; gap:12px; padding:12px 18px; margin-bottom:6px; border-bottom:1px solid #3e4042;">
+<img src="favicon.png.png" alt="NeTubeX" style="width:32px; height:32px; border-radius:50%; pointer-events:none;">
+<span style="font-weight:600; color:#e4e6eb;">NeTubeX</span>
 </div>
 <a href="#" class="floating-menu-item" id="postulerBtn"><i class="fab fa-whatsapp"></i> Postuler</a>
 <a href="#" class="floating-menu-item" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Connexion</a>
@@ -119,64 +100,84 @@ footer{background:#ffffff;padding:25px 20px;margin-top:30px;border-top:1px solid
 <a href="#" class="floating-menu-item" id="privacyLink"><i class="fas fa-shield-alt"></i> Confidentialité</a>
 </div>
 <div class="content-wrapper">
-<div class="container">
-<div class="hero-section facebook-card fade-section">
-<div class="card-header">
-<div class="card-avatar"><i class="fas fa-rocket"></i></div>
-<div><div class="card-author">NeTubeX</div><div class="card-time">Mis à jour récemment</div></div>
-</div>
-<div class="card-divider"></div>
-<div class="card-content">
-<h1 class="card-title">Transformez votre présence digitale<br>en revenus durables</h1>
-<p class="card-text">NeTubeX est un espace de rémunération digitale qui transforme le temps passé en ligne en revenus concrets grâce à son programme institutionnel.</p>
+<div class="posts-container">
+<div class="facebook-post hero-post fade-section">
+<div class="post-header">
+<div class="post-avatar"><i class="fas fa-rocket"></i></div>
+<div class="post-author-info">
+<div class="post-author">NeTubeX</div>
+<div class="post-time">Mis à jour récemment</div>
 </div>
 </div>
-</div>
-<div class="photo-wall" id="clickablePhoto">
-<img src="vicky.jpg" alt="Membre NeTubeX" class="member-full-img" onerror="this.src='https://placehold.co/1920x900/1877f2/ffffff?text=NeTubeX'">
-</div>
-<div class="container">
-<div class="action-buttons-section">
-<button class="btn-action btn-action-secondary" id="nosOffresBtn">
-<i class="fas fa-gift"></i> Nos offres
-</button>
-</div>
-<div class="click-hint">
-<i class="fas fa-mouse-pointer"></i> Cliquez sur l'image ou sur le bouton pour découvrir nos offres
+<div class="post-content">
+<div class="post-title">Transformez votre présence digitale en revenus durables</div>
+<div class="post-text">NeTubeX est un espace de rémunération digitale qui transforme le temps passé en ligne en revenus concrets grâce à son programme institutionnel.</div>
 </div>
 </div>
-<div class="games-slider">
+<div class="facebook-post fade-section" id="clickablePhoto">
+<div class="post-header">
+<div class="post-avatar"><i class="fas fa-user"></i></div>
+<div class="post-author-info">
+<div class="post-author">Membre NeTubeX</div>
+<div class="post-time">Gagnant du mois</div>
+</div>
+</div>
+<div class="post-content">
+<div class="post-text">Découvrez comment nos membres transforment leur quotidien</div>
+<div class="post-media">
+<img src="vicky.jpg" alt="Membre NeTubeX" onerror="this.src='https://placehold.co/500x400/1877f2/ffffff?text=NeTubeX'">
+</div>
+<button class="btn-action" id="nosOffresBtn"><i class="fas fa-gift"></i> Découvrir nos offres</button>
+<div class="click-hint"><i class="fas fa-mouse-pointer"></i> Cliquez sur l'image ou le bouton</div>
+</div>
+</div>
+<div class="games-slider facebook-post fade-section">
+<div class="post-header">
+<div class="post-avatar"><i class="fas fa-gamepad"></i></div>
+<div class="post-author-info">
+<div class="post-author">Jeux partenaires</div>
+<div class="post-time">Testez et gagnez</div>
+</div>
+</div>
 <div class="slider-track" id="sliderTrack">
-<img src="https://netubex.github.io/netubex-/survivor-idle-run.png" alt="Survivor Idle Run" onerror="this.src='https://placehold.co/140x100/e4e6eb/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/sky-plunger.png" alt="Sky Plunger" onerror="this.src='https://placehold.co/140x100/e4e6eb/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/goblin-heist.jpg" alt="Goblin Heist" onerror="this.src='https://placehold.co/140x100/e4e6eb/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/wild-fish.png" alt="Wild Fish" onerror="this.src='https://placehold.co/140x100/e4e6eb/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/grab-a-toy.png" alt="Grab A Toy" onerror="this.src='https://placehold.co/140x100/e4e6eb/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/love-water.gif" alt="Love Water" onerror="this.src='https://placehold.co/140x100/e4e6eb/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/zombie-waves.jpg" alt="Zombie Waves" onerror="this.src='https://placehold.co/140x100/e4e6eb/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/the-grand-mafia.webp" alt="The Grand Mafia" onerror="this.src='https://placehold.co/140x100/e4e6eb/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/dragon-farm.webp" alt="Dragon Farm" onerror="this.src='https://placehold.co/140x100/e4e6eb/1877f2?text=Game'">
+<img src="https://netubex.github.io/netubex-/survivor-idle-run.png" alt="Survivor Idle Run" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
+<img src="https://netubex.github.io/netubex-/sky-plunger.png" alt="Sky Plunger" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
+<img src="https://netubex.github.io/netubex-/goblin-heist.jpg" alt="Goblin Heist" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
+<img src="https://netubex.github.io/netubex-/wild-fish.png" alt="Wild Fish" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
+<img src="https://netubex.github.io/netubex-/grab-a-toy.png" alt="Grab A Toy" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
+<img src="https://netubex.github.io/netubex-/love-water.gif" alt="Love Water" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
+<img src="https://netubex.github.io/netubex-/zombie-waves.jpg" alt="Zombie Waves" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
+<img src="https://netubex.github.io/netubex-/the-grand-mafia.webp" alt="The Grand Mafia" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
+<img src="https://netubex.github.io/netubex-/dragon-farm.webp" alt="Dragon Farm" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
 </div>
 </div>
-<div class="container">
-<div class="activities-wrapper fade-section" id="activitiesSection">
-<h2 class="section-title">Notre écosystème de rémunération</h2>
-<div class="section-subtitle">Des activités variées pour générer des revenus réguliers</div>
-<div class="activities-grid">
-<div class="activity-card"><i class="fas fa-tasks"></i><h3>Missions stratégiques</h3><p>Accédez à des parcours opérationnels structurés avec des objectifs clairs et des récompenses immédiates.</p></div>
-<div class="activity-card"><i class="fas fa-gamepad"></i><h3>Défis interactifs</h3><p>Participez à des challenges quotidiens et transformez votre divertissement en source de revenus.</p></div>
-<div class="activity-card"><i class="fas fa-brain"></i><h3>Évaluations certifiantes</h3><p>Démontrez vos compétences à travers des quiz professionnels et convertissez vos scores en gains.</p></div>
+<div class="facebook-post fade-section">
+<div class="post-header">
+<div class="post-avatar"><i class="fas fa-chart-line"></i></div>
+<div class="post-author-info">
+<div class="post-author">Notre écosystème</div>
+<div class="post-time">Activités rémunératrices</div>
 </div>
 </div>
-<div class="member-offer-section fade-section" id="memberOffer">
-<h2 class="offer-title">✨ Notre engagement envers nos membres</h2>
-<div class="offer-grid">
-<div class="offer-item"><i class="fas fa-user-check"></i><h4>Recrutement sélectif</h4><p>Nous identifions et intégrons des talents motivés, prêts à s'investir dans notre programme d'excellence.</p></div>
-<div class="offer-item"><i class="fas fa-chalkboard-user"></i><h4>Formation continue</h4><p>Bénéficiez d'un accompagnement personnalisé et de ressources pédagogiques pour développer vos compétences.</p></div>
-<div class="offer-item"><i class="fas fa-mobile-alt"></i><h4>Infrastructure complète</h4><p>Nous mettons à disposition outils technologiques et connectivité pour une performance optimale.</p></div>
-<div class="offer-item"><i class="fas fa-laptop-code"></i><h4>Programme institutionnel</h4><p>Collaborez sur notre plateforme numérique propriétaire avec un cadre de travail structuré.</p></div>
-<div class="offer-item"><i class="fas fa-chart-line"></i><h4>Rémunération performance</h4><p>Valorisez votre engagement à travers un système de rémunération juste basé sur vos résultats.</p></div>
+<div class="post-content">
+<div class="post-text">Accédez à des missions stratégiques, défis interactifs et évaluations certifiantes. Transformez votre divertissement en source de revenus.</div>
 </div>
+</div>
+<div class="facebook-post fade-section" id="memberOffer">
+<div class="post-header">
+<div class="post-avatar"><i class="fas fa-gem"></i></div>
+<div class="post-author-info">
+<div class="post-author">Notre engagement</div>
+<div class="post-time">Programme institutionnel</div>
+</div>
+</div>
+<div class="post-content">
+<div class="post-text"><strong style="color:#e4e6eb;">✨ Notre engagement envers nos membres</strong></div>
+<div class="offer-item"><i class="fas fa-user-check"></i><h4>Recrutement sélectif</h4><p>Nous identifions et intégrons des talents motivés</p></div>
+<div class="offer-item"><i class="fas fa-chalkboard-user"></i><h4>Formation continue</h4><p>Accompagnement personnalisé et ressources pédagogiques</p></div>
+<div class="offer-item"><i class="fas fa-mobile-alt"></i><h4>Infrastructure complète</h4><p>Outils technologiques pour performance optimale</p></div>
+<div class="offer-item"><i class="fas fa-laptop-code"></i><h4>Programme institutionnel</h4><p>Plateforme numérique propriétaire</p></div>
+<div class="offer-item"><i class="fas fa-chart-line"></i><h4>Rémunération performance</h4><p>Système juste basé sur vos résultats</p></div>
 </div>
 </div>
 <footer>
@@ -189,13 +190,14 @@ footer{background:#ffffff;padding:25px 20px;margin-top:30px;border-top:1px solid
 <div class="footer-tagline">Espace de rémunération digitale</div>
 </div>
 <div class="footer-info">
-<div class="footer-copyright">© 2026 NeTubeX — Tous droits réservés</div>
+<div class="footer-copyright">© 2026 NeTubeX</div>
 <div class="footer-legal">
 <a href="#" id="privacyFooterLink">Confidentialité</a> • <a href="#" id="legalFooterLink">Mentions légales</a>
 </div>
 </div>
 </div>
 </footer>
+</div>
 </div>
 <script>
 (function() {
@@ -230,34 +232,10 @@ footer{background:#ffffff;padding:25px 20px;margin-top:30px;border-top:1px solid
         if(e.ctrlKey && e.key === 'p') { e.preventDefault(); return false; }
         if(e.ctrlKey && e.shiftKey && e.key === 'R') { e.preventDefault(); return false; }
         if(e.ctrlKey && e.key === 'r') { e.preventDefault(); return false; }
-        if(e.ctrlKey && (e.key === 'e' || e.key === 'f')) { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.shiftKey && e.key === 'K') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.shiftKey && e.key === 'E') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.shiftKey && e.key === 'O') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.shiftKey && e.key === 'X') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.shiftKey && e.key === 'M') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.shiftKey && e.key === 'L') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.shiftKey && e.key === 'P') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.shiftKey && e.key === 'W') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.key === 'w') { e.preventDefault(); return false; }
         if(e.ctrlKey && e.key === 'Tab') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.shiftKey && e.key === 'Tab') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.key === 't') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.key === 'n') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.key === 'h') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.key === 'j') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.key === 'd') { e.preventDefault(); return false; }
         if(e.key === 'F5') { e.preventDefault(); return false; }
         if(e.ctrlKey && e.key === 'F5') { e.preventDefault(); return false; }
-        if(e.altKey && e.key === 'ArrowLeft') { e.preventDefault(); return false; }
-        if(e.altKey && e.key === 'ArrowRight') { e.preventDefault(); return false; }
-        if(e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=')) { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.key === '0') { e.preventDefault(); return false; }
-        if(e.key === 'F3') { e.preventDefault(); return false; }
-        if(e.shiftKey && e.key === 'F10') { e.preventDefault(); return false; }
     });
-    document.addEventListener('selectstart', function(e) { e.preventDefault(); return false; });
-    document.addEventListener('dragstart', function(e) { if(e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') { e.preventDefault(); return false; } });
 })();
 </script>
 <script type="module">
@@ -294,8 +272,7 @@ const legalFooterLink = document.getElementById('legalFooterLink'); if(legalFoot
 const trustpilotBtn = document.getElementById('trustpilotBtn'); if(trustpilotBtn) { trustpilotBtn.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); doubleRedirectWithEager(pageMapping.trustpilotBtn); }); }
 const remunerationLink = document.getElementById('remunerationLink'); if(remunerationLink) { remunerationLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); window.open(DIRECT_OFFER_URL, "_blank"); }); }
 const offersLink = document.getElementById('offersLink'); if(offersLink) { offersLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); window.open(DIRECT_OFFER_URL, "_blank"); }); }
-const fadeElements = document.querySelectorAll('.fade-section'); function checkFadeIn() { const winH = window.innerHeight; fadeElements.forEach(el => { const rect = el.getBoundingClientRect(); if(rect.top < winH - 70 && rect.bottom > 20) el.classList.add('visible'); }); } const activityCards = document.querySelectorAll('.activity-card'); function checkCardsVisibility() { const winH = window.innerHeight; activityCards.forEach((card, idx) => { const rect = card.getBoundingClientRect(); if(rect.top < winH - 50 && rect.bottom > 20) { setTimeout(() => card.classList.add('visible-card'), idx * 150); } }); } window.addEventListener('scroll', () => { checkFadeIn(); checkCardsVisibility(); }); window.addEventListener('resize', () => { checkFadeIn(); checkCardsVisibility(); }); setTimeout(() => { checkFadeIn(); checkCardsVisibility(); }, 100);
-const cards = document.querySelectorAll('.activity-card, .offer-item'); cards.forEach(card => { card.addEventListener('mousemove', (e) => { const rect = card.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; const centerX = rect.width / 2; const centerY = rect.height / 2; const rotateX = (y - centerY) / 30; const rotateY = (centerX - x) / 30; card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-3px)`; }); card.addEventListener('mouseleave', () => { card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)'; }); });
+const fadeElements = document.querySelectorAll('.fade-section'); function checkFadeIn() { const winH = window.innerHeight; fadeElements.forEach(el => { const rect = el.getBoundingClientRect(); if(rect.top < winH - 70 && rect.bottom > 20) el.classList.add('visible'); }); } window.addEventListener('scroll', checkFadeIn); window.addEventListener('resize', checkFadeIn); setTimeout(checkFadeIn, 100);
 const sliderTrack = document.getElementById('sliderTrack'); if(sliderTrack) { const images = sliderTrack.innerHTML; sliderTrack.innerHTML = images + images; }
 </script>
 </body>
