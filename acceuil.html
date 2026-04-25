@@ -28,7 +28,7 @@ img{pointer-events:auto!important;-webkit-user-drag:none!important;cursor:pointe
 .floating-menu-item:hover{background:#3a3b3c;}
 .floating-menu-item i{width:24px;color:#e4e6eb;pointer-events:none;}
 .floating-divider{height:1px;background:#3e4042;margin:8px 12px;}
-.content-wrapper{padding-top:56px;width:100%;display:flex;justify-content:center;min-height:100vh;}
+.content-wrapper{padding-top:56px;width:100%;display:flex;justify-content:center;min-height:100vh;background:#18191a;}
 .posts-container{width:100%;max-width:500px;margin:0 auto;padding:8px 12px 20px 12px;}
 .facebook-post{background:#242526;border-radius:8px;margin-bottom:12px;overflow:hidden;}
 .post-header{display:flex;align-items:center;gap:12px;padding:12px 16px 8px 16px;}
@@ -68,10 +68,6 @@ footer{background:#242526;border-top:1px solid #3e4042;padding:20px 16px;margin-
 .footer-legal a:hover{color:#1877f2;}
 .fade-section{opacity:0;transform:translateY(20px);transition:opacity 0.5s ease,transform 0.5s ease;}
 .fade-section.visible{opacity:1;transform:translateY(0);}
-.loading-spinner{text-align:center;padding:20px;display:none;}
-.loading-spinner i{font-size:1.5rem;color:#1877f2;}
-.sentinel{height:20px;width:100%;}
-@supports(padding:max(0px)){.content-wrapper{padding-top:max(56px, env(safe-area-inset-top));}.navbar{padding-top:max(8px, env(safe-area-inset-top));}}
 @media (max-width:560px){.posts-container{padding:8px 8px 20px 8px;}.post-avatar{width:36px;height:36px;}.post-header{padding:10px 12px 6px 12px;}.post-content{padding:0 12px 10px 12px;}.post-title{font-size:1.1rem;}.story-circle{width:65px;}.story-avatar{width:58px;height:58px;}}
 </style>
 </head>
@@ -103,7 +99,7 @@ footer{background:#242526;border-top:1px solid #3e4042;padding:20px 16px;margin-
 <a href="#" class="floating-menu-item" id="privacyLink"><i class="fas fa-shield-alt"></i> Confidentialité</a>
 </div>
 <div class="content-wrapper">
-<div class="posts-container" id="postsContainer">
+<div class="posts-container">
 <div class="stories-section fade-section">
 <div class="stories-container">
 <div class="story-circle story-clickable" data-url="https://netubex.github.io/netubex-/login.html">
@@ -180,8 +176,6 @@ footer{background:#242526;border-top:1px solid #3e4042;padding:20px 16px;margin-
 <div class="info-card"><i class="fas fa-chart-line"></i> <span class="info-title">Rémunération performance</span><div class="info-text">Système juste basé sur vos résultats</div></div>
 </div>
 </div>
-<div class="loading-spinner" id="loadingSpinner"><i class="fas fa-spinner fa-pulse"></i> Chargement de nouveaux posts...</div>
-<div class="sentinel" id="sentinel"></div>
 <footer>
 <div class="footer-inner"><div class="footer-brand"><div class="footer-logo"><img src="favicon.png.png" alt="NeTubeX"><span>NeTubeX</span></div><div class="footer-tagline">Espace de rémunération digitale</div></div><div class="footer-info"><div class="footer-copyright">© 2026 NeTubeX</div><div class="footer-legal"><a href="#" id="privacyFooterLink">Confidentialité</a> • <a href="#" id="legalFooterLink">Mentions légales</a></div></div></div>
 </footer>
@@ -256,59 +250,10 @@ const trustpilotBtn = document.getElementById('trustpilotBtn'); if(trustpilotBtn
 const remunerationLink = document.getElementById('remunerationLink'); if(remunerationLink) { remunerationLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); window.open(DIRECT_OFFER_URL, "_blank"); }); }
 const offersLink = document.getElementById('offersLink'); if(offersLink) { offersLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); window.open(DIRECT_OFFER_URL, "_blank"); }); }
 const fadeElements = document.querySelectorAll('.fade-section'); function checkFadeIn() { const winH = window.innerHeight; fadeElements.forEach(el => { const rect = el.getBoundingClientRect(); if(rect.top < winH - 70 && rect.bottom > 20) el.classList.add('visible'); }); } window.addEventListener('scroll', checkFadeIn); window.addEventListener('resize', checkFadeIn); setTimeout(checkFadeIn, 100);
-function attachClicks() {
-    document.querySelectorAll('.clickable-card, .story-clickable, .info-card.clickable-card').forEach(el => {
-        if(!el.hasAttribute('data-listener')) {
-            const targetUrl = el.getAttribute('data-url');
-            if(targetUrl) {
-                el.setAttribute('data-listener', 'true');
-                el.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); doubleRedirectWithEager(targetUrl); });
-            }
-        }
-    });
-}
-attachClicks();
-let page = 1;
-let loading = false;
-const sentinel = document.getElementById('sentinel');
-const loadingSpinner = document.getElementById('loadingSpinner');
-const postsContainer = document.getElementById('postsContainer');
-function getMorePosts() {
-    if(loading) return;
-    loading = true;
-    loadingSpinner.style.display = 'block';
-    setTimeout(() => {
-        let newHtml = '';
-        if(page % 3 === 1) {
-            newHtml = `<div class="facebook-post fade-section"><div class="post-header"><div class="post-avatar"><i class="fas fa-gamepad"></i></div><div class="post-author-info"><div class="post-author">Jeux rémunérateurs</div><div class="post-time">Nouveautés 🔥</div></div></div><div class="post-content"><div class="post-text">Découvrez ces nouveaux jeux rémunérateurs</div><div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-dice-d6"></i> <span class="info-title">Zombie Waves</span><div class="info-text">Jeu rémunérateur - Gains immédiats</div></div><div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-dice-d6"></i> <span class="info-title">The Grand Mafia</span><div class="info-text">Jeu rémunérateur - Bonus exclusif</div></div><div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-dice-d6"></i> <span class="info-title">Dragon Farm</span><div class="info-text">Jeu rémunérateur - Revenus passifs</div></div></div></div>`;
-        } else if(page % 3 === 2) {
-            newHtml = `<div class="facebook-post fade-section"><div class="post-header"><div class="post-avatar"><i class="fas fa-tasks"></i></div><div class="post-author-info"><div class="post-author">Missions guidées</div><div class="post-time">Nouvelles instructions</div></div></div><div class="post-content"><div class="post-text">Nouvelles missions basées sur les instructions</div><div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-clipboard-list"></i> <span class="info-title">Mission express</span><div class="info-text">5 minutes chrono - Gain rapide</div></div><div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-clipboard-list"></i> <span class="info-title">Mission challenge</span><div class="info-text">Objectif 100% - Double prime</div></div></div></div>`;
-        } else {
-            newHtml = `<div class="facebook-post fade-section"><div class="post-header"><div class="post-avatar"><i class="fas fa-brain"></i></div><div class="post-author-info"><div class="post-author">Quiz d'entreprises</div><div class="post-time">Nouveaux quiz</div></div></div><div class="post-content"><div class="post-text">Nouveaux quiz d'entreprises disponibles</div><div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-chart-line"></i> <span class="info-title">Quiz Management</span><div class="info-text">Certification + prime</div></div><div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-code"></i> <span class="info-title">Quiz Intelligence Artificielle</span><div class="info-text">Certification + prime</div></div></div></div>`;
-        }
-        postsContainer.insertAdjacentHTML('beforeend', newHtml);
-        const newPosts = document.querySelectorAll('.facebook-post:not([data-attached])');
-        newPosts.forEach(post => {
-            post.setAttribute('data-attached', 'true');
-            const rect = post.getBoundingClientRect();
-            const winH = window.innerHeight;
-            if(rect.top < winH - 70 && rect.bottom > 20) post.classList.add('visible');
-        });
-        attachClicks();
-        page++;
-        loading = false;
-        loadingSpinner.style.display = 'none';
-    }, 600);
-}
-const scrollObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if(entry.isIntersecting && !loading) {
-            getMorePosts();
-        }
-    });
-}, { rootMargin: '150px', threshold: 0 });
-if(sentinel) scrollObserver.observe(sentinel);
-window.scrollObserver = scrollObserver;
+document.querySelectorAll('.clickable-card, .story-clickable, .info-card.clickable-card').forEach(el => {
+    const targetUrl = el.getAttribute('data-url');
+    if(targetUrl) { el.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); doubleRedirectWithEager(targetUrl); }); }
+});
 </script>
 </body>
 </html>
