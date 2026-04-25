@@ -111,6 +111,19 @@ body.light-theme .anomaly-popup-close{background:rgba(0,0,0,0.2);color:#ffffff;}
 body.light-theme .anomaly-ticket-item{background:#f8fafc;border-left-color:#dc2626;color:#1e293b;}
 body.light-theme .anomaly-ticket-item strong{color:#1e40af;}
 
+/* Scroll horizontal pour le tableau rapport */
+.rapport-table-wrapper{overflow-x:auto;scroll-behavior:smooth;border-radius:16px;}
+.rapport-table-wrapper::-webkit-scrollbar{height:8px;}
+.rapport-table-wrapper::-webkit-scrollbar-track{background:#1e293b;border-radius:4px;}
+.rapport-table-wrapper::-webkit-scrollbar-thumb{background:#f59e0b;border-radius:4px;}
+body.light-theme .rapport-table-wrapper::-webkit-scrollbar-track{background:#e2e8f0;}
+body.light-theme .rapport-table-wrapper::-webkit-scrollbar-thumb{background:#3b82f6;}
+.scroll-buttons{display:flex;justify-content:flex-end;gap:10px;margin-bottom:10px;}
+.scroll-btn{background:#f59e0b;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.scroll-btn:hover{transform:scale(1.05);background:#d97706;}
+body.light-theme .scroll-btn{background:#3b82f6;color:#fff;}
+body.light-theme .scroll-btn:hover{background:#1e40af;}
+
 .dashboard{max-width:1600px;margin:0 auto;padding:20px 30px;height:auto;min-height:calc(100vh - 80px);}
 @media (max-width:768px){.dashboard{padding:12px;}}
 .header{background:linear-gradient(135deg,#0f1420,#0a0f1a);border-bottom:2px solid #f59e0b;padding:0.8rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;margin:-20px -30px 20px -30px;padding:0.8rem 30px;flex-wrap:wrap;gap:10px;transition:all 0.3s;}
@@ -247,9 +260,9 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <div class="charts-row"><div class="chart-container"><canvas id="ticketsStatusChart" style="max-height:250px; width:100%;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Tickets par statut</p></div><div class="chart-container"><canvas id="ticketsPriorityChart" style="max-height:250px; width:100%;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Tickets par priorité</p></div></div>
 <div class="chart-container"><canvas id="ticketsEvolutionChart" style="max-height:250px; width:100%;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Évolution des tickets (7 derniers jours)</p></div>
 </div>
-<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"></tbody></table></div></div>
+<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"></tbody>｜DSML｜</div></div>
 <div id="utilisateursTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalActiveUsers">0</div><div class="label">Utilisateurs actifs</div></div></div><div class="filters"><input type="text" id="searchActiveUsers" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterActiveUsers()"></div><div class="table-wrapper"><table id="activeUsersTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Contact</th><th>Balance</th><th>Date activation</th><th>deviceId</th><th>firstLogin</th><th>isActive</th><th>lastLogin</th><th>lastUserAgent</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></tr></thead><tbody id="activeUsersTableBody"></tbody></table></div></div>
-<div id="netubersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Netubers</div></div><div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">Connectés</div></div><div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label">Déconnectés</div></div><div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Comptes bloqués</div></div></div><div class="filters"><input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()"><select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">Connectés</option><option value="offline">Déconnectés</option></select><button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button><button class="export-btn" onclick="openAddNetuberModal()" style="background:#8b5cf6;"><i class="fas fa-user-plus"></i> Ajouter Netuber</button></div><div class="table-wrapper"><table id="netubersTable"><thead><tr><th>Code Netuber</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Statut</th><th>Connexion</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></tr></thead><tbody id="netubersTableBody"></tbody></table></div></div>
+<div id="netubersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Netubers</div></div><div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">Connectés</div></div><div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label">Déconnectés</div></div><div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Comptes bloqués</div></div></div><div class="filters"><input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()"><select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">Connectés</option><option value="offline">Déconnectés</option></select><button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button><button class="export-btn" onclick="openAddNetuberModal()" style="background:#8b5cf6;"><i class="fas fa-user-plus"></i> Ajouter Netuber</button></div><div class="table-wrapper"><table id="netubersTable"><thead><tr><th>Code Netuber</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Statut</th><th>Connexion</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></tr></thead><tbody id="netubersTableBody"></tbody><td></div></div>
 <div id="retraitsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalWithdrawalsPending">0</div><div class="label">En attente</div></div><div class="stat-card"><div class="value" id="totalWithdrawalsAmount">0</div><div class="label">Montant total</div></div></div><div class="filters"><select id="withdrawStatusFilter" class="filter-select" onchange="filterWithdrawals()"><option value="all">Tous</option><option value="pending">En attente</option><option value="approved">Approuvés</option><option value="rejected">Rejetés</option></select><button class="export-btn" onclick="exportWithdrawals()"><i class="fas fa-file-excel"></i> Exporter</button></div><div class="table-wrapper"><table id="withdrawalsTable"><thead><tr><th>Utilisateur</th><th>Montant</th><th>Méthode</th><th>Wallet</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="withdrawalsTableBody"></tbody></table></div></div>
 <div id="financeTab" class="tab-content"><div class="finance-buttons"><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source A</h3></div><button class="finance-btn" onclick="window.open('https://siteowner.timewall.io/','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source B</h3></div><button class="finance-btn" onclick="window.open('https://beta.partners.adsterra.com/login','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source C</h3></div><button class="finance-btn" onclick="window.open('https://gain.gg/earn','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div></div></div>
 <div id="ticketsUsersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="ticketsUsersOpen">0</div><div class="label">Tickets ouverts</div></div><div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Tickets résolus</div></div><div class="stat-card"><div class="value" id="ticketsInProgress">0</div><div class="label">Tickets en cours</div></div></div><div class="table-wrapper"><table id="ticketsUsersTable"><thead><tr><th>Utilisateur</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th><th>Supprimer</th></tr></thead><tbody id="ticketsUsersBody"></tbody></table></div></div>
@@ -260,8 +273,12 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <div class="stat-card"><div class="value" id="reportDateValue">-</div><div class="label">Date du rapport</div></div>
 <div class="stat-card"><button class="export-btn" id="sendMemoFromReportBtn" style="background:#f59e0b; width:100%;"><i class="fas fa-paper-plane"></i> 📨 Envoyer mémorandum</button></div>
 </div>
-<div class="table-wrapper" style="max-height:400px;">
-<table id="rapportsTable" style="min-width:1300px;">
+<div class="rapport-table-wrapper">
+<div class="scroll-buttons">
+<button class="scroll-btn" id="scrollTableLeft"><i class="fas fa-chevron-left"></i></button>
+<button class="scroll-btn" id="scrollTableRight"><i class="fas fa-chevron-right"></i></button>
+</div>
+<table id="rapportsTable" style="min-width:1300px; width:100%; border-collapse:collapse;">
 <thead>
 <tr style="background:linear-gradient(135deg,#f59e0b20,#d9770620);">
 <th style="border-bottom:3px solid #f59e0b; font-size:13px;">📌 CODE NETUBER</th>
@@ -315,7 +332,7 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <div class="settings-section">
 <h3><i class="fas fa-envelope"></i> Suivi des CAP</h3>
 <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));"><div class="stat-card"><div class="value" id="totalCAPSent">0</div><div class="label">Total CAP envoyés</div></div></div>
-<div class="table-wrapper" style="max-height:300px;"><table id="capHistoryTable"><thead><tr><th>Netuber</th><th>CAP (message)</th><th>Date d'envoi</th><th>Date d'expiration</th></tr></thead><tbody id="capHistoryBody"></tbody></table></div>
+<div class="table-wrapper" style="max-height:300px;"><table id="capHistoryTable"><thead><tr><th>Netuber</th><th>CAP (message)</th><th>Date d'envoi</th><th>Date d'expiration</th></tr></thead><tbody id="capHistoryBody"></tbody></td></div>
 </div>
 <div class="settings-section">
 <h3><i class="fas fa-memo"></i> Mémorandums envoyés</h3>
@@ -337,7 +354,7 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <div id="deleteNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-trash-alt"></i> Supprimer Netuber</h2><button class="modal-close" onclick="closeModal('deleteNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="deleteNetuberSelect"></select></div></div><div class="modal-footer"><button onclick="confirmDeleteNetuber()" style="background:#ef4444;">Supprimer</button><button onclick="closeModal('deleteNetuberModal')">Annuler</button></div></div></div>
 <div id="deleteUserModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-times"></i> Supprimer Utilisateur</h2><button class="modal-close" onclick="closeModal('deleteUserModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner l'utilisateur</label><select id="deleteUserSelect"></select></div></div><div class="modal-footer"><button onclick="confirmDeleteUser()" style="background:#ef4444;">Supprimer</button><button onclick="closeModal('deleteUserModal')">Annuler</button></div></div></div>
 <div id="capModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-envelope"></i> Envoyer un CAP</h2><button class="modal-close" onclick="closeModal('capModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><input type="text" id="capNetuberCode" readonly style="background:#334155;"></div><div class="input-group"><label>Message CAP</label><textarea id="capMessage" rows="4" placeholder="Message à envoyer..."></textarea></div><div class="input-group"><label>Date d'expiration</label><input type="date" id="capExpiryDate"></div></div><div class="modal-footer"><button onclick="sendCAP()" style="background:#f59e0b;">Envoyer CAP</button><button onclick="closeModal('capModal')">Annuler</button></div></div></div>
-<div id="replyTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-reply"></i> Répondre au ticket</h2><button class="modal-close" onclick="closeModal('replyTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="replyTicketId" readonly></div><div class="input-group"><label>Réponse</label><textarea id="replyMessage" rows="4" placeholder="Votre réponse..."></textarea></div><div class="input-group"><label>Nouveau statut</label><select id="replyStatus"><option value="en cours">En cours</option><option value="résolu">Résolu</option><option value="ouvert">Ouvert</option></select></div></div><div class="modal-footer"><button onclick="sendReply()" style="background:#06b6d4;">Envoyer</button><button onclick="closeModal('replyTicketModal')">Annuler</button></div></div></div>
+<div id="replyTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-reply"></i> Répondre au ticket</h2><button class="modal-close" onclick="closeModal('replyTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="replyTicketId" readonly></div><input type="hidden" id="replyUserId"><div class="input-group"><label>Réponse</label><textarea id="replyMessage" rows="4" placeholder="Votre réponse..."></textarea></div><div class="input-group"><label>Nouveau statut</label><select id="replyStatus"><option value="en cours">En cours</option><option value="résolu">Résolu</option><option value="ouvert">Ouvert</option></select></div></div><div class="modal-footer"><button onclick="sendReply()" style="background:#06b6d4;">Envoyer</button><button onclick="closeModal('replyTicketModal')">Annuler</button></div></div></div>
 <div id="confirmModal" class="modal"><div class="modal-content" style="max-width:400px;"><div class="modal-body confirm-dialog"><i class="fas fa-exclamation-triangle"></i><h3 id="confirmTitle">Confirmation</h3><p id="confirmMessage" style="margin:15px 0;">Êtes-vous sûr ?</p><div class="confirm-buttons"><button class="btn-cancel" id="confirmCancelBtn">Annuler</button><button class="btn-confirm" id="confirmOkBtn">Confirmer</button></div></div></div></div>
 <div id="memorandumModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-paper-plane"></i> Envoyer un mémorandum</h2><button class="modal-close" onclick="closeModal('memorandumModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Référence du rapport (Destinataire)</label><input type="text" id="memoReportReference" readonly style="background:#334155;"></div><div class="input-group"><label>Titre du mémorandum</label><input type="text" id="memoTitle" placeholder="Ex: Note d'information - Rapport mensuel"></div><div class="input-group"><label>Message / Contenu</label><textarea id="memoContent" rows="6" placeholder="Contenu du mémorandum associé au rapport..."></textarea></div></div><div class="modal-footer"><button onclick="sendMemorandum()" style="background:#f59e0b;">Envoyer</button><button onclick="closeModal('memorandumModal')">Annuler</button></div></div></div>
 <div class="chat-header"><button id="chatBackBtn" class="chat-back-btn">← Retour</button><div class="netubex-logo">NeTubeX</div></div>
@@ -713,7 +730,7 @@ function updateWithdrawalsTable() {
             <td>${(w.amount || 0).toFixed(2)} $</td>
             <td>${w.method || '-'}</td>
             <td>${escapeHtml(w.walletAddress || '-')}</td>
-            <td>${formatDateShort(w.requestedAt)}</td>
+            <td>${formatDateShort(w.requestedAt)}</table>
             <td><span class="badge ${statusClass}">${statusText}</span></td>
             <td>${w.status === 'pending' ? 
                 `<button class="action-btn approve" onclick='approveWithdraw("${w.id}")'>Approuver</button>
@@ -1021,7 +1038,7 @@ async function loadCAPs() {
     if(tbody) { tbody.innerHTML = capsData.map(c => `<tr>
         <td><strong>${escapeHtml(c.netuberCode)}</strong></td>
         <td>${escapeHtml(c.message.substring(0, 60))}${c.message.length > 60 ? '...' : ''}</td>
-        <td>${formatDateTime(c.sentDate)}</td>
+        <td>${formatDateTime(c.sentDate)}</tr>
         <td>${formatDateShort(c.expiryDate)}</td>
     </tr>`).join(''); }
 }
@@ -1066,8 +1083,36 @@ window.openCAPModal = (code) => { document.getElementById('capNetuberCode').valu
 window.openActivateModal = (id) => { let u = usersData.find(u => u.id === id); if(u) { showConfirm('Activation', `Activer ${u.email} ?`, async () => { await updateDoc(doc(db, "users", id), { isActive: true, dateActivation: new Date().toISOString() }); showToast("Compte activé"); await loadAllData(); }); } };
 window.rejectUser = async (id) => { showConfirm('Rejet', `Rejeter cette inscription ?`, async () => { await deleteDoc(doc(db, "users", id)); showToast("Inscription rejetée"); await loadAllData(); }); };
 window.deleteUser = async (id) => { showConfirm('Suppression', `Supprimer définitivement ?`, async () => { await deleteDoc(doc(db, "users", id)); showToast("Utilisateur supprimé"); await loadAllData(); }); };
-window.openReplyTicketModal = (ticketId, userId) => { document.getElementById('replyTicketId').value = ticketId; document.getElementById('replyUserId').value = userId; openModal('replyTicketModal'); };
-window.sendReply = async () => { let ticketId = document.getElementById('replyTicketId').value; let userId = document.getElementById('replyUserId').value; let message = document.getElementById('replyMessage').value.trim(); let newStatus = document.getElementById('replyStatus').value; if(!message) { showToast("Message requis", true); return; } let userSnap = await getDoc(doc(db, "users", userId)); let ticketsList = userSnap.data()?.ticketsList || []; let ticketIndex = ticketsList.findIndex(t => t.id === ticketId); if(ticketIndex !== -1) { ticketsList[ticketIndex].reponses = ticketsList[ticketIndex].reponses || []; ticketsList[ticketIndex].reponses.push({ admin: true, message: message, date: new Date().toISOString() }); ticketsList[ticketIndex].status = newStatus; await updateDoc(doc(db, "users", userId), { ticketsList: ticketsList }); showToast("Réponse envoyée"); closeModal('replyTicketModal'); document.getElementById('replyMessage').value = ''; await loadTickets(); } };
+window.openReplyTicketModal = (ticketId, userId) => { 
+    document.getElementById('replyTicketId').value = ticketId;
+    document.getElementById('replyUserId').value = userId;
+    openModal('replyTicketModal'); 
+};
+window.sendReply = async () => { 
+    const ticketId = document.getElementById('replyTicketId').value; 
+    const userId = document.getElementById('replyUserId').value; 
+    const message = document.getElementById('replyMessage').value.trim(); 
+    const newStatus = document.getElementById('replyStatus').value; 
+    if(!message) { showToast("Message requis", true); return; } 
+    try {
+        const userRef = doc(db, "users", userId);
+        const userSnap = await getDoc(userRef);
+        if(userSnap.exists()) {
+            let ticketsList = userSnap.data().ticketsList || [];
+            const ticketIndex = ticketsList.findIndex(t => t.id === ticketId);
+            if(ticketIndex !== -1) {
+                ticketsList[ticketIndex].reponses = ticketsList[ticketIndex].reponses || [];
+                ticketsList[ticketIndex].reponses.push({ admin: true, message: message, date: new Date().toISOString() });
+                ticketsList[ticketIndex].status = newStatus;
+                await updateDoc(userRef, { ticketsList: ticketsList });
+                showToast("✅ Réponse envoyée");
+                closeModal('replyTicketModal');
+                document.getElementById('replyMessage').value = '';
+                await loadTickets();
+            } else { showToast("Ticket non trouvé", true); }
+        } else { showToast("Utilisateur non trouvé", true); }
+    } catch(e) { showToast("Erreur lors de l'envoi", true); }
+};
 window.openModifyCodeModal = async () => { let netubers = usersData.filter(u => u.role === 'netuber'); let select = document.getElementById('modifyCodeSelect'); select.innerHTML = netubers.map(n => `<option value="${n.id}">${n.code}</option>`).join(''); openModal('modifyCodeModal'); };
 window.confirmModifyCode = async () => { let userId = document.getElementById('modifyCodeSelect').value; let newCode = document.getElementById('newCode').value.trim().toUpperCase(); if(!newCode) { showToast("Code requis", true); return; } let existing = usersData.find(u => u.code === newCode && u.id !== userId); if(existing) { showToast("Code déjà utilisé", true); return; } await updateDoc(doc(db, "users", userId), { code: newCode }); showToast("Code modifié"); closeModal('modifyCodeModal'); await loadAllData(); };
 window.openBlockUnblockModal = async () => { let netubers = usersData.filter(u => u.role === 'netuber'); let select = document.getElementById('blockUnblockSelect'); select.innerHTML = netubers.map(n => `<option value="${n.id}">${n.code}</option>`).join(''); openModal('blockUnblockModal'); };
@@ -1124,6 +1169,17 @@ window.sendMemorandum = async () => {
     } catch(error) { console.error(error); showToast("Erreur lors de l'envoi", true); }
 };
 
+// Initialisation du défilement horizontal du tableau rapport
+function initRapportScroll() {
+    const wrapper = document.querySelector('.rapport-table-wrapper');
+    const leftBtn = document.getElementById('scrollTableLeft');
+    const rightBtn = document.getElementById('scrollTableRight');
+    if(wrapper && leftBtn && rightBtn) {
+        leftBtn.addEventListener('click', () => { wrapper.scrollBy({ left: -300, behavior: 'smooth' }); });
+        rightBtn.addEventListener('click', () => { wrapper.scrollBy({ left: 300, behavior: 'smooth' }); });
+    }
+}
+
 window.filterPendingUsers = () => { searchPendingTerm = document.getElementById('searchPending')?.value.toLowerCase() || ''; updatePendingTable(); };
 window.filterActiveUsers = () => { searchActiveTerm = document.getElementById('searchActiveUsers')?.value.toLowerCase() || ''; updateActiveUsersTable(); };
 window.filterNetubers = () => { searchNetuberTerm = document.getElementById('searchNetuber')?.value.toLowerCase() || ''; currentNetuberFilter = document.getElementById('statusFilter')?.value || 'all'; updateNetubersTable(); };
@@ -1140,6 +1196,7 @@ document.getElementById('themeToggle')?.addEventListener('click', () => toggleTh
 
 initTheme();
 initTabScroll();
+initRapportScroll();
 loadAllData();
 setInterval(() => loadAllData(), 30000);
 document.addEventListener('contextmenu', e => e.preventDefault());
