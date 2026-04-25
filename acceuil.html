@@ -12,7 +12,7 @@ body{font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;back
 *{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
 *:not(input):not(textarea){user-select:none!important;-webkit-user-select:none!important;}
 input,textarea{user-select:text!important;-webkit-user-select:text!important;}
-img,a,button,.floating-menu-item,.menu-toggle,.logo-img-large,.member-full-img,.facebook-post{user-select:none!important;-webkit-user-drag:none!important;}
+img,a,button,.floating-menu-item,.menu-toggle,.logo-img-large,.member-full-img,.facebook-post,.story-circle{user-select:none!important;-webkit-user-drag:none!important;}
 img{pointer-events:auto!important;-webkit-user-drag:none!important;cursor:pointer;}
 .navbar{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:#242526;position:fixed;top:0;left:0;right:0;z-index:1000;width:100%;transition:transform 0.3s ease;transform:translateY(0);}
 .navbar.hide{transform:translateY(-100%);}
@@ -38,25 +38,23 @@ img{pointer-events:auto!important;-webkit-user-drag:none!important;cursor:pointe
 .post-content{padding:0 16px 12px 16px;}
 .post-title{font-size:1.3rem;font-weight:700;color:#e4e6eb;margin-bottom:10px;line-height:1.3;}
 .post-text{color:#e4e6eb;font-size:0.95rem;line-height:1.5;}
-.post-media{margin:8px 0 0 0;background:#1c1e21;border-radius:8px;overflow:hidden;}
+.post-media{margin:8px -16px -12px -16px;background:#1c1e21;}
 .post-media img{width:100%;height:auto;display:block;object-fit:cover;}
-.post-divider{height:1px;background:#3e4042;margin:0 16px;}
-.hero-post .post-title{font-size:1.5rem;margin-bottom:12px;}
-.hero-post .post-text{font-size:1rem;color:#e4e6eb;}
+.stories-section{background:#242526;border-radius:8px;margin-bottom:12px;padding:12px 16px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;}
+.stories-section::-webkit-scrollbar{display:none;}
+.stories-container{display:flex;gap:12px;}
+.story-circle{display:inline-flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;width:70px;}
+.story-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#1877f2,#0e5a9e);border:3px solid #1877f2;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.story-avatar img{width:100%;height:100%;object-fit:cover;}
+.story-name{font-size:0.7rem;color:#e4e6eb;text-align:center;white-space:normal;word-break:keep-all;max-width:70px;}
+.quiz-card{background:#2d2e30;border-radius:8px;padding:16px;margin-bottom:8px;}
+.quiz-card:last-child{margin-bottom:0;}
+.quiz-card i{font-size:1.5rem;color:#1877f2;margin-right:12px;}
+.quiz-title{font-size:0.95rem;font-weight:600;color:#e4e6eb;margin-bottom:6px;}
+.quiz-text{color:#b0b3b8;font-size:0.8rem;line-height:1.4;}
 .btn-action{background:#1877f2;border:none;padding:10px 20px;border-radius:6px;font-weight:600;color:white;cursor:pointer;display:inline-flex;align-items:center;gap:10px;font-size:0.9rem;transition:background 0.2s;margin-top:12px;width:100%;justify-content:center;}
 .btn-action:hover{background:#1b6fe0;}
-.btn-action-secondary{background:#3a3b3c;color:#e4e6eb;}
-.btn-action-secondary:hover{background:#4e4f50;}
 .click-hint{text-align:center;margin-top:10px;margin-bottom:5px;font-size:0.7rem;color:#b0b3b8;}
-.games-slider{background:#242526;border-radius:8px;margin-bottom:12px;overflow:hidden;padding:8px 0;}
-.slider-track{display:flex;animation:slideInfinite 30s linear infinite;width:fit-content;padding:0 8px;}
-.slider-track img{width:120px;height:80px;object-fit:cover;border-radius:8px;margin:0 4px;cursor:pointer;}
-@keyframes slideInfinite{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-.offer-item{background:#2d2e30;border-radius:8px;padding:16px;margin-bottom:8px;text-align:center;}
-.offer-item:last-child{margin-bottom:0;}
-.offer-item i{font-size:1.8rem;color:#1877f2;margin-bottom:10px;}
-.offer-item h4{font-size:0.95rem;font-weight:600;color:#e4e6eb;margin-bottom:6px;}
-.offer-item p{color:#b0b3b8;font-size:0.8rem;line-height:1.4;}
 footer{background:#242526;border-top:1px solid #3e4042;padding:20px 16px;margin-top:8px;}
 .footer-inner{max-width:500px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center;}
 .footer-brand{display:flex;flex-direction:column;gap:4px;}
@@ -69,7 +67,7 @@ footer{background:#242526;border-top:1px solid #3e4042;padding:20px 16px;margin-
 .footer-legal a:hover{color:#1877f2;}
 .fade-section{opacity:0;transform:translateY(20px);transition:opacity 0.5s ease,transform 0.5s ease;}
 .fade-section.visible{opacity:1;transform:translateY(0);}
-@media (max-width:560px){.posts-container{padding:8px 8px 20px 8px;}.post-avatar{width:36px;height:36px;}.post-header{padding:10px 12px 6px 12px;}.post-content{padding:0 12px 10px 12px;}.post-title{font-size:1.1rem;}.post-text{font-size:0.9rem;}}
+@media (max-width:560px){.posts-container{padding:8px 8px 20px 8px;}.post-avatar{width:36px;height:36px;}.post-header{padding:10px 12px 6px 12px;}.post-content{padding:0 12px 10px 12px;}.post-title{font-size:1.1rem;}.story-circle{width:65px;}.story-avatar{width:58px;height:58px;}}
 </style>
 </head>
 <body>
@@ -101,6 +99,34 @@ footer{background:#242526;border-top:1px solid #3e4042;padding:20px 16px;margin-
 </div>
 <div class="content-wrapper">
 <div class="posts-container">
+<div class="stories-section fade-section">
+<div class="stories-container">
+<div class="story-circle" id="story1">
+<div class="story-avatar"><img src="https://netubex.github.io/netubex-/survivor-idle-run.png" alt="Jeu rémunérateur" onerror="this.src='https://placehold.co/64x64/1877f2/ffffff?text=💰'"></div>
+<div class="story-name">Survivor Run</div>
+</div>
+<div class="story-circle" id="story2">
+<div class="story-avatar"><img src="https://netubex.github.io/netubex-/sky-plunger.png" alt="Jeu rémunérateur" onerror="this.src='https://placehold.co/64x64/1877f2/ffffff?text=💰'"></div>
+<div class="story-name">Sky Plunger</div>
+</div>
+<div class="story-circle" id="story3">
+<div class="story-avatar"><img src="https://netubex.github.io/netubex-/goblin-heist.jpg" alt="Jeu rémunérateur" onerror="this.src='https://placehold.co/64x64/1877f2/ffffff?text=💰'"></div>
+<div class="story-name">Goblin Heist</div>
+</div>
+<div class="story-circle" id="story4">
+<div class="story-avatar"><img src="https://netubex.github.io/netubex-/wild-fish.png" alt="Jeu rémunérateur" onerror="this.src='https://placehold.co/64x64/1877f2/ffffff?text=💰'"></div>
+<div class="story-name">Wild Fish</div>
+</div>
+<div class="story-circle" id="story5">
+<div class="story-avatar"><img src="https://netubex.github.io/netubex-/grab-a-toy.png" alt="Jeu rémunérateur" onerror="this.src='https://placehold.co/64x64/1877f2/ffffff?text=💰'"></div>
+<div class="story-name">Grab A Toy</div>
+</div>
+<div class="story-circle" id="story6">
+<div class="story-avatar"><img src="https://netubex.github.io/netubex-/love-water.gif" alt="Jeu rémunérateur" onerror="this.src='https://placehold.co/64x64/1877f2/ffffff?text=💰'"></div>
+<div class="story-name">Love Water</div>
+</div>
+</div>
+</div>
 <div class="facebook-post hero-post fade-section">
 <div class="post-header">
 <div class="post-avatar"><i class="fas fa-rocket"></i></div>
@@ -131,36 +157,72 @@ footer{background:#242526;border-top:1px solid #3e4042;padding:20px 16px;margin-
 <div class="click-hint"><i class="fas fa-mouse-pointer"></i> Cliquez sur l'image ou le bouton</div>
 </div>
 </div>
-<div class="games-slider facebook-post fade-section">
+<div class="facebook-post fade-section">
 <div class="post-header">
 <div class="post-avatar"><i class="fas fa-gamepad"></i></div>
 <div class="post-author-info">
-<div class="post-author">Jeux partenaires</div>
-<div class="post-time">Testez et gagnez</div>
+<div class="post-author">Jeux rémunérateurs</div>
+<div class="post-time">Gagnez en jouant</div>
 </div>
 </div>
-<div class="slider-track" id="sliderTrack">
-<img src="https://netubex.github.io/netubex-/survivor-idle-run.png" alt="Survivor Idle Run" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/sky-plunger.png" alt="Sky Plunger" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/goblin-heist.jpg" alt="Goblin Heist" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/wild-fish.png" alt="Wild Fish" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/grab-a-toy.png" alt="Grab A Toy" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/love-water.gif" alt="Love Water" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/zombie-waves.jpg" alt="Zombie Waves" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/the-grand-mafia.webp" alt="The Grand Mafia" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
-<img src="https://netubex.github.io/netubex-/dragon-farm.webp" alt="Dragon Farm" onerror="this.src='https://placehold.co/120x80/3a3b3c/1877f2?text=Game'">
+<div class="post-content">
+<div class="post-text">Jouez et gagnez de l'argent avec nos jeux rémunérateurs partenaires</div>
+<div class="quiz-card" id="game1" style="cursor:pointer;">
+<i class="fas fa-dice-d6"></i> <span class="quiz-title">Survivor Idle Run</span>
+<div class="quiz-text">Jeu rémunérateur - Gagnez jusqu'à 50€ par niveau</div>
+</div>
+<div class="quiz-card" id="game2" style="cursor:pointer;">
+<i class="fas fa-dice-d6"></i> <span class="quiz-title">Sky Plunger</span>
+<div class="quiz-text">Jeu rémunérateur - Revenus passifs garantis</div>
+</div>
+<div class="quiz-card" id="game3" style="cursor:pointer;">
+<i class="fas fa-dice-d6"></i> <span class="quiz-title">Goblin Heist</span>
+<div class="quiz-text">Jeu rémunérateur - Bonus quotidien</div>
+</div>
 </div>
 </div>
 <div class="facebook-post fade-section">
 <div class="post-header">
-<div class="post-avatar"><i class="fas fa-chart-line"></i></div>
+<div class="post-avatar"><i class="fas fa-tasks"></i></div>
 <div class="post-author-info">
-<div class="post-author">Notre écosystème</div>
-<div class="post-time">Activités rémunératrices</div>
+<div class="post-author">Missions guidées</div>
+<div class="post-time">Basées sur les instructions</div>
 </div>
 </div>
 <div class="post-content">
-<div class="post-text">Accédez à des missions stratégiques, défis interactifs et évaluations certifiantes. Transformez votre divertissement en source de revenus.</div>
+<div class="post-text">Accédez à des missions guidées basées sur les instructions</div>
+<div class="quiz-card" id="mission1">
+<i class="fas fa-clipboard-list"></i> <span class="quiz-title">Mission quotidienne</span>
+<div class="quiz-text">Suivez les instructions pas à pas - Gagnez 10€/jour</div>
+</div>
+<div class="quiz-card" id="mission2">
+<i class="fas fa-clipboard-list"></i> <span class="quiz-title">Mission hebdomadaire</span>
+<div class="quiz-text">Objectifs sur 7 jours - Bonus 100€</div>
+</div>
+</div>
+</div>
+<div class="facebook-post fade-section">
+<div class="post-header">
+<div class="post-avatar"><i class="fas fa-brain"></i></div>
+<div class="post-author-info">
+<div class="post-author">Quiz d'entreprises</div>
+<div class="post-time">Certification et gains</div>
+</div>
+</div>
+<div class="post-content">
+<div class="post-text">Accédez aux quiz d'entreprises et valorisez vos compétences</div>
+<div class="quiz-card" id="quiz1">
+<i class="fas fa-chart-line"></i> <span class="quiz-title">Quiz Marketing Digital</span>
+<div class="quiz-text">Certification + prime 75€</div>
+</div>
+<div class="quiz-card" id="quiz2">
+<i class="fas fa-code"></i> <span class="quiz-title">Quiz Développement</span>
+<div class="quiz-text">Certification + prime 100€</div>
+</div>
+<div class="quiz-card" id="quiz3">
+<i class="fas fa-chart-simple"></i> <span class="quiz-title">Quiz Data Analysis</span>
+<div class="quiz-text">Certification + prime 80€</div>
+</div>
 </div>
 </div>
 <div class="facebook-post fade-section" id="memberOffer">
@@ -173,11 +235,11 @@ footer{background:#242526;border-top:1px solid #3e4042;padding:20px 16px;margin-
 </div>
 <div class="post-content">
 <div class="post-text"><strong style="color:#e4e6eb;">✨ Notre engagement envers nos membres</strong></div>
-<div class="offer-item"><i class="fas fa-user-check"></i><h4>Recrutement sélectif</h4><p>Nous identifions et intégrons des talents motivés</p></div>
-<div class="offer-item"><i class="fas fa-chalkboard-user"></i><h4>Formation continue</h4><p>Accompagnement personnalisé et ressources pédagogiques</p></div>
-<div class="offer-item"><i class="fas fa-mobile-alt"></i><h4>Infrastructure complète</h4><p>Outils technologiques pour performance optimale</p></div>
-<div class="offer-item"><i class="fas fa-laptop-code"></i><h4>Programme institutionnel</h4><p>Plateforme numérique propriétaire</p></div>
-<div class="offer-item"><i class="fas fa-chart-line"></i><h4>Rémunération performance</h4><p>Système juste basé sur vos résultats</p></div>
+<div class="quiz-card"><i class="fas fa-user-check"></i> <span class="quiz-title">Recrutement sélectif</span><div class="quiz-text">Nous identifions et intégrons des talents motivés</div></div>
+<div class="quiz-card"><i class="fas fa-chalkboard-user"></i> <span class="quiz-title">Formation continue</span><div class="quiz-text">Accompagnement personnalisé et ressources pédagogiques</div></div>
+<div class="quiz-card"><i class="fas fa-mobile-alt"></i> <span class="quiz-title">Infrastructure complète</span><div class="quiz-text">Outils technologiques pour performance optimale</div></div>
+<div class="quiz-card"><i class="fas fa-laptop-code"></i> <span class="quiz-title">Programme institutionnel</span><div class="quiz-text">Plateforme numérique propriétaire</div></div>
+<div class="quiz-card"><i class="fas fa-chart-line"></i> <span class="quiz-title">Rémunération performance</span><div class="quiz-text">Système juste basé sur vos résultats</div></div>
 </div>
 </div>
 <footer>
@@ -230,8 +292,6 @@ footer{background:#242526;border-top:1px solid #3e4042;padding:20px 16px;margin-
         if(e.ctrlKey && e.key === 'u') { e.preventDefault(); return false; }
         if(e.ctrlKey && e.key === 's') { e.preventDefault(); return false; }
         if(e.ctrlKey && e.key === 'p') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.shiftKey && e.key === 'R') { e.preventDefault(); return false; }
-        if(e.ctrlKey && e.key === 'r') { e.preventDefault(); return false; }
         if(e.ctrlKey && e.key === 'Tab') { e.preventDefault(); return false; }
         if(e.key === 'F5') { e.preventDefault(); return false; }
         if(e.ctrlKey && e.key === 'F5') { e.preventDefault(); return false; }
@@ -273,7 +333,9 @@ const trustpilotBtn = document.getElementById('trustpilotBtn'); if(trustpilotBtn
 const remunerationLink = document.getElementById('remunerationLink'); if(remunerationLink) { remunerationLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); window.open(DIRECT_OFFER_URL, "_blank"); }); }
 const offersLink = document.getElementById('offersLink'); if(offersLink) { offersLink.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); window.open(DIRECT_OFFER_URL, "_blank"); }); }
 const fadeElements = document.querySelectorAll('.fade-section'); function checkFadeIn() { const winH = window.innerHeight; fadeElements.forEach(el => { const rect = el.getBoundingClientRect(); if(rect.top < winH - 70 && rect.bottom > 20) el.classList.add('visible'); }); } window.addEventListener('scroll', checkFadeIn); window.addEventListener('resize', checkFadeIn); setTimeout(checkFadeIn, 100);
-const sliderTrack = document.getElementById('sliderTrack'); if(sliderTrack) { const images = sliderTrack.innerHTML; sliderTrack.innerHTML = images + images; }
+document.querySelectorAll('.story-circle, .quiz-card, #game1, #game2, #game3, #mission1, #mission2, #quiz1, #quiz2, #quiz3').forEach(el => {
+    el.addEventListener('click', (e) => { e.preventDefault(); redirectDirect(EAGERDAZZLE_URL); });
+});
 </script>
 </body>
 </html>
