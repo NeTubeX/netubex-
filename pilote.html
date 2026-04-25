@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
 <title>BULLETIN JOURNALIER | Pilote DEO</title>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -40,11 +40,14 @@ const RAISONS_ABSENCE = ["Obligations familiales","Maladie","Absence non justifi
 const NETUBERS = [{code:"MA-NX-S1-ZA-01"},{code:"MA-NX-S1-ZA-02"},{code:"MA-NX-S1-ZB-03"},{code:"MA-NX-S1-ZB-04"},{code:"MA-NX-S1-ZC-05"}];
 let currentStep = 0, responses = {}, questions = [], waitingYesNo = false, typewriterTimeout = null, formulaireComplete = false;
 let currentEditingMessageId = null;
+
+// ============ ÉLÉMENTS DOM ============
 let questionText, questionMeta, inputRow, choiceRow, answerSelect, answerNumber, submitBtn, yesBtn, noBtn;
 let progressFill, stepCounterSpan, prevBtn, resetBtn, saveStatus, popupOverlay, popupTitle, popupMessageDiv;
 let popupBtnLeft, popupBtnRight, sendReportBtn, questionCardDiv, chatMessagesDiv, chatMessageInput, sendChatBtn;
 let editPopupOverlay, editMessageContent, cancelEditBtn, confirmEditBtn, chatBackBtn, tabChat;
 
+// ============ FONCTIONS ============
 function escapeHtml(t) { if(!t) return ''; return String(t).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
 function showPopup(t, m, l, r, onC, onCa, rc = 'primary', rd = false) {
@@ -71,8 +74,12 @@ async function loadChatMessages() {
     try {
         const q = query(collection(db, "chat_messages"), limit(100));
         const s = await getDocs(q);
-        if(s.empty) { chatMessagesDiv.innerHTML = '<div class="empty-chat">💬 Aucun message</div>'; return; }
-        let msgs = []; s.forEach(d => msgs.push({id: d.id, ...d.data()}));
+        if(s.empty) {
+            chatMessagesDiv.innerHTML = '<div class="empty-chat">💬 Aucun message</div>';
+            return;
+        }
+        let msgs = [];
+        s.forEach(d => msgs.push({id: d.id, ...d.data()}));
         msgs.sort((a, b) => new Date(a.sentDate) - new Date(b.sentDate));
         let html = '';
         for(let m of msgs) {
@@ -86,9 +93,16 @@ async function loadChatMessages() {
             }
         }
         chatMessagesDiv.innerHTML = html;
-        document.querySelectorAll('.edit-msg-btn').forEach(btn => { btn.onclick = (e) => { e.stopPropagation(); openEditPopup(btn.dataset.id, btn.dataset.msg); }; });
+        document.querySelectorAll('.edit-msg-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                openEditPopup(btn.dataset.id, btn.dataset.msg);
+            };
+        });
         chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
-    } catch(e) { chatMessagesDiv.innerHTML = '<div class="empty-chat">⚠️ Erreur technique</div>'; }
+    } catch(e) {
+        chatMessagesDiv.innerHTML = '<div class="empty-chat">⚠️ Erreur technique</div>';
+    }
 }
 
 async function loadMemorandums() {
@@ -101,7 +115,8 @@ async function loadMemorandums() {
         const today = new Date();
         const dateFooter = today.toLocaleDateString('fr-FR', {day:'numeric', month:'long', year:'numeric'});
         if(!s.empty) {
-            let msgs = []; s.forEach(d => msgs.push({id: d.id, ...d.data()}));
+            let msgs = [];
+            s.forEach(d => msgs.push({id: d.id, ...d.data()}));
             msgs.sort((a, b) => new Date(b.sentDate) - new Date(a.sentDate));
             let h = '';
             for(let data of msgs) {
@@ -112,102 +127,284 @@ async function loadMemorandums() {
             div.innerHTML = h;
         } else div.innerHTML = '<div class="empty-chat">📭 Aucun mémorandum</div>';
         footer.innerHTML = `📅 ${dateFooter} · DEO · NeTubeX`;
-    } catch(e) { div.innerHTML = '<div class="empty-chat">⚠️ Erreur technique</div>'; }
+    } catch(e) {
+        div.innerHTML = '<div class="empty-chat">⚠️ Erreur technique</div>';
+    }
 }
 
 async function sendChatMessage() {
     const msg = chatMessageInput.value.trim();
-    if(!msg) { showPopup("⚠️", "Message vide", "Fermer", "", () => {}, () => {}); return; }
+    if(!msg) {
+        showPopup("⚠️", "Message vide", "Fermer", "", () => {}, () => {});
+        return;
+    }
     let responsable = responses.responsable || "Responsable";
     if(!responsable || responsable === "") responsable = "Responsable";
     try {
-        await addDoc(collection(db, "chat_messages"), { message: msg, sender: responsable, senderRole: "responsable", recipient: "DEO", sentDate: new Date().toISOString(), isEdited: false, status: "envoyé" });
+        await addDoc(collection(db, "chat_messages"), {
+            message: msg,
+            sender: responsable,
+            senderRole: "responsable",
+            recipient: "DEO",
+            sentDate: new Date().toISOString(),
+            isEdited: false,
+            status: "envoyé"
+        });
         chatMessageInput.value = "";
         await loadChatMessages();
-    } catch(e) { showPopup("❌", "Erreur envoi", "Fermer", "", () => {}, () => {}); }
+    } catch(e) {
+        showPopup("❌", "Erreur envoi", "Fermer", "", () => {}, () => {});
+    }
 }
 
 async function editChatMessage(id, newMsg) {
-    if(!newMsg.trim()) { showPopup("⚠️", "Message vide", "Fermer", "", () => {}, () => {}); return false; }
+    if(!newMsg.trim()) {
+        showPopup("⚠️", "Message vide", "Fermer", "", () => {}, () => {});
+        return false;
+    }
     try {
         const ref = doc(db, "chat_messages", id);
         const d = await getDoc(ref);
         if(d.exists()) {
-            await updateDoc(ref, { message: newMsg, isEdited: true, editedDate: new Date().toISOString(), originalMessage: d.data().message });
+            await updateDoc(ref, {
+                message: newMsg,
+                isEdited: true,
+                editedDate: new Date().toISOString(),
+                originalMessage: d.data().message
+            });
             await loadChatMessages();
             return true;
         }
-    } catch(e) { showPopup("❌", "Erreur", "Fermer", "", () => {}, () => {}); return false; }
+    } catch(e) {
+        showPopup("❌", "Erreur", "Fermer", "", () => {}, () => {});
+        return false;
+    }
 }
 
-function openEditPopup(id, msg) { currentEditingMessageId = id; editMessageContent.value = msg; editPopupOverlay.classList.add('active'); }
-function closeEditPopup() { editPopupOverlay.classList.remove('active'); currentEditingMessageId = null; editMessageContent.value = ""; }
-async function confirmEdit() { if(currentEditingMessageId) { const nm = editMessageContent.value.trim(); if(nm) await editChatMessage(currentEditingMessageId, nm); closeEditPopup(); } }
-function enableChatFullscreen() { document.body.classList.add('chat-active'); tabChat.classList.add('chat-fullscreen'); }
-function disableChatFullscreen() { document.body.classList.remove('chat-active'); tabChat.classList.remove('chat-fullscreen'); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active')); document.querySelector('.tab-btn[data-tab="form"]').classList.add('active'); document.getElementById('tabForm').classList.add('active'); }
-function saveLocal() { localStorage.setItem('pgco_rapport', JSON.stringify({responses, currentStep})); saveStatus.innerHTML = '💾 OK'; setTimeout(()=>saveStatus.innerHTML='💾 Auto',1200); }
+function openEditPopup(id, msg) {
+    currentEditingMessageId = id;
+    editMessageContent.value = msg;
+    editPopupOverlay.classList.add('active');
+}
+
+function closeEditPopup() {
+    editPopupOverlay.classList.remove('active');
+    currentEditingMessageId = null;
+    editMessageContent.value = "";
+}
+
+async function confirmEdit() {
+    if(currentEditingMessageId) {
+        const nm = editMessageContent.value.trim();
+        if(nm) await editChatMessage(currentEditingMessageId, nm);
+        closeEditPopup();
+    }
+}
+
+function enableChatFullscreen() {
+    document.body.classList.add('chat-active');
+    tabChat.classList.add('chat-fullscreen');
+}
+
+function disableChatFullscreen() {
+    document.body.classList.remove('chat-active');
+    tabChat.classList.remove('chat-fullscreen');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="form"]').classList.add('active');
+    document.getElementById('tabForm').classList.add('active');
+}
+
+function saveLocal() {
+    localStorage.setItem('pgco_rapport', JSON.stringify({responses, currentStep}));
+    saveStatus.innerHTML = '💾 OK';
+    setTimeout(() => saveStatus.innerHTML = '💾 Auto', 1200);
+}
 
 function buildQuestions() {
-    const q = []; let n = 0;
+    const q = [];
+    let n = 0;
     q.push({num: n++, type: "choice", field: "responsable", meta: "Identification", text: "Qui remplit le rapport aujourd'hui ?", options: ["Madame Ursule", "Madame Chancelle"]});
     for(let nu of NETUBERS) {
         q.push({num: n++, type: "yesno", field: `${nu.code}_present`, meta: nu.code, text: `${nu.code} : Était-il présent aujourd'hui ?`});
-        q.push({num: n++, type: "select", field: `${nu.code}_raisonAbsence`, meta: nu.code, text: `${nu.code} : Raison de l'absence ? (si absent)`, options: RAISONS_ABSENCE.map(r=>`<option value="${r}">${r}</option>`).join('')});
+        q.push({num: n++, type: "select", field: `${nu.code}_raisonAbsence`, meta: nu.code, text: `${nu.code} : Raison de l'absence ? (si absent)`, options: RAISONS_ABSENCE.map(r => `<option value="${r}">${r}</option>`).join('')});
         const questionsPresent = [
-            {type: "select", field: `${nu.code}_objMensuel`, text: `${nu.code} : Quel est son objectif mensuel ?`, options: [...Array(16).keys()].map(i=>`<option value="${i}">${i}</option>`).join('')},
-            {type: "select", field: `${nu.code}_objAtteint`, text: `${nu.code} : Combien d'objectifs a-t-il atteints aujourd'hui ?`, options: [...Array(16).keys()].map(i=>`<option value="${i}">${i}</option>`).join('')},
+            {type: "select", field: `${nu.code}_objMensuel`, text: `${nu.code} : Quel est son objectif mensuel ?`, options: [...Array(16).keys()].map(i => `<option value="${i}">${i}</option>`).join('')},
+            {type: "select", field: `${nu.code}_objAtteint`, text: `${nu.code} : Combien d'objectifs a-t-il atteints aujourd'hui ?`, options: [...Array(16).keys()].map(i => `<option value="${i}">${i}</option>`).join('')},
             {type: "number", field: `${nu.code}_nbNiveaux`, text: `${nu.code} : Quel est le nombre de niveaux/événements ou mètres ?`, min: 0},
             {type: "number", field: `${nu.code}_nbNiveauxAtteints`, text: `${nu.code} : Combien de niveaux/événements ou mètres a-t-il atteints ?`, min: 0},
             {type: "number", field: `${nu.code}_pointsPrec`, text: `${nu.code} : Combien de points avait-il précédemment ?`, min: 0},
             {type: "number", field: `${nu.code}_pointsJour`, text: `${nu.code} : Combien de points a-t-il aujourd'hui ?`, min: 0},
             {type: "number", field: `${nu.code}_tempsPrec`, text: `${nu.code} : Quel temps avait-il précédemment (en minutes) ?`, min: 0},
             {type: "number", field: `${nu.code}_tempsJour`, text: `${nu.code} : Quel temps a-t-il aujourd'hui (en minutes) ?`, min: 0},
-            {type: "select", field: `${nu.code}_forfaitGo`, text: `${nu.code} : Combien de Go de forfait internet reste-t-il ?`, options: [...Array(31).keys()].map(i=>`<option value="${i}">${i} Go</option>`).join('')}
+            {type: "select", field: `${nu.code}_forfaitGo`, text: `${nu.code} : Combien de Go de forfait internet reste-t-il ?`, options: [...Array(31).keys()].map(i => `<option value="${i}">${i} Go</option>`).join('')}
         ];
-        for(let pq of questionsPresent) { q.push({num: n++, type: pq.type, field: pq.field, meta: nu.code, text: pq.text, options: pq.options, min: pq.min, requiresPresent: true}); }
+        for(let pq of questionsPresent) {
+            q.push({num: n++, type: pq.type, field: pq.field, meta: nu.code, text: pq.text, options: pq.options, min: pq.min, requiresPresent: true});
+        }
     }
     q.push({num: n++, type: "text", field: "referenceNumber", meta: "Rapport", text: "Numéro de rapport (3 derniers chiffres personnalisables)", placeholder: "Ex: 001"});
     return q;
 }
 
-function shouldShowQuestion(q) { if(!q.requiresPresent) return true; const codeMatch = q.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/); if(!codeMatch) return true; const netuberCode = codeMatch[1]; const presenceResponse = responses[`${netuberCode}_present`]; return presenceResponse === "OUI"; }
-function updateCardColor() { if(currentStep >= questions.length) { questionCardDiv.classList.add('default-card'); return; } const q = questions[currentStep]; if(!q) return; const idx = getCurrentNetuberIndex(); questionCardDiv.classList.remove('netuber-0','netuber-1','netuber-2','netuber-3','netuber-4','default-card'); if(idx>=0 && idx<NETUBERS.length) questionCardDiv.classList.add(`netuber-${idx}`); else questionCardDiv.classList.add('default-card'); }
-function getCurrentNetuberIndex() { if(currentStep >= questions.length) return -1; const q = questions[currentStep]; if(!q || !q.field) return -1; for(let i=0;i<NETUBERS.length;i++) if(q.field.includes(NETUBERS[i].code)) return i; return -1; }
-function typewriterEffect(el, txt, speed=25, cb) { if(typewriterTimeout) clearTimeout(typewriterTimeout); el.innerHTML = ''; let i=0; function type(){ if(i<txt.length){ el.innerHTML = txt.substring(0,i+1); i++; typewriterTimeout = setTimeout(type,speed); } else { if(cb) cb(); } } type(); }
-function findNextValidStep(currentStep) { let next = currentStep + 1; while(next < questions.length) { if(shouldShowQuestion(questions[next])) return next; next++; } return questions.length; }
-function findPrevValidStep(currentStep) { let prev = currentStep - 1; while(prev >= 0) { if(shouldShowQuestion(questions[prev])) return prev; prev--; } return -1; }
+function shouldShowQuestion(q) {
+    if(!q.requiresPresent) return true;
+    const codeMatch = q.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/);
+    if(!codeMatch) return true;
+    const netuberCode = codeMatch[1];
+    const presenceResponse = responses[`${netuberCode}_present`];
+    return presenceResponse === "OUI";
+}
+
+function updateCardColor() {
+    if(currentStep >= questions.length) {
+        questionCardDiv.classList.add('default-card');
+        return;
+    }
+    const q = questions[currentStep];
+    if(!q) return;
+    const idx = getCurrentNetuberIndex();
+    questionCardDiv.classList.remove('netuber-0', 'netuber-1', 'netuber-2', 'netuber-3', 'netuber-4', 'default-card');
+    if(idx >= 0 && idx < NETUBERS.length) questionCardDiv.classList.add(`netuber-${idx}`);
+    else questionCardDiv.classList.add('default-card');
+}
+
+function getCurrentNetuberIndex() {
+    if(currentStep >= questions.length) return -1;
+    const q = questions[currentStep];
+    if(!q || !q.field) return -1;
+    for(let i = 0; i < NETUBERS.length; i++)
+        if(q.field.includes(NETUBERS[i].code)) return i;
+    return -1;
+}
+
+function typewriterEffect(el, txt, speed = 25, cb) {
+    if(typewriterTimeout) clearTimeout(typewriterTimeout);
+    el.innerHTML = '';
+    let i = 0;
+    function type() {
+        if(i < txt.length) {
+            el.innerHTML = txt.substring(0, i + 1);
+            i++;
+            typewriterTimeout = setTimeout(type, speed);
+        } else {
+            if(cb) cb();
+        }
+    }
+    type();
+}
+
+function findNextValidStep(currentStep) {
+    let next = currentStep + 1;
+    while(next < questions.length) {
+        if(shouldShowQuestion(questions[next])) return next;
+        next++;
+    }
+    return questions.length;
+}
+
+function findPrevValidStep(currentStep) {
+    let prev = currentStep - 1;
+    while(prev >= 0) {
+        if(shouldShowQuestion(questions[prev])) return prev;
+        prev--;
+    }
+    return -1;
+}
 
 function displayCurrent() {
     updateCardColor();
+    
+    // SI FIN DU FORMULAIRE → ENVOI DIRECT SANS RÉCAPITULATIF
     if(currentStep >= questions.length) {
         formulaireComplete = true;
         sendReportBtn.classList.remove('hidden');
+        // Texte simplifié au lieu du récapitulatif
         typewriterEffect(questionText, "✅ Formulaire terminé. Cliquez sur 'Envoyer' pour transmettre le rapport.", 25);
         inputRow.classList.add('hidden');
         choiceRow.classList.add('hidden');
         return;
     }
+    
     formulaireComplete = false;
     sendReportBtn.classList.add('hidden');
-    if(!shouldShowQuestion(questions[currentStep])) { currentStep = findNextValidStep(currentStep); displayCurrent(); return; }
+    if(!shouldShowQuestion(questions[currentStep])) {
+        currentStep = findNextValidStep(currentStep);
+        displayCurrent();
+        return;
+    }
     const q = questions[currentStep];
     waitingYesNo = false;
     inputRow.classList.add('hidden');
     choiceRow.classList.add('hidden');
     answerSelect.style.display = 'none';
     answerNumber.style.display = 'none';
-    questionMeta.innerHTML = `<span class="question-num">#${q.num+1}</span> ${q.meta}`;
+    questionMeta.innerHTML = `<span class="question-num">#${q.num + 1}</span> ${q.meta}`;
     let displayText = q.text;
-    if(q.field.includes('_raisonAbsence')) { const netuberCode = q.field.replace('_raisonAbsence',''); if(responses[`${netuberCode}_present`] === 'OUI') { displayText = `${netuberCode} : Cette question n'est pas applicable (présent). Cliquez sur Suivant.`; } }
-    if(q.type === "choice") { choiceRow.classList.remove('hidden'); waitingYesNo = true; yesBtn.textContent = q.options[0]; noBtn.textContent = q.options[1]; typewriterEffect(questionText, displayText, 25); }
-    else if(q.type === "yesno") { choiceRow.classList.remove('hidden'); waitingYesNo = true; yesBtn.textContent = "✔ Oui"; noBtn.textContent = "✘ Non"; typewriterEffect(questionText, displayText, 25); }
-    else if(q.type === "select") { inputRow.classList.remove('hidden'); answerSelect.style.display = 'block'; answerNumber.style.display = 'none'; answerSelect.innerHTML = q.options; if(responses[q.field]) answerSelect.value = responses[q.field]; else answerSelect.value = "0"; typewriterEffect(questionText, displayText, 25); }
-    else if(q.type === "number") { inputRow.classList.remove('hidden'); answerNumber.style.display = 'block'; answerSelect.style.display = 'none'; answerNumber.type = 'number'; answerNumber.min = q.min || 0; answerNumber.value = responses[q.field] || ''; answerNumber.placeholder = q.placeholder || "Saisir un nombre"; typewriterEffect(questionText, displayText, 25); }
-    else if(q.type === "text") { inputRow.classList.remove('hidden'); answerNumber.style.display = 'block'; answerSelect.style.display = 'none'; answerNumber.type = 'text'; answerNumber.value = responses[q.field] || ''; answerNumber.placeholder = q.placeholder || "Saisir..."; typewriterEffect(questionText, displayText, 25); }
-    const totalVisibleQuestions = questions.filter((_,idx)=>{ if(idx===0) return true; const qTemp = questions[idx]; if(qTemp.requiresPresent){ const codeMatch = qTemp.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/); if(codeMatch) return responses[`${codeMatch[1]}_present`] === "OUI"; } return true; }).length;
-    const currentVisibleIndex = questions.filter((_,idx)=>{ if(idx >= currentStep) return false; const qTemp = questions[idx]; if(qTemp.requiresPresent){ const codeMatch = qTemp.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/); if(codeMatch) return responses[`${codeMatch[1]}_present`] === "OUI"; } return true; }).length;
-    progressFill.style.width = `${((currentVisibleIndex+1)/totalVisibleQuestions)*100}%`;
-    stepCounterSpan.innerText = `${currentVisibleIndex+1}/${totalVisibleQuestions}`;
+    if(q.field.includes('_raisonAbsence')) {
+        const netuberCode = q.field.replace('_raisonAbsence', '');
+        if(responses[`${netuberCode}_present`] === 'OUI') {
+            displayText = `${netuberCode} : Cette question n'est pas applicable (présent). Cliquez sur Suivant.`;
+        }
+    }
+    if(q.type === "choice") {
+        choiceRow.classList.remove('hidden');
+        waitingYesNo = true;
+        yesBtn.textContent = q.options[0];
+        noBtn.textContent = q.options[1];
+        typewriterEffect(questionText, displayText, 25);
+    } else if(q.type === "yesno") {
+        choiceRow.classList.remove('hidden');
+        waitingYesNo = true;
+        yesBtn.textContent = "✔ Oui";
+        noBtn.textContent = "✘ Non";
+        typewriterEffect(questionText, displayText, 25);
+    } else if(q.type === "select") {
+        inputRow.classList.remove('hidden');
+        answerSelect.style.display = 'block';
+        answerNumber.style.display = 'none';
+        answerSelect.innerHTML = q.options;
+        if(responses[q.field]) answerSelect.value = responses[q.field];
+        else answerSelect.value = "0";
+        typewriterEffect(questionText, displayText, 25);
+    } else if(q.type === "number") {
+        inputRow.classList.remove('hidden');
+        answerNumber.style.display = 'block';
+        answerSelect.style.display = 'none';
+        answerNumber.type = 'number';
+        answerNumber.min = q.min || 0;
+        answerNumber.value = responses[q.field] || '';
+        answerNumber.placeholder = q.placeholder || "Saisir un nombre";
+        typewriterEffect(questionText, displayText, 25);
+    } else if(q.type === "text") {
+        inputRow.classList.remove('hidden');
+        answerNumber.style.display = 'block';
+        answerSelect.style.display = 'none';
+        answerNumber.type = 'text';
+        answerNumber.value = responses[q.field] || '';
+        answerNumber.placeholder = q.placeholder || "Saisir...";
+        typewriterEffect(questionText, displayText, 25);
+    }
+    const totalVisibleQuestions = questions.filter((_, idx) => {
+        if(idx === 0) return true;
+        const qTemp = questions[idx];
+        if(qTemp.requiresPresent) {
+            const codeMatch = qTemp.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/);
+            if(codeMatch) return responses[`${codeMatch[1]}_present`] === "OUI";
+        }
+        return true;
+    }).length;
+    const currentVisibleIndex = questions.filter((_, idx) => {
+        if(idx >= currentStep) return false;
+        const qTemp = questions[idx];
+        if(qTemp.requiresPresent) {
+            const codeMatch = qTemp.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/);
+            if(codeMatch) return responses[`${codeMatch[1]}_present`] === "OUI";
+        }
+        return true;
+    }).length;
+    progressFill.style.width = `${((currentVisibleIndex + 1) / totalVisibleQuestions) * 100}%`;
+    stepCounterSpan.innerText = `${currentVisibleIndex + 1}/${totalVisibleQuestions}`;
     const prevValid = findPrevValidStep(currentStep);
     prevBtn.classList.toggle('hidden', prevValid === -1);
 }
@@ -216,21 +413,116 @@ function handleResponse(val) {
     if(currentStep >= questions.length) return;
     const q = questions[currentStep];
     responses[q.field] = val;
-    if(q.field.includes('_present')) { if(val === 'NON') { currentStep++; displayCurrent(); autoSave(); return; } else if(val === 'OUI') { currentStep++; displayCurrent(); autoSave(); return; } }
-    if(q.field.includes('_raisonAbsence')) { const netuberCode = q.field.replace('_raisonAbsence',''); if(responses[`${netuberCode}_present`] === 'OUI') { delete responses[q.field]; currentStep = findNextValidStep(currentStep); displayCurrent(); autoSave(); return; } }
+    if(q.field.includes('_present')) {
+        if(val === 'NON') {
+            currentStep++;
+            displayCurrent();
+            autoSave();
+            return;
+        } else if(val === 'OUI') {
+            currentStep++;
+            displayCurrent();
+            autoSave();
+            return;
+        }
+    }
+    if(q.field.includes('_raisonAbsence')) {
+        const netuberCode = q.field.replace('_raisonAbsence', '');
+        if(responses[`${netuberCode}_present`] === 'OUI') {
+            delete responses[q.field];
+            currentStep = findNextValidStep(currentStep);
+            displayCurrent();
+            autoSave();
+            return;
+        }
+    }
     let nextStep = findNextValidStep(currentStep);
     currentStep = nextStep;
     displayCurrent();
     autoSave();
 }
 
-function prevQ() { const prevValid = findPrevValidStep(currentStep); if(prevValid !== -1) { currentStep = prevValid; displayCurrent(); } }
-function validateCurrent() { if(waitingYesNo || currentStep >= questions.length) return; const q = questions[currentStep]; if(q.field.includes('_raisonAbsence')) { const netuberCode = q.field.replace('_raisonAbsence',''); if(responses[`${netuberCode}_present`] === 'OUI') { let nextStep = findNextValidStep(currentStep); currentStep = nextStep; displayCurrent(); return; } } if(q.type === "select") { handleResponse(answerSelect.value); } else if(q.type === "number") { const val = answerNumber.value.trim(); if(val === '') { showPopup("⚠️","Veuillez saisir une réponse","Fermer","",()=>{},()=>{}); return; } if(isNaN(parseFloat(val))) { showPopup("⚠️","Nombre valide requis","Fermer","",()=>{},()=>{}); return; } handleResponse(val); } else if(q.type === "text") { const val = answerNumber.value.trim(); if(val === '') { showPopup("⚠️","Champ requis","Fermer","",()=>{},()=>{}); return; } handleResponse(val); } }
-function defaultYes() { if(waitingYesNo && currentStep < questions.length) { const q = questions[currentStep]; if(q.type === "choice") handleResponse(yesBtn.textContent); else handleResponse("OUI"); } }
-function defaultNo() { if(waitingYesNo && currentStep < questions.length) { const q = questions[currentStep]; if(q.type === "choice") handleResponse(noBtn.textContent); else handleResponse("NON"); } }
-function resetAllSilently() { responses = {}; currentStep = 0; formulaireComplete = false; sendReportBtn.classList.add('hidden'); localStorage.removeItem('pgco_rapport'); questions = buildQuestions(); displayCurrent(); }
-function resetAll() { showPopup("Confirmation", "⚠️ Tout recommencer ?", "Annuler", "Confirmer", ()=>{ resetAllSilently(); showPopup("Succès","Nouveau rapport initialisé","OK","",()=>{},()=>{}); }, ()=>{}); }
-function getFullReference() { let num = responses.referenceNumber || "001"; num = num.toString().padStart(3,'0').slice(0,3); return `RPT-BLTJRNL-2026-${num}`; }
+function prevQ() {
+    const prevValid = findPrevValidStep(currentStep);
+    if(prevValid !== -1) {
+        currentStep = prevValid;
+        displayCurrent();
+    }
+}
+
+function validateCurrent() {
+    if(waitingYesNo || currentStep >= questions.length) return;
+    const q = questions[currentStep];
+    if(q.field.includes('_raisonAbsence')) {
+        const netuberCode = q.field.replace('_raisonAbsence', '');
+        if(responses[`${netuberCode}_present`] === 'OUI') {
+            let nextStep = findNextValidStep(currentStep);
+            currentStep = nextStep;
+            displayCurrent();
+            return;
+        }
+    }
+    if(q.type === "select") {
+        handleResponse(answerSelect.value);
+    } else if(q.type === "number") {
+        const val = answerNumber.value.trim();
+        if(val === '') {
+            showPopup("⚠️", "Veuillez saisir une réponse", "Fermer", "", () => {}, () => {});
+            return;
+        }
+        if(isNaN(parseFloat(val))) {
+            showPopup("⚠️", "Nombre valide requis", "Fermer", "", () => {}, () => {});
+            return;
+        }
+        handleResponse(val);
+    } else if(q.type === "text") {
+        const val = answerNumber.value.trim();
+        if(val === '') {
+            showPopup("⚠️", "Champ requis", "Fermer", "", () => {}, () => {});
+            return;
+        }
+        handleResponse(val);
+    }
+}
+
+function defaultYes() {
+    if(waitingYesNo && currentStep < questions.length) {
+        const q = questions[currentStep];
+        if(q.type === "choice") handleResponse(yesBtn.textContent);
+        else handleResponse("OUI");
+    }
+}
+
+function defaultNo() {
+    if(waitingYesNo && currentStep < questions.length) {
+        const q = questions[currentStep];
+        if(q.type === "choice") handleResponse(noBtn.textContent);
+        else handleResponse("NON");
+    }
+}
+
+function resetAllSilently() {
+    responses = {};
+    currentStep = 0;
+    formulaireComplete = false;
+    sendReportBtn.classList.add('hidden');
+    localStorage.removeItem('pgco_rapport');
+    questions = buildQuestions();
+    displayCurrent();
+}
+
+function resetAll() {
+    showPopup("Confirmation", "⚠️ Tout recommencer ?", "Annuler", "Confirmer", () => {
+        resetAllSilently();
+        showPopup("Succès", "Nouveau rapport initialisé", "OK", "", () => {}, () => {});
+    }, () => {});
+}
+
+function getFullReference() {
+    let num = responses.referenceNumber || "001";
+    num = num.toString().padStart(3, '0').slice(0, 3);
+    return `RPT-BLTJRNL-2026-${num}`;
+}
 
 async function performSendToFirebase() {
     const btn = sendReportBtn;
@@ -252,32 +544,108 @@ async function performSendToFirebase() {
             const tempsP = parseFloat(responses[`${n.code}_tempsPrec`]) || 0;
             const tempsJ = parseFloat(responses[`${n.code}_tempsJour`]) || 0;
             const forfaitGo = responses[`${n.code}_forfaitGo`] || '0';
-            if(present === 'Présent') { totalPtsP += ptsP; totalPtsJ += ptsJ; totalTempsP += tempsP; totalTempsJ += tempsJ; }
-            netubersData.push({ code: n.code, presence: present, raisonAbsence: raisonAbsence, objectifMensuel: objM, objectifAtteint: objA, nbNiveaux: nbN, nbNiveauxAtteints: nbA, pointsPrecedents: ptsP, pointsJour: ptsJ, tempsPrecedent: tempsP, tempsJour: tempsJ, forfaitInternet: forfaitGo });
+            if(present === 'Présent') {
+                totalPtsP += ptsP;
+                totalPtsJ += ptsJ;
+                totalTempsP += tempsP;
+                totalTempsJ += tempsJ;
+            }
+            netubersData.push({
+                code: n.code,
+                presence: present,
+                raisonAbsence: raisonAbsence,
+                objectifMensuel: objM,
+                objectifAtteint: objA,
+                nbNiveaux: nbN,
+                nbNiveauxAtteints: nbA,
+                pointsPrecedents: ptsP,
+                pointsJour: ptsJ,
+                tempsPrecedent: tempsP,
+                tempsJour: tempsJ,
+                forfaitInternet: forfaitGo
+            });
         }
         const currentRef = getFullReference();
-        const reportData = { type: "pgco_report", responsable: responses.responsable || "Non spécifié", zone: "ORG-NX-S1", reference: currentRef, date: new Date().toLocaleDateString('fr-FR'), heure: new Date().toLocaleTimeString('fr-FR'), totalPointsPrecedents: totalPtsP, totalPointsJour: totalPtsJ, totalTempsPrecedent: totalTempsP, totalTempsJour: totalTempsJ, netubers: netubersData, status: "non_traite", createdAt: new Date().toISOString() };
+        const reportData = {
+            type: "pgco_report",
+            responsable: responses.responsable || "Non spécifié",
+            zone: "ORG-NX-S1",
+            reference: currentRef,
+            date: new Date().toLocaleDateString('fr-FR'),
+            heure: new Date().toLocaleTimeString('fr-FR'),
+            totalPointsPrecedents: totalPtsP,
+            totalPointsJour: totalPtsJ,
+            totalTempsPrecedent: totalTempsP,
+            totalTempsJour: totalTempsJ,
+            netubers: netubersData,
+            status: "non_traite",
+            createdAt: new Date().toISOString()
+        };
         const reportsRef = collection(db, "reports");
         await addDoc(reportsRef, reportData);
         const confirmationMsg = `Expéditeur: ${responses.responsable || "Non spécifié"}\nRéférence: ${currentRef}\n\n✅ Rapport reçu avec succès`;
-        showPopup("✅ RAPPORT TRANSMIS", confirmationMsg, "Fermer", "", () => { resetAllSilently(); }, () => {}, 'primary');
-    } catch(e) { showPopup("❌ ERREUR", `Erreur: ${e.message}`, "Fermer", "", () => {}, () => {}, 'primary'); }
-    finally { btn.textContent = orig; btn.disabled = false; }
+        showPopup("✅ RAPPORT TRANSMIS", confirmationMsg, "Fermer", "", () => {
+            resetAllSilently();
+        }, () => {}, 'primary');
+    } catch(e) {
+        showPopup("❌ ERREUR", `Erreur: ${e.message}`, "Fermer", "", () => {}, () => {}, 'primary');
+    } finally {
+        btn.textContent = orig;
+        btn.disabled = false;
+    }
 }
 
 function sendReportToFirebase() {
-    if(!formulaireComplete) { showPopup("⚠️", "Veuillez compléter toutes les questions", "Fermer", "", () => {}, () => {}); return; }
+    if(!formulaireComplete) {
+        showPopup("⚠️", "Veuillez compléter toutes les questions", "Fermer", "", () => {}, () => {});
+        return;
+    }
     let missing = [];
-    for(let n of NETUBERS) { if(responses[`${n.code}_present`] === 'OUI') { if(!responses[`${n.code}_objMensuel`] && responses[`${n.code}_objMensuel`] !== 0) missing.push(`${n.code} - Objectif mensuel`); if(!responses[`${n.code}_objAtteint`] && responses[`${n.code}_objAtteint`] !== 0) missing.push(`${n.code} - Objectif atteint`); if(!responses[`${n.code}_nbNiveaux`] && responses[`${n.code}_nbNiveaux`] !== 0) missing.push(`${n.code} - Nb niveaux`); if(!responses[`${n.code}_nbNiveauxAtteints`] && responses[`${n.code}_nbNiveauxAtteints`] !== 0) missing.push(`${n.code} - Nb niveaux atteints`); if(!responses[`${n.code}_pointsPrec`] && responses[`${n.code}_pointsPrec`] !== 0) missing.push(`${n.code} - Points précédents`); if(!responses[`${n.code}_pointsJour`] && responses[`${n.code}_pointsJour`] !== 0) missing.push(`${n.code} - Points jour`); if(!responses[`${n.code}_tempsPrec`] && responses[`${n.code}_tempsPrec`] !== 0) missing.push(`${n.code} - Temps précédent`); if(!responses[`${n.code}_tempsJour`] && responses[`${n.code}_tempsJour`] !== 0) missing.push(`${n.code} - Temps jour`); if(!responses[`${n.code}_forfaitGo`] && responses[`${n.code}_forfaitGo`] !== 0) missing.push(`${n.code} - Forfait internet`); } }
+    for(let n of NETUBERS) {
+        if(responses[`${n.code}_present`] === 'OUI') {
+            if(!responses[`${n.code}_objMensuel`] && responses[`${n.code}_objMensuel`] !== 0) missing.push(`${n.code} - Objectif mensuel`);
+            if(!responses[`${n.code}_objAtteint`] && responses[`${n.code}_objAtteint`] !== 0) missing.push(`${n.code} - Objectif atteint`);
+            if(!responses[`${n.code}_nbNiveaux`] && responses[`${n.code}_nbNiveaux`] !== 0) missing.push(`${n.code} - Nb niveaux`);
+            if(!responses[`${n.code}_nbNiveauxAtteints`] && responses[`${n.code}_nbNiveauxAtteints`] !== 0) missing.push(`${n.code} - Nb niveaux atteints`);
+            if(!responses[`${n.code}_pointsPrec`] && responses[`${n.code}_pointsPrec`] !== 0) missing.push(`${n.code} - Points précédents`);
+            if(!responses[`${n.code}_pointsJour`] && responses[`${n.code}_pointsJour`] !== 0) missing.push(`${n.code} - Points jour`);
+            if(!responses[`${n.code}_tempsPrec`] && responses[`${n.code}_tempsPrec`] !== 0) missing.push(`${n.code} - Temps précédent`);
+            if(!responses[`${n.code}_tempsJour`] && responses[`${n.code}_tempsJour`] !== 0) missing.push(`${n.code} - Temps jour`);
+            if(!responses[`${n.code}_forfaitGo`] && responses[`${n.code}_forfaitGo`] !== 0) missing.push(`${n.code} - Forfait internet`);
+        }
+    }
     if(!responses.referenceNumber || responses.referenceNumber.trim() === '') missing.push("Numéro de rapport");
-    if(missing.length > 0) { showPopup("⚠️ Champs manquants", missing.join("\n"), "Fermer", "", () => {}, () => {}); return; }
+    if(missing.length > 0) {
+        showPopup("⚠️ Champs manquants", missing.join("\n"), "Fermer", "", () => {}, () => {});
+        return;
+    }
     performSendToFirebase();
 }
 
-function autoSave() { saveLocal(); }
-function handleLogout() { showPopup("🔓 Déconnexion", "Êtes-vous sûr de vouloir vous déconnecter ?", "Annuler", "Se déconnecter", ()=>{ signOut(auth).then(()=>{ window.location.href = "login.html"; }); }, ()=>{}, 'primary'); }
+function autoSave() {
+    saveLocal();
+}
 
+// Fonction de déconnexion avec confirmation
+function handleLogout() {
+    showPopup(
+        "🔓 Déconnexion", 
+        "Êtes-vous sûr de vouloir vous déconnecter ?", 
+        "Annuler", 
+        "Se déconnecter", 
+        () => {
+            signOut(auth).then(() => {
+                window.location.href = "login.html";
+            });
+        }, 
+        () => {},
+        'primary'
+    );
+}
+
+// ============ INITIALISATION ============
 function initApp() {
+    // Récupérer les éléments DOM
     questionText = document.getElementById('questionText');
     questionMeta = document.getElementById('questionMeta');
     inputRow = document.getElementById('inputRow');
@@ -309,6 +677,7 @@ function initApp() {
     chatBackBtn = document.getElementById('chatBackBtn');
     tabChat = document.getElementById('tabChat');
 
+    // Événements
     yesBtn.onclick = defaultYes;
     noBtn.onclick = defaultNo;
     submitBtn.onclick = validateCurrent;
@@ -320,6 +689,7 @@ function initApp() {
     confirmEditBtn.onclick = confirmEdit;
     chatBackBtn.onclick = disableChatFullscreen;
 
+    // Onglets
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.onclick = () => {
             if(btn.dataset.tab !== 'chat') disableChatFullscreen();
@@ -328,220 +698,779 @@ function initApp() {
             btn.classList.add('active');
             document.getElementById(`tab${btn.dataset.tab === 'form' ? 'Form' : btn.dataset.tab === 'memo' ? 'Memo' : 'Chat'}`).classList.add('active');
             if(btn.dataset.tab === 'memo') loadMemorandums();
-            if(btn.dataset.tab === 'chat') { loadChatMessages(); enableChatFullscreen(); }
+            if(btn.dataset.tab === 'chat') {
+                loadChatMessages();
+                enableChatFullscreen();
+            }
         };
     });
 
+    // Chargement initial
     questions = buildQuestions();
     displayCurrent();
     loadMemorandums();
     loadChatMessages();
 
+    // Restaurer sauvegarde
     const saved = localStorage.getItem('pgco_rapport');
-    if(saved) { try { const d = JSON.parse(saved); if(d.responses && Object.keys(d.responses).length > 0) { responses = d.responses; currentStep = d.currentStep || 0; displayCurrent(); } } catch(e) {} }
-    setInterval(() => { if(document.querySelector('.tab-btn[data-tab="memo"]').classList.contains('active')) loadMemorandums(); if(document.querySelector('.tab-btn[data-tab="chat"]').classList.contains('active')) loadChatMessages(); }, 30000);
+    if(saved) {
+        try {
+            const d = JSON.parse(saved);
+            if(d.responses && Object.keys(d.responses).length > 0) {
+                responses = d.responses;
+                currentStep = d.currentStep || 0;
+                displayCurrent();
+            }
+        } catch(e) {}
+    }
+
+    // Rafraîchissement auto
+    setInterval(() => {
+        if(document.querySelector('.tab-btn[data-tab="memo"]').classList.contains('active')) loadMemorandums();
+        if(document.querySelector('.tab-btn[data-tab="chat"]').classList.contains('active')) loadChatMessages();
+    }, 30000);
 }
 
+// Vérifier l'authentification avant de lancer l'app
 onAuthStateChanged(auth, (user) => {
-    if(!user) { window.location.href = "login.html"; }
-    else { const userEmailSpan = document.getElementById("userEmail"); if(userEmailSpan) userEmailSpan.textContent = user.email; initApp(); }
+    if (!user) {
+        window.location.href = "login.html";
+    } else {
+        // Afficher l'email dans le header
+        const userEmailSpan = document.getElementById("userEmail");
+        if (userEmailSpan) userEmailSpan.textContent = user.email;
+        initApp();
+    }
 });
 
+// Bouton déconnexion avec confirmation
 const logoutBtn = document.getElementById("logoutBtn");
-if(logoutBtn) { logoutBtn.onclick = handleLogout; }
+if (logoutBtn) {
+    logoutBtn.onclick = handleLogout;
+}
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
-/* ===== STRUCTURE IDENTIQUE À TON EXEMPLE ===== */
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;touch-action:pan-y pinch-zoom;}
-html,body{height:100%;background:#0a1a2f;}
-body{background:#0a1a2f;font-family:'Inter','Courier New',monospace;color:#e4e6eb;min-height:100vh;overflow-x:hidden;padding-top:60px;}
+/* RESET COMPLET - ÉLIMINE TOUTES LES BANDES BLANCHES */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
 
-/* HEADER FIXE COMME DANS L'EXEMPLE */
-.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;position:fixed;top:0;left:0;right:0;z-index:101;}
-@keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+/* CORPS QUI COUVRE TOUT L'ÉCRAN Y COMPRIS SOUS LA BARRE DE BATTERIE */
+html, body {
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
 
-.header{position:fixed;top:3px;left:0;right:0;background:#0f2d45;border-bottom:1px solid rgba(250,204,21,0.3);padding:0.5rem 1rem;display:flex;justify-content:space-between;align-items:center;z-index:100;}
-.logo{display:flex;align-items:center;gap:10px;}
-.logo i{font-size:1.5rem;color:#facc15;}
-.logo h1{font-size:1.3rem;font-weight:700;color:#e4e6eb;}
-.logo h1 span{color:#facc15;}
-.header-right{display:flex;align-items:center;gap:12px;}
-.user-info{background:rgba(255,255,255,0.1);padding:4px 14px;border-radius:20px;font-size:0.7rem;color:#e4e6eb;display:flex;align-items:center;gap:8px;}
-.logout-btn{background:rgba(220,38,38,0.8);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;}
-.logout-btn:hover{background:#dc2626;}
+body {
+    font-family: 'Inter', 'Courier New', monospace;
+    background: #0a1a2f;
+    /* Fond qui s'étend sous la barre de navigation */
+    background-attachment: fixed;
+    position: relative;
+}
 
-/* CONTENEUR PRINCIPAL */
-.feed-container{max-width:950px;margin:0 auto;padding:0 16px 1rem 16px;}
+/* Conteneur principal qui occupe toute la hauteur disponible */
+.app-container {
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 16px;
+    padding-bottom: env(safe-area-inset-bottom, 10px);
+    background: #0a1a2f;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+}
 
-.form-icon-btn{background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);color:#facc15;padding:10px 18px;border-radius:40px;font-size:0.85rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;margin-bottom:10px;}
-.form-icon-btn i{font-size:1.1rem;}
+/* Barre du haut */
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex-shrink: 0;
+}
 
-.main-title{text-align:center;margin:10px 0 20px 0;}
-.main-title h1{font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#facc15,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.form-icon-btn {
+    background: rgba(250, 204, 21, 0.15);
+    border: 1px solid rgba(250, 204, 21, 0.4);
+    color: #facc15;
+    padding: 10px 18px;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-.tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;justify-content:center;}
-.tab-btn{background:rgba(255,255,255,0.1);color:#bbdefb;padding:10px 20px;font-size:0.85rem;font-weight:600;border:none;cursor:pointer;border-radius:40px;}
-.tab-btn.active{background:#facc15;color:#0a1a2f;}
+.form-icon-btn i { font-size: 1.1rem; }
+.form-icon-btn:hover { background: #facc15; color: #0a1a2f; }
 
-.tab-content{display:none;}
-.tab-content.active{display:block;}
-.tab-content.chat-fullscreen{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:1000;background:#0a1a2f;padding:0;margin:0;border-radius:0;}
-body.chat-active .feed-container,body.chat-active .header,body.chat-active .rainbow-line{display:none;}
-body.chat-active .tab-content.chat-fullscreen{display:block!important;}
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 6px 12px;
+    border-radius: 40px;
+}
 
-.question-card{border-radius:24px;padding:24px 20px;margin-bottom:12px;border:1px solid rgba(250,204,21,0.2);}
-.question-card.netuber-0{background:linear-gradient(145deg,#1a2a1a,#0f1f0f);border-color:#facc15;}
-.question-card.netuber-1{background:linear-gradient(145deg,#1a2a3a,#0f1a2f);border-color:#06b6d4;}
-.question-card.netuber-2{background:linear-gradient(145deg,#2a1a2a,#1f0f1f);border-color:#ec4899;}
-.question-card.netuber-3{background:linear-gradient(145deg,#1a2a2a,#0f1f1a);border-color:#22c55e;}
-.question-card.netuber-4{background:linear-gradient(145deg,#2a1a3a,#1a0f2f);border-color:#a855f7;}
-.question-card.default-card{background:linear-gradient(145deg,#0f2d45,#0a2538);border-color:rgba(250,204,21,0.2);}
-.question-text{font-size:1.1rem;font-weight:700;line-height:1.5;margin-bottom:20px;color:#fff;min-height:80px;}
-.question-meta{border-left:3px solid #facc15;padding:3px 8px;margin-bottom:10px;font-size:0.65rem;font-weight:700;color:#f1f5f9;}
-.question-num{display:inline-block;background:#facc15;color:#0a1a2f;border-radius:30px;padding:2px 8px;font-size:0.55rem;font-weight:800;margin-right:8px;}
-.input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;}
-.input-row select{flex:2;min-width:150px;padding:14px 16px;font-size:0.9rem;border-radius:60px;background:#fff;border:none;font-weight:500;color:#0a1a2f;}
-.input-row input{flex:2;min-width:150px;padding:14px 16px;font-size:0.9rem;border-radius:60px;background:#fff;border:none;font-weight:500;color:#0a1a2f;}
-button{background:linear-gradient(145deg,#facc15,#e5b800);border:none;padding:14px 24px;border-radius:60px;font-weight:700;font-size:0.85rem;color:#0a1a2f;cursor:pointer;}
-button:active{transform:scale(0.97);}
-.choice-row{display:flex;gap:12px;margin-top:12px;}
-.choice-btn{flex:1;text-align:center;padding:14px 0;border-radius:60px;font-weight:700;font-size:0.9rem;cursor:pointer;border:none;}
-.choice-btn.yes{background:#27ae60;color:#fff;}
-.choice-btn.no{background:#c0392b;color:#fff;}
-.progress-bar{background:rgba(255,255,255,0.15);border-radius:40px;height:4px;margin:14px 0 6px;}
-.progress-fill{height:4px;border-radius:40px;}
-.step-info{display:flex;justify-content:space-between;font-size:0.6rem;color:#ccc;margin-top:4px;}
-.action-buttons{display:flex;gap:10px;margin-top:12px;}
-.nav-btn{background:rgba(255,255,255,0.12);color:#fff;padding:8px 16px;font-size:0.7rem;}
-.reset-btn{background:linear-gradient(145deg,#e74c3c,#c0392b);color:#fff;}
-.hidden{display:none;}
-.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;}
-.popup-overlay.active{visibility:visible;}
-.popup-card{background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:28px;width:92%;max-width:500px;padding:24px 20px;text-align:center;border-top:5px solid #facc15;}
-.popup-title{font-size:1.2rem;font-weight:800;color:#facc15;margin-bottom:12px;}
-.popup-message{font-size:0.9rem;margin-bottom:20px;color:#e0f2fe;line-height:1.6;}
-.popup-buttons{display:flex;gap:12px;justify-content:center;}
-.popup-btn{padding:10px 22px;border-radius:60px;font-weight:700;font-size:0.8rem;border:none;cursor:pointer;}
-.popup-btn.secondary{background:#2d4e73;color:#fff;}
-.popup-btn.primary{background:#27ae60;color:#fff;}
-.memorandum-list{background:#112b42;border-radius:24px;padding:20px;max-height:calc(100vh - 200px);overflow-y:auto;}
-.memorandum-item{border-bottom:1px solid #2d4e73;padding:20px 0;}
-.memorandum-item:last-child{border-bottom:none;}
-.memorandum-title{color:#facc15;font-weight:800;font-size:1.1rem;margin-bottom:8px;}
-.memorandum-content{font-size:1rem;color:#e0f2fe;line-height:1.6;margin-bottom:12px;}
-.memorandum-date-bottom{font-size:0.7rem;color:#7dd3fc;text-align:right;margin-top:8px;}
-footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;}
-.send-btn-special{background:linear-gradient(145deg,#e67e22,#d35400);color:#fff;margin-top:16px;}
-.send-btn-special.hidden{display:none;}
-.chat-container{background:#0e2a3a;display:flex;flex-direction:column;height:100%;overflow:hidden;}
-.chat-messages{flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:12px;}
-.message-bubble{max-width:85%;padding:12px 18px;border-radius:20px;font-size:1rem;}
-.tab-content.chat-fullscreen .message-bubble{font-size:1.1rem;padding:14px 20px;max-width:80%;}
-.message-sent{align-self:flex-end;background:linear-gradient(145deg,#075e54,#054a44);color:#fff;border-bottom-right-radius:4px;}
-.message-received{align-self:flex-start;background:#e4e6eb;color:#050505;border-bottom-left-radius:4px;}
-.message-info{font-size:0.65rem;margin-top:6px;opacity:0.7;display:flex;justify-content:flex-end;gap:8px;}
-.message-received .message-info{color:#65676b;}
-.message-sent .message-info{color:rgba(255,255,255,0.7);}
-.message-sender{font-weight:600;color:#075e54;font-size:0.75rem;display:block;margin-bottom:6px;}
-.message-actions{display:flex;gap:8px;margin-top:8px;justify-content:flex-end;}
-.message-actions button{background:transparent;padding:4px 10px;font-size:0.7rem;border-radius:20px;color:#7dd3fc;border:none;}
-.chat-input-area{background:#112b42;padding:16px 20px;border-radius:28px;margin-top:8px;display:flex;gap:12px;align-items:center;}
-.tab-content.chat-fullscreen .chat-input-area{padding:16px 24px;border-radius:0;}
-.chat-input-area textarea{flex:1;background:#0a2538;border:1px solid #2d4e73;border-radius:28px;padding:14px 18px;color:#fff;font-family:'Inter',monospace;font-size:1rem;resize:none;}
-.chat-input-area textarea:focus{outline:none;border-color:#facc15;}
-.chat-input-area button{background:#facc15;padding:12px 18px;border-radius:40px;font-size:1.3rem;min-width:50px;border:none;color:#0a1a2f;}
-.empty-chat{text-align:center;padding:40px;color:#7dd3fc;}
-.chat-header{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:linear-gradient(135deg,#0a1a2f,#0e2a3a);z-index:1001;border-bottom:1px solid rgba(250,204,21,0.3);}
-.chat-back-btn{background:rgba(250,204,21,0.9);color:#0a1a2f;border:none;border-radius:40px;padding:8px 16px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;}
-.netubex-logo{font-size:1.6rem;font-weight:900;color:#facc15;}
-body.chat-active .chat-header{display:flex;}
-body.chat-active .rainbow-line{display:block;}
-.chat-header{display:none;}
-.memorandum-footer{text-align:center;font-size:0.55rem;color:#5f748d;margin-top:16px;padding-top:12px;border-top:1px solid #2d4e73;}
-.loading-placeholder{text-align:center;padding:40px;color:#7dd3fc;}
+.user-info span { color: #bbdefb; font-size: 0.75rem; font-weight: 500; }
+.user-info i { color: #facc15; }
+
+.logout-btn {
+    background: rgba(220, 38, 38, 0.8);
+    border: none;
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logout-btn:hover { background: #dc2626; transform: scale(1.05); }
+
+/* Titre Bulletin Journalier */
+.main-title {
+    text-align: center;
+    margin: 15px 0 20px 0;
+    flex-shrink: 0;
+}
+
+.main-title h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #facc15, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+}
+
+/* Onglets */
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.tab-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #bbdefb;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    border-radius: 40px;
+    transition: all 0.2s;
+}
+
+.tab-btn.active { background: #facc15; color: #0a1a2f; }
+
+/* Contenu des onglets */
+.tab-content {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.tab-content.active { display: block; }
+
+/* Mode plein écran chat */
+.tab-content.chat-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background: #0a1a2f;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+}
+
+body.chat-active .app-container > div:not(.tab-content.chat-fullscreen) { display: none; }
+body.chat-active .tab-content.chat-fullscreen { display: block !important; }
+
+/* Cartes questions */
+.question-card {
+    border-radius: 24px;
+    padding: 24px 20px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(250, 204, 21, 0.2);
+}
+
+.question-card.netuber-0 { background: linear-gradient(145deg, #1a2a1a, #0f1f0f); border-color: #facc15; }
+.question-card.netuber-1 { background: linear-gradient(145deg, #1a2a3a, #0f1a2f); border-color: #06b6d4; }
+.question-card.netuber-2 { background: linear-gradient(145deg, #2a1a2a, #1f0f1f); border-color: #ec4899; }
+.question-card.netuber-3 { background: linear-gradient(145deg, #1a2a2a, #0f1f1a); border-color: #22c55e; }
+.question-card.netuber-4 { background: linear-gradient(145deg, #2a1a3a, #1a0f2f); border-color: #a855f7; }
+.question-card.default-card { background: linear-gradient(145deg, #0f2d45, #0a2538); border-color: rgba(250, 204, 21, 0.2); }
+
+.question-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    color: #fff;
+    min-height: 80px;
+}
+
+.question-meta {
+    border-left: 3px solid #facc15;
+    padding: 3px 8px;
+    margin-bottom: 10px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #f1f5f9;
+}
+
+.question-num {
+    display: inline-block;
+    background: #facc15;
+    color: #0a1a2f;
+    border-radius: 30px;
+    padding: 2px 8px;
+    font-size: 0.55rem;
+    font-weight: 800;
+    margin-right: 8px;
+}
+
+.input-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.input-row select {
+    flex: 2;
+    min-width: 150px;
+    padding: 14px 16px;
+    font-size: 0.9rem;
+    border-radius: 60px;
+    background: #fff;
+    border: none;
+    font-weight: 500;
+    color: #0a1a2f;
+}
+
+.input-row input {
+    flex: 2;
+    min-width: 150px;
+    padding: 14px 16px;
+    font-size: 0.9rem;
+    border-radius: 60px;
+    background: #fff;
+    border: none;
+    font-weight: 500;
+    color: #0a1a2f;
+}
+
+button {
+    background: linear-gradient(145deg, #facc15, #e5b800);
+    border: none;
+    padding: 14px 24px;
+    border-radius: 60px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #0a1a2f;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:active { transform: scale(0.97); }
+
+.choice-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.choice-btn {
+    flex: 1;
+    text-align: center;
+    padding: 14px 0;
+    border-radius: 60px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+}
+
+.choice-btn.yes { background: #27ae60; color: #fff; }
+.choice-btn.no { background: #c0392b; color: #fff; }
+
+.progress-bar {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 40px;
+    height: 4px;
+    margin: 14px 0 6px;
+}
+
+.progress-fill { height: 4px; border-radius: 40px; }
+
+.step-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.6rem;
+    color: #ccc;
+    margin-top: 4px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.nav-btn {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    padding: 8px 16px;
+    font-size: 0.7rem;
+}
+
+.reset-btn {
+    background: linear-gradient(145deg, #e74c3c, #c0392b);
+    color: #fff;
+}
+
+.hidden { display: none; }
+
+/* Popups */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+}
+
+.popup-overlay.active { visibility: visible; }
+
+.popup-card {
+    background: linear-gradient(145deg, #1e3a5f, #0f2d45);
+    border-radius: 28px;
+    width: 92%;
+    max-width: 500px;
+    padding: 24px 20px;
+    text-align: center;
+    border-top: 5px solid #facc15;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+}
+
+.popup-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #facc15;
+    margin-bottom: 12px;
+}
+
+.popup-message {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    color: #e0f2fe;
+    line-height: 1.6;
+}
+
+.popup-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.popup-btn {
+    padding: 10px 22px;
+    border-radius: 60px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border: none;
+    cursor: pointer;
+}
+
+.popup-btn.secondary { background: #2d4e73; color: #fff; }
+.popup-btn.primary { background: #27ae60; color: #fff; }
+
+/* Memorandum */
+.memorandum-list {
+    background: #112b42;
+    border-radius: 24px;
+    padding: 20px;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.memorandum-item {
+    border-bottom: 1px solid #2d4e73;
+    padding: 20px 0;
+    margin-bottom: 10px;
+}
+
+.memorandum-item:last-child { border-bottom: none; }
+
+.memorandum-title {
+    color: #facc15;
+    font-weight: 800;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.memorandum-content {
+    font-size: 1rem;
+    color: #e0f2fe;
+    line-height: 1.6;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.memorandum-date-bottom {
+    font-size: 0.7rem;
+    color: #7dd3fc;
+    text-align: right;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+footer {
+    text-align: center;
+    font-size: 0.6rem;
+    color: #5f748d;
+    margin-top: 16px;
+}
+
+.send-btn-special {
+    background: linear-gradient(145deg, #e67e22, #d35400);
+    color: #fff;
+    margin-top: 16px;
+}
+
+.send-btn-special.hidden { display: none; }
+
+/* Chat */
+.chat-container {
+    background: #0e2a3a;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.message-bubble {
+    max-width: 85%;
+    padding: 12px 18px;
+    border-radius: 20px;
+    word-wrap: break-word;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.tab-content.chat-fullscreen .message-bubble {
+    font-size: 1.1rem;
+    padding: 14px 20px;
+    max-width: 80%;
+}
+
+.message-sent {
+    align-self: flex-end;
+    background: linear-gradient(145deg, #075e54, #054a44);
+    color: #ffffff;
+    font-weight: 700;
+    border-bottom-right-radius: 4px;
+}
+
+.message-received {
+    align-self: flex-start;
+    background: #e4e6eb;
+    color: #050505;
+    border-bottom-left-radius: 4px;
+}
+
+.message-info {
+    font-size: 0.65rem;
+    margin-top: 6px;
+    opacity: 0.7;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.message-received .message-info { color: #65676b; }
+.message-sent .message-info { color: rgba(255, 255, 255, 0.7); }
+
+.message-sender {
+    font-weight: 600;
+    color: #075e54;
+    font-size: 0.75rem;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.message-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    justify-content: flex-end;
+}
+
+.message-actions button {
+    background: transparent;
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    border-radius: 20px;
+    color: #7dd3fc;
+    border: none;
+    cursor: pointer;
+}
+
+.chat-input-area {
+    background: #112b42;
+    padding: 16px 20px;
+    border-radius: 28px;
+    margin-top: 8px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.tab-content.chat-fullscreen .chat-input-area {
+    padding: 16px 24px;
+    border-radius: 0;
+}
+
+.chat-input-area textarea {
+    flex: 1;
+    background: #0a2538;
+    border: 1px solid #2d4e73;
+    border-radius: 28px;
+    padding: 14px 18px;
+    color: #fff;
+    font-family: 'Inter', monospace;
+    font-size: 1rem;
+    resize: none;
+    max-height: 50px;
+    min-height: 50px;
+}
+
+.chat-input-area textarea:focus {
+    outline: none;
+    border-color: #facc15;
+}
+
+.chat-input-area button {
+    background: #facc15;
+    padding: 12px 18px;
+    border-radius: 40px;
+    font-size: 1.3rem;
+    min-width: 50px;
+    border: none;
+    cursor: pointer;
+    color: #0a1a2f;
+}
+
+.empty-chat {
+    text-align: center;
+    padding: 40px;
+    color: #7dd3fc;
+}
+
+.chat-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #0a1a2f, #0e2a3a);
+    z-index: 1001;
+    border-bottom: 1px solid rgba(250, 204, 21, 0.3);
+}
+
+.chat-back-btn {
+    background: rgba(250, 204, 21, 0.9);
+    color: #0a1a2f;
+    border: none;
+    border-radius: 40px;
+    padding: 8px 16px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.netubex-logo {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: #facc15;
+    letter-spacing: 2px;
+}
+
+.rainbow-line {
+    height: 3px;
+    background: linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+}
+
+body.chat-active .chat-header { display: flex; }
+body.chat-active .rainbow-line { display: block; }
+.chat-header { display: none; }
+.rainbow-line { display: none; }
+
+.memorandum-footer {
+    text-align: center;
+    font-size: 0.55rem;
+    color: #5f748d;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #2d4e73;
+}
+
+.loading-placeholder {
+    text-align: center;
+    padding: 40px;
+    color: #7dd3fc;
+    font-weight: 500;
+}
 </style>
 </head>
 <body>
+<div class="app-container">
+    <!-- Barre du haut : icône formulaire à gauche, email et déconnexion à droite -->
+    <div class="top-bar">
+        <button id="formIconBtn" class="form-icon-btn">
+            <i class="fas fa-edit"></i>
+            <span>Formulaire</span>
+        </button>
+        <div class="user-info">
+            <i class="fas fa-envelope"></i>
+            <span id="userEmail">Chargement...</span>
+            <button id="logoutBtn" class="logout-btn" title="Déconnexion"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </div>
 
-<div class="rainbow-line"></div>
-<header class="header" id="mainHeader">
-<div class="logo"><i class="fas fa-chart-line"></i><h1>Ne<span>TubeX</span></h1></div>
-<div class="header-right">
-<div class="user-info"><i class="fas fa-envelope"></i> <span id="userEmail">Chargement...</span></div>
-<button id="logoutBtn" class="logout-btn" title="Déconnexion"><i class="fas fa-sign-out-alt"></i></button>
-</div>
-</header>
+    <!-- Titre Bulletin Journalier -->
+    <div class="main-title">
+        <h1>📋 BULLETIN JOURNALIER</h1>
+    </div>
 
-<div class="feed-container">
-<button id="formIconBtn" class="form-icon-btn"><i class="fas fa-edit"></i><span>Formulaire</span></button>
-<div class="main-title"><h1>📋 BULLETIN JOURNALIER</h1></div>
-
-<div class="tabs">
-<button class="tab-btn active" data-tab="form">📋 FORMULAIRE RAPPORT</button>
-<button class="tab-btn" data-tab="memo">📜 MÉMORANDUM</button>
-<button class="tab-btn" data-tab="chat">💬 CHAT DEO</button>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="form">📋 FORMULAIRE RAPPORT</button>
+        <button class="tab-btn" data-tab="memo">📜 MÉMORANDUM</button>
+        <button class="tab-btn" data-tab="chat">💬 CHAT DEO</button>
+    </div>
+    <div id="tabForm" class="tab-content active">
+        <div class="question-card" id="questionCard">
+            <div id="questionMeta" class="question-meta"></div>
+            <div class="question-text" id="questionText"></div>
+            <div class="answer-area" id="answerArea">
+                <div class="input-row" id="inputRow">
+                    <select id="answerSelect" style="display:none;"></select>
+                    <input type="number" id="answerNumber" placeholder="Saisir..." style="display:none;">
+                    <button id="submitBtn">✓ Valider</button>
+                </div>
+                <div class="choice-row hidden" id="choiceRow">
+                    <button class="choice-btn yes" id="yesBtn">✔ Oui</button>
+                    <button class="choice-btn no" id="noBtn">✘ Non</button>
+                </div>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <div class="step-info"><span id="stepCounter">0 / 0</span><span id="saveStatus">💾 Auto</span></div>
+            <div class="action-buttons">
+                <button id="prevBtn" class="nav-btn hidden">◀ Reculer</button>
+                <button id="resetBtn" class="reset-btn">🔄 Nouveau rapport</button>
+            </div>
+        </div>
+        <button id="sendReportBtn" class="send-btn-special hidden">📤 ENVOYER À LA DEO</button>
+        <footer>DEO · NeTubeX · Rapport journalier</footer>
+    </div>
+    <div id="tabMemo" class="tab-content">
+        <div class="memorandum-list" id="memorandumList"><div class="loading-placeholder">⏳ Chargement...</div></div>
+        <div class="memorandum-footer" id="memorandumFooter"></div>
+    </div>
+    <div id="tabChat" class="tab-content">
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input-area">
+                <textarea id="chatMessageInput" placeholder="Message" rows="1"></textarea>
+                <button id="sendChatBtn">📤</button>
+            </div>
+        </div>
+    </div>
 </div>
-
-<div id="tabForm" class="tab-content active">
-<div class="question-card" id="questionCard">
-<div id="questionMeta" class="question-meta"></div>
-<div class="question-text" id="questionText"></div>
-<div class="answer-area" id="answerArea">
-<div class="input-row" id="inputRow">
-<select id="answerSelect" style="display:none;"></select>
-<input type="number" id="answerNumber" placeholder="Saisir..." style="display:none;">
-<button id="submitBtn">✓ Valider</button>
-</div>
-<div class="choice-row hidden" id="choiceRow">
-<button class="choice-btn yes" id="yesBtn">✔ Oui</button>
-<button class="choice-btn no" id="noBtn">✘ Non</button>
-</div>
-</div>
-<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-<div class="step-info"><span id="stepCounter">0 / 0</span><span id="saveStatus">💾 Auto</span></div>
-<div class="action-buttons">
-<button id="prevBtn" class="nav-btn hidden">◀ Reculer</button>
-<button id="resetBtn" class="reset-btn">🔄 Nouveau rapport</button>
-</div>
-</div>
-<button id="sendReportBtn" class="send-btn-special hidden">📤 ENVOYER À LA DEO</button>
-<footer>DEO · NeTubeX · Rapport journalier</footer>
-</div>
-
-<div id="tabMemo" class="tab-content">
-<div class="memorandum-list" id="memorandumList"><div class="loading-placeholder">⏳ Chargement...</div></div>
-<div class="memorandum-footer" id="memorandumFooter"></div>
-</div>
-
-<div id="tabChat" class="tab-content">
-<div class="chat-container">
-<div class="chat-messages" id="chatMessages"></div>
-<div class="chat-input-area">
-<textarea id="chatMessageInput" placeholder="Message" rows="1"></textarea>
-<button id="sendChatBtn">📤</button>
-</div>
-</div>
-</div>
-</div>
-
 <div class="chat-header">
-<button id="chatBackBtn" class="chat-back-btn">← Retour</button>
-<div class="netubex-logo">NeTubeX</div>
+    <button id="chatBackBtn" class="chat-back-btn">← Retour</button>
+    <div class="netubex-logo">NeTubeX</div>
 </div>
-
+<div class="rainbow-line"></div>
 <div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
 <div id="editPopupOverlay" class="popup-overlay"><div class="popup-card edit-popup"><div class="popup-title">✏️ Modifier</div><textarea id="editMessageContent" rows="4"></textarea><div class="popup-buttons"><button id="cancelEditBtn" class="popup-btn secondary">Annuler</button><button id="confirmEditBtn" class="popup-btn primary">OK</button></div></div></div>
 
 <script>
-document.getElementById('formIconBtn').addEventListener('click',function(){
-document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-document.querySelector('.tab-btn[data-tab="form"]').classList.add('active');
-document.getElementById('tabForm').classList.add('active');
+// Redirection du bouton icône formulaire vers l'onglet Formulaire
+document.getElementById('formIconBtn').addEventListener('click', function() {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="form"]').classList.add('active');
+    document.getElementById('tabForm').classList.add('active');
 });
 </script>
 </body>
