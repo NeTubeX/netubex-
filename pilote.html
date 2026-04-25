@@ -635,6 +635,23 @@ function autoSave() {
     saveLocal();
 }
 
+// Fonction de déconnexion avec confirmation
+function handleLogout() {
+    showPopup(
+        "🔓 Déconnexion", 
+        "Êtes-vous sûr de vouloir vous déconnecter ?", 
+        "Annuler", 
+        "Se déconnecter", 
+        () => {
+            signOut(auth).then(() => {
+                window.location.href = "login.html";
+            });
+        }, 
+        () => {},
+        'primary'
+    );
+}
+
 // ============ INITIALISATION ============
 function initApp() {
     // Récupérer les éléments DOM
@@ -735,14 +752,10 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Bouton déconnexion
+// Bouton déconnexion avec confirmation
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
-    logoutBtn.onclick = () => {
-        signOut(auth).then(() => {
-            window.location.href = "login.html";
-        });
-    };
+    logoutBtn.onclick = handleLogout;
 }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -753,13 +766,23 @@ if (logoutBtn) {
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Inter','Courier New',monospace;background:#0a1a2f;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 .app-container{max-width:950px;margin:0 auto;width:100%;height:100vh;display:flex;flex-direction:column;padding:10px 16px;overflow:hidden;}
-.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
-.header-top h1{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#facc15,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:0;}
+
+/* NOUVEAU HEADER avec formulaire icône à gauche */
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px;}
+.form-icon-btn{background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);color:#facc15;padding:10px 18px;border-radius:40px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+.form-icon-btn i{font-size:1.1rem;}
+.form-icon-btn:hover{background:#facc15;color:#0a1a2f;}
 .user-info{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.08);padding:6px 12px;border-radius:40px;}
 .user-info span{color:#bbdefb;font-size:0.75rem;font-weight:500;}
+.user-info i{color:#facc15;}
 .logout-btn{background:rgba(220,38,38,0.8);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
 .logout-btn:hover{background:#dc2626;transform:scale(1.05);}
-.tabs{display:flex;gap:8px;margin-bottom:12px;flex-shrink:0;flex-wrap:wrap;}
+
+/* TITRE BULLETIN JOURNALIER décalé vers le bas */
+.main-title{text-align:center;margin:15px 0 20px 0;}
+.main-title h1{font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#facc15,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px;}
+
+.tabs{display:flex;gap:8px;margin-bottom:12px;flex-shrink:0;flex-wrap:wrap;justify-content:center;}
 .tab-btn{background:rgba(255,255,255,0.1);color:#bbdefb;padding:10px 20px;font-size:0.85rem;font-weight:600;border:none;cursor:pointer;border-radius:40px;transition:all 0.2s;}
 .tab-btn.active{background:#facc15;color:#0a1a2f;}
 .tab-content{display:none;height:100%;overflow-y:auto;flex:1;padding-right:4px;}
@@ -802,7 +825,7 @@ button:active{transform:scale(0.97);}
 .popup-btn{padding:10px 22px;border-radius:60px;font-weight:700;font-size:0.8rem;border:none;cursor:pointer;}
 .popup-btn.secondary{background:#2d4e73;color:#fff;}
 .popup-btn.primary{background:#27ae60;color:#fff;}
-.memorandum-list{background:#112b42;border-radius:24px;padding:20px;max-height:calc(100vh - 180px);overflow-y:auto;}
+.memorandum-list{background:#112b42;border-radius:24px;padding:20px;max-height:calc(100vh - 200px);overflow-y:auto;}
 .memorandum-item{border-bottom:1px solid #2d4e73;padding:20px 0;margin-bottom:10px;}
 .memorandum-item:last-child{border-bottom:none;}
 .memorandum-title{color:#facc15;font-weight:800;font-size:1.1rem;margin-bottom:8px;}
@@ -843,63 +866,84 @@ body.chat-active .rainbow-line{display:block;}
 </head>
 <body>
 <div class="app-container">
-<div class="header-top">
-<h1>📋 BULLETIN JOURNALIER</h1>
-<div class="user-info">
-<span><i class="fas fa-user-check"></i> <span id="userEmail">Chargement...</span></span>
-<button id="logoutBtn" class="logout-btn" title="Déconnexion"><i class="fas fa-sign-out-alt"></i></button>
-</div>
-</div>
-<div class="tabs">
-<button class="tab-btn active" data-tab="form">📋 FORMULAIRE RAPPORT</button>
-<button class="tab-btn" data-tab="memo">📜 MÉMORANDUM</button>
-<button class="tab-btn" data-tab="chat">💬 CHAT DEO</button>
-</div>
-<div id="tabForm" class="tab-content active">
-<div class="question-card" id="questionCard">
-<div id="questionMeta" class="question-meta"></div>
-<div class="question-text" id="questionText"></div>
-<div class="answer-area" id="answerArea">
-<div class="input-row" id="inputRow">
-<select id="answerSelect" style="display:none;"></select>
-<input type="number" id="answerNumber" placeholder="Saisir..." style="display:none;">
-<button id="submitBtn">✓ Valider</button>
-</div>
-<div class="choice-row hidden" id="choiceRow">
-<button class="choice-btn yes" id="yesBtn">✔ Oui</button>
-<button class="choice-btn no" id="noBtn">✘ Non</button>
-</div>
-</div>
-<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-<div class="step-info"><span id="stepCounter">0 / 0</span><span id="saveStatus">💾 Auto</span></div>
-<div class="action-buttons">
-<button id="prevBtn" class="nav-btn hidden">◀ Reculer</button>
-<button id="resetBtn" class="reset-btn">🔄 Nouveau rapport</button>
-</div>
-</div>
-<button id="sendReportBtn" class="send-btn-special hidden">📤 ENVOYER À LA DEO</button>
-<footer>DEO · NeTubeX · Rapport journalier</footer>
-</div>
-<div id="tabMemo" class="tab-content">
-<div class="memorandum-list" id="memorandumList"><div class="loading-placeholder">⏳ Chargement...</div></div>
-<div class="memorandum-footer" id="memorandumFooter"></div>
-</div>
-<div id="tabChat" class="tab-content">
-<div class="chat-container">
-<div class="chat-messages" id="chatMessages"></div>
-<div class="chat-input-area">
-<textarea id="chatMessageInput" placeholder="Message" rows="1"></textarea>
-<button id="sendChatBtn">📤</button>
-</div>
-</div>
-</div>
+    <!-- Nouvelle barre du haut : icône formulaire à gauche, email et déconnexion à droite -->
+    <div class="top-bar">
+        <button id="formIconBtn" class="form-icon-btn">
+            <i class="fas fa-edit"></i>
+            <span>Formulaire</span>
+        </button>
+        <div class="user-info">
+            <i class="fas fa-envelope"></i>
+            <span id="userEmail">Chargement...</span>
+            <button id="logoutBtn" class="logout-btn" title="Déconnexion"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </div>
+
+    <!-- Titre Bulletin Journalier décalé vers le bas -->
+    <div class="main-title">
+        <h1>📋 BULLETIN JOURNALIER</h1>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="form">📋 FORMULAIRE RAPPORT</button>
+        <button class="tab-btn" data-tab="memo">📜 MÉMORANDUM</button>
+        <button class="tab-btn" data-tab="chat">💬 CHAT DEO</button>
+    </div>
+    <div id="tabForm" class="tab-content active">
+        <div class="question-card" id="questionCard">
+            <div id="questionMeta" class="question-meta"></div>
+            <div class="question-text" id="questionText"></div>
+            <div class="answer-area" id="answerArea">
+                <div class="input-row" id="inputRow">
+                    <select id="answerSelect" style="display:none;"></select>
+                    <input type="number" id="answerNumber" placeholder="Saisir..." style="display:none;">
+                    <button id="submitBtn">✓ Valider</button>
+                </div>
+                <div class="choice-row hidden" id="choiceRow">
+                    <button class="choice-btn yes" id="yesBtn">✔ Oui</button>
+                    <button class="choice-btn no" id="noBtn">✘ Non</button>
+                </div>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <div class="step-info"><span id="stepCounter">0 / 0</span><span id="saveStatus">💾 Auto</span></div>
+            <div class="action-buttons">
+                <button id="prevBtn" class="nav-btn hidden">◀ Reculer</button>
+                <button id="resetBtn" class="reset-btn">🔄 Nouveau rapport</button>
+            </div>
+        </div>
+        <button id="sendReportBtn" class="send-btn-special hidden">📤 ENVOYER À LA DEO</button>
+        <footer>DEO · NeTubeX · Rapport journalier</footer>
+    </div>
+    <div id="tabMemo" class="tab-content">
+        <div class="memorandum-list" id="memorandumList"><div class="loading-placeholder">⏳ Chargement...</div></div>
+        <div class="memorandum-footer" id="memorandumFooter"></div>
+    </div>
+    <div id="tabChat" class="tab-content">
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input-area">
+                <textarea id="chatMessageInput" placeholder="Message" rows="1"></textarea>
+                <button id="sendChatBtn">📤</button>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="chat-header">
-<button id="chatBackBtn" class="chat-back-btn">← Retour</button>
-<div class="netubex-logo">NeTubeX</div>
+    <button id="chatBackBtn" class="chat-back-btn">← Retour</button>
+    <div class="netubex-logo">NeTubeX</div>
 </div>
 <div class="rainbow-line"></div>
 <div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
 <div id="editPopupOverlay" class="popup-overlay"><div class="popup-card edit-popup"><div class="popup-title">✏️ Modifier</div><textarea id="editMessageContent" rows="4"></textarea><div class="popup-buttons"><button id="cancelEditBtn" class="popup-btn secondary">Annuler</button><button id="confirmEditBtn" class="popup-btn primary">OK</button></div></div></div>
+
+<script>
+// Redirection du bouton icône formulaire vers l'onglet Formulaire
+document.getElementById('formIconBtn').addEventListener('click', function() {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="form"]').classList.add('active');
+    document.getElementById('tabForm').classList.add('active');
+});
+</script>
 </body>
 </html>
