@@ -231,9 +231,10 @@ function showPopup(t,m,l,r,onC,onCa,rc='primary',rd=false){
     };
 }
 
+// VERSION CORRIGÉE - SANS orderBy
 async function loadChatMessages(){
     try{
-        const q=query(collection(db,"chat_messages"),orderBy("sentDate","desc"),limit(100));
+        const q=query(collection(db,"chat_messages"), limit(100));
         const s=await getDocs(q);
         if(s.empty){
             chatMessagesDiv.innerHTML='<div class="empty-chat">💬 Aucun message</div>';
@@ -241,7 +242,7 @@ async function loadChatMessages(){
         }
         let msgs=[];
         s.forEach(d=>msgs.push({id:d.id,...d.data()}));
-        msgs.reverse();
+        msgs.sort((a,b)=>new Date(a.sentDate)-new Date(b.sentDate));
         let html='';
         for(let m of msgs){
             const env=m.senderRole==='responsable';
@@ -262,7 +263,37 @@ async function loadChatMessages(){
         });
         chatMessagesDiv.scrollTop=chatMessagesDiv.scrollHeight;
     }catch(e){
-        chatMessagesDiv.innerHTML='<div class="empty-chat">⚠️ Erreur de chargement</div>';
+        console.error("Erreur chat:",e);
+        chatMessagesDiv.innerHTML='<div class="empty-chat">⚠️ Erreur technique</div>';
+    }
+}
+
+// VERSION CORRIGÉE - SANS orderBy
+async function loadMemorandums(){
+    const div=document.getElementById('memorandumList');
+    div.innerHTML='<div class="loading-placeholder">⏳ Chargement...</div>';
+    try{
+        const q=query(collection(db,"memorandums"), limit(20));
+        const s=await getDocs(q);
+        const footer=document.getElementById('memorandumFooter');
+        const today=new Date();
+        const dateFooter=today.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+        if(!s.empty){
+            let msgs=[];
+            s.forEach(d=>msgs.push({id:d.id,...d.data()}));
+            msgs.sort((a,b)=>new Date(b.sentDate)-new Date(a.sentDate));
+            let h='';
+            for(let data of msgs){
+                const sentDate=data.sentDate||data.date;
+                const formattedDate=new Date(sentDate).toLocaleString('fr-FR',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+                h+=`<div class="memorandum-item"><div class="memorandum-title">📋 ${escapeHtml(data.title||'Mémorandum')}</div><div class="memorandum-content">${(data.content||'').replace(/\n/g,'<br>')}</div><div class="memorandum-date-bottom">📅 ${formattedDate}</div></div>`;
+            }
+            div.innerHTML=h;
+        }else div.innerHTML='<div class="empty-chat">📭 Aucun mémorandum</div>';
+        footer.innerHTML=`📅 ${dateFooter} · DEO · NeTubeX`;
+    }catch(e){
+        console.error("Erreur mémos:",e);
+        div.innerHTML='<div class="empty-chat">⚠️ Erreur technique</div>';
     }
 }
 
@@ -349,74 +380,19 @@ function disableChatFullscreen(){
     document.getElementById('tabForm').classList.add('active');
 }
 
-async function loadMemorandums(){
-    const div=document.getElementById('memorandumList');
-    div.innerHTML='<div class="loading-placeholder">⏳ Chargement...</div>';
-    try{
-        const q=query(collection(db,"memorandums"),orderBy("sentDate","desc"),limit(20));
-        const s=await getDocs(q);
-        const footer=document.getElementById('memorandumFooter');
-        const today=new Date();
-        const dateFooter=today.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
-        if(!s.empty){
-            let h='';
-            s.forEach(d=>{
-                const data=d.data();
-                const sentDate=data.sentDate||data.date;
-                const formattedDate=new Date(sentDate).toLocaleString('fr-FR',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
-                h+=`<div class="memorandum-item"><div class="memorandum-title">📋 ${escapeHtml(data.title||'Mémorandum')}</div><div class="memorandum-content">${(data.content||'').replace(/\n/g,'<br>')}</div><div class="memorandum-date-bottom">📅 ${formattedDate}</div></div>`;
-            });
-            div.innerHTML=h;
-        }else div.innerHTML='<div class="empty-chat">📭 Aucun mémorandum</div>';
-        footer.innerHTML=`📅 ${dateFooter} · DEO · NeTubeX`;
-    }catch(e){
-        div.innerHTML='<div class="empty-chat">⚠️ Erreur de chargement</div>';
-    }
-}
-
 function saveLocal(){
     localStorage.setItem('pgco_rapport',JSON.stringify({responses,currentStep}));
     saveStatus.innerHTML='💾 OK';
     setTimeout(()=>saveStatus.innerHTML='💾 Auto',1200);
 }
 
-// ============ CONSTRUCTION CORRIGÉE DES QUESTIONS ============
 function buildQuestions(){
     const q=[];
     let n=0;
-    
-    // Question responsable
-    q.push({
-        num:n++,
-        type:"choice",
-        field:"responsable",
-        meta:"Identification",
-        text:"Qui remplit le rapport aujourd'hui ?",
-        options:["Madame Ursule","Madame Chancelle"]
-    });
-    
-    // Pour chaque Netuber
+    q.push({num:n++,type:"choice",field:"responsable",meta:"Identification",text:"Qui remplit le rapport aujourd'hui ?",options:["Madame Ursule","Madame Chancelle"]});
     for(let nu of NETUBERS){
-        // Question 1: Présent ? (toujours posée)
-        q.push({
-            num:n++,
-            type:"yesno",
-            field:`${nu.code}_present`,
-            meta:nu.code,
-            text:`${nu.code} : Était-il présent aujourd'hui ?`
-        });
-        
-        // Question 2: Raison d'absence (posée à TOUS, mais logique différente selon réponse)
-        q.push({
-            num:n++,
-            type:"select",
-            field:`${nu.code}_raisonAbsence`,
-            meta:nu.code,
-            text:`${nu.code} : Raison de l'absence ? (si absent)`,
-            options:RAISONS_ABSENCE.map(r=>`<option value="${r}">${r}</option>`).join('')
-        });
-        
-        // Les questions suivantes ne seront posées que si présent
+        q.push({num:n++,type:"yesno",field:`${nu.code}_present`,meta:nu.code,text:`${nu.code} : Était-il présent aujourd'hui ?`});
+        q.push({num:n++,type:"select",field:`${nu.code}_raisonAbsence`,meta:nu.code,text:`${nu.code} : Raison de l'absence ? (si absent)`,options:RAISONS_ABSENCE.map(r=>`<option value="${r}">${r}</option>`).join('')});
         const questionsPresent = [
             {type:"select", field:`${nu.code}_objMensuel`, text:`${nu.code} : Quel est son objectif mensuel ?`, options:[...Array(16).keys()].map(i=>`<option value="${i}">${i}</option>`).join('')},
             {type:"select", field:`${nu.code}_objAtteint`, text:`${nu.code} : Combien d'objectifs a-t-il atteints aujourd'hui ?`, options:[...Array(16).keys()].map(i=>`<option value="${i}">${i}</option>`).join('')},
@@ -428,46 +404,20 @@ function buildQuestions(){
             {type:"number", field:`${nu.code}_tempsJour`, text:`${nu.code} : Quel temps a-t-il aujourd'hui (en minutes) ?`, min:0},
             {type:"select", field:`${nu.code}_forfaitGo`, text:`${nu.code} : Combien de Go de forfait internet reste-t-il ?`, options:[...Array(31).keys()].map(i=>`<option value="${i}">${i} Go</option>`).join('')}
         ];
-        
         for(let pq of questionsPresent){
-            q.push({
-                num:n++,
-                type:pq.type,
-                field:pq.field,
-                meta:nu.code,
-                text:pq.text,
-                options:pq.options,
-                min:pq.min,
-                requiresPresent:true  // Marqueur pour indiquer que cette question nécessite présence
-            });
+            q.push({num:n++,type:pq.type,field:pq.field,meta:nu.code,text:pq.text,options:pq.options,min:pq.min,requiresPresent:true});
         }
     }
-    
-    // Question finale numéro de rapport
-    q.push({
-        num:n++,
-        type:"text",
-        field:"referenceNumber",
-        meta:"Rapport",
-        text:"Numéro de rapport (3 derniers chiffres personnalisables)",
-        placeholder:"Ex: 001"
-    });
-    
+    q.push({num:n++,type:"text",field:"referenceNumber",meta:"Rapport",text:"Numéro de rapport (3 derniers chiffres personnalisables)",placeholder:"Ex: 001"});
     return q;
 }
 
-// Vérifie si on doit afficher la question courante (gère le skip si absent)
 function shouldShowQuestion(q){
     if(!q.requiresPresent) return true;
-    
-    // Extraire le code Netuber du champ
     const codeMatch = q.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/);
     if(!codeMatch) return true;
-    
     const netuberCode = codeMatch[1];
     const presenceResponse = responses[`${netuberCode}_present`];
-    
-    // Si la réponse de présence est "NON" (absent), on masque les questions qui nécessitent présence
     return presenceResponse === "OUI";
 }
 
@@ -509,7 +459,6 @@ function typewriterEffect(el,txt,speed=25,cb){
     type();
 }
 
-// Fonction pour trouver la prochaine question valide (qui doit être affichée)
 function findNextValidStep(currentStep){
     let next = currentStep + 1;
     while(next < questions.length){
@@ -518,10 +467,9 @@ function findNextValidStep(currentStep){
         }
         next++;
     }
-    return questions.length; // Fin du formulaire
+    return questions.length;
 }
 
-// Fonction pour trouver la précédente question valide
 function findPrevValidStep(currentStep){
     let prev = currentStep - 1;
     while(prev >= 0){
@@ -535,7 +483,6 @@ function findPrevValidStep(currentStep){
 
 function displayCurrent(){
     updateCardColor();
-    
     if(currentStep >= questions.length){
         formulaireComplete=true;
         sendReportBtn.classList.remove('hidden');
@@ -557,27 +504,20 @@ function displayCurrent(){
         choiceRow.classList.add('hidden');
         return;
     }
-    
     formulaireComplete=false;
     sendReportBtn.classList.add('hidden');
-    
-    // Si la question courante ne doit pas être affichée, passer à la suivante
     if(!shouldShowQuestion(questions[currentStep])){
         currentStep = findNextValidStep(currentStep);
         displayCurrent();
         return;
     }
-    
     const q=questions[currentStep];
     waitingYesNo=false;
     inputRow.classList.add('hidden');
     choiceRow.classList.add('hidden');
     answerSelect.style.display='none';
     answerNumber.style.display='none';
-    
     questionMeta.innerHTML=`<span class="question-num">#${q.num+1}</span> ${q.meta}`;
-    
-    // Adaptation du texte pour la raison d'absence
     let displayText = q.text;
     if(q.field.includes('_raisonAbsence')){
         const netuberCode = q.field.replace('_raisonAbsence','');
@@ -585,7 +525,6 @@ function displayCurrent(){
             displayText = `${netuberCode} : Cette question n'est pas applicable (présent). Cliquez sur Suivant.`;
         }
     }
-    
     if(q.type==="choice"){
         choiceRow.classList.remove('hidden');
         waitingYesNo=true;
@@ -624,7 +563,6 @@ function displayCurrent(){
         answerNumber.placeholder=q.placeholder||"Saisir...";
         typewriterEffect(questionText,displayText,25);
     }
-    
     const totalVisibleQuestions = questions.filter((_,idx) => {
         let step = idx;
         const qTemp = questions[step];
@@ -637,7 +575,6 @@ function displayCurrent(){
         }
         return true;
     }).length;
-    
     const currentVisibleIndex = questions.filter((_,idx) => {
         if(idx >= currentStep) return false;
         const qTemp = questions[idx];
@@ -649,53 +586,39 @@ function displayCurrent(){
         }
         return true;
     }).length;
-    
     progressFill.style.width=`${((currentVisibleIndex+1)/totalVisibleQuestions)*100}%`;
     stepCounterSpan.innerText=`${currentVisibleIndex+1}/${totalVisibleQuestions}`;
-    
     const prevValid = findPrevValidStep(currentStep);
     prevBtn.classList.toggle('hidden', prevValid === -1);
 }
 
-// Gestion des réponses avec skip intelligent
 function handleResponse(val){
     if(currentStep>=questions.length) return;
-    
     const q=questions[currentStep];
     responses[q.field]=val;
-    
-    // Si c'est la question de présence
     if(q.field.includes('_present')){
         if(val === 'NON'){
-            // Absent : on passe à la raison d'absence (qui sera adaptée)
             currentStep++;
             displayCurrent();
             autoSave();
             return;
         }else if(val === 'OUI'){
-            // Présent : on passe à la question suivante (qui est la raison d'absence, mais elle sera masquée automatiquement)
             currentStep++;
             displayCurrent();
             autoSave();
             return;
         }
     }
-    
-    // Pour la raison d'absence quand la réponse est "OUI" à présent, on skip automatiquement
     if(q.field.includes('_raisonAbsence')){
         const netuberCode = q.field.replace('_raisonAbsence','');
         if(responses[`${netuberCode}_present`] === 'OUI'){
-            // Ne pas enregistrer la raison d'absence pour un présent
             delete responses[q.field];
-            // Passer à la question suivante
             currentStep = findNextValidStep(currentStep);
             displayCurrent();
             autoSave();
             return;
         }
     }
-    
-    // Pour toutes les autres questions
     let nextStep = findNextValidStep(currentStep);
     currentStep = nextStep;
     displayCurrent();
@@ -713,19 +636,15 @@ function prevQ(){
 function validateCurrent(){
     if(waitingYesNo || currentStep>=questions.length) return;
     const q=questions[currentStep];
-    
-    // Cas spécial : raison d'absence pour un présent (bouton "Suivant" virtuel)
     if(q.field.includes('_raisonAbsence')){
         const netuberCode = q.field.replace('_raisonAbsence','');
         if(responses[`${netuberCode}_present`] === 'OUI'){
-            // Passer automatiquement
             let nextStep = findNextValidStep(currentStep);
             currentStep = nextStep;
             displayCurrent();
             return;
         }
     }
-    
     if(q.type==="select"){
         handleResponse(answerSelect.value);
     }else if(q.type==="number"){
@@ -937,15 +856,6 @@ setInterval(()=>{
     if(document.querySelector('.tab-btn[data-tab="memo"]').classList.contains('active')) loadMemorandums();
     if(document.querySelector('.tab-btn[data-tab="chat"]').classList.contains('active')) loadChatMessages();
 },30000);
-
-setInterval(async()=>{
-    const seuil=new Date(Date.now()-24*60*60*1000);
-    const q=query(collection(db,"chat_messages"),where("sentDate","<",seuil.toISOString()));
-    const s=await getDocs(q);
-    s.forEach(async(d)=>{
-        await deleteDoc(doc(db,"chat_messages",d.id));
-    });
-},3600000);
 </script>
 </body>
 </html>
