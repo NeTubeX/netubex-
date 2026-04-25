@@ -8,7 +8,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#18191a;color:#e4e6eb;min-height:100vh;overflow-x:hidden;user-select:none;line-height:1.5;padding-top:0;}
+html{scroll-behavior:smooth;}
+body{font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#18191a;color:#e4e6eb;min-height:100vh;overflow-x:hidden;user-select:none;line-height:1.5;padding-top:0;overscroll-behavior:none;}
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap');
 *{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
 *:not(input):not(textarea){user-select:none!important;-webkit-user-select:none!important;}
 input,textarea{user-select:text!important;-webkit-user-select:text!important;}
@@ -27,7 +29,7 @@ img{pointer-events:auto!important;-webkit-user-drag:none!important;cursor:pointe
 .floating-menu-item:hover{background:#3a3b3c;}
 .floating-menu-item i{width:24px;color:#e4e6eb;pointer-events:none;}
 .floating-divider{height:1px;background:#3e4042;margin:8px 12px;}
-.content-wrapper{padding-top:56px;width:100%;display:flex;justify-content:center;}
+.content-wrapper{padding-top:56px;width:100%;display:flex;justify-content:center;min-height:100vh;}
 .posts-container{width:100%;max-width:500px;margin:0 auto;padding:8px 12px 20px 12px;}
 .facebook-post{background:#242526;border-radius:8px;margin-bottom:12px;overflow:hidden;}
 .post-header{display:flex;align-items:center;gap:12px;padding:12px 16px 8px 16px;}
@@ -47,7 +49,7 @@ img{pointer-events:auto!important;-webkit-user-drag:none!important;cursor:pointe
 .story-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#1877f2,#0e5a9e);border:3px solid #1877f2;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .story-avatar img{width:100%;height:100%;object-fit:cover;}
 .story-name{font-size:0.7rem;color:#e4e6eb;text-align:center;white-space:normal;word-break:keep-all;max-width:70px;}
-.info-card{background:#2d2e30;border-radius:8px;padding:16px;margin-bottom:8px;}
+.info-card{background:#2d2e30;border-radius:8px;padding:16px;margin-bottom:8px;cursor:pointer;}
 .info-card:last-child{margin-bottom:0;}
 .info-card i{font-size:1.5rem;color:#1877f2;margin-right:12px;vertical-align:middle;}
 .info-title{font-size:0.95rem;font-weight:600;color:#e4e6eb;margin-bottom:6px;display:inline-block;vertical-align:middle;}
@@ -67,6 +69,10 @@ footer{background:#242526;border-top:1px solid #3e4042;padding:20px 16px;margin-
 .footer-legal a:hover{color:#1877f2;}
 .fade-section{opacity:0;transform:translateY(20px);transition:opacity 0.5s ease,transform 0.5s ease;}
 .fade-section.visible{opacity:1;transform:translateY(0);}
+.loading-spinner{text-align:center;padding:20px;display:none;}
+.loading-spinner i{font-size:1.5rem;color:#1877f2;}
+.sentinel{height:10px;width:100%;}
+@supports(padding:max(0px)){.content-wrapper{padding-top:max(56px, env(safe-area-inset-top));}.navbar{padding-top:max(8px, env(safe-area-inset-top));}}
 @media (max-width:560px){.posts-container{padding:8px 8px 20px 8px;}.post-avatar{width:36px;height:36px;}.post-header{padding:10px 12px 6px 12px;}.post-content{padding:0 12px 10px 12px;}.post-title{font-size:1.1rem;}.story-circle{width:65px;}.story-avatar{width:58px;height:58px;}}
 </style>
 </head>
@@ -98,7 +104,7 @@ footer{background:#242526;border-top:1px solid #3e4042;padding:20px 16px;margin-
 <a href="#" class="floating-menu-item" id="privacyLink"><i class="fas fa-shield-alt"></i> Confidentialité</a>
 </div>
 <div class="content-wrapper">
-<div class="posts-container">
+<div class="posts-container" id="postsContainer">
 <div class="stories-section fade-section">
 <div class="stories-container">
 <div class="story-circle story-clickable" data-url="https://netubex.github.io/netubex-/login.html">
@@ -127,133 +133,47 @@ footer{background:#242526;border-top:1px solid #3e4042;padding:20px 16px;margin-
 </div>
 </div>
 </div>
-<div class="facebook-post hero-post fade-section">
-<div class="post-header">
-<div class="post-avatar"><i class="fas fa-rocket"></i></div>
-<div class="post-author-info">
-<div class="post-author">NeTubeX</div>
-<div class="post-time">Mis à jour récemment</div>
-</div>
-</div>
-<div class="post-content">
-<div class="post-title">Transformez votre présence digitale en revenus durables</div>
-<div class="post-text">NeTubeX est un espace de rémunération digitale qui transforme le temps passé en ligne en revenus concrets grâce à son programme institutionnel.</div>
-</div>
+<div class="facebook-post hero-post fade-section" id="post1">
+<div class="post-header"><div class="post-avatar"><i class="fas fa-rocket"></i></div><div class="post-author-info"><div class="post-author">NeTubeX</div><div class="post-time">Mis à jour récemment</div></div></div>
+<div class="post-content"><div class="post-title">Transformez votre présence digitale en revenus durables</div><div class="post-text">NeTubeX est un espace de rémunération digitale qui transforme le temps passé en ligne en revenus concrets grâce à son programme institutionnel.</div></div>
 </div>
 <div class="facebook-post fade-section" id="clickablePhoto">
-<div class="post-header">
-<div class="post-avatar"><i class="fas fa-user"></i></div>
-<div class="post-author-info">
-<div class="post-author">Membre NeTubeX</div>
-<div class="post-time">Gagnant du mois</div>
+<div class="post-header"><div class="post-avatar"><i class="fas fa-user"></i></div><div class="post-author-info"><div class="post-author">Membre NeTubeX</div><div class="post-time">Gagnant du mois</div></div></div>
+<div class="post-content"><div class="post-text">Découvrez comment nos membres transforment leur quotidien</div><div class="post-media"><img src="vicky.jpg" alt="Membre NeTubeX" onerror="this.src='https://placehold.co/500x400/1877f2/ffffff?text=NeTubeX'"></div><button class="btn-action" id="nosOffresBtn"><i class="fas fa-gift"></i> Découvrir nos offres</button><div class="click-hint"><i class="fas fa-mouse-pointer"></i> Cliquez sur l'image ou le bouton</div></div>
 </div>
-</div>
-<div class="post-content">
-<div class="post-text">Découvrez comment nos membres transforment leur quotidien</div>
-<div class="post-media">
-<img src="vicky.jpg" alt="Membre NeTubeX" onerror="this.src='https://placehold.co/500x400/1877f2/ffffff?text=NeTubeX'">
-</div>
-<button class="btn-action" id="nosOffresBtn"><i class="fas fa-gift"></i> Découvrir nos offres</button>
-<div class="click-hint"><i class="fas fa-mouse-pointer"></i> Cliquez sur l'image ou le bouton</div>
+<div class="facebook-post fade-section">
+<div class="post-header"><div class="post-avatar"><i class="fas fa-gamepad"></i></div><div class="post-author-info"><div class="post-author">Jeux rémunérateurs</div><div class="post-time">Gagnez en jouant</div></div></div>
+<div class="post-content"><div class="post-text">Jouez et gagnez avec nos jeux rémunérateurs partenaires</div>
+<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-dice-d6"></i> <span class="info-title">Survivor Idle Run</span><div class="info-text">Jeu rémunérateur - Gains garantis</div></div>
+<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-dice-d6"></i> <span class="info-title">Sky Plunger</span><div class="info-text">Jeu rémunérateur - Revenus passifs</div></div>
+<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-dice-d6"></i> <span class="info-title">Goblin Heist</span><div class="info-text">Jeu rémunérateur - Bonus quotidien</div></div>
 </div>
 </div>
 <div class="facebook-post fade-section">
-<div class="post-header">
-<div class="post-avatar"><i class="fas fa-gamepad"></i></div>
-<div class="post-author-info">
-<div class="post-author">Jeux rémunérateurs</div>
-<div class="post-time">Gagnez en jouant</div>
-</div>
-</div>
-<div class="post-content">
-<div class="post-text">Jouez et gagnez avec nos jeux rémunérateurs partenaires</div>
-<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html">
-<i class="fas fa-dice-d6"></i> <span class="info-title">Survivor Idle Run</span>
-<div class="info-text">Jeu rémunérateur - Gains garantis</div>
-</div>
-<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html">
-<i class="fas fa-dice-d6"></i> <span class="info-title">Sky Plunger</span>
-<div class="info-text">Jeu rémunérateur - Revenus passifs</div>
-</div>
-<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html">
-<i class="fas fa-dice-d6"></i> <span class="info-title">Goblin Heist</span>
-<div class="info-text">Jeu rémunérateur - Bonus quotidien</div>
-</div>
+<div class="post-header"><div class="post-avatar"><i class="fas fa-tasks"></i></div><div class="post-author-info"><div class="post-author">Missions guidées</div><div class="post-time">Basées sur les instructions</div></div></div>
+<div class="post-content"><div class="post-text">Accédez à des missions guidées basées sur les instructions</div>
+<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-clipboard-list"></i> <span class="info-title">Mission quotidienne</span><div class="info-text">Suivez les instructions pas à pas</div></div>
+<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-clipboard-list"></i> <span class="info-title">Mission hebdomadaire</span><div class="info-text">Objectifs sur 7 jours</div></div>
 </div>
 </div>
 <div class="facebook-post fade-section">
-<div class="post-header">
-<div class="post-avatar"><i class="fas fa-tasks"></i></div>
-<div class="post-author-info">
-<div class="post-author">Missions guidées</div>
-<div class="post-time">Basées sur les instructions</div>
-</div>
-</div>
-<div class="post-content">
-<div class="post-text">Accédez à des missions guidées basées sur les instructions</div>
-<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html">
-<i class="fas fa-clipboard-list"></i> <span class="info-title">Mission quotidienne</span>
-<div class="info-text">Suivez les instructions pas à pas</div>
-</div>
-<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html">
-<i class="fas fa-clipboard-list"></i> <span class="info-title">Mission hebdomadaire</span>
-<div class="info-text">Objectifs sur 7 jours</div>
-</div>
+<div class="post-header"><div class="post-avatar"><i class="fas fa-brain"></i></div><div class="post-author-info"><div class="post-author">Quiz d'entreprises</div><div class="post-time">Certification et gains</div></div></div>
+<div class="post-content"><div class="post-text">Accédez aux quiz d'entreprises et valorisez vos compétences</div>
+<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-chart-line"></i> <span class="info-title">Quiz Marketing Digital</span><div class="info-text">Certification + prime</div></div>
+<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-code"></i> <span class="info-title">Quiz Développement</span><div class="info-text">Certification + prime</div></div>
+<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-chart-simple"></i> <span class="info-title">Quiz Data Analysis</span><div class="info-text">Certification + prime</div></div>
 </div>
 </div>
 <div class="facebook-post fade-section">
-<div class="post-header">
-<div class="post-avatar"><i class="fas fa-brain"></i></div>
-<div class="post-author-info">
-<div class="post-author">Quiz d'entreprises</div>
-<div class="post-time">Certification et gains</div>
-</div>
-</div>
+<div class="post-header"><div class="post-avatar"><i class="fas fa-wallet"></i></div><div class="post-author-info"><div class="post-author">Conditions de retrait</div><div class="post-time">Information officielle</div></div></div>
 <div class="post-content">
-<div class="post-text">Accédez aux quiz d'entreprises et valorisez vos compétences</div>
-<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html">
-<i class="fas fa-chart-line"></i> <span class="info-title">Quiz Marketing Digital</span>
-<div class="info-text">Certification + prime</div>
-</div>
-<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html">
-<i class="fas fa-code"></i> <span class="info-title">Quiz Développement</span>
-<div class="info-text">Certification + prime</div>
-</div>
-<div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html">
-<i class="fas fa-chart-simple"></i> <span class="info-title">Quiz Data Analysis</span>
-<div class="info-text">Certification + prime</div>
-</div>
-</div>
-</div>
-<div class="facebook-post fade-section">
-<div class="post-header">
-<div class="post-avatar"><i class="fas fa-wallet"></i></div>
-<div class="post-author-info">
-<div class="post-author">Conditions de retrait</div>
-<div class="post-time">Information officielle</div>
-</div>
-</div>
-<div class="post-content">
-<div class="info-card">
-<i class="fas fa-hand-holding-usd"></i> <span class="info-title">Seuil de retrait</span>
-<div class="info-text">Seuil de retrait à partir de 1€</div>
-</div>
-<div class="info-card">
-<i class="fas fa-gift"></i> <span class="info-title">Bonus de bienvenue</span>
-<div class="info-text">Bonus de 0,20€ offert dès votre inscription</div>
-</div>
+<div class="info-card"><i class="fas fa-hand-holding-usd"></i> <span class="info-title">Seuil de retrait</span><div class="info-text">Seuil de retrait à partir de 1€</div></div>
+<div class="info-card"><i class="fas fa-gift"></i> <span class="info-title">Bonus de bienvenue</span><div class="info-text">Bonus de 0,20€ offert dès votre inscription</div></div>
 </div>
 </div>
 <div class="facebook-post fade-section" id="memberOffer">
-<div class="post-header">
-<div class="post-avatar"><i class="fas fa-gem"></i></div>
-<div class="post-author-info">
-<div class="post-author">Notre engagement</div>
-<div class="post-time">Programme institutionnel</div>
-</div>
-</div>
-<div class="post-content">
-<div class="post-text"><strong style="color:#e4e6eb;">✨ Notre engagement envers nos membres</strong></div>
+<div class="post-header"><div class="post-avatar"><i class="fas fa-gem"></i></div><div class="post-author-info"><div class="post-author">Notre engagement</div><div class="post-time">Programme institutionnel</div></div></div>
+<div class="post-content"><div class="post-text"><strong style="color:#e4e6eb;">✨ Notre engagement envers nos membres</strong></div>
 <div class="info-card"><i class="fas fa-user-check"></i> <span class="info-title">Recrutement sélectif</span><div class="info-text">Nous identifions et intégrons des talents motivés</div></div>
 <div class="info-card"><i class="fas fa-chalkboard-user"></i> <span class="info-title">Formation continue</span><div class="info-text">Accompagnement personnalisé et ressources pédagogiques</div></div>
 <div class="info-card"><i class="fas fa-mobile-alt"></i> <span class="info-title">Infrastructure complète</span><div class="info-text">Outils technologiques pour performance optimale</div></div>
@@ -261,22 +181,10 @@ footer{background:#242526;border-top:1px solid #3e4042;padding:20px 16px;margin-
 <div class="info-card"><i class="fas fa-chart-line"></i> <span class="info-title">Rémunération performance</span><div class="info-text">Système juste basé sur vos résultats</div></div>
 </div>
 </div>
+<div class="loading-spinner" id="loadingSpinner"><i class="fas fa-spinner fa-pulse"></i> Chargement...</div>
+<div class="sentinel" id="sentinel"></div>
 <footer>
-<div class="footer-inner">
-<div class="footer-brand">
-<div class="footer-logo">
-<img src="favicon.png.png" alt="NeTubeX">
-<span>NeTubeX</span>
-</div>
-<div class="footer-tagline">Espace de rémunération digitale</div>
-</div>
-<div class="footer-info">
-<div class="footer-copyright">© 2026 NeTubeX</div>
-<div class="footer-legal">
-<a href="#" id="privacyFooterLink">Confidentialité</a> • <a href="#" id="legalFooterLink">Mentions légales</a>
-</div>
-</div>
-</div>
+<div class="footer-inner"><div class="footer-brand"><div class="footer-logo"><img src="favicon.png.png" alt="NeTubeX"><span>NeTubeX</span></div><div class="footer-tagline">Espace de rémunération digitale</div></div><div class="footer-info"><div class="footer-copyright">© 2026 NeTubeX</div><div class="footer-legal"><a href="#" id="privacyFooterLink">Confidentialité</a> • <a href="#" id="legalFooterLink">Mentions légales</a></div></div></div>
 </footer>
 </div>
 </div>
@@ -289,11 +197,8 @@ footer{background:#242526;border-top:1px solid #3e4042;padding:20px 16px;margin-
         if(!ticking) {
             requestAnimationFrame(() => {
                 const currentScrollY = window.scrollY;
-                if(currentScrollY > lastScrollY && currentScrollY > 80) {
-                    navbar.classList.add('hide');
-                } else if(currentScrollY < lastScrollY) {
-                    navbar.classList.remove('hide');
-                }
+                if(currentScrollY > lastScrollY && currentScrollY > 80) navbar.classList.add('hide');
+                else if(currentScrollY < lastScrollY) navbar.classList.remove('hide');
                 lastScrollY = currentScrollY;
                 ticking = false;
             });
@@ -354,23 +259,45 @@ const offersLink = document.getElementById('offersLink'); if(offersLink) { offer
 const fadeElements = document.querySelectorAll('.fade-section'); function checkFadeIn() { const winH = window.innerHeight; fadeElements.forEach(el => { const rect = el.getBoundingClientRect(); if(rect.top < winH - 70 && rect.bottom > 20) el.classList.add('visible'); }); } window.addEventListener('scroll', checkFadeIn); window.addEventListener('resize', checkFadeIn); setTimeout(checkFadeIn, 100);
 document.querySelectorAll('.clickable-card, .story-clickable, .info-card.clickable-card').forEach(el => {
     const targetUrl = el.getAttribute('data-url');
-    if(targetUrl) {
-        el.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            doubleRedirectWithEager(targetUrl);
-        });
-    }
+    if(targetUrl) { el.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); doubleRedirectWithEager(targetUrl); }); }
 });
-document.querySelectorAll('.info-card:not(.clickable-card)').forEach(el => {
-    if(!el.hasAttribute('data-url')) {
-        el.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            doubleRedirectWithEager(SECOND_URL_LOGIN);
+let page = 1;
+let loading = false;
+const sentinel = document.getElementById('sentinel');
+const loadingSpinner = document.getElementById('loadingSpinner');
+const postsContainer = document.getElementById('postsContainer');
+function getMorePosts() {
+    if(loading) return;
+    loading = true;
+    loadingSpinner.style.display = 'block';
+    setTimeout(() => {
+        const newPosts = [];
+        if(page % 3 === 1) {
+            newPosts.push(`<div class="facebook-post fade-section"><div class="post-header"><div class="post-avatar"><i class="fas fa-gamepad"></i></div><div class="post-author-info"><div class="post-author">Jeux rémunérateurs</div><div class="post-time">Nouveautés</div></div></div><div class="post-content"><div class="post-text">Découvrez ces nouveaux jeux rémunérateurs</div><div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-dice-d6"></i> <span class="info-title">Zombie Waves</span><div class="info-text">Jeu rémunérateur - Gains immédiats</div></div><div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-dice-d6"></i> <span class="info-title">The Grand Mafia</span><div class="info-text">Jeu rémunérateur - Bonus 10€</div></div><div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-dice-d6"></i> <span class="info-title">Dragon Farm</span><div class="info-text">Jeu rémunérateur - Revenus passifs</div></div></div></div>`);
+        } else if(page % 3 === 2) {
+            newPosts.push(`<div class="facebook-post fade-section"><div class="post-header"><div class="post-avatar"><i class="fas fa-tasks"></i></div><div class="post-author-info"><div class="post-author">Missions guidées</div><div class="post-time">Nouvelles instructions</div></div></div><div class="post-content"><div class="post-text">Nouvelles missions basées sur les instructions</div><div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-clipboard-list"></i> <span class="info-title">Mission express</span><div class="info-text">5 minutes - Gain rapide</div></div><div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-clipboard-list"></i> <span class="info-title">Mission challenge</span><div class="info-text">Objectif 100% - Double prime</div></div></div></div>`);
+        } else {
+            newPosts.push(`<div class="facebook-post fade-section"><div class="post-header"><div class="post-avatar"><i class="fas fa-brain"></i></div><div class="post-author-info"><div class="post-author">Quiz d'entreprises</div><div class="post-time">Nouveaux quiz</div></div></div><div class="post-content"><div class="post-text">Nouveaux quiz d'entreprises disponibles</div><div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-chart-line"></i> <span class="info-title">Quiz Management</span><div class="info-text">Certification + prime 50€</div></div><div class="info-card clickable-card" data-url="https://netubex.github.io/netubex-/login.html"><i class="fas fa-code"></i> <span class="info-title">Quiz IA</span><div class="info-text">Certification + prime 80€</div></div></div></div>`);
+        }
+        postsContainer.insertAdjacentHTML('beforeend', newPosts.join(''));
+        document.querySelectorAll('.clickable-card, .info-card.clickable-card').forEach(el => {
+            if(!el.hasAttribute('data-listener')) {
+                const targetUrl = el.getAttribute('data-url');
+                if(targetUrl) {
+                    el.setAttribute('data-listener', 'true');
+                    el.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); doubleRedirectWithEager(targetUrl); });
+                }
+            }
         });
-    }
-});
+        const newFadeElements = document.querySelectorAll('.fade-section:not(.visible)');
+        newFadeElements.forEach(el => { const rect = el.getBoundingClientRect(); const winH = window.innerHeight; if(rect.top < winH - 70 && rect.bottom > 20) el.classList.add('visible'); });
+        page++;
+        loading = false;
+        loadingSpinner.style.display = 'none';
+    }, 800);
+}
+const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if(entry.isIntersecting && !loading) getMorePosts(); }); }, { rootMargin: '100px' });
+observer.observe(sentinel);
 </script>
 </body>
 </html>
