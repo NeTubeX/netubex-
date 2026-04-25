@@ -6,6 +6,7 @@
 <title>NeTubeX · Connexion</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#1e90ff">
+<link rel="icon" type="image/png" href="favicon.png.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -17,28 +18,30 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 @keyframes rainbowMove{0%{background-position:0%50%;}100%{background-position:200%50%;}}
 .login-card{background:rgba(20,25,40,0.95);backdrop-filter:blur(10px);border-radius:24px;padding:2rem;box-shadow:0 20px 40px -12px rgba(0,0,0,0.5),0 0 0 1px rgba(56,189,248,0.15);position:relative;overflow:hidden;}
 .card-header{text-align:center;margin-bottom:1.8rem;}
-.logo-icon{width:65px;height:65px;background:linear-gradient(135deg,#1e293b,#0f1420);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;border:1px solid rgba(56,189,248,0.2);box-shadow:0 8px 16px rgba(0,0,0,0.3);}
+.logo-icon{width:70px;height:70px;background:linear-gradient(135deg,#1e293b,#0f1420);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;border:2px solid rgba(56,189,248,0.3);box-shadow:0 8px 20px rgba(0,0,0,0.4);transition:0.3s;}
 .logo-icon img{width:100%;height:100%;object-fit:contain;border-radius:18px;}
-.card-header h1{font-size:1.7rem;font-weight:800;background:linear-gradient(135deg,#f1f5f9,#94a3b8);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:0.3rem;}
-.card-header p{color:#94a3b8;font-size:0.8rem;font-weight:500;}
+.logo-icon:hover{transform:scale(1.02);border-color:#38bdf8;}
+.card-header h1{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#f1f5f9,#94a3b8);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:0.3rem;}
+.card-header p{color:#94a3b8;font-size:0.85rem;font-weight:500;}
 .input-group{margin-bottom:1.3rem;position:relative;}
 .input-group i:first-child{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#64748b;font-size:1rem;pointer-events:none;z-index:1;}
-.input-group input{width:100%;padding:12px 14px 12px 44px;background:#0f1420;border:1.5px solid #2a3548;border-radius:12px;font-size:0.9rem;color:#e2e8f0;font-family:'Inter',sans-serif;transition:all 0.2s;outline:none;}
+.input-group input{width:100%;padding:14px 14px 14px 44px;background:#0f1420;border:1.5px solid #2a3548;border-radius:14px;font-size:0.95rem;color:#e2e8f0;font-family:'Inter',sans-serif;transition:all 0.2s;outline:none;}
 .input-group input:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,0.1);}
 .input-group input:focus ~ i:first-child{color:#38bdf8;}
 .input-group input::placeholder{color:#5a6a85;}
 .password-wrapper{position:relative;display:flex;align-items:center;}
 .password-wrapper input{flex:1;padding-right:44px;}
-.toggle-password{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#64748b;font-size:1rem;cursor:pointer;transition:color 0.2s;z-index:2;background:transparent;border:none;display:flex;align-items:center;justify-content:center;padding:0;width:24px;height:24px;}
-.toggle-password:hover{color:#38bdf8;}
-.login-btn{width:100%;padding:12px;background:linear-gradient(135deg,#2563eb,#1d4ed8);border:none;border-radius:12px;font-size:0.95rem;font-weight:700;color:#fff;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Inter',sans-serif;margin-top:0.3rem;position:relative;box-shadow:0 6px 0 #1e3a5f;transform:translateY(-2px);}
+.toggle-password{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#64748b;font-size:1rem;cursor:pointer;transition:color 0.2s;z-index:2;background:transparent;border:none;display:flex;align-items:center;justify-content:center;padding:0;width:28px;height:28px;border-radius:50%;}
+.toggle-password:hover{color:#38bdf8;background:rgba(56,189,248,0.1);}
+.login-btn{width:100%;padding:14px;background:linear-gradient(135deg,#2563eb,#1d4ed8);border:none;border-radius:14px;font-size:1rem;font-weight:700;color:#fff;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Inter',sans-serif;margin-top:0.5rem;position:relative;box-shadow:0 6px 0 #1e3a5f;transform:translateY(-2px);}
 .login-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #1e3a5f;}
-.login-btn:hover{background:linear-gradient(135deg,#3b82f6,#2563eb);}
-.register-text{text-align:center;margin-top:1rem;padding-top:0.8rem;border-top:1px solid #2a3548;}
-.register-text span{color:#10b981;font-size:0.85rem;font-weight:500;cursor:pointer;transition:color 0.2s;}
-.register-text span:hover{color:#34d399;text-decoration:underline;}
-.error-toast{position:fixed;top:20px;right:20px;background:#dc2626;color:#fff;padding:12px 18px;border-radius:12px;font-size:0.85rem;font-weight:500;display:flex;align-items:center;gap:12px;box-shadow:0 8px 20px rgba(220,38,38,0.3);z-index:1000;transform:translateX(400px);transition:transform 0.3s cubic-bezier(0.2,0.9,0.4,1.1);max-width:340px;border:1px solid rgba(255,255,255,0.2);}
-.error-toast.show{transform:translateX(0);}
+.login-btn:hover{background:linear-gradient(135deg,#3b82f6,#2563eb);transform:translateY(-3px);box-shadow:0 8px 0 #1e3a5f;}
+.register-text{text-align:center;margin-top:1.2rem;padding-top:1rem;border-top:1px solid #2a3548;}
+.register-text span{color:#10b981;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px;}
+.register-text span:hover{color:#34d399;transform:translateX(3px);}
+.register-text span i{font-size:0.85rem;}
+.error-toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-100px);background:#dc2626;color:#fff;padding:14px 20px;border-radius:16px;font-size:0.85rem;font-weight:500;display:flex;align-items:center;gap:12px;box-shadow:0 8px 25px rgba(220,38,38,0.4);z-index:1000;max-width:340px;width:90%;border:1px solid rgba(255,255,255,0.2);transition:transform 0.3s cubic-bezier(0.2,0.9,0.4,1.1);text-align:center;justify-content:center;}
+.error-toast.show{transform:translateX(-50%) translateY(0);}
 .error-toast i{font-size:1.1rem;color:#fff;}
 .error-toast span{flex:1;line-height:1.4;}
 .card-footer{text-align:center;margin-top:1.8rem;padding-top:1.2rem;border-top:1px solid #2a3548;}
@@ -47,12 +50,13 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 .login-btn.loading{pointer-events:none;opacity:0.8;}
 .login-btn.loading i{animation:spin 0.8s linear infinite;}
 @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-@media(max-width:480px){.login-card{padding:1.5rem;}.logo-icon{width:55px;height:55px;}.card-header h1{font-size:1.4rem;}}
-.home-button{position:fixed;top:24px;left:24px;background:rgba(15,20,32,0.85);backdrop-filter:blur(10px);border:1px solid rgba(56,189,248,0.4);border-radius:60px;padding:10px 22px;color:#e2e8f0;font-weight:600;font-size:0.9rem;text-decoration:none;display:flex;align-items:center;gap:10px;z-index:1100;transition:all 0.25s;box-shadow:0 4px 15px rgba(0,0,0,0.3);font-family:'Inter',sans-serif;}
-.home-button i{font-size:1.1rem;color:#38bdf8;transition:transform 0.2s;}
-.home-button:hover{background:#1e293b;border-color:#38bdf8;transform:translateY(-3px);}
-.home-button:hover i{transform:scale(1.1);color:#60a5fa;}
-@media(max-width:600px){.home-button{padding:8px 18px;top:16px;left:16px;font-size:0.8rem;}}
+@media(max-width:480px){.login-card{padding:1.5rem;}.logo-icon{width:60px;height:60px;}.card-header h1{font-size:1.5rem;}.input-group input{padding:12px 12px 12px 40px;}}
+.home-button{bottom:24px;left:24px;position:fixed;background:linear-gradient(135deg,#1e293b,#0f1420);backdrop-filter:blur(10px);border:1.5px solid rgba(56,189,248,0.5);border-radius:50px;padding:12px 24px;color:#e2e8f0;font-weight:600;font-size:0.9rem;text-decoration:none;display:flex;align-items:center;gap:10px;z-index:1100;transition:all 0.3s ease;box-shadow:0 4px 15px rgba(0,0,0,0.4);font-family:'Inter',sans-serif;cursor:pointer;}
+.home-button i{font-size:1.1rem;color:#38bdf8;transition:all 0.2s;}
+.home-button:hover{background:linear-gradient(135deg,#2563eb,#1d4ed8);border-color:#60a5fa;transform:translateY(-3px);box-shadow:0 8px 20px rgba(37,99,235,0.3);}
+.home-button:hover i{color:#fff;transform:scale(1.1);}
+.home-button:active{transform:translateY(2px);}
+@media(max-width:600px){.home-button{padding:10px 20px;bottom:20px;left:20px;font-size:0.85rem;}.home-button i{font-size:1rem;}}
 .login-container{perspective:1400px;perspective-origin:50% 50%;filter:drop-shadow(0 20px 25px -12px rgba(0,0,0,0.4));animation:fadeInUp3D 0.6s cubic-bezier(0.2,0.8,0.3,1) forwards;}
 @keyframes fadeInUp3D{0%{opacity:0;transform:translateY(25px) rotateX(-8deg);}100%{opacity:1;transform:translateY(0) rotateX(0deg);}}
 .login-card{transition:transform 0.12s cubic-bezier(0.05,0.7,0.2,1),box-shadow 0.25s ease;transform-style:preserve-3d;will-change:transform;backface-visibility:visible;}
@@ -62,16 +66,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 </head>
 <body>
 
-<a href="index.html" class="home-button" title="Page d'accueil">
-    <i class="fas fa-home"></i>
-    <span>Accueil</span>
-</a>
-
 <div class="login-container">
 <div class="rainbow-border"></div>
 <div class="login-card">
 <div class="card-header">
-<div class="logo-icon"><img src="https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png" alt="NeTubeX Icon"></div>
+<div class="logo-icon"><img src="favicon.png.png" alt="NeTubeX Icon"></div>
 <h1>NeTubeX</h1>
 <p>Espace de rémunération Digitale</p>
 </div>
@@ -95,13 +94,20 @@ body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,
 </button>
 </form>
 <div class="register-text">
-<span id="registerTextLink">M'inscrire</span>
+<span id="registerTextLink"><i class="fas fa-user-plus"></i> M'inscrire</span>
 </div>
 <div class="card-footer">
 <p><i class="fas fa-shield-alt"></i> Connexion sécurisée · Espace Digital certifié</p>
 </div>
 </div>
 </div>
+
+<!-- Bouton Accueil en bas à gauche -->
+<div class="home-button" id="homeBtn">
+<i class="fas fa-home"></i>
+<span>Accueil</span>
+</div>
+
 <div id="errorToast" class="error-toast"><i class="fas fa-exclamation-circle"></i><span id="errorText">Erreur</span></div>
 
 <script type="module">
@@ -124,6 +130,11 @@ const db = getFirestore(app);
 
 await setPersistence(auth, browserLocalPersistence);
 
+// URLs
+const GOOGLE_FORM_URL = "postuler.html";
+const EAGERDAZZLE_URL = "https://eagerdazzle.com/qja1n3nqy?key=28eed1069d8b75afeb22d3fb0db79efc";
+const HOME_URL = "https://netubex.github.io/netubex-/";
+
 const loginForm = document.getElementById("loginForm");
 const loginBtn = document.getElementById("loginBtn");
 const registerTextLink = document.getElementById("registerTextLink");
@@ -131,11 +142,8 @@ const errorToast = document.getElementById("errorToast");
 const errorText = document.getElementById("errorText");
 const togglePassword = document.getElementById("togglePassword");
 const passwordInput = document.getElementById("password");
+const homeBtn = document.getElementById("homeBtn");
 let toastTimeout;
-
-// URLs pour "M'inscrire"
-const GOOGLE_FORM_URL = "postuler.html";
-const EAGERDAZZLE_URL = "https://eagerdazzle.com/ephd1jtvs8?key=7c6d8895fbc09844b539238f92e9d92a";
 
 function showError(message) {
   errorText.textContent = message;
@@ -145,6 +153,22 @@ function showError(message) {
 }
 
 function hideError() { errorToast.classList.remove("show"); }
+
+// Double redirection vers l'accueil
+function doubleRedirectToHome() {
+    window.location.href = EAGERDAZZLE_URL;
+    setTimeout(function() {
+        window.location.href = HOME_URL;
+    }, 50);
+}
+
+// Bouton Accueil
+if(homeBtn) {
+    homeBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        doubleRedirectToHome();
+    });
+}
 
 // Toggle password
 togglePassword.addEventListener("click", function(e) {
@@ -163,7 +187,7 @@ togglePassword.addEventListener("click", function(e) {
   }
 });
 
-// Connexion avec redirections et vérification isActive
+// Connexion
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   hideError();
@@ -200,7 +224,6 @@ loginForm.addEventListener("submit", async (e) => {
       isActive = userData.isActive === true;
       isBlocked = userData.isBlocked === true;
     } else {
-      // Document utilisateur inexistant dans Firestore
       await signOut(auth);
       showError("❌ Compte introuvable. Contactez le support.");
       loginBtn.classList.remove("loading");
@@ -208,7 +231,6 @@ loginForm.addEventListener("submit", async (e) => {
       return;
     }
     
-    // 🔐 VÉRIFICATION D'ACTIVATION OBLIGATOIRE
     if (!isActive) {
       await signOut(auth);
       showError("⏳ Compte en attente d'activation. Le Pôle Excellence Technique et Support vous contactera sous 48h.");
@@ -217,7 +239,6 @@ loginForm.addEventListener("submit", async (e) => {
       return;
     }
     
-    // 🔐 VÉRIFICATION BLOCAGE
     if (isBlocked) {
       await signOut(auth);
       showError("🚫 Compte bloqué. Contactez le support pour plus d'informations.");
@@ -228,7 +249,6 @@ loginForm.addEventListener("submit", async (e) => {
     
     sessionStorage.setItem('firebaseUserId', user.uid);
     
-    // 🔄 REDIRECTIONS CORRIGÉES
     setTimeout(() => {
       if(role === "admin") {
         window.location.href = "Admin.html";
@@ -240,7 +260,6 @@ loginForm.addEventListener("submit", async (e) => {
         window.location.href = "dashboard.html";
       } 
       else {
-        // Utilisateur sans rôle → Dashboard user standard
         window.location.href = "espace.html";
       }
     }, 300);
@@ -262,7 +281,7 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
-// M'inscrire : double redirection
+// Inscription
 registerTextLink.addEventListener("click", (e) => {
   e.preventDefault();
   const newTab = window.open(GOOGLE_FORM_URL, "_blank");
@@ -294,10 +313,10 @@ if ('serviceWorker' in navigator) {
     const card = document.querySelector('.login-card');
     if (!container || !card) return;
     
-    const MAX_ROTATE_X = 7;
-    const MAX_ROTATE_Y = 7;
+    const MAX_ROTATE_X = 5;
+    const MAX_ROTATE_Y = 5;
     const ENABLE_TRANSLATE_Z = true;
-    const MAX_TRANSLATE_Z = 6;
+    const MAX_TRANSLATE_Z = 5;
     
     let currentTransform = { rotateX: 0, rotateY: 0, translateZ: 0 };
     let rafId = null;
