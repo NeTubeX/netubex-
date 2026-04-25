@@ -264,7 +264,7 @@ function updateWithdrawalsTable(){
         let u=usersData.find(u=>u.id===w.userId);
         let statusClass=w.status==='pending'?'badge-warning':(w.status==='approved'?'badge-success':'badge-danger');
         let statusText=w.status==='pending'?'En attente':(w.status==='approved'?'Approuvé':'Rejeté');
-        return `<tr><td>${escapeHtml(u?.email||w.userId)}</td><td>${(w.amount||0).toFixed(2)} $</td><td>${w.method||'-'}</td><td>${escapeHtml(w.walletAddress||'-')}</td><td>${formatDateShort(w.requestedAt)}</td><td><span class="badge ${statusClass}">${statusText}</span></td><td>${w.status==='pending'?`<button class="action-btn approve" onclick='approveWithdraw("${w.id}")'>Approuver</button><button class="action-btn delete" onclick='rejectWithdraw("${w.id}")'>Rejeter</button>`:(w.status==='approved'?`<button class="action-btn delete" onclick='deleteWithdraw("${w.id}")'>Supprimer</button>`:'-')}<tr></tr>`;
+        return `<tr><td>${escapeHtml(u?.email||w.userId)}</td><td>${(w.amount||0).toFixed(2)} $</td><td>${w.method||'-'}</td><td>${escapeHtml(w.walletAddress||'-')}</td><td>${formatDateShort(w.requestedAt)}</td><td><span class="badge ${statusClass}">${statusText}</span></td><td>${w.status==='pending'?`<button class="action-btn approve" onclick='approveWithdraw("${w.id}")'>Approuver</button><button class="action-btn delete" onclick='rejectWithdraw("${w.id}")'>Rejeter</button>`:(w.status==='approved'?`<button class="action-btn delete" onclick='deleteWithdraw("${w.id}")'>Supprimer</button>`:'-')}</td></tr>`;
     }).join('');
 }
 window.filterWithdrawals=()=>{ currentWithdrawFilter=document.getElementById('withdrawStatusFilter').value; updateWithdrawalsTable(); };
@@ -298,7 +298,7 @@ async function loadLastReport(){
                     let rendement=n.tempsJour>0?((n.pointsJour/(n.tempsJour/60)).toFixed(2)):0;
                     let presenceClass = n.presence === 'Présent' ? 'badge-present' : 'badge-absent';
                     let presenceText = n.presence === 'Présent' ? '✅ PRÉSENT' : '❌ ABSENT';
-                    return `<tr>
+                    return `</table>
                         <td style="white-space:nowrap;"><strong onclick="showRapportPopup(${JSON.stringify(n).replace(/"/g, '&quot;')})" style="cursor:pointer;color:#f59e0b;">${escapeHtml(n.code)}</strong></td>
                         <td><span class="${presenceClass}">${presenceText}</span></td>
                         <td style="max-width:150px; white-space:normal;">${escapeHtml(n.raisonAbsence||'-')}</td>
@@ -311,8 +311,8 @@ async function loadLastReport(){
                         <td>${n.tempsPrecedent||0}</td>
                         <td>${n.tempsJour||0}</td>
                         <td>${escapeHtml(n.forfaitInternet||'-')}</td>
-                        <td style="color:${rendement>=50?'#10b981':(rendement>=30?'#f59e0b':'#ef4444')}; font-weight:600;">${rendement} pts/h</td>
-                    </table>`;
+                        <td style="color:${rendement>=50?'#10b981':(rendement>=30?'#f59e0b':'#ef4444')}; font-weight:600;">${rendement} pts/h}-
+                    </tr>`;
                 }).join('');
             }
             document.getElementById('reportCount').innerText=netubers.length;
@@ -324,73 +324,82 @@ async function loadLastReport(){
     }catch(e){console.error(e);}
 }
 function updateNetubersTable(){
-    let tbody=document.getElementById('netubersTableBody');
-    if(!tbody)return;
-    let now=new Date(); let INACTIVITY_LIMIT=8*60*60*1000;
+    let tbody = document.getElementById('netubersTableBody');
+    if(!tbody){
+        console.error("Tableau netubersTableBody non trouvé");
+        return;
+    }
+    let now = new Date();
+    let INACTIVITY_LIMIT = 8 * 60 * 60 * 1000;
     let netuberUsers = usersData.filter(u => u.role === 'netuber' && u.isActive === true);
-    let filtered=netuberUsers.filter(u=>{
-        let matchesSearch=!searchNetuberTerm||u.code.toLowerCase().includes(searchNetuberTerm);
-        let lastSeen=u.lastSeen?new Date(u.lastSeen):null;
-        let isOnline=lastSeen&&lastSeen.getFullYear()>1970&&(now-lastSeen)<INACTIVITY_LIMIT;
-        let matchesStatus=currentNetuberFilter==='all'||(currentNetuberFilter==='online'&&isOnline)||(currentNetuberFilter==='offline'&&!isOnline);
-        return matchesSearch&&matchesStatus;
+    let filtered = netuberUsers.filter(u => {
+        let matchesSearch = !searchNetuberTerm || (u.code || '').toLowerCase().includes(searchNetuberTerm);
+        let lastSeen = u.lastSeen ? new Date(u.lastSeen) : null;
+        let isOnline = lastSeen && lastSeen.getFullYear() > 1970 && (now - lastSeen) < INACTIVITY_LIMIT;
+        let matchesStatus = currentNetuberFilter === 'all' || (currentNetuberFilter === 'online' && isOnline) || (currentNetuberFilter === 'offline' && !isOnline);
+        return matchesSearch && matchesStatus;
     });
-    let onlineCount=0; let blockedCount=0;
-    tbody.innerHTML=filtered.map(u=>{
-        let lastSeen=u.lastSeen?new Date(u.lastSeen):null;
-        let isOnline=lastSeen&&lastSeen.getFullYear()>1970&&(now-lastSeen)<INACTIVITY_LIMIT;
-        if(isOnline)onlineCount++;
-        if(u.isBlocked)blockedCount++;
-        let statusText='';
-        if(!lastSeen||lastSeen.getFullYear()<=1970){
-            statusText='Jamais connecté';
-        } else if(isOnline){
-            const diffMs = now - lastSeen;
-            const diffMinutes = Math.floor(diffMs / 60000);
-            const diffHours = Math.floor(diffMinutes / 60);
-            const diffDays = Math.floor(diffHours / 24);
-            if(diffDays > 0){
-                statusText = `Connecté il y a ${diffDays} j`;
-            } else if(diffHours > 0){
-                statusText = `Connecté il y a ${diffHours} h`;
-            } else if(diffMinutes > 0){
-                statusText = `Connecté il y a ${diffMinutes} min`;
+    let onlineCount = 0;
+    let blockedCount = 0;
+    if(filtered.length === 0){
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Aucun Netuber trouvé</td></tr>';
+    } else {
+        tbody.innerHTML = filtered.map(u => {
+            let lastSeen = u.lastSeen ? new Date(u.lastSeen) : null;
+            let isOnline = lastSeen && lastSeen.getFullYear() > 1970 && (now - lastSeen) < INACTIVITY_LIMIT;
+            if(isOnline) onlineCount++;
+            if(u.isBlocked) blockedCount++;
+            let statusText = '';
+            if(!lastSeen || lastSeen.getFullYear() <= 1970){
+                statusText = 'Jamais connecté';
+            } else if(isOnline){
+                const diffMs = now - lastSeen;
+                const diffMinutes = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMinutes / 60);
+                const diffDays = Math.floor(diffHours / 24);
+                if(diffDays > 0){
+                    statusText = `Connecté il y a ${diffDays} j`;
+                } else if(diffHours > 0){
+                    statusText = `Connecté il y a ${diffHours} h`;
+                } else if(diffMinutes > 0){
+                    statusText = `Connecté il y a ${diffMinutes} min`;
+                } else {
+                    statusText = `Connecté à l'instant`;
+                }
             } else {
-                statusText = `Connecté à l'instant`;
+                const diffMs = now - lastSeen;
+                const diffMinutes = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMinutes / 60);
+                const diffDays = Math.floor(diffHours / 24);
+                if(diffDays > 0){
+                    statusText = `Déconnecté depuis ${diffDays} j`;
+                } else if(diffHours > 0){
+                    statusText = `Déconnecté depuis ${diffHours} h`;
+                } else if(diffMinutes > 0){
+                    statusText = `Déconnecté depuis ${diffMinutes} min`;
+                } else {
+                    statusText = `Déconnecté depuis moins d'une minute`;
+                }
             }
-        } else {
-            const diffMs = now - lastSeen;
-            const diffMinutes = Math.floor(diffMs / 60000);
-            const diffHours = Math.floor(diffMinutes / 60);
-            const diffDays = Math.floor(diffHours / 24);
-            if(diffDays > 0){
-                statusText = `Déconnecté depuis ${diffDays} j`;
-            } else if(diffHours > 0){
-                statusText = `Déconnecté depuis ${diffHours} h`;
-            } else if(diffMinutes > 0){
-                statusText = `Déconnecté depuis ${diffMinutes} min`;
-            } else {
-                statusText = `Déconnecté depuis moins d'une minute`;
-            }
-        }
-        let statusHtml=isOnline?'<span class="status-spot online"><i class="fas fa-circle"></i> Connecté</span>':'<span class="status-spot offline"><i class="fas fa-circle"></i> Déconnecté</span>';
-        let objMensuel=u.objectifMensuel||0;
-        let objAtteint=u.objectifAtteint||0;
-        return `<tr>
-            <td><strong>${escapeHtml(u.code)}</strong>${u.isBlocked?' <span class="badge badge-danger">Bloqué</span>':''}</td>
-            <td>${objMensuel}</td>
-            <td style="color:${objAtteint>=objMensuel?'#10b981':'#f59e0b'}">${objAtteint}</td>
-            <td>${statusHtml}</td>
-            <td><small>${statusText}</small></td>
-            <td><button class="action-btn cap" onclick='openCAPModal("${u.code}")'>CAP</button><button class="action-btn delete" onclick='blockUser("${u.id}")'>${u.isBlocked?'Débloquer':'Bloquer'}</button></td>
-        </tr>`;
-    }).join('');
-    document.getElementById('totalNetubers').innerText=netuberUsers.length;
-    document.getElementById('totalOnline').innerText=onlineCount;
-    document.getElementById('totalOffline').innerText=netuberUsers.length-onlineCount;
-    document.getElementById('blockedCount').innerText=blockedCount;
-    let ctx=document.getElementById('onlineChart')?.getContext('2d');
-    if(ctx){if(onlineChart)onlineChart.destroy();onlineChart=new Chart(ctx,{type:'doughnut',data:{labels:['Connectés','Déconnectés'],datasets:[{data:[onlineCount,netuberUsers.length-onlineCount],backgroundColor:['#10b981','#64748b']}]},options:{responsive:true}});}
+            let statusHtml = isOnline ? '<span class="status-spot online"><i class="fas fa-circle"></i> Connecté</span>' : '<span class="status-spot offline"><i class="fas fa-circle"></i> Déconnecté</span>';
+            let objMensuel = u.objectifMensuel || 0;
+            let objAtteint = u.objectifAtteint || 0;
+            return `<tr>
+                <td><strong>${escapeHtml(u.code)}</strong>${u.isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</td>
+                <td>${objMensuel}</td>
+                <td style="color:${objAtteint >= objMensuel ? '#10b981' : '#f59e0b'}">${objAtteint}</td>
+                <td>${statusHtml}</td>
+                <td><small>${statusText}</small></td>
+                <td><button class="action-btn cap" onclick='openCAPModal("${u.code}")'>CAP</button><button class="action-btn delete" onclick='blockUser("${u.id}")'>${u.isBlocked ? 'Débloquer' : 'Bloquer'}</button></td>
+            </tr>`;
+        }).join('');
+    }
+    document.getElementById('totalNetubers').innerText = netuberUsers.length;
+    document.getElementById('totalOnline').innerText = onlineCount;
+    document.getElementById('totalOffline').innerText = netuberUsers.length - onlineCount;
+    document.getElementById('blockedCount').innerText = blockedCount;
+    let ctx = document.getElementById('onlineChart')?.getContext('2d');
+    if(ctx){ if(onlineChart) onlineChart.destroy(); onlineChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Connectés', 'Déconnectés'], datasets: [{ data: [onlineCount, netuberUsers.length - onlineCount], backgroundColor: ['#10b981', '#64748b'] }] }, options: { responsive: true } }); }
 }
 function updatePendingTable(){
     let tbody=document.getElementById('pendingTableBody');
@@ -472,7 +481,7 @@ async function loadCAPs(){
     capsData=[]; snap.forEach(d=>capsData.push({id:d.id,...d.data()}));
     document.getElementById('totalCAPSent').innerText=capsData.length;
     let tbody=document.getElementById('capHistoryBody');
-    if(tbody){ tbody.innerHTML=capsData.map(c=>`<tr>}<strong>${escapeHtml(c.netuberCode)}</strong></td>}</td>${escapeHtml(c.message.substring(0,60))}${c.message.length>60?'...':''}</td></td>}</td>${formatDateTime(c.sentDate)}</td></td>}</td>${formatDateShort(c.expiryDate)}</td></tr>`).join(''); }
+    if(tbody){ tbody.innerHTML=capsData.map(c=>`<tr>}<strong>${escapeHtml(c.netuberCode)}</strong></td>}</td>${escapeHtml(c.message.substring(0,60))}${c.message.length>60?'...':''}</td>}</td>${formatDateTime(c.sentDate)}</td>}</td>${formatDateShort(c.expiryDate)}</td></tr>`).join(''); }
 }
 async function loadMemos(){
     let memosRef=collection(db,"memorandums");
@@ -480,7 +489,7 @@ async function loadMemos(){
     let snap=await getDocs(q);
     memosData=[]; snap.forEach(d=>memosData.push({id:d.id,...d.data()}));
     let tbody=document.getElementById('memosBody');
-    if(tbody){ tbody.innerHTML=memosData.map(m=>`<tr>}</td><strong>${escapeHtml(m.title)}</strong></td></td>}</td><span class="badge badge-warning">${escapeHtml(m.reportReference||'-')}</span></td></td>}</td>${formatDateTime(m.sentDate)}</td></td>}</td>${escapeHtml(m.content.substring(0,50))}${m.content.length>50?'...':''}</td></td>}</td><button class="action-btn delete" onclick='deleteMemorandum("${m.id}")'>Supprimer</button></td></tr>`).join(''); }
+    if(tbody){ tbody.innerHTML=memosData.map(m=>`</table>}</td><strong>${escapeHtml(m.title)}</strong></td>}</td><span class="badge badge-warning">${escapeHtml(m.reportReference||'-')}</span></td>}<td>${formatDateTime(m.sentDate)}</td>}<td>${escapeHtml(m.content.substring(0,50))}${m.content.length>50?'...':''}</td>}<td><button class="action-btn delete" onclick='deleteMemorandum("${m.id}")'>Supprimer</button></td></tr>`).join(''); }
 }
 window.deleteMemorandum=async(id)=>{ showConfirm('Suppression','Supprimer ce mémorandum ?',async()=>{ await deleteDoc(doc(db,"memorandums",id)); showToast("Mémorandum supprimé"); await loadMemos(); }); };
 window.sendMemorandum = async () => { let ref=document.getElementById('memoReportReference').value; let title=document.getElementById('memoTitle').value.trim(); let content=document.getElementById('memoContent').value.trim(); if(!title||!content){showToast("Titre et contenu requis",true);return;} if(!ref){showToast("Aucune référence",true);return;} await addDoc(collection(db,"memorandums"),{recipient:"DEO - Direction",title:title,content:content,reportReference:ref,sentDate:new Date().toISOString(),type:"memorandum",sentBy:"DEO_Dashboard"}); showToast(`✅ Mémorandum envoyé`); closeModal('memorandumModal'); await loadMemos(); };
