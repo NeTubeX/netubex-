@@ -55,6 +55,32 @@ input:focus{outline:none;border-color:#2c6e9e;box-shadow:0 0 0 3px rgba(44,110,1
 .repartition-row strong{color:#1c4e6f;}
 .footer-note{margin-top:32px;text-align:center;font-size:0.7rem;color:#8aa0bb;padding:20px;border-top:1px solid #eef2f6;}
 .total-row td{background:#f8fafd;font-weight:700;border-top:2px solid #e2e8f0;}
+
+/* Nouveau design pour la carte Indemnités */
+.indemnites-stats{display:flex;gap:20px;margin-bottom:28px;flex-wrap:wrap;}
+.indemnites-stat-card{background:#f8fafc;border-radius:16px;padding:20px;flex:1;min-width:160px;border:1px solid #eef2f6;}
+.indemnites-stat-label{font-size:0.7rem;color:#5c6f87;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
+.indemnites-stat-value{font-size:1.6rem;font-weight:700;color:#1c4e6f;}
+.indemnites-stat-unit{font-size:0.8rem;font-weight:400;color:#5c6f87;}
+
+.indemnites-card{background:#ffffff;border:1px solid #eef2f6;border-radius:16px;overflow:hidden;}
+.indemnites-card-header{background:#f8fafc;padding:16px 24px;border-bottom:1px solid #eef2f6;}
+.indemnites-card-header h3{font-size:0.85rem;font-weight:600;color:#1c4e6f;}
+.indemnites-list{display:flex;flex-direction:column;}
+.indemnites-item{display:grid;grid-template-columns:200px 1fr 1fr 1fr 1fr;align-items:center;padding:16px 24px;border-bottom:1px solid #f0f4f9;transition:background 0.2s;}
+.indemnites-item:hover{background:#fafcff;}
+.indemnites-item-header{background:#f1f4f9;font-weight:600;color:#1e3a5f;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;padding:12px 24px;}
+.indemnites-code{font-weight:600;color:#1c4e6f;}
+.indemnites-points{text-align:right;font-weight:500;}
+.indemnites-temps-min{text-align:right;color:#5c6f87;}
+.indemnites-temps-h{text-align:right;font-weight:500;}
+.indemnites-valeur{text-align:right;font-weight:700;color:#1e6b3b;}
+.indemnites-total{background:#f8fafc;border-top:2px solid #e2e8f0;font-weight:700;}
+.indemnites-total .indemnites-code{font-size:0.85rem;}
+.indemnites-rank{width:40px;text-align:center;font-weight:600;color:#5a7a9a;}
+.rank-1{background:linear-gradient(145deg,#fff8e8,#fffef5);border-left:3px solid #f5a623;}
+.rank-2{background:linear-gradient(145deg,#f8fafc,#ffffff);border-left:3px solid #c0cbd6;}
+.rank-3{background:linear-gradient(145deg,#f8fafc,#ffffff);border-left:3px solid #cd7f32;}
 </style>
 </head>
 <body>
@@ -95,13 +121,7 @@ input:focus{outline:none;border-color:#2c6e9e;box-shadow:0 0 0 3px rgba(44,110,1
         </div>
         <div id="sectionIndemnites" class="content-section">
             <div class="section-header"><h2>👥 INDEMNITÉS NETUBERS</h2></div>
-            <div class="table-wrapper">
-                <table class="pro-table">
-                    <thead><tr><th>Netuber</th><th class="text-right">Points (mois)</th><th class="text-right">Temps total (min)</th><th class="text-right">Temps (h)</th><th class="text-right">Valeur ($)</th></tr></thead>
-                    <tbody id="indemnitesBody"><tr><td colspan="5" style="text-align:center;padding:50px;">Chargement...您</tbody>
-                    <tfoot id="indemnitesFooter"></tfoot>
-                </table>
-            </div>
+            <div id="indemnitesContainer"></div>
         </div>
         <div id="sectionBalance" class="content-section">
             <div class="section-header"><h2>📊 BALANCE COMPTABLE</h2></div>
@@ -139,8 +159,7 @@ const exportExcelBtn = document.getElementById('exportExcelBtn');
 const bilanPeriod = document.getElementById('bilanPeriod');
 const periodeLabel = document.getElementById('periodeLabel');
 const journalBody = document.getElementById('journalBody');
-const indemnitesBody = document.getElementById('indemnitesBody');
-const indemnitesFooter = document.getElementById('indemnitesFooter');
+const indemnitesContainer = document.getElementById('indemnitesContainer');
 const balanceBody = document.getElementById('balanceBody');
 const resultatBody = document.getElementById('resultatBody');
 const syntheseBox = document.getElementById('syntheseBox');
@@ -217,14 +236,14 @@ async function genererComptabilite(){
     if(journalRows.length>0){
         let html='';
         for(const row of journalRows){
-            html+=`<tr><td>${row.date}</td><td>${row.compte}</td><td class="text-right"><strong>${row.debitPts>0?row.debitPts.toLocaleString()+' pts':(row.debitPts===0?'0':'-')}</strong></td><td class="text-right">${row.debitUsd>0?row.debitUsd.toFixed(2)+' $':(row.debitUsd===0?'0.00 $':'-')}</td><td class="text-right">${row.creditUsd>0?row.creditUsd.toFixed(2)+' $':(row.creditUsd===0?'0.00 $':'-')}</td><td>${row.libelle}</td></tr>`;
+            html+=`<tr><td class="col-date">${row.date}</td><td class="col-compte">${row.compte}</td><td class="text-right"><strong>${row.debitPts>0?row.debitPts.toLocaleString()+' pts':(row.debitPts===0?'0':'-')}</strong></td><td class="text-right">${row.debitUsd>0?row.debitUsd.toFixed(2)+' $':(row.debitUsd===0?'0.00 $':'-')}</td><td class="text-right">${row.creditUsd>0?row.creditUsd.toFixed(2)+' $':(row.creditUsd===0?'0.00 $':'-')}</td><td class="col-libelle">${row.libelle}</td></tr>`;
         }
         journalBody.innerHTML=html;
     }else{journalBody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:50px;">Aucune activité您</tbody>'}
-    let indemnitesHtml='';
     let totalPointsMois=0;
     let totalTempsMois=0;
     let totalValeurMois=0;
+    const netubersData=[];
     const netubersTries=Array.from(cumulParNetuber.keys()).sort();
     for(const code of netubersTries){
         const lignes=cumulParNetuber.get(code);
@@ -234,11 +253,49 @@ async function genererComptabilite(){
         totalPointsMois+=totalPoints;
         totalTempsMois+=totalTemps;
         totalValeurMois+=totalValeur;
-        indemnitesHtml+=`<tr><td><strong>${code}</strong></td><td class="text-right">${totalPoints.toLocaleString()} pts</td><td class="text-right">${totalTemps} min</td><td class="text-right">${minutesToHours(totalTemps)}</td><td class="text-right"><strong>${totalValeur.toFixed(2)} $</strong></td></tr>`;
+        netubersData.push({code:code,points:totalPoints,temps:totalTemps,valeur:totalValeur});
     }
-    if(indemnitesHtml==='')indemnitesHtml='<tr><td colspan="5" style="text-align:center;padding:50px;">Aucune donnée您';
-    indemnitesBody.innerHTML=indemnitesHtml;
-    indemnitesFooter.innerHTML=`<tr class="total-row"><td><strong>TOTAL</strong></td><td class="text-right"><strong>${totalPointsMois.toLocaleString()} pts</strong></td><td class="text-right"><strong>${totalTempsMois} min</strong></td><td class="text-right"><strong>${minutesToHours(totalTempsMois)}</strong></td><td class="text-right"><strong>${totalValeurMois.toFixed(2)} $</strong></td></tr>`;
+    netubersData.sort((a,b)=>b.points-a.points);
+    let indemnitesHtml=`
+        <div class="indemnites-stats">
+            <div class="indemnites-stat-card"><div class="indemnites-stat-label">📊 Points totaux</div><div class="indemnites-stat-value">${totalPointsMois.toLocaleString()} <span class="indemnites-stat-unit">pts</span></div></div>
+            <div class="indemnites-stat-card"><div class="indemnites-stat-label">⏱️ Temps total</div><div class="indemnites-stat-value">${minutesToHours(totalTempsMois)}</div></div>
+            <div class="indemnites-stat-card"><div class="indemnites-stat-label">💰 Valeur totale</div><div class="indemnites-stat-value">${totalValeurMois.toFixed(2)} <span class="indemnites-stat-unit">$</span></div></div>
+            <div class="indemnites-stat-card"><div class="indemnites-stat-label">👥 Netubers actifs</div><div class="indemnites-stat-value">${netubersData.length}</div></div>
+        </div>
+        <div class="indemnites-card">
+            <div class="indemnites-card-header"><h3>🏆 CLASSEMENT DES NETUBERS</h3></div>
+            <div class="indemnites-list">
+                <div class="indemnites-item indemnites-item-header">
+                    <div>#</div><div>Netuber</div><div class="text-right">Points</div><div class="text-right">Temps</div><div class="text-right">Valeur</div>
+                </div>`;
+    for(let i=0;i<netubersData.length;i++){
+        const n=netubersData[i];
+        let rankClass='';
+        if(i===0)rankClass='rank-1';
+        else if(i===1)rankClass='rank-2';
+        else if(i===2)rankClass='rank-3';
+        indemnitesHtml+=`
+                <div class="indemnites-item ${rankClass}">
+                    <div class="indemnites-rank">${i+1}</div>
+                    <div class="indemnites-code">${n.code}</div>
+                    <div class="indemnites-points text-right">${n.points.toLocaleString()} pts</div>
+                    <div class="indemnites-temps-h text-right">${minutesToHours(n.temps)}</div>
+                    <div class="indemnites-valeur text-right">${n.valeur.toFixed(2)} $</div>
+                </div>`;
+    }
+    indemnitesHtml+=`
+                <div class="indemnites-item indemnites-total">
+                    <div class="indemnites-rank">🏆</div>
+                    <div class="indemnites-code">TOTAL</div>
+                    <div class="indemnites-points text-right">${totalPointsMois.toLocaleString()} pts</div>
+                    <div class="indemnites-temps-h text-right">${minutesToHours(totalTempsMois)}</div>
+                    <div class="indemnites-valeur text-right">${totalValeurMois.toFixed(2)} $</div>
+                </div>
+            </div>
+        </div>`;
+    if(netubersData.length===0)indemnitesHtml='<div style="padding:50px;text-align:center;">Aucune donnée disponible</div>';
+    indemnitesContainer.innerHTML=indemnitesHtml;
     const balances={};
     for(const row of journalRows){
         if(row.creditUsd>0){balances[row.compte]=balances[row.compte]||{debit:0,credit:0};balances[row.compte].credit+=row.creditUsd;}
@@ -263,7 +320,7 @@ async function genererComptabilite(){
             totalCredit+=vals.credit;
         }
     }
-    balanceHtml+=`<tr class="total-row"><td><strong>TOTAL</strong></td><td class="text-right"><strong>${totalDebit.toFixed(2)} $</strong></td><td class="text-right"><strong>${totalCredit.toFixed(2)} $</strong></td></tr>`;
+    balanceHtml+=`<tr class="total-row"><td><strong>TOTAL</strong></td><td class="text-right"><strong>${totalDebit.toFixed(2)} $</strong><tr><td class="text-right"><strong>${totalCredit.toFixed(2)} $</strong></td></tr>`;
     balanceBody.innerHTML=balanceHtml||'<tr><td colspan="3" style="text-align:center;">Aucune donnée您';
     let totalProduits=0,totalCharges=0;
     let produitsHtml='',chargesHtml='';
@@ -274,7 +331,7 @@ async function genererComptabilite(){
     const resultatHtml=produitsHtml+`<tr class="total-row"><td><strong>Total Charges</strong></td><td class="text-right"><strong>${totalCharges.toFixed(2)} $</strong></td></tr>`+chargesHtml+`<tr class="total-row"><td><strong>Résultat (Caisse)</strong></td><td class="text-right"><strong>${(totalProduits-totalCharges).toFixed(2)} $</strong></td></tr>`;
     resultatBody.innerHTML=resultatHtml||'<tr><td colspan="2" style="text-align:center;">Aucune donnée您';
     syntheseBox.innerHTML=`<div class="synthese-grid"><div class="synthese-item"><div class="synthese-label">Production totale</div><div class="synthese-value">${totalPointsMois.toLocaleString()} pts</div></div><div class="synthese-item"><div class="synthese-label">Valeur totale</div><div class="synthese-value">${totalValeurMois.toFixed(2)} $</div></div></div><div class="repartition-grid"><div class="repartition-row"><span>👥 Netubers (50%)</span><strong>${(totalValeurMois*REPARTITION.netuber).toFixed(2)} $</strong></div><div class="repartition-row"><span>✈️ Pilotes (10%)</span><strong>${(totalValeurMois*REPARTITION.pilotes).toFixed(2)} $</strong></div><div class="repartition-row"><span>🏢 Pôles (15%)</span><strong>${(totalValeurMois*REPARTITION.poles).toFixed(2)} $</strong></div><div class="repartition-row"><span>📡 Forfait Data (10%)</span><strong>${(totalValeurMois*REPARTITION.data).toFixed(2)} $</strong></div><div class="repartition-row"><span>💰 Caisse (15%)</span><strong>${(totalValeurMois*REPARTITION.caisse).toFixed(2)} $</strong></div></div>`;
-    currentExportData={journalRows,balanceAggregated,totalProduits,totalCharges,resultat:totalProduits-totalCharges,totalPointsMois,totalValeurMois,netubersData:Array.from(cumulParNetuber.entries()).map(([code,lignes])=>({code,points:lignes.reduce((s,l)=>s+l.points,0),temps:lignes.reduce((s,l)=>s+l.temps,0),valeur:lignes.reduce((s,l)=>s+l.gainNetuber,0)}))};
+    currentExportData={journalRows,balanceAggregated,totalProduits,totalCharges,resultat:totalProduits-totalCharges,totalPointsMois,totalValeurMois,netubersData};
 }
 function exportToExcel(){
     if(!currentExportData){alert("Aucune donnée à exporter");return;}
