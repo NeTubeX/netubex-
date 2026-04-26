@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;touch-action:pan-y pinch-zoom;}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
 html,body{height:100%;}
 body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#e4e6eb;min-height:100vh;overflow-x:hidden;padding-top:60px;}
 .rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;position:fixed;top:0;left:0;right:0;z-index:101;}
@@ -24,15 +24,17 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .online-status{display:flex;align-items:center;gap:6px;background:rgba(16,185,129,0.15);padding:3px 10px;border-radius:20px;font-size:0.65rem;color:#10b981;width:fit-content;}
 .blinking-dot{width:7px;height:7px;background-color:#10b981;border-radius:50%;animation:blink 1.2s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.3;transform:scale(0.8);}}
-.stories-container{background:#18191A;border-bottom:1px solid #3e4042;padding:12px 0 8px 0;}
-.stories-scroll{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 16px 8px 16px;-webkit-overflow-scrolling:touch;}
-.stories-scroll::-webkit-scrollbar{display:none;}
-.story-item{flex:0 0 auto;scroll-snap-align:start;cursor:pointer;text-align:center;width:80px;}
-.story-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#f58529,#feda77,#dd2a7b,#8134af,#515bd4);padding:3px;margin-bottom:8px;}
-.story-avatar-inner{width:100%;height:100%;border-radius:50%;background:#242526;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff;font-family:'Inter',sans-serif;}
-.story-name{font-size:11px;font-weight:600;color:#e4e6eb;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px;}
-.story-points{font-size:9px;color:#f59e0b;font-weight:500;margin-top:2px;}
-.story-time{font-size:8px;color:#b0b3b8;margin-top:1px;}
+.stories-container{background:#18191A;border-bottom:1px solid #3e4042;padding:16px 0;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;display:flex;gap:16px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;}
+.stories-container::-webkit-scrollbar{display:none;}
+.story-card{flex:0 0 85%;scroll-snap-align:start;margin-left:7.5%;margin-right:7.5%;background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:24px;padding:24px 20px;text-align:center;border:1px solid rgba(250,204,21,0.3);box-shadow:0 8px 20px rgba(0,0,0,0.3);}
+.story-card:last-child{margin-right:7.5%;}
+.story-rank{font-size:14px;color:#facc15;font-weight:700;margin-bottom:12px;letter-spacing:2px;}
+.story-digit{font-size:72px;font-weight:900;color:#facc15;margin:20px 0;text-shadow:0 0 10px rgba(250,204,21,0.3);}
+.story-code{font-size:13px;font-weight:600;color:#e0f2fe;background:rgba(0,0,0,0.3);display:inline-block;padding:6px 16px;border-radius:40px;margin-bottom:16px;}
+.story-points{font-size:28px;font-weight:800;color:#fff;margin:16px 0 8px;}
+.story-points span{font-size:14px;color:#facc15;font-weight:500;}
+.story-time{font-size:18px;color:#b0d4ff;font-weight:500;}
+.story-time span{font-size:12px;color:#facc15;}
 .feed-container{max-width:680px;margin:0 auto;padding:0 0 1rem 0;}
 .games-list{display:flex;flex-direction:column;gap:8px;width:100%;}
 .post-card{background:#242526;border-radius:8px;overflow:hidden;transition:background-color 0.2s ease;position:relative;}
@@ -111,8 +113,8 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 <div class="online-status"><span class="blinking-dot"></span><span>En ligne</span></div>
 </div>
 </header>
-<div id="storiesSection" class="stories-container" style="display:none;">
-<div class="stories-scroll" id="storiesScroll"></div>
+<div id="storiesSection" style="display:none;">
+<div id="storiesScroll" class="stories-container"></div>
 </div>
 <div class="feed-container">
 <div class="games-list" id="gamesContainer"></div>
@@ -244,7 +246,6 @@ document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) { e.preventDefault(); return false; }
     if (e.ctrlKey && e.key === 'u') { e.preventDefault(); return false; }
     if (e.ctrlKey && e.key === 's') { e.preventDefault(); return false; }
-    if (e.key === 'F5') { e.preventDefault(); return false; }
 });
 function showToast(msg, isError = false) {
     const toast = document.createElement('div');
@@ -311,7 +312,6 @@ async function sendTicketToFirebase(category, subCategory, subject, priority) {
         showToast("Ticket envoyé avec succès !");
         return true;
     } catch (error) {
-        console.error("Erreur envoi ticket:", error);
         showToast("Erreur lors de l'envoi du ticket", true);
         return false;
     }
@@ -357,18 +357,24 @@ async function loadLastReportStories() {
         presents.sort((a, b) => { const pointsA = a.pointsJour || 0; const pointsB = b.pointsJour || 0; if (pointsA === pointsB) return a.code.localeCompare(b.code); return pointsB - pointsA; });
         const topNetubers = presents.slice(0, 5);
         storiesScroll.innerHTML = '';
-        topNetubers.forEach((netuber) => {
+        topNetubers.forEach((netuber, index) => {
             const code = netuber.code;
+            const lastTwoDigits = code.slice(-2);
             const points = netuber.pointsJour || 0;
             const temps = netuber.tempsJour || 0;
-            const lastChar = code.slice(-1);
-            const storyDiv = document.createElement('div');
-            storyDiv.className = 'story-item';
-            storyDiv.innerHTML = `<div class="story-avatar"><div class="story-avatar-inner">${lastChar}</div></div><div class="story-name">${code}</div><div class="story-points">${points} pts</div><div class="story-time">${temps} min</div>`;
-            storiesScroll.appendChild(storyDiv);
+            const card = document.createElement('div');
+            card.className = 'story-card';
+            card.innerHTML = `
+                <div class="story-rank">${index === 0 ? '🥇 1ER' : index === 1 ? '🥈 2ÈME' : index === 2 ? '🥉 3ÈME' : `${index+1}ÈME`}</div>
+                <div class="story-digit">${lastTwoDigits}</div>
+                <div class="story-code">${code}</div>
+                <div class="story-points">${points} <span>pts</span></div>
+                <div class="story-time">${temps} <span>min</span></div>
+            `;
+            storiesScroll.appendChild(card);
         });
         storiesSection.style.display = 'block';
-    } catch (error) { console.error("Erreur chargement dernier rapport:", error); storiesSection.style.display = 'none'; }
+    } catch (error) { storiesSection.style.display = 'none'; }
 }
 async function initUser(user) {
     if (!user) return;
