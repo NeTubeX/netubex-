@@ -10,7 +10,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;}
 html,body{height:100%;overflow-x:hidden;}
 body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:100vh;transition:background 0.3s, color 0.3s;overflow-y:auto;}
 
@@ -180,99 +180,29 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 .confirm-dialog i{font-size:48px;margin-bottom:15px;}
 .confirm-buttons{display:flex;gap:12px;justify-content:center;}
 .confirm-buttons button{padding:10px 24px;border-radius:40px;border:none;cursor:pointer;font-weight:600;}
-
-.bank-statement {
-    background: #111827;
-    border-radius: 20px;
-    border: 1px solid #1e293b;
-    overflow: hidden;
-}
-.bank-header {
-    background: linear-gradient(135deg, #0f1724, #0a0f1a);
-    padding: 20px 25px;
-    border-bottom: 2px solid #f59e0b;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-.bank-header h2 {
-    font-size: 20px;
-    font-weight: 700;
-    color: #f59e0b;
-}
-.bank-header .bank-date {
-    font-size: 12px;
-    color: #94a3b8;
-}
-.bank-balance-card {
-    background: #1e293b;
-    margin: 20px 25px;
-    padding: 20px;
-    border-radius: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-.bank-balance-card .balance-label {
-    font-size: 12px;
-    color: #94a3b8;
-}
-.bank-balance-card .balance-amount {
-    font-size: 32px;
-    font-weight: 800;
-    color: #f59e0b;
-}
-.bank-balance-card .balance-sub {
-    text-align: right;
-}
-.bank-table {
-    margin: 0 25px 25px 25px;
-    border-radius: 12px;
-    overflow-x: auto;
-}
-.bank-table table {
-    min-width: 800px;
-    width: 100%;
-    border-collapse: collapse;
-}
-.bank-table th {
-    background: #1e293b;
-    padding: 14px 12px;
-    font-size: 11px;
-    font-weight: 600;
-    color: #94a3b8;
-    border-bottom: 1px solid #334155;
-}
-.bank-table td {
-    padding: 12px;
-    font-size: 12px;
-    border-bottom: 1px solid #1e293b;
-}
-.bank-table tr:last-child td {
-    border-bottom: none;
-}
-.bank-footer {
-    padding: 20px 25px;
-    border-top: 1px solid #1e293b;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 15px;
-    font-size: 11px;
-    color: #64748b;
-}
-.transaction-credit {
-    color: #10b981;
-    font-weight: 600;
-}
-.transaction-debit {
-    color: #ef4444;
-    font-weight: 600;
-}
+.finance-buttons{display:flex;flex-direction:column;gap:15px;margin-top:20px;}
+.finance-card{border-radius:16px;padding:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;border:1px solid;}
+.finance-btn{border:none;padding:10px 24px;border-radius:40px;cursor:pointer;font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;transition:0.2s;}
+.visite-stats{border-radius:16px;padding:20px;margin-bottom:20px;border:1px solid;}
+.visite-numbers{display:flex;gap:30px;flex-wrap:wrap;}
+.visite-item{flex:1;min-width:120px;text-align:center;padding:15px;border-radius:12px;}
+.visite-item .number{font-size:32px;font-weight:700;}
+.visite-item .label{font-size:11px;margin-top:5px;}
+.settings-section{border-radius:16px;padding:20px;margin-bottom:20px;border:1px solid;transition:all 0.3s;}
+.settings-section h3{font-size:16px;margin-bottom:15px;display:flex;align-items:center;gap:8px;}
+.admin-buttons{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:10px;}
+.admin-btn{border:1px solid;padding:12px 20px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;}
+.counter-badge{padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;margin-left:10px;}
+.report-ref-badge{border-radius:12px;padding:8px 15px;text-align:center;}
+.report-ref-badge .label{font-size:10px;}
+.report-ref-badge .value{font-size:14px;font-weight:700;font-family:monospace;}
+.anomaly-popup-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(8px);z-index:2000;justify-content:center;align-items:center;}
+.anomaly-popup-overlay.active{display:flex;}
+.anomaly-popup-content{border-radius:24px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto;border:1px solid;}
+.anomaly-popup-header{padding:20px;border-radius:24px 24px 0 0;display:flex;justify-content:space-between;align-items:center;}
+.anomaly-popup-close{background:rgba(0,0,0,0.3);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;}
+.anomaly-popup-body{padding:20px;}
+.anomaly-ticket-item{border-radius:12px;padding:12px;margin-bottom:10px;border-left:3px solid;}
 </style>
 </head>
 <body class="dark-soft">
@@ -300,7 +230,6 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <button class="tab" data-tab="anomalies"><i class="fas fa-exclamation-triangle"></i> Anomalies</button>
 <button class="tab" data-tab="settings"><i class="fas fa-cog"></i> Paramètres</button>
 <button class="tab" data-tab="securite"><i class="fas fa-shield-alt"></i> 🔒 Alertes Sécurité <span id="alertsBadge" class="counter-badge" style="background:#ef4444; color:white; margin-left:5px;">0</span></button>
-<button class="tab" data-tab="paiements"><i class="fas fa-money-bill-wave"></i> 💰 Paiements Mensuels</button>
 </div></div>
 <button class="tabs-arrow" id="scrollRightArrow"><i class="fas fa-chevron-right"></i></button>
 </div>
@@ -317,53 +246,12 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <div class="charts-row"><div class="chart-container"><canvas id="ticketsStatusChart" style="max-height:250px; width:100%;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Tickets par statut</p></div><div class="chart-container"><canvas id="ticketsPriorityChart" style="max-height:250px; width:100%;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Tickets par priorité</p></div></div>
 <div class="chart-container"><canvas id="ticketsEvolutionChart" style="max-height:250px; width:100%;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Évolution des tickets (7 derniers jours)</p></div>
 </div>
-<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></thead><tbody id="pendingTableBody"></tbody></table></div></div>
-<div id="utilisateursTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalActiveUsers">0</div><div class="label">Utilisateurs actifs</div></div></div><div class="filters"><input type="text" id="searchActiveUsers" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterActiveUsers()"></div><div class="table-wrapper"><table id="activeUsersTable"><thead><th>Nom & Prénom</th><th>Email</th><th>Contact</th><th>Balance</th><th>Date activation</th><th>deviceId</th><th>firstLogin</th><th>isActive</th><th>lastLogin</th><th>lastUserAgent</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></thead><tbody id="activeUsersTableBody"></tbody></table></div></div>
-<div id="netubersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Netubers</div></div><div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">Connectés</div></div><div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label">Déconnectés</div></div><div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Comptes bloqués</div></div></div><div class="filters"><input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()"><select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">Connectés</option><option value="offline">Déconnectés</option></select><button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button><button class="export-btn" onclick="openAddNetuberModal()" style="background:#8b5cf6;"><i class="fas fa-user-plus"></i> Ajouter Netuber</button></div><div class="table-wrapper"><table id="netubersTable"><thead><th>Code Netuber</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Statut</th><th>Connexion</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></thead><tbody id="netubersTableBody"></tbody></table></div></div>
-<div id="retraitsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalWithdrawalsPending">0</div><div class="label">En attente</div></div><div class="stat-card"><div class="value" id="totalWithdrawalsAmount">0</div><div class="label">Montant total</div></div></div><div class="filters"><select id="withdrawStatusFilter" class="filter-select" onchange="filterWithdrawals()"><option value="all">Tous</option><option value="pending">En attente</option><option value="approved">Approuvés</option><option value="rejected">Rejetés</option></select><button class="export-btn" onclick="exportWithdrawals()"><i class="fas fa-file-excel"></i> Exporter</button></div><div class="table-wrapper"><table id="withdrawalsTable"><thead><th>Utilisateur</th><th>Montant</th><th>Méthode</th><th>Wallet</th><th>Date</th><th>Statut</th><th>Actions</th></thead><tbody id="withdrawalsTableBody"></tbody><tr></div></div>
-
-<div id="financeTab" class="tab-content">
-<div class="bank-statement">
-<div class="bank-header">
-<h2><i class="fas fa-university"></i> NE TUBE X · RELEVÉ DE COMPTE BANCAIRE</h2>
-<div class="bank-date"><i class="far fa-calendar-alt"></i> <span id="bankStatementDate">2025-04-26</span></div>
-</div>
-<div class="bank-balance-card">
-<div>
-<div class="balance-label">SOLDE DISPONIBLE</div>
-<div class="balance-amount" id="bankBalance">0,00 USD</div>
-<div class="balance-label">Compte courant · Détenteur: DEO-Flory Ngenda</div>
-</div>
-<div class="balance-sub">
-<div class="balance-label">IBAN: NE23 0001 1234 5678 9012 3456 78</div>
-<div class="balance-label">BIC: NTUBXCDK</div>
-<div class="balance-label">Devise: USD</div>
-</div>
-</div>
-<div class="bank-table">
-<table>
-<thead>
-<th>DATE OPÉRATION</th>
-<th>RÉFÉRENCE</th>
-<th>LIBELLÉ</th>
-<th>DÉBIT (USD)</th>
-<th>CRÉDIT (USD)</th>
-<th>SOLDE (USD)</th>
-</thead>
-<tbody id="bankTransactionsBody">
-<tr><td colspan="6" style="text-align:center;padding:40px;">Chargement des transactions...</td></tr>
-</tbody>
-</table>
-</div>
-<div class="bank-footer">
-<span><i class="fas fa-print"></i> Document émis le <span id="bankEmitDate"></span></span>
-<span><i class="fas fa-shield-alt"></i> Relevé certifié conforme - NeTubeX Financial</span>
-<button class="export-btn" onclick="exportBankStatement()" style="background:#f59e0b;color:#0a0f1a;"><i class="fas fa-download"></i> Télécharger relevé PDF</button>
-</div>
-</div>
-</div>
-
-<div id="ticketsUsersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="ticketsUsersOpen">0</div><div class="label">Tickets ouverts</div></div><div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Tickets résolus</div></div><div class="stat-card"><div class="value" id="ticketsInProgress">0</div><div class="label">Tickets en cours</div></div></div><div class="table-wrapper"><table id="ticketsUsersTable"><thead><th>Utilisateur</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th><th>Supprimer</th></thead><tbody id="ticketsUsersBody"></tbody></table></div></div>
+<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"></tbody></table></div></div>
+<div id="utilisateursTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalActiveUsers">0</div><div class="label">Utilisateurs actifs</div></div></div><div class="filters"><input type="text" id="searchActiveUsers" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterActiveUsers()"></div><div class="table-wrapper"><table id="activeUsersTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Contact</th><th>Balance</th><th>Date activation</th><th>deviceId</th><th>firstLogin</th><th>isActive</th><th>lastLogin</th><th>lastUserAgent</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></tr></thead><tbody id="activeUsersTableBody"></tbody></table></div></div>
+<div id="netubersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Netubers</div></div><div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">Connectés</div></div><div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label">Déconnectés</div></div><div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Comptes bloqués</div></div></div><div class="filters"><input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()"><select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">Connectés</option><option value="offline">Déconnectés</option></select><button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button><button class="export-btn" onclick="openAddNetuberModal()" style="background:#8b5cf6;"><i class="fas fa-user-plus"></i> Ajouter Netuber</button></div><div class="table-wrapper"><table id="netubersTable"><thead><tr><th>Code Netuber</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Statut</th><th>Connexion</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></tr></thead><tbody id="netubersTableBody"></tbody></table></div></div>
+<div id="retraitsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalWithdrawalsPending">0</div><div class="label">En attente</div></div><div class="stat-card"><div class="value" id="totalWithdrawalsAmount">0</div><div class="label">Montant total</div></div></div><div class="filters"><select id="withdrawStatusFilter" class="filter-select" onchange="filterWithdrawals()"><option value="all">Tous</option><option value="pending">En attente</option><option value="approved">Approuvés</option><option value="rejected">Rejetés</option></select><button class="export-btn" onclick="exportWithdrawals()"><i class="fas fa-file-excel"></i> Exporter</button></div><div class="table-wrapper"><table id="withdrawalsTable"><thead><tr><th>Utilisateur</th><th>Montant</th><th>Méthode</th><th>Wallet</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="withdrawalsTableBody"></tbody></table></div></div>
+<div id="financeTab" class="tab-content"><div class="finance-buttons"><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source A</h3></div><button class="finance-btn" onclick="window.open('https://siteowner.timewall.io/','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source B</h3></div><button class="finance-btn" onclick="window.open('https://beta.partners.adsterra.com/login','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source C</h3></div><button class="finance-btn" onclick="window.open('https://gain.gg/earn','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div></div></div>
+<div id="ticketsUsersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="ticketsUsersOpen">0</div><div class="label">Tickets ouverts</div></div><div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Tickets résolus</div></div><div class="stat-card"><div class="value" id="ticketsInProgress">0</div><div class="label">Tickets en cours</div></div></div><div class="table-wrapper"><table id="ticketsUsersTable"><thead><tr><th>Utilisateur</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th><th>Supprimer</th></tr></thead><tbody id="ticketsUsersBody"></tbody></table></div></div>
 <div id="rapportsTab" class="tab-content">
 <div class="stats-grid">
 <div class="stat-card"><div class="value" id="reportCount">0</div><div class="label">Netubers dans le rapport</div></div>
@@ -374,6 +262,7 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <div class="table-wrapper" style="max-height:400px;">
 <table id="rapportsTable" style="min-width:1300px;">
 <thead>
+<tr style="background:linear-gradient(135deg,#f59e0b20,#d9770620);">
 <th style="border-bottom:3px solid #f59e0b; font-size:13px;">📌 CODE NETUBER</th>
 <th style="border-bottom:3px solid #f59e0b;">✅ PRÉSENCE</th>
 <th style="border-bottom:3px solid #f59e0b;">❓ RAISON ABSENCE</th>
@@ -387,6 +276,7 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <th style="border-bottom:3px solid #f59e0b;">⏱️ TEMPS JOUR(min)</th>
 <th style="border-bottom:3px solid #f59e0b;">📶 FORFAIT Go</th>
 <th style="border-bottom:3px solid #f59e0b;">⚡ RENDEMENT(pts/h)</th>
+</tr>
 </thead>
 <tbody id="rapportsTableBody"></tbody>
 </table>
@@ -419,16 +309,16 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 </div>
 </div>
 </div>
-<div id="anomaliesTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalAnomalies">0</div><div class="label">Anomalies détectées</div></div></div><div class="table-wrapper"><table id="anomaliesTable"><thead><th>Netuber</th><th>Type anomalie</th><th>Nombre tickets</th><th>Action</th><th>Supprimer</th></thead><tbody id="anomaliesTableBody"></tbody></table></div></div>
+<div id="anomaliesTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalAnomalies">0</div><div class="label">Anomalies détectées</div></div></div><div class="table-wrapper"><table id="anomaliesTable"><thead><tr><th>Netuber</th><th>Type anomalie</th><th>Nombre tickets</th><th>Action</th><th>Supprimer</th></tr></thead><tbody id="anomaliesTableBody"></tbody></table></div></div>
 <div id="settingsTab" class="tab-content">
 <div class="settings-section">
 <h3><i class="fas fa-envelope"></i> Suivi des CAP</h3>
 <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));"><div class="stat-card"><div class="value" id="totalCAPSent">0</div><div class="label">Total CAP envoyés</div></div></div>
-<div class="table-wrapper" style="max-height:300px;"><table id="capHistoryTable"><thead><th>Netuber</th><th>CAP (message)</th><th>Date d'envoi</th><th>Date d'expiration</th></thead><tbody id="capHistoryBody"></tbody></table></div>
+<div class="table-wrapper" style="max-height:300px;"><table id="capHistoryTable"><thead><tr><th>Netuber</th><th>CAP (message)</th><th>Date d'envoi</th><th>Date d'expiration</th></tr></thead><tbody id="capHistoryBody"></tbody></table></div>
 </div>
 <div class="settings-section">
 <h3><i class="fas fa-memo"></i> Mémorandums envoyés</h3>
-<div class="table-wrapper" style="max-height:300px;"><table id="memosTable"><thead><th>Titre</th><th>Réf. Rapport</th><th>Date d'envoi</th><th>Contenu du message</th><th>Actions</th></thead><tbody id="memosBody"></tbody></tr></div>
+<div class="table-wrapper" style="max-height:300px;"><table id="memosTable"><thead><tr><th>Titre</th><th>Réf. Rapport</th><th>Date d'envoi</th><th>Contenu du message</th><th>Actions</th></tr></thead><tbody id="memosBody"></tbody></table></div>
 </div>
 <div class="settings-section">
 <h3><i class="fas fa-shield-alt"></i> Administration</h3>
@@ -458,48 +348,17 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <div class="table-wrapper">
 <table id="securityAlertsTable">
 <thead>
+<tr>
 <th>🔒 Type</th>
 <th>📱 Netuber/Email</th>
 <th>📝 Détails</th>
 <th>📅 Date/Heure</th>
 <th>✅ Statut</th>
 <th>🔄 Actions</th>
+</tr>
 </thead>
 <tbody id="securityAlertsBody"></tbody>
 </table>
-</div>
-</div>
-<div id="paiementsTab" class="tab-content">
-<div class="stats-grid">
-<div class="stat-card"><div class="value" id="totalPointsMois">0</div><div class="label"><i class="fas fa-chart-line"></i> Total points</div></div>
-<div class="stat-card"><div class="value" id="totalGainsMois">0</div><div class="label"><i class="fas fa-dollar-sign"></i> Total gains</div></div>
-<div class="stat-card"><div class="value" id="totalNetubersMois">0</div><div class="label"><i class="fas fa-users"></i> Netubers</div></div>
-<div class="stat-card"><div class="value" id="totalPaidMois">0</div><div class="label"><i class="fas fa-check-circle"></i> Payés</div></div>
-<div class="stat-card"><div class="value" id="totalPendingMois">0</div><div class="label"><i class="fas fa-clock"></i> En attente</div></div>
-<div class="stat-card"><div class="value" id="totalRestePayer">0</div><div class="label"><i class="fas fa-hourglass-half"></i> Reste à payer</div></div>
-</div>
-<div class="filters">
-<select id="reportMonthSelect" class="filter-select" onchange="loadPaiementData()">
-<option value="">Chargement des rapports...</option>
-</select>
-<button class="export-btn" onclick="exportPaiementsCSV()" style="background:#10b981;"><i class="fas fa-file-excel"></i> Exporter CSV</button>
-<button class="export-btn" onclick="markAllPaid()" style="background:#f59e0b;"><i class="fas fa-check-double"></i> Tout payer</button>
-</div>
-<div class="table-wrapper">
-<table id="paiementsTable">
-<thead>
-<th>📌 Code Netuber</th>
-<th>📈 Points</th>
-<th>⏱️ Temps (min)</th>
-<th>⚡ Rendement (pts/h)</th>
-<th>💰 Gain (0.08$/1000pts)</th>
-<th>✅ Statut</th>
-<th>📅 Payé le</th>
-<th>🔄 Action</th>
-</thead>
-<tbody id="paiementsBody"></tbody>
-</table>
-</div>
 </div>
 </div>
 <div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Nom complet</label><input type="text" id="newNetuberNom" placeholder="Nom et prénom"></div><div class="input-group"><label>Email</label><input type="email" id="newNetuberEmail" placeholder="exemple@email.com"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newNetuberPassword" placeholder="6 caractères minimum"></div><div class="input-group"><label>Code Netuber (unique)</label><input type="text" id="newNetuberCode" placeholder="EX: NX-001"></div><div class="input-group"><label>Contact WhatsApp</label><input type="text" id="newNetuberContact" placeholder="+243 XXX XXX XXX"></div></div><div class="modal-footer"><button onclick="confirmAddNetuber()" style="background:#10b981;color:#fff;padding:10px 24px;border-radius:40px;border:none;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#1e293b;color:#fff;padding:10px 24px;border-radius:40px;border:none;">Annuler</button></div></div></div>
@@ -524,23 +383,23 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-let usersData = [], devicesData = [], withdrawalsData = [], ticketsData = [], capsData = [], memosData = [], lastReport = null, allReports = [];
+let usersData = [], devicesData = [], withdrawalsData = [], ticketsData = [], capsData = [], memosData = [], lastReport = null;
 let securityAlerts = [];
 let onlineChart, pointsChart, tempsChart, inscriptionsChart, visitesChart;
 let ticketsStatusChart, ticketsPriorityChart, ticketsEvolutionChart;
 let currentNetuberFilter = "all", currentWithdrawFilter = "all", currentAlertFilter = "all";
 let searchPendingTerm = "", searchActiveTerm = "", searchNetuberTerm = "";
 let currentReportReference = null, currentReportDate = null;
-let paiementsData = {};
-let selectedMonth = null;
-let bankBalance = 25890.75;
-let bankTransactions = [];
 
 function escapeHtml(t) { if(!t) return ''; return String(t).replace(/[&<>]/g, m => m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;')); }
 function formatDateShort(d) { if(!d) return '-'; try { return new Date(d).toLocaleDateString('fr-FR'); } catch(e) { return '-'; } }
 function formatDateTime(d) { if(!d) return '-'; try { return new Date(d).toLocaleString('fr-FR'); } catch(e) { return '-'; } }
 
-function generateUniqueId() { return `${Date.now()}x${Math.floor(Math.random()*1000000000000000000)}`; }
+function generateUniqueId() {
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 1000000000000000000);
+    return `${timestamp}x${random}`;
+}
 
 function showToast(msg, isError = false) {
     let t = document.createElement('div');
@@ -600,55 +459,6 @@ function toggleTheme() {
         localStorage.setItem('theme', 'dark-soft');
     }
 }
-
-function updateBankStatement() {
-    const dateSpan = document.getElementById('bankStatementDate');
-    if(dateSpan) dateSpan.innerText = new Date().toISOString().slice(0,10);
-    const emitSpan = document.getElementById('bankEmitDate');
-    if(emitSpan) emitSpan.innerText = new Date().toLocaleString('fr-FR');
-    const balanceSpan = document.getElementById('bankBalance');
-    if(balanceSpan) balanceSpan.innerText = bankBalance.toLocaleString('fr-FR') + ' USD';
-    const tbody = document.getElementById('bankTransactionsBody');
-    if(!tbody) return;
-    if(bankTransactions.length === 0) {
-        bankTransactions = [
-            { date: '2025-04-26', ref: 'TRX-001', label: 'Dépôt publicité source A', debit: 0, credit: 12500.00, balance: 12500.00 },
-            { date: '2025-04-25', ref: 'TRX-002', label: 'Virement source B', debit: 0, credit: 8900.50, balance: 21400.50 },
-            { date: '2025-04-24', ref: 'TRX-003', label: 'Frais de plateforme', debit: 150.25, credit: 0, balance: 21250.25 },
-            { date: '2025-04-23', ref: 'TRX-004', label: 'Paiement Netuber NX-001', debit: 1250.00, credit: 0, balance: 20000.25 },
-            { date: '2025-04-22', ref: 'TRX-005', label: 'Paiement Netuber NX-002', debit: 980.00, credit: 0, balance: 19020.25 },
-            { date: '2025-04-21', ref: 'TRX-006', label: 'Dépôt source C', debit: 0, credit: 4500.00, balance: 23520.25 },
-            { date: '2025-04-20', ref: 'TRX-007', label: 'Frais bancaires', debit: 29.50, credit: 0, balance: 23490.75 },
-            { date: '2025-04-19', ref: 'TRX-008', label: 'Commission affilé', debit: 0, credit: 2400.00, balance: 25890.75 }
-        ];
-        let runningBalance = 0;
-        bankTransactions = bankTransactions.map(t => { runningBalance += t.credit - t.debit; return { ...t, balance: runningBalance }; });
-    }
-    tbody.innerHTML = bankTransactions.map(t => `
-        <tr>
-            <td>${t.date}</td>
-            <td><code>${t.ref}</code></td>
-            <td>${escapeHtml(t.label)}</td>
-            <td class="transaction-debit">${t.debit > 0 ? t.debit.toLocaleString('fr-FR') + ' USD' : '-'}</td>
-            <td class="transaction-credit">${t.credit > 0 ? t.credit.toLocaleString('fr-FR') + ' USD' : '-'}</td>
-            <td><strong>${t.balance.toLocaleString('fr-FR')} USD</strong></td>
-        </tr>
-    `).join('');
-}
-
-window.exportBankStatement = () => {
-    showToast("Téléchargement du relevé bancaire (simulation PDF)");
-    let csv = "DATE,RÉFÉRENCE,LIBELLÉ,DÉBIT (USD),CRÉDIT (USD),SOLDE (USD)\n";
-    bankTransactions.forEach(t => {
-        csv += `${t.date},${t.ref},${t.label},${t.debit},${t.credit},${t.balance}\n`;
-    });
-    const blob = new Blob([csv], {type: 'text/csv'});
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `releve_compte_netubex_${new Date().toISOString().slice(0,10)}.csv`;
-    link.click();
-    showToast("Export CSV du relevé lancé");
-};
 
 window.showRapportPopup = function(netuberData) {
     const popup = document.getElementById('rapportPopup');
@@ -712,6 +522,7 @@ function updateVisitesChart() {
         d.setDate(d.getDate() - i);
         const dateStr = d.toISOString().split('T')[0];
         last7Days.push(dateStr);
+        const visitesToday = parseInt(document.getElementById('visitesToday')?.innerText) || 0;
         visitesPerDay[dateStr] = Math.floor(Math.random() * 50) + 10;
     }
     if(visitesChart) visitesChart.destroy();
@@ -861,7 +672,6 @@ document.querySelectorAll('.tab').forEach(btn => {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
             document.getElementById(tab + 'Tab').classList.add('active');
-            if(tab === 'finance') updateBankStatement();
         }
     };
     if(btn.getAttribute('data-tab') === 'chatDeo') { btn.onclick = () => { enableChatFullscreen(); loadChatMessages(); }; }
@@ -899,7 +709,7 @@ function updateSecurityAlertsTable() {
         filtered = securityAlerts.filter(a => a.type === currentAlertFilter);
     }
     if(filtered.length === 0) {
-        tbody.innerHTML = '<td colspan="6" style="text-align:center;padding:40px;">🔒 Aucune alerte de sécurité</td>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;">🔒 Aucune alerte de sécurité</td></tr>';
         return;
     }
     tbody.innerHTML = filtered.map(alert => {
@@ -937,8 +747,8 @@ function updateSecurityAlertsTable() {
                 ${!alert.read ? `<button class="action-btn" onclick='markAlertRead("${alert.id}")' style="background:#3b82f6;">✓ Marquer lu</button>` : ''}
                 ${alert.type === 'device_mismatch' ? `<button class="action-btn" onclick='resetNetuberDevice("${alert.netuberCode}")' style="background:#f59e0b;">🔄 Réinit device</button>` : ''}
                 <button class="action-btn delete" onclick='deleteAlert("${alert.id}")' style="background:#ef4444;">🗑️</button>
-             </td>
-         </tr>`;
+            </td>
+        </tr>`;
     }).join('');
 }
 
@@ -1004,154 +814,6 @@ window.exportSecurityAlerts = () => {
     showToast("Export CSV lancé");
 };
 
-async function loadAllReports() {
-    try {
-        const q = query(collection(db, "reports"), orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
-        allReports = [];
-        snapshot.forEach(doc => {
-            allReports.push({ id: doc.id, ...doc.data() });
-        });
-        const select = document.getElementById('reportMonthSelect');
-        if(select && allReports.length > 0) {
-            select.innerHTML = allReports.map(report => {
-                const monthName = report.month || new Date(report.createdAt).toLocaleDateString('fr-FR', { year:'numeric', month:'long' });
-                return `<option value="${report.id}" data-month="${report.month || report.createdAt}">📅 ${monthName}</option>`;
-            }).join('');
-            if(!selectedMonth && allReports.length > 0) {
-                selectedMonth = allReports[0].id;
-                loadPaiementData();
-            }
-        } else if(select) {
-            select.innerHTML = '<option value="">Aucun rapport disponible</option>';
-        }
-    } catch(e) { console.error("Erreur chargement rapports:", e); }
-}
-
-async function loadPaiementData() {
-    const reportId = document.getElementById('reportMonthSelect')?.value;
-    if(!reportId || reportId === '') return;
-    selectedMonth = reportId;
-    const report = allReports.find(r => r.id === reportId);
-    if(!report || !report.netubers) return;
-    const netubersData = report.netubers;
-    const paiementsRef = collection(db, "paiements");
-    const paiementsSnap = await getDocs(paiementsRef);
-    const paiementsMap = {};
-    paiementsSnap.forEach(doc => {
-        const data = doc.data();
-        if(data.month === (report.month || report.createdAt)) {
-            paiementsMap[data.netuberCode] = data;
-        }
-    });
-    let totalPoints = 0, totalGains = 0, totalPaid = 0, totalPending = 0;
-    const tableData = netubersData.map(n => {
-        const points = n.pointsJour || 0;
-        const temps = n.tempsJour || 0;
-        const rendement = temps > 0 ? ((points / temps) * 60).toFixed(0) : 0;
-        const gain = (points / 1000) * 0.08;
-        const paiement = paiementsMap[n.code];
-        const status = paiement?.status === 'paid' ? 'paid' : 'pending';
-        const paidAt = paiement?.paidAt ? formatDateShort(paiement.paidAt) : '-';
-        totalPoints += points;
-        totalGains += gain;
-        if(status === 'paid') totalPaid++;
-        else totalPending++;
-        return { code: n.code, points, temps, rendement, gain, status, paidAt };
-    });
-    document.getElementById('totalPointsMois').innerText = totalPoints.toLocaleString();
-    document.getElementById('totalGainsMois').innerText = totalGains.toFixed(2) + ' $';
-    document.getElementById('totalNetubersMois').innerText = netubersData.length;
-    document.getElementById('totalPaidMois').innerText = totalPaid;
-    document.getElementById('totalPendingMois').innerText = totalPending;
-    const resteAPayer = totalGains - (totalPaid * (totalGains / netubersData.length));
-    document.getElementById('totalRestePayer').innerText = resteAPayer.toFixed(2) + ' $';
-    const tbody = document.getElementById('paiementsBody');
-    if(tbody) {
-        tbody.innerHTML = tableData.map(d => {
-            const statusBadge = d.status === 'paid' ? '<span class="badge-success" style="padding:4px 12px;">✅ Payé</span>' : '<span class="badge-warning" style="padding:4px 12px;">⏳ En attente</span>';
-            return `<tr>
-                <td><strong>${escapeHtml(d.code)}</strong></td>
-                <td>${d.points.toLocaleString()} pts</td>
-                <td>${d.temps} min</td>
-                <td>${d.rendement} pts/h</td>
-                <td>${d.gain.toFixed(2)} $</td>
-                <td>${statusBadge}</td>
-                <td>${d.paidAt}</td>
-                <td>${d.status === 'pending' ? `<button class="action-btn" onclick='markNetuberPaid("${d.code}", "${report.month || report.createdAt}")' style="background:#10b981;">✅ Payer</button>` : '-'}</td>
-             </tr>`;
-        }).join('');
-    }
-}
-
-window.markNetuberPaid = async (netuberCode, month) => {
-    const report = allReports.find(r => r.id === selectedMonth);
-    if(!report) return;
-    const netuber = report.netubers.find(n => n.code === netuberCode);
-    if(!netuber) return;
-    const points = netuber.pointsJour || 0;
-    const gain = (points / 1000) * 0.08;
-    const paiementRef = doc(db, "paiements", `${month}_${netuberCode}`);
-    await setDoc(paiementRef, {
-        netuberCode: netuberCode,
-        month: month,
-        points: points,
-        gain: gain,
-        status: 'paid',
-        paidAt: new Date().toISOString()
-    });
-    showToast(`✅ ${netuberCode} marqué comme payé - ${gain.toFixed(2)}$`);
-    await loadPaiementData();
-};
-
-window.markAllPaid = async () => {
-    const report = allReports.find(r => r.id === selectedMonth);
-    if(!report || !report.netubers) return;
-    showConfirm('Paiement groupé', `Payer tous les Netubers du mois ${report.month || new Date(report.createdAt).toLocaleDateString('fr-FR')} ?`, async () => {
-        for(const netuber of report.netubers) {
-            const points = netuber.pointsJour || 0;
-            const gain = (points / 1000) * 0.08;
-            const paiementRef = doc(db, "paiements", `${report.month || report.createdAt}_${netuber.code}`);
-            await setDoc(paiementRef, {
-                netuberCode: netuber.code,
-                month: report.month || report.createdAt,
-                points: points,
-                gain: gain,
-                status: 'paid',
-                paidAt: new Date().toISOString()
-            });
-        }
-        showToast(`✅ Tous les Netubers ont été marqués comme payés`);
-        await loadPaiementData();
-    });
-};
-
-window.exportPaiementsCSV = () => {
-    const report = allReports.find(r => r.id === selectedMonth);
-    if(!report || !report.netubers) return;
-    let csv = "Code Netuber,Points,Temps (min),Rendement (pts/h),Gain ($),Statut,Payé le\n";
-    report.netubers.forEach(async n => {
-        const points = n.pointsJour || 0;
-        const temps = n.tempsJour || 0;
-        const rendement = temps > 0 ? ((points / temps) * 60).toFixed(0) : 0;
-        const gain = (points / 1000) * 0.08;
-        const paiementsRef = collection(db, "paiements");
-        const q = query(paiementsRef, where("netuberCode", "==", n.code), where("month", "==", report.month || report.createdAt));
-        const snap = await getDocs(q);
-        const status = !snap.empty && snap.docs[0].data().status === 'paid' ? 'Payé' : 'En attente';
-        const paidAt = !snap.empty && snap.docs[0].data().paidAt ? formatDateShort(snap.docs[0].data().paidAt) : '-';
-        csv += `"${n.code}","${points}","${temps}","${rendement}","${gain.toFixed(2)}","${status}","${paidAt}"\n`;
-    });
-    setTimeout(() => {
-        const blob = new Blob([csv], {type: 'text/csv'});
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `paiements_${report.month || new Date(report.createdAt).toISOString().slice(0,7)}.csv`;
-        link.click();
-        showToast("Export CSV lancé");
-    }, 500);
-};
-
 async function loadAllData() {
     try {
         let snap = await getDocs(collection(db, "users"));
@@ -1164,14 +826,12 @@ async function loadAllData() {
         await loadCAPs();
         await loadMemos();
         await loadSecurityAlerts();
-        await loadAllReports();
         updateNetubersTable();
         updateActiveUsersTable();
         updatePendingTable();
         updateTicketsCharts();
         updateInscriptionsChart();
         updateVisitesChart();
-        updateBankStatement();
         
         const netubersCount = usersData.filter(u => u.role === 'netuber' && u.isActive === true).length;
         const activeUsersCount = usersData.filter(u => u.isActive === true && (!u.role || u.role !== 'netuber') && u.email).length;
@@ -1305,7 +965,7 @@ async function loadLastReport() {
                     let rendement = n.tempsJour > 0 ? ((n.pointsJour / (n.tempsJour / 60)).toFixed(2)) : 0;
                     let presenceClass = n.presence === 'Présent' ? 'badge-present' : 'badge-absent';
                     let presenceText = n.presence === 'Présent' ? '✅ PRÉSENT' : '❌ ABSENT';
-                    return `<td style="white-space:nowrap;"><strong onclick="showRapportPopup(${JSON.stringify(n).replace(/"/g, '&quot;')})" style="cursor:pointer;color:#f59e0b;">${escapeHtml(n.code)}</strong></td><td><span class="${presenceClass}">${presenceText}</span></td><td style="max-width:150px; white-space:normal;">${escapeHtml(n.raisonAbsence || '-')}</td><td>${n.objectifMensuel || 0}</td><td style="color:${(n.objectifAtteint || 0) >= (n.objectifMensuel || 0) ? '#10b981' : '#f59e0b'}">${n.objectifAtteint || 0}</td><td>${n.nbNiveaux || 0}</td><td>${n.nbNiveauxAtteints || 0}</td><td>${n.pointsPrecedents || 0}</td><td style="color:#f59e0b; font-weight:600;">${n.pointsJour || 0}</td><td>${n.tempsPrecedent || 0}</td><td>${n.tempsJour || 0}</td><td>${escapeHtml(n.forfaitInternet || '-')}</td><td style="color:${rendement >= 50 ? '#10b981' : (rendement >= 30 ? '#f59e0b' : '#ef4444')}; font-weight:600;">${rendement} pts/h</td>`;
+                    return `<tr><td style="white-space:nowrap;"><strong onclick="showRapportPopup(${JSON.stringify(n).replace(/"/g, '&quot;')})" style="cursor:pointer;color:#f59e0b;">${escapeHtml(n.code)}</strong></td><td><span class="${presenceClass}">${presenceText}</span></td><td style="max-width:150px; white-space:normal;">${escapeHtml(n.raisonAbsence || '-')}</td><td>${n.objectifMensuel || 0}</td><td style="color:${(n.objectifAtteint || 0) >= (n.objectifMensuel || 0) ? '#10b981' : '#f59e0b'}">${n.objectifAtteint || 0}</td><td>${n.nbNiveaux || 0}</td><td>${n.nbNiveauxAtteints || 0}</td><td>${n.pointsPrecedents || 0}</td><td style="color:#f59e0b; font-weight:600;">${n.pointsJour || 0}</td><td>${n.tempsPrecedent || 0}</td><td>${n.tempsJour || 0}</td><td>${escapeHtml(n.forfaitInternet || '-')}</td><td style="color:${rendement >= 50 ? '#10b981' : (rendement >= 30 ? '#f59e0b' : '#ef4444')}; font-weight:600;">${rendement} pts/h</td></tr>`;
                 }).join('');
             }
             document.getElementById('reportCount').innerText = netubers.length;
@@ -1527,7 +1187,7 @@ async function loadCAPs() {
     capsData = []; snap.forEach(d => capsData.push({ id: d.id, ...d.data() }));
     document.getElementById('totalCAPSent').innerText = capsData.length;
     let tbody = document.getElementById('capHistoryBody');
-    if(tbody) { tbody.innerHTML = capsData.map(c => `<tr>
+    if(tbody) { tbody.innerHTML = capsData.map(c => `</table>
         <td><strong>${escapeHtml(c.netuberCode)}</strong></td>
         <td>${escapeHtml(c.message.substring(0, 60))}${c.message.length > 60 ? '...' : ''}</td>
         <td>${formatDateTime(c.sentDate)}</td>
