@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -15,7 +14,6 @@
 html,body{height:100%;overflow-x:hidden;}
 body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;min-height:100vh;transition:background 0.3s, color 0.3s;overflow-y:auto;}
 
-/* MODE SOMBRE (DARK-SOFT) */
 body.dark-soft{background:#0f1724;color:#e2e8f0;}
 body.dark-soft .header{background:linear-gradient(135deg,#0f1420,#0a0f1a);border-bottom:2px solid #f59e0b;}
 body.dark-soft .stat-card,body.dark-soft .chart-container,body.dark-soft .table-wrapper,body.dark-soft .modal-content,body.dark-soft .finance-card,body.dark-soft .settings-section,body.dark-soft .rapport-popup-content{background:#111827;border-color:#1e293b;}
@@ -53,7 +51,6 @@ body.dark-soft .anomaly-popup-content{background:#111827;border-color:#ef4444;}
 body.dark-soft .anomaly-popup-header{background:#ef4444;}
 body.dark-soft .anomaly-ticket-item{background:#1e293b;border-left-color:#f59e0b;}
 
-/* MODE CLAIR PROFESSIONNEL */
 body.light-theme{background:#f1f5f9;color:#1e293b;}
 body.light-theme .header{background:#ffffff;border-bottom:2px solid #3b82f6;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
 body.light-theme .logo h1{color:#1e40af;}
@@ -232,6 +229,7 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <button class="tab" data-tab="chatDeo"><i class="fas fa-comments"></i> CHAT DEO</button>
 <button class="tab" data-tab="anomalies"><i class="fas fa-exclamation-triangle"></i> Anomalies</button>
 <button class="tab" data-tab="settings"><i class="fas fa-cog"></i> Paramètres</button>
+<button class="tab" data-tab="securite"><i class="fas fa-shield-alt"></i> 🔒 Alertes Sécurité <span id="alertsBadge" class="counter-badge" style="background:#ef4444; color:white; margin-left:5px;">0</span></button>
 </div></div>
 <button class="tabs-arrow" id="scrollRightArrow"><i class="fas fa-chevron-right"></i></button>
 </div>
@@ -332,6 +330,37 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 </div>
 </div>
 </div>
+<div id="securiteTab" class="tab-content">
+<div class="stats-grid">
+<div class="stat-card"><div class="value" id="totalAlerts">0</div><div class="label"><i class="fas fa-shield-alt"></i> Total alertes</div></div>
+<div class="stat-card"><div class="value" id="unreadAlertsCount">0</div><div class="label"><i class="fas fa-envelope"></i> Non lues</div></div>
+</div>
+<div class="filters">
+<select id="alertTypeFilter" class="filter-select" onchange="filterSecurityAlerts()">
+<option value="all">Tous types</option>
+<option value="device_mismatch">🔴 Device mismatch</option>
+<option value="login_failed">🟠 Échec connexion</option>
+<option value="account_not_found">🟡 Compte inexistant</option>
+</select>
+<button class="export-btn" onclick="markAllAlertsRead()" style="background:#3b82f6;"><i class="fas fa-check-double"></i> Tout marquer lu</button>
+<button class="export-btn" onclick="exportSecurityAlerts()" style="background:#10b981;"><i class="fas fa-file-excel"></i> Exporter</button>
+</div>
+<div class="table-wrapper">
+<table id="securityAlertsTable">
+<thead>
+<tr>
+<th>🔒 Type</th>
+<th>📱 Netuber/Email</th>
+<th>📝 Détails</th>
+<th>📅 Date/Heure</th>
+<th>✅ Statut</th>
+<th>🔄 Actions</th>
+</tr>
+</thead>
+<tbody id="securityAlertsBody"></tbody>
+</table>
+</div>
+</div>
 <div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Nom complet</label><input type="text" id="newNetuberNom" placeholder="Nom et prénom"></div><div class="input-group"><label>Email</label><input type="email" id="newNetuberEmail" placeholder="exemple@email.com"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newNetuberPassword" placeholder="6 caractères minimum"></div><div class="input-group"><label>Code Netuber (unique)</label><input type="text" id="newNetuberCode" placeholder="EX: NX-001"></div><div class="input-group"><label>Contact WhatsApp</label><input type="text" id="newNetuberContact" placeholder="+243 XXX XXX XXX"></div></div><div class="modal-footer"><button onclick="confirmAddNetuber()" style="background:#10b981;color:#fff;padding:10px 24px;border-radius:40px;border:none;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#1e293b;color:#fff;padding:10px 24px;border-radius:40px;border:none;">Annuler</button></div></div></div>
 <div id="modifyCodeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-key"></i> Modifier code Netuber</h2><button class="modal-close" onclick="closeModal('modifyCodeModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="modifyCodeSelect"></select></div><div class="input-group"><label>Nouveau code</label><input type="text" id="newCode" placeholder="Ex: MA-NX-99"></div></div><div class="modal-footer"><button onclick="confirmModifyCode()" style="background:#f59e0b;">Modifier</button><button onclick="closeModal('modifyCodeModal')">Annuler</button></div></div></div>
 <div id="blockUnblockModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-ban"></i> Bloquer Netuber</h2><button class="modal-close" onclick="closeModal('blockUnblockModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="blockUnblockSelect"></select></div><div class="input-group"><label>Action</label><select id="blockAction"><option value="block">Bloquer</option><option value="unblock">Débloquer</option></select></div></div><div class="modal-footer"><button onclick="confirmBlockUnblock()" style="background:#f59e0b;">Valider</button><button onclick="closeModal('blockUnblockModal')">Annuler</button></div></div></div>
@@ -355,9 +384,10 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 let usersData = [], devicesData = [], withdrawalsData = [], ticketsData = [], capsData = [], memosData = [], lastReport = null;
+let securityAlerts = [];
 let onlineChart, pointsChart, tempsChart, inscriptionsChart, visitesChart;
 let ticketsStatusChart, ticketsPriorityChart, ticketsEvolutionChart;
-let currentNetuberFilter = "all", currentWithdrawFilter = "all";
+let currentNetuberFilter = "all", currentWithdrawFilter = "all", currentAlertFilter = "all";
 let searchPendingTerm = "", searchActiveTerm = "", searchNetuberTerm = "";
 let currentReportReference = null, currentReportDate = null;
 
@@ -647,6 +677,143 @@ document.querySelectorAll('.tab').forEach(btn => {
     if(btn.getAttribute('data-tab') === 'chatDeo') { btn.onclick = () => { enableChatFullscreen(); loadChatMessages(); }; }
 });
 
+async function loadSecurityAlerts() {
+    try {
+        const q = query(collection(db, "security_alerts"), orderBy("timestamp", "desc"));
+        const snapshot = await getDocs(q);
+        securityAlerts = [];
+        snapshot.forEach(doc => {
+            securityAlerts.push({ id: doc.id, ...doc.data() });
+        });
+        updateSecurityAlertsTable();
+        updateAlertBadge();
+        document.getElementById('totalAlerts').innerText = securityAlerts.length;
+        document.getElementById('unreadAlertsCount').innerText = securityAlerts.filter(a => !a.read).length;
+    } catch(e) { console.error("Erreur chargement alertes:", e); }
+}
+
+function updateAlertBadge() {
+    const unreadCount = securityAlerts.filter(a => !a.read).length;
+    const badge = document.getElementById('alertsBadge');
+    if(badge) {
+        badge.innerText = unreadCount;
+        badge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
+    }
+}
+
+function updateSecurityAlertsTable() {
+    const tbody = document.getElementById('securityAlertsBody');
+    if(!tbody) return;
+    let filtered = securityAlerts;
+    if(currentAlertFilter !== 'all') {
+        filtered = securityAlerts.filter(a => a.type === currentAlertFilter);
+    }
+    if(filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;">🔒 Aucune alerte de sécurité</td></tr>';
+        return;
+    }
+    tbody.innerHTML = filtered.map(alert => {
+        let typeIcon = '', typeLabel = '', typeColor = '';
+        switch(alert.type) {
+            case 'device_mismatch':
+                typeIcon = '🔴'; typeLabel = 'Device mismatch'; typeColor = '#ef4444';
+                break;
+            case 'login_failed':
+                typeIcon = '🟠'; typeLabel = 'Échec connexion'; typeColor = '#f59e0b';
+                break;
+            case 'account_not_found':
+                typeIcon = '🟡'; typeLabel = 'Compte inexistant'; typeColor = '#eab308';
+                break;
+            default:
+                typeIcon = '⚪'; typeLabel = alert.type; typeColor = '#64748b';
+        }
+        let details = '';
+        if(alert.type === 'device_mismatch') {
+            details = `Appareil enregistré: ${alert.registeredDeviceId?.substring(0,20) || '?'}<br>Appareil tenté: ${alert.attemptedDeviceId?.substring(0,20) || '?'}`;
+        } else if(alert.type === 'login_failed') {
+            details = `Email: ${escapeHtml(alert.email)}<br>Mot de passe incorrect`;
+        } else {
+            details = `Email tenté: ${escapeHtml(alert.email)}<br>Compte non trouvé dans la base`;
+        }
+        let statusBadge = alert.read ? '<span class="badge-success" style="padding:2px 8px;">✓ Lu</span>' : '<span class="badge-danger" style="padding:2px 8px;">⚠️ Non lu</span>';
+        let netuberInfo = alert.netuberCode ? `<strong>${escapeHtml(alert.netuberCode)}</strong>` : escapeHtml(alert.email || '-');
+        return `<tr style="${!alert.read ? 'background:rgba(239,68,68,0.1);' : ''}">
+            <td><span style="color:${typeColor};font-weight:600;">${typeIcon} ${typeLabel}</span></td>
+            <td>${netuberInfo}</td>
+            <td><small>${details}</small></td>
+            <td>${formatDateTime(alert.timestamp)}</td>
+            <td>${statusBadge}</td>
+            <td>
+                ${!alert.read ? `<button class="action-btn" onclick='markAlertRead("${alert.id}")' style="background:#3b82f6;">✓ Marquer lu</button>` : ''}
+                ${alert.type === 'device_mismatch' ? `<button class="action-btn" onclick='resetNetuberDevice("${alert.netuberCode}")' style="background:#f59e0b;">🔄 Réinit device</button>` : ''}
+                <button class="action-btn delete" onclick='deleteAlert("${alert.id}")' style="background:#ef4444;">🗑️</button>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+window.filterSecurityAlerts = () => {
+    currentAlertFilter = document.getElementById('alertTypeFilter').value;
+    updateSecurityAlertsTable();
+};
+
+window.markAlertRead = async (alertId) => {
+    try {
+        await updateDoc(doc(db, "security_alerts", alertId), { read: true });
+        showToast("Alerte marquée comme lue");
+        await loadSecurityAlerts();
+    } catch(e) { showToast("Erreur", true); }
+};
+
+window.markAllAlertsRead = async () => {
+    showConfirm('Marquer tout', 'Marquer toutes les alertes comme lues ?', async () => {
+        for(const alert of securityAlerts.filter(a => !a.read)) {
+            try {
+                await updateDoc(doc(db, "security_alerts", alert.id), { read: true });
+            } catch(e) {}
+        }
+        showToast("Toutes les alertes ont été marquées comme lues");
+        await loadSecurityAlerts();
+    });
+};
+
+window.deleteAlert = async (alertId) => {
+    showConfirm('Suppression', 'Supprimer cette alerte ?', async () => {
+        await deleteDoc(doc(db, "security_alerts", alertId));
+        showToast("Alerte supprimée");
+        await loadSecurityAlerts();
+    });
+};
+
+window.resetNetuberDevice = async (netuberCode) => {
+    if(!netuberCode) return;
+    const targetUser = usersData.find(u => u.code === netuberCode && u.role === 'netuber');
+    if(!targetUser) { showToast("Netuber non trouvé", true); return; }
+    showConfirm('Réinitialisation', `Réinitialiser le deviceId de ${netuberCode} ? (Lui permettra de se connecter depuis un nouveau téléphone)`, async () => {
+        await updateDoc(doc(db, "users", targetUser.id), { deviceId: null });
+        showToast(`✅ DeviceId réinitialisé pour ${netuberCode}`);
+        await loadAllData();
+    });
+};
+
+window.exportSecurityAlerts = () => {
+    let csv = "Type,Netuber/Email,Détails,Date,Statut\n";
+    securityAlerts.forEach(a => {
+        let typeStr = a.type === 'device_mismatch' ? 'Device mismatch' : (a.type === 'login_failed' ? 'Échec connexion' : 'Compte inexistant');
+        let details = '';
+        if(a.type === 'device_mismatch') details = `Device mismatch: ${a.registeredDeviceId} vs ${a.attemptedDeviceId}`;
+        else if(a.type === 'login_failed') details = `Échec login: ${a.email}`;
+        else details = `Compte inexistant: ${a.email}`;
+        csv += `"${typeStr}","${a.netuberCode || a.email || '-'}","${details}","${a.timestamp}","${a.read ? 'Lu' : 'Non lu'}"\n`;
+    });
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `security_alerts_${new Date().toISOString().slice(0,19)}.csv`;
+    link.click();
+    showToast("Export CSV lancé");
+};
+
 async function loadAllData() {
     try {
         let snap = await getDocs(collection(db, "users"));
@@ -658,6 +825,7 @@ async function loadAllData() {
         await loadTickets();
         await loadCAPs();
         await loadMemos();
+        await loadSecurityAlerts();
         updateNetubersTable();
         updateActiveUsersTable();
         updatePendingTable();
@@ -1019,7 +1187,7 @@ async function loadCAPs() {
     capsData = []; snap.forEach(d => capsData.push({ id: d.id, ...d.data() }));
     document.getElementById('totalCAPSent').innerText = capsData.length;
     let tbody = document.getElementById('capHistoryBody');
-    if(tbody) { tbody.innerHTML = capsData.map(c => `<tr>
+    if(tbody) { tbody.innerHTML = capsData.map(c => `</table>
         <td><strong>${escapeHtml(c.netuberCode)}</strong></td>
         <td>${escapeHtml(c.message.substring(0, 60))}${c.message.length > 60 ? '...' : ''}</td>
         <td>${formatDateTime(c.sentDate)}</td>
@@ -1098,7 +1266,7 @@ window.confirmAddNetuber = async () => {
             uid: cred.user.uid, uniqueId: uniqueId,
             nom: nom.split(' ')[0] || '', prenom: nom.split(' ').slice(1).join(' ') || '',
             email: email, code: code, contactValue: contact, moyenContact: "whatsapp",
-            role: "netuber", isActive: true, isBlocked: false,
+            role: "netuber", isActive: true, isBlocked: false, deviceId: null,
             dateActivation: new Date().toISOString(), objectifMensuel: 0, objectifAtteint: 0,
             balance: 0, ticketsList: [], capsList: [],
             lastSeen: new Date().toISOString(), lastConnection: new Date().toISOString(), isOnline: true
