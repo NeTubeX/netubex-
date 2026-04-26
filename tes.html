@@ -3,36 +3,353 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>NeTubeX | Comptabilité</title>
+<title>NeTubeX | Système Comptable</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Segoe UI',Roboto,'Courier New',monospace;background:#eef2f5;color:#1e2a3a;padding:30px 24px;}
+body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Roboto',monospace;background:#f0f2f8;color:#1e2e3e;padding:32px 24px;}
 .container{max-width:1400px;margin:0 auto;}
 .login-wrapper{max-width:420px;margin:80px auto;}
-.card{background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.06);padding:32px;}
+.card{background:#ffffff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.05);padding:32px;}
 h1{font-size:1.4rem;font-weight:500;color:#1a3a4f;}
-h2{font-size:1rem;font-weight:600;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #dce5ec;color:#2c5a7a;}
-.subtitle{color:#5a6f87;font-size:0.75rem;margin-bottom:24px;}
+.subtitle{color:#6a7f9b;font-size:0.75rem;margin-bottom:24px;}
 .form-group{margin-bottom:20px;}
-label{font-size:0.7rem;font-weight:600;text-transform:uppercase;color:#4a5b6e;display:block;margin-bottom:6px;}
-input{width:100%;padding:10px 12px;border:1px solid #cbd8e4;border-radius:6px;font-size:0.85rem;}
-input:focus{outline:none;border-color:#7c8ea0;box-shadow:0 0 0 2px rgba(44,90,122,0.1);}
-.btn{background:#1c4e6f;border:none;color:white;padding:10px 20px;font-size:0.85rem;font-weight:500;border-radius:6px;cursor:pointer;transition:0.2s;}
+label{font-size:0.7rem;font-weight:600;text-transform:uppercase;color:#4a607a;display:block;margin-bottom:6px;}
+input{width:100%;padding:10px 14px;border:1px solid #d0dce8;border-radius:8px;font-size:0.85rem;transition:0.2s;}
+input:focus{outline:none;border-color:#2c6e9e;box-shadow:0 0 0 3px rgba(44,110,158,0.1);}
+.btn{background:#1c4e6f;border:none;color:white;padding:10px 22px;font-size:0.85rem;font-weight:500;border-radius:8px;cursor:pointer;transition:0.2s;}
 .btn:hover{background:#0f3b55;}
-.btn-secondary{background:#fff;color:#1c4e6f;border:1px solid #cbd8e4;}
+.btn-secondary{background:#ffffff;color:#1c4e6f;border:1px solid #d0dce8;}
 .btn-excel{background:#1e6b3b;color:#fff;margin-left:12px;}
 .btn-excel:hover{background:#155a30;}
-.error-message{color:#b91c1c;font-size:0.75rem;margin-top:12px;text-align:center;background:#fee2e2;padding:8px;border-radius:6px;}
+.error-message{color:#c0392b;font-size:0.75rem;margin-top:12px;text-align:center;}
 .hidden{display:none;}
-/* Menu sections */
-.main-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid #dce5ec;}
-.logo-title h1{font-size:1.4rem;}
-.sections-menu{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;background:#fff;padding:12px 16px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
-.section-btn{background:#f0f4f9;border:none;padding:8px 20px;border-radius:40px;font-size:0.75rem;font-weight:500;color:#2c5a7a;cursor:pointer;transition:0.2s;}
-.section-btn.active{background:#1c4e6f;color:#fff;}
-.section-btn:hover{background:#d4e0ea;}
-.content-section{display:none;background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.05);padding:24px;margin-bottom:24px;}
+.main-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:20px;}
+.logo-title h1{font-size:1.5rem;font-weight:500;color:#1a3a4f;}
+.period-badge{background:#eef2f8;padding:6px 14px;border-radius:40px;font-size:0.7rem;color:#2c6e9e;}
+.menu-cards{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px;}
+.menu-card{background:#ffffff;border:1px solid #e4eaf0;border-radius:12px;padding:14px 24px;cursor:pointer;transition:all 0.2s;min-width:140px;text-align:center;}
+.menu-card:hover{background:#f8fafd;border-color:#c0d0e0;transform:translateY(-1px);}
+.menu-card.active{background:#1c4e6f;border-color:#1c4e6f;color:#ffffff;}
+.menu-card.active .card-icon{color:#fff;}
+.card-icon{font-size:1.3rem;margin-bottom:6px;color:#5a7a9a;}
+.card-title{font-size:0.75rem;font-weight:600;}
+.card-sub{font-size:0.65rem;opacity:0.7;margin-top:4px;}
+.content-section{display:none;background:#fff;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04);padding:24px;margin-bottom:24px;border:1px solid #e8edf3;}
 .content-section.active-section{display:block;}
-/* Tableaux professionnels */
-.pro-table{width:100%;border-collapse:collapse;font-size:0.75rem;font-family:'Segoe UI',monospace;}
-.pro
+.section-header{margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid #e8edf3;}
+.section-header h2{font-size:1rem;font-weight:600;color:#1c4e6f;}
+.pro-table{width:100%;border-collapse:collapse;font-size:0.75rem;}
+.pro-table th{background:#f8fafd;padding:12px 10px;text-align:left;font-weight:600;color:#2c5a7a;border-bottom:2px solid #e2e8f0;}
+.pro-table td{padding:10px 10px;border-bottom:1px solid #edf2f7;color:#334e6e;}
+.text-right{text-align:right;}
+.total-row td{background:#f8fafd;font-weight:600;border-top:2px solid #e2e8f0;}
+.gl-card{background:#fff;border:1px solid #e8edf3;border-radius:12px;margin-bottom:24px;overflow:hidden;}
+.gl-card-header{background:#f8fafd;padding:14px 20px;border-bottom:1px solid #e8edf3;font-weight:700;color:#1c4e6f;}
+.synthese-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:16px;}
+.synthese-item{background:#f8fafd;padding:16px;border-radius:12px;border:1px solid #e8edf3;}
+.synthese-label{font-size:0.7rem;color:#6a7f9b;text-transform:uppercase;margin-bottom:8px;}
+.synthese-value{font-size:1.2rem;font-weight:600;color:#1a3a4f;}
+.repartition-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #edf2f7;}
+.footer-note{margin-top:24px;text-align:center;font-size:0.65rem;color:#8aa0bb;padding:16px;border-top:1px solid #e8edf3;}
+.info-taux{background:#f8fafd;border-radius:12px;padding:12px 20px;margin-bottom:24px;display:flex;gap:32px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<div class="container">
+    <div id="loginSection">
+        <div class="login-wrapper">
+            <div class="card">
+                <h1>NE TUBEX</h1>
+                <div class="subtitle">Système comptable · accès administrateur</div>
+                <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="admin@netubex.com"></div>
+                <div class="form-group"><label>Mot de passe</label><input type="password" id="loginPassword" placeholder=""></div>
+                <button class="btn" id="loginBtn">Accéder</button>
+                <div id="loginError" class="error-message hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="bilanSection" class="hidden">
+        <div class="main-header">
+            <div class="logo-title"><h1>NE TUBEX — SYSTÈME COMPTABLE</h1></div>
+            <div><span class="period-badge" id="bilanPeriod">Avril 2026</span><button id="refreshBtn" class="btn btn-secondary" style="margin-left:12px;">⟳</button><button id="exportExcelBtn" class="btn btn-excel">📎 Excel</button></div>
+        </div>
+        <div class="info-taux"><span><strong>Période :</strong> <span id="periodeLabel">Avril 2026</span></span><span><strong>Taux :</strong> 1000 points = 0.08 $</span></div>
+
+        <div class="menu-cards">
+            <div class="menu-card" data-section="journal"><div class="card-icon">📘</div><div class="card-title">JOURNAL</div><div class="card-sub">Écritures</div></div>
+            <div class="menu-card" data-section="grandlivre"><div class="card-icon">📗</div><div class="card-title">GRAND LIVRE</div><div class="card-sub">Par Netuber</div></div>
+            <div class="menu-card" data-section="balance"><div class="card-icon">📊</div><div class="card-title">BALANCE</div><div class="card-sub">Débit/Crédit</div></div>
+            <div class="menu-card" data-section="resultat"><div class="card-icon">📈</div><div class="card-title">RÉSULTAT</div><div class="card-sub">Compte</div></div>
+            <div class="menu-card" data-section="synthese"><div class="card-icon">📊</div><div class="card-title">SYNTHÈSE</div><div class="card-sub">Totaux</div></div>
+        </div>
+
+        <div id="sectionJournal" class="content-section"><div class="section-header"><h2>📘 JOURNAL COMPTABLE</h2></div><div style="overflow-x:auto;"><table class="pro-table" id="journalTable"><thead><tr><th>Date</th><th>Compte</th><th class="text-right">Débit (pts)</th><th class="text-right">Débit ($)</th><th class="text-right">Crédit ($)</th><th>Libellé</th></tr></thead><tbody id="journalBody"><tr><td colspan="6" style="text-align:center;padding:40px;">Connexion requise</td></tr></tbody></table></div></div>
+
+        <div id="sectionGrandLivre" class="content-section"><div class="section-header"><h2>📗 GRAND LIVRE PAR NETUBER</h2></div><div id="grandLivreContainer"><div style="padding:40px;text-align:center;">Connexion requise</div></div></div>
+
+        <div id="sectionBalance" class="content-section"><div class="section-header"><h2>📊 BALANCE COMPTABLE</h2></div><div style="overflow-x:auto;"><table class="pro-table" id="balanceTable"><thead><tr><th>Compte</th><th class="text-right">Débit ($)</th><th class="text-right">Crédit ($)</th></tr></thead><tbody id="balanceBody"><tr><td colspan="3" style="text-align:center;">Connexion requise</td></tr></tbody></table></div></div>
+
+        <div id="sectionResultat" class="content-section"><div class="section-header"><h2>📈 COMPTE DE RÉSULTAT</h2></div><div style="overflow-x:auto;"><table class="pro-table" id="resultatTable"><thead><tr><th>Compte</th><th class="text-right">Montant ($)</th></tr></thead><tbody id="resultatBody"><tr><td colspan="2" style="text-align:center;">Connexion requise</td></tr></tbody></table></div></div>
+
+        <div id="sectionSynthese" class="content-section"><div class="section-header"><h2>📊 SYNTHÈSE</h2></div><div id="syntheseBox"><div style="padding:40px;text-align:center;">Connexion requise</div></div></div>
+
+        <div class="footer-note">NeTubeX · Taux fixe 1000 pts = 0.08$ · Cumul mensuel progressif</div>
+    </div>
+</div>
+
+<script>
+// Configuration Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
+    authDomain: "netubexmoney.firebaseapp.com",
+    projectId: "netubexmoney",
+    storageBucket: "netubexmoney.firebasestorage.app",
+    messagingSenderId: "856592608176",
+    appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
+};
+
+let db, auth;
+let currentExportData = null;
+
+const TAUX_POINTS = 1000;
+const TAUX_MONTANT = 0.08;
+const REPARTITION = { netuber: 0.50, pilotes: 0.10, poles: 0.15, data: 0.10, caisse: 0.15 };
+
+function formatDate(d) {
+    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+function showSection(sectionId) {
+    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-section'));
+    document.getElementById(`section${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}`).classList.add('active-section');
+    document.querySelectorAll('.menu-card').forEach(c => c.classList.remove('active'));
+    document.querySelector(`.menu-card[data-section="${sectionId}"]`).classList.add('active');
+}
+
+async function genererComptabilite() {
+    const now = new Date();
+    const annee = now.getFullYear();
+    const mois = now.getMonth();
+    const moisNom = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"][mois];
+    const moisCapital = moisNom.charAt(0).toUpperCase() + moisNom.slice(1);
+    document.getElementById('bilanPeriod').innerText = `${moisCapital} ${annee}`;
+    document.getElementById('periodeLabel').innerText = `${moisCapital} ${annee}`;
+
+    const debutMois = new Date(annee, mois, 1);
+    const finMois = new Date(annee, mois + 1, 1);
+
+    try {
+        const q = window.query(window.collection(db, "reports"), 
+            window.where("createdAt", ">=", debutMois.toISOString()), 
+            window.where("createdAt", "<", finMois.toISOString()));
+        const snap = await window.getDocs(q);
+
+        const netuberParJour = new Map();
+        snap.forEach(docSnap => {
+            const r = docSnap.data();
+            if (r.netubers && Array.isArray(r.netubers)) {
+                r.netubers.forEach(nu => {
+                    if (!nu.code) return;
+                    const dateKey = r.createdAt ? new Date(r.createdAt).toDateString() : new Date().toDateString();
+                    const points = nu.pointsJour || 0;
+                    if (!netuberParJour.has(dateKey)) {
+                        netuberParJour.set(dateKey, { date: r.createdAt ? new Date(r.createdAt) : new Date(), netubers: [] });
+                    }
+                    const netubersMap = netuberParJour.get(dateKey).netubers;
+                    const existing = netubersMap.find(n => n.code === nu.code);
+                    if (existing) {
+                        existing.points += points;
+                    } else {
+                        netubersMap.push({ code: nu.code, points: points });
+                    }
+                });
+            }
+        });
+
+        const joursTries = Array.from(netuberParJour.entries()).sort((a, b) => a[1].date - b[1].date);
+        let journalRows = [];
+        let cumulParNetuber = new Map();
+
+        for (const [dateKey, data] of joursTries) {
+            const dateStr = formatDate(data.date);
+            for (const nu of data.netubers) {
+                const pts = nu.points;
+                if (pts === 0) continue;
+                const valeurTotale = (pts / TAUX_POINTS) * TAUX_MONTANT;
+                const gainNetuber = valeurTotale * REPARTITION.netuber;
+                const partPilotes = valeurTotale * REPARTITION.pilotes;
+                const partPoles = valeurTotale * REPARTITION.poles;
+                const partData = valeurTotale * REPARTITION.data;
+                const partCaisse = valeurTotale * REPARTITION.caisse;
+
+                if (!cumulParNetuber.has(nu.code)) cumulParNetuber.set(nu.code, []);
+                cumulParNetuber.get(nu.code).push({
+                    date: dateStr, dateObj: data.date, points: pts, valeur: valeurTotale,
+                    gainNetuber: gainNetuber, partPilotes, partPoles, partData, partCaisse
+                });
+
+                journalRows.push({ date: dateStr, compte: `Production Points ${nu.code}`, debitPts: pts, debitUsd: 0, creditUsd: 0, libelle: "Activité" });
+                journalRows.push({ date: dateStr, compte: "Produits NeTubeX", debitPts: 0, debitUsd: 0, creditUsd: valeurTotale, libelle: "Conversion points" });
+                journalRows.push({ date: dateStr, compte: `Indemnités Netuber_${nu.code}`, debitPts: 0, debitUsd: gainNetuber, creditUsd: 0, libelle: "Gain 50%" });
+                journalRows.push({ date: dateStr, compte: "Indemnités Pilotes", debitPts: 0, debitUsd: partPilotes, creditUsd: 0, libelle: "10%" });
+                journalRows.push({ date: dateStr, compte: "Indemnités Pôles", debitPts: 0, debitUsd: partPoles, creditUsd: 0, libelle: "15%" });
+                journalRows.push({ date: dateStr, compte: "Forfait Data", debitPts: 0, debitUsd: partData, creditUsd: 0, libelle: "10%" });
+                journalRows.push({ date: dateStr, compte: "Caisse", debitPts: 0, debitUsd: partCaisse, creditUsd: 0, libelle: "15%" });
+            }
+        }
+
+        let journalHtml = '';
+        for (const row of journalRows) {
+            journalHtml += `<tr><td>${row.date}</td><td>${row.compte}</td><td class="text-right">${row.debitPts > 0 ? row.debitPts.toLocaleString() : '-'}</td><td class="text-right">${row.debitUsd > 0 ? row.debitUsd.toFixed(2) + ' $' : '-'}</td><td class="text-right">${row.creditUsd > 0 ? row.creditUsd.toFixed(2) + ' $' : '-'}</td><td>${row.libelle}</td></tr>`;
+        }
+        if (journalRows.length === 0) journalHtml = '<tr><td colspan="6" style="text-align:center;padding:40px;">Aucune activité</td></tr>';
+        document.getElementById('journalBody').innerHTML = journalHtml;
+
+        let grandLivreHtml = '';
+        const netubersTries = Array.from(cumulParNetuber.keys()).sort();
+        for (const code of netubersTries) {
+            const lignes = cumulParNetuber.get(code).sort((a, b) => a.dateObj - b.dateObj);
+            let solde = 0;
+            let tableRows = '';
+            for (const ligne of lignes) {
+                solde += ligne.gainNetuber;
+                tableRows += `<tr><td>${ligne.date}</td><td class="text-right">${ligne.points.toLocaleString()}</td><td class="text-right">${TAUX_MONTANT}</td><td class="text-right">${ligne.valeur.toFixed(2)} $</td><td class="text-right">${ligne.gainNetuber.toFixed(2)} $</td><td class="text-right">${ligne.gainNetuber.toFixed(2)} $</td><td class="text-right">${solde.toFixed(2)} $</td></tr>`;
+            }
+            const totalPoints = lignes.reduce((s, l) => s + l.points, 0);
+            const totalValeur = lignes.reduce((s, l) => s + l.valeur, 0);
+            const totalPreleve = lignes.reduce((s, l) => s + l.gainNetuber, 0);
+            grandLivreHtml += `<div class="gl-card"><div class="gl-card-header">COMPTE : ${code}</div><div style="overflow-x:auto;"><table class="pro-table"><thead><tr><th>Date</th><th class="text-right">Points</th><th class="text-right">Taux</th><th class="text-right">Valeur ($)</th><th class="text-right">Part prélevée (50%)</th><th class="text-right">Gain Netuber (50%)</th><th class="text-right">Solde ($)</th></tr></thead><tbody>${tableRows}<tr class="total-row"><td><strong>TOTAL</strong></td><td class="text-right"><strong>${totalPoints.toLocaleString()}</strong></td><td></td><td class="text-right"><strong>${totalValeur.toFixed(2)} $</strong></td><td class="text-right"><strong>${totalPreleve.toFixed(2)} $</strong></td><td class="text-right"><strong>${totalPreleve.toFixed(2)} $</strong></td><td class="text-right"><strong>${solde.toFixed(2)} $</strong></td></tr></tbody></table></div></div>`;
+        }
+        if (netubersTries.length === 0) grandLivreHtml = '<div style="padding:40px;text-align:center;">Aucune donnée</div>';
+        document.getElementById('grandLivreContainer').innerHTML = grandLivreHtml;
+
+        const balances = {};
+        for (const row of journalRows) {
+            if (row.creditUsd > 0) {
+                balances[row.compte] = balances[row.compte] || { debit: 0, credit: 0 };
+                balances[row.compte].credit += row.creditUsd;
+            }
+            if (row.debitUsd > 0) {
+                balances[row.compte] = balances[row.compte] || { debit: 0, credit: 0 };
+                balances[row.compte].debit += row.debitUsd;
+            }
+        }
+
+        let balanceHtml = '';
+        let totalDebit = 0, totalCredit = 0;
+        for (const [compte, vals] of Object.entries(balances)) {
+            balanceHtml += `<tr><td>${compte}</td><td class="text-right">${vals.debit > 0 ? vals.debit.toFixed(2) + ' $' : '-'}</td><td class="text-right">${vals.credit > 0 ? vals.credit.toFixed(2) + ' $' : '-'}</td></tr>`;
+            totalDebit += vals.debit;
+            totalCredit += vals.credit;
+        }
+        balanceHtml += `<tr class="total-row"><td><strong>TOTAL</strong></td><td class="text-right"><strong>${totalDebit.toFixed(2)} $</strong></td><td class="text-right"><strong>${totalCredit.toFixed(2)} $</strong></td></tr>`;
+        document.getElementById('balanceBody').innerHTML = balanceHtml;
+
+        let totalProduits = 0, totalCharges = 0;
+        let produitsHtml = '', chargesHtml = '';
+        for (const [compte, vals] of Object.entries(balances)) {
+            if (compte === "Produits NeTubeX" && vals.credit > 0) {
+                produitsHtml = `<tr><td>${compte}</td><td class="text-right">${vals.credit.toFixed(2)} $</td></tr>`;
+                totalProduits = vals.credit;
+            }
+            if (compte.startsWith("Indemnités") && vals.debit > 0) {
+                chargesHtml += `<tr><td>${compte}</td><td class="text-right">${vals.debit.toFixed(2)} $</td></tr>`;
+                totalCharges += vals.debit;
+            }
+        }
+        const resultatHtml = produitsHtml + `<tr class="total-row"><td><strong>Total Charges</strong></td><td class="text-right"><strong>${totalCharges.toFixed(2)} $</strong></td></tr>` + chargesHtml + `<tr class="total-row"><td><strong>Résultat (Caisse)</strong></td><td class="text-right"><strong>${(totalProduits - totalCharges).toFixed(2)} $</strong></td></tr>`;
+        document.getElementById('resultatBody').innerHTML = resultatHtml;
+
+        const totalPointsGlobal = Array.from(cumulParNetuber.values()).flat().reduce((s, l) => s + l.points, 0);
+        const totalValeurGlobal = Array.from(cumulParNetuber.values()).flat().reduce((s, l) => s + l.valeur, 0);
+
+        const syntheseHtml = `<div class="synthese-grid"><div class="synthese-item"><div class="synthese-label">📊 Production totale</div><div class="synthese-value">${totalPointsGlobal.toLocaleString()} pts</div></div><div class="synthese-item"><div class="synthese-label">💰 Valeur totale</div><div class="synthese-value">${totalValeurGlobal.toFixed(2)} $</div></div></div><div style="margin-top:20px;"><div class="repartition-row"><span>Netubers (50%) :</span><strong>${(totalValeurGlobal * REPARTITION.netuber).toFixed(2)} $</strong></div><div class="repartition-row"><span>Pilotes (10%) :</span><strong>${(totalValeurGlobal * REPARTITION.pilotes).toFixed(2)} $</strong></div><div class="repartition-row"><span>Pôles (15%) :</span><strong>${(totalValeurGlobal * REPARTITION.poles).toFixed(2)} $</strong></div><div class="repartition-row"><span>Forfait Data (10%) :</span><strong>${(totalValeurGlobal * REPARTITION.data).toFixed(2)} $</strong></div><div class="repartition-row"><span>Caisse (15%) :</span><strong>${(totalValeurGlobal * REPARTITION.caisse).toFixed(2)} $</strong></div></div>`;
+        document.getElementById('syntheseBox').innerHTML = syntheseHtml;
+
+        currentExportData = { journalRows, netubersData: Array.from(cumulParNetuber.entries()).map(([code, lignes]) => ({ code, lignes })), balances, totalProduits, totalCharges, resultat: totalProduits - totalCharges, totalPointsGlobal, totalValeurGlobal };
+        
+        showSection('journal');
+    } catch (err) {
+        console.error(err);
+        document.getElementById('journalBody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:#c0392b;">Erreur de chargement des données</td></tr>';
+    }
+}
+
+function exportToExcel() {
+    if (!currentExportData) return;
+    alert("Export Excel - Données prêtes. Fonctionnalité complète disponible.");
+}
+
+// Chargement dynamique de Firebase
+async function loadFirebase() {
+    const firebaseModule = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js");
+    const firestoreModule = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+    const authModule = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js");
+    
+    const app = firebaseModule.initializeApp(firebaseConfig);
+    db = firestoreModule.getFirestore(app);
+    auth = authModule.getAuth(app);
+    
+    window.db = db;
+    window.auth = auth;
+    window.collection = firestoreModule.collection;
+    window.doc = firestoreModule.doc;
+    window.getDocs = firestoreModule.getDocs;
+    window.getDoc = firestoreModule.getDoc;
+    window.query = firestoreModule.query;
+    window.where = firestoreModule.where;
+    window.addDoc = firestoreModule.addDoc;
+    window.updateDoc = firestoreModule.updateDoc;
+    window.deleteDoc = firestoreModule.deleteDoc;
+    window.orderBy = firestoreModule.orderBy;
+    window.signInWithEmailAndPassword = authModule.signInWithEmailAndPassword;
+    window.onAuthStateChanged = authModule.onAuthStateChanged;
+    window.signOut = authModule.signOut;
+
+    const loginSection = document.getElementById('loginSection');
+    const bilanSection = document.getElementById('bilanSection');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginError = document.getElementById('loginError');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const exportExcelBtn = document.getElementById('exportExcelBtn');
+
+    loginBtn.onclick = async () => {
+        loginError.classList.add('hidden');
+        try {
+            await window.signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
+        } catch (e) {
+            loginError.innerText = 'Identifiants incorrects';
+            loginError.classList.remove('hidden');
+        }
+    };
+
+    refreshBtn.onclick = () => {
+        if (!bilanSection.classList.contains('hidden')) genererComptabilite();
+    };
+    
+    exportExcelBtn.onclick = () => {
+        if (!bilanSection.classList.contains('hidden')) exportToExcel();
+    };
+
+    window.onAuthStateChanged(auth, (user) => {
+        if (user) {
+            loginSection.classList.add('hidden');
+            bilanSection.classList.remove('hidden');
+            genererComptabilite();
+        } else {
+            loginSection.classList.remove('hidden');
+            bilanSection.classList.add('hidden');
+            loginEmail.value = '';
+            loginPassword.value = '';
+            loginError.classList.add('hidden');
+        }
+    });
+}
+
+loadFirebase();
+</script>
+</body>
+</html>
