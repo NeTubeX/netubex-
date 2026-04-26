@@ -85,6 +85,8 @@ footer{background:#1c1e21;border-top:1px solid #3e4042;padding:30px 20px 20px 20
 .full-width-img img{width:100%;height:auto;display:block;}
 .threshold-caption{padding:10px 0 5px 0;text-align:center;font-weight:500;background:linear-gradient(135deg,#feda77,#d62976);-webkit-background-clip:text;background-clip:text;color:transparent;}
 @media (max-width:560px){.posts-container{padding:56px 0 20px 0;}.post-avatar{width:36px;height:36px;}.post-header{padding:10px 12px 6px 12px;}.post-content{padding:0 12px 10px 12px;}.post-title{font-size:1.1rem;}.story-circle{width:65px;}.story-avatar{width:58px;height:58px;}.payment-img{width:50px;height:50px;}.footer-inner{flex-direction:column;gap:20px;text-align:center;}.footer-section h4{margin-bottom:10px;}.social-icons{justify-content:center;}.identity-full{min-height:300px;padding:40px 20px;}}
+.fade-section{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.fade-section.visible{opacity:1;transform:translateY(0);}
 </style>
 </head>
 <body>
@@ -298,7 +300,24 @@ footer{background:#1c1e21;border-top:1px solid #3e4042;padding:30px 20px 20px 20
         if(e.ctrlKey && e.key === 'Tab') { e.preventDefault(); return false; }
         if(e.key === 'F5') { e.preventDefault(); return false; }
         if(e.ctrlKey && e.key === 'F5') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'r') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'R') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'h') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'H') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'n') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'N') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 't') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'T') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.shiftKey && e.key === 'N') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.shiftKey && e.key === 'P') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.shiftKey && e.key === 'Q') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.shiftKey && e.key === 'W') { e.preventDefault(); return false; }
+        if(e.metaKey && e.key === 's') { e.preventDefault(); return false; }
+        if(e.metaKey && e.key === 'S') { e.preventDefault(); return false; }
     });
+    document.addEventListener('selectstart', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('dragstart', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
 })();
 </script>
 <script type="module">
