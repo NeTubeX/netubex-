@@ -3,60 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>NeTubeX | Administration</title>
+<title>NeTubeX | Bilan Mensuel</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Roboto',Arial,sans-serif;background:#eef2f5;color:#1a2a3a;line-height:1.45;padding:32px 24px;}
-.container{max-width:1280px;margin:0 auto;}
-.login-wrapper{max-width:440px;margin:80px auto;}
-.card{background:#ffffff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.06);overflow:hidden;}
-.card-header{padding:24px 28px 0 28px;}
-.card-body{padding:20px 28px 28px 28px;}
-h1{font-size:1.6rem;font-weight:500;letter-spacing:-0.3px;color:#0a2540;margin-bottom:6px;}
-.subtitle{color:#5c6f87;font-size:0.8rem;border-left:3px solid #cbd5e1;padding-left:12px;margin-top:6px;}
-.form-group{margin-bottom:22px;}
-label{display:block;font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;color:#4a5b6e;margin-bottom:6px;}
-input{width:100%;padding:12px 14px;border:1px solid #dce3e9;border-radius:6px;font-size:0.9rem;background:#ffffff;transition:all 0.2s;font-family:inherit;}
-input:focus{outline:none;border-color:#7c8ea0;box-shadow:0 0 0 3px rgba(60,80,100,0.08);}
-.btn{display:inline-block;padding:10px 20px;font-size:0.85rem;font-weight:500;border-radius:6px;cursor:pointer;border:none;transition:all 0.2s;font-family:inherit;}
-.btn-primary{background:#1c4e6f;color:white;width:100%;padding:12px;}
-.btn-primary:hover{background:#0f3b55;}
-.btn-secondary{background:#eef2f5;color:#2c4c6c;border:1px solid #dce3e9;}
-.btn-secondary:hover{background:#e2e8ed;}
-.error-message{color:#b91c1c;font-size:0.75rem;margin-top:12px;text-align:center;background:#fee2e2;padding:8px;border-radius:6px;}
+body{font-family:'Segoe UI','Roboto','Courier New',monospace;background:#eef2f5;color:#1a2a3a;padding:40px 24px;}
+.container{max-width:1000px;margin:0 auto;}
+.login-wrapper{max-width:420px;margin:80px auto;}
+.card{background:#ffffff;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.08);padding:32px;}
+h1{font-size:1.4rem;font-weight:500;letter-spacing:-0.3px;color:#1a3a4f;margin-bottom:4px;}
+h2{font-size:1rem;font-weight:600;margin:24px 0 16px 0;padding-bottom:6px;border-bottom:1px solid #dce3e9;color:#2c5a7a;}
+.subtitle{color:#5c6f87;font-size:0.75rem;margin-bottom:20px;}
+.form-group{margin-bottom:20px;}
+label{display:block;font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#4a5b6e;margin-bottom:6px;}
+input{width:100%;padding:10px 12px;border:1px solid #d0d7dd;border-radius:3px;font-size:0.85rem;background:#fff;}
+input:focus{outline:none;border-color:#7c8ea0;}
+.btn{background:#1c4e6f;border:none;color:white;padding:10px 20px;font-size:0.85rem;font-weight:500;border-radius:3px;cursor:pointer;width:100%;}
+.btn:hover{background:#0f3b55;}
+.btn-secondary{background:#eef2f5;color:#1c4e6f;border:1px solid #d0d7dd;width:auto;}
+.error-message{color:#b91c1c;font-size:0.75rem;margin-top:12px;text-align:center;background:#fee2e2;padding:8px;border-radius:3px;}
 .hidden{display:none;}
-.dashboard-header{margin-bottom:28px;border-bottom:1px solid #e2e8f0;padding-bottom:18px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;}
-.dashboard-header h1{font-size:1.5rem;font-weight:500;}
-.period-badge{background:#eef2f5;padding:6px 14px;border-radius:30px;font-size:0.75rem;color:#2c5a7a;font-weight:500;}
-.refresh-btn{background:#ffffff;border:1px solid #cbdce8;padding:6px 16px;font-size:0.75rem;}
-.stats-row{display:flex;gap:20px;margin-bottom:32px;flex-wrap:wrap;}
-.stat-card{background:#f8fafc;border-radius:10px;padding:18px 22px;flex:1;min-width:160px;border:1px solid #e6edf2;}
-.stat-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.6px;color:#5b6f82;margin-bottom:8px;}
-.stat-value{font-size:1.8rem;font-weight:500;color:#0a2b3e;line-height:1.2;}
-.stat-unit{font-size:0.8rem;font-weight:400;color:#6f8faa;}
-.section{background:#ffffff;border-radius:10px;border:1px solid #e6edf2;margin-bottom:28px;overflow:hidden;}
-.section-header{padding:18px 24px;background:#fafcfd;border-bottom:1px solid #eef2f8;}
-.section-header h2{font-size:1rem;font-weight:600;color:#1e4a6b;letter-spacing:-0.2px;}
-.section-body{padding:0;}
-.invoice-table{width:100%;border-collapse:collapse;font-size:0.85rem;}
-.invoice-table th{text-align:left;padding:16px 20px 12px 20px;background:#fafcfd;font-weight:600;color:#2c4e6e;border-bottom:1px solid #eef2f8;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.3px;}
-.invoice-table td{padding:14px 20px;border-bottom:1px solid #f0f4f9;color:#234十五;vertical-align:top;}
-.invoice-table tr:last-child td{border-bottom:none;}
-.invoice-total-row{background:#fbfefc;border-top:2px solid #e2eaf1;}
-.invoice-total-row td{padding:16px 20px;font-weight:600;}
-.text-right{text-align:right;}
-.ranking-container{padding:8px 0;}
-.ranking-item{display:flex;align-items:center;padding:12px 20px;border-bottom:1px solid #f0f4f9;}
-.ranking-rank{width:44px;font-weight:600;color:#3f6b8c;}
-.ranking-name{flex:2;font-weight:500;color:#1a4b6e;}
-.ranking-points{width:120px;text-align:right;font-weight:500;font-feature-settings:'tnum';}
-.ranking-gain{width:100px;text-align:right;color:#2c7a5e;font-weight:500;}
-.alert-item{padding:14px 20px;border-bottom:1px solid #f0f4f9;font-size:0.85rem;display:flex;gap:12px;}
-.alert-warning{border-left:3px solid #e6a017;background:#fefaf5;}
-.alert-danger{border-left:3px solid #c0392b;background:#fef5f5;}
-.empty-state{padding:46px 24px;text-align:center;color:#7f95ae;font-style:normal;background:#ffffff;}
-.footer-note{margin-top:24px;text-align:center;font-size:0.7rem;color:#7f95ae;padding:16px;border-top:1px solid #e2eaf1;}
-.amount-highlight{font-weight:600;color:#1e5a3a;}
+.bilan-header{margin-bottom:28px;border-bottom:2px solid #dce3e9;padding-bottom:16px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;}
+.bilan-header h1{font-size:1.5rem;font-weight:500;}
+.period-badge{background:#eef2f5;padding:5px 12px;font-size:0.7rem;color:#2c5a7a;font-family:monospace;}
+.refresh-btn{padding:5px 14px;font-size:0.7rem;margin-left:12px;}
+.section-global{margin-bottom:28px;background:#fafcfd;border:1px solid #e6edf2;padding:20px 24px;}
+.global-stats{display:flex;gap:32px;flex-wrap:wrap;}
+.global-item{flex:1;}
+.global-label{font-size:0.7rem;text-transform:uppercase;color:#5b6f82;letter-spacing:0.5px;}
+.global-value{font-size:1.3rem;font-weight:500;color:#1a3a4f;}
+.separator{height:2px;background:#dce3e9;margin:24px 0;}
+.invoice-block{margin-bottom:32px;background:#ffffff;border:1px solid #e6edf2;}
+.invoice-title{padding:14px 20px;background:#f8fafc;border-bottom:1px solid #eef2f8;font-weight:600;color:#1c4e6f;font-size:0.9rem;}
+.invoice-body{padding:20px;}
+.debit-credit-table{width:100%;border-collapse:collapse;}
+.debit-credit-table td{padding:10px 8px;vertical-align:top;}
+.debit-credit-table td:first-child{width:50%;border-right:1px solid #e6edf2;}
+.debit-credit-table tr:last-child td{padding-top:16px;border-top:1px solid #dce3e9;font-weight:600;}
+.label-prod{color:#2c5a7a;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.3px;}
+.label-valo{color:#2c5a7a;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.3px;}
+.value-points{font-weight:500;font-size:1rem;}
+.value-money{font-weight:600;color:#1e6b3b;}
+.small-text{font-size:0.7rem;color:#6f8faa;}
+.total-row{font-weight:600;border-top:1px solid #dce3e9;}
+.synthese-box{background:#f8fafc;border:1px solid #dce3e9;padding:20px 24px;margin-top:16px;}
+.synthese-line{display:flex;justify-content:space-between;padding:8px 0;}
+.synthese-line.total{border-top:2px solid #dce3e9;margin-top:8px;padding-top:12px;font-weight:700;font-size:1rem;}
+.footer-note{margin-top:32px;text-align:center;font-size:0.65rem;color:#7f95ae;padding:16px;border-top:1px solid #e2eaf1;}
 </style>
 </head>
 <body>
@@ -65,44 +57,43 @@ input:focus{outline:none;border-color:#7c8ea0;box-shadow:0 0 0 3px rgba(60,80,10
     <div id="loginSection">
         <div class="login-wrapper">
             <div class="card">
-                <div class="card-header"><h1>NeTubeX</h1><div class="subtitle">Portail administrateur · facturation mensuelle</div></div>
-                <div class="card-body">
-                    <div class="form-group"><label>Email professionnel</label><input type="email" id="loginEmail" placeholder="responsable@netubex.com"></div>
-                    <div class="form-group"><label>Mot de passe</label><input type="password" id="loginPassword" placeholder=""></div>
-                    <button class="btn btn-primary" id="loginBtn">Accéder au bilan</button>
-                    <div id="loginError" class="error-message hidden"></div>
-                </div>
+                <h1>NE TUBEX</h1>
+                <div class="subtitle">Portail bilan mensuel · accès administrateur</div>
+                <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="admin@netubex.com"></div>
+                <div class="form-group"><label>Mot de passe</label><input type="password" id="loginPassword" placeholder=""></div>
+                <button class="btn" id="loginBtn">Accéder au bilan</button>
+                <div id="loginError" class="error-message hidden"></div>
             </div>
         </div>
     </div>
 
-    <!-- BILAN ADMIN -->
+    <!-- BILAN MENSUEL -->
     <div id="bilanSection" class="hidden">
-        <div class="dashboard-header">
-            <div><h1>NeTubeX · factures</h1><div class="subtitle" style="margin-top:6px;">cumul mensuel progressif</div></div>
-            <div><span class="period-badge" id="bilanPeriod">mois en cours</span><button id="refreshBtn" class="btn btn-secondary" style="margin-left:14px;">⟳ Actualiser</button></div>
+        <div class="bilan-header">
+            <div><h1>NE TUBEX — BILAN MENSUEL</h1></div>
+            <div><span class="period-badge" id="bilanPeriod">avril 2026</span><button id="refreshBtn" class="btn btn-secondary refresh-btn">⟳ Actualiser</button></div>
         </div>
 
-        <!-- indicateurs clés -->
-        <div class="stats-row" id="statsRow">
-            <div class="stat-card"><div class="stat-label">Points totaux</div><div class="stat-value" id="totalPoints">0</div></div>
-            <div class="stat-card"><div class="stat-label">Gains totaux</div><div class="stat-value" id="totalGains">0 <span class="stat-unit">$</span></div></div>
-            <div class="stat-card"><div class="stat-label">Temps cumulé</div><div class="stat-value" id="totalTemps">0<span class="stat-unit"> min</span></div></div>
-            <div class="stat-card"><div class="stat-label">Netubers actifs</div><div class="stat-value" id="totalActifs">0</div></div>
+        <!-- POINTS TOTAUX + TAUX -->
+        <div class="section-global">
+            <div class="global-stats">
+                <div class="global-item"><div class="global-label">🔢 POINTS TOTAUX (GLOBAL)</div><div class="global-value" id="globalPoints">0 pts</div></div>
+                <div class="global-item"><div class="global-label">💱 TAUX DE CONVERSION</div><div class="global-value" id="globalTaux">1000 pts = 0.08 $</div></div>
+                <div class="global-item"><div class="global-label">ÉQUIVALENT GLOBAL</div><div class="global-value" id="globalEquivalent">0 $</div></div>
+            </div>
         </div>
 
-        <!-- tableau factures style entreprise -->
-        <div class="section">
-            <div class="section-header"><h2>📄 Factures mensuelles (détail par Netuber)</h2></div>
-            <div class="section-body"><div id="facturesList"><div class="empty-state">Chargement des factures...</div></div></div>
-        </div>
+        <div class="separator"></div>
 
-        <!-- classement + alertes sur deux colonnes -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:28px;">
-            <div class="section"><div class="section-header"><h2>🏆 Classement performance</h2></div><div class="section-body"><div id="classementList"><div class="empty-state">Chargement...</div></div></div></div>
-            <div class="section"><div class="section-header"><h2>⚠️ Alertes & anomalies</h2></div><div class="section-body"><div id="alertesList"><div class="empty-state">Chargement...</div></div></div></div>
+        <!-- FACTURES STYLE DÉBIT/CRÉDIT -->
+        <div id="facturesContainer"></div>
+
+        <!-- SYNTHÈSE FINALE -->
+        <div class="synthese-box">
+            <div class="synthese-line"><span>📊 TOTAL POINTS (TOUS NETUBERS)</span><span id="synthesePoints">0 pts</span></div>
+            <div class="synthese-line total"><span>💰 TOTAL GAINS</span><span id="syntheseGains">0 $</span></div>
         </div>
-        <div class="footer-note">Taux de conversion appliqué : 1 000 points = 0,08 USD · Relevé mensuel non clôturé (cumul au jour le jour)</div>
+        <div class="footer-note">NeTubeX · Facturation mensuelle · Taux fixe 1000 points = 0,08 USD · Document non clôturé (cumul progressif)</div>
     </div>
 </div>
 
@@ -122,13 +113,11 @@ const loginBtn=document.getElementById('loginBtn');
 const loginError=document.getElementById('loginError');
 const refreshBtn=document.getElementById('refreshBtn');
 const bilanPeriod=document.getElementById('bilanPeriod');
-const facturesList=document.getElementById('facturesList');
-const classementList=document.getElementById('classementList');
-const alertesList=document.getElementById('alertesList');
-const totalPointsSpan=document.getElementById('totalPoints');
-const totalGainsSpan=document.getElementById('totalGains');
-const totalTempsSpan=document.getElementById('totalTemps');
-const totalActifsSpan=document.getElementById('totalActifs');
+const globalPoints=document.getElementById('globalPoints');
+const globalEquivalent=document.getElementById('globalEquivalent');
+const synthesePoints=document.getElementById('synthesePoints');
+const syntheseGains=document.getElementById('syntheseGains');
+const facturesContainer=document.getElementById('facturesContainer');
 const TAUX_POINTS=1000,TAUX_MONTANT=0.08;
 function minutesToHuman(m){const h=Math.floor(m/60);const r=m%60;if(h===0)return `${r} min`;return `${h}h ${r>0?r+'min':''}`;}
 function formatDateFr(d){return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});}
@@ -137,7 +126,7 @@ const now=new Date();
 const annee=now.getFullYear();
 const mois=now.getMonth();
 const moisNom=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"][mois];
-bilanPeriod.innerText=`${moisNom} ${annee} · mise à jour ${formatDateFr(now)}`;
+bilanPeriod.innerText=`${moisNom} ${annee} · cumul progressif`;
 const debutMois=new Date(annee,mois,1);
 const finMois=new Date(annee,mois+1,1);
 try{
@@ -161,50 +150,45 @@ if(dDate&&(!entry.lastDate||dDate>entry.lastDate))entry.lastDate=dDate;
 });
 const netubers=Array.from(cumul.entries()).map(([code,data])=>({code,points:data.points,tempsMin:data.tempsMin,gain:(data.points/TAUX_POINTS)*TAUX_MONTANT,lastDate:data.lastDate})).filter(n=>n.points>0||n.tempsMin>0);
 netubers.sort((a,b)=>b.points-a.points);
-const totalPts=netubers.reduce((s,n)=>s+n.points,0);
-const totalGain=netubers.reduce((s,n)=>s+n.gain,0);
-const totalMinutes=netubers.reduce((s,n)=>s+n.tempsMin,0);
-totalPointsSpan.innerText=totalPts.toLocaleString();
-totalGainsSpan.innerText=totalGain.toFixed(2);
-totalTempsSpan.innerText=minutesToHuman(totalMinutes);
-totalActifsSpan.innerText=netubers.length;
-let facturesHtml=`<table class="invoice-table"><thead><tr><th>Netuber</th><th>Points cumulés (mois)</th><th>Temps cumulé</th><th>Gain (USD)</th><th>Dernier rapport</th></tr></thead><tbody>`;
+const totalPointsGlobal=netubers.reduce((s,n)=>s+n.points,0);
+const totalGainsGlobal=netubers.reduce((s,n)=>s+n.gain,0);
+globalPoints.innerText=`${totalPointsGlobal.toLocaleString()} points`;
+globalEquivalent.innerText=`${totalGainsGlobal.toFixed(2)} $`;
+synthesePoints.innerText=`${totalPointsGlobal.toLocaleString()} pts`;
+syntheseGains.innerText=`${totalGainsGlobal.toFixed(2)} $`;
+let facturesHtml='';
 for(const n of netubers){
-facturesHtml+=`<tr><td style="font-weight:500;">${n.code}</td><td>${n.points.toLocaleString()} pts</td><td>${minutesToHuman(n.tempsMin)}</td><td class="text-right amount-highlight">${n.gain.toFixed(2)} $</td><td style="color:#5a6f87;">${n.lastDate?formatDateFr(n.lastDate):'—'}</td></tr>`;
+const gainValue=n.gain.toFixed(2);
+facturesHtml+=`
+<div class="invoice-block">
+    <div class="invoice-title">📄 Netuber : ${n.code} · ${moisNom} ${annee}</div>
+    <div class="invoice-body">
+        <table class="debit-credit-table">
+            <tr>
+                <td><span class="label-prod">Débit (Production)</span></td>
+                <td><span class="label-valo">Crédit (Valorisation)</span></td>
+            </tr>
+            <tr>
+                <td>Points générés : ${n.points.toLocaleString()} pts</td>
+                <td>Valeur : ${gainValue} $</td>
+            </tr>
+            <tr>
+                <td>Temps : ${minutesToHuman(n.tempsMin)}</td>
+                <td>Taux : ${TAUX_POINTS} = ${TAUX_MONTANT} $</td>
+            </tr>
+            <tr class="total-row">
+                <td><strong>TOTAL<br>${n.points.toLocaleString()} pts</strong></td>
+                <td><strong>TOTAL<br>${gainValue} $</strong></td>
+            </tr>
+        </table>
+    </div>
+</div>`;
 }
-facturesHtml+=`<tr class="invoice-total-row"><td><strong>Total mensuel</strong></td><td><strong>${totalPts.toLocaleString()} pts</strong></td><td><strong>${minutesToHuman(totalMinutes)}</strong></td><td class="text-right"><strong>${totalGain.toFixed(2)} $</strong></td><td></td></tr>`;
-facturesHtml+=`</tbody></table>`;
-if(netubers.length===0)facturesHtml='<div class="empty-state">Aucune facture générée pour ce mois.</div>';
-facturesList.innerHTML=facturesHtml;
-let classementHtml='<div class="ranking-container">';
-netubers.slice(0,10).forEach((n,idx)=>{
-classementHtml+=`<div class="ranking-item"><div class="ranking-rank">${idx+1}</div><div class="ranking-name">${n.code}</div><div class="ranking-points">${n.points.toLocaleString()} pts</div><div class="ranking-gain">${n.gain.toFixed(2)} $</div></div>`;
-});
-classementHtml+='</div>';
-if(netubers.length===0)classementHtml='<div class="empty-state">Aucun classement disponible.</div>';
-classementList.innerHTML=classementHtml;
-let alertesHtml='';
-let alerteCount=0;
-for(const n of netubers){
-if(n.points>0&&n.tempsMin===0){
-alertesHtml+=`<div class="alert-item alert-warning"><span>⚠️</span><span>${n.code} : ${n.points.toLocaleString()} points sans temps enregistré.</span></div>`;
-alerteCount++;
+if(netubers.length===0){
+facturesHtml='<div style="background:#fff;border:1px solid #e6edf2;padding:40px;text-align:center;color:#5b6f82;">Aucune facture disponible pour ce mois.</div>';
 }
-if(n.points<500&&n.points>0){
-alertesHtml+=`<div class="alert-item alert-danger"><span>📉</span><span>${n.code} : gain mensuel &lt; 0,04 $ (seuil bas).</span></div>`;
-alerteCount++;
-}
-if(n.lastDate){
-const joursDiff=Math.floor((now-n.lastDate)/(1000*3600*24));
-if(joursDiff>=3&&n.points>0){
-alertesHtml+=`<div class="alert-item alert-warning"><span>⏱️</span><span>${n.code} : inactif depuis ${joursDiff} jours.</span></div>`;
-alerteCount++;
-}
-}
-}
-if(alerteCount===0)alertesHtml='<div class="empty-state">✅ Aucune alerte à signaler.</div>';
-alertesList.innerHTML=alertesHtml;
-}catch(err){facturesList.innerHTML='<div class="empty-state">Erreur de chargement Firebase.</div>';console.error(err);}
+facturesContainer.innerHTML=facturesHtml;
+}catch(err){facturesContainer.innerHTML='<div style="background:#fff;border:1px solid #e6edf2;padding:40px;text-align:center;color:#b91c1c;">Erreur de chargement des données.</div>';console.error(err);}
 }
 loginBtn.onclick=async()=>{loginError.classList.add('hidden');try{await signInWithEmailAndPassword(auth,loginEmail.value,loginPassword.value);}catch(e){loginError.innerText='Identifiants incorrects';loginError.classList.remove('hidden');}};
 refreshBtn.onclick=()=>{if(!bilanSection.classList.contains('hidden'))genererBilan();};
