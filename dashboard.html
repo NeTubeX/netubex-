@@ -321,6 +321,27 @@ function closePopup(id) {
     const popup = document.getElementById(id);
     if (popup) popup.classList.remove('active');
 }
+
+// ===== FONCTION POUR OBTENIR L'IDENTIFIANT UNIQUE DU TÉLÉPHONE =====
+function getDeviceUniqueId() {
+    let deviceId = localStorage.getItem('device_permanent_id');
+    if (!deviceId) {
+        const screenInfo = `${screen.width}x${screen.height}x${screen.colorDepth}`;
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const language = navigator.language;
+        const platform = navigator.platform;
+        
+        const fingerprint = `${screenInfo}|${timezone}|${language}|${platform}`;
+        let hash = 0;
+        for (let i = 0; i < fingerprint.length; i++) {
+            hash = ((hash << 5) - hash) + fingerprint.charCodeAt(i);
+            hash |= 0;
+        }
+        deviceId = `DEVICE_${Math.abs(hash)}`;
+        localStorage.setItem('device_permanent_id', deviceId);
+    }
+    return deviceId;
+}
 </script>
 
 <script type="module">
@@ -376,7 +397,7 @@ function showGameDetails(game){
     document.getElementById('gamePopup').classList.add('active');
 }
 
-// MISE À JOUR DU STATUT EN LIGNE (important pour l'admin)
+// MISE À JOUR DU STATUT EN LIGNE
 async function updateOnlineStatus() {
     if (!currentUser || !userDocRef) return;
     await updateDoc(userDocRef, {
@@ -385,7 +406,7 @@ async function updateOnlineStatus() {
     }).catch(console.error);
 }
 
-// Envoi d'un ticket vers Firebase (dans users/ticketsList)
+// Envoi d'un ticket vers Firebase
 async function sendTicketToFirebase(category, subCategory, subject, priority) {
     if (!currentUser) return false;
     
@@ -413,7 +434,7 @@ async function sendTicketToFirebase(category, subCategory, subject, priority) {
     }
 }
 
-// Chargement des tickets depuis Firebase (écoute en temps réel)
+// Chargement des tickets depuis Firebase
 function listenToTickets() {
     if (!userDocRef) return;
     
@@ -423,7 +444,6 @@ function listenToTickets() {
             currentTickets = data.ticketsList || [];
             currentCaps = data.capsList || [];
             
-            // Mettre à jour l'affichage si la popup est ouverte
             const activeTab = document.querySelector('.tickets-tab.active')?.dataset.tab || 'encours';
             renderTickets(activeTab);
         }
@@ -487,35 +507,50 @@ function escapeHtml(str) {
     return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'));
 }
 
+// ===== FONCTION initUser MODIFIÉE AVEC VÉRIFICATION DEVICE ID =====
 async function initUser(user) {
     if (!user) return;
+    
+    const deviceId = getDeviceUniqueId();
     currentUser = user;
     userDocRef = doc(db, "users", user.uid);
     
     const snap = await getDoc(userDocRef);
+    
     if (!snap.exists()) {
-        await setDoc(userDocRef, { 
-            email: user.email, 
-            code: user.email.split('@')[0].substring(0,8).toUpperCase(), 
-            role: "netuber", 
-            isActive: true,
-            ticketsList: [],
-            capsList: [],
-            lastSeen: new Date().toISOString(),
-            isOnline: true
-        });
-    } else {
-        // Mettre à jour le statut en ligne
-        await updateDoc(userDocRef, {
-            lastSeen: new Date().toISOString(),
-            isOnline: true
-        }).catch(console.error);
+        showToast("❌ Compte invalide. Contactez l'administrateur.", true);
+        await signOut(auth);
+        window.location.href = "login.html";
+        return;
     }
+    
+    const userData = snap.data();
+    
+    // VÉRIFICATION DU DEVICE ID
+    if (!userData.deviceId) {
+        // PREMIÈRE CONNEXION : on associe ce téléphone au compte
+        await updateDoc(userDocRef, { deviceId: deviceId });
+        showToast("✅ Ce téléphone est maintenant associé à votre compte");
+        
+    } else if (userData.deviceId !== deviceId) {
+        // TENTATIVE DE CONNEXION DEPUIS UN AUTRE TÉLÉPHONE
+        showToast("❌ Ce compte ne peut être utilisé que sur son téléphone d'origine. Connexion bloquée.", true);
+        await signOut(auth);
+        setTimeout(() => {
+            window.location.href = "login.html";
+        }, 2000);
+        return;
+    }
+    
+    // Mise à jour du statut en ligne
+    await updateDoc(userDocRef, {
+        lastSeen: new Date().toISOString(),
+        isOnline: true
+    }).catch(console.error);
     
     const codeDisplay = document.getElementById('userCodeDisplay');
     if (codeDisplay) {
-        const userData = await getDoc(userDocRef);
-        codeDisplay.textContent = userData.data().code || "NETUBER";
+        codeDisplay.textContent = userData.code || "NETUBER";
     }
     
     renderGames();
@@ -571,7 +606,6 @@ document.getElementById('submitTicketBtn')?.addEventListener('click', async () =
     await sendTicketToFirebase(category, subCategory || "Non spécifié", subject, priority);
     closePopup('ticketFormPopup');
     
-    // Réinitialiser le formulaire
     document.getElementById('ticketCategory').value = '';
     document.getElementById('ticketSubCategory').innerHTML = '<option value="">-- Sous-catégorie --</option>';
     document.getElementById('ticketSubject').value = '';
