@@ -27,6 +27,103 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .blinking-dot{width:7px;height:7px;background-color:#10b981;border-radius:50%;animation:blink 1.2s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.3;transform:scale(0.8);}}
 
+/* SECTION STORIES - STYLE FACEBOOK */
+.stories-container{
+    max-width:680px;
+    margin:0 auto;
+    padding:12px 16px;
+    background:#18191A;
+    border-bottom:1px solid #3e4042;
+}
+.stories-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:12px;
+    padding:0 4px;
+}
+.stories-header h3{
+    font-size:0.95rem;
+    font-weight:600;
+    color:#e4e6eb;
+}
+.stories-header span{
+    font-size:0.7rem;
+    color:#8f9298;
+}
+.stories-scroll{
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    padding-bottom:8px;
+    -webkit-overflow-scrolling:touch;
+}
+.stories-scroll::-webkit-scrollbar{
+    display:none;
+}
+.story-card{
+    flex:0 0 auto;
+    scroll-snap-align:start;
+    cursor:pointer;
+    transition:transform 0.2s;
+}
+.story-card:active{
+    transform:scale(0.95);
+}
+.story-circle{
+    width:100px;
+    height:100px;
+    background:linear-gradient(135deg,#facc15,#e2b800,#f59e0b);
+    border-radius:50%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:8px;
+    box-shadow:0 0 0 3px #242526,0 0 0 5px #facc15;
+    transition:box-shadow 0.2s;
+}
+.story-card:hover .story-circle{
+    box-shadow:0 0 0 3px #242526,0 0 0 5px #f59e0b;
+}
+.story-digit{
+    font-size:28px;
+    font-weight:800;
+    color:#0a1a2f;
+    line-height:1;
+    margin-bottom:4px;
+}
+.story-code{
+    font-size:9px;
+    font-weight:700;
+    color:#0a1a2f;
+    background:rgba(255,255,255,0.5);
+    padding:2px 4px;
+    border-radius:10px;
+    margin-bottom:3px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:90px;
+}
+.story-points{
+    font-size:10px;
+    font-weight:800;
+    color:#0a1a2f;
+    line-height:1.2;
+}
+.story-time{
+    font-size:8px;
+    font-weight:600;
+    color:#0a1a2f;
+    opacity:0.8;
+}
+.hidden-section{
+    display:none !important;
+}
+
 .feed-container{max-width:680px;margin:0 auto;padding:0 0 1rem 0;}
 .games-list{display:flex;flex-direction:column;gap:8px;width:100%;}
 
@@ -115,6 +212,15 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 </div>
 </header>
 
+<!-- SECTION STORIES - CLASSEMENT PERFORMANCE -->
+<div id="storiesSection" class="stories-container hidden-section">
+    <div class="stories-header">
+        <h3>🏆 Classement performance</h3>
+        <span>Dernier report</span>
+    </div>
+    <div class="stories-scroll" id="storiesScroll"></div>
+</div>
+
 <div class="feed-container">
 <div class="games-list" id="gamesContainer"></div>
 </div>
@@ -134,7 +240,6 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 <div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div>
 </div>
 
-<!-- Formulaire nouveau ticket avec catégories détaillées -->
 <div id="ticketFormPopup" class="slide-popup">
 <div class="popup-left">
 <i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i>
@@ -166,7 +271,6 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 </div>
 </div>
 
-<!-- Liste des tickets -->
 <div id="ticketsListPopup" class="slide-popup">
 <div class="popup-left">
 <i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i>
@@ -180,7 +284,6 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 </div>
 </div>
 
-<!-- Liste des CAP reçus -->
 <div id="capPopup" class="slide-popup">
 <div class="popup-left">
 <i class="fas fa-chart-line" style="font-size:2rem;color:#f59e0b;"></i>
@@ -326,7 +429,7 @@ function closePopup(id) {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, onSnapshot, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
 const app = initializeApp(firebaseConfig);
@@ -376,7 +479,6 @@ function showGameDetails(game){
     document.getElementById('gamePopup').classList.add('active');
 }
 
-// MISE À JOUR DU STATUT EN LIGNE (important pour l'admin)
 async function updateOnlineStatus() {
     if (!currentUser || !userDocRef) return;
     await updateDoc(userDocRef, {
@@ -385,7 +487,6 @@ async function updateOnlineStatus() {
     }).catch(console.error);
 }
 
-// Envoi d'un ticket vers Firebase (dans users/ticketsList)
 async function sendTicketToFirebase(category, subCategory, subject, priority) {
     if (!currentUser) return false;
     
@@ -413,7 +514,6 @@ async function sendTicketToFirebase(category, subCategory, subject, priority) {
     }
 }
 
-// Chargement des tickets depuis Firebase (écoute en temps réel)
 function listenToTickets() {
     if (!userDocRef) return;
     
@@ -423,7 +523,6 @@ function listenToTickets() {
             currentTickets = data.ticketsList || [];
             currentCaps = data.capsList || [];
             
-            // Mettre à jour l'affichage si la popup est ouverte
             const activeTab = document.querySelector('.tickets-tab.active')?.dataset.tab || 'encours';
             renderTickets(activeTab);
         }
@@ -487,6 +586,76 @@ function escapeHtml(str) {
     return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'));
 }
 
+// ============ SECTION STORIES : CLASSEMENT PERFORMANCE ============
+async function loadLastReportStories() {
+    const storiesSection = document.getElementById('storiesSection');
+    const storiesScroll = document.getElementById('storiesScroll');
+    
+    try {
+        // Récupérer le dernier rapport (le plus récent)
+        const reportsRef = collection(db, "reports");
+        const q = query(reportsRef, orderBy("createdAt", "desc"), limit(1));
+        const querySnapshot = await getDocs(q);
+        
+        if (querySnapshot.empty) {
+            storiesSection.classList.add('hidden-section');
+            return;
+        }
+        
+        const lastReport = querySnapshot.docs[0].data();
+        const netubers = lastReport.netubers || [];
+        
+        // Filtrer les présents et trier par pointsJour décroissants
+        const presents = netubers.filter(n => n.presence === "Présent");
+        
+        if (presents.length === 0) {
+            storiesSection.classList.add('hidden-section');
+            return;
+        }
+        
+        // Trier par pointsJour décroissants
+        presents.sort((a, b) => {
+            const pointsA = a.pointsJour || 0;
+            const pointsB = b.pointsJour || 0;
+            if (pointsA === pointsB) {
+                // Départage par ordre alphabétique du code
+                return a.code.localeCompare(b.code);
+            }
+            return pointsB - pointsA;
+        });
+        
+        // Prendre les 5 premiers maximum
+        const topNetubers = presents.slice(0, 5);
+        
+        // Générer les stories
+        storiesScroll.innerHTML = '';
+        topNetubers.forEach((netuber, index) => {
+            const code = netuber.code;
+            const points = netuber.pointsJour || 0;
+            const temps = netuber.tempsJour || 0;
+            const dernierChiffre = code.slice(-1);
+            
+            const storyCard = document.createElement('div');
+            storyCard.className = 'story-card';
+            storyCard.innerHTML = `
+                <div class="story-circle">
+                    <div class="story-digit">${dernierChiffre}</div>
+                    <div class="story-code">${code}</div>
+                    <div class="story-points">${points} pts</div>
+                    <div class="story-time">${temps} min</div>
+                </div>
+            `;
+            storiesScroll.appendChild(storyCard);
+        });
+        
+        storiesSection.classList.remove('hidden-section');
+        
+    } catch (error) {
+        console.error("Erreur chargement dernier rapport:", error);
+        storiesSection.classList.add('hidden-section');
+    }
+}
+
 async function initUser(user) {
     if (!user) return;
     currentUser = user;
@@ -505,7 +674,6 @@ async function initUser(user) {
             isOnline: true
         });
     } else {
-        // Mettre à jour le statut en ligne
         await updateDoc(userDocRef, {
             lastSeen: new Date().toISOString(),
             isOnline: true
@@ -520,8 +688,8 @@ async function initUser(user) {
     
     renderGames();
     listenToTickets();
+    await loadLastReportStories();
     
-    // Mettre à jour le statut toutes les 30 secondes
     setInterval(() => updateOnlineStatus(), 30000);
 }
 
@@ -571,7 +739,6 @@ document.getElementById('submitTicketBtn')?.addEventListener('click', async () =
     await sendTicketToFirebase(category, subCategory || "Non spécifié", subject, priority);
     closePopup('ticketFormPopup');
     
-    // Réinitialiser le formulaire
     document.getElementById('ticketCategory').value = '';
     document.getElementById('ticketSubCategory').innerHTML = '<option value="">-- Sous-catégorie --</option>';
     document.getElementById('ticketSubject').value = '';
