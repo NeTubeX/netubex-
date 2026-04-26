@@ -6,34 +6,37 @@
 <title>NeTubeX · Connexion</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="icon" type="image/png" href="favicon.png.png">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
-body{background:linear-gradient(135deg,#0a0f1a 0%,#0f1724 100%);font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
-.login-container{max-width:420px;width:100%;margin:0 auto;}
-.login-card{background:#111827;border-radius:32px;padding:40px 32px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);border:1px solid #1e293b;backdrop-filter:blur(10px);transition:all 0.3s;}
-.login-card:hover{border-color:#f59e0b;box-shadow:0 0 30px rgba(245,158,11,0.1);}
-.logo{text-align:center;margin-bottom:32px;}
-.logo i{font-size:48px;color:#f59e0b;margin-bottom:12px;}
-.logo h1{font-size:28px;font-weight:800;color:#e2e8f0;}
-.logo h1 span{color:#f59e0b;}
-.logo p{font-size:12px;color:#64748b;margin-top:8px;}
+body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-container{max-width:440px;width:100%;margin:0 auto;}
+.login-card{background:#ffffff;border-radius:24px;padding:40px 36px;box-shadow:0 4px 20px rgba(0,0,0,0.05),0 1px 2px rgba(0,0,0,0.03);border:1px solid #e2e8f0;transition:all 0.2s;}
+.logo{text-align:center;margin-bottom:28px;}
+.logo img{height:48px;width:auto;margin-bottom:12px;}
+.logo h1{font-size:26px;font-weight:700;color:#1e293b;}
+.logo h1 span{color:#3b82f6;}
+.logo p{font-size:12px;color:#64748b;margin-top:6px;}
+.error-message{background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:12px 16px;margin-bottom:24px;color:#dc2626;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;}
+.error-message i{font-size:16px;}
+.error-message.hidden{display:none;}
 .input-group{margin-bottom:20px;}
-.input-group label{display:block;font-size:12px;font-weight:500;color:#94a3b8;margin-bottom:6px;}
-.input-group input{width:100%;padding:14px 16px;background:#1e293b;border:1.5px solid #334155;border-radius:16px;color:#f1f5f9;font-size:14px;font-family:'Inter',sans-serif;transition:all 0.2s;outline:none;}
-.input-group input:focus{border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,0.2);}
-.login-btn{width:100%;padding:14px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:16px;color:#0a0f1a;font-weight:700;font-size:16px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
-.login-btn:hover{transform:translateY(-2px);box-shadow:0 10px 20px -5px rgba(245,158,11,0.3);}
+.input-group label{display:block;font-size:12px;font-weight:600;color:#475569;margin-bottom:6px;}
+.input-group input{width:100%;padding:12px 14px;background:#ffffff;border:1.5px solid #e2e8f0;border-radius:12px;color:#1e293b;font-size:14px;font-family:'Inter',sans-serif;transition:all 0.2s;outline:none;}
+.input-group input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
+.login-btn{width:100%;padding:12px;background:#3b82f6;border:none;border-radius:12px;color:#ffffff;font-weight:600;font-size:15px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.login-btn:hover{background:#2563eb;transform:translateY(-1px);}
 .login-btn:active{transform:translateY(0);}
-.footer-links{text-align:center;margin-top:24px;}
-.footer-links a{color:#64748b;font-size:12px;text-decoration:none;transition:color 0.2s;}
-.footer-links a:hover{color:#f59e0b;}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:40px;font-size:13px;z-index:10000;animation:slideUp 0.3s ease;}
+.login-btn:disabled{background:#94a3b8;cursor:not-allowed;transform:none;}
+.footer-links{text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid #e2e8f0;}
+.footer-links a{color:#64748b;font-size:12px;text-decoration:none;margin:0 8px;transition:color 0.2s;}
+.footer-links a:hover{color:#3b82f6;}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;font-size:13px;font-weight:500;z-index:10000;animation:slideUp 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
 .toast-success{background:#10b981;color:#fff;}
 .toast-error{background:#ef4444;color:#fff;}
 .toast-info{background:#3b82f6;color:#fff;}
 @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
-.security-badge{position:fixed;bottom:15px;right:15px;font-size:10px;color:#475569;background:rgba(0,0,0,0.3);padding:6px 12px;border-radius:20px;}
-.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;position:fixed;top:0;left:0;right:0;z-index:100;}
+.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#3b82f6,#2563eb,#60a5fa,#3b82f6);background-size:200% 100%;animation:rainbowMove 3s linear infinite;position:fixed;top:0;left:0;right:0;z-index:100;}
 @keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
 </style>
 </head>
@@ -42,14 +45,18 @@ body{background:linear-gradient(135deg,#0a0f1a 0%,#0f1724 100%);font-family:'Int
 <div class="login-container">
 <div class="login-card">
 <div class="logo">
-<i class="fas fa-chart-line"></i>
+<img src="favicon.png.png" alt="NeTubeX Logo">
 <h1>Ne<span>TubeX</span></h1>
-<p>Espace de rémunération digitale</p>
+<p>Espace professionnel de rémunération digitale</p>
+</div>
+<div id="errorMessage" class="error-message hidden">
+<i class="fas fa-exclamation-circle"></i>
+<span id="errorText"></span>
 </div>
 <form id="loginForm">
 <div class="input-group">
-<label><i class="fas fa-envelope"></i> Email</label>
-<input type="email" id="email" placeholder="exemple@email.com" required autocomplete="email">
+<label><i class="fas fa-envelope"></i> Adresse email</label>
+<input type="email" id="email" placeholder="exemple@entreprise.com" required autocomplete="email">
 </div>
 <div class="input-group">
 <label><i class="fas fa-lock"></i> Mot de passe</label>
@@ -60,11 +67,8 @@ body{background:linear-gradient(135deg,#0a0f1a 0%,#0f1724 100%);font-family:'Int
 </button>
 </form>
 <div class="footer-links">
-<a href="#">Mot de passe oublié ?</a> • <a href="#">Support</a>
+<a href="#">Assistance technique</a> • <a href="#">Sécurité</a>
 </div>
-</div>
-<div class="security-badge">
-<i class="fas fa-shield-alt"></i> Connexion sécurisée
 </div>
 </div>
 <script type="module">
@@ -86,7 +90,7 @@ let sessionStartTime = Date.now();
 let loginAttempts = 0;
 let lastAttemptTime = null;
 let deviceId = null;
-function getDeviceUniqueId() {
+function getDeviceUniqueId(){
 let storedId = localStorage.getItem('device_permanent_id');
 if(!storedId){
 const screenInfo = `${screen.width}x${screen.height}x${screen.colorDepth}`;
@@ -103,6 +107,23 @@ storedId = `DEVICE_${Math.abs(hash)}`;
 localStorage.setItem('device_permanent_id', storedId);
 }
 return storedId;
+}
+function showErrorMessage(message){
+const errorDiv = document.getElementById('errorMessage');
+const errorText = document.getElementById('errorText');
+errorText.textContent = message;
+errorDiv.classList.remove('hidden');
+}
+function hideErrorMessage(){
+const errorDiv = document.getElementById('errorMessage');
+errorDiv.classList.add('hidden');
+}
+function showToast(message, type='error'){
+const toast = document.createElement('div');
+toast.className = `toast toast-${type}`;
+toast.innerHTML = (type==='success'?'✓ ':(type==='error'?'✗ ':'ℹ '))+message;
+document.body.appendChild(toast);
+setTimeout(()=>toast.remove(),4000);
 }
 async function sendSecurityAlert(type, email, details={}){
 try{
@@ -130,29 +151,22 @@ await addDoc(collection(db,"security_alerts"), alertData);
 return true;
 }catch(error){ console.error("Erreur envoi alerte:",error); return false; }
 }
-function showToast(message, type='error'){
-const toast = document.createElement('div');
-toast.className = `toast toast-${type}`;
-toast.innerHTML = (type==='success'?'✅ ':(type==='error'?'❌ ':'ℹ️ '))+message;
-document.body.appendChild(toast);
-setTimeout(()=>toast.remove(),4000);
-}
 document.getElementById('loginForm').addEventListener('submit', async (e)=>{
 e.preventDefault();
+hideErrorMessage();
 const email = document.getElementById('email').value.trim();
 const password = document.getElementById('password').value;
 const loginBtn = document.getElementById('loginBtn');
 if(!email || !password){
-showToast('Veuillez remplir tous les champs','error');
+showErrorMessage('Veuillez renseigner votre email et mot de passe');
 return;
 }
 deviceId = getDeviceUniqueId();
 loginAttempts++;
-const currentAttemptTime = Date.now();
-const timeSpentSeconds = Math.floor((currentAttemptTime - sessionStartTime)/1000);
-lastAttemptTime = currentAttemptTime;
+const timeSpentSeconds = Math.floor((Date.now() - sessionStartTime)/1000);
+lastAttemptTime = Date.now();
 loginBtn.disabled = true;
-loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
+loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authentification...';
 try{
 const userCredential = await signInWithEmailAndPassword(auth, email, password);
 const user = userCredential.user;
@@ -163,7 +177,7 @@ await sendSecurityAlert('login_success', email, {
 level: 'info',
 netuberCode: netuberCode,
 netuberId: user.uid,
-message: `✅ Connexion réussie pour ${netuberCode || email} après ${timeSpentSeconds} secondes (${loginAttempts} tentative${loginAttempts>1?'s':''})`,
+message: `Connexion réussie pour ${netuberCode || email} après ${timeSpentSeconds} secondes (${loginAttempts} tentative${loginAttempts>1?'s':''})`,
 timeToSuccess: timeSpentSeconds
 });
 if(!userData?.deviceId){
@@ -171,34 +185,43 @@ await sendSecurityAlert('new_device_linked', email, {
 level: 'info',
 netuberCode: netuberCode,
 netuberId: user.uid,
-message: `🟢 Nouvel appareil enregistré pour ${netuberCode || email} : ${deviceId}`,
+message: `Nouvel appareil enregistré pour ${netuberCode || email}`,
 registeredDeviceId: deviceId
 });
 }
-showToast(`Connexion réussie ! Bienvenue ${netuberCode || email}`,'success');
+showToast(`Connexion réussie. Bienvenue ${netuberCode || email}`,'success');
 setTimeout(()=>{ window.location.href="index.html"; },1000);
 }catch(error){
 let alertType = 'login_failed';
 let alertMessage = '';
 let level = 'high';
+let userMessage = '';
 if(error.code === 'auth/user-not-found'){
 alertType = 'account_not_found';
 level = 'medium';
-alertMessage = `🟡 Tentative sur compte inexistant : ${email}`;
-showToast('Email ou mot de passe incorrect','error');
+alertMessage = `Tentative sur compte inexistant : ${email}`;
+userMessage = 'Aucun compte associé à cette adresse email';
+showErrorMessage(userMessage);
 }else if(error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential'){
 alertType = 'login_failed';
 level = 'high';
-alertMessage = `🟠 Échec connexion pour ${email} - ${loginAttempts} tentative(s)`;
-showToast('Email ou mot de passe incorrect','error');
+alertMessage = `Échec connexion pour ${email} - ${loginAttempts} tentative(s)`;
+userMessage = 'Email ou mot de passe incorrect';
+showErrorMessage(userMessage);
 }else if(error.code === 'auth/too-many-requests'){
 alertType = 'login_failed';
 level = 'critical';
-alertMessage = `🔴 Trop de tentatives pour ${email} - Compte temporairement limité`;
-showToast('Trop de tentatives. Réessayez plus tard','error');
+alertMessage = `Trop de tentatives pour ${email}`;
+userMessage = 'Trop de tentatives échouées. Veuillez réessayer dans quelques minutes';
+showErrorMessage(userMessage);
+}else if(error.code === 'auth/invalid-email'){
+userMessage = 'Format d\'email invalide';
+showErrorMessage(userMessage);
+alertMessage = `Email invalide : ${email}`;
 }else{
-alertMessage = `⚠️ Erreur inconnue: ${error.message}`;
-showToast('Erreur de connexion','error');
+userMessage = 'Erreur de connexion. Vérifiez votre connexion internet';
+showErrorMessage(userMessage);
+alertMessage = `Erreur inconnue: ${error.message}`;
 }
 await sendSecurityAlert(alertType, email, {
 level: level,
