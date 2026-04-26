@@ -2,64 +2,105 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<title>NeTubeX | Bilan Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>NeTubeX | Administration</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Inter','Courier New',monospace;background:linear-gradient(135deg,#0a1a2f,#0e2a3a);min-height:100vh;padding:20px;}
-.login-container,.bilan-container{max-width:800px;margin:0 auto;}
-.login-card,.bilan-card{background:linear-gradient(145deg,#0f2d45,#0a2538);border-radius:32px;padding:30px;border-top:5px solid #facc15;}
-.logo{text-align:center;margin-bottom:30px;}
-.logo h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,#facc15,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.input-group{margin-bottom:20px;}
-.input-group input{width:100%;padding:14px 16px;border-radius:60px;border:1px solid #2d4e73;background:#0a1a2f;color:#fff;font-size:1rem;}
-.input-group input:focus{outline:none;border-color:#facc15;}
-.login-btn,.refresh-btn,.logout-btn{background:linear-gradient(145deg,#facc15,#e5b800);border:none;padding:12px 24px;border-radius:60px;font-weight:700;cursor:pointer;}
-.login-btn{width:100%;}
-.logout-btn{background:#dc2626;color:#fff;}
-.bilan-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
-.bilan-period{color:#7dd3fc;font-size:0.8rem;}
-.bilan-section{margin-bottom:32px;background:rgba(255,255,255,0.03);border-radius:20px;padding:20px;}
-.bilan-section h3{color:#facc15;margin-bottom:16px;border-left:4px solid #facc15;padding-left:12px;}
-.facture-item{background:rgba(255,255,255,0.05);border-radius:16px;padding:16px;margin-bottom:12px;border-left:3px solid #facc15;}
-.facture-header{font-weight:800;margin-bottom:10px;}
-.facture-details{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;font-size:0.85rem;}
-.classement-item{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(255,255,255,0.05);border-radius:12px;margin-bottom:8px;}
-.classement-rank{font-weight:800;width:40px;color:#facc15;}
-.classement-points{font-weight:800;color:#facc15;}
-.top-1{background:linear-gradient(145deg,#facc1533,#facc1522);border-left:3px solid #facc15;}
-.top-2{background:linear-gradient(145deg,#c0c0c033,#c0c0c022);border-left:3px solid #c0c0c0;}
-.top-3{background:linear-gradient(145deg,#cd7f3233,#cd7f3222);border-left:3px solid #cd7f32;}
-.alerte-item{padding:12px 16px;border-radius:12px;margin-bottom:8px;display:flex;align-items:center;gap:12px;}
-.alerte-item.warning{background:#facc1522;border-left:3px solid #facc15;}
-.alerte-item.danger{background:#dc262622;border-left:3px solid #dc2626;}
-.error-message{color:#ef4444;text-align:center;margin-top:12px;font-size:0.8rem;}
+body{font-family:'Segoe UI','Roboto',Arial,sans-serif;background:#f5f5f5;color:#1e1e1e;line-height:1.5;padding:30px 20px;}
+.container{max-width:1100px;margin:0 auto;}
+.card{background:#ffffff;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.08);padding:32px;}
+.login-card{max-width:420px;margin:60px auto;}
+h1{font-size:1.5rem;font-weight:500;letter-spacing:-0.3px;margin-bottom:8px;color:#1e1e1e;}
+h2{font-size:1.3rem;font-weight:500;margin-bottom:20px;padding-bottom:8px;border-bottom:1px solid #e0e0e0;}
+h3{font-size:1rem;font-weight:600;margin-bottom:16px;color:#2c3e50;}
+.subtitle{color:#5a6c7e;font-size:0.85rem;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #eaeaea;}
+.form-group{margin-bottom:20px;}
+label{display:block;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#5a6c7e;margin-bottom:6px;}
+input{width:100%;padding:10px 12px;border:1px solid #d0d5d8;border-radius:3px;font-size:0.9rem;background:#fff;transition:border 0.2s;}
+input:focus{outline:none;border-color:#7a8c9e;}
+button{background:#2c3e50;border:none;color:white;padding:10px 20px;font-size:0.85rem;font-weight:500;border-radius:3px;cursor:pointer;transition:background 0.2s;}
+button:hover{background:#1a2a38;}
+.btn-secondary{background:#e0e4e8;color:#1e1e1e;}
+.btn-secondary:hover{background:#cbd2d9;}
+.btn-danger{background:#c0392b;color:#fff;}
+.btn-danger:hover{background:#a93226;}
+.btn-block{width:100%;}
+.header-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #e0e0e0;}
+.error-message{color:#c0392b;font-size:0.8rem;margin-top:12px;text-align:center;}
 .hidden{display:none;}
-.loading{text-align:center;padding:40px;color:#7dd3fc;}
+.bilan-period{font-size:0.8rem;color:#5a6c7e;background:#f0f2f5;padding:6px 12px;border-radius:2px;}
+.refresh-btn{background:#e0e4e8;color:#1e1e1e;margin-left:12px;}
+.refresh-btn:hover{background:#cbd2d9;}
+.section{margin-bottom:40px;}
+.invoice-table{width:100%;border-collapse:collapse;font-size:0.85rem;}
+.invoice-table th{text-align:left;padding:12px 8px 8px 0;border-bottom:1px solid #e0e0e0;font-weight:600;color:#2c3e50;}
+.invoice-table td{padding:10px 8px 10px 0;border-bottom:1px solid #f0f0f0;}
+.invoice-table tr:last-child td{border-bottom:none;}
+.invoice-number{font-weight:500;color:#1e1e1e;}
+.amount{text-align:right;font-weight:500;}
+.text-right{text-align:right;}
+.ranking-list{list-style:none;}
+.ranking-item{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0;}
+.ranking-rank{width:40px;font-weight:600;color:#5a6c7e;}
+.ranking-name{flex:2;font-weight:500;}
+.ranking-points{width:100px;text-align:right;font-weight:500;}
+.ranking-gain{width:80px;text-align:right;color:#2c7a4d;}
+.alert-item{padding:10px 0;border-bottom:1px solid #f0f0f0;font-size:0.85rem;}
+.alert-warning{color:#a66b00;}
+.alert-danger{color:#c0392b;}
+.empty-state{color:#8a9aad;font-style:italic;padding:20px 0;}
+.footer-note{margin-top:32px;padding-top:16px;border-top:1px solid #eaeaea;font-size:0.7rem;color:#8a9aad;text-align:center;}
+.invoice-date{font-size:0.75rem;color:#7a8c9e;}
 </style>
 </head>
 <body>
-<div class="login-container" id="loginSection">
-    <div class="login-card">
-        <div class="logo"><h1>📊 NeTubeX</h1><p>Bilan Admin</p></div>
-        <div class="input-group"><input type="email" id="loginEmail" placeholder="Email"></div>
-        <div class="input-group"><input type="password" id="loginPassword" placeholder="Mot de passe"></div>
-        <button class="login-btn" id="loginBtn">🔐 Se connecter</button>
-        <div id="loginError" class="error-message"></div>
-    </div>
-</div>
-<div class="bilan-container hidden" id="bilanSection">
-    <div class="bilan-card">
-        <div class="bilan-header">
-            <h2>📊 BILAN ADMIN</h2>
-            <div><button class="logout-btn" id="logoutBtn">🚪 Déconnexion</button></div>
+<div class="container">
+    <!-- SECTION LOGIN -->
+    <div id="loginSection">
+        <div class="card login-card">
+            <h1>NeTubeX</h1>
+            <div class="subtitle">Accès administration · Factures & bilan</div>
+            <div class="form-group"><label>Adresse email</label><input type="email" id="loginEmail" placeholder="exemple@netubex.com"></div>
+            <div class="form-group"><label>Mot de passe</label><input type="password" id="loginPassword" placeholder="••••••"></div>
+            <button class="btn-block" id="loginBtn">Se connecter</button>
+            <div id="loginError" class="error-message"></div>
         </div>
-        <div class="bilan-header"><span class="bilan-period" id="bilanPeriod">Chargement...</span><button class="refresh-btn" id="refreshBtn">🔄 Actualiser</button></div>
-        <div class="bilan-section"><h3>🧾 FACTURES (cumul mensuel)</h3><div id="facturesList" class="factures-list"><div class="loading">Chargement...</div></div></div>
-        <div class="bilan-section"><h3>🏆 CLASSEMENT (Top Netubers)</h3><div id="classementList" class="classement-list"><div class="loading">Chargement...</div></div></div>
-        <div class="bilan-section"><h3>⚠️ ALERTES</h3><div id="alertesList" class="alertes-list"><div class="loading">Chargement...</div></div></div>
+    </div>
+
+    <!-- SECTION BILAN (visible après connexion) -->
+    <div id="bilanSection" class="hidden">
+        <div class="card">
+            <div class="header-bar">
+                <div><h1>NeTubeX</h1><div class="subtitle" style="margin:0;padding:0;border:none;">Bilan mensuel · Factures</div></div>
+                <div><button id="logoutBtn" class="btn-danger">Déconnexion</button></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+                <span class="bilan-period" id="bilanPeriod">Chargement...</span>
+                <button id="refreshBtn" class="refresh-btn">Actualiser</button>
+            </div>
+
+            <!-- FACTURES -->
+            <div class="section">
+                <h2>Factures</h2>
+                <div id="facturesList"><div class="empty-state">Chargement des données...</div></div>
+            </div>
+
+            <!-- CLASSEMENT -->
+            <div class="section">
+                <h2>Classement des Netubers</h2>
+                <div id="classementList"><div class="empty-state">Chargement...</div></div>
+            </div>
+
+            <!-- ALERTES -->
+            <div class="section">
+                <h2>Alertes administratives</h2>
+                <div id="alertesList"><div class="empty-state">Chargement...</div></div>
+            </div>
+            <div class="footer-note">NeTubeX · Facturation mensuelle · Taux 1000 points = 0,08 $</div>
+        </div>
     </div>
 </div>
+
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import{getFirestore,collection,getDocs,query,where}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -81,14 +122,14 @@ const facturesList=document.getElementById('facturesList');
 const classementList=document.getElementById('classementList');
 const alertesList=document.getElementById('alertesList');
 const TAUX={points:1000,montant:0.08};
-function minutesToHours(m){const h=Math.floor(m/60);const r=m%60;return`${h}h ${r.toString().padStart(2,'0')}min`;}
-function calculerGain(p){return(p/TAUX.points)*TAUX.montant;}
+function minutesToHours(m){const h=Math.floor(m/60);const r=m%60;return h>0?`${h}h${r>0?` ${r}min`:''}`:`${r}min`;}
+function formatDateFr(d){return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});}
 async function genererBilan(){
 const mtn=new Date();
 const annee=mtn.getFullYear();
 const mois=mtn.getMonth();
-const moisNoms=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-bilanPeriod.innerHTML=`📅 ${moisNoms[mois]} ${annee} (cumul progressif)`;
+const moisNom=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"][mois];
+bilanPeriod.innerText=`Période : ${moisNom} ${annee} · cumul progressif (non clôturé)`;
 const debutMois=new Date(annee,mois,1);
 const finMois=new Date(annee,mois+1,1);
 try{
@@ -107,46 +148,50 @@ if(dDate&&(!cumul[n.code].lastDate||dDate>cumul[n.code].lastDate))cumul[n.code].
 });
 }
 });
-let htmlFactures='',htmlClassement='',htmlAlertes='';
-const classementArr=[];
-for(const[code,data]of Object.entries(cumul)){
-if(data.points>0||data.temps>0){
-const gain=calculerGain(data.points);
-classementArr.push({code,points:data.points,gain,temps:data.temps,lastDate:data.lastDate});
-htmlFactures+=`<div class="facture-item"><div class="facture-header">📄 ${code}</div><div class="facture-details"><span>📅 Mois: ${moisNoms[mois]} ${annee}</span><span>⭐ Points: ${data.points.toLocaleString()} pts</span><span>⏱️ Temps: ${minutesToHours(data.temps)}</span><span>💰 Gain: ${gain.toFixed(2)} $</span><span>📊 Taux: ${TAUX.points}pts → ${TAUX.montant}$</span>${data.lastDate?`<span>📅 Dernier rapport: ${data.lastDate.toLocaleDateString('fr-FR')}</span>`:''}</div></div>`;
-}}
-classementArr.sort((a,b)=>b.points-a.points);
-classementArr.slice(0,10).forEach((item,idx)=>{
-const rank=idx+1;
-let rankClass='';
-if(rank===1)rankClass='top-1';
-else if(rank===2)rankClass='top-2';
-else if(rank===3)rankClass='top-3';
-htmlClassement+=`<div class="classement-item ${rankClass}"><div class="classement-rank">#${rank}</div><div class="classement-name">${item.code}</div><div class="classement-points">${item.points.toLocaleString()} pts</div><div class="classement-gain">${item.gain.toFixed(2)} $</div></div>`;
-});
-let alertCount=0;
-for(const item of classementArr){
-if(item.points>0&&item.temps===0){htmlAlertes+=`<div class="alerte-item warning"><span class="alerte-icon">⚠️</span><span class="alerte-text">${item.code} : ${item.points} pts mais 0 minute cumulée</span></div>`;alertCount++;}
-if(item.points<500&&item.points>0){htmlAlertes+=`<div class="alerte-item danger"><span class="alerte-icon">📉</span><span class="alerte-text">${item.code} : gain mensuel &lt; 0.04$ (${item.points} pts)</span></div>`;alertCount++;}
-const today=new Date();
-if(item.lastDate){
-const joursDiff=Math.floor((today-item.lastDate)/(1000*60*60*24));
-if(joursDiff>=3&&item.points>0){htmlAlertes+=`<div class="alerte-item warning"><span class="alerte-icon">⏰</span><span class="alerte-text">${item.code} : dernier rapport il y a ${joursDiff} jours</span></div>`;alertCount++;}
-}}
-if(alertCount===0)htmlAlertes='<div class="loading">✅ Aucune alerte</div>';
-if(classementArr.length===0){htmlFactures='<div class="loading">📭 Aucun rapport pour ce mois</div>';htmlClassement='<div class="loading">📭 Aucune donnée</div>';}
-facturesList.innerHTML=htmlFactures;
-classementList.innerHTML=htmlClassement;
-alertesList.innerHTML=htmlAlertes;
-}catch(e){facturesList.innerHTML='<div class="loading">❌ Erreur chargement</div>';}
+const netubersArray=Object.entries(cumul).map(([code,data])=>({code,points:data.points,temps:data.temps,gain:(data.points/TAUX.points)*TAUX.montant,lastDate:data.lastDate})).filter(n=>n.points>0||n.temps>0);
+netubersArray.sort((a,b)=>b.points-a.points);
+let facturesHtml='<table class="invoice-table"><thead><tr><th>Netuber</th><th>Points cumulés</th><th>Temps cumulé</th><th>Gain (USD)</th><th>Dernier rapport</th></tr></thead><tbody>';
+for(const n of netubersArray){
+facturesHtml+=`<tr><td class="invoice-number">${n.code}</td><td>${n.points.toLocaleString()} pts</td><td>${minutesToHours(n.temps)}</td><td class="amount">${n.gain.toFixed(2)} $</td><td class="invoice-date">${n.lastDate?formatDateFr(n.lastDate):'—'}</td></tr>`;
 }
-loginBtn.onclick=async()=>{
-loginError.textContent='';
-try{await signInWithEmailAndPassword(auth,loginEmail.value,loginPassword.value);}
-catch(e){loginError.textContent='Email ou mot de passe incorrect';}
-};
+facturesHtml+=`<tr style="border-top:2px solid #e0e0e0;"><td><strong>Total</strong></td><td><strong>${netubersArray.reduce((s,n)=>s+n.points,0).toLocaleString()} pts</strong></td><td><strong>${minutesToHours(netubersArray.reduce((s,n)=>s+n.temps,0))}</strong></td><td class="amount"><strong>${netubersArray.reduce((s,n)=>s+n.gain,0).toFixed(2)} $</strong></td><td></td></tr>`;
+facturesHtml+='</tbody></table>';
+if(netubersArray.length===0)facturesHtml='<div class="empty-state">Aucune facture pour la période en cours.</div>';
+facturesList.innerHTML=facturesHtml;
+let classementHtml='<div class="ranking-list">';
+netubersArray.slice(0,10).forEach((n,idx)=>{
+classementHtml+=`<div class="ranking-item"><div class="ranking-rank">${idx+1}</div><div class="ranking-name">${n.code}</div><div class="ranking-points">${n.points.toLocaleString()} pts</div><div class="ranking-gain">${n.gain.toFixed(2)} $</div></div>`;
+});
+classementHtml+='</div>';
+if(netubersArray.length===0)classementHtml='<div class="empty-state">Aucune donnée de classement.</div>';
+classementList.innerHTML=classementHtml;
+let alertesHtml='';
+let alertCount=0;
+for(const n of netubersArray){
+if(n.points>0&&n.temps===0){
+alertesHtml+=`<div class="alert-item alert-warning">⚠️ ${n.code} : ${n.points.toLocaleString()} points enregistrés mais aucune minute cumulée.</div>`;
+alertCount++;
+}
+if(n.points<500&&n.points>0){
+alertesHtml+=`<div class="alert-item alert-danger">📉 ${n.code} : gain mensuel inférieur à 0,04 $ (${n.points} points).</div>`;
+alertCount++;
+}
+const today=new Date();
+if(n.lastDate){
+const diffJours=Math.floor((today-n.lastDate)/(1000*60*60*24));
+if(diffJours>=3&&n.points>0){
+alertesHtml+=`<div class="alert-item alert-warning">⏱️ ${n.code} : dernier rapport il y a ${diffJours} jours.</div>`;
+alertCount++;
+}
+}
+}
+if(alertCount===0)alertesHtml='<div class="empty-state">Aucune alerte à signaler.</div>';
+alertesList.innerHTML=alertesHtml;
+}catch(e){facturesList.innerHTML='<div class="empty-state">Erreur de chargement des données.</div>';}
+}
+loginBtn.onclick=async()=>{loginError.innerText='';try{await signInWithEmailAndPassword(auth,loginEmail.value,loginPassword.value);}catch(e){loginError.innerText='Identifiants incorrects';}};
 logoutBtn.onclick=async()=>{await signOut(auth);};
-refreshBtn.onclick=()=>{if(bilanSection.classList.contains('hidden')===false)genererBilan();};
+refreshBtn.onclick=()=>{if(!bilanSection.classList.contains('hidden'))genererBilan();};
 onAuthStateChanged(auth,(user)=>{
 if(user){
 loginSection.classList.add('hidden');
@@ -155,9 +200,7 @@ genererBilan();
 }else{
 loginSection.classList.remove('hidden');
 bilanSection.classList.add('hidden');
-loginEmail.value='';
-loginPassword.value='';
-loginError.textContent='';
+loginEmail.value='';loginPassword.value='';loginError.innerText='';
 }
 });
 </script>
