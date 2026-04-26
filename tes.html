@@ -3,52 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>NeTubeX | Journal Comptable</title>
+<title>NeTubeX | Système Comptable Complet</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Segoe UI','Roboto',monospace;background:#f0f2f5;color:#1a2a3a;padding:40px 24px;}
-.container{max-width:1200px;margin:0 auto;}
+body{font-family:'Segoe UI','Roboto',monospace;background:#e8ecf0;color:#1a2a3a;padding:30px 20px;}
+.container{max-width:1300px;margin:0 auto;}
 .login-wrapper{max-width:420px;margin:80px auto;}
-.card{background:#ffffff;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.08);padding:32px;}
-h1{font-size:1.3rem;font-weight:500;letter-spacing:-0.2px;color:#1a3a4f;}
-h2{font-size:0.85rem;font-weight:600;margin:20px 0 12px 0;color:#2c5a7a;text-transform:uppercase;letter-spacing:0.5px;}
+.card{background:#ffffff;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.08);padding:32px;}
+h1{font-size:1.3rem;font-weight:500;color:#1a3a4f;}
+h2{font-size:1rem;font-weight:600;margin:28px 0 16px 0;padding-bottom:6px;border-bottom:2px solid #cbd5e1;color:#2c5a7a;}
+h3{font-size:0.85rem;font-weight:600;margin:16px 0 12px 0;color:#2c5a7a;}
 .subtitle{color:#5c6f87;font-size:0.75rem;margin-bottom:20px;}
 .form-group{margin-bottom:20px;}
 label{display:block;font-size:0.7rem;font-weight:600;text-transform:uppercase;color:#4a5b6e;margin-bottom:6px;}
-input{width:100%;padding:10px 12px;border:1px solid #d0d7dd;border-radius:3px;font-size:0.85rem;background:#fff;}
+input{width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:4px;font-size:0.85rem;background:#fff;}
 input:focus{outline:none;border-color:#7c8ea0;}
-.btn{background:#1c4e6f;border:none;color:white;padding:10px 20px;font-size:0.85rem;font-weight:500;border-radius:3px;cursor:pointer;width:100%;}
+.btn{background:#1c4e6f;border:none;color:white;padding:10px 20px;font-size:0.85rem;font-weight:500;border-radius:4px;cursor:pointer;}
 .btn:hover{background:#0f3b55;}
-.btn-secondary{background:#eef2f5;color:#1c4e6f;border:1px solid #d0d7dd;width:auto;}
-.error-message{color:#b91c1c;font-size:0.75rem;margin-top:12px;text-align:center;background:#fee2e2;padding:8px;border-radius:3px;}
+.btn-secondary{background:#eef2f5;color:#1c4e6f;border:1px solid #cbd5e1;}
+.btn-excel{background:#1e6b3b;color:#fff;margin-left:12px;}
+.btn-excel:hover{background:#155a30;}
+.error-message{color:#b91c1c;font-size:0.75rem;margin-top:12px;text-align:center;background:#fee2e2;padding:8px;border-radius:4px;}
 .hidden{display:none;}
-/* Bilan comptable */
-.header-bilan{border-bottom:2px solid #dce3e9;padding-bottom:16px;margin-bottom:24px;display:flex;justify-content:space-between;flex-wrap:wrap;align-items:flex-end;}
-.header-bilan h1{font-size:1.4rem;}
-.period-badge{background:#eef2f5;padding:5px 12px;font-size:0.7rem;color:#2c5a7a;font-family:monospace;}
-.refresh-btn{padding:5px 14px;font-size:0.7rem;margin-left:12px;}
-.info-taux{background:#fafcfd;border:1px solid #e6edf2;padding:12px 20px;margin-bottom:24px;display:flex;gap:32px;flex-wrap:wrap;}
-.info-taux span{font-size:0.75rem;color:#2c5a7a;}
-.info-taux strong{font-weight:600;color:#1a3a4f;}
-.table-container{overflow-x:auto;margin-bottom:28px;background:#fff;border:1px solid #e6edf2;}
+/* Bilan */
+.header-bilan{border-bottom:2px solid #cbd5e1;padding-bottom:16px;margin-bottom:24px;display:flex;justify-content:space-between;flex-wrap:wrap;align-items:flex-end;}
+.header-bilan h1{font-size:1.5rem;}
+.period-badge{background:#eef2f5;padding:5px 12px;font-size:0.75rem;color:#2c5a7a;}
+.info-taux{background:#f8fafc;border:1px solid #e2e8f0;padding:12px 20px;margin-bottom:24px;display:flex;gap:32px;flex-wrap:wrap;}
+.table-container{overflow-x:auto;margin-bottom:24px;background:#fff;border:1px solid #e2e8f0;border-radius:4px;}
 table{width:100%;border-collapse:collapse;font-size:0.75rem;}
-th{background:#f8fafc;padding:12px 10px;text-align:left;font-weight:600;color:#2c5a7a;border-bottom:1px solid #dce3e9;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.3px;}
-td{padding:10px 10px;border-bottom:1px solid #f0f4f9;color:#2c3e50;}
-tr:last-child td{border-bottom:none;}
-.separator-row td{padding:0;height:1px;background:#e6edf2;}
+th{background:#f8fafc;padding:10px 8px;text-align:left;font-weight:600;color:#2c5a7a;border-bottom:1px solid #e2e8f0;font-size:0.7rem;}
+td{padding:8px;border-bottom:1px solid #f0f4f9;}
 .text-right{text-align:right;}
-.text-debit{color:#1a5a3a;font-weight:500;}
-.text-credit{color:#2c5a7a;font-weight:500;}
-.grand-livre{background:#fff;border:1px solid #e6edf2;margin-bottom:24px;}
-.gl-item{display:flex;justify-content:space-between;padding:10px 20px;border-bottom:1px solid #f0f4f9;}
-.gl-item:last-child{border-bottom:none;}
-.gl-label{font-weight:500;color:#2c5a7a;}
-.gl-value{font-weight:500;}
-.synthese-equilibre{background:#f8fafc;border:1px solid #dce3e9;padding:20px 24px;margin-top:16px;}
-.equilibre-line{display:flex;justify-content:space-between;padding:6px 0;}
-.equilibre-line.total{border-top:2px solid #dce3e9;margin-top:8px;padding-top:12px;font-weight:700;font-size:0.9rem;}
-.check-ok{color:#1e6b3b;font-weight:500;}
-.footer-note{margin-top:32px;text-align:center;font-size:0.65rem;color:#7f95ae;padding:16px;border-top:1px solid #e2eaf1;}
+.balance-table td, .balance-table th{padding:8px 12px;}
+.gl-section{margin-bottom:32px;background:#fff;border:1px solid #e2e8f0;border-radius:4px;}
+.gl-header{background:#f8fafc;padding:12px 20px;border-bottom:1px solid #e2e8f0;font-weight:600;color:#1c4e6f;}
+.synthese-box{background:#f8fafc;border:1px solid #e2e8f0;padding:20px;margin-top:16px;border-radius:4px;}
+.repartition-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0;}
+.repartition-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e2e8f0;}
+.footer-note{margin-top:32px;text-align:center;font-size:0.65rem;color:#7f95ae;padding:16px;border-top:1px solid #e2e8f0;}
+.total-row{background:#f8fafc;font-weight:600;border-top:2px solid #cbd5e1;}
 </style>
 </head>
 <body>
@@ -57,10 +51,10 @@ tr:last-child td{border-bottom:none;}
         <div class="login-wrapper">
             <div class="card">
                 <h1>NE TUBEX</h1>
-                <div class="subtitle">Journal comptable · accès administrateur</div>
+                <div class="subtitle">Système comptable complet · accès administrateur</div>
                 <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="admin@netubex.com"></div>
                 <div class="form-group"><label>Mot de passe</label><input type="password" id="loginPassword" placeholder=""></div>
-                <button class="btn" id="loginBtn">Accéder au journal</button>
+                <button class="btn" id="loginBtn">Accéder à la comptabilité</button>
                 <div id="loginError" class="error-message hidden"></div>
             </div>
         </div>
@@ -68,28 +62,46 @@ tr:last-child td{border-bottom:none;}
 
     <div id="bilanSection" class="hidden">
         <div class="header-bilan">
-            <div><h1>NE TUBEX — JOURNAL COMPTABLE FINAL</h1></div>
-            <div><span class="period-badge" id="bilanPeriod">Avril 2026</span><button id="refreshBtn" class="btn btn-secondary refresh-btn">⟳ Actualiser</button></div>
+            <div><h1>NE TUBEX — SYSTÈME COMPTABLE COMPLET</h1></div>
+            <div><span class="period-badge" id="bilanPeriod">Avril 2026</span><button id="refreshBtn" class="btn btn-secondary">⟳ Actualiser</button><button id="exportExcelBtn" class="btn btn-excel">📎 Exporter Excel</button></div>
         </div>
         <div class="info-taux"><span><strong>Période :</strong> <span id="periodeLabel">Avril 2026</span></span><span><strong>Taux :</strong> 1000 points = 0.08 $</span></div>
 
         <!-- JOURNAL COMPTABLE -->
+        <h2>📘 JOURNAL COMPTABLE (POINTS + $)</h2>
         <div class="table-container">
             <table id="journalTable">
-                <thead>
-                    <tr><th>Date</th><th>Compte</th><th class="text-right">Débit (pts)</th><th class="text-right">Débit ($)</th><th class="text-right">Crédit ($)</th><th>Libellé</th></tr>
-                </thead>
+                <thead><tr><th>Date</th><th>Compte</th><th class="text-right">Débit (pts)</th><th class="text-right">Débit ($)</th><th class="text-right">Crédit ($)</th><th>Libellé</th></tr></thead>
                 <tbody id="journalBody"></tbody>
             </table>
         </div>
 
-        <!-- GRAND LIVRE SYNTHESE -->
-        <h2>📗 GRAND LIVRE (SYNTHÈSE)</h2>
-        <div class="grand-livre" id="grandLivre"></div>
+        <!-- GRAND LIVRE PAR NETUBER -->
+        <h2>📗 GRAND LIVRE PAR NETUBER</h2>
+        <div id="grandLivreContainer"></div>
 
-        <!-- EQUILIBRE -->
-        <div class="synthese-equilibre" id="equilibreBlock"></div>
-        <div class="footer-note">NeTubeX · Comptabilité points/argent · Répartition automatique · Document non clôturé</div>
+        <!-- BALANCE COMPTABLE -->
+        <h2>📊 BALANCE COMPTABLE</h2>
+        <div class="table-container">
+            <table class="balance-table" id="balanceTable">
+                <thead><tr><th>Compte</th><th class="text-right">Débit ($)</th><th class="text-right">Crédit ($)</th></tr></thead>
+                <tbody id="balanceBody"></tbody>
+            </table>
+        </div>
+
+        <!-- COMPTE DE RÉSULTAT -->
+        <h2>📈 COMPTE DE RÉSULTAT</h2>
+        <div class="table-container">
+            <table id="resultatTable">
+                <thead><tr><th>Compte</th><th class="text-right">Montant ($)</th></tr></thead>
+                <tbody id="resultatBody"></tbody>
+            </table>
+        </div>
+
+        <!-- SYNTHÈSE -->
+        <h2>📊 SYNTHÈSE</h2>
+        <div class="synthese-box" id="syntheseBox"></div>
+        <div class="footer-note">NeTubeX · Système comptable intégré · Taux 1000 pts = 0.08$ · Document non clôturé (cumul progressif)</div>
     </div>
 </div>
 
@@ -97,6 +109,8 @@ tr:last-child td{border-bottom:none;}
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import{getFirestore,collection,getDocs,query,where}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import{getAuth,signInWithEmailAndPassword,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import* as XLSX from"https://cdn.sheetjs.com/xlsx-0.20.2/package/xlsx.mjs";
+window.XLSX=XLSX;
 const firebaseConfig={apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
 const app=initializeApp(firebaseConfig);
 const db=getFirestore(app);
@@ -108,108 +122,161 @@ const loginPassword=document.getElementById('loginPassword');
 const loginBtn=document.getElementById('loginBtn');
 const loginError=document.getElementById('loginError');
 const refreshBtn=document.getElementById('refreshBtn');
+const exportExcelBtn=document.getElementById('exportExcelBtn');
 const bilanPeriod=document.getElementById('bilanPeriod');
 const periodeLabel=document.getElementById('periodeLabel');
 const journalBody=document.getElementById('journalBody');
-const grandLivreDiv=document.getElementById('grandLivre');
-const equilibreBlock=document.getElementById('equilibreBlock');
+const grandLivreContainer=document.getElementById('grandLivreContainer');
+const balanceBody=document.getElementById('balanceBody');
+const resultatBody=document.getElementById('resultatBody');
+const syntheseBox=document.getElementById('syntheseBox');
 const TAUX_POINTS=1000,TAUX_MONTANT=0.08;
-const REPARTITION={netubers:0.50,pilotes:0.10,poles:0.15,data:0.10,caisse:0.15};
+const REPARTITION={netuber:0.50,pilotes:0.10,poles:0.15,data:0.10,caisse:0.15};
 function formatDate(d){return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});}
-async function genererJournal(){
+function minutesToHuman(m){const h=Math.floor(m/60);const r=m%60;if(h===0)return `${r} min`;return `${h}h ${r>0?r+'min':''}`;}
+async function genererComptabilite(){
 const now=new Date();
 const annee=now.getFullYear();
 const mois=now.getMonth();
 const moisNom=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"][mois];
-bilanPeriod.innerText=`${moisNom.charAt(0).toUpperCase()+moisNom.slice(1)} ${annee}`;
-periodeLabel.innerText=`${moisNom.charAt(0).toUpperCase()+moisNom.slice(1)} ${annee}`;
+const moisCapital=moisNom.charAt(0).toUpperCase()+moisNom.slice(1);
+bilanPeriod.innerText=`${moisCapital} ${annee}`;
+periodeLabel.innerText=`${moisCapital} ${annee}`;
 const debutMois=new Date(annee,mois,1);
 const finMois=new Date(annee,mois+1,1);
 try{
 const q=query(collection(db,"reports"),where("createdAt",">=",debutMois.toISOString()),where("createdAt","<",finMois.toISOString()));
 const snap=await getDocs(q);
-const rapportsParJour=new Map();
+const netuberParJour=new Map();
 snap.forEach(docSnap=>{
 const r=docSnap.data();
 if(r.netubers&&Array.isArray(r.netubers)){
 r.netubers.forEach(nu=>{
-if(!nu.code||nu.presence!=="Présent")return;
+if(!nu.code)return;
 const dateKey=r.createdAt?new Date(r.createdAt).toDateString():new Date().toDateString();
-const pointsJour=nu.pointsJour||0;
-if(!rapportsParJour.has(dateKey))rapportsParJour.set(dateKey,{points:0,date:r.createdAt?new Date(r.createdAt):new Date()});
-rapportsParJour.get(dateKey).points+=pointsJour;
+const points=nu.pointsJour||0;
+const temps=nu.tempsJour||0;
+if(!netuberParJour.has(dateKey))netuberParJour.set(dateKey,{date:r.createdAt?new Date(r.createdAt):new Date(),netubers:[]});
+const netubersMap=netuberParJour.get(dateKey).netubers;
+const existing=netubersMap.find(n=>n.code===nu.code);
+if(existing){existing.points+=points;existing.temps+=temps;}
+else netubersMap.push({code:nu.code,points:points,temps:temps});
 });
 }
 });
-const joursTries=Array.from(rapportsParJour.entries()).sort((a,b)=>a[1].date-b[1].date);
+const joursTries=Array.from(netuberParJour.entries()).sort((a,b)=>a[1].date-b[1].date);
 let journalRows=[];
-let totalProductionPoints=0;
-let totalProduits=0;
-let totalIndemnNetubers=0,totalIndemnPilotes=0,totalIndemnPoles=0,totalForfaitData=0,totalCaisse=0;
+let cumulParNetuber=new Map();
 for(const[dateKey,data] of joursTries){
-const pts=data.points;
+const dateStr=formatDate(data.date);
+for(const nu of data.netubers){
+const pts=nu.points;
 if(pts===0)continue;
 const valeurTotale=(pts/TAUX_POINTS)*TAUX_MONTANT;
-totalProductionPoints+=pts;
-totalProduits+=valeurTotale;
-const indemnNetubers=valeurTotale*REPARTITION.netubers;
-const indemnPilotes=valeurTotale*REPARTITION.pilotes;
-const indemnPoles=valeurTotale*REPARTITION.poles;
-const forfaitData=valeurTotale*REPARTITION.data;
-const caisse=valeurTotale*REPARTITION.caisse;
-totalIndemnNetubers+=indemnNetubers;
-totalIndemnPilotes+=indemnPilotes;
-totalIndemnPoles+=indemnPoles;
-totalForfaitData+=forfaitData;
-totalCaisse+=caisse;
-const dateStr=formatDate(data.date);
-journalRows.push({date:dateStr,compte:"Production Points",debitPts:pts,debitUsd:0,creditUsd:0,libelle:"Activité Netuber"});
+const gainNetuber=valeurTotale*REPARTITION.netuber;
+const partPilotes=valeurTotale*REPARTITION.pilotes;
+const partPoles=valeurTotale*REPARTITION.poles;
+const partData=valeurTotale*REPARTITION.data;
+const partCaisse=valeurTotale*REPARTITION.caisse;
+if(!cumulParNetuber.has(nu.code))cumulParNetuber.set(nu.code,[]);
+cumulParNetuber.get(nu.code).push({date:dateStr,dateObj:data.date,points:pts,valeur:valeurTotale,gainNetuber:gainNetuber,partPilotes,partPoles,partData,partCaisse});
+journalRows.push({date:dateStr,compte:`Production Points ${nu.code}`,debitPts:pts,debitUsd:0,creditUsd:0,libelle:"Activité"});
 journalRows.push({date:dateStr,compte:"Produits NeTubeX",debitPts:0,debitUsd:0,creditUsd:valeurTotale,libelle:"Conversion points"});
-journalRows.push({date:dateStr,compte:"Indemnités Netubers",debitPts:0,debitUsd:indemnNetubers,creditUsd:0,libelle:"50%"});
-journalRows.push({date:dateStr,compte:"Indemnités Pilotes",debitPts:0,debitUsd:indemnPilotes,creditUsd:0,libelle:"10%"});
-journalRows.push({date:dateStr,compte:"Indemnités Pôles",debitPts:0,debitUsd:indemnPoles,creditUsd:0,libelle:"15%"});
-journalRows.push({date:dateStr,compte:"Forfait Data",debitPts:0,debitUsd:forfaitData,creditUsd:0,libelle:"10%"});
-journalRows.push({date:dateStr,compte:"Caisse",debitPts:0,debitUsd:caisse,creditUsd:0,libelle:"15%"});
+journalRows.push({date:dateStr,compte:`Indemnités Netuber_${nu.code}`,debitPts:0,debitUsd:gainNetuber,creditUsd:0,libelle:"Gain 50%"});
+journalRows.push({date:dateStr,compte:"Indemnités Pilotes",debitPts:0,debitUsd:partPilotes,creditUsd:0,libelle:"10%"});
+journalRows.push({date:dateStr,compte:"Indemnités Pôles",debitPts:0,debitUsd:partPoles,creditUsd:0,libelle:"15%"});
+journalRows.push({date:dateStr,compte:"Forfait Data",debitPts:0,debitUsd:partData,creditUsd:0,libelle:"10%"});
+journalRows.push({date:dateStr,compte:"Caisse",debitPts:0,debitUsd:partCaisse,creditUsd:0,libelle:"15%"});
 }
-if(journalRows.length===0){
-journalBody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;">Aucune activité enregistrée ce mois</td></tr>';
-grandLivreDiv.innerHTML='<div class="gl-item"><span class="gl-label">Aucune donnée</span><span>0</span></div>';
-equilibreBlock.innerHTML='<div class="equilibre-line">Aucune opération</div>';
-return;
 }
-let html='';
+let journalHtml='';
 for(const row of journalRows){
-html+=`<tr>
-<td>${row.date}</td>
-<td>${row.compte}</td>
-<td class="text-right">${row.debitPts>0?row.debitPts.toLocaleString():'-'}</td>
-<td class="text-right ${row.debitUsd>0?'text-debit':''}">${row.debitUsd>0?row.debitUsd.toFixed(2)+' $':'-'}</td>
-<td class="text-right ${row.creditUsd>0?'text-credit':''}">${row.creditUsd>0?row.creditUsd.toFixed(2)+' $':'-'}</td>
-<td>${row.libelle}</td>
-</tr>`;
+journalHtml+=`<tr><td>${row.date}</td><td>${row.compte}</td><td class="text-right">${row.debitPts>0?row.debitPts.toLocaleString():'-'}</td><td class="text-right">${row.debitUsd>0?row.debitUsd.toFixed(2)+' $':'-'}</td><td class="text-right">${row.creditUsd>0?row.creditUsd.toFixed(2)+' $':'-'}</td><td>${row.libelle}</td></tr>`;
 }
-journalBody.innerHTML=html;
-let grandLivreHtml=`
-<div class="gl-item"><span class="gl-label">Production Points</span><span class="gl-value">${totalProductionPoints.toLocaleString()} pts</span></div>
-<div class="gl-item"><span class="gl-label">Produits NeTubeX</span><span class="gl-value">${totalProduits.toFixed(2)} $</span></div>
-<div class="gl-item"><span class="gl-label">Indemnités Netubers</span><span class="gl-value">${totalIndemnNetubers.toFixed(2)} $</span></div>
-<div class="gl-item"><span class="gl-label">Indemnités Pilotes</span><span class="gl-value">${totalIndemnPilotes.toFixed(2)} $</span></div>
-<div class="gl-item"><span class="gl-label">Indemnités Pôles</span><span class="gl-value">${totalIndemnPoles.toFixed(2)} $</span></div>
-<div class="gl-item"><span class="gl-label">Forfait Data</span><span class="gl-value">${totalForfaitData.toFixed(2)} $</span></div>
-<div class="gl-item"><span class="gl-label">Caisse</span><span class="gl-value">${totalCaisse.toFixed(2)} $</span></div>`;
-grandLivreDiv.innerHTML=grandLivreHtml;
-const totalRepartition=totalIndemnNetubers+totalIndemnPilotes+totalIndemnPoles+totalForfaitData+totalCaisse;
-const equilibreOk=Math.abs(totalProduits-totalRepartition)<0.01;
-equilibreBlock.innerHTML=`
-<div class="equilibre-line"><span>📊 TOTAL VALEUR</span><span><strong>${totalProduits.toFixed(2)} $</strong></span></div>
-<div class="equilibre-line"><span>Répartition (50%+10%+15%+10%+15%)</span><span>${totalRepartition.toFixed(2)} $</span></div>
-<div class="equilibre-line total"><span>✔ SYSTÈME ÉQUILIBRÉ</span><span class="check-ok">${equilibreOk?'✅ Oui':'⚠️ Écart'}</span></div>
-<div class="equilibre-line"><span>Répartition validée · Points + argent visibles · Prêt pour automatisation</span><span></span></div>`;
+if(journalRows.length===0)journalBody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;">Aucune activité enregistrée</td></tr>';
+else journalBody.innerHTML=journalHtml;
+let grandLivreHtml='';
+const netubersTries=Array.from(cumulParNetuber.keys()).sort();
+for(const code of netubersTries){
+const lignes=cumulParNetuber.get(code).sort((a,b)=>a.dateObj-b.dateObj);
+let solde=0;
+let tableRows='';
+for(const ligne of lignes){
+solde+=ligne.gainNetuber;
+tableRows+=`<tr><td>${ligne.date}</td><td class="text-right">${ligne.points.toLocaleString()}</td><td class="text-right">${TAUX_MONTANT}</td><td class="text-right">${ligne.valeur.toFixed(2)} $</td><td class="text-right">${ligne.gainNetuber.toFixed(2)} $</td><td class="text-right">${ligne.gainNetuber.toFixed(2)} $</td><td class="text-right">${solde.toFixed(2)} $</td></tr>`;
+}
+const totalPoints=lignes.reduce((s,l)=>s+l.points,0);
+const totalValeur=lignes.reduce((s,l)=>s+l.valeur,0);
+const totalPreleve=lignes.reduce((s,l)=>s+l.gainNetuber,0);
+const totalGain=lignes.reduce((s,l)=>s+l.gainNetuber,0);
+grandLivreHtml+=`<div class="gl-section"><div class="gl-header">COMPTE : ${code}</div><div class="table-container"><table><thead><tr><th>Date</th><th class="text-right">Points</th><th class="text-right">Taux</th><th class="text-right">Valeur ($)</th><th class="text-right">Part prélevée (50%)</th><th class="text-right">Gain Netuber (50%)</th><th class="text-right">Solde ($)</th></tr></thead><tbody>${tableRows}<tr class="total-row"><td><strong>TOTAL</strong></td><td class="text-right"><strong>${totalPoints.toLocaleString()}</strong></td><td></td><td class="text-right"><strong>${totalValeur.toFixed(2)} $</strong></td><td class="text-right"><strong>${totalPreleve.toFixed(2)} $</strong></td><td class="text-right"><strong>${totalGain.toFixed(2)} $</strong></td><td class="text-right"><strong>${solde.toFixed(2)} $</strong></td></tr></tbody></table></div></div>`;
+}
+if(netubersTries.length===0)grandLivreHtml='<div class="table-container"><div style="padding:40px;text-align:center;">Aucune donnée</div></div>';
+grandLivreContainer.innerHTML=grandLivreHtml;
+const balances={};
+for(const row of journalRows){
+if(row.creditUsd>0){balances[row.compte]=(balances[row.compte]||{debit:0,credit:0});balances[row.compte].credit+=row.creditUsd;}
+if(row.debitUsd>0){balances[row.compte]=(balances[row.compte]||{debit:0,credit:0});balances[row.compte].debit+=row.debitUsd;}
+}
+let balanceHtml='';
+let totalDebit=0,totalCredit=0;
+for(const[compte,vals] of Object.entries(balances)){
+balanceHtml+=`<tr><td>${compte}</td><td class="text-right">${vals.debit>0?vals.debit.toFixed(2)+' $':'-'}</td><td class="text-right">${vals.credit>0?vals.credit.toFixed(2)+' $':'-'}</td></tr>`;
+totalDebit+=vals.debit;totalCredit+=vals.credit;
+}
+balanceHtml+=`<tr class="total-row"><td><strong>TOTAL</strong></td><td class="text-right"><strong>${totalDebit.toFixed(2)} $</strong></td><td class="text-right"><strong>${totalCredit.toFixed(2)} $</strong></td></tr>`;
+balanceBody.innerHTML=balanceHtml;
+let totalProduits=0,totalCharges=0;
+let produitsHtml='',chargesHtml='';
+for(const[compte,vals] of Object.entries(balances)){
+if(compte==="Produits NeTubeX"&&vals.credit>0){produitsHtml+=`<tr><td>${compte}</td><td class="text-right">${vals.credit.toFixed(2)} $</td></tr>`;totalProduits=vals.credit;}
+if(compte.startsWith("Indemnités")&&vals.debit>0){chargesHtml+=`<tr><td>${compte}</td><td class="text-right">${vals.debit.toFixed(2)} $</td></tr>`;totalCharges+=vals.debit;}
+}
+const resultatHtml=`<tr class="total-row"><td><strong>Total Produits</strong></td><td class="text-right"><strong>${totalProduits.toFixed(2)} $</strong></td></tr>${produitsHtml}<tr><td></td><td></td></tr><tr><td><strong>Total Charges</strong></td><td class="text-right"><strong>${totalCharges.toFixed(2)} $</strong></td></tr>${chargesHtml}<tr class="total-row"><td><strong>Résultat (Caisse)</strong></td><td class="text-right"><strong>${(totalProduits-totalCharges).toFixed(2)} $</strong></td></tr>`;
+resultatBody.innerHTML=resultatHtml;
+const totalPointsGlobal=Array.from(cumulParNetuber.values()).flat().reduce((s,l)=>s+l.points,0);
+const totalValeurGlobal=Array.from(cumulParNetuber.values()).flat().reduce((s,l)=>s+l.valeur,0);
+let repartitionHtml='<div class="repartition-grid">';
+repartitionHtml+=`<div class="repartition-item"><span>Netubers :</span><strong>${(totalValeurGlobal*REPARTITION.netuber).toFixed(2)} $</strong></div>`;
+repartitionHtml+=`<div class="repartition-item"><span>Pilotes :</span><strong>${(totalValeurGlobal*REPARTITION.pilotes).toFixed(2)} $</strong></div>`;
+repartitionHtml+=`<div class="repartition-item"><span>Pôles :</span><strong>${(totalValeurGlobal*REPARTITION.poles).toFixed(2)} $</strong></div>`;
+repartitionHtml+=`<div class="repartition-item"><span>Data :</span><strong>${(totalValeurGlobal*REPARTITION.data).toFixed(2)} $</strong></div>`;
+repartitionHtml+=`<div class="repartition-item"><span>Caisse :</span><strong>${(totalValeurGlobal*REPARTITION.caisse).toFixed(2)} $</strong></div>`;
+repartitionHtml+='</div>';
+syntheseBox.innerHTML=`<div class="repartition-item"><span>📊 Production totale :</span><strong>${totalPointsGlobal.toLocaleString()} pts</strong></div><div class="repartition-item"><span>💰 Valeur totale :</span><strong>${totalValeurGlobal.toFixed(2)} $</strong></div>${repartitionHtml}<div class="repartition-item" style="border-top:2px solid #cbd5e1;margin-top:12px;padding-top:12px;"><span>✔ Système complet · Comptabilité équilibrée · Transparence totale</span><span>✅ Prêt pour intégration</span></div>`;
+window.currentExportData={journalRows,netubersData:Array.from(cumulParNetuber.entries()).map(([code,lignes])=>({code,lignes})),balances,totalProduits,totalCharges,resultat:totalProduits-totalCharges,totalPointsGlobal,totalValeurGlobal};
 }catch(err){journalBody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:#b91c1c;">Erreur de chargement</td></tr>';}
 }
+function exportToExcel(){
+if(!window.currentExportData)return;
+const {journalRows,netubersData,balances,totalProduits,totalCharges,resultat,totalPointsGlobal,totalValeurGlobal}=window.currentExportData;
+const wb=XLSX.utils.book_new();
+const journalData=journalRows.map(r=>({Date:r.date,Compte:r.compte,"Débit pts":r.debitPts,"Débit $":r.debitUsd,"Crédit $":r.creditUsd,Libellé:r.libelle}));
+const wsJournal=XLSX.utils.json_to_sheet(journalData);
+XLSX.utils.book_append_sheet(wb,wsJournal,"JOURNAL_COMPTABLE");
+const grandLivreData=[];
+for(const net of netubersData){
+for(const ligne of net.lignes){
+grandLivreData.push({Netuber:net.code,Date:ligne.date,Points:ligne.points,Taux:TAUX_MONTANT,"Valeur $":ligne.valeur,"Part prélevée 50%":ligne.gainNetuber,"Gain Netuber 50%":ligne.gainNetuber,"Solde $":ligne.gainNetuber});
+}
+}
+const wsGrandLivre=XLSX.utils.json_to_sheet(grandLivreData);
+XLSX.utils.book_append_sheet(wb,wsGrandLivre,"GRAND_LIVRE");
+const balanceData=Object.entries(balances).map(([c,v])=>({Compte:c,"Débit $":v.debit,"Crédit $":v.credit}));
+const wsBalance=XLSX.utils.json_to_sheet(balanceData);
+XLSX.utils.book_append_sheet(wb,wsBalance,"BALANCE");
+const resultatData=[{Compte:"Produits NeTubeX","Montant $":totalProduits},{Compte:"Total Charges","Montant $":totalCharges},{Compte:"Résultat (Caisse)","Montant $":resultat}];
+const wsResultat=XLSX.utils.json_to_sheet(resultatData);
+XLSX.utils.book_append_sheet(wb,wsResultat,"COMPTE_RESULTAT");
+const syntheseData=[{Indicateur:"Production totale",Valeur:`${totalPointsGlobal.toLocaleString()} pts`},{Indicateur:"Valeur totale",Valeur:`${totalValeurGlobal.toFixed(2)} $`},{Indicateur:"Netubers",Valeur:`${(totalValeurGlobal*REPARTITION.netuber).toFixed(2)} $`},{Indicateur:"Pilotes",Valeur:`${(totalValeurGlobal*REPARTITION.pilotes).toFixed(2)} $`},{Indicateur:"Pôles",Valeur:`${(totalValeurGlobal*REPARTITION.poles).toFixed(2)} $`},{Indicateur:"Data",Valeur:`${(totalValeurGlobal*REPARTITION.data).toFixed(2)} $`},{Indicateur:"Caisse",Valeur:`${(totalValeurGlobal*REPARTITION.caisse).toFixed(2)} $`}];
+const wsSynthese=XLSX.utils.json_to_sheet(syntheseData);
+XLSX.utils.book_append_sheet(wb,wsSynthese,"SYNTHESE");
+XLSX.writeFile(wb,`NE_TUBEX_COMPTABILITE_${periodeLabel.innerText.replace(/ /g,'_')}.xlsx`);
+}
 loginBtn.onclick=async()=>{loginError.classList.add('hidden');try{await signInWithEmailAndPassword(auth,loginEmail.value,loginPassword.value);}catch(e){loginError.innerText='Identifiants incorrects';loginError.classList.remove('hidden');}};
-refreshBtn.onclick=()=>{if(!bilanSection.classList.contains('hidden'))genererJournal();};
-onAuthStateChanged(auth,(user)=>{if(user){loginSection.classList.add('hidden');bilanSection.classList.remove('hidden');genererJournal();}else{loginSection.classList.remove('hidden');bilanSection.classList.add('hidden');loginEmail.value='';loginPassword.value='';loginError.classList.add('hidden');}});
+refreshBtn.onclick=()=>{if(!bilanSection.classList.contains('hidden'))genererComptabilite();};
+exportExcelBtn.onclick=()=>{if(!bilanSection.classList.contains('hidden'))exportToExcel();};
+onAuthStateChanged(auth,(user)=>{if(user){loginSection.classList.add('hidden');bilanSection.classList.remove('hidden');genererComptabilite();}else{loginSection.classList.remove('hidden');bilanSection.classList.add('hidden');loginEmail.value='';loginPassword.value='';loginError.classList.add('hidden');}});
 </script>
 </body>
 </html>
