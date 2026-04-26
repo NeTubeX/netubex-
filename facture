@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>NeTubeX · Facture Netuber</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="icon" type="image/png" href="favicon.png.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
+body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;padding:40px 20px;}
+.container{max-width:900px;margin:0 auto;}
+.invoice-card{background:#ffffff;border-radius:24px;box-shadow:0 20px 35px -10px rgba(0,0,0,0.1);overflow:hidden;margin-bottom:30px;}
+.header-actions{display:flex;justify-content:flex-end;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.action-btn{padding:12px 24px;border-radius:40px;border:none;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;}
+.action-btn.pay{background:#10b981;color:#fff;}
+.action-btn.pay:hover{background:#059669;transform:translateY(-2px);}
+.action-btn.pdf{background:#3b82f6;color:#fff;}
+.action-btn.pdf:hover{background:#2563eb;transform:translateY(-2px);}
+.action-btn.print{background:#64748b;color:#fff;}
+.action-btn.print:hover{background:#475569;transform:translateY(-2px);}
+.filters-card{background:#ffffff;border-radius:20px;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.05);display:flex;gap:20px;flex-wrap:wrap;align-items:flex-end;}
+.filter-group{flex:1;min-width:180px;}
+.filter-group label{display:block;font-size:12px;font-weight:600;color:#475569;margin-bottom:5px;}
+.filter-group select,.filter-group input{width:100%;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:12px;font-size:14px;font-family:'Inter',sans-serif;background:#ffffff;color:#1e293b;cursor:pointer;}
+.filter-group select:focus,.filter-group input:focus{outline:none;border-color:#3b82f6;}
+.loader{text-align:center;padding:40px;color:#64748b;}
+.invoice-content{padding:40px;}
+.invoice-header{text-align:center;margin-bottom:30px;padding-bottom:20px;border-bottom:3px solid #3b82f6;}
+.invoice-header h1{font-size:28px;font-weight:800;color:#1e293b;}
+.invoice-header h1 span{color:#3b82f6;}
+.invoice-header p{font-size:12px;color:#64748b;margin-top:5px;}
+.invoice-title{text-align:center;margin-bottom:25px;}
+.invoice-title h2{font-size:22px;font-weight:700;color:#1e293b;background:linear-gradient(135deg,#3b82f6,#2563eb);display:inline-block;padding:5px 20px;border-radius:40px;color:#fff;}
+.invoice-info{display:flex;justify-content:space-between;margin-bottom:30px;padding:20px;background:#f8fafc;border-radius:16px;flex-wrap:wrap;gap:15px;}
+.info-box{flex:1;min-width:150px;}
+.info-box .label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:1px;}
+.info-box .value{font-size:18px;font-weight:700;color:#1e293b;margin-top:5px;font-family:monospace;}
+.netuber-box{background:linear-gradient(135deg,#e0f2fe,#bae6fd);border-radius:16px;padding:20px;margin-bottom:30px;text-align:center;}
+.netuber-box .code{font-size:32px;font-weight:800;color:#1e40af;font-family:monospace;letter-spacing:2px;}
+.netuber-box .label{font-size:12px;color:#475569;margin-top:5px;}
+.details-table{width:100%;margin-bottom:30px;border-collapse:collapse;}
+.details-table th,.details-table td{padding:15px;text-align:left;border-bottom:1px solid #e2e8f0;}
+.details-table th{background:#f8fafc;font-weight:600;color:#475569;font-size:13px;}
+.details-table td{font-size:14px;color:#1e293b;}
+.details-table tr:last-child td{border-bottom:none;}
+.total-row{background:#f0f9ff;border-radius:16px;}
+.total-row td{font-weight:700;color:#1e40af;font-size:18px;}
+.status-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:40px;font-size:12px;font-weight:600;}
+.status-paid{background:#10b98120;color:#059669;}
+.status-pending{background:#f59e0b20;color:#d97706;}
+.payment-info{background:#f1f5f9;border-radius:16px;padding:20px;margin-bottom:30px;text-align:center;}
+.payment-info p{font-size:13px;color:#475569;}
+.payment-info strong{color:#1e293b;}
+.invoice-footer{text-align:center;padding-top:20px;border-top:1px solid #e2e8f0;margin-top:20px;}
+.invoice-footer p{font-size:11px;color:#94a3b8;}
+.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#3b82f6,#2563eb,#60a5fa,#3b82f6);background-size:200% 100%;animation:rainbowMove 3s linear infinite;margin-bottom:20px;border-radius:3px;}
+@keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+@media print{
+body{background:#fff;padding:0;margin:0;}
+.rainbow-line,.header-actions,.filters-card,.action-btn{display:none;}
+.invoice-card{box-shadow:none;margin:0;padding:0;}
+.invoice-content{padding:20px;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="rainbow-line"></div>
+<div class="header-actions">
+<button class="action-btn pay" id="payBtn"><i class="fas fa-credit-card"></i> Payer</button>
+<button class="action-btn pdf" id="pdfBtn"><i class="fas fa-file-pdf"></i> Télécharger PDF</button>
+<button class="action-btn print" id="printBtn"><i class="fas fa-print"></i> Imprimer</button>
+</div>
+<div class="filters-card">
+<div class="filter-group">
+<label><i class="fas fa-calendar"></i> Période</label>
+<select id="monthSelect"></select>
+</div>
+<div class="filter-group">
+<label><i class="fas fa-id-card"></i> Netuber</label>
+<select id="netuberSelect"></select>
+</div>
+</div>
+<div id="invoiceContainer">
+<div class="loader"><i class="fas fa-spinner fa-spin"></i> Chargement de la facture...</div>
+</div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy, where, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
+authDomain: "netubexmoney.firebaseapp.com",
+projectId: "netubexmoney",
+storageBucket: "netubexmoney.firebasestorage.app",
+messagingSenderId: "856592608176",
+appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+let allReports = [];
+let netubersList = [];
+let currentUser = null;
+
+function formatNumber(n){ return n.toLocaleString('fr-FR'); }
+function formatDate(d){ return new Date(d).toLocaleDateString('fr-FR'); }
+function formatDateTime(d){ return new Date(d).toLocaleString('fr-FR'); }
+
+async function loadData(){
+const reportsSnap = await getDocs(query(collection(db,"reports"), orderBy("createdAt","desc")));
+allReports = [];
+reportsSnap.forEach(doc => { allReports.push({ id: doc.id, ...doc.data() }); });
+const usersSnap = await getDocs(collection(db,"users"));
+netubersList = [];
+usersSnap.forEach(doc => {
+const u = doc.data();
+if(u.role === 'netuber' && u.code){
+netubersList.push({ id: doc.id, code: u.code, email: u.email, nom: u.nom, prenom: u.prenom });
+}
+});
+initSelectors();
+}
+function initSelectors(){
+const monthSelect = document.getElementById('monthSelect');
+if(allReports.length === 0){
+monthSelect.innerHTML = '<option>Aucun rapport disponible</option>';
+return;
+}
+monthSelect.innerHTML = allReports.map((r, idx) => {
+const monthName = r.month || new Date(r.createdAt).toLocaleDateString('fr-FR', { year:'numeric', month:'long' });
+return `<option value="${r.id}" ${idx === 0 ? 'selected' : ''}>📅 ${monthName}</option>`;
+}).join('');
+const netuberSelect = document.getElementById('netuberSelect');
+netuberSelect.innerHTML = '<option value="">-- Sélectionner un Netuber --</option>' + 
+netubersList.map(n => `<option value="${n.code}">${n.code}</option>`).join('');
+monthSelect.addEventListener('change', loadInvoice);
+netuberSelect.addEventListener('change', loadInvoice);
+loadInvoice();
+}
+async function loadInvoice(){
+const monthId = document.getElementById('monthSelect').value;
+const netuberCode = document.getElementById('netuberSelect').value;
+if(!monthId || !netuberCode){ displayEmptyInvoice(); return; }
+const report = allReports.find(r => r.id === monthId);
+if(!report || !report.netubers){ displayEmptyInvoice(); return; }
+const netuberData = report.netubers.find(n => n.code === netuberCode);
+if(!netuberData){ displayEmptyInvoice(); return; }
+const points = netuberData.pointsJour || 0;
+const temps = netuberData.tempsJour || 0;
+const rendement = temps > 0 ? ((points / temps) * 60).toFixed(0) : 0;
+const gain = (points / 1000) * 0.08;
+const monthName = report.month || new Date(report.createdAt).toLocaleDateString('fr-FR', { year:'numeric', month:'long' });
+const invoiceNumber = `NET-${new Date(report.createdAt).getFullYear()}${(new Date(report.createdAt).getMonth()+1).toString().padStart(2,'0')}-${netuberCode}`;
+const invoiceDate = formatDate(new Date());
+const dueDate = new Date();
+dueDate.setDate(dueDate.getDate() + 10);
+const paiementsRef = collection(db,"paiements");
+const q = query(paiementsRef, where("netuberCode","==",netuberCode), where("month","==",report.month || new Date(report.createdAt).toISOString().slice(0,7)));
+const paiementsSnap = await getDocs(q);
+const isPaid = !paiementsSnap.empty && paiementsSnap.docs[0].data().status === 'paid';
+const paidDate = !paiementsSnap.empty && paiementsSnap.docs[0].data().paidAt ? formatDate(paiementsSnap.docs[0].data().paidAt) : null;
+const statusText = isPaid ? 'Payé' : 'En attente de paiement';
+const statusClass = isPaid ? 'status-paid' : 'status-pending';
+const statusIcon = isPaid ? '✅' : '⏳';
+const container = document.getElementById('invoiceContainer');
+container.innerHTML = `
+<div class="invoice-card" id="invoiceCard">
+<div class="invoice-content">
+<div class="invoice-header">
+<h1>Ne<span>TubeX</span></h1>
+<p>Espace de Rémunération Digitale</p>
+</div>
+<div class="invoice-title">
+<h2>FACTURE</h2>
+</div>
+<div class="invoice-info">
+<div class="info-box">
+<div class="label">N° FACTURE</div>
+<div class="value">${invoiceNumber}</div>
+</div>
+<div class="info-box">
+<div class="label">DATE D'ÉMISSION</div>
+<div class="value">${invoiceDate}</div>
+</div>
+<div class="info-box">
+<div class="label">PÉRIODE</div>
+<div class="value">${monthName}</div>
+</div>
+<div class="info-box">
+<div class="label">DATE D'ÉCHÉANCE</div>
+<div class="value">${formatDate(dueDate)}</div>
+</div>
+</div>
+<div class="netuber-box">
+<div class="code">${netuberCode}</div>
+<div class="label">CODE NETUBER</div>
+</div>
+<table class="details-table">
+<thead>
+<tr>
+<th>DÉSIGNATION</th>
+<th>VALEUR</th>
+<th>MONTANT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Points du mois</td>
+<td>${formatNumber(points)} pts</td>
+<td rowspan="3" style="vertical-align:middle; text-align:right; font-size:24px; font-weight:700; color:#1e40af;">${gain.toFixed(2)} $</td>
+</tr>
+<tr>
+<td>Temps total</td>
+<td>${temps} min (${Math.floor(temps/60)}h${temps%60}min)</td>
+</tr>
+<tr>
+<td>Rendement</td>
+<td>${formatNumber(rendement)} pts/h</td>
+</tr>
+<tr>
+<td>Taux de conversion</td>
+<td colspan="2">1 000 points = 0.08 $</td>
+</tr>
+<tr class="total-row">
+<td colspan="2" style="font-weight:700;">TOTAL À PAYER TTC</td>
+<td style="font-weight:700; font-size:20px; color:#1e40af;">${gain.toFixed(2)} $</td>
+</tr>
+</tbody>
+</table>
+<div class="payment-info">
+<p><i class="fas fa-info-circle"></i> Mode de paiement : Virement bancaire / Orange Money / Wave</p>
+<p><strong>IBAN : CD67 1234 5678 9012 3456 7890 123</strong></p>
+<p><strong>BIC : NETUCDK1</strong></p>
+</div>
+<div class="status-badge ${statusClass}" style="justify-content:center; margin-bottom:20px;">
+${statusIcon} ${statusText} ${isPaid ? `le ${paidDate}` : ''}
+</div>
+<div class="invoice-footer">
+<p>Arrêtée la présente facture à la somme de ${gain.toFixed(2)} $ (${gain.toFixed(2)} dollars américains)</p>
+<p>Merci pour votre confiance - NeTubeX · Espace de Rémunération Digitale</p>
+</div>
+</div>
+</div>
+`;
+window.currentInvoiceData = { netuberCode, monthId, report, points, gain, isPaid };
+}
+function displayEmptyInvoice(){
+document.getElementById('invoiceContainer').innerHTML = '<div class="invoice-card"><div class="invoice-content" style="text-align:center;padding:60px;"><i class="fas fa-file-invoice" style="font-size:48px;color:#cbd5e1;"></i><p style="margin-top:20px;color:#64748b;">Sélectionnez un Netuber et une période</p></div></div>';
+}
+document.getElementById('payBtn')?.addEventListener('click', async () => {
+if(!window.currentInvoiceData || window.currentInvoiceData.isPaid){
+showToast("Cette facture a déjà été payée",'error');
+return;
+}
+const { netuberCode, monthId, report, points, gain } = window.currentInvoiceData;
+const month = report.month || new Date(report.createdAt).toISOString().slice(0,7);
+showConfirm('Confirmation de paiement', `Payer ${gain.toFixed(2)} $ pour le Netuber ${netuberCode} ?`, async () => {
+const paymentRef = doc(db, "paiements", `${month}_${netuberCode}`);
+await setDoc(paymentRef, {
+netuberCode: netuberCode,
+month: month,
+points: points,
+gain: gain,
+status: 'paid',
+paidAt: new Date().toISOString()
+});
+showToast(`✅ Paiement effectué - ${gain.toFixed(2)} $ pour ${netuberCode}`,'success');
+loadInvoice();
+});
+});
+document.getElementById('pdfBtn')?.addEventListener('click', () => {
+const element = document.getElementById('invoiceCard');
+if(!element){ showToast("Aucune facture à télécharger",'error'); return; }
+const opt = { margin: [0.5,0.5,0.5,0.5], filename: `facture_${document.querySelector('.info-box .value')?.innerText || 'NETUBER'}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, letterRendering: true }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } };
+html2pdf().set(opt).from(element).save();
+showToast("Téléchargement du PDF en cours",'info');
+});
+document.getElementById('printBtn')?.addEventListener('click', () => { window.print(); });
+function showToast(message, type='error'){
+const toast = document.createElement('div');
+toast.style.cssText = `position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:${type==='success'?'#10b981':type==='error'?'#ef4444':'#3b82f6'};color:#fff;padding:12px 24px;border-radius:12px;font-size:13px;z-index:10000;animation:slideUp 0.3s ease;`;
+toast.innerHTML = (type==='success'?'✅ ':(type==='error'?'❌ ':'ℹ '))+message;
+document.body.appendChild(toast);
+setTimeout(()=>toast.remove(),4000);
+}
+function showConfirm(title, message, onConfirm){
+const modal = document.createElement('div');
+modal.style.cssText = `position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:2000;display:flex;align-items:center;justify-content:center;`;
+modal.innerHTML = `<div style="background:#fff;border-radius:24px;max-width:400px;width:90%;padding:24px;text-align:center;"><i class="fas fa-credit-card" style="font-size:48px;color:#f59e0b;margin-bottom:16px;"></i><h3 style="font-size:20px;margin-bottom:10px;">${title}</h3><p style="color:#475569;margin-bottom:24px;">${message}</p><div style="display:flex;gap:12px;justify-content:center;"><button id="confirmOk" style="background:#10b981;border:none;padding:10px 24px;border-radius:40px;color:#fff;font-weight:600;cursor:pointer;">Confirmer</button><button id="confirmCancel" style="background:#e2e8f0;border:none;padding:10px 24px;border-radius:40px;color:#1e293b;font-weight:600;cursor:pointer;">Annuler</button></div></div>`;
+document.body.appendChild(modal);
+document.getElementById('confirmOk').onclick = () => { modal.remove(); onConfirm(); };
+document.getElementById('confirmCancel').onclick = () => modal.remove();
+}
+onAuthStateChanged(auth, async (user) => {
+if(user){
+const userSnap = await getDoc(doc(db,"users",user.uid));
+const userData = userSnap.data();
+if(userData?.role !== 'admin' && userData?.role !== 'deo'){
+showToast("Accès réservé à l'administration",'error');
+setTimeout(()=>{ window.location.href = "index.html"; },2000);
+return;
+}
+currentUser = user;
+await loadData();
+} else {
+window.location.href = "login.html";
+}
+});
+document.addEventListener('contextmenu', e=>e.preventDefault());
+document.addEventListener('keydown', function(e){
+if(e.key==='F12'){ e.preventDefault(); return false; }
+if(e.ctrlKey && e.shiftKey && (e.key==='I'||e.key==='J'||e.key==='C')){ e.preventDefault(); return false; }
+if(e.ctrlKey && e.key==='u'){ e.preventDefault(); return false; }
+});
+</script>
+</body>
+</html>
