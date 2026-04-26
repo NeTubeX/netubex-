@@ -8,20 +8,10 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, doc, getDoc, getDocs, query, where, orderBy, limit, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
-  authDomain: "netubexmoney.firebaseapp.com",
-  projectId: "netubexmoney",
-  storageBucket: "netubexmoney.firebasestorage.app",
-  messagingSenderId: "856592608176",
-  appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
-};
-
+const firebaseConfig = {apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-
 window.db = db;
 window.collection = collection;
 window.addDoc = addDoc;
@@ -34,726 +24,77 @@ window.orderBy = orderBy;
 window.limit = limit;
 window.updateDoc = updateDoc;
 window.deleteDoc = deleteDoc;
-
-// ============ DONNÉES ============
 const RAISONS_ABSENCE = ["Obligations familiales","Maladie","Absence non justifiée","Déplacement/voyage","Abandon","Problème de santé","Fatigue","Rendez-vous","Deuil","Engagement scolaire"];
 const NETUBERS = [{code:"MA-NX-S1-ZA-01"},{code:"MA-NX-S1-ZA-02"},{code:"MA-NX-S1-ZB-03"},{code:"MA-NX-S1-ZB-04"},{code:"MA-NX-S1-ZC-05"}];
 let currentStep = 0, responses = {}, questions = [], waitingYesNo = false, typewriterTimeout = null, formulaireComplete = false;
 let currentEditingMessageId = null;
-
-// ============ ÉLÉMENTS DOM ============
 let questionText, questionMeta, inputRow, choiceRow, answerSelect, answerNumber, submitBtn, yesBtn, noBtn;
 let progressFill, stepCounterSpan, prevBtn, resetBtn, saveStatus, popupOverlay, popupTitle, popupMessageDiv;
 let popupBtnLeft, popupBtnRight, sendReportBtn, questionCardDiv, chatMessagesDiv, chatMessageInput, sendChatBtn;
 let editPopupOverlay, editMessageContent, cancelEditBtn, confirmEditBtn, chatBackBtn, tabChat;
-
-// ============ FONCTIONS ============
-function escapeHtml(t) { if(!t) return ''; return String(t).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-
-function formatDate(dateValue) {
-    if (!dateValue) return "Date inconnue";
-    try {
-        let d;
-        if (typeof dateValue === 'string') {
-            d = new Date(dateValue);
-        } else if (dateValue.toDate) {
-            d = dateValue.toDate();
-        } else {
-            d = new Date(dateValue);
-        }
-        if (isNaN(d.getTime())) return "Date inconnue";
-        return d.toLocaleDateString('fr-FR', {day:'numeric', month:'long', year:'numeric'}) + ' ' + 
-               d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
-    } catch(e) {
-        return "Date inconnue";
-    }
-}
-
-function showPopup(t, m, l, r, onC, onCa, rc = 'primary', rd = false) {
-    popupTitle.textContent = t;
-    popupMessageDiv.innerHTML = m;
-    popupBtnLeft.textContent = l;
-    popupBtnRight.textContent = r;
-    popupBtnRight.className = `popup-btn ${rc}`;
-    if(rd) popupBtnRight.disabled = true;
-    else popupBtnRight.disabled = false;
-    popupOverlay.classList.add('active');
-    popupBtnRight.onclick = () => {
-        if(popupBtnRight.disabled) return;
-        popupOverlay.classList.remove('active');
-        if(onC) onC();
-    };
-    popupBtnLeft.onclick = () => {
-        popupOverlay.classList.remove('active');
-        if(onCa) onCa();
-    };
-}
-
-async function loadChatMessages() {
-    try {
-        const q = query(collection(db, "chat_messages"), limit(100));
-        const s = await getDocs(q);
-        if(s.empty) {
-            chatMessagesDiv.innerHTML = '<div class="empty-chat">💬 Aucun message</div>';
-            return;
-        }
-        let msgs = [];
-        s.forEach(d => msgs.push({id: d.id, ...d.data()}));
-        msgs.sort((a, b) => new Date(a.sentDate || 0) - new Date(b.sentDate || 0));
-        let html = '';
-        for(let m of msgs) {
-            const env = m.senderRole === 'responsable';
-            const fd = formatDate(m.sentDate);
-            if(env) {
-                html += `<div class="message-bubble message-sent"><div class="message-content">${escapeHtml(m.message)}</div><div class="message-info"><span>${fd}</span>${m.isEdited ? '<span>(modifié)</span>' : ''}</div><div class="message-actions"><button class="edit-msg-btn" data-id="${m.id}" data-msg="${escapeHtml(m.message)}">✏️</button></div></div>`;
-            } else {
-                html += `<div class="message-bubble message-received"><div><span class="message-sender">DEO</span><div class="message-content">${escapeHtml(m.message)}</div></div><div class="message-info"><span>${fd}</span>${m.isEdited ? '<span>(modifié)</span>' : ''}</div></div>`;
-            }
-        }
-        chatMessagesDiv.innerHTML = html;
-        document.querySelectorAll('.edit-msg-btn').forEach(btn => {
-            btn.onclick = (e) => {
-                e.stopPropagation();
-                openEditPopup(btn.dataset.id, btn.dataset.msg);
-            };
-        });
-        chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
-    } catch(e) {
-        chatMessagesDiv.innerHTML = '<div class="empty-chat">⚠️ Erreur technique</div>';
-    }
-}
-
-async function loadMemorandums() {
-    const div = document.getElementById('memorandumList');
-    div.innerHTML = '<div class="loading-placeholder">⏳ Chargement...</div>';
-    try {
-        const q = query(collection(db, "memorandums"), limit(20));
-        const s = await getDocs(q);
-        const footer = document.getElementById('memorandumFooter');
-        const today = new Date();
-        const dateFooter = today.toLocaleDateString('fr-FR', {day:'numeric', month:'long', year:'numeric'});
-        if(!s.empty) {
-            let msgs = [];
-            s.forEach(d => msgs.push({id: d.id, ...d.data()}));
-            msgs.sort((a, b) => new Date(b.sentDate) - new Date(a.sentDate));
-            let h = '';
-            for(let data of msgs) {
-                const sentDate = data.sentDate || data.date;
-                const formattedDate = formatDate(sentDate);
-                h += `<div class="memorandum-item"><div class="memorandum-title">📋 ${escapeHtml(data.title || 'Mémorandum')}</div><div class="memorandum-content">${(data.content || '').replace(/\n/g, '<br>')}</div><div class="memorandum-date-bottom">📅 ${formattedDate}</div></div>`;
-            }
-            div.innerHTML = h;
-        } else div.innerHTML = '<div class="empty-chat">📭 Aucun mémorandum</div>';
-        footer.innerHTML = `📅 ${dateFooter} · DEO · NeTubeX`;
-    } catch(e) {
-        div.innerHTML = '<div class="empty-chat">⚠️ Erreur technique</div>';
-    }
-}
-
-async function sendChatMessage() {
-    const msg = chatMessageInput.value.trim();
-    if(!msg) {
-        showPopup("⚠️", "Message vide", "Fermer", "", () => {}, () => {});
-        return;
-    }
-    let responsable = responses.responsable || "Responsable";
-    if(!responsable || responsable === "") responsable = "Responsable";
-    try {
-        await addDoc(collection(db, "chat_messages"), {
-            message: msg,
-            sender: responsable,
-            senderRole: "responsable",
-            recipient: "DEO",
-            sentDate: new Date().toISOString(),
-            isEdited: false,
-            status: "envoyé"
-        });
-        chatMessageInput.value = "";
-        await loadChatMessages();
-    } catch(e) {
-        showPopup("❌", "Erreur envoi", "Fermer", "", () => {}, () => {});
-    }
-}
-
-async function editChatMessage(id, newMsg) {
-    if(!newMsg.trim()) {
-        showPopup("⚠️", "Message vide", "Fermer", "", () => {}, () => {});
-        return false;
-    }
-    try {
-        const ref = doc(db, "chat_messages", id);
-        const d = await getDoc(ref);
-        if(d.exists()) {
-            await updateDoc(ref, {
-                message: newMsg,
-                isEdited: true,
-                editedDate: new Date().toISOString(),
-                originalMessage: d.data().message
-            });
-            await loadChatMessages();
-            return true;
-        }
-    } catch(e) {
-        showPopup("❌", "Erreur", "Fermer", "", () => {}, () => {});
-        return false;
-    }
-}
-
-function openEditPopup(id, msg) {
-    currentEditingMessageId = id;
-    editMessageContent.value = msg;
-    editPopupOverlay.classList.add('active');
-}
-
-function closeEditPopup() {
-    editPopupOverlay.classList.remove('active');
-    currentEditingMessageId = null;
-    editMessageContent.value = "";
-}
-
-async function confirmEdit() {
-    if(currentEditingMessageId) {
-        const nm = editMessageContent.value.trim();
-        if(nm) await editChatMessage(currentEditingMessageId, nm);
-        closeEditPopup();
-    }
-}
-
-function enableChatFullscreen() {
-    document.body.classList.add('chat-active');
-    tabChat.classList.add('chat-fullscreen');
-}
-
-function disableChatFullscreen() {
-    document.body.classList.remove('chat-active');
-    tabChat.classList.remove('chat-fullscreen');
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelector('.tab-btn[data-tab="form"]').classList.add('active');
-    document.getElementById('tabForm').classList.add('active');
-}
-
-function saveLocal() {
-    localStorage.setItem('pgco_rapport', JSON.stringify({responses, currentStep}));
-    saveStatus.innerHTML = '💾 OK';
-    setTimeout(() => saveStatus.innerHTML = '💾 Auto', 1200);
-}
-
-function buildQuestions() {
-    const q = [];
-    let n = 0;
-    q.push({num: n++, type: "choice", field: "responsable", meta: "Identification", text: "Qui remplit le rapport aujourd'hui ?", options: ["Madame Ursule", "Madame Chancelle"]});
-    for(let nu of NETUBERS) {
-        q.push({num: n++, type: "yesno", field: `${nu.code}_present`, meta: nu.code, text: `${nu.code} : Était-il présent aujourd'hui ?`});
-        q.push({num: n++, type: "select", field: `${nu.code}_raisonAbsence`, meta: nu.code, text: `${nu.code} : Raison de l'absence ? (si absent)`, options: RAISONS_ABSENCE.map(r => `<option value="${r}">${r}</option>`).join('')});
-        const questionsPresent = [
-            {type: "select", field: `${nu.code}_objMensuel`, text: `${nu.code} : Quel est son objectif mensuel ?`, options: [...Array(16).keys()].map(i => `<option value="${i}">${i}</option>`).join('')},
-            {type: "select", field: `${nu.code}_objAtteint`, text: `${nu.code} : Combien d'objectifs a-t-il atteints aujourd'hui ?`, options: [...Array(16).keys()].map(i => `<option value="${i}">${i}</option>`).join('')},
-            {type: "number", field: `${nu.code}_nbNiveaux`, text: `${nu.code} : Quel est le nombre de niveaux/événements ou mètres ?`, min: 0},
-            {type: "number", field: `${nu.code}_nbNiveauxAtteints`, text: `${nu.code} : Combien de niveaux/événements ou mètres a-t-il atteints ?`, min: 0},
-            {type: "number", field: `${nu.code}_pointsPrec`, text: `${nu.code} : Combien de points avait-il précédemment ?`, min: 0},
-            {type: "number", field: `${nu.code}_pointsJour`, text: `${nu.code} : Combien de points a-t-il aujourd'hui ?`, min: 0},
-            {type: "number", field: `${nu.code}_tempsPrec`, text: `${nu.code} : Quel temps avait-il précédemment (en minutes) ?`, min: 0},
-            {type: "number", field: `${nu.code}_tempsJour`, text: `${nu.code} : Quel temps a-t-il aujourd'hui (en minutes) ?`, min: 0},
-            {type: "select", field: `${nu.code}_forfaitGo`, text: `${nu.code} : Combien de Go de forfait internet reste-t-il ?`, options: [...Array(31).keys()].map(i => `<option value="${i}">${i} Go</option>`).join('')}
-        ];
-        for(let pq of questionsPresent) {
-            q.push({num: n++, type: pq.type, field: pq.field, meta: nu.code, text: pq.text, options: pq.options, min: pq.min, requiresPresent: true});
-        }
-    }
-    q.push({num: n++, type: "text", field: "referenceNumber", meta: "Rapport", text: "Numéro de rapport (3 derniers chiffres personnalisables)", placeholder: "Ex: 001"});
-    return q;
-}
-
-function shouldShowQuestion(q) {
-    if(!q.requiresPresent) return true;
-    const codeMatch = q.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/);
-    if(!codeMatch) return true;
-    const netuberCode = codeMatch[1];
-    const presenceResponse = responses[`${netuberCode}_present`];
-    return presenceResponse === "OUI";
-}
-
-function updateCardColor() {
-    if(currentStep >= questions.length) {
-        questionCardDiv.classList.add('default-card');
-        return;
-    }
-    const q = questions[currentStep];
-    if(!q) return;
-    const idx = getCurrentNetuberIndex();
-    questionCardDiv.classList.remove('netuber-0', 'netuber-1', 'netuber-2', 'netuber-3', 'netuber-4', 'default-card');
-    if(idx >= 0 && idx < NETUBERS.length) questionCardDiv.classList.add(`netuber-${idx}`);
-    else questionCardDiv.classList.add('default-card');
-}
-
-function getCurrentNetuberIndex() {
-    if(currentStep >= questions.length) return -1;
-    const q = questions[currentStep];
-    if(!q || !q.field) return -1;
-    for(let i = 0; i < NETUBERS.length; i++)
-        if(q.field.includes(NETUBERS[i].code)) return i;
-    return -1;
-}
-
-function typewriterEffect(el, txt, speed = 25, cb) {
-    if(typewriterTimeout) clearTimeout(typewriterTimeout);
-    el.innerHTML = '';
-    let i = 0;
-    function type() {
-        if(i < txt.length) {
-            el.innerHTML = txt.substring(0, i + 1);
-            i++;
-            typewriterTimeout = setTimeout(type, speed);
-        } else {
-            if(cb) cb();
-        }
-    }
-    type();
-}
-
-function findNextValidStep(currentStep) {
-    let next = currentStep + 1;
-    while(next < questions.length) {
-        if(shouldShowQuestion(questions[next])) return next;
-        next++;
-    }
-    return questions.length;
-}
-
-function findPrevValidStep(currentStep) {
-    let prev = currentStep - 1;
-    while(prev >= 0) {
-        if(shouldShowQuestion(questions[prev])) return prev;
-        prev--;
-    }
-    return -1;
-}
-
-function displayCurrent() {
-    updateCardColor();
-    
-    if(currentStep >= questions.length) {
-        formulaireComplete = true;
-        sendReportBtn.classList.remove('hidden');
-        typewriterEffect(questionText, "✅ Formulaire terminé. Cliquez sur 'Envoyer' pour transmettre le rapport.", 25);
-        inputRow.classList.add('hidden');
-        choiceRow.classList.add('hidden');
-        return;
-    }
-    
-    formulaireComplete = false;
-    sendReportBtn.classList.add('hidden');
-    if(!shouldShowQuestion(questions[currentStep])) {
-        currentStep = findNextValidStep(currentStep);
-        displayCurrent();
-        return;
-    }
-    const q = questions[currentStep];
-    waitingYesNo = false;
-    inputRow.classList.add('hidden');
-    choiceRow.classList.add('hidden');
-    answerSelect.style.display = 'none';
-    answerNumber.style.display = 'none';
-    questionMeta.innerHTML = `<span class="question-num">#${q.num + 1}</span> ${q.meta}`;
-    let displayText = q.text;
-    if(q.field.includes('_raisonAbsence')) {
-        const netuberCode = q.field.replace('_raisonAbsence', '');
-        if(responses[`${netuberCode}_present`] === 'OUI') {
-            displayText = `${netuberCode} : Cette question n'est pas applicable (présent). Cliquez sur Suivant.`;
-        }
-    }
-    if(q.type === "choice") {
-        choiceRow.classList.remove('hidden');
-        waitingYesNo = true;
-        yesBtn.textContent = q.options[0];
-        noBtn.textContent = q.options[1];
-        typewriterEffect(questionText, displayText, 25);
-    } else if(q.type === "yesno") {
-        choiceRow.classList.remove('hidden');
-        waitingYesNo = true;
-        yesBtn.textContent = "✔ Oui";
-        noBtn.textContent = "✘ Non";
-        typewriterEffect(questionText, displayText, 25);
-    } else if(q.type === "select") {
-        inputRow.classList.remove('hidden');
-        answerSelect.style.display = 'block';
-        answerNumber.style.display = 'none';
-        answerSelect.innerHTML = q.options;
-        if(responses[q.field]) answerSelect.value = responses[q.field];
-        else answerSelect.value = "0";
-        typewriterEffect(questionText, displayText, 25);
-    } else if(q.type === "number") {
-        inputRow.classList.remove('hidden');
-        answerNumber.style.display = 'block';
-        answerSelect.style.display = 'none';
-        answerNumber.type = 'number';
-        answerNumber.min = q.min || 0;
-        answerNumber.value = responses[q.field] || '';
-        answerNumber.placeholder = q.placeholder || "Saisir un nombre";
-        typewriterEffect(questionText, displayText, 25);
-    } else if(q.type === "text") {
-        inputRow.classList.remove('hidden');
-        answerNumber.style.display = 'block';
-        answerSelect.style.display = 'none';
-        answerNumber.type = 'text';
-        answerNumber.value = responses[q.field] || '';
-        answerNumber.placeholder = q.placeholder || "Saisir...";
-        typewriterEffect(questionText, displayText, 25);
-    }
-    const totalVisibleQuestions = questions.filter((_, idx) => {
-        if(idx === 0) return true;
-        const qTemp = questions[idx];
-        if(qTemp.requiresPresent) {
-            const codeMatch = qTemp.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/);
-            if(codeMatch) return responses[`${codeMatch[1]}_present`] === "OUI";
-        }
-        return true;
-    }).length;
-    const currentVisibleIndex = questions.filter((_, idx) => {
-        if(idx >= currentStep) return false;
-        const qTemp = questions[idx];
-        if(qTemp.requiresPresent) {
-            const codeMatch = qTemp.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/);
-            if(codeMatch) return responses[`${codeMatch[1]}_present`] === "OUI";
-        }
-        return true;
-    }).length;
-    progressFill.style.width = `${((currentVisibleIndex + 1) / totalVisibleQuestions) * 100}%`;
-    stepCounterSpan.innerText = `${currentVisibleIndex + 1}/${totalVisibleQuestions}`;
-    const prevValid = findPrevValidStep(currentStep);
-    prevBtn.classList.toggle('hidden', prevValid === -1);
-}
-
-function handleResponse(val) {
-    if(currentStep >= questions.length) return;
-    const q = questions[currentStep];
-    responses[q.field] = val;
-    if(q.field.includes('_present')) {
-        if(val === 'NON') {
-            currentStep++;
-            displayCurrent();
-            autoSave();
-            return;
-        } else if(val === 'OUI') {
-            currentStep++;
-            displayCurrent();
-            autoSave();
-            return;
-        }
-    }
-    if(q.field.includes('_raisonAbsence')) {
-        const netuberCode = q.field.replace('_raisonAbsence', '');
-        if(responses[`${netuberCode}_present`] === 'OUI') {
-            delete responses[q.field];
-            currentStep = findNextValidStep(currentStep);
-            displayCurrent();
-            autoSave();
-            return;
-        }
-    }
-    let nextStep = findNextValidStep(currentStep);
-    currentStep = nextStep;
-    displayCurrent();
-    autoSave();
-}
-
-function prevQ() {
-    const prevValid = findPrevValidStep(currentStep);
-    if(prevValid !== -1) {
-        currentStep = prevValid;
-        displayCurrent();
-    }
-}
-
-function validateCurrent() {
-    if(waitingYesNo || currentStep >= questions.length) return;
-    const q = questions[currentStep];
-    if(q.field.includes('_raisonAbsence')) {
-        const netuberCode = q.field.replace('_raisonAbsence', '');
-        if(responses[`${netuberCode}_present`] === 'OUI') {
-            let nextStep = findNextValidStep(currentStep);
-            currentStep = nextStep;
-            displayCurrent();
-            return;
-        }
-    }
-    if(q.type === "select") {
-        handleResponse(answerSelect.value);
-    } else if(q.type === "number") {
-        const val = answerNumber.value.trim();
-        if(val === '') {
-            showPopup("⚠️", "Veuillez saisir une réponse", "Fermer", "", () => {}, () => {});
-            return;
-        }
-        if(isNaN(parseFloat(val))) {
-            showPopup("⚠️", "Nombre valide requis", "Fermer", "", () => {}, () => {});
-            return;
-        }
-        handleResponse(val);
-    } else if(q.type === "text") {
-        const val = answerNumber.value.trim();
-        if(val === '') {
-            showPopup("⚠️", "Champ requis", "Fermer", "", () => {}, () => {});
-            return;
-        }
-        handleResponse(val);
-    }
-}
-
-function defaultYes() {
-    if(waitingYesNo && currentStep < questions.length) {
-        const q = questions[currentStep];
-        if(q.type === "choice") handleResponse(yesBtn.textContent);
-        else handleResponse("OUI");
-    }
-}
-
-function defaultNo() {
-    if(waitingYesNo && currentStep < questions.length) {
-        const q = questions[currentStep];
-        if(q.type === "choice") handleResponse(noBtn.textContent);
-        else handleResponse("NON");
-    }
-}
-
-function resetAllSilently() {
-    responses = {};
-    currentStep = 0;
-    formulaireComplete = false;
-    sendReportBtn.classList.add('hidden');
-    localStorage.removeItem('pgco_rapport');
-    questions = buildQuestions();
-    displayCurrent();
-}
-
-function resetAll() {
-    showPopup("Confirmation", "⚠️ Tout recommencer ?", "Annuler", "Confirmer", () => {
-        resetAllSilently();
-        showPopup("Succès", "Nouveau rapport initialisé", "OK", "", () => {}, () => {});
-    }, () => {});
-}
-
-function getFullReference() {
-    let num = responses.referenceNumber || "001";
-    num = num.toString().padStart(3, '0').slice(0, 3);
-    return `RPT-BLTJRNL-2026-${num}`;
-}
-
-async function performSendToFirebase() {
-    const btn = sendReportBtn;
-    const orig = btn.textContent;
-    btn.textContent = "⏳ Envoi...";
-    btn.disabled = true;
-    try {
-        let totalPtsP = 0, totalPtsJ = 0, totalTempsP = 0, totalTempsJ = 0;
-        const netubersData = [];
-        for(let n of NETUBERS) {
-            const present = responses[`${n.code}_present`] === 'OUI' ? 'Présent' : 'Absent';
-            const raisonAbsence = responses[`${n.code}_raisonAbsence`] || "";
-            const objM = parseInt(responses[`${n.code}_objMensuel`]) || 0;
-            const objA = parseInt(responses[`${n.code}_objAtteint`]) || 0;
-            const nbN = parseFloat(responses[`${n.code}_nbNiveaux`]) || 0;
-            const nbA = parseFloat(responses[`${n.code}_nbNiveauxAtteints`]) || 0;
-            const ptsP = parseFloat(responses[`${n.code}_pointsPrec`]) || 0;
-            const ptsJ = parseFloat(responses[`${n.code}_pointsJour`]) || 0;
-            const tempsP = parseFloat(responses[`${n.code}_tempsPrec`]) || 0;
-            const tempsJ = parseFloat(responses[`${n.code}_tempsJour`]) || 0;
-            const forfaitGo = responses[`${n.code}_forfaitGo`] || '0';
-            if(present === 'Présent') {
-                totalPtsP += ptsP;
-                totalPtsJ += ptsJ;
-                totalTempsP += tempsP;
-                totalTempsJ += tempsJ;
-            }
-            netubersData.push({
-                code: n.code,
-                presence: present,
-                raisonAbsence: raisonAbsence,
-                objectifMensuel: objM,
-                objectifAtteint: objA,
-                nbNiveaux: nbN,
-                nbNiveauxAtteints: nbA,
-                pointsPrecedents: ptsP,
-                pointsJour: ptsJ,
-                tempsPrecedent: tempsP,
-                tempsJour: tempsJ,
-                forfaitInternet: forfaitGo
-            });
-        }
-        const currentRef = getFullReference();
-        const reportData = {
-            type: "pgco_report",
-            responsable: responses.responsable || "Non spécifié",
-            zone: "ORG-NX-S1",
-            reference: currentRef,
-            date: new Date().toLocaleDateString('fr-FR'),
-            heure: new Date().toLocaleTimeString('fr-FR'),
-            totalPointsPrecedents: totalPtsP,
-            totalPointsJour: totalPtsJ,
-            totalTempsPrecedent: totalTempsP,
-            totalTempsJour: totalTempsJ,
-            netubers: netubersData,
-            status: "non_traite",
-            createdAt: new Date().toISOString()
-        };
-        const reportsRef = collection(db, "reports");
-        await addDoc(reportsRef, reportData);
-        const confirmationMsg = `Expéditeur: ${responses.responsable || "Non spécifié"}\nRéférence: ${currentRef}\n\n✅ Rapport reçu avec succès`;
-        showPopup("✅ RAPPORT TRANSMIS", confirmationMsg, "Fermer", "", () => {
-            resetAllSilently();
-        }, () => {}, 'primary');
-    } catch(e) {
-        showPopup("❌ ERREUR", `Erreur: ${e.message}`, "Fermer", "", () => {}, () => {}, 'primary');
-    } finally {
-        btn.textContent = orig;
-        btn.disabled = false;
-    }
-}
-
-function sendReportToFirebase() {
-    if(!formulaireComplete) {
-        showPopup("⚠️", "Veuillez compléter toutes les questions", "Fermer", "", () => {}, () => {});
-        return;
-    }
-    let missing = [];
-    for(let n of NETUBERS) {
-        if(responses[`${n.code}_present`] === 'OUI') {
-            if(!responses[`${n.code}_objMensuel`] && responses[`${n.code}_objMensuel`] !== 0) missing.push(`${n.code} - Objectif mensuel`);
-            if(!responses[`${n.code}_objAtteint`] && responses[`${n.code}_objAtteint`] !== 0) missing.push(`${n.code} - Objectif atteint`);
-            if(!responses[`${n.code}_nbNiveaux`] && responses[`${n.code}_nbNiveaux`] !== 0) missing.push(`${n.code} - Nb niveaux`);
-            if(!responses[`${n.code}_nbNiveauxAtteints`] && responses[`${n.code}_nbNiveauxAtteints`] !== 0) missing.push(`${n.code} - Nb niveaux atteints`);
-            if(!responses[`${n.code}_pointsPrec`] && responses[`${n.code}_pointsPrec`] !== 0) missing.push(`${n.code} - Points précédents`);
-            if(!responses[`${n.code}_pointsJour`] && responses[`${n.code}_pointsJour`] !== 0) missing.push(`${n.code} - Points jour`);
-            if(!responses[`${n.code}_tempsPrec`] && responses[`${n.code}_tempsPrec`] !== 0) missing.push(`${n.code} - Temps précédent`);
-            if(!responses[`${n.code}_tempsJour`] && responses[`${n.code}_tempsJour`] !== 0) missing.push(`${n.code} - Temps jour`);
-            if(!responses[`${n.code}_forfaitGo`] && responses[`${n.code}_forfaitGo`] !== 0) missing.push(`${n.code} - Forfait internet`);
-        }
-    }
-    if(!responses.referenceNumber || responses.referenceNumber.trim() === '') missing.push("Numéro de rapport");
-    if(missing.length > 0) {
-        showPopup("⚠️ Champs manquants", missing.join("\n"), "Fermer", "", () => {}, () => {});
-        return;
-    }
-    performSendToFirebase();
-}
-
-function autoSave() {
-    saveLocal();
-}
-
-function handleLogout() {
-    showPopup(
-        "🔓 Déconnexion", 
-        "Êtes-vous sûr de vouloir vous déconnecter ?", 
-        "Annuler", 
-        "Se déconnecter", 
-        () => {
-            signOut(auth).then(() => {
-                window.location.href = "login.html";
-            });
-        }, 
-        () => {},
-        'primary'
-    );
-}
-
-// ============ INITIALISATION ============
-function initApp() {
-    questionText = document.getElementById('questionText');
-    questionMeta = document.getElementById('questionMeta');
-    inputRow = document.getElementById('inputRow');
-    choiceRow = document.getElementById('choiceRow');
-    answerSelect = document.getElementById('answerSelect');
-    answerNumber = document.getElementById('answerNumber');
-    submitBtn = document.getElementById('submitBtn');
-    yesBtn = document.getElementById('yesBtn');
-    noBtn = document.getElementById('noBtn');
-    progressFill = document.getElementById('progressFill');
-    stepCounterSpan = document.getElementById('stepCounter');
-    prevBtn = document.getElementById('prevBtn');
-    resetBtn = document.getElementById('resetBtn');
-    saveStatus = document.getElementById('saveStatus');
-    popupOverlay = document.getElementById('popupOverlay');
-    popupTitle = document.getElementById('popupTitle');
-    popupMessageDiv = document.getElementById('popupMessage');
-    popupBtnLeft = document.getElementById('popupBtnLeft');
-    popupBtnRight = document.getElementById('popupBtnRight');
-    sendReportBtn = document.getElementById('sendReportBtn');
-    questionCardDiv = document.getElementById('questionCard');
-    chatMessagesDiv = document.getElementById('chatMessages');
-    chatMessageInput = document.getElementById('chatMessageInput');
-    sendChatBtn = document.getElementById('sendChatBtn');
-    editPopupOverlay = document.getElementById('editPopupOverlay');
-    editMessageContent = document.getElementById('editMessageContent');
-    cancelEditBtn = document.getElementById('cancelEditBtn');
-    confirmEditBtn = document.getElementById('confirmEditBtn');
-    chatBackBtn = document.getElementById('chatBackBtn');
-    tabChat = document.getElementById('tabChat');
-
-    yesBtn.onclick = defaultYes;
-    noBtn.onclick = defaultNo;
-    submitBtn.onclick = validateCurrent;
-    prevBtn.onclick = prevQ;
-    resetBtn.onclick = resetAll;
-    sendReportBtn.onclick = sendReportToFirebase;
-    sendChatBtn.onclick = sendChatMessage;
-    cancelEditBtn.onclick = closeEditPopup;
-    confirmEditBtn.onclick = confirmEdit;
-    chatBackBtn.onclick = disableChatFullscreen;
-
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.onclick = () => {
-            if(btn.dataset.tab !== 'chat') disableChatFullscreen();
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(`tab${btn.dataset.tab === 'form' ? 'Form' : btn.dataset.tab === 'memo' ? 'Memo' : 'Chat'}`).classList.add('active');
-            if(btn.dataset.tab === 'memo') loadMemorandums();
-            if(btn.dataset.tab === 'chat') {
-                loadChatMessages();
-                enableChatFullscreen();
-            }
-        };
-    });
-
-    questions = buildQuestions();
-    displayCurrent();
-    loadMemorandums();
-    loadChatMessages();
-
-    const saved = localStorage.getItem('pgco_rapport');
-    if(saved) {
-        try {
-            const d = JSON.parse(saved);
-            if(d.responses && Object.keys(d.responses).length > 0) {
-                responses = d.responses;
-                currentStep = d.currentStep || 0;
-                displayCurrent();
-            }
-        } catch(e) {}
-    }
-
-    setInterval(() => {
-        if(document.querySelector('.tab-btn[data-tab="memo"]').classList.contains('active')) loadMemorandums();
-        if(document.querySelector('.tab-btn[data-tab="chat"]').classList.contains('active')) loadChatMessages();
-    }, 30000);
-}
-
-onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        window.location.href = "login.html";
-    } else {
-        const userEmailSpan = document.getElementById("userEmail");
-        if (userEmailSpan) userEmailSpan.textContent = user.email;
-        initApp();
-    }
-});
-
-const logoutBtn = document.getElementById("logoutBtn");
-if (logoutBtn) {
-    logoutBtn.onclick = handleLogout;
-}
+function escapeHtml(t){if(!t)return '';return String(t).replace(/[&<>]/g,function(m){if(m==='&')return '&amp;';if(m==='<')return '&lt;';if(m==='>')return '&gt;';return m;});}
+function formatDate(dateValue){if(!dateValue)return"Date inconnue";try{let d;if(typeof dateValue==='string'){d=new Date(dateValue);}else if(dateValue.toDate){d=dateValue.toDate();}else{d=new Date(dateValue);}if(isNaN(d.getTime()))return"Date inconnue";return d.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}catch(e){return"Date inconnue";}}
+function showPopup(t,m,l,r,onC,onCa,rc='primary',rd=false){popupTitle.textContent=t;popupMessageDiv.innerHTML=m;popupBtnLeft.textContent=l;popupBtnRight.textContent=r;popupBtnRight.className=`popup-btn ${rc}`;if(rd)popupBtnRight.disabled=true;else popupBtnRight.disabled=false;popupOverlay.classList.add('active');popupBtnRight.onclick=()=>{if(popupBtnRight.disabled)return;popupOverlay.classList.remove('active');if(onC)onC();};popupBtnLeft.onclick=()=>{popupOverlay.classList.remove('active');if(onCa)onCa();};}
+async function loadChatMessages(){try{const q=query(collection(db,"chat_messages"),limit(100));const s=await getDocs(q);if(s.empty){chatMessagesDiv.innerHTML='<div class="empty-chat">💬 Aucun message</div>';return;}let msgs=[];s.forEach(d=>msgs.push({id:d.id,...d.data()}));msgs.sort((a,b)=>new Date(a.sentDate||0)-new Date(b.sentDate||0));let html='';for(let m of msgs){const env=m.senderRole==='responsable';const fd=formatDate(m.sentDate);if(env){html+=`<div class="message-bubble message-sent"><div class="message-content">${escapeHtml(m.message)}</div><div class="message-info"><span>${fd}</span>${m.isEdited?'<span>(modifié)</span>':''}</div><div class="message-actions"><button class="edit-msg-btn" data-id="${m.id}" data-msg="${escapeHtml(m.message)}">✏️</button></div></div>`;}else{html+=`<div class="message-bubble message-received"><div><span class="message-sender">DEO</span><div class="message-content">${escapeHtml(m.message)}</div></div><div class="message-info"><span>${fd}</span>${m.isEdited?'<span>(modifié)</span>':''}</div></div>`;}}
+chatMessagesDiv.innerHTML=html;document.querySelectorAll('.edit-msg-btn').forEach(btn=>{btn.onclick=(e)=>{e.stopPropagation();openEditPopup(btn.dataset.id,btn.dataset.msg);};});chatMessagesDiv.scrollTop=chatMessagesDiv.scrollHeight;}catch(e){chatMessagesDiv.innerHTML='<div class="empty-chat">⚠️ Erreur technique</div>';}}
+async function loadMemorandums(){const div=document.getElementById('memorandumList');div.innerHTML='<div class="loading-placeholder">⏳ Chargement...</div>';try{const q=query(collection(db,"memorandums"),limit(20));const s=await getDocs(q);const footer=document.getElementById('memorandumFooter');const today=new Date();const dateFooter=today.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});if(!s.empty){let msgs=[];s.forEach(d=>msgs.push({id:d.id,...d.data()}));msgs.sort((a,b)=>new Date(b.sentDate)-new Date(a.sentDate));let h='';for(let data of msgs){const sentDate=data.sentDate||data.date;const formattedDate=formatDate(sentDate);h+=`<div class="memorandum-item"><div class="memorandum-title">📋 ${escapeHtml(data.title||'Mémorandum')}</div><div class="memorandum-content">${(data.content||'').replace(/\n/g,'<br>')}</div><div class="memorandum-date-bottom">📅 ${formattedDate}</div></div>`;}
+div.innerHTML=h;}else div.innerHTML='<div class="empty-chat">📭 Aucun mémorandum</div>';footer.innerHTML=`📅 ${dateFooter} · DEO · NeTubeX`;}catch(e){div.innerHTML='<div class="empty-chat">⚠️ Erreur technique</div>';}}
+async function sendChatMessage(){const msg=chatMessageInput.value.trim();if(!msg){showPopup("⚠️","Message vide","Fermer","",()=>{},()=>{});return;}
+const user=auth.currentUser;let expediteur="Responsable";if(user&&user.email){expediteur=user.email.split('@')[0];expediteur=expediteur.charAt(0).toUpperCase()+expediteur.slice(1);}
+try{await addDoc(collection(db,"chat_messages"),{message:msg,sender:expediteur,senderEmail:user?user.email:null,senderRole:"responsable",recipient:"DEO",sentDate:new Date().toISOString(),isEdited:false,status:"envoyé"});chatMessageInput.value="";await loadChatMessages();showPopup("✅","Message envoyé","Fermer","",()=>{},()=>{});}catch(e){showPopup("❌","Erreur envoi: "+e.message,"Fermer","",()=>{},()=>{});}}
+async function editChatMessage(id,newMsg){if(!newMsg.trim()){showPopup("⚠️","Message vide","Fermer","",()=>{},()=>{});return false;}try{const ref=doc(db,"chat_messages",id);const d=await getDoc(ref);if(d.exists()){await updateDoc(ref,{message:newMsg,isEdited:true,editedDate:new Date().toISOString(),originalMessage:d.data().message});await loadChatMessages();return true;}}catch(e){showPopup("❌","Erreur","Fermer","",()=>{},()=>{});return false;}}
+function openEditPopup(id,msg){currentEditingMessageId=id;editMessageContent.value=msg;editPopupOverlay.classList.add('active');}
+function closeEditPopup(){editPopupOverlay.classList.remove('active');currentEditingMessageId=null;editMessageContent.value="";}
+async function confirmEdit(){if(currentEditingMessageId){const nm=editMessageContent.value.trim();if(nm)await editChatMessage(currentEditingMessageId,nm);closeEditPopup();}}
+function enableChatFullscreen(){document.body.classList.add('chat-active');tabChat.classList.add('chat-fullscreen');}
+function disableChatFullscreen(){document.body.classList.remove('chat-active');tabChat.classList.remove('chat-fullscreen');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.querySelector('.tab-btn[data-tab="form"]').classList.add('active');document.getElementById('tabForm').classList.add('active');}
+function saveLocal(){localStorage.setItem('pgco_rapport',JSON.stringify({responses,currentStep}));saveStatus.innerHTML='💾 OK';setTimeout(()=>saveStatus.innerHTML='💾 Auto',1200);}
+function buildQuestions(){const q=[];let n=0;q.push({num:n++,type:"choice",field:"responsable",meta:"Identification",text:"Qui remplit le rapport aujourd'hui ?",options:["Madame Ursule","Madame Chancelle"]});for(let nu of NETUBERS){q.push({num:n++,type:"yesno",field:`${nu.code}_present`,meta:nu.code,text:`${nu.code} : Était-il présent aujourd'hui ?`});q.push({num:n++,type:"select",field:`${nu.code}_raisonAbsence`,meta:nu.code,text:`${nu.code} : Raison de l'absence ? (si absent)`,options:RAISONS_ABSENCE.map(r=>`<option value="${r}">${r}</option>`).join('')});const questionsPresent=[{type:"select",field:`${nu.code}_objMensuel`,text:`${nu.code} : Quel est son objectif mensuel ?`,options:[...Array(16).keys()].map(i=>`<option value="${i}">${i}</option>`).join('')},{type:"select",field:`${nu.code}_objAtteint`,text:`${nu.code} : Combien d'objectifs a-t-il atteints aujourd'hui ?`,options:[...Array(16).keys()].map(i=>`<option value="${i}">${i}</option>`).join('')},{type:"number",field:`${nu.code}_nbNiveaux`,text:`${nu.code} : Quel est le nombre de niveaux/événements ou mètres ?`,min:0},{type:"number",field:`${nu.code}_nbNiveauxAtteints`,text:`${nu.code} : Combien de niveaux/événements ou mètres a-t-il atteints ?`,min:0},{type:"number",field:`${nu.code}_pointsPrec`,text:`${nu.code} : Combien de points avait-il précédemment ?`,min:0},{type:"number",field:`${nu.code}_pointsJour`,text:`${nu.code} : Combien de points a-t-il aujourd'hui ?`,min:0},{type:"number",field:`${nu.code}_tempsPrec`,text:`${nu.code} : Quel temps avait-il précédemment (en minutes) ?`,min:0},{type:"number",field:`${nu.code}_tempsJour`,text:`${nu.code} : Quel temps a-t-il aujourd'hui (en minutes) ?`,min:0},{type:"select",field:`${nu.code}_forfaitGo`,text:`${nu.code} : Combien de Go de forfait internet reste-t-il ?`,options:[...Array(31).keys()].map(i=>`<option value="${i}">${i} Go</option>`).join('')}];for(let pq of questionsPresent){q.push({num:n++,type:pq.type,field:pq.field,meta:nu.code,text:pq.text,options:pq.options,min:pq.min,requiresPresent:true});}}
+q.push({num:n++,type:"text",field:"referenceNumber",meta:"Rapport",text:"Numéro de rapport (3 derniers chiffres personnalisables)",placeholder:"Ex: 001"});return q;}
+function shouldShowQuestion(q){if(!q.requiresPresent)return true;const codeMatch=q.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/);if(!codeMatch)return true;const netuberCode=codeMatch[1];const presenceResponse=responses[`${netuberCode}_present`];return presenceResponse==="OUI";}
+function updateCardColor(){if(currentStep>=questions.length){questionCardDiv.classList.add('default-card');return;}
+const q=questions[currentStep];if(!q)return;const idx=getCurrentNetuberIndex();questionCardDiv.classList.remove('netuber-0','netuber-1','netuber-2','netuber-3','netuber-4','default-card');if(idx>=0&&idx<NETUBERS.length)questionCardDiv.classList.add(`netuber-${idx}`);else questionCardDiv.classList.add('default-card');}
+function getCurrentNetuberIndex(){if(currentStep>=questions.length)return-1;const q=questions[currentStep];if(!q||!q.field)return-1;for(let i=0;i<NETUBERS.length;i++)if(q.field.includes(NETUBERS[i].code))return i;return-1;}
+function typewriterEffect(el,txt,speed=25,cb){if(typewriterTimeout)clearTimeout(typewriterTimeout);el.innerHTML='';let i=0;function type(){if(i<txt.length){el.innerHTML=txt.substring(0,i+1);i++;typewriterTimeout=setTimeout(type,speed);}else{if(cb)cb();}}
+type();}
+function findNextValidStep(currentStep){let next=currentStep+1;while(next<questions.length){if(shouldShowQuestion(questions[next]))return next;next++;}
+return questions.length;}
+function findPrevValidStep(currentStep){let prev=currentStep-1;while(prev>=0){if(shouldShowQuestion(questions[prev]))return prev;prev--;}
+return-1;}
+function displayCurrent(){updateCardColor();if(currentStep>=questions.length){formulaireComplete=true;sendReportBtn.classList.remove('hidden');typewriterEffect(questionText,"✅ Formulaire terminé. Cliquez sur 'Envoyer' pour transmettre le rapport.",25);inputRow.classList.add('hidden');choiceRow.classList.add('hidden');return;}
+formulaireComplete=false;sendReportBtn.classList.add('hidden');if(!shouldShowQuestion(questions[currentStep])){currentStep=findNextValidStep(currentStep);displayCurrent();return;}
+const q=questions[currentStep];waitingYesNo=false;inputRow.classList.add('hidden');choiceRow.classList.add('hidden');answerSelect.style.display='none';answerNumber.style.display='none';questionMeta.innerHTML=`<span class="question-num">#${q.num+1}</span> ${q.meta}`;let displayText=q.text;if(q.field.includes('_raisonAbsence')){const netuberCode=q.field.replace('_raisonAbsence','');if(responses[`${netuberCode}_present`]==='OUI'){displayText=`${netuberCode} : Cette question n'est pas applicable (présent). Cliquez sur Suivant.`;}}
+if(q.type==="choice"){choiceRow.classList.remove('hidden');waitingYesNo=true;yesBtn.textContent=q.options[0];noBtn.textContent=q.options[1];typewriterEffect(questionText,displayText,25);}else if(q.type==="yesno"){choiceRow.classList.remove('hidden');waitingYesNo=true;yesBtn.textContent="✔ Oui";noBtn.textContent="✘ Non";typewriterEffect(questionText,displayText,25);}else if(q.type==="select"){inputRow.classList.remove('hidden');answerSelect.style.display='block';answerNumber.style.display='none';answerSelect.innerHTML=q.options;if(responses[q.field])answerSelect.value=responses[q.field];else answerSelect.value="0";typewriterEffect(questionText,displayText,25);}else if(q.type==="number"){inputRow.classList.remove('hidden');answerNumber.style.display='block';answerSelect.style.display='none';answerNumber.type='number';answerNumber.min=q.min||0;answerNumber.value=responses[q.field]||'';answerNumber.placeholder=q.placeholder||"Saisir un nombre";typewriterEffect(questionText,displayText,25);}else if(q.type==="text"){inputRow.classList.remove('hidden');answerNumber.style.display='block';answerSelect.style.display='none';answerNumber.type='text';answerNumber.value=responses[q.field]||'';answerNumber.placeholder=q.placeholder||"Saisir...";typewriterEffect(questionText,displayText,25);}
+const totalVisibleQuestions=questions.filter((_,idx)=>{if(idx===0)return true;const qTemp=questions[idx];if(qTemp.requiresPresent){const codeMatch=qTemp.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/);if(codeMatch)return responses[`${codeMatch[1]}_present`]==="OUI";}
+return true;}).length;const currentVisibleIndex=questions.filter((_,idx)=>{if(idx>=currentStep)return false;const qTemp=questions[idx];if(qTemp.requiresPresent){const codeMatch=qTemp.field.match(/(MA-NX-S1-[A-Z]{2}-\d{2})/);if(codeMatch)return responses[`${codeMatch[1]}_present`]==="OUI";}
+return true;}).length;progressFill.style.width=`${((currentVisibleIndex+1)/totalVisibleQuestions)*100}%`;stepCounterSpan.innerText=`${currentVisibleIndex+1}/${totalVisibleQuestions}`;const prevValid=findPrevValidStep(currentStep);prevBtn.classList.toggle('hidden',prevValid===-1);}
+function handleResponse(val){if(currentStep>=questions.length)return;const q=questions[currentStep];responses[q.field]=val;if(q.field.includes('_present')){if(val==='NON'){currentStep++;displayCurrent();autoSave();return;}else if(val==='OUI'){currentStep++;displayCurrent();autoSave();return;}}
+if(q.field.includes('_raisonAbsence')){const netuberCode=q.field.replace('_raisonAbsence','');if(responses[`${netuberCode}_present`]==='OUI'){delete responses[q.field];currentStep=findNextValidStep(currentStep);displayCurrent();autoSave();return;}}
+let nextStep=findNextValidStep(currentStep);currentStep=nextStep;displayCurrent();autoSave();}
+function prevQ(){const prevValid=findPrevValidStep(currentStep);if(prevValid!==-1){currentStep=prevValid;displayCurrent();}}
+function validateCurrent(){if(waitingYesNo||currentStep>=questions.length)return;const q=questions[currentStep];if(q.field.includes('_raisonAbsence')){const netuberCode=q.field.replace('_raisonAbsence','');if(responses[`${netuberCode}_present`]==='OUI'){let nextStep=findNextValidStep(currentStep);currentStep=nextStep;displayCurrent();return;}}
+if(q.type==="select"){handleResponse(answerSelect.value);}else if(q.type==="number"){const val=answerNumber.value.trim();if(val===''){showPopup("⚠️","Veuillez saisir une réponse","Fermer","",()=>{},()=>{});return;}
+if(isNaN(parseFloat(val))){showPopup("⚠️","Nombre valide requis","Fermer","",()=>{},()=>{});return;}
+handleResponse(val);}else if(q.type==="text"){const val=answerNumber.value.trim();if(val===''){showPopup("⚠️","Champ requis","Fermer","",()=>{},()=>{});return;}
+handleResponse(val);}}
+function defaultYes(){if(waitingYesNo&当前Step<questions.length){const q=questions[currentStep];if(q.type==="choice")handleResponse(yesBtn.textContent);else handleResponse("OUI");}}
+function defaultNo(){if(waitingYesNo&&currentStep<questions.length){const q=questions[currentStep];if(q.type==="choice")handleResponse(noBtn.textContent);else handleResponse("NON");}}
+function resetAllSilently(){responses={};currentStep=0;formulaireComplete=false;sendReportBtn.classList.add('hidden');localStorage.removeItem('pgco_rapport');questions=buildQuestions();displayCurrent();}
+function resetAll(){showPopup("Confirmation","⚠️ Tout recommencer ?","Annuler","Confirmer",()=>{resetAllSilently();showPopup("Succès","Nouveau rapport initialisé","OK","",()=>{},()=>{});},()=>{});}
+function getFullReference(){let num=responses.referenceNumber||"001";num=num.toString().padStart(3,'0').slice(0,3);return`RPT-BLTJRNL-2026-${num}`;}
+async function performSendToFirebase(){const btn=sendReportBtn;const orig=btn.textContent;btn.textContent="⏳ Envoi...";btn.disabled=true;try{let totalPtsP=0,totalPtsJ=0,totalTempsP=0,totalTempsJ=0;const netubersData=[];for(let n of NETUBERS){const present=responses[`${n.code}_present`]==='OUI'?'Présent':'Absent';const raisonAbsence=responses[`${n.code}_raisonAbsence`]||"";const objM=parseInt(responses[`${n.code}_objMensuel`])||0;const objA=parseInt(responses[`${n.code}_objAtteint`])||0;const nbN=parseFloat(responses[`${n.code}_nbNiveaux`])||0;const nbA=parseFloat(responses[`${n.code}_nbNiveauxAtteints`])||0;const ptsP=parseFloat(responses[`${n.code}_pointsPrec`])||0;const ptsJ=parseFloat(responses[`${n.code}_pointsJour`])||0;const tempsP=parseFloat(responses[`${n.code}_tempsPrec`])||0;const tempsJ=parseFloat(responses[`${n.code}_tempsJour`])||0;const forfaitGo=responses[`${n.code}_forfaitGo`]||'0';if(present==='Présent'){totalPtsP+=ptsP;totalPtsJ+=ptsJ;totalTempsP+=tempsP;totalTempsJ+=tempsJ;}
+netubersData.push({code:n.code,presence:present,raisonAbsence:raisonAbsence,objectifMensuel:objM,objectifAtteint:objA,nbNiveaux:nbN,nbNiveauxAtteints:nbA,pointsPrecedents:ptsP,pointsJour:ptsJ,tempsPrecedent:tempsP,tempsJour:tempsJ,forfaitInternet:forfaitGo});}
+const currentRef=getFullReference();const reportData={type:"pgco_report",responsable:responses.responsable||"Non spécifié",zone:"ORG-NX-S1",reference:currentRef,date:new Date().toLocaleDateString('fr-FR'),heure:new Date().toLocaleTimeString('fr-FR'),totalPointsPrecedents:totalPtsP,totalPointsJour:totalPtsJ,totalTempsPrecedent:totalTempsP,totalTempsJour:totalTempsJ,netubers:netubersData,status:"non_traite",createdAt:new Date().toISOString()};const reportsRef=collection(db,"reports");await addDoc(reportsRef,reportData);const confirmationMsg=`Expéditeur: ${responses.responsable||"Non spécifié"}\nRéférence: ${currentRef}\n\n✅ Rapport reçu avec succès`;showPopup("✅ RAPPORT TRANSMIS",confirmationMsg,"Fermer","",()=>{resetAllSilently();},()=>{},'primary');}catch(e){showPopup("❌ ERREUR",`Erreur: ${e.message}`,"Fermer","",()=>{},()=>{},'primary');}finally{btn.textContent=orig;btn.disabled=false;}}
+function sendReportToFirebase(){if(!formulaireComplete){showPopup("⚠️","Veuillez compléter toutes les questions","Fermer","",()=>{},()=>{});return;}
+let missing=[];for(let n of NETUBERS){if(responses[`${n.code}_present`]==='OUI'){if(!responses[`${n.code}_objMensuel`]&&responses[`${n.code}_objMensuel`]!==0)missing.push(`${n.code} - Objectif mensuel`);if(!responses[`${n.code}_objAtteint`]&&responses[`${n.code}_objAtteint`]!==0)missing.push(`${n.code} - Objectif atteint`);if(!responses[`${n.code}_nbNiveaux`]&&responses[`${n.code}_nbNiveaux`]!==0)missing.push(`${n.code} - Nb niveaux`);if(!responses[`${n.code}_nbNiveauxAtteints`]&&responses[`${n.code}_nbNiveauxAtteints`]!==0)missing.push(`${n.code} - Nb niveaux atteints`);if(!responses[`${n.code}_pointsPrec`]&&responses[`${n.code}_pointsPrec`]!==0)missing.push(`${n.code} - Points précédents`);if(!responses[`${n.code}_pointsJour`]&&responses[`${n.code}_pointsJour`]!==0)missing.push(`${n.code} - Points jour`);if(!responses[`${n.code}_tempsPrec`]&&responses[`${n.code}_tempsPrec`]!==0)missing.push(`${n.code} - Temps précédent`);if(!responses[`${n.code}_tempsJour`]&&responses[`${n.code}_tempsJour`]!==0)missing.push(`${n.code} - Temps jour`);if(!responses[`${n.code}_forfaitGo`]&&responses[`${n.code}_forfaitGo`]!==0)missing.push(`${n.code} - Forfait internet`);}}
+if(!responses.referenceNumber||responses.referenceNumber.trim()==='')missing.push("Numéro de rapport");if(missing.length>0){showPopup("⚠️ Champs manquants",missing.join("\n"),"Fermer","",()=>{},()=>{});return;}
+performSendToFirebase();}
+function autoSave(){saveLocal();}
+function handleLogout(){showPopup("🔓 Déconnexion","Êtes-vous sûr de vouloir vous déconnecter ?","Annuler","Se déconnecter",()=>{signOut(auth).then(()=>{window.location.href="login.html";});},()=>{},'primary');}
+function initApp(){questionText=document.getElementById('questionText');questionMeta=document.getElementById('questionMeta');inputRow=document.getElementById('inputRow');choiceRow=document.getElementById('choiceRow');answerSelect=document.getElementById('answerSelect');answerNumber=document.getElementById('answerNumber');submitBtn=document.getElementById('submitBtn');yesBtn=document.getElementById('yesBtn');noBtn=document.getElementById('noBtn');progressFill=document.getElementById('progressFill');stepCounterSpan=document.getElementById('stepCounter');prevBtn=document.getElementById('prevBtn');resetBtn=document.getElementById('resetBtn');saveStatus=document.getElementById('saveStatus');popupOverlay=document.getElementById('popupOverlay');popupTitle=document.getElementById('popupTitle');popupMessageDiv=document.getElementById('popupMessage');popupBtnLeft=document.getElementById('popupBtnLeft');popupBtnRight=document.getElementById('popupBtnRight');sendReportBtn=document.getElementById('sendReportBtn');questionCardDiv=document.getElementById('questionCard');chatMessagesDiv=document.getElementById('chatMessages');chatMessageInput=document.getElementById('chatMessageInput');sendChatBtn=document.getElementById('sendChatBtn');editPopupOverlay=document.getElementById('editPopupOverlay');editMessageContent=document.getElementById('editMessageContent');cancelEditBtn=document.getElementById('cancelEditBtn');confirmEditBtn=document.getElementById('confirmEditBtn');chatBackBtn=document.getElementById('chatBackBtn');tabChat=document.getElementById('tabChat');yesBtn.onclick=defaultYes;noBtn.onclick=defaultNo;submitBtn.onclick=validateCurrent;prevBtn.onclick=prevQ;resetBtn.onclick=resetAll;sendReportBtn.onclick=sendReportToFirebase;sendChatBtn.onclick=sendChatMessage;cancelEditBtn.onclick=closeEditPopup;confirmEditBtn.onclick=confirmEdit;chatBackBtn.onclick=disableChatFullscreen;document.querySelectorAll('.tab-btn').forEach(btn=>{btn.onclick=()=>{if(btn.dataset.tab!=='chat')disableChatFullscreen();document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));btn.classList.add('active');document.getElementById(`tab${btn.dataset.tab==='form'?'Form':btn.dataset.tab==='memo'?'Memo':'Chat'}`).classList.add('active');if(btn.dataset.tab==='memo')loadMemorandums();if(btn.dataset.tab==='chat'){loadChatMessages();enableChatFullscreen();}};});questions=buildQuestions();displayCurrent();loadMemorandums();loadChatMessages();const saved=localStorage.getItem('pgco_rapport');if(saved){try{const d=JSON.parse(saved);if(d.responses&&Object.keys(d.responses).length>0){responses=d.responses;currentStep=d.currentStep||0;displayCurrent();}}catch(e){}}
+setInterval(()=>{if(document.querySelector('.tab-btn[data-tab="memo"]').classList.contains('active'))loadMemorandums();if(document.querySelector('.tab-btn[data-tab="chat"]').classList.contains('active'))loadChatMessages();},30000);}
+onAuthStateChanged(auth,(user)=>{if(!user){window.location.href="login.html";}else{const userEmailSpan=document.getElementById("userEmail");if(userEmailSpan)userEmailSpan.textContent=user.email;initApp();}});
+const logoutBtn=document.getElementById("logoutBtn");if(logoutBtn){logoutBtn.onclick=handleLogout;}
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -924,7 +265,6 @@ body.chat-active .rainbow-line{display:block;}
 <div class="rainbow-line"></div>
 <div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
 <div id="editPopupOverlay" class="popup-overlay"><div class="popup-card edit-popup"><div class="popup-title">✏️ Modifier</div><textarea id="editMessageContent" rows="4"></textarea><div class="popup-buttons"><button id="cancelEditBtn" class="popup-btn secondary">Annuler</button><button id="confirmEditBtn" class="popup-btn primary">OK</button></div></div></div>
-
 <script>
 document.getElementById('formIconBtn').addEventListener('click', function() {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -932,6 +272,14 @@ document.getElementById('formIconBtn').addEventListener('click', function() {
     document.querySelector('.tab-btn[data-tab="form"]').classList.add('active');
     document.getElementById('tabForm').classList.add('active');
 });
+document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});
+document.addEventListener('keydown',function(e){const fk=[{key:'F12',p:true},{ctrl:true,shift:true,key:'I',p:true},{ctrl:true,shift:true,key:'J',p:true},{ctrl:true,shift:true,key:'C',p:true},{ctrl:true,key:'U',p:true},{ctrl:true,key:'S',p:true},{ctrl:true,key:'P',p:true},{ctrl:true,key:'R',p:true},{ctrl:true,shift:true,key:'R',p:true},{ctrl:true,key:'F5',p:true},{ctrl:true,key:'E',p:true},{ctrl:true,key:'G',p:true},{ctrl:true,key:'F',p:true},{ctrl:true,key:'H',p:true},{ctrl:true,key:'J',p:true},{ctrl:true,key:'K',p:true},{ctrl:true,key:'O',p:true},{ctrl:true,key:'N',p:true},{ctrl:true,key:'W',p:true},{ctrl:true,key:'T',p:true},{ctrl:true,key:'Tab',p:true},{ctrl:true,shift:true,key:'Tab',p:true},{ctrl:true,shift:true,key:'N',p:true},{ctrl:true,shift:true,key:'P',p:true},{ctrl:true,shift:true,key:'E',p:true},{ctrl:true,shift:true,key:'Q',p:true},{ctrl:true,shift:true,key:'W',p:true}];for(let fb of fk){let m=true;if(fb.ctrl&&!e.ctrlKey)m=false;if(fb.shift&&!e.shiftKey)m=false;if(fb.key){const km=e.key===fb.key||(fb.key==='F12'&&e.key==='F12')||(fb.key==='I'&&e.key==='i')||(fb.key==='J'&&e.key==='j')||(fb.key==='C'&&e.key==='c')||(fb.key==='U'&&e.key==='u')||(fb.key==='S'&&e.key==='s')||(fb.key==='P'&&e.key==='p')||(fb.key==='R'&&e.key==='r')||(fb.key==='E'&&e.key==='e')||(fb.key==='G'&&e.key==='g')||(fb.key==='F'&&e.key==='f')||(fb.key==='H'&&e.key==='h')||(fb.key==='K'&&e.key==='k')||(fb.key==='O'&&e.key==='o')||(fb.key==='N'&&e.key==='n')||(fb.key==='W'&&e.key==='w')||(fb.key==='T'&&e.key==='t')||(fb.key==='Q'&&e.key==='q')||(fb.key==='Tab'&&e.key==='Tab');if(!km)m=false;}
+if(m&&fb.p){e.preventDefault();e.stopPropagation();return false;}}
+if(e.key==='F12'){e.preventDefault();return false;}
+if(e.ctrlKey&&e.shiftKey&&/^[A-Za-z]$/.test(e.key)){e.preventDefault();return false;}});
+document.addEventListener('dragstart',function(e){e.preventDefault();return false;});
+document.addEventListener('selectstart',function(e){e.preventDefault();return false;});
+document.addEventListener('copy',function(e){e.preventDefault();return false;});
 </script>
 </body>
 </html>
