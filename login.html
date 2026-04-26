@@ -42,7 +42,7 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 .bottom-btn:hover{background:#3b82f6;transform:translateY(-2px);}
 .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;transition:visibility 0.2s;}
 .modal-overlay.active{visibility:visible;}
-.modal-content{background:#ffffff;border-radius:28px;max-width:700px;width:90%;max-height:85vh;overflow-y:auto;position:relative;transform:scale(0.95);transition:transform 0.2s;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);}
+.modal-content{background:#ffffff;border-radius:28px;max-width:750px;width:90%;max-height:85vh;overflow-y:auto;position:relative;transform:scale(0.95);transition:transform 0.2s;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);}
 .modal-overlay.active .modal-content{transform:scale(1);}
 .modal-content.small{max-width:450px;}
 .modal-header{position:sticky;top:0;background:#ffffff;padding:20px 24px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;z-index:10;}
@@ -91,6 +91,8 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 .info-message p{font-size:12px;color:#475569;}
 .loading-spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:8px;}
 @keyframes spin{to{transform:rotate(360deg);}}
+.form-section-title{font-size:14px;font-weight:600;color:#1e293b;margin:20px 0 12px 0;padding-bottom:6px;border-bottom:2px solid #e2e8f0;display:flex;align-items:center;gap:8px;}
+.form-section-title i{color:#3b82f6;font-size:14px;}
 </style>
 </head>
 <body>
@@ -135,6 +137,7 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 </div>
 <div class="modal-body">
 <form id="registerForm">
+<div class="form-section-title"><i class="fas fa-user-circle"></i> Informations personnelles</div>
 <div class="input-row">
 <div class="input-group">
 <label>Nom</label>
@@ -157,11 +160,13 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 </div>
 <div id="genderError" class="error-message" style="display:none; background:transparent; padding:0; margin-top:8px;">Veuillez sélectionner votre sexe</div>
 </div>
+<div class="form-section-title"><i class="fas fa-envelope"></i> Identifiants de connexion</div>
 <div class="input-group">
 <label>Email</label>
 <input type="email" id="regEmail" placeholder="exemple@email.com">
 <div id="regEmailError" class="error-message" style="display:none; background:transparent; padding:0; margin-top:5px;"></div>
 </div>
+<div class="input-row">
 <div class="input-group">
 <label>Mot de passe</label>
 <input type="password" id="regPassword" placeholder="Min 6 caractères">
@@ -173,11 +178,12 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 <input type="password" id="regConfirmPassword" placeholder="Retapez votre mot de passe">
 <div id="pwdMatchError" class="error-message" style="display:none; background:transparent; padding:0;">Les mots de passe ne correspondent pas</div>
 </div>
-<div class="input-group"><label>Comment voulez-vous être contacté ?</label></div>
+</div>
+<div class="form-section-title"><i class="fas fa-phone-alt"></i> Contact</div>
 <div class="contact-row">
 <div class="contact-card" id="contactWhatsappCard" onclick="selectContactMethod('whatsapp')">
 <label><input type="radio" name="contactMethod" value="whatsapp"> <i class="fab fa-whatsapp"></i> WhatsApp</label>
-<div class="contact-hint">Le Pôle Excellence vous contactera ici</div>
+<div class="contact-hint">Vous serez contacté sur ce numéro</div>
 <div class="contact-value-input" id="whatsappInput" style="display:none;">
 <div class="country-select-row">
 <select id="countryCode">
@@ -194,7 +200,7 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 </div>
 <div class="contact-card" id="contactGmailCard" onclick="selectContactMethod('gmail')">
 <label><input type="radio" name="contactMethod" value="gmail"> <i class="fab fa-google"></i> Gmail</label>
-<div class="contact-hint">Le Pôle Excellence vous contactera ici</div>
+<div class="contact-hint">Vous serez contacté sur cette adresse</div>
 <div class="contact-value-input" id="gmailInput" style="display:none;">
 <input type="email" id="gmailAddress" placeholder="exemple@gmail.com">
 </div>
@@ -202,13 +208,13 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 </div>
 <div class="checkbox-group">
 <input type="checkbox" id="acceptCgu">
-<label for="acceptCgu">J'accepte les <a href="#" target="_blank">Conditions Générales</a></label>
+<label for="acceptCgu">J'accepte les <a href="#" target="_blank">Conditions Générales d'Utilisation</a></label>
 </div>
-<button type="button" class="btn-submit" id="registerSubmitBtn">Créer mon compte</button>
+<button type="button" class="btn-submit" id="registerSubmitBtn"><i class="fas fa-paper-plane"></i> Créer mon compte</button>
 </form>
 <div class="info-message">
 <i class="fas fa-info-circle"></i>
-<p>Après inscription, le Pôle Excellence vous contactera sous 48h pour activer votre accès.</p>
+<p>Après inscription, le Pôle Excellence vous contactera sous <strong>24h</strong> pour activer votre accès. Vous serez ensuite redirigé vers votre espace.</p>
 </div>
 </div>
 </div>
@@ -328,14 +334,25 @@ const user = userCredential.user;
 const userSnap = await getDoc(doc(db,"users",user.uid));
 const userData = userSnap.exists() ? userSnap.data() : null;
 const netuberCode = userData?.code || null;
+const role = userData?.role || null;
 await sendSecurityAlert('login_success', email, {
 level: 'info',
 netuberCode: netuberCode,
 netuberId: user.uid,
-message: `Connexion réussie pour ${netuberCode || email}`
+message: `Connexion réussie pour ${netuberCode || email} (rôle: ${role || 'aucun'})`
 });
 showToast(`Connexion réussie. Bienvenue ${netuberCode || email}`,'success');
-setTimeout(()=>{ window.location.href="index.html"; },1000);
+setTimeout(()=>{
+if(role === 'admin'){
+window.location.href = "admin.html";
+} else if(role === 'netuber'){
+window.location.href = "dashboard.html";
+} else if(role === 'pilote'){
+window.location.href = "pilote.html";
+} else {
+window.location.href = "espace.html";
+}
+},1000);
 }catch(error){
 let alertType = 'login_failed';
 let userMessage = '';
@@ -516,7 +533,7 @@ return;
 }
 const submitBtn = document.getElementById('registerSubmitBtn');
 submitBtn.disabled = true;
-submitBtn.innerHTML = '<span class="loading-spinner"></span> Création...';
+submitBtn.innerHTML = '<span class="loading-spinner"></span> Création en cours...';
 try{
 const userCred = await createUserWithEmailAndPassword(auth, email, password);
 const uniqueId = generateUniqueId();
@@ -531,15 +548,15 @@ level: 'info',
 message: `✨ Nouvelle inscription : ${nom} ${prenom} (${email}) via ${selectedMethod}`,
 details: { nom, prenom, moyenContact: selectedMethod }
 });
-showToast("Compte créé ! Vous serez contacté sous 48h pour l'activation.",'success');
-setTimeout(()=>{ closeApplyModal(); document.getElementById('registerForm').reset(); },3000);
+showToast("Compte créé ! Redirection vers l'accueil...",'success');
+setTimeout(()=>{ closeApplyModal(); window.location.href = "index.html"; },2000);
 }catch(error){
 let errorMsg = "Erreur lors de la création du compte";
 if(error.code === 'auth/email-already-in-use') errorMsg = "Cet email est déjà utilisé";
 await sendSecurityAlert('invalid_registration', email, { level: 'medium', message: `Erreur Firebase: ${error.code}` });
 showToast(errorMsg,'error');
 submitBtn.disabled = false;
-submitBtn.innerHTML = 'Créer mon compte';
+submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Créer mon compte';
 }
 });
 function openApplyModal(){ document.getElementById('applyModal').classList.add('active'); }
