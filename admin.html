@@ -252,7 +252,7 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <div id="netubersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Netubers</div></div><div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">Connectés</div></div><div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label">Déconnectés</div></div><div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Comptes bloqués</div></div></div><div class="filters"><input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()"><select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">Connectés</option><option value="offline">Déconnectés</option></select><button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button><button class="export-btn" onclick="openAddNetuberModal()" style="background:#8b5cf6;"><i class="fas fa-user-plus"></i> Ajouter Netuber</button></div><div class="table-wrapper"><table id="netubersTable"><thead><tr><th>Code Netuber</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Statut</th><th>Connexion</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></tr></thead><tbody id="netubersTableBody"></tbody></table></div></div>
 <div id="retraitsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalWithdrawalsPending">0</div><div class="label">En attente</div></div><div class="stat-card"><div class="value" id="totalWithdrawalsAmount">0</div><div class="label">Montant total</div></div></div><div class="filters"><select id="withdrawStatusFilter" class="filter-select" onchange="filterWithdrawals()"><option value="all">Tous</option><option value="pending">En attente</option><option value="approved">Approuvés</option><option value="rejected">Rejetés</option></select><button class="export-btn" onclick="exportWithdrawals()"><i class="fas fa-file-excel"></i> Exporter</button></div><div class="table-wrapper"><table id="withdrawalsTable"><thead><tr><th>Utilisateur</th><th>Montant</th><th>Méthode</th><th>Wallet</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="withdrawalsTableBody"></tbody></table></div></div>
 <div id="financeTab" class="tab-content"><div class="finance-buttons"><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source A</h3></div><button class="finance-btn" onclick="window.open('https://siteowner.timewall.io/','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source B</h3></div><button class="finance-btn" onclick="window.open('https://beta.partners.adsterra.com/login','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source C</h3></div><button class="finance-btn" onclick="window.open('https://gain.gg/earn','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div></div></div>
-<div id="ticketsUsersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="ticketsUsersOpen">0</div><div class="label">Tickets ouverts</div></div><div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Tickets résolus</div></div><div class="stat-card"><div class="value" id="ticketsInProgress">0</div><div class="label">Tickets en cours</div></div></div><div class="table-wrapper"><table id="ticketsUsersTable"><thead><tr><th>Utilisateur</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th><th>Supprimer</th></tr></thead><tbody id="ticketsUsersBody"></tbody></table></div></div>
+<div id="ticketsUsersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="ticketsUsersOpen">0</div><div class="label">Tickets ouverts</div></div><div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Tickets résolus</div></div><div class="stat-card"><div class="value" id="ticketsInProgress">0</div><div class="label">Tickets en cours</div></div></div><div class="table-wrapper"><table id="ticketsUsersTable"><thead><tr><th>Utilisateur</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th><th>Supprimer</th><tr></thead><tbody id="ticketsUsersBody"></tbody></table></div></div>
 <div id="rapportsTab" class="tab-content">
 <div class="stats-grid">
 <div class="stat-card"><div class="value" id="reportCount">0</div><div class="label">Netubers dans le rapport</div></div>
@@ -385,7 +385,7 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, getDoc, query, orderBy, limit, where, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
 
@@ -393,6 +393,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// Variables globales
 let usersData = [], devicesData = [], withdrawalsData = [], ticketsData = [], capsData = [], memosData = [], lastReport = null;
 let securityAlerts = [];
 let onlineChart, pointsChart, tempsChart, inscriptionsChart, visitesChart;
@@ -400,6 +401,22 @@ let ticketsStatusChart, ticketsPriorityChart, ticketsEvolutionChart;
 let currentNetuberFilter = "all", currentWithdrawFilter = "all", currentAlertFilter = "all";
 let searchPendingTerm = "", searchActiveTerm = "", searchNetuberTerm = "";
 let currentReportReference = null, currentReportDate = null;
+let isAuthenticated = false;
+
+// Vérification de l'authentification - REDIRECTION IMMÉDIATE
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        // Redirection vers login.html si non connecté
+        window.location.href = "login.html";
+        return;
+    }
+    isAuthenticated = true;
+    // Charger les données seulement si l'utilisateur est connecté
+    initTheme();
+    initTabScroll();
+    loadAllData();
+    setInterval(() => loadAllData(), 30000);
+});
 
 function escapeHtml(t) { if(!t) return ''; return String(t).replace(/[&<>]/g, m => m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;')); }
 function formatDateShort(d) { if(!d) return '-'; try { return new Date(d).toLocaleDateString('fr-FR'); } catch(e) { return '-'; } }
@@ -719,7 +736,7 @@ function updateSecurityAlertsTable() {
         filtered = securityAlerts.filter(a => a.type === currentAlertFilter);
     }
     if(filtered.length === 0) {
-        tbody.innerHTML = '<td><td colspan="6" style="text-align:center;padding:40px;">🔒 Aucune alerte de sécurité</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;">🔒 Aucune alerte de sécurité</td></tr>';
         return;
     }
     tbody.innerHTML = filtered.map(alert => {
@@ -1038,8 +1055,8 @@ function updateNetubersTable() {
                 <button class="action-btn delete" onclick='blockNetuber("${u.id}")'>${u.isBlocked ? 'Débloquer' : 'Bloquer'}</button>
                 <button class="action-btn" onclick='openModifyNetuberCodeModal("${u.id}")' style="background:#3b82f6;">Modifier Code</button>
                 <button class="action-btn delete" onclick='deleteNetuber("${u.id}")' style="background:#ef4444;">Supprimer</button>
-             </td>
-         </tr>`;
+            </td>
+        </tr>`;
     }).join('');
     document.getElementById('totalNetubers').innerText = netuberUsers.length;
     document.getElementById('totalOnline').innerText = onlineCount;
@@ -1102,7 +1119,7 @@ function updateActiveUsersTable() {
             <td>${lastConnection ? formatDateTime(lastConnection) : '-'}</td>
             <td>${lastDisconnection ? formatDateTime(lastDisconnection) : '-'}</td>
             <td><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Supprimer</button></td>
-        </tr>`;
+        </table>`;
     }).join('');
     document.getElementById('totalActiveUsers').innerText = activeUsers.length;
 }
@@ -1317,10 +1334,7 @@ document.getElementById('logoutBtn')?.addEventListener('click', () => showConfir
 document.getElementById('refreshBtn')?.addEventListener('click', () => location.reload());
 document.getElementById('themeToggle')?.addEventListener('click', () => toggleTheme());
 
-initTheme();
-initTabScroll();
-loadAllData();
-setInterval(() => loadAllData(), 30000);
+// Supprimer les appels directs car ils sont maintenant dans onAuthStateChanged
 document.addEventListener('contextmenu', e => e.preventDefault());
 </script>
 </body>
