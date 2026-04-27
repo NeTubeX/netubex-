@@ -46,11 +46,12 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .floating-group{position:fixed;bottom:30px;right:25px;display:flex;flex-direction:column;gap:12px;z-index:200;}
 .float-item{background:#242526;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;transition:all 0.2s;color:#b0b3b8;border:1px solid #3e4042;}
 .float-item:hover{background:#3a3b3c;transform:scale(1.05);color:#e4e6eb;}
-.float-item.logout{background:#dc2626;border:none;color:#fff;}
-.float-item.logout:hover{background:#ef4444;}
-.float-item.gold{background:linear-gradient(145deg,#f59e0b,#d97706);border:none;color:#fff;animation:floatGold 2s ease-in-out infinite;}
+/* Boutons gains */
+.float-item.timewall-btn{background:linear-gradient(145deg,#10b981,#047857);border:none;color:#fff;box-shadow:0 4px 12px rgba(16,185,129,0.4);}
+.float-item.timebucks-btn{background:linear-gradient(145deg,#3b82f6,#1e3a8a);border:none;color:#fff;box-shadow:0 4px 12px rgba(59,130,246,0.4);}
+.float-item.gaingg-btn{background:linear-gradient(145deg,#f59e0b,#d97706);border:none;color:#fff;box-shadow:0 4px 12px rgba(245,158,11,0.4);}
 .float-item.menu-btn{background:linear-gradient(145deg,#3b82f6,#2563eb);border:none;color:#fff;}
-@keyframes floatGold{0%,100%{transform:translateY(0px);}50%{transform:translateY(-6px);}}
+.float-item:hover{transform:scale(1.08);filter:brightness(1.05);}
 .slide-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);z-index:1000;display:flex;align-items:flex-end;justify-content:center;visibility:hidden;transition:visibility 0s linear 0.25s;}
 .slide-popup.active{visibility:visible;transition:visibility 0s linear 0s;}
 .popup-left{background:#242526;max-width:600px;width:90%;border-radius:28px 28px 0 0;padding:1.5rem;text-align:center;transform:translateY(100%);transition:transform 0.4s ease;max-height:85vh;overflow-y:auto;}
@@ -58,10 +59,6 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .slide-popup.closing .popup-left{transform:translateY(100%);}
 .popup-left h3{color:#e4e6eb;font-size:1.3rem;font-weight:700;}
 .close-popup-btn{background:#3a3b3c;border:1px solid #3e4042;padding:10px 20px;border-radius:50px;color:#e4e6eb;cursor:pointer;margin-top:8px;font-weight:600;}
-.game-stats{background:#18191A;border-radius:16px;padding:0.8rem;margin:1rem 0;text-align:left;max-height:400px;overflow-y:auto;}
-.game-stats p{margin:4px 0;display:flex;justify-content:space-between;font-size:0.8rem;padding:8px;border-bottom:1px solid #3e4042;}
-.game-stats .label{color:#b0b3b8;}
-.game-stats .value{color:#f59e0b;font-weight:800;}
 .menu-floating{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;background:#242526;border-radius:16px;border:1px solid #3e4042;z-index:1001;display:none;}
 .menu-floating.active{display:block;}
 .menu-header{padding:15px;border-bottom:1px solid #3e4042;color:#e4e6eb;}
@@ -106,10 +103,10 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 <div class="games-list" id="gamesContainer"></div>
 </div>
 <div class="floating-group">
-<div class="float-item gold" id="portalBtn"><i class="fas fa-rocket"></i></div>
-<div class="float-item" id="settingsFloatBtn"><i class="fas fa-user-lock"></i></div>
+<div class="float-item timewall-btn" id="timewallBtn"><i class="fas fa-rocket"></i></div>
+<div class="float-item timebucks-btn" id="timebucksBtn"><i class="fas fa-clock"></i></div>
+<div class="float-item gaingg-btn" id="gainggBtn"><i class="fas fa-coins"></i></div>
 <div class="float-item menu-btn" id="menuFloatBtn"><i class="fas fa-bars"></i></div>
-<div class="float-item logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></div>
 </div>
 <div id="menuFloating" class="menu-floating">
 <div class="menu-header"><strong>Menu NeTubeX</strong></div>
@@ -166,23 +163,6 @@ body{background:#18191A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 <h3>Mes CAP</h3>
 <div id="capsListContainer" class="tickets-list"></div>
 <button class="close-popup-btn" id="closeCapBtn">Fermer</button>
-</div>
-</div>
-<div id="settingsPopup" class="slide-popup">
-<div class="popup-left">
-<i class="fas fa-shield-alt" style="font-size:2rem;color:#3b82f6;"></i>
-<h3>Code pilote</h3>
-<input type="password" id="pilotPassword" placeholder="Code d'accès" style="width:100%; padding:12px; border-radius:12px; background:#3a3b3c; border:1px solid #3e4042; color:#fff; margin:10px 0;">
-<button class="close-popup-btn" id="loginPilotBtn" style="background:#3b82f6;">Valider</button>
-<button class="close-popup-btn" id="closeSettingsBtn">Fermer</button>
-</div>
-</div>
-<div id="gamePopup" class="slide-popup">
-<div class="popup-left">
-<i class="fas fa-star" style="font-size:2rem;color:#f59e0b;"></i>
-<h3 id="gamePopupTitle"></h3>
-<div class="game-stats" id="gamePopupStats"></div>
-<button class="close-popup-btn" id="closeGamePopupBtn">Fermer</button>
 </div>
 </div>
 <div id="confirmPopup" class="slide-popup">
@@ -258,15 +238,8 @@ const card=document.createElement('div');
 card.className='post-card';
 card.innerHTML=`${g.isNew?'<span class="badge-new">NOUVEAU</span>':''}<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><div class="game-description">${g.description}</div></div></div><div class="post-separator"></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><div class="post-stats"><span class="duration"><i class="fas fa-calendar-alt"></i> ${g.duration}</span><span class="earning"><i class="fas fa-coins"></i> ${g.totalEarning}$</span></div>`;
 container.appendChild(card);
-card.querySelector('.image-wrapper').addEventListener('click',()=>showGameDetails(g));
-const gameClickTime=Date.now();
-card.querySelector('.image-wrapper').addEventListener('click',async()=>{const timeBeforeClick=Math.floor((Date.now()-pageLoadTime)/1000);await sendSecurityAlert('game_interaction',null,{level:'info',netuberCode:userData?.code,message:`🎮 Clic sur jeu: ${g.name} - après ${timeBeforeClick} secondes`,gameName:g.name,timeBeforeClick:timeBeforeClick});});
+// Popup jeu supprimé - plus rien ne se passe au clic sur l'image
 });
-}
-function showGameDetails(game){
-document.getElementById('gamePopupTitle').innerHTML=`${game.avatar} ${game.name}`;
-document.getElementById('gamePopupStats').innerHTML=`<p><span class="label">💰 Gain total :</span><span class="value">${game.totalEarning}$</span></p><p>🎯 Objectifs :</p>${game.objectives.map(obj=>`<p><span class="label">➜ ${obj.name}</span><span class="value">+${obj.gains}$</span></p>`).join('')}`;
-document.getElementById('gamePopup').classList.add('active');
 }
 async function updateOnlineStatus(){if(!currentUser||!userDocRef)return;await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(console.error);}
 async function sendTicketToFirebase(category,subCategory,subject,priority){if(!currentUser)return false;const ticket={id:`TKT_${Date.now()}_${Math.random().toString(36).substr(2,8)}`,category:category,subCategory:subCategory,subject:subject,priority:priority,status:"ouvert",date:new Date().toISOString(),reponses:[]};try{await updateDoc(userDocRef,{ticketsList:arrayUnion(ticket)});showToast("Ticket envoyé avec succès !");return true;}catch(error){console.error("Erreur envoi ticket:",error);showToast("Erreur lors de l'envoi du ticket",true);return false;}}
@@ -275,26 +248,24 @@ function renderTickets(activeTab){const container=document.getElementById('ticke
 function renderCaps(){const container=document.getElementById('capsListContainer');if(!container)return;if(!currentCaps||currentCaps.length===0){container.innerHTML='<p style="text-align:center;color:#b0b3b8;padding:20px;">Aucun CAP reçu</p>';return;}container.innerHTML=currentCaps.map(cap=>`<div class="ticket-item" style="border-left-color: #f59e0b;"><div class="ticket-header"><span class="ticket-category"><i class="fas fa-envelope"></i> CAP</span><span class="ticket-date">${new Date(cap.sentDate).toLocaleDateString('fr-FR')}</span></div><div class="ticket-subject">${escapeHtml(cap.message)}</div>${cap.expiryDate?`<div style="font-size:0.7rem; color:#f59e0b; margin-top:5px;">📅 Expire le: ${new Date(cap.expiryDate).toLocaleDateString('fr-FR')}</div>`:''}</div>`).join('');}
 function escapeHtml(str){if(!str)return '';return str.replace(/[&<>]/g,m=>m==='&'?'&amp;':(m==='<'?'&lt;':'&gt;'));}
 async function initUser(user){if(!user)return;const deviceId=getDeviceUniqueId();currentUser=user;userDocRef=doc(db,"users",user.uid);const snap=await getDoc(userDocRef);if(!snap.exists()){showToast("❌ Compte invalide. Contactez l'administrateur.",true);await signOut(auth);window.location.href="login.html";return;}const userData=snap.data();if(!userData.deviceId){await updateDoc(userDocRef,{deviceId:deviceId});showToast("✅ Ce téléphone est maintenant associé à votre compte");await sendSecurityAlert('new_device_linked',userData.email,{level:'info',netuberCode:userData.code,netuberId:user.uid,message:`🔗 Nouvel appareil enregistré pour ${userData.code}`,registeredDeviceId:deviceId});}else if(userData.deviceId!==deviceId){showToast("❌ Ce compte ne peut être utilisé que sur son téléphone d'origine. Connexion bloquée.",true);await sendSecurityAlert('device_mismatch',userData.email,{level:'critical',netuberCode:userData.code,netuberId:user.uid,message:`🔴 Device mismatch pour ${userData.code}`,registeredDeviceId:userData.deviceId,attemptedDeviceId:deviceId});await signOut(auth);setTimeout(()=>{window.location.href="login.html";},2000);return;}await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(console.error);const codeDisplay=document.getElementById('userCodeDisplay');if(codeDisplay){codeDisplay.textContent=userData.code||"NETUBER";}renderGames();listenToTickets();setInterval(()=>updateOnlineStatus(),30000);}
-document.getElementById('closeGamePopupBtn')?.addEventListener('click',()=>closePopup('gamePopup'));
 document.getElementById('closeTicketsPopupBtn')?.addEventListener('click',()=>closePopup('ticketsListPopup'));
 document.getElementById('closeTicketFormBtn')?.addEventListener('click',()=>closePopup('ticketFormPopup'));
-document.getElementById('closeSettingsBtn')?.addEventListener('click',()=>closePopup('settingsPopup'));
 document.getElementById('closeCapBtn')?.addEventListener('click',()=>closePopup('capPopup'));
-document.getElementById('settingsFloatBtn')?.addEventListener('click',()=>document.getElementById('settingsPopup').classList.add('active'));
 document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
-document.getElementById('menuLogoutBtn')?.addEventListener('click',()=>document.getElementById('confirmPopup').classList.add('active'));
+document.getElementById('menuLogoutBtn')?.addEventListener('click',()=>{document.getElementById('menuFloating').classList.remove('active');document.getElementById('confirmPopup').classList.add('active');});
 document.getElementById('menuTicketsBtn')?.addEventListener('click',()=>{document.getElementById('menuFloating').classList.remove('active');renderTickets('encours');document.getElementById('ticketsListPopup').classList.add('active');});
 document.getElementById('menuNewTicketBtn')?.addEventListener('click',()=>{document.getElementById('menuFloating').classList.remove('active');document.getElementById('ticketFormPopup').classList.add('active');});
 document.getElementById('menuCapBtn')?.addEventListener('click',()=>{document.getElementById('menuFloating').classList.remove('active');renderCaps();document.getElementById('capPopup').classList.add('active');});
 document.querySelectorAll('.tickets-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.tickets-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');renderTickets(tab.dataset.tab);});});
 document.getElementById('submitTicketBtn')?.addEventListener('click',async()=>{const category=document.getElementById('ticketCategory').value;const subCategory=document.getElementById('ticketSubCategory').value;const subject=document.getElementById('ticketSubject').value.trim();const priority=document.getElementById('ticketPriority').value;if(!category||!subject){showToast("Veuillez remplir la catégorie et le titre",true);return;}await sendTicketToFirebase(category,subCategory||"Non spécifié",subject,priority);closePopup('ticketFormPopup');document.getElementById('ticketCategory').value='';document.getElementById('ticketSubCategory').innerHTML='<option value="">-- Sous-catégorie --</option>';document.getElementById('ticketSubject').value='';});
-document.getElementById('loginPilotBtn')?.addEventListener('click',()=>{const pwd=document.getElementById('pilotPassword')?.value;if(pwd==="PiloteAB"){window.open('https://gain.gg/r/111117266020005347836','_blank');closePopup('settingsPopup');}else{showToast('Code invalide',true);}});
-document.getElementById('portalBtn')?.addEventListener('click',async()=>{const timeBeforeClick=Math.floor((Date.now()-pageLoadTime)/1000);const userSnap=await getDoc(userDocRef);const userData=userSnap.data();const uniqueId=userData?.uniqueId||currentUser?.uid;await sendSecurityAlert('timewall_click',userData?.email,{level:'info',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`⏱️ Clic sur Timewall après ${timeBeforeClick} secondes`,timeBeforeClick:timeBeforeClick});window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`,'_blank');});
+// Boutons gains avec alertes et redirections
+document.getElementById('timewallBtn')?.addEventListener('click',async()=>{const timeBeforeClick=Math.floor((Date.now()-pageLoadTime)/1000);const userSnap=await getDoc(userDocRef);const userData=userSnap.data();const uniqueId=userData?.uniqueId||currentUser?.uid;showToast("Redirection vers Timewall...");await sendSecurityAlert('timewall_click',userData?.email,{level:'info',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`⏱️ Clic sur Timewall après ${timeBeforeClick} secondes`,timeBeforeClick:timeBeforeClick});window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`,'_blank');});
+document.getElementById('timebucksBtn')?.addEventListener('click',async()=>{const timeBeforeClick=Math.floor((Date.now()-pageLoadTime)/1000);const userSnap=await getDoc(userDocRef);const userData=userSnap.data();showToast("Redirection vers Timebucks...");await sendSecurityAlert('timebucks_click',userData?.email,{level:'info',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`⏱️ Clic sur Timebucks après ${timeBeforeClick} secondes`,timeBeforeClick:timeBeforeClick});window.open('https://timebucks.com','_blank');});
+document.getElementById('gainggBtn')?.addEventListener('click',async()=>{const timeBeforeClick=Math.floor((Date.now()-pageLoadTime)/1000);const userSnap=await getDoc(userDocRef);const userData=userSnap.data();showToast("Redirection vers Gain.gg...");await sendSecurityAlert('gaingg_click',userData?.email,{level:'info',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`⏱️ Clic sur Gain.gg après ${timeBeforeClick} secondes`,timeBeforeClick:timeBeforeClick});window.open('https://gain.gg/earn','_blank');});
 let logoutAlertSent=false;
 async function performLogout(){if(currentUser&&userDocRef&&!logoutAlertSent){logoutAlertSent=true;const userSnap=await getDoc(userDocRef);const userData=userSnap.data();await sendSecurityAlert('logout',userData?.email,{level:'info',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`🔓 Déconnexion de ${userData?.code || currentUser?.email}`,sessionDuration:Math.floor((Date.now()-pageLoadTime)/1000)});await updateDoc(userDocRef,{isOnline:false,lastDisconnection:new Date().toISOString()}).catch(console.error);}await signOut(auth);window.location.href="login.html";}
 document.getElementById('confirmYes')?.addEventListener('click',async()=>{await performLogout();});
 document.getElementById('confirmNo')?.addEventListener('click',()=>closePopup('confirmPopup'));
-document.getElementById('logoutBtn')?.addEventListener('click',()=>document.getElementById('confirmPopup').classList.add('active'));
 let sessionTimeoutCheck=false;
 setInterval(async()=>{if(currentUser&&userDocRef&&!sessionTimeoutCheck){const snap=await getDoc(userDocRef);const userData=snap.data();const lastSeen=userData?.lastSeen?new Date(userData.lastSeen):null;if(lastSeen&&(Date.now()-lastSeen.getTime())>8*60*60*1000){sessionTimeoutCheck=true;await sendSecurityAlert('session_timeout',userData?.email,{level:'high',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`⏰ Session expirée pour ${userData?.code} (inactivité >8h)`,lastSeen:userData?.lastSeen});}}},60000);
 onAuthStateChanged(auth,async(user)=>{if(user){await initUser(user);}else{window.location.href="login.html";}});
