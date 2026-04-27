@@ -8,19 +8,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* BLOCAGE TOTAL SELECTION TEXTE */
-*:not(input):not(textarea) {
-  -webkit-user-select: none !important;
-  -moz-user-select: none !important;
-  -ms-user-select: none !important;
-  user-select: none !important;
-  -webkit-touch-callout: none !important;
-  -webkit-tap-highlight-color: transparent !important;
-}
-input, textarea {
-  -webkit-user-select: text !important;
-  user-select: text !important;
-}
+*:not(input):not(textarea){-webkit-user-select:none!important;-moz-user-select:none!important;-ms-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important;-webkit-tap-highlight-color:transparent!important;}
+input,textarea{-webkit-user-select:text!important;user-select:text!important;}
 *{margin:0;padding:0;box-sizing:border-box;touch-action:pan-y;}
 html,body{height:100%;touch-action:pan-y;background:#18191A;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#e4e6eb;padding-top:60px;overflow-x:hidden;}
@@ -51,9 +40,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
 .post-meta .game-description{font-size:15px;color:#e4e6eb!important;font-weight:600!important;line-height:1.35;margin-top:4px;}
 .post-meta .game-description .see-more-link{color:#1877f2!important;font-weight:600;cursor:pointer;display:inline;font-size:15px;margin-left:4px;}
 .post-meta .game-description .see-more-link:hover{text-decoration:underline;}
-.post-meta .how-to-play{font-size:14px;color:#b0b3b8;margin-top:10px;padding-top:8px;border-top:1px solid #3e4042;display:none;}
+.post-meta .how-to-play{font-size:14px;color:#e4e6eb!important;font-weight:600!important;margin-top:10px;padding-top:8px;border-top:1px solid #3e4042;display:none;}
 .post-meta .how-to-play.show{display:block;}
-.post-meta .how-to-play strong{color:#e4e6eb;}
+.post-meta .how-to-play strong{color:#f59e0b;font-weight:700;}
 .post-separator{height:1px;background:#3e4042;margin:0 12px;}
 .image-wrapper{display:block;line-height:0;}
 .post-image{width:100%;height:auto;min-height:200px;object-fit:cover;}
@@ -68,11 +57,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
 .float-item.panel-b{background:linear-gradient(145deg,#3b82f6,#1e3a8a);}
 .float-item.panel-c{background:linear-gradient(145deg,#f59e0b,#d97706);}
 .float-item.menu-btn{background:linear-gradient(145deg,#3b82f6,#2563eb);font-size:1.3rem;font-weight:400;}
-.menu-badge{position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;border-radius:50%;min-width:20px;height:20px;font-size:0.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px;box-shadow:0 0 0 2px #242526;}
+.menu-badge{position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;border-radius:50%;min-width:20px;height:20px;font-size:0.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px;box-shadow:0 0 0 2px #242526;animation:badgePop 0.3s ease-out;}
+@keyframes badgePop{0%{transform:scale(0);}80%{transform:scale(1.2);}100%{transform:scale(1);}}
 .fly-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:2000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:visibility 0s linear 0.25s,opacity 0.25s;}
 .fly-popup.active{visibility:visible;opacity:1;transition:visibility 0s linear 0s,opacity 0.25s;}
-.fly-popup-inner{background:#242526;border-radius:28px;padding:1.8rem;text-align:center;max-width:340px;width:85%;transform:scale(0.2);opacity:0;transition:transform 0.5s cubic-bezier(0.34,1.2,0.64,1),opacity 0.4s;}
-.fly-popup.active .fly-popup-inner{transform:scale(1);opacity:1;}
+.fly-popup-inner{background:#242526;border-radius:28px;padding:1.8rem;text-align:center;max-width:340px;width:85%;transform:scale(0.2) translateY(50px);opacity:0;transition:transform 0.5s cubic-bezier(0.34,1.2,0.64,1),opacity 0.4s;}
+.fly-popup.active .fly-popup-inner{transform:scale(1) translateY(0);opacity:1;}
 .fly-popup-inner .popup-letter{font-size:3rem;font-weight:800;width:60px;height:60px;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;}
 .fly-popup-inner h3{font-size:1.4rem;margin-bottom:1rem;color:#e4e6eb;}
 .fly-popup-inner p{color:#b0b3b8;margin-bottom:1.5rem;line-height:1.5;}
@@ -185,7 +175,8 @@ function showToast(m,e=false){let t=document.createElement('div');t.className='t
 function closePopup(i){let p=document.getElementById(i);if(p)p.classList.remove('active');}
 function updateSubCategories(){let c=document.getElementById('ticketCategory').value,s=document.getElementById('ticketSubCategory');s.innerHTML='<option value="">-- Sous-catégorie --</option>';if(c&&subCategories[c])subCategories[c].forEach(sub=>{let o=document.createElement('option');o.value=sub;o.textContent=sub;s.appendChild(o);});}
 function escapeHtml(s){if(!s)return '';return s.replace(/[&<>]/g,m=>m==='&'?'&amp;':(m==='<'?'&lt;':'&gt;'));}
-function renderGames(){let c=document.getElementById('gamesContainer');if(!c)return;c.innerHTML='';games.forEach(g=>{let card=document.createElement('div');card.className='post-card';let descId=`desc-${g.id}`,howId=`how-${g.id}`,full=g.description,short=full.length>140?full.substring(0,140)+'...':full,needs=full.length>140;card.innerHTML=`<div class="post-header"><div class="avatar"><img src="${g.avatar}"></div><div class="post-meta"><h4>${g.name}</h4><div id="${descId}" class="game-description">${short}${needs?' <span class="see-more-link" data-id="'+g.id+'">voir plus</span>':''}</div><div id="${howId}" class="how-to-play"><strong>🎮 Comment jouer :</strong><br>${g.howToPlay}</div></div></div><div class="post-separator"></div><div class="image-wrapper"><img class="post-image" src="${g.img}" loading="lazy"></div><div class="post-stats"><span class="duration"><i class="fas fa-calendar-alt"></i> ${g.duration}</span><span class="earning"><i class="fas fa-coins"></i> ${g.totalEarning}$</span></div>`;c.appendChild(card);if(needs){let link=card.querySelector(`.see-more-link[data-id="${g.id}"]`),descDiv=document.getElementById(descId),howDiv=document.getElementById(howId),expanded=false;let shortText=short;let fullText=full;link.onclick=(e)=>{e.preventDefault();if(!expanded){descDiv.innerHTML=fullText+' <span class="see-more-link" data-id="'+g.id+'">voir moins</span>';howDiv.classList.add('show');expanded=true;}else{descDiv.innerHTML=shortText+' <span class="see-more-link" data-id="'+g.id+'">voir plus</span>';howDiv.classList.remove('show');expanded=false;}};}});}
+function attachSeeMoreLink(link, descDiv, howDiv, fullText, shortText){let expanded=false;link.onclick=(e)=>{e.preventDefault();e.stopPropagation();if(!expanded){descDiv.innerHTML=fullText+' <span class="see-more-link">voir moins</span>';howDiv.classList.add('show');expanded=true;let newLink=descDiv.querySelector('.see-more-link');if(newLink)attachSeeMoreLink(newLink,descDiv,howDiv,fullText,shortText);}else{descDiv.innerHTML=shortText+' <span class="see-more-link">voir plus</span>';howDiv.classList.remove('show');expanded=false;let newLink=descDiv.querySelector('.see-more-link');if(newLink)attachSeeMoreLink(newLink,descDiv,howDiv,fullText,shortText);}};}
+function renderGames(){let c=document.getElementById('gamesContainer');if(!c)return;c.innerHTML='';games.forEach(g=>{let card=document.createElement('div');card.className='post-card';let descId=`desc-${g.id}`,howId=`how-${g.id}`,full=g.description,short=full.length>140?full.substring(0,140)+'...':full,needs=full.length>140;card.innerHTML=`<div class="post-header"><div class="avatar"><img src="${g.avatar}"></div><div class="post-meta"><h4>${g.name}</h4><div id="${descId}" class="game-description">${short}${needs?' <span class="see-more-link">voir plus</span>':''}</div><div id="${howId}" class="how-to-play"><strong>🎮 Comment jouer :</strong><br>${g.howToPlay}</div></div></div><div class="post-separator"></div><div class="image-wrapper"><img class="post-image" src="${g.img}" loading="lazy"></div><div class="post-stats"><span class="duration"><i class="fas fa-calendar-alt"></i> ${g.duration}</span><span class="earning"><i class="fas fa-coins"></i> ${g.totalEarning}$</span></div>`;c.appendChild(card);if(needs){let link=card.querySelector('.see-more-link');let descDiv=document.getElementById(descId);let howDiv=document.getElementById(howId);attachSeeMoreLink(link,descDiv,howDiv,full,short);}});}
 function renderTickets(t){let c=document.getElementById('ticketsListContainer');if(!c)return;let f=currentTickets.filter(tk=>t==='encours'?tk.status!=='résolu':tk.status==='résolu');if(f.length===0){c.innerHTML='<p style="text-align:center;color:#b0b3b8;padding:20px;">Aucun ticket</p>';return;}c.innerHTML=f.map(tk=>{let st=tk.status==='ouvert'?'En attente':(tk.status==='en cours'?'En cours':'Résolu'),sc=tk.status==='ouvert'?'status-ouvert':(tk.status==='en cours'?'status-en-cours':'status-resolu'),rh=tk.reponses&&tk.reponses.length?`<div class="ticket-reponse"><i class="fas fa-reply"></i> Réponse admin: ${tk.reponses[tk.reponses.length-1].message}</div>`:'';return`<div class="ticket-item ${tk.status==='résolu'?'resolu':''}"><div class="ticket-header"><span class="ticket-category">${tk.category}${tk.subCategory?' › '+tk.subCategory.substring(0,30):''}</span><span class="ticket-date">${new Date(tk.date).toLocaleDateString('fr-FR')}</span></div><div class="ticket-subject"><strong>${escapeHtml(tk.subject)}</strong></div><div style="margin-top:6px;"><span class="ticket-status ${sc}">${st}</span></div>${rh}</div>`;}).join('');}
 function renderCaps(){let c=document.getElementById('capsListContainer');if(!c)return;if(!currentCaps||!currentCaps.length){c.innerHTML='<p style="text-align:center;color:#b0b3b8;padding:20px;">Aucun CAP reçu</p>';return;}c.innerHTML=currentCaps.map(cp=>`<div class="ticket-item" style="border-left-color:#f59e0b;"><div class="ticket-header"><span class="ticket-category"><i class="fas fa-envelope"></i> CAP</span><span class="ticket-date">${new Date(cp.sentDate).toLocaleDateString('fr-FR')}</span></div><div class="ticket-subject">${escapeHtml(cp.message)}</div>${cp.expiryDate?`<div style="font-size:0.7rem;color:#f59e0b;margin-top:5px;">📅 Expire le: ${new Date(cp.expiryDate).toLocaleDateString('fr-FR')}</div>`:''}</div>`).join('');}
 function updateNotificationBadge(){if(!currentUser)return;let last=userLastMenuOpen||new Date(0).toISOString(),count=0,rcid=userReadCapsIds||[],rtid=userReadTicketResponseIds||[];currentCaps.forEach(c=>{if(c.sentDate&&c.sentDate>last&&!rcid.includes(c.id))count++;});currentTickets.forEach(t=>{if(t.reponses&&t.reponses.length&&!rtid.includes(t.id)){let lr=t.reponses[t.reponses.length-1];if(lr.date&&lr.date>last)count++;}});let b=document.getElementById('notificationBadge');if(b){if(count>0){b.textContent=count>99?'99+':count;b.style.display='flex';}else b.style.display='none';}}
