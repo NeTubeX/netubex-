@@ -230,6 +230,7 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <button class="tab" data-tab="anomalies"><i class="fas fa-exclamation-triangle"></i> Anomalies</button>
 <button class="tab" data-tab="settings"><i class="fas fa-cog"></i> Paramètres</button>
 <button class="tab" data-tab="securite"><i class="fas fa-shield-alt"></i> 🔒 Alertes Sécurité <span id="alertsBadge" class="counter-badge" style="background:#ef4444; color:white; margin-left:5px;">0</span></button>
+<button class="tab" data-tab="paiement"><i class="fas fa-credit-card"></i> Paiement Mensuel</button>
 </div></div>
 <button class="tabs-arrow" id="scrollRightArrow"><i class="fas fa-chevron-right"></i></button>
 </div>
@@ -360,6 +361,15 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <tbody id="securityAlertsBody"></tbody>
 </table>
 </div>
+</div>
+<div id="paiementTab" class="tab-content">
+    <div style="position: relative; width: 100%; height: 80vh; border-radius: 20px; overflow: hidden; margin-top: 10px;">
+        <iframe src="https://www.netubex.com/paie.html" 
+                style="width: 100%; height: 100%; border: none; border-radius: 16px;"
+                title="Paiement Mensuel"
+                sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals">
+        </iframe>
+    </div>
 </div>
 <div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Nom complet</label><input type="text" id="newNetuberNom" placeholder="Nom et prénom"></div><div class="input-group"><label>Email</label><input type="email" id="newNetuberEmail" placeholder="exemple@email.com"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newNetuberPassword" placeholder="6 caractères minimum"></div><div class="input-group"><label>Code Netuber (unique)</label><input type="text" id="newNetuberCode" placeholder="EX: NX-001"></div><div class="input-group"><label>Contact WhatsApp</label><input type="text" id="newNetuberContact" placeholder="+243 XXX XXX XXX"></div></div><div class="modal-footer"><button onclick="confirmAddNetuber()" style="background:#10b981;color:#fff;padding:10px 24px;border-radius:40px;border:none;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#1e293b;color:#fff;padding:10px 24px;border-radius:40px;border:none;">Annuler</button></div></div></div>
 <div id="modifyCodeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-key"></i> Modifier code Netuber</h2><button class="modal-close" onclick="closeModal('modifyCodeModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="modifyCodeSelect"></select></div><div class="input-group"><label>Nouveau code</label><input type="text" id="newCode" placeholder="Ex: MA-NX-99"></div></div><div class="modal-footer"><button onclick="confirmModifyCode()" style="background:#f59e0b;">Modifier</button><button onclick="closeModal('modifyCodeModal')">Annuler</button></div></div></div>
@@ -709,7 +719,7 @@ function updateSecurityAlertsTable() {
         filtered = securityAlerts.filter(a => a.type === currentAlertFilter);
     }
     if(filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;">🔒 Aucune alerte de sécurité</td></tr>';
+        tbody.innerHTML = '<td><td colspan="6" style="text-align:center;padding:40px;">🔒 Aucune alerte de sécurité</td></tr>';
         return;
     }
     tbody.innerHTML = filtered.map(alert => {
@@ -747,8 +757,8 @@ function updateSecurityAlertsTable() {
                 ${!alert.read ? `<button class="action-btn" onclick='markAlertRead("${alert.id}")' style="background:#3b82f6;">✓ Marquer lu</button>` : ''}
                 ${alert.type === 'device_mismatch' ? `<button class="action-btn" onclick='resetNetuberDevice("${alert.netuberCode}")' style="background:#f59e0b;">🔄 Réinit device</button>` : ''}
                 <button class="action-btn delete" onclick='deleteAlert("${alert.id}")' style="background:#ef4444;">🗑️</button>
-            </td>
-        </tr>`;
+             </td>
+         </tr>`;
     }).join('');
 }
 
@@ -889,7 +899,7 @@ function updateWithdrawalsTable() {
                  <button class="action-btn delete" onclick='rejectWithdraw("${w.id}")'>Rejeter</button>` : 
                 `<button class="action-btn delete" onclick='deleteWithdraw("${w.id}")'>🗑️ Supprimer</button>`
              }</td>
-        </tr>`;
+         </tr>`;
     }).join('');
 }
 
@@ -1028,8 +1038,8 @@ function updateNetubersTable() {
                 <button class="action-btn delete" onclick='blockNetuber("${u.id}")'>${u.isBlocked ? 'Débloquer' : 'Bloquer'}</button>
                 <button class="action-btn" onclick='openModifyNetuberCodeModal("${u.id}")' style="background:#3b82f6;">Modifier Code</button>
                 <button class="action-btn delete" onclick='deleteNetuber("${u.id}")' style="background:#ef4444;">Supprimer</button>
-            </td>
-        </tr>`;
+             </td>
+         </tr>`;
     }).join('');
     document.getElementById('totalNetubers').innerText = netuberUsers.length;
     document.getElementById('totalOnline').innerText = onlineCount;
@@ -1187,7 +1197,7 @@ async function loadCAPs() {
     capsData = []; snap.forEach(d => capsData.push({ id: d.id, ...d.data() }));
     document.getElementById('totalCAPSent').innerText = capsData.length;
     let tbody = document.getElementById('capHistoryBody');
-    if(tbody) { tbody.innerHTML = capsData.map(c => `</table>
+    if(tbody) { tbody.innerHTML = capsData.map(c => `<tr>
         <td><strong>${escapeHtml(c.netuberCode)}</strong></td>
         <td>${escapeHtml(c.message.substring(0, 60))}${c.message.length > 60 ? '...' : ''}</td>
         <td>${formatDateTime(c.sentDate)}</td>
