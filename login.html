@@ -72,6 +72,7 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 .checkbox-group a{color:#3b82f6;text-decoration:none;}
 .btn-submit{width:100%;padding:14px;background:#3b82f6;border:none;border-radius:40px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:10px;}
 .btn-submit:hover{background:#2563eb;}
+.btn-submit:disabled{opacity:0.6;cursor:not-allowed;}
 .password-strength{height:4px;margin-top:8px;border-radius:4px;background:#e2e8f0;}
 .password-strength.weak{width:25%;background:#ef4444;}
 .password-strength.medium{width:50%;background:#f59e0b;}
@@ -128,7 +129,7 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 <form id="registerForm">
 <div class="form-section-title"><i class="fas fa-user-circle"></i> Informations personnelles</div>
 <div class="input-group">
-<label>Prénom (identifiant d'affichage)</label>
+<label>Prénom</label>
 <input type="text" id="regDisplayName" placeholder="Votre prénom" required>
 </div>
 <div class="input-group">
@@ -193,7 +194,7 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 </form>
 <div class="info-message">
 <i class="fas fa-info-circle"></i>
-<p>Après validation, l'accès vous sera activé sous 24h ouvrées.</p>
+<p>Un email de vérification vous sera envoyé. Après confirmation, l'activation de votre compte sera effective sous 24h ouvrées.</p>
 </div>
 </div>
 </div>
@@ -221,7 +222,7 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 </div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, doc, getDoc, setDoc, query, where, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 const firebaseConfig = {
 apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
@@ -350,12 +351,23 @@ const role = userData?.role || null;
 const currentDeviceId = getDeviceUniqueId();
 const registeredDeviceId = userData?.deviceId;
 const isActive = userData?.isActive === true;
+const emailVerified = user.emailVerified;
+if(!emailVerified){
+await sendSecurityAlert('email_not_verified', email, {
+level: 'medium',
+message: `Tentative de connexion sur email non vérifié: ${email}`
+});
+showErrorMessage('Veuillez vérifier votre email avant de vous connecter. Vérifiez vos spams.');
+loginBtn.disabled = false;
+loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
+return;
+}
 if(!isActive && userData){
 await sendSecurityAlert('inactive_account_login_attempt', email, {
 level: 'medium',
 message: `Tentative sur compte inactif: ${email}`
 });
-showToast('Compte en cours d\'activation.', 'error');
+showErrorMessage('Votre compte est en cours d\'activation par l\'administration. Veuillez patienter.');
 loginBtn.disabled = false;
 loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
 return;
@@ -447,10 +459,10 @@ if(/[A-Z]/.test(pwd)) score++;
 if(/[0-9]/.test(pwd)) score++;
 if(/[^A-Za-z0-9]/.test(pwd)) score++;
 switch(score){
-case 0:case 1: strengthBar.classList.add('weak'); strengthText.textContent('Sécurité faible'); break;
-case 2: strengthBar.classList.add('medium'); strengthText.textContent('Sécurité moyenne'); break;
-case 3: strengthBar.classList.add('strong'); strengthText.textContent('Sécurité forte'); break;
-case 4: strengthBar.classList.add('very-strong'); strengthText.textContent('Sécurité très forte'); break;
+case 0:case 1: strengthBar.classList.add('weak'); strengthText.textContent='Sécurité faible'; break;
+case 2: strengthBar.classList.add('medium'); strengthText.textContent='Sécurité moyenne'; break;
+case 3: strengthBar.classList.add('strong'); strengthText.textContent='Sécurité forte'; break;
+case 4: strengthBar.classList.add('very-strong'); strengthText.textContent='Sécurité très forte'; break;
 }
 }
 document.getElementById('regPassword')?.addEventListener('input', function(){ checkPasswordStrength(this.value); checkPasswordMatch(); });
@@ -546,6 +558,7 @@ submitBtn.innerHTML = '<span class="loading-spinner"></span> Création en cours.
 try{
 const userCred = await createUserWithEmailAndPassword(auth, email, password);
 await updateProfile(userCred.user, { displayName: displayName });
+await sendEmailVerification(userCred.user);
 const uniqueId = generateUniqueId();
 await setDoc(doc(db,"users",userCred.user.uid),{
 username: displayName,
@@ -559,6 +572,7 @@ role: null,
 code: null,
 uniqueId: uniqueId,
 deviceId: getDeviceUniqueId(),
+emailVerified: false,
 dateInscription: new Date().toISOString(),
 lastSeen: new Date().toISOString()
 });
@@ -566,8 +580,8 @@ await sendSecurityAlert('new_registration', email, {
 level: 'info',
 message: `Nouvel inscrit : ${displayName} (${email}) via ${selectedMethod}`
 });
-showToast("Inscription enregistrée. Activation sous 24h.", "success");
-setTimeout(()=>{ closeApplyModal(); window.location.href = "index.html"; },2000);
+showToast("Inscription enregistrée. Vérifiez votre boîte email.", "success");
+setTimeout(()=>{ closeApplyModal(); window.location.href = "index.html"; },3000);
 }catch(error){
 let errorMsg = "Erreur lors de la création du compte";
 if(error.code === 'auth/email-already-in-use') errorMsg = "Cet email est déjà utilisé";
@@ -591,23 +605,30 @@ if(!email){ showToast("Veuillez entrer votre email", 'error'); return; }
 if(isSuspiciousEmail(email)){
 await sendSecurityAlert('suspicious_email_format', email, { level: 'medium', message: `Réinitialisation avec email suspect: ${email}` });
 }
+const emailExists = await checkEmailExists(email);
+if(!emailExists){
+await sendSecurityAlert('password_reset_failed', email, { level: 'low', message: `Tentative sur email inexistant: ${email}` });
+showToast("Aucun compte associé à cet email", 'error');
+return;
+}
 actionPerformed = true;
 btn.disabled = true;
-btn.innerHTML = '<span class="loading-spinner"></span> Envoi...';
+btn.innerHTML = '<span class="loading-spinner"></span> Envoi en cours...';
 try{
 await sendPasswordResetEmail(auth, email);
-await sendSecurityAlert('password_reset_request', email, { level: 'info', message: `Demande de réinitialisation pour ${email}` });
-showToast("Lien de réinitialisation envoyé", 'success');
+await sendSecurityAlert('password_reset_request', email, { level: 'info', message: `Email de réinitialisation envoyé à: ${email}` });
+showToast("Un lien de réinitialisation a été envoyé à votre adresse email", 'success');
 closeForgotModal();
 document.getElementById('resetEmail').value = '';
 }catch(error){
+let errorMessage = "Erreur technique. Veuillez réessayer.";
 if(error.code === 'auth/user-not-found'){
+errorMessage = "Aucun compte associé à cet email";
 await sendSecurityAlert('password_reset_failed', email, { level: 'low', message: `Compte inexistant: ${email}` });
-showToast("Aucun compte associé à cet email", 'error');
 }else{
 await sendSecurityAlert('password_reset_failed', email, { level: 'low', message: `Erreur technique: ${error.code}` });
-showToast("Erreur technique. Veuillez réessayer.", 'error');
 }
+showToast(errorMessage, 'error');
 }finally{
 btn.disabled = false;
 btn.innerHTML = 'Envoyer';
