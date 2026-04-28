@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-<title>NeTubeX · Connexion</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<title>NeTubeX · Authentification</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
@@ -12,7 +12,7 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 .rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff8000,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;position:fixed;top:0;left:0;right:0;z-index:100;}
 @keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
 .login-container{max-width:480px;width:100%;margin:0 auto;}
-.login-card{background:#ffffff;border-radius:24px;padding:40px 36px;box-shadow:0 4px 20px rgba(0,0,0,0.05),0 1px 2px rgba(0,0,0,0.03);border:1px solid #e2e8f0;}
+.login-card{background:#ffffff;border-radius:24px;padding:40px 36px;box-shadow:0 4px 20px rgba(0,0,0,0.05);border:1px solid #e2e8f0;}
 .logo{text-align:center;margin-bottom:28px;}
 .logo h1{font-size:28px;font-weight:800;color:#1e293b;letter-spacing:-0.5px;}
 .logo h1 span{color:#3b82f6;background:linear-gradient(135deg,#3b82f6,#2563eb);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
@@ -23,12 +23,11 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 .input-group label{display:block;font-size:12px;font-weight:600;color:#475569;margin-bottom:6px;}
 .input-group input{width:100%;padding:12px 14px;background:#ffffff;border:1.5px solid #e2e8f0;border-radius:12px;color:#1e293b;font-size:14px;font-family:'Inter',sans-serif;transition:all 0.2s;outline:none;}
 .input-group input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
-.login-btn{width:100%;padding:12px;background:#3b82f6;border:none;border-radius:12px;color:#ffffff;font-weight:600;font-size:15px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
-.login-btn:hover{background:#2563eb;transform:translateY(-1px);}
-.login-btn:active{transform:translateY(0);}
-.login-btn:disabled{background:#94a3b8;cursor:not-allowed;transform:none;}
+.login-btn{width:100%;padding:12px;background:#3b82f6;border:none;border-radius:12px;color:#ffffff;font-weight:600;font-size:15px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;}
+.login-btn:hover{background:#2563eb;}
+.login-btn:disabled{background:#94a3b8;cursor:not-allowed;}
 .footer-links{text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid #e2e8f0;}
-.footer-links a{color:#64748b;font-size:12px;text-decoration:none;margin:0 8px;transition:color 0.2s;cursor:pointer;}
+.footer-links a{color:#64748b;font-size:12px;text-decoration:none;margin:0 8px;cursor:pointer;}
 .footer-links a:hover{color:#3b82f6;}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;font-size:13px;font-weight:500;z-index:10000;animation:slideUp 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
 .toast-success{background:#10b981;color:#fff;}
@@ -37,60 +36,53 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
 .bottom-buttons{position:fixed;bottom:20px;left:0;right:0;display:flex;justify-content:center;gap:16px;z-index:99;}
 .bottom-btn{background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);border:none;padding:10px 24px;border-radius:40px;color:#fff;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s;text-decoration:none;}
-.bottom-btn:hover{background:#3b82f6;transform:translateY(-2px);}
-.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;transition:visibility 0.2s;}
+.bottom-btn:hover{background:#3b82f6;}
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;}
 .modal-overlay.active{visibility:visible;}
-.modal-content{background:#ffffff;border-radius:28px;max-width:750px;width:90%;max-height:85vh;overflow-y:auto;position:relative;transform:scale(0.95);transition:transform 0.2s;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);}
+.modal-content{background:#ffffff;border-radius:28px;max-width:750px;width:90%;max-height:85vh;overflow-y:auto;transform:scale(0.95);transition:transform 0.2s;}
 .modal-overlay.active .modal-content{transform:scale(1);}
 .modal-content.small{max-width:450px;}
-.modal-header{position:sticky;top:0;background:#ffffff;padding:20px 24px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;z-index:10;}
+.modal-header{position:sticky;top:0;background:#ffffff;padding:20px 24px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;}
 .modal-header h2{font-size:20px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;}
 .modal-header h2 i{color:#3b82f6;}
-.modal-close{background:#f1f5f9;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;transition:0.2s;color:#64748b;}
-.modal-close:hover{background:#e2e8f0;transform:rotate(90deg);}
+.modal-close{background:#f1f5f9;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;color:#64748b;}
 .modal-body{padding:24px;}
-.modal-footer{padding:16px 24px;border-top:1px solid #e2e8f0;background:#f8fafc;border-radius:0 0 28px 28px;}
-@media (max-width:640px){.modal-content{width:95%;max-height:90vh;border-radius:20px;}.modal-body{padding:16px;}}
-.input-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-@media (max-width:560px){.input-row{grid-template-columns:1fr;gap:12px;}}
+.modal-footer{padding:16px 24px;border-top:1px solid #e2e8f0;background:#f8fafc;}
+@media (max-width:640px){.modal-content{width:95%;}}
 .gender-row{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;}
-.gender-option{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#ffffff;border-radius:12px;border:1px solid #e2e8f0;cursor:pointer;transition:all 0.2s;}
+.gender-option{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#ffffff;border-radius:12px;border:1px solid #e2e8f0;cursor:pointer;}
 .gender-option.selected{background:rgba(59,130,246,0.05);border-color:#3b82f6;}
 .gender-option input{width:18px;height:18px;accent-color:#3b82f6;margin:0;}
 .gender-option label{cursor:pointer;font-size:14px;color:#1e293b;}
 .contact-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
 @media (max-width:560px){.contact-row{grid-template-columns:1fr;}}
-.contact-card{background:#ffffff;border-radius:16px;padding:14px;border:1px solid #e2e8f0;cursor:pointer;transition:all 0.2s;}
-.contact-card:hover{border-color:#3b82f6;}
+.contact-card{background:#ffffff;border-radius:16px;padding:14px;border:1px solid #e2e8f0;cursor:pointer;}
 .contact-card.selected{border-color:#3b82f6;background:rgba(59,130,246,0.05);}
-.contact-card label{display:flex;align-items:center;gap:12px;cursor:pointer;font-weight:500;color:#1e293b;}
+.contact-card label{display:flex;align-items:center;gap:12px;cursor:pointer;font-weight:500;}
 .contact-card input[type="radio"]{width:18px;height:18px;accent-color:#3b82f6;margin:0;}
 .contact-hint{font-size:11px;color:#64748b;margin-top:6px;margin-left:30px;}
 .contact-value-input{margin-top:10px;}
-.contact-value-input input{width:100%;padding:10px 14px;border-radius:12px;border:1px solid #e2e8f0;background:#ffffff;color:#1e293b;font-size:14px;}
+.contact-value-input input{width:100%;padding:10px 14px;border-radius:12px;border:1px solid #e2e8f0;}
 .country-select-row{display:flex;gap:10px;}
-.country-select-row select{flex:1;padding:10px 12px;border-radius:12px;border:1px solid #e2e8f0;background:#ffffff;}
+.country-select-row select{flex:1;padding:10px 12px;border-radius:12px;border:1px solid #e2e8f0;}
 .country-select-row input{flex:2;}
 .checkbox-group{margin:20px 0;display:flex;align-items:flex-start;gap:12px;}
 .checkbox-group input{width:18px;height:18px;margin-top:2px;accent-color:#3b82f6;}
 .checkbox-group label{font-size:12px;color:#475569;line-height:1.4;}
 .checkbox-group a{color:#3b82f6;text-decoration:none;}
-.btn-submit{width:100%;padding:14px;background:#3b82f6;border:none;border-radius:40px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;margin-top:10px;}
-.btn-submit:hover{background:#2563eb;transform:translateY(-1px);}
-.btn-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
-.password-strength{height:4px;margin-top:8px;border-radius:4px;transition:all 0.3s;background:#e2e8f0;}
+.btn-submit{width:100%;padding:14px;background:#3b82f6;border:none;border-radius:40px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:10px;}
+.btn-submit:hover{background:#2563eb;}
+.password-strength{height:4px;margin-top:8px;border-radius:4px;background:#e2e8f0;}
 .password-strength.weak{width:25%;background:#ef4444;}
 .password-strength.medium{width:50%;background:#f59e0b;}
 .password-strength.strong{width:75%;background:#10b981;}
 .password-strength.very-strong{width:100%;background:#10b981;}
 .strength-text{font-size:11px;margin-top:5px;color:#64748b;}
 .info-message{background:#f0f9ff;border-radius:16px;padding:14px;margin-top:20px;text-align:center;}
-.info-message i{color:#3b82f6;margin-right:8px;}
 .info-message p{font-size:12px;color:#475569;}
 .loading-spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:8px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .form-section-title{font-size:14px;font-weight:600;color:#1e293b;margin:20px 0 12px 0;padding-bottom:6px;border-bottom:2px solid #e2e8f0;display:flex;align-items:center;gap:8px;}
-.form-section-title i{color:#3b82f6;font-size:14px;}
 </style>
 </head>
 <body>
@@ -108,14 +100,14 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 <form id="loginForm">
 <div class="input-group">
 <label><i class="fas fa-envelope"></i> Adresse email</label>
-<input type="email" id="email" placeholder="exemple@domaine.com" required autocomplete="email">
+<input type="email" id="email" placeholder="exemple@domaine.com" required>
 </div>
 <div class="input-group">
 <label><i class="fas fa-lock"></i> Mot de passe</label>
-<input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+<input type="password" id="password" placeholder="••••••••" required>
 </div>
 <button type="submit" class="login-btn" id="loginBtn">
-<i class="fas fa-sign-in-alt"></i> Authentification
+<i class="fas fa-sign-in-alt"></i> Se connecter
 </button>
 </form>
 <div class="footer-links">
@@ -135,15 +127,9 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 <div class="modal-body">
 <form id="registerForm">
 <div class="form-section-title"><i class="fas fa-user-circle"></i> Informations personnelles</div>
-<div class="input-row">
 <div class="input-group">
-<label>Nom</label>
-<input type="text" id="regNom" placeholder="Nom">
-</div>
-<div class="input-group">
-<label>Prénom</label>
-<input type="text" id="regPrenom" placeholder="Prénom">
-</div>
+<label>Prénom (identifiant d'affichage)</label>
+<input type="text" id="regDisplayName" placeholder="Votre prénom" required>
 </div>
 <div class="input-group">
 <label>Sexe</label>
@@ -160,20 +146,18 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 <div class="form-section-title"><i class="fas fa-envelope"></i> Identifiants de connexion</div>
 <div class="input-group">
 <label>Email</label>
-<input type="email" id="regEmail" placeholder="exemple@domaine.com">
+<input type="email" id="regEmail" placeholder="exemple@domaine.com" required>
 </div>
-<div class="input-row">
 <div class="input-group">
 <label>Mot de passe</label>
-<input type="password" id="regPassword" placeholder="Min 6 caractères">
+<input type="password" id="regPassword" placeholder="Min 6 caractères" required>
 <div class="password-strength" id="passwordStrength"></div>
 <div id="strengthText" class="strength-text"></div>
 </div>
 <div class="input-group">
 <label>Confirmer mot de passe</label>
-<input type="password" id="regConfirmPassword" placeholder="Retapez votre mot de passe">
+<input type="password" id="regConfirmPassword" placeholder="Retapez votre mot de passe" required>
 <div id="pwdMatchError" class="error-message" style="display:none; background:transparent; padding:0;"></div>
-</div>
 </div>
 <div class="form-section-title"><i class="fas fa-phone-alt"></i> Contact</div>
 <div class="contact-row">
@@ -209,7 +193,7 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 </form>
 <div class="info-message">
 <i class="fas fa-info-circle"></i>
-<p>Après validation de votre inscription, l'accès vous sera activé sous 24h ouvrées.</p>
+<p>Après validation, l'accès vous sera activé sous 24h ouvrées.</p>
 </div>
 </div>
 </div>
@@ -237,8 +221,8 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 </div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, doc, getDoc, setDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, doc, getDoc, setDoc, query, where, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 const firebaseConfig = {
 apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
 authDomain: "netubexmoney.firebaseapp.com",
@@ -252,7 +236,6 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 let sessionStartTime = Date.now();
 let loginAttempts = 0;
-let pageLoadedAlertSent = false;
 let actionPerformed = false;
 let regAttempts = 0;
 let regLastAttempt = 0;
@@ -324,22 +307,17 @@ function hideErrorMessage(){
 document.getElementById('errorMessage').classList.add('hidden');
 }
 setTimeout(()=>{
-if(!pageLoadedAlertSent){
-pageLoadedAlertSent = true;
 sendSecurityAlert('page_loaded', null, {
 level: 'info',
-message: 'Page de connexion chargée',
-details: { pageLoadTime: new Date().toISOString() }
+message: 'Page de connexion chargée'
 });
-}
 },100);
 window.addEventListener('beforeunload', ()=>{
 if(!actionPerformed){
 const timeSpent = Math.floor((Date.now() - sessionStartTime)/1000);
 sendSecurityAlert('page_abandoned', null, {
 level: 'low',
-message: `Abandon de la page après ${timeSpent} secondes sans action`,
-details: { timeSpentSeconds: timeSpent, abandoned: true }
+message: `Abandon après ${timeSpent} secondes`
 });
 }
 });
@@ -350,23 +328,15 @@ const email = document.getElementById('email').value.trim();
 const password = document.getElementById('password').value;
 const loginBtn = document.getElementById('loginBtn');
 if(!email || !password){
-showErrorMessage('Veuillez renseigner votre email et mot de passe');
+showErrorMessage('Veuillez renseigner email et mot de passe');
 return;
 }
 if(isSuspiciousEmail(email)){
-await sendSecurityAlert('suspicious_email_format', email, {
-level: 'medium',
-message: `Tentative avec email suspect: ${email}`,
-details: { emailFormat: 'suspicious' }
-});
+await sendSecurityAlert('suspicious_email_format', email, { level: 'medium', message: `Email suspect: ${email}` });
 }
 const timeToAction = Math.floor((Date.now() - sessionStartTime)/1000);
 actionPerformed = true;
-await sendSecurityAlert('time_to_action', email, {
-level: 'info',
-message: `Action après ${timeToAction} secondes sur la page`,
-details: { actionType: 'login_attempt', timeSpentSeconds: timeToAction }
-});
+await sendSecurityAlert('time_to_action', email, { level: 'info', message: `Action après ${timeToAction}s` });
 loginAttempts++;
 loginBtn.disabled = true;
 loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authentification...';
@@ -383,86 +353,56 @@ const isActive = userData?.isActive === true;
 if(!isActive && userData){
 await sendSecurityAlert('inactive_account_login_attempt', email, {
 level: 'medium',
-netuberCode: netuberCode,
-netuberId: user.uid,
-message: `Tentative de connexion sur compte inactif: ${email}`
+message: `Tentative sur compte inactif: ${email}`
 });
-showToast('Accès refusé. Votre compte est en cours d\'activation par l\'administration.', 'error');
+showToast('Compte en cours d\'activation.', 'error');
 loginBtn.disabled = false;
-loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Authentification';
+loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
 return;
 }
 if(registeredDeviceId && registeredDeviceId !== currentDeviceId){
 await sendSecurityAlert('device_changed', email, {
 level: 'high',
-netuberCode: netuberCode,
-netuberId: user.uid,
-message: `Connexion depuis un nouvel appareil. Ancien: ${registeredDeviceId.substring(0,20)}... Nouveau: ${currentDeviceId.substring(0,20)}...`,
+message: `Nouvel appareil détecté`,
 details: { oldDeviceId: registeredDeviceId, newDeviceId: currentDeviceId }
 });
 await updateDoc(doc(db,"users",user.uid), { deviceId: currentDeviceId });
 }
 await sendSecurityAlert('login_success', email, {
 level: 'info',
-netuberCode: netuberCode,
-netuberId: user.uid,
-role: role,
 message: `Authentification réussie pour ${netuberCode || email}`
 });
-let welcomeMessage = '';
-if(role === 'admin'){
-welcomeMessage = 'Authentification réussie. Accès panel administration.';
-} else if(role === 'netuber'){
-welcomeMessage = `Authentification réussie. Bienvenue ${netuberCode || 'collaborateur'}.`;
-} else if(role === 'pilote'){
-welcomeMessage = 'Authentification réussie. Accès espace pilotage.';
-} else {
-welcomeMessage = 'Authentification réussie. Redirection en cours.';
-}
+let welcomeMessage = role === 'admin' ? 'Accès panel administration.' : (role === 'netuber' ? 'Accès espace rémunération.' : (role === 'pilote' ? 'Accès espace pilotage.' : 'Authentification réussie.'));
 showToast(welcomeMessage, 'success');
 setTimeout(()=>{
-if(role === 'admin'){
-window.location.href = "admin.html";
-} else if(role === 'netuber'){
-window.location.href = "dashboard.html";
-} else if(role === 'pilote'){
-window.location.href = "pilote.html";
-} else {
-window.location.href = "espace.html";
-}
+if(role === 'admin') window.location.href = "admin.html";
+else if(role === 'netuber') window.location.href = "dashboard.html";
+else if(role === 'pilote') window.location.href = "pilote.html";
+else window.location.href = "espace.html";
 },1000);
 }catch(error){
 let alertType = 'login_failed';
 let userMessage = '';
 if(error.code === 'auth/user-not-found'){
 alertType = 'account_not_found';
-userMessage = 'Aucun compte associé à cette adresse email';
-showErrorMessage(userMessage);
+userMessage = 'Aucun compte associé à cet email';
 }else if(error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential'){
 alertType = 'login_failed';
 userMessage = 'Email ou mot de passe incorrect';
-showErrorMessage(userMessage);
 }else if(error.code === 'auth/too-many-requests'){
 alertType = 'login_failed';
-userMessage = 'Trop de tentatives. Veuillez réessayer ultérieurement';
-showErrorMessage(userMessage);
+userMessage = 'Trop de tentatives. Réessayez plus tard.';
 }else{
-userMessage = 'Erreur technique. Veuillez réessayer';
-showErrorMessage(userMessage);
+userMessage = 'Erreur technique. Veuillez réessayer.';
 }
-await sendSecurityAlert(alertType, email, {
-level: 'high',
-message: `Échec d'authentification pour ${email}`,
-errorCode: error.code,
-attemptsCount: loginAttempts
-});
+showErrorMessage(userMessage);
+await sendSecurityAlert(alertType, email, { level: 'high', message: `Échec authentification pour ${email}`, errorCode: error.code });
 loginBtn.disabled = false;
-loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Authentification';
+loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
 }
 });
 let selectedMethod = null;
 let selectedGender = null;
-let deviceId = getDeviceUniqueId();
 function selectGender(gender){
 selectedGender = gender;
 document.getElementById('genderMale').classList.remove('selected');
@@ -507,10 +447,10 @@ if(/[A-Z]/.test(pwd)) score++;
 if(/[0-9]/.test(pwd)) score++;
 if(/[^A-Za-z0-9]/.test(pwd)) score++;
 switch(score){
-case 0:case 1: strengthBar.classList.add('weak'); strengthText.textContent='Sécurité faible'; break;
-case 2: strengthBar.classList.add('medium'); strengthText.textContent='Sécurité moyenne'; break;
-case 3: strengthBar.classList.add('strong'); strengthText.textContent='Sécurité forte'; break;
-case 4: strengthBar.classList.add('very-strong'); strengthText.textContent='Sécurité très forte'; break;
+case 0:case 1: strengthBar.classList.add('weak'); strengthText.textContent('Sécurité faible'); break;
+case 2: strengthBar.classList.add('medium'); strengthText.textContent('Sécurité moyenne'); break;
+case 3: strengthBar.classList.add('strong'); strengthText.textContent('Sécurité forte'); break;
+case 4: strengthBar.classList.add('very-strong'); strengthText.textContent('Sécurité très forte'); break;
 }
 }
 document.getElementById('regPassword')?.addEventListener('input', function(){ checkPasswordStrength(this.value); checkPasswordMatch(); });
@@ -522,7 +462,7 @@ if(confirm && pwd !== confirm){ errorDiv.style.display='block'; return false; }
 else{ errorDiv.style.display='none'; return true; }
 }
 document.getElementById('regConfirmPassword')?.addEventListener('input', checkPasswordMatch);
-function validateWhatsApp(number){ const clean = number.replace(/\s+/g,''); const regex = /^[0-9]{6,12}$/; if(!regex.test(clean)){ return {valid:false, message:"Numéro invalide (6 à 12 chiffres)"}; } return {valid:true, message:""}; }
+function validateWhatsApp(number){ const clean = number.replace(/\s+/g,''); const regex = /^[0-9]{6,12}$/; return regex.test(clean); }
 async function checkEmailExists(email){
 const usersRef = collection(db,"users");
 const q = query(usersRef, where("email","==",email));
@@ -533,21 +473,20 @@ function generateUniqueId(){ return `${Date.now()}x${Math.floor(Math.random()*10
 document.getElementById('registerSubmitBtn')?.addEventListener('click', async () => {
 const now = Date.now();
 if(now - regLastAttempt < 5000 && regAttempts >= 2){
-await sendSecurityAlert('suspicious_registration', document.getElementById('regEmail').value, { level: 'medium', message: 'Tentatives d\'inscription suspectes (rythme anormal)' });
-showToast('Trop de tentatives. Veuillez patienter quelques secondes.','error');
+await sendSecurityAlert('suspicious_registration', document.getElementById('regEmail').value, { level: 'medium', message: 'Inscriptions suspectes (rythme anormal)' });
+showToast('Trop de tentatives. Veuillez patienter.', 'error');
 return;
 }
 regAttempts++;
 regLastAttempt = now;
-const nom = document.getElementById('regNom').value.trim();
-const prenom = document.getElementById('regPrenom').value.trim();
+const displayName = document.getElementById('regDisplayName').value.trim();
 const email = document.getElementById('regEmail').value.trim();
 const password = document.getElementById('regPassword').value;
 const confirmPassword = document.getElementById('regConfirmPassword').value;
 const acceptCgu = document.getElementById('acceptCgu').checked;
-if(!nom || !prenom || !email || !password){
+if(!displayName || !email || !password){
 await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Champs obligatoires manquants' });
-showToast("Tous les champs sont requis",'error');
+showToast("Tous les champs sont requis", 'error');
 return;
 }
 if(!selectedGender){
@@ -557,56 +496,45 @@ await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 
 return;
 }
 if(password.length<6){
-await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Mot de passe trop court (<6 caractères)' });
-showToast("Le mot de passe doit contenir au moins 6 caractères",'error');
+await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Mot de passe trop court' });
+showToast("Le mot de passe doit contenir au moins 6 caractères", 'error');
 return;
 }
 if(password !== confirmPassword){
 await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Mots de passe non concordants' });
-showToast("Les mots de passe ne correspondent pas",'error');
+showToast("Les mots de passe ne correspondent pas", 'error');
 return;
 }
 if(!acceptCgu){
 await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'CGU non acceptées' });
-showToast("Vous devez accepter les conditions générales",'error');
+showToast("Vous devez accepter les conditions générales", 'error');
 return;
 }
 let contactValue = '';
 if(selectedMethod === 'whatsapp'){
 const countryCode = document.getElementById('countryCode').value;
 const localNumber = document.getElementById('whatsappNumber').value.trim();
-if(!localNumber){
-await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Numéro WhatsApp manquant' });
-showToast("Numéro WhatsApp requis",'error');
-return;
-}
-const validation = validateWhatsApp(localNumber);
-if(!validation.valid){
+if(!localNumber || !validateWhatsApp(localNumber)){
 await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Numéro WhatsApp invalide' });
-showToast(validation.message,'error');
+showToast("Numéro WhatsApp invalide", 'error');
 return;
 }
 contactValue = countryCode + localNumber;
 }else if(selectedMethod === 'gmail'){
 contactValue = document.getElementById('gmailAddress').value.trim();
-if(!contactValue){
-await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Adresse Gmail manquante' });
-showToast("Adresse Gmail requise",'error');
-return;
-}
-if(!contactValue.includes('@gmail.com')){
-await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Email non Gmail' });
-showToast("Veuillez entrer une adresse Gmail valide",'error');
+if(!contactValue || !contactValue.includes('@gmail.com')){
+await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Adresse Gmail invalide' });
+showToast("Veuillez entrer une adresse Gmail valide", 'error');
 return;
 }
 }else{
 await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Moyen de contact non sélectionné' });
-showToast("Sélectionnez un moyen de contact",'error');
+showToast("Sélectionnez un moyen de contact", 'error');
 return;
 }
 if(await checkEmailExists(email)){
-await sendSecurityAlert('invalid_registration', email, { level: 'medium', message: 'Tentative d\'inscription avec email existant' });
-showToast("Cet email est déjà utilisé",'error');
+await sendSecurityAlert('invalid_registration', email, { level: 'medium', message: 'Email déjà utilisé' });
+showToast("Cet email est déjà utilisé", 'error');
 return;
 }
 if(isSuspiciousEmail(email)){
@@ -617,26 +545,34 @@ submitBtn.disabled = true;
 submitBtn.innerHTML = '<span class="loading-spinner"></span> Création en cours...';
 try{
 const userCred = await createUserWithEmailAndPassword(auth, email, password);
+await updateProfile(userCred.user, { displayName: displayName });
 const uniqueId = generateUniqueId();
 await setDoc(doc(db,"users",userCred.user.uid),{
-nom: nom, prenom: prenom, sexe: selectedGender, email: email,
-moyenContact: selectedMethod, contactValue: contactValue, isActive: false, isBlocked: false,
-role: null, code: null, uniqueId: uniqueId,
+username: displayName,
+sexe: selectedGender,
+email: email,
+moyenContact: selectedMethod,
+contactValue: contactValue,
+isActive: false,
+isBlocked: false,
+role: null,
+code: null,
+uniqueId: uniqueId,
 deviceId: getDeviceUniqueId(),
-dateInscription: new Date().toISOString(), lastSeen: new Date().toISOString()
+dateInscription: new Date().toISOString(),
+lastSeen: new Date().toISOString()
 });
 await sendSecurityAlert('new_registration', email, {
 level: 'info',
-message: `Nouvel inscrit : ${nom} ${prenom} (${email}) via ${selectedMethod}`,
-details: { nom, prenom, moyenContact: selectedMethod }
+message: `Nouvel inscrit : ${displayName} (${email}) via ${selectedMethod}`
 });
-showToast("Inscription enregistrée. Activation sous 24h.","success");
+showToast("Inscription enregistrée. Activation sous 24h.", "success");
 setTimeout(()=>{ closeApplyModal(); window.location.href = "index.html"; },2000);
 }catch(error){
 let errorMsg = "Erreur lors de la création du compte";
 if(error.code === 'auth/email-already-in-use') errorMsg = "Cet email est déjà utilisé";
-await sendSecurityAlert('invalid_registration', email, { level: 'medium', message: `Erreur Firebase: ${error.code}` });
-showToast(errorMsg,'error');
+await sendSecurityAlert('invalid_registration', email, { level: 'medium', message: `Erreur: ${error.code}` });
+showToast(errorMsg, 'error');
 submitBtn.disabled = false;
 submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Créer mon compte';
 }
@@ -651,28 +587,26 @@ window.closeForgotModal = closeForgotModal;
 document.getElementById('sendResetLinkBtn')?.addEventListener('click', async () => {
 const email = document.getElementById('resetEmail').value.trim();
 const btn = document.getElementById('sendResetLinkBtn');
-if(!email){ showToast("Veuillez entrer votre email",'error'); return; }
+if(!email){ showToast("Veuillez entrer votre email", 'error'); return; }
 if(isSuspiciousEmail(email)){
-await sendSecurityAlert('suspicious_email_format', email, { level: 'medium', message: `Tentative réinitialisation avec email suspect: ${email}` });
+await sendSecurityAlert('suspicious_email_format', email, { level: 'medium', message: `Réinitialisation avec email suspect: ${email}` });
 }
-const timeToAction = Math.floor((Date.now() - sessionStartTime)/1000);
 actionPerformed = true;
-await sendSecurityAlert('time_to_action', email, { level: 'info', message: `Action réinitialisation après ${timeToAction}s`, details: { actionType: 'password_reset', timeSpentSeconds: timeToAction } });
 btn.disabled = true;
 btn.innerHTML = '<span class="loading-spinner"></span> Envoi...';
 try{
 await sendPasswordResetEmail(auth, email);
 await sendSecurityAlert('password_reset_request', email, { level: 'info', message: `Demande de réinitialisation pour ${email}` });
-showToast("Un lien de réinitialisation a été envoyé",'success');
+showToast("Lien de réinitialisation envoyé", 'success');
 closeForgotModal();
 document.getElementById('resetEmail').value = '';
 }catch(error){
 if(error.code === 'auth/user-not-found'){
-await sendSecurityAlert('password_reset_failed', email, { level: 'low', message: `Tentative sur compte inexistant: ${email}` });
-showToast("Aucun compte associé à cet email",'error');
+await sendSecurityAlert('password_reset_failed', email, { level: 'low', message: `Compte inexistant: ${email}` });
+showToast("Aucun compte associé à cet email", 'error');
 }else{
 await sendSecurityAlert('password_reset_failed', email, { level: 'low', message: `Erreur technique: ${error.code}` });
-showToast("Erreur technique. Veuillez réessayer",'error');
+showToast("Erreur technique. Veuillez réessayer.", 'error');
 }
 }finally{
 btn.disabled = false;
