@@ -6,17 +6,17 @@
 <title>NeTubeX · Connexion</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="icon" type="image/png" href="favicon.png.png">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
 body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;}
-.login-container{max-width:440px;width:100%;margin:0 auto;}
-.login-card{background:#ffffff;border-radius:24px;padding:40px 36px;box-shadow:0 4px 20px rgba(0,0,0,0.05),0 1px 2px rgba(0,0,0,0.03);border:1px solid #e2e8f0;transition:all 0.2s;}
+.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff8000,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;position:fixed;top:0;left:0;right:0;z-index:100;}
+@keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+.login-container{max-width:480px;width:100%;margin:0 auto;}
+.login-card{background:#ffffff;border-radius:24px;padding:40px 36px;box-shadow:0 4px 20px rgba(0,0,0,0.05),0 1px 2px rgba(0,0,0,0.03);border:1px solid #e2e8f0;}
 .logo{text-align:center;margin-bottom:28px;}
-.logo img{height:48px;width:auto;margin-bottom:12px;}
-.logo h1{font-size:26px;font-weight:700;color:#1e293b;}
-.logo h1 span{color:#3b82f6;}
-.logo p{font-size:12px;color:#64748b;margin-top:6px;}
+.logo h1{font-size:28px;font-weight:800;color:#1e293b;letter-spacing:-0.5px;}
+.logo h1 span{color:#3b82f6;background:linear-gradient(135deg,#3b82f6,#2563eb);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo p{font-size:12px;color:#64748b;margin-top:8px;font-weight:500;}
 .error-message{background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:12px 16px;margin-bottom:24px;color:#dc2626;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;}
 .error-message.hidden{display:none;}
 .input-group{margin-bottom:20px;}
@@ -35,8 +35,6 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 .toast-error{background:#ef4444;color:#fff;}
 .toast-info{background:#3b82f6;color:#fff;}
 @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
-.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#3b82f6,#2563eb,#60a5fa,#3b82f6);background-size:200% 100%;animation:rainbowMove 3s linear infinite;position:fixed;top:0;left:0;right:0;z-index:100;}
-@keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
 .bottom-buttons{position:fixed;bottom:20px;left:0;right:0;display:flex;justify-content:center;gap:16px;z-index:99;}
 .bottom-btn{background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);border:none;padding:10px 24px;border-radius:40px;color:#fff;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s;text-decoration:none;}
 .bottom-btn:hover{background:#3b82f6;transform:translateY(-2px);}
@@ -100,7 +98,6 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 <div class="login-container">
 <div class="login-card">
 <div class="logo">
-<img src="favicon.png.png" alt="NeTubeX Logo">
 <h1>Ne<span>TubeX</span></h1>
 <p>Espace professionnel de rémunération digitale</p>
 </div>
@@ -111,18 +108,18 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 <form id="loginForm">
 <div class="input-group">
 <label><i class="fas fa-envelope"></i> Adresse email</label>
-<input type="email" id="email" placeholder="exemple@gmail.com" required autocomplete="email">
+<input type="email" id="email" placeholder="exemple@domaine.com" required autocomplete="email">
 </div>
 <div class="input-group">
 <label><i class="fas fa-lock"></i> Mot de passe</label>
 <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
 </div>
 <button type="submit" class="login-btn" id="loginBtn">
-<i class="fas fa-sign-in-alt"></i> Se connecter
+<i class="fas fa-sign-in-alt"></i> Authentification
 </button>
 </form>
 <div class="footer-links">
-<a id="forgotPasswordBtn">Mot de passe oublié ?</a> • <a id="applyNowBtn">Postuler</a>
+<a id="forgotPasswordBtn">Mot de passe oublié</a> • <a id="applyNowBtn">Créer un compte</a>
 </div>
 </div>
 </div>
@@ -141,11 +138,11 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 <div class="input-row">
 <div class="input-group">
 <label>Nom</label>
-<input type="text" id="regNom" placeholder="Ngenda">
+<input type="text" id="regNom" placeholder="Nom">
 </div>
 <div class="input-group">
 <label>Prénom</label>
-<input type="text" id="regPrenom" placeholder="Vicky">
+<input type="text" id="regPrenom" placeholder="Prénom">
 </div>
 </div>
 <div class="input-group">
@@ -158,13 +155,12 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 <input type="radio" name="gender" value="femme" id="femaleRadio"> <label for="femaleRadio"><i class="fas fa-venus"></i> Femme</label>
 </div>
 </div>
-<div id="genderError" class="error-message" style="display:none; background:transparent; padding:0; margin-top:8px;">Veuillez sélectionner votre sexe</div>
+<div id="genderError" class="error-message" style="display:none; background:transparent; padding:0; margin-top:8px;"></div>
 </div>
 <div class="form-section-title"><i class="fas fa-envelope"></i> Identifiants de connexion</div>
 <div class="input-group">
 <label>Email</label>
-<input type="email" id="regEmail" placeholder="exemple@email.com">
-<div id="regEmailError" class="error-message" style="display:none; background:transparent; padding:0; margin-top:5px;"></div>
+<input type="email" id="regEmail" placeholder="exemple@domaine.com">
 </div>
 <div class="input-row">
 <div class="input-group">
@@ -176,14 +172,14 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 <div class="input-group">
 <label>Confirmer mot de passe</label>
 <input type="password" id="regConfirmPassword" placeholder="Retapez votre mot de passe">
-<div id="pwdMatchError" class="error-message" style="display:none; background:transparent; padding:0;">Les mots de passe ne correspondent pas</div>
+<div id="pwdMatchError" class="error-message" style="display:none; background:transparent; padding:0;"></div>
 </div>
 </div>
 <div class="form-section-title"><i class="fas fa-phone-alt"></i> Contact</div>
 <div class="contact-row">
 <div class="contact-card" id="contactWhatsappCard" onclick="selectContactMethod('whatsapp')">
 <label><input type="radio" name="contactMethod" value="whatsapp"> <i class="fab fa-whatsapp"></i> WhatsApp</label>
-<div class="contact-hint">Vous serez contacté sur ce numéro</div>
+<div class="contact-hint">Contact via numéro de téléphone</div>
 <div class="contact-value-input" id="whatsappInput" style="display:none;">
 <div class="country-select-row">
 <select id="countryCode">
@@ -195,12 +191,11 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 </select>
 <input type="tel" id="whatsappNumber" placeholder="XX XXX XXXX">
 </div>
-<div id="whatsappError" class="error-message" style="display:none; background:transparent; padding:0;"></div>
 </div>
 </div>
 <div class="contact-card" id="contactGmailCard" onclick="selectContactMethod('gmail')">
 <label><input type="radio" name="contactMethod" value="gmail"> <i class="fab fa-google"></i> Gmail</label>
-<div class="contact-hint">Vous serez contacté sur cette adresse</div>
+<div class="contact-hint">Contact via adresse Gmail</div>
 <div class="contact-value-input" id="gmailInput" style="display:none;">
 <input type="email" id="gmailAddress" placeholder="exemple@gmail.com">
 </div>
@@ -214,7 +209,7 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 </form>
 <div class="info-message">
 <i class="fas fa-info-circle"></i>
-<p>Après inscription, le Pôle Excellence vous contactera sous <strong>24h</strong> pour activer votre accès. Vous serez ensuite redirigé vers votre espace.</p>
+<p>Après validation de votre inscription, l'accès vous sera activé sous 24h ouvrées.</p>
 </div>
 </div>
 </div>
@@ -222,21 +217,21 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 <div id="forgotPasswordModal" class="modal-overlay">
 <div class="modal-content small">
 <div class="modal-header">
-<h2><i class="fas fa-key"></i> Mot de passe oublié</h2>
+<h2><i class="fas fa-key"></i> Réinitialisation</h2>
 <button class="modal-close" onclick="closeForgotModal()"><i class="fas fa-times"></i></button>
 </div>
 <div class="modal-body">
 <div class="input-group">
-<label><i class="fas fa-envelope"></i> Adresse email</label>
-<input type="email" id="resetEmail" placeholder="exemple@email.com">
+<label><i class="fas fa-envelope"></i> Email professionnel</label>
+<input type="email" id="resetEmail" placeholder="exemple@domaine.com">
 </div>
 <div class="info-message" style="margin-top:10px;">
 <i class="fas fa-info-circle"></i>
-<p>Un lien de réinitialisation vous sera envoyé par email.</p>
+<p>Un lien de réinitialisation sera envoyé à votre adresse email.</p>
 </div>
 </div>
 <div class="modal-footer">
-<button class="btn-submit" id="sendResetLinkBtn" style="margin-top:0;">Envoyer le lien</button>
+<button class="btn-submit" id="sendResetLinkBtn" style="margin-top:0;">Envoyer</button>
 </div>
 </div>
 </div>
@@ -257,6 +252,10 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 let sessionStartTime = Date.now();
 let loginAttempts = 0;
+let pageLoadedAlertSent = false;
+let actionPerformed = false;
+let regAttempts = 0;
+let regLastAttempt = 0;
 function getDeviceUniqueId(){
 let storedId = localStorage.getItem('device_permanent_id');
 if(!storedId){
@@ -274,6 +273,15 @@ storedId = `DEVICE_${Math.abs(hash)}`;
 localStorage.setItem('device_permanent_id', storedId);
 }
 return storedId;
+}
+function isSuspiciousEmail(email){
+const suspiciousDomains = ['tempmail', 'guerrillamail', '10minutemail', 'throwaway', 'mailinator', 'yopmail', 'temp-mail', 'trashmail'];
+const emailLower = email.toLowerCase();
+if(!emailLower.includes('@')) return true;
+for(const domain of suspiciousDomains){
+if(emailLower.includes(domain)) return true;
+}
+return false;
 }
 async function sendSecurityAlert(type, email, details={}){
 try{
@@ -302,7 +310,7 @@ return true;
 function showToast(message, type='error'){
 const toast = document.createElement('div');
 toast.className = `toast toast-${type}`;
-toast.innerHTML = (type==='success'?'✓ ':(type==='error'?'✗ ':'ℹ '))+message;
+toast.innerHTML = message;
 document.body.appendChild(toast);
 setTimeout(()=>toast.remove(),4000);
 }
@@ -315,6 +323,26 @@ errorDiv.classList.remove('hidden');
 function hideErrorMessage(){
 document.getElementById('errorMessage').classList.add('hidden');
 }
+setTimeout(()=>{
+if(!pageLoadedAlertSent){
+pageLoadedAlertSent = true;
+sendSecurityAlert('page_loaded', null, {
+level: 'info',
+message: 'Page de connexion chargée',
+details: { pageLoadTime: new Date().toISOString() }
+});
+}
+},100);
+window.addEventListener('beforeunload', ()=>{
+if(!actionPerformed){
+const timeSpent = Math.floor((Date.now() - sessionStartTime)/1000);
+sendSecurityAlert('page_abandoned', null, {
+level: 'low',
+message: `Abandon de la page après ${timeSpent} secondes sans action`,
+details: { timeSpentSeconds: timeSpent, abandoned: true }
+});
+}
+});
 document.getElementById('loginForm').addEventListener('submit', async (e)=>{
 e.preventDefault();
 hideErrorMessage();
@@ -325,6 +353,20 @@ if(!email || !password){
 showErrorMessage('Veuillez renseigner votre email et mot de passe');
 return;
 }
+if(isSuspiciousEmail(email)){
+await sendSecurityAlert('suspicious_email_format', email, {
+level: 'medium',
+message: `Tentative avec email suspect: ${email}`,
+details: { emailFormat: 'suspicious' }
+});
+}
+const timeToAction = Math.floor((Date.now() - sessionStartTime)/1000);
+actionPerformed = true;
+await sendSecurityAlert('time_to_action', email, {
+level: 'info',
+message: `Action après ${timeToAction} secondes sur la page`,
+details: { actionType: 'login_attempt', timeSpentSeconds: timeToAction }
+});
 loginAttempts++;
 loginBtn.disabled = true;
 loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authentification...';
@@ -335,13 +377,49 @@ const userSnap = await getDoc(doc(db,"users",user.uid));
 const userData = userSnap.exists() ? userSnap.data() : null;
 const netuberCode = userData?.code || null;
 const role = userData?.role || null;
+const currentDeviceId = getDeviceUniqueId();
+const registeredDeviceId = userData?.deviceId;
+const isActive = userData?.isActive === true;
+if(!isActive && userData){
+await sendSecurityAlert('inactive_account_login_attempt', email, {
+level: 'medium',
+netuberCode: netuberCode,
+netuberId: user.uid,
+message: `Tentative de connexion sur compte inactif: ${email}`
+});
+showToast('Accès refusé. Votre compte est en cours d\'activation par l\'administration.', 'error');
+loginBtn.disabled = false;
+loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Authentification';
+return;
+}
+if(registeredDeviceId && registeredDeviceId !== currentDeviceId){
+await sendSecurityAlert('device_changed', email, {
+level: 'high',
+netuberCode: netuberCode,
+netuberId: user.uid,
+message: `Connexion depuis un nouvel appareil. Ancien: ${registeredDeviceId.substring(0,20)}... Nouveau: ${currentDeviceId.substring(0,20)}...`,
+details: { oldDeviceId: registeredDeviceId, newDeviceId: currentDeviceId }
+});
+await updateDoc(doc(db,"users",user.uid), { deviceId: currentDeviceId });
+}
 await sendSecurityAlert('login_success', email, {
 level: 'info',
 netuberCode: netuberCode,
 netuberId: user.uid,
-message: `Connexion réussie pour ${netuberCode || email} (rôle: ${role || 'aucun'})`
+role: role,
+message: `Authentification réussie pour ${netuberCode || email}`
 });
-showToast(`Connexion réussie. Bienvenue ${netuberCode || email}`,'success');
+let welcomeMessage = '';
+if(role === 'admin'){
+welcomeMessage = 'Authentification réussie. Accès panel administration.';
+} else if(role === 'netuber'){
+welcomeMessage = `Authentification réussie. Bienvenue ${netuberCode || 'collaborateur'}.`;
+} else if(role === 'pilote'){
+welcomeMessage = 'Authentification réussie. Accès espace pilotage.';
+} else {
+welcomeMessage = 'Authentification réussie. Redirection en cours.';
+}
+showToast(welcomeMessage, 'success');
 setTimeout(()=>{
 if(role === 'admin'){
 window.location.href = "admin.html";
@@ -366,19 +444,20 @@ userMessage = 'Email ou mot de passe incorrect';
 showErrorMessage(userMessage);
 }else if(error.code === 'auth/too-many-requests'){
 alertType = 'login_failed';
-userMessage = 'Trop de tentatives. Réessayez plus tard';
+userMessage = 'Trop de tentatives. Veuillez réessayer ultérieurement';
 showErrorMessage(userMessage);
 }else{
-userMessage = 'Erreur de connexion';
+userMessage = 'Erreur technique. Veuillez réessayer';
 showErrorMessage(userMessage);
 }
 await sendSecurityAlert(alertType, email, {
 level: 'high',
-message: `Échec connexion pour ${email}`,
-errorCode: error.code
+message: `Échec d'authentification pour ${email}`,
+errorCode: error.code,
+attemptsCount: loginAttempts
 });
 loginBtn.disabled = false;
-loginBtn.innerHTML = '<i class=\"fas fa-sign-in-alt\"></i> Se connecter';
+loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Authentification';
 }
 });
 let selectedMethod = null;
@@ -428,10 +507,10 @@ if(/[A-Z]/.test(pwd)) score++;
 if(/[0-9]/.test(pwd)) score++;
 if(/[^A-Za-z0-9]/.test(pwd)) score++;
 switch(score){
-case 0:case 1: strengthBar.classList.add('weak'); strengthText.textContent='⚠️ Faible'; break;
-case 2: strengthBar.classList.add('medium'); strengthText.textContent='⚠️ Moyen'; break;
-case 3: strengthBar.classList.add('strong'); strengthText.textContent='✅ Fort'; break;
-case 4: strengthBar.classList.add('very-strong'); strengthText.textContent='✅ Très fort'; break;
+case 0:case 1: strengthBar.classList.add('weak'); strengthText.textContent='Sécurité faible'; break;
+case 2: strengthBar.classList.add('medium'); strengthText.textContent='Sécurité moyenne'; break;
+case 3: strengthBar.classList.add('strong'); strengthText.textContent='Sécurité forte'; break;
+case 4: strengthBar.classList.add('very-strong'); strengthText.textContent='Sécurité très forte'; break;
 }
 }
 document.getElementById('regPassword')?.addEventListener('input', function(){ checkPasswordStrength(this.value); checkPasswordMatch(); });
@@ -451,13 +530,11 @@ const snapshot = await getDocs(q);
 return !snapshot.empty;
 }
 function generateUniqueId(){ return `${Date.now()}x${Math.floor(Math.random()*1000000000000000000)}`; }
-let regAttempts = 0;
-let regLastAttempt = 0;
 document.getElementById('registerSubmitBtn')?.addEventListener('click', async () => {
 const now = Date.now();
 if(now - regLastAttempt < 5000 && regAttempts >= 2){
-await sendSecurityAlert('suspicious_registration', document.getElementById('regEmail').value, { level: 'medium', message: 'Tentatives d\'inscription suspectes (trop rapides)' });
-showToast('Trop de tentatives. Attendez quelques secondes','error');
+await sendSecurityAlert('suspicious_registration', document.getElementById('regEmail').value, { level: 'medium', message: 'Tentatives d\'inscription suspectes (rythme anormal)' });
+showToast('Trop de tentatives. Veuillez patienter quelques secondes.','error');
 return;
 }
 regAttempts++;
@@ -469,17 +546,18 @@ const password = document.getElementById('regPassword').value;
 const confirmPassword = document.getElementById('regConfirmPassword').value;
 const acceptCgu = document.getElementById('acceptCgu').checked;
 if(!nom || !prenom || !email || !password){
-await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Champs manquants lors de l\'inscription' });
+await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Champs obligatoires manquants' });
 showToast("Tous les champs sont requis",'error');
 return;
 }
 if(!selectedGender){
 document.getElementById('genderError').style.display='block';
+document.getElementById('genderError').innerHTML = 'Veuillez sélectionner votre sexe';
 await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Sexe non sélectionné' });
 return;
 }
 if(password.length<6){
-await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Mot de passe trop court' });
+await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Mot de passe trop court (<6 caractères)' });
 showToast("Le mot de passe doit contenir au moins 6 caractères",'error');
 return;
 }
@@ -531,6 +609,9 @@ await sendSecurityAlert('invalid_registration', email, { level: 'medium', messag
 showToast("Cet email est déjà utilisé",'error');
 return;
 }
+if(isSuspiciousEmail(email)){
+await sendSecurityAlert('suspicious_email_format', email, { level: 'medium', message: `Inscription avec email suspect: ${email}` });
+}
 const submitBtn = document.getElementById('registerSubmitBtn');
 submitBtn.disabled = true;
 submitBtn.innerHTML = '<span class="loading-spinner"></span> Création en cours...';
@@ -541,14 +622,15 @@ await setDoc(doc(db,"users",userCred.user.uid),{
 nom: nom, prenom: prenom, sexe: selectedGender, email: email,
 moyenContact: selectedMethod, contactValue: contactValue, isActive: false, isBlocked: false,
 role: null, code: null, uniqueId: uniqueId,
+deviceId: getDeviceUniqueId(),
 dateInscription: new Date().toISOString(), lastSeen: new Date().toISOString()
 });
 await sendSecurityAlert('new_registration', email, {
 level: 'info',
-message: `✨ Nouvelle inscription : ${nom} ${prenom} (${email}) via ${selectedMethod}`,
+message: `Nouvel inscrit : ${nom} ${prenom} (${email}) via ${selectedMethod}`,
 details: { nom, prenom, moyenContact: selectedMethod }
 });
-showToast("Compte créé ! Redirection vers l'accueil...",'success');
+showToast("Inscription enregistrée. Activation sous 24h.","success");
 setTimeout(()=>{ closeApplyModal(); window.location.href = "index.html"; },2000);
 }catch(error){
 let errorMsg = "Erreur lors de la création du compte";
@@ -559,10 +641,10 @@ submitBtn.disabled = false;
 submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Créer mon compte';
 }
 });
-function openApplyModal(){ document.getElementById('applyModal').classList.add('active'); }
+function openApplyModal(){ document.getElementById('applyModal').classList.add('active'); actionPerformed = true; }
 function closeApplyModal(){ document.getElementById('applyModal').classList.remove('active'); }
 document.getElementById('applyNowBtn')?.addEventListener('click', openApplyModal);
-document.getElementById('forgotPasswordBtn')?.addEventListener('click', ()=>{ document.getElementById('forgotPasswordModal').classList.add('active'); });
+document.getElementById('forgotPasswordBtn')?.addEventListener('click', ()=>{ document.getElementById('forgotPasswordModal').classList.add('active'); actionPerformed = true; });
 function closeForgotModal(){ document.getElementById('forgotPasswordModal').classList.remove('active'); }
 window.closeApplyModal = closeApplyModal;
 window.closeForgotModal = closeForgotModal;
@@ -570,25 +652,31 @@ document.getElementById('sendResetLinkBtn')?.addEventListener('click', async () 
 const email = document.getElementById('resetEmail').value.trim();
 const btn = document.getElementById('sendResetLinkBtn');
 if(!email){ showToast("Veuillez entrer votre email",'error'); return; }
+if(isSuspiciousEmail(email)){
+await sendSecurityAlert('suspicious_email_format', email, { level: 'medium', message: `Tentative réinitialisation avec email suspect: ${email}` });
+}
+const timeToAction = Math.floor((Date.now() - sessionStartTime)/1000);
+actionPerformed = true;
+await sendSecurityAlert('time_to_action', email, { level: 'info', message: `Action réinitialisation après ${timeToAction}s`, details: { actionType: 'password_reset', timeSpentSeconds: timeToAction } });
 btn.disabled = true;
 btn.innerHTML = '<span class="loading-spinner"></span> Envoi...';
 try{
 await sendPasswordResetEmail(auth, email);
-await sendSecurityAlert('password_reset_request', email, { level: 'info', message: `Demande de réinitialisation envoyée à ${email}` });
-showToast("Lien de réinitialisation envoyé par email",'success');
+await sendSecurityAlert('password_reset_request', email, { level: 'info', message: `Demande de réinitialisation pour ${email}` });
+showToast("Un lien de réinitialisation a été envoyé",'success');
 closeForgotModal();
 document.getElementById('resetEmail').value = '';
 }catch(error){
 if(error.code === 'auth/user-not-found'){
-await sendSecurityAlert('password_reset_failed', email, { level: 'low', message: `Tentative de réinitialisation sur compte inexistant: ${email}` });
+await sendSecurityAlert('password_reset_failed', email, { level: 'low', message: `Tentative sur compte inexistant: ${email}` });
 showToast("Aucun compte associé à cet email",'error');
 }else{
-await sendSecurityAlert('password_reset_failed', email, { level: 'low', message: `Erreur: ${error.code}` });
-showToast("Erreur lors de l'envoi",'error');
+await sendSecurityAlert('password_reset_failed', email, { level: 'low', message: `Erreur technique: ${error.code}` });
+showToast("Erreur technique. Veuillez réessayer",'error');
 }
 }finally{
 btn.disabled = false;
-btn.innerHTML = 'Envoyer le lien';
+btn.innerHTML = 'Envoyer';
 }
 });
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
