@@ -125,7 +125,7 @@ body.light-theme .anomaly-ticket-item strong{color:#1e40af;}
 .tabs-wrapper::-webkit-scrollbar-track{background:#1e293b;border-radius:4px;}
 .tabs-wrapper::-webkit-scrollbar-thumb{background:#f59e0b;border-radius:4px;}
 .tabs{display:inline-flex;gap:8px;padding-bottom:5px;}
-.tab{padding:10px 20px;background:transparent;border:none;border-radius:30px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:500;transition:all 0.2s;}
+.tab{padding:10px 20px;background:transparent;border:none;border-radius:30px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:500;transition:all 0.2s;position:relative;}
 .tab-content{display:none;animation:fadeIn 0.2s;}
 .tab-content.active{display:block;}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
@@ -193,6 +193,8 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 .admin-buttons{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:10px;}
 .admin-btn{border:1px solid;padding:12px 20px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;}
 .counter-badge{padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;margin-left:10px;}
+.tab-badge{background:#ef4444;color:white;border-radius:20px;padding:2px 6px;font-size:10px;font-weight:bold;margin-left:8px;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:0.8;}100%{transform:scale(1);opacity:1;}}
 .report-ref-badge{border-radius:12px;padding:8px 15px;text-align:center;}
 .report-ref-badge .label{font-size:10px;}
 .report-ref-badge .value{font-size:14px;font-weight:700;font-family:monospace;}
@@ -252,7 +254,7 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <div id="netubersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Netubers</div></div><div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">Connectés</div></div><div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label">Déconnectés</div></div><div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Comptes bloqués</div></div></div><div class="filters"><input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()"><select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">Connectés</option><option value="offline">Déconnectés</option></select><button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button><button class="export-btn" onclick="openAddNetuberModal()" style="background:#8b5cf6;"><i class="fas fa-user-plus"></i> Ajouter Netuber</button></div><div class="table-wrapper"><table id="netubersTable"><thead><tr><th>Code Netuber</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Statut</th><th>Connexion</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></tr></thead><tbody id="netubersTableBody"></tbody></table></div></div>
 <div id="retraitsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalWithdrawalsPending">0</div><div class="label">En attente</div></div><div class="stat-card"><div class="value" id="totalWithdrawalsAmount">0</div><div class="label">Montant total</div></div></div><div class="filters"><select id="withdrawStatusFilter" class="filter-select" onchange="filterWithdrawals()"><option value="all">Tous</option><option value="pending">En attente</option><option value="approved">Approuvés</option><option value="rejected">Rejetés</option></select><button class="export-btn" onclick="exportWithdrawals()"><i class="fas fa-file-excel"></i> Exporter</button></div><div class="table-wrapper"><table id="withdrawalsTable"><thead><tr><th>Utilisateur</th><th>Montant</th><th>Méthode</th><th>Wallet</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="withdrawalsTableBody"></tbody></table></div></div>
 <div id="financeTab" class="tab-content"><div class="finance-buttons"><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source A</h3></div><button class="finance-btn" onclick="window.open('https://siteowner.timewall.io/','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source B</h3></div><button class="finance-btn" onclick="window.open('https://beta.partners.adsterra.com/login','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source C</h3></div><button class="finance-btn" onclick="window.open('https://gain.gg/earn','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div></div></div>
-<div id="ticketsUsersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="ticketsUsersOpen">0</div><div class="label">Tickets ouverts</div></div><div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Tickets résolus</div></div><div class="stat-card"><div class="value" id="ticketsInProgress">0</div><div class="label">Tickets en cours</div></div></div><div class="table-wrapper"><table id="ticketsUsersTable"><thead><tr><th>Utilisateur</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th><th>Supprimer</th><tr></thead><tbody id="ticketsUsersBody"></tbody></table></div></div>
+<div id="ticketsUsersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="ticketsUsersOpen">0</div><div class="label">Tickets ouverts</div></div><div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Tickets résolus</div></div><div class="stat-card"><div class="value" id="ticketsInProgress">0</div><div class="label">Tickets en cours</div></div></div><div class="table-wrapper"><table id="ticketsUsersTable"><thead><tr><th>Utilisateur</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th><th>Supprimer</th></tr></thead><tbody id="ticketsUsersBody"></tbody></table></div></div>
 <div id="rapportsTab" class="tab-content">
 <div class="stats-grid">
 <div class="stat-card"><div class="value" id="reportCount">0</div><div class="label">Netubers dans le rapport</div></div>
@@ -341,6 +343,9 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <option value="all">Tous types</option>
 <option value="device_mismatch">🔴 Device mismatch</option>
 <option value="login_failed">🟠 Échec connexion</option>
+<option value="login_success">✅ Connexion réussie</option>
+<option value="new_registration">📝 Nouvelle inscription</option>
+<option value="password_reset_request">🔑 Demande réinitialisation</option>
 <option value="account_not_found">🟡 Compte inexistant</option>
 </select>
 <button class="export-btn" onclick="markAllAlertsRead()" style="background:#3b82f6;"><i class="fas fa-check-double"></i> Tout marquer lu</button>
@@ -377,7 +382,7 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <div id="deleteNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-trash-alt"></i> Supprimer Netuber</h2><button class="modal-close" onclick="closeModal('deleteNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="deleteNetuberSelect"></select></div></div><div class="modal-footer"><button onclick="confirmDeleteNetuber()" style="background:#ef4444;">Supprimer</button><button onclick="closeModal('deleteNetuberModal')">Annuler</button></div></div></div>
 <div id="deleteUserModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-times"></i> Supprimer Utilisateur</h2><button class="modal-close" onclick="closeModal('deleteUserModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner l'utilisateur</label><select id="deleteUserSelect"></select></div></div><div class="modal-footer"><button onclick="confirmDeleteUser()" style="background:#ef4444;">Supprimer</button><button onclick="closeModal('deleteUserModal')">Annuler</button></div></div></div>
 <div id="capModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-envelope"></i> Envoyer un CAP</h2><button class="modal-close" onclick="closeModal('capModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Netuber</label><input type="text" id="capNetuberCode" readonly style="background:#334155;"></div><div class="input-group"><label>Message CAP</label><textarea id="capMessage" rows="4" placeholder="Message à envoyer..."></textarea></div><div class="input-group"><label>Date d'expiration</label><input type="date" id="capExpiryDate"></div></div><div class="modal-footer"><button onclick="sendCAP()" style="background:#f59e0b;">Envoyer CAP</button><button onclick="closeModal('capModal')">Annuler</button></div></div></div>
-<div id="replyTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-reply"></i> Répondre au ticket</h2><button class="modal-close" onclick="closeModal('replyTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="replyTicketId" readonly></div><div class="input-group"><label>Réponse</label><textarea id="replyMessage" rows="4" placeholder="Votre réponse..."></textarea></div><div class="input-group"><label>Nouveau statut</label><select id="replyStatus"><option value="en cours">En cours</option><option value="résolu">Résolu</option><option value="ouvert">Ouvert</option></select></div></div><div class="modal-footer"><button onclick="sendReply()" style="background:#06b6d4;">Envoyer</button><button onclick="closeModal('replyTicketModal')">Annuler</button></div></div></div>
+<div id="replyTicketModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-reply"></i> Répondre au ticket</h2><button class="modal-close" onclick="closeModal('replyTicketModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Ticket ID</label><input type="text" id="replyTicketId" readonly></div><div class="input-group"><label>Utilisateur ID</label><input type="text" id="replyUserId" readonly></div><div class="input-group"><label>Réponse</label><textarea id="replyMessage" rows="4" placeholder="Votre réponse..."></textarea></div><div class="input-group"><label>Nouveau statut</label><select id="replyStatus"><option value="en cours">En cours</option><option value="résolu">Résolu</option><option value="ouvert">Ouvert</option></select></div></div><div class="modal-footer"><button onclick="sendReply()" style="background:#06b6d4;">Envoyer</button><button onclick="closeModal('replyTicketModal')">Annuler</button></div></div></div>
 <div id="confirmModal" class="modal"><div class="modal-content" style="max-width:400px;"><div class="modal-body confirm-dialog"><i class="fas fa-exclamation-triangle"></i><h3 id="confirmTitle">Confirmation</h3><p id="confirmMessage" style="margin:15px 0;">Êtes-vous sûr ?</p><div class="confirm-buttons"><button class="btn-cancel" id="confirmCancelBtn">Annuler</button><button class="btn-confirm" id="confirmOkBtn">Confirmer</button></div></div></div></div>
 <div id="memorandumModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-paper-plane"></i> Envoyer un mémorandum</h2><button class="modal-close" onclick="closeModal('memorandumModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Référence du rapport (Destinataire)</label><input type="text" id="memoReportReference" readonly style="background:#334155;"></div><div class="input-group"><label>Titre du mémorandum</label><input type="text" id="memoTitle" placeholder="Ex: Note d'information - Rapport mensuel"></div><div class="input-group"><label>Message / Contenu</label><textarea id="memoContent" rows="6" placeholder="Contenu du mémorandum associé au rapport..."></textarea></div></div><div class="modal-footer"><button onclick="sendMemorandum()" style="background:#f59e0b;">Envoyer</button><button onclick="closeModal('memorandumModal')">Annuler</button></div></div></div>
 <div class="chat-header"><button id="chatBackBtn" class="chat-back-btn">← Retour</button><div class="netubex-logo">NeTubeX</div></div>
@@ -406,12 +411,10 @@ let isAuthenticated = false;
 // Vérification de l'authentification - REDIRECTION IMMÉDIATE
 onAuthStateChanged(auth, (user) => {
     if (!user) {
-        // Redirection vers login.html si non connecté
         window.location.href = "login.html";
         return;
     }
     isAuthenticated = true;
-    // Charger les données seulement si l'utilisateur est connecté
     initTheme();
     initTabScroll();
     loadAllData();
@@ -449,6 +452,278 @@ function showConfirm(title, message, onConfirm) {
     ok.addEventListener('click', handler); cancel.addEventListener('click', cancelHandler);
 }
 
+// ========== FONCTIONS DE GESTION DES BADGES ==========
+function updateAllTabBadges() {
+    // Badge pour les inscriptions en attente
+    const pendingCount = usersData.filter(u => u.isActive !== true && (!u.role || u.role !== 'netuber')).length;
+    updateTabBadge('inscriptions', pendingCount);
+    
+    // Badge pour les retraits en attente
+    const pendingWithdrawals = withdrawalsData.filter(w => w.status === 'pending').length;
+    updateTabBadge('retraits', pendingWithdrawals);
+    
+    // Badge pour les tickets non résolus
+    const openTickets = ticketsData.filter(t => t.status !== 'résolu').length;
+    updateTabBadge('ticketsUsers', openTickets);
+    
+    // Badge pour les alertes sécurité non lues
+    const unreadAlerts = securityAlerts.filter(a => !a.read).length;
+    updateTabBadge('securite', unreadAlerts);
+    document.getElementById('alertsBadge').innerText = unreadAlerts;
+    document.getElementById('alertsBadge').style.display = unreadAlerts > 0 ? 'inline-block' : 'none';
+    
+    // Badge pour les anomalies (netubers avec +3 tickets)
+    const ticketsByUser = {};
+    ticketsData.forEach(t => {
+        const key = t.userEmail || t.userCode;
+        if(!ticketsByUser[key]) ticketsByUser[key] = [];
+        ticketsByUser[key].push(t);
+    });
+    const anomaliesCount = Object.values(ticketsByUser).filter(tickets => tickets.length >= 3).length;
+    updateTabBadge('anomalies', anomaliesCount);
+}
+
+function updateTabBadge(tabName, count) {
+    const tabButton = document.querySelector(`.tab[data-tab="${tabName}"]`);
+    if(!tabButton) return;
+    
+    const oldBadge = tabButton.querySelector('.tab-badge');
+    if(oldBadge) oldBadge.remove();
+    
+    if(count > 0) {
+        const badge = document.createElement('span');
+        badge.className = 'tab-badge';
+        badge.innerText = count > 99 ? '99+' : count;
+        tabButton.appendChild(badge);
+        
+        // Notification toast pour les nouveaux éléments
+        if(tabName === 'inscriptions' && count > 0) {
+            showToast(`📝 ${count} inscription(s) en attente d'activation`, false);
+        }
+        if(tabName === 'retraits' && count > 0) {
+            showToast(`💰 ${count} demande(s) de retrait en attente`, false);
+        }
+        if(tabName === 'ticketsUsers' && count > 0) {
+            showToast(`🎫 ${count} ticket(s) à traiter`, false);
+        }
+        if(tabName === 'securite' && count > 0) {
+            showToast(`🔒 ${count} nouvelle(s) alerte(s) de sécurité`, false);
+        }
+    }
+}
+
+// ========== FONCTIONS DES ALERTES SÉCURITÉ CORRIGÉES ==========
+async function loadSecurityAlerts() {
+    try {
+        const q = query(collection(db, "security_alerts"), orderBy("timestamp", "desc"));
+        const snapshot = await getDocs(q);
+        securityAlerts = [];
+        snapshot.forEach(doc => {
+            securityAlerts.push({ id: doc.id, ...doc.data() });
+        });
+        updateSecurityAlertsTable();
+        updateAllTabBadges();
+        document.getElementById('totalAlerts').innerText = securityAlerts.length;
+        document.getElementById('unreadAlertsCount').innerText = securityAlerts.filter(a => !a.read).length;
+    } catch(e) { console.error("Erreur chargement alertes:", e); }
+}
+
+function updateSecurityAlertsTable() {
+    const tbody = document.getElementById('securityAlertsBody');
+    if(!tbody) return;
+    let filtered = securityAlerts;
+    if(currentAlertFilter !== 'all') {
+        filtered = securityAlerts.filter(a => a.type === currentAlertFilter);
+    }
+    if(filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;">🔒 Aucune alerte de sécurité</td></tr>';
+        return;
+    }
+    tbody.innerHTML = filtered.map(alert => {
+        let typeIcon = '', typeLabel = '', typeColor = '';
+        
+        // Déterminer le type d'alerte
+        switch(alert.type) {
+            case 'device_mismatch':
+                typeIcon = '🔴'; typeLabel = 'Device mismatch'; typeColor = '#ef4444';
+                break;
+            case 'login_failed':
+                typeIcon = '🟠'; typeLabel = 'Échec connexion'; typeColor = '#f59e0b';
+                break;
+            case 'login_success':
+                typeIcon = '✅'; typeLabel = 'Connexion réussie'; typeColor = '#10b981';
+                break;
+            case 'new_registration':
+                typeIcon = '📝'; typeLabel = 'Nouvelle inscription'; typeColor = '#3b82f6';
+                break;
+            case 'password_reset_request':
+                typeIcon = '🔑'; typeLabel = 'Demande réinitialisation'; typeColor = '#8b5cf6';
+                break;
+            case 'account_not_found':
+                typeIcon = '🟡'; typeLabel = 'Compte inexistant'; typeColor = '#eab308';
+                break;
+            default:
+                typeIcon = '⚪'; typeLabel = alert.type; typeColor = '#64748b';
+        }
+        
+        // Détails selon le type d'alerte
+        let details = '';
+        if(alert.type === 'device_mismatch') {
+            details = `Appareil enregistré: ${alert.registeredDeviceId?.substring(0,20) || '?'}<br>Appareil tenté: ${alert.attemptedDeviceId?.substring(0,20) || '?'}`;
+        } else if(alert.type === 'login_failed') {
+            details = `Email: ${escapeHtml(alert.email)}<br>Mot de passe incorrect`;
+        } else if(alert.type === 'login_success') {
+            details = `✅ Connexion réussie<br>Email: ${escapeHtml(alert.email)}<br>Appareil: ${alert.details?.deviceId?.substring(0,20) || '?'}`;
+        } else if(alert.type === 'new_registration') {
+            details = `📝 Nouvelle inscription<br>Email: ${escapeHtml(alert.email)}<br>Message: ${alert.message || ''}`;
+        } else if(alert.type === 'password_reset_request') {
+            details = `🔑 Demande réinitialisation<br>Email: ${escapeHtml(alert.email)}`;
+        } else if(alert.type === 'account_not_found') {
+            details = `Email tenté: ${escapeHtml(alert.email)}<br>Compte non trouvé dans la base`;
+        } else {
+            details = `Type: ${alert.type}<br>Email: ${escapeHtml(alert.email)}<br>Message: ${alert.message || '-'}`;
+        }
+        
+        let statusBadge = alert.read ? '<span class="badge-success" style="padding:2px 8px;">✓ Lu</span>' : '<span class="badge-danger" style="padding:2px 8px;">⚠️ Non lu</span>';
+        let netuberInfo = alert.netuberCode ? `<strong>${escapeHtml(alert.netuberCode)}</strong>` : escapeHtml(alert.email || '-');
+        
+        return `<tr style="${!alert.read ? 'background:rgba(239,68,68,0.1);' : ''}">
+            <td><span style="color:${typeColor};font-weight:600;">${typeIcon} ${typeLabel}</span></td>
+            <td>${netuberInfo}</td>
+            <td><small>${details}</small></td>
+            <td>${formatDateTime(alert.timestamp)}</td>
+            <td>${statusBadge}</td>
+            <td>
+                ${!alert.read ? `<button class="action-btn" onclick='markAlertRead("${alert.id}")' style="background:#3b82f6;">✓ Marquer lu</button>` : ''}
+                ${alert.type === 'device_mismatch' ? `<button class="action-btn" onclick='resetNetuberDevice("${alert.netuberCode}")' style="background:#f59e0b;">🔄 Réinit device</button>` : ''}
+                <button class="action-btn delete" onclick='deleteAlert("${alert.id}")' style="background:#ef4444;">🗑️</button>
+              </td>
+          </tr>`;
+    }).join('');
+}
+
+window.filterSecurityAlerts = () => {
+    currentAlertFilter = document.getElementById('alertTypeFilter').value;
+    updateSecurityAlertsTable();
+};
+
+window.markAlertRead = async (alertId) => {
+    try {
+        await updateDoc(doc(db, "security_alerts", alertId), { read: true });
+        showToast("Alerte marquée comme lue");
+        await loadSecurityAlerts();
+    } catch(e) { showToast("Erreur", true); }
+};
+
+window.markAllAlertsRead = async () => {
+    showConfirm('Marquer tout', 'Marquer toutes les alertes comme lues ?', async () => {
+        for(const alert of securityAlerts.filter(a => !a.read)) {
+            try {
+                await updateDoc(doc(db, "security_alerts", alert.id), { read: true });
+            } catch(e) {}
+        }
+        showToast("Toutes les alertes ont été marquées comme lues");
+        await loadSecurityAlerts();
+    });
+};
+
+window.deleteAlert = async (alertId) => {
+    showConfirm('Suppression', 'Supprimer cette alerte ?', async () => {
+        await deleteDoc(doc(db, "security_alerts", alertId));
+        showToast("Alerte supprimée");
+        await loadSecurityAlerts();
+    });
+};
+
+window.resetNetuberDevice = async (netuberCode) => {
+    if(!netuberCode) return;
+    const targetUser = usersData.find(u => u.code === netuberCode && u.role === 'netuber');
+    if(!targetUser) { showToast("Netuber non trouvé", true); return; }
+    showConfirm('Réinitialisation', `Réinitialiser le deviceId de ${netuberCode} ?`, async () => {
+        await updateDoc(doc(db, "users", targetUser.id), { deviceId: null });
+        showToast(`✅ DeviceId réinitialisé pour ${netuberCode}`);
+        await loadAllData();
+    });
+};
+
+window.exportSecurityAlerts = () => {
+    let csv = "Type,Netuber/Email,Détails,Date,Statut\n";
+    securityAlerts.forEach(a => {
+        let typeStr = '';
+        if(a.type === 'device_mismatch') typeStr = 'Device mismatch';
+        else if(a.type === 'login_failed') typeStr = 'Échec connexion';
+        else if(a.type === 'login_success') typeStr = 'Connexion réussie';
+        else if(a.type === 'new_registration') typeStr = 'Nouvelle inscription';
+        else if(a.type === 'password_reset_request') typeStr = 'Demande réinitialisation';
+        else if(a.type === 'account_not_found') typeStr = 'Compte inexistant';
+        else typeStr = a.type;
+        
+        let details = '';
+        if(a.type === 'device_mismatch') details = `Device mismatch: ${a.registeredDeviceId} vs ${a.attemptedDeviceId}`;
+        else if(a.type === 'login_failed') details = `Échec login: ${a.email}`;
+        else if(a.type === 'login_success') details = `Connexion réussie: ${a.email}`;
+        else if(a.type === 'new_registration') details = `Nouvelle inscription: ${a.email}`;
+        else if(a.type === 'password_reset_request') details = `Demande réinitialisation: ${a.email}`;
+        else details = `Compte inexistant: ${a.email}`;
+        
+        csv += `"${typeStr}","${a.netuberCode || a.email || '-'}","${details}","${a.timestamp}","${a.read ? 'Lu' : 'Non lu'}"\n`;
+    });
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `security_alerts_${new Date().toISOString().slice(0,19)}.csv`;
+    link.click();
+    showToast("Export CSV lancé");
+};
+
+// ========== FONCTIONS DES TICKETS CORRIGÉES ==========
+function openReplyTicketModal(ticketId, userId) { 
+    document.getElementById('replyTicketId').value = ticketId; 
+    document.getElementById('replyUserId').value = userId;
+    openModal('replyTicketModal'); 
+}
+window.openReplyTicketModal = openReplyTicketModal;
+
+async function sendReply() { 
+    let ticketId = document.getElementById('replyTicketId').value; 
+    let userId = document.getElementById('replyUserId').value; 
+    let message = document.getElementById('replyMessage').value.trim(); 
+    let newStatus = document.getElementById('replyStatus').value; 
+    
+    if(!message) { 
+        showToast("Message requis", true); 
+        return; 
+    }
+    
+    try {
+        let userSnap = await getDoc(doc(db, "users", userId)); 
+        let ticketsList = userSnap.data()?.ticketsList || []; 
+        let ticketIndex = ticketsList.findIndex(t => t.id === ticketId); 
+        
+        if(ticketIndex !== -1) { 
+            ticketsList[ticketIndex].reponses = ticketsList[ticketIndex].reponses || []; 
+            ticketsList[ticketIndex].reponses.push({ 
+                admin: true, 
+                message: message, 
+                date: new Date().toISOString() 
+            }); 
+            ticketsList[ticketIndex].status = newStatus; 
+            await updateDoc(doc(db, "users", userId), { ticketsList: ticketsList }); 
+            showToast("✅ Réponse envoyée"); 
+            closeModal('replyTicketModal'); 
+            document.getElementById('replyMessage').value = ''; 
+            await loadTickets(); 
+        } else {
+            showToast("Ticket non trouvé", true);
+        }
+    } catch(error) {
+        console.error(error);
+        showToast("Erreur lors de l'envoi", true);
+    }
+}
+window.sendReply = sendReply;
+
+// ========== CHAT ==========
 function initTabScroll() {
     const tabsWrapper = document.querySelector('.tabs-wrapper');
     const leftArrow = document.getElementById('scrollLeftArrow');
@@ -638,6 +913,7 @@ function updateTicketsCharts() {
     }
 }
 
+// Chat
 const chatStyles = document.createElement('style');
 chatStyles.textContent = `.tab-content.chat-fullscreen{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:1000;background:#0a1a2f;padding:0;margin:0;border-radius:0;}body.chat-active .dashboard>.header,body.chat-active .tabs-container{display:none;}body.chat-active .tab-content.chat-fullscreen{display:block!important;}.chat-container{display:flex;flex-direction:column;height:100%;overflow:hidden;}.chat-messages{flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:12px;}.message-bubble{max-width:85%;padding:12px 18px;border-radius:20px;word-wrap:break-word;font-size:1rem;line-height:1.5;}.message-sent{align-self:flex-end;border-bottom-right-radius:4px;}.message-received{align-self:flex-start;border-bottom-left-radius:4px;}.message-info{font-size:0.65rem;margin-top:6px;opacity:0.7;display:flex;justify-content:flex-end;gap:8px;}.message-sender{font-weight:600;font-size:0.75rem;display:block;margin-bottom:4px;}.message-actions{display:flex;gap:8px;margin-top:8px;justify-content:flex-end;}.message-actions button{background:transparent;padding:4px 10px;font-size:0.7rem;border-radius:20px;border:none;cursor:pointer;}.chat-input-area{padding:16px 20px;border-radius:28px;margin-top:8px;display:flex;gap:12px;align-items:center;}.chat-input-area textarea{flex:1;border-radius:28px;padding:14px 18px;font-family:'Inter',monospace;font-size:1rem;resize:none;max-height:50px;min-height:50px;}.chat-input-area textarea:focus{outline:none;}.chat-input-area button{padding:12px 18px;border-radius:40px;font-size:1.3rem;min-width:50px;border:none;cursor:pointer;}.empty-chat{text-align:center;padding:40px;}.chat-header{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;z-index:1001;border-bottom:1px solid rgba(250,204,21,0.3);}.chat-back-btn{border:none;border-radius:40px;padding:8px 16px;font-weight:700;font-size:0.85rem;cursor:pointer;display:flex;align-items:center;gap:6px;}.netubex-logo{font-size:1.6rem;font-weight:900;letter-spacing:2px;}.rainbow-line{height:3px;background:linear-gradient(90deg,#ff0000,#ff8000,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);position:fixed;top:56px;left:0;right:0;z-index:1001;}body.chat-active .chat-header{display:flex;}body.chat-active .rainbow-line{display:block;}.chat-header{display:none;}.rainbow-line{display:none;}.loading-placeholder{text-align:center;padding:40px;font-weight:500;}`;
 document.head.appendChild(chatStyles);
@@ -704,143 +980,6 @@ document.querySelectorAll('.tab').forEach(btn => {
     if(btn.getAttribute('data-tab') === 'chatDeo') { btn.onclick = () => { enableChatFullscreen(); loadChatMessages(); }; }
 });
 
-async function loadSecurityAlerts() {
-    try {
-        const q = query(collection(db, "security_alerts"), orderBy("timestamp", "desc"));
-        const snapshot = await getDocs(q);
-        securityAlerts = [];
-        snapshot.forEach(doc => {
-            securityAlerts.push({ id: doc.id, ...doc.data() });
-        });
-        updateSecurityAlertsTable();
-        updateAlertBadge();
-        document.getElementById('totalAlerts').innerText = securityAlerts.length;
-        document.getElementById('unreadAlertsCount').innerText = securityAlerts.filter(a => !a.read).length;
-    } catch(e) { console.error("Erreur chargement alertes:", e); }
-}
-
-function updateAlertBadge() {
-    const unreadCount = securityAlerts.filter(a => !a.read).length;
-    const badge = document.getElementById('alertsBadge');
-    if(badge) {
-        badge.innerText = unreadCount;
-        badge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
-    }
-}
-
-function updateSecurityAlertsTable() {
-    const tbody = document.getElementById('securityAlertsBody');
-    if(!tbody) return;
-    let filtered = securityAlerts;
-    if(currentAlertFilter !== 'all') {
-        filtered = securityAlerts.filter(a => a.type === currentAlertFilter);
-    }
-    if(filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;">🔒 Aucune alerte de sécurité</td></tr>';
-        return;
-    }
-    tbody.innerHTML = filtered.map(alert => {
-        let typeIcon = '', typeLabel = '', typeColor = '';
-        switch(alert.type) {
-            case 'device_mismatch':
-                typeIcon = '🔴'; typeLabel = 'Device mismatch'; typeColor = '#ef4444';
-                break;
-            case 'login_failed':
-                typeIcon = '🟠'; typeLabel = 'Échec connexion'; typeColor = '#f59e0b';
-                break;
-            case 'account_not_found':
-                typeIcon = '🟡'; typeLabel = 'Compte inexistant'; typeColor = '#eab308';
-                break;
-            default:
-                typeIcon = '⚪'; typeLabel = alert.type; typeColor = '#64748b';
-        }
-        let details = '';
-        if(alert.type === 'device_mismatch') {
-            details = `Appareil enregistré: ${alert.registeredDeviceId?.substring(0,20) || '?'}<br>Appareil tenté: ${alert.attemptedDeviceId?.substring(0,20) || '?'}`;
-        } else if(alert.type === 'login_failed') {
-            details = `Email: ${escapeHtml(alert.email)}<br>Mot de passe incorrect`;
-        } else {
-            details = `Email tenté: ${escapeHtml(alert.email)}<br>Compte non trouvé dans la base`;
-        }
-        let statusBadge = alert.read ? '<span class="badge-success" style="padding:2px 8px;">✓ Lu</span>' : '<span class="badge-danger" style="padding:2px 8px;">⚠️ Non lu</span>';
-        let netuberInfo = alert.netuberCode ? `<strong>${escapeHtml(alert.netuberCode)}</strong>` : escapeHtml(alert.email || '-');
-        return `<tr style="${!alert.read ? 'background:rgba(239,68,68,0.1);' : ''}">
-            <td><span style="color:${typeColor};font-weight:600;">${typeIcon} ${typeLabel}</span></td>
-            <td>${netuberInfo}</td>
-            <td><small>${details}</small></td>
-            <td>${formatDateTime(alert.timestamp)}</td>
-            <td>${statusBadge}</td>
-            <td>
-                ${!alert.read ? `<button class="action-btn" onclick='markAlertRead("${alert.id}")' style="background:#3b82f6;">✓ Marquer lu</button>` : ''}
-                ${alert.type === 'device_mismatch' ? `<button class="action-btn" onclick='resetNetuberDevice("${alert.netuberCode}")' style="background:#f59e0b;">🔄 Réinit device</button>` : ''}
-                <button class="action-btn delete" onclick='deleteAlert("${alert.id}")' style="background:#ef4444;">🗑️</button>
-             </td>
-         </tr>`;
-    }).join('');
-}
-
-window.filterSecurityAlerts = () => {
-    currentAlertFilter = document.getElementById('alertTypeFilter').value;
-    updateSecurityAlertsTable();
-};
-
-window.markAlertRead = async (alertId) => {
-    try {
-        await updateDoc(doc(db, "security_alerts", alertId), { read: true });
-        showToast("Alerte marquée comme lue");
-        await loadSecurityAlerts();
-    } catch(e) { showToast("Erreur", true); }
-};
-
-window.markAllAlertsRead = async () => {
-    showConfirm('Marquer tout', 'Marquer toutes les alertes comme lues ?', async () => {
-        for(const alert of securityAlerts.filter(a => !a.read)) {
-            try {
-                await updateDoc(doc(db, "security_alerts", alert.id), { read: true });
-            } catch(e) {}
-        }
-        showToast("Toutes les alertes ont été marquées comme lues");
-        await loadSecurityAlerts();
-    });
-};
-
-window.deleteAlert = async (alertId) => {
-    showConfirm('Suppression', 'Supprimer cette alerte ?', async () => {
-        await deleteDoc(doc(db, "security_alerts", alertId));
-        showToast("Alerte supprimée");
-        await loadSecurityAlerts();
-    });
-};
-
-window.resetNetuberDevice = async (netuberCode) => {
-    if(!netuberCode) return;
-    const targetUser = usersData.find(u => u.code === netuberCode && u.role === 'netuber');
-    if(!targetUser) { showToast("Netuber non trouvé", true); return; }
-    showConfirm('Réinitialisation', `Réinitialiser le deviceId de ${netuberCode} ? (Lui permettra de se connecter depuis un nouveau téléphone)`, async () => {
-        await updateDoc(doc(db, "users", targetUser.id), { deviceId: null });
-        showToast(`✅ DeviceId réinitialisé pour ${netuberCode}`);
-        await loadAllData();
-    });
-};
-
-window.exportSecurityAlerts = () => {
-    let csv = "Type,Netuber/Email,Détails,Date,Statut\n";
-    securityAlerts.forEach(a => {
-        let typeStr = a.type === 'device_mismatch' ? 'Device mismatch' : (a.type === 'login_failed' ? 'Échec connexion' : 'Compte inexistant');
-        let details = '';
-        if(a.type === 'device_mismatch') details = `Device mismatch: ${a.registeredDeviceId} vs ${a.attemptedDeviceId}`;
-        else if(a.type === 'login_failed') details = `Échec login: ${a.email}`;
-        else details = `Compte inexistant: ${a.email}`;
-        csv += `"${typeStr}","${a.netuberCode || a.email || '-'}","${details}","${a.timestamp}","${a.read ? 'Lu' : 'Non lu'}"\n`;
-    });
-    const blob = new Blob([csv], {type: 'text/csv'});
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `security_alerts_${new Date().toISOString().slice(0,19)}.csv`;
-    link.click();
-    showToast("Export CSV lancé");
-};
-
 async function loadAllData() {
     try {
         let snap = await getDocs(collection(db, "users"));
@@ -853,12 +992,14 @@ async function loadAllData() {
         await loadCAPs();
         await loadMemos();
         await loadSecurityAlerts();
+        
         updateNetubersTable();
         updateActiveUsersTable();
         updatePendingTable();
         updateTicketsCharts();
         updateInscriptionsChart();
         updateVisitesChart();
+        updateAllTabBadges();
         
         const netubersCount = usersData.filter(u => u.role === 'netuber' && u.isActive === true).length;
         const activeUsersCount = usersData.filter(u => u.isActive === true && (!u.role || u.role !== 'netuber') && u.email).length;
@@ -916,7 +1057,7 @@ function updateWithdrawalsTable() {
                  <button class="action-btn delete" onclick='rejectWithdraw("${w.id}")'>Rejeter</button>` : 
                 `<button class="action-btn delete" onclick='deleteWithdraw("${w.id}")'>🗑️ Supprimer</button>`
              }</td>
-         </tr>`;
+          </tr>`;
     }).join('');
 }
 
@@ -1055,8 +1196,8 @@ function updateNetubersTable() {
                 <button class="action-btn delete" onclick='blockNetuber("${u.id}")'>${u.isBlocked ? 'Débloquer' : 'Bloquer'}</button>
                 <button class="action-btn" onclick='openModifyNetuberCodeModal("${u.id}")' style="background:#3b82f6;">Modifier Code</button>
                 <button class="action-btn delete" onclick='deleteNetuber("${u.id}")' style="background:#ef4444;">Supprimer</button>
-            </td>
-        </tr>`;
+             </td>
+         </tr>`;
     }).join('');
     document.getElementById('totalNetubers').innerText = netuberUsers.length;
     document.getElementById('totalOnline').innerText = onlineCount;
@@ -1119,7 +1260,7 @@ function updateActiveUsersTable() {
             <td>${lastConnection ? formatDateTime(lastConnection) : '-'}</td>
             <td>${lastDisconnection ? formatDateTime(lastDisconnection) : '-'}</td>
             <td><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Supprimer</button></td>
-        </table>`;
+        </tr>`;
     }).join('');
     document.getElementById('totalActiveUsers').innerText = activeUsers.length;
 }
@@ -1262,8 +1403,6 @@ window.openCAPModal = (code) => { document.getElementById('capNetuberCode').valu
 window.openActivateModal = (id) => { let u = usersData.find(u => u.id === id); if(u) { showConfirm('Activation', `Activer ${u.email} ?`, async () => { await updateDoc(doc(db, "users", id), { isActive: true, dateActivation: new Date().toISOString() }); showToast("Compte activé"); await loadAllData(); }); } };
 window.rejectUser = async (id) => { showConfirm('Rejet', `Rejeter cette inscription ?`, async () => { await deleteDoc(doc(db, "users", id)); showToast("Inscription rejetée"); await loadAllData(); }); };
 window.deleteUser = async (id) => { showConfirm('Suppression', `Supprimer définitivement ?`, async () => { await deleteDoc(doc(db, "users", id)); showToast("Utilisateur supprimé"); await loadAllData(); }); };
-window.openReplyTicketModal = (ticketId, userId) => { document.getElementById('replyTicketId').value = ticketId; document.getElementById('replyUserId').value = userId; openModal('replyTicketModal'); };
-window.sendReply = async () => { let ticketId = document.getElementById('replyTicketId').value; let userId = document.getElementById('replyUserId').value; let message = document.getElementById('replyMessage').value.trim(); let newStatus = document.getElementById('replyStatus').value; if(!message) { showToast("Message requis", true); return; } let userSnap = await getDoc(doc(db, "users", userId)); let ticketsList = userSnap.data()?.ticketsList || []; let ticketIndex = ticketsList.findIndex(t => t.id === ticketId); if(ticketIndex !== -1) { ticketsList[ticketIndex].reponses = ticketsList[ticketIndex].reponses || []; ticketsList[ticketIndex].reponses.push({ admin: true, message: message, date: new Date().toISOString() }); ticketsList[ticketIndex].status = newStatus; await updateDoc(doc(db, "users", userId), { ticketsList: ticketsList }); showToast("Réponse envoyée"); closeModal('replyTicketModal'); document.getElementById('replyMessage').value = ''; await loadTickets(); } };
 window.openModifyCodeModal = async () => { let netubers = usersData.filter(u => u.role === 'netuber'); let select = document.getElementById('modifyCodeSelect'); select.innerHTML = netubers.map(n => `<option value="${n.id}">${n.code}</option>`).join(''); openModal('modifyCodeModal'); };
 window.confirmModifyCode = async () => { let userId = document.getElementById('modifyCodeSelect').value; let newCode = document.getElementById('newCode').value.trim().toUpperCase(); if(!newCode) { showToast("Code requis", true); return; } let existing = usersData.find(u => u.code === newCode && u.id !== userId); if(existing) { showToast("Code déjà utilisé", true); return; } await updateDoc(doc(db, "users", userId), { code: newCode }); showToast("Code modifié"); closeModal('modifyCodeModal'); await loadAllData(); };
 window.openBlockUnblockModal = async () => { let netubers = usersData.filter(u => u.role === 'netuber'); let select = document.getElementById('blockUnblockSelect'); select.innerHTML = netubers.map(n => `<option value="${n.id}">${n.code}</option>`).join(''); openModal('blockUnblockModal'); };
@@ -1334,7 +1473,6 @@ document.getElementById('logoutBtn')?.addEventListener('click', () => showConfir
 document.getElementById('refreshBtn')?.addEventListener('click', () => location.reload());
 document.getElementById('themeToggle')?.addEventListener('click', () => toggleTheme());
 
-// Supprimer les appels directs car ils sont maintenant dans onAuthStateChanged
 document.addEventListener('contextmenu', e => e.preventDefault());
 </script>
 </body>
