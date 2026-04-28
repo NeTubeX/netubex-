@@ -83,20 +83,74 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 .menu-item.danger i{color:#ef4444;}
 .footer{background:#242526;border-top:1px solid #3e4042;padding:1rem;text-align:center;}
 .footer p{color:#b0b3b8;font-size:0.7rem;}
-.toast-notification{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 20px;border-radius:40px;font-size:0.8rem;z-index:10000;animation:fadeOut 3s forwards;}
-@keyframes fadeOut{0%{opacity:1;}80%{opacity:1;}100%{opacity:0;visibility:hidden;}}
+
+/* TOASTS PROFESSIONNELS */
+.toast-container{
+    position:fixed;
+    top:80px;
+    right:20px;
+    z-index:10000;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    max-width:400px;
+    min-width:320px;
+    pointer-events:none;
+}
+.toast{
+    pointer-events:auto;
+    background:rgba(15,23,42,0.95);
+    backdrop-filter:blur(16px);
+    border-radius:12px;
+    padding:16px 20px;
+    color:#f1f5f9;
+    font-size:14px;
+    font-weight:500;
+    box-shadow:0 20px 35px -10px rgba(0,0,0,0.4),0 0 0 1px rgba(255,255,255,0.08);
+    border-left:4px solid;
+    animation:slideInDown 0.4s cubic-bezier(0.68,-0.55,0.265,1.55) forwards;
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    cursor:pointer;
+}
+.toast:hover{transform:translateX(-4px);}
+.toast-success{border-left-color:#10b981;background:linear-gradient(135deg,rgba(16,185,129,0.98),rgba(6,95,70,0.98));}
+.toast-error{border-left-color:#ef4444;background:linear-gradient(135deg,rgba(239,68,68,0.98),rgba(185,28,28,0.98));}
+.toast-info{border-left-color:#3b82f6;background:linear-gradient(135deg,rgba(59,130,246,0.98),rgba(29,78,216,0.98));}
+.toast-warning{border-left-color:#f59e0b;background:linear-gradient(135deg,rgba(245,158,11,0.98),rgba(217,119,6,0.98));}
+.toast-icon{font-size:22px;width:28px;text-align:center;flex-shrink:0;margin-top:2px;}
+.toast-content{flex:1;}
+.toast-title{font-weight:700;font-size:14px;margin-bottom:4px;}
+.toast-message{font-size:12.5px;opacity:0.9;line-height:1.45;}
+.toast-close{background:rgba(255,255,255,0.12);border:none;width:26px;height:26px;border-radius:13px;cursor:pointer;color:white;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.toast-close:hover{background:rgba(255,255,255,0.25);transform:scale(1.05);}
+@keyframes slideInDown{
+    from{opacity:0;transform:translateX(50px) translateY(-20px);}
+    to{opacity:1;transform:translateX(0) translateY(0);}
+}
+@keyframes slideOutUp{
+    from{opacity:1;transform:translateX(0) translateY(0);}
+    to{opacity:0;transform:translateX(50px) translateY(-20px);}
+}
+.toast-exit{animation:slideOutUp 0.3s ease forwards;}
+@media (max-width:640px){
+    .toast-container{top:70px;right:12px;left:12px;max-width:none;min-width:auto;}
+    .toast{padding:14px 16px;}
+}
+
 .tickets-list{max-height:400px;overflow-y:auto;}
 .ticket-item{background:#18191A;border-radius:12px;padding:12px;margin-bottom:10px;border-left:3px solid #3b82f6;}
 .ticket-item.resolu{border-left-color:#10b981;opacity:0.7;}
 .ticket-header{display:flex;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;}
-.ticket-category{font-weight:700;font-size:0.85rem;}
 .ticket-date{font-size:0.7rem;color:#b0b3b8;}
 .ticket-status{font-size:0.7rem;padding:2px 8px;border-radius:12px;display:inline-block;}
 .status-ouvert{background:#1e3a5f;color:#60a5fa;}
 .status-en-cours{background:#5c3a1e;color:#f59e0b;}
 .status-resolu{background:#1a5c3a;color:#10b981;}
-.ticket-subject{font-weight:500;margin:6px 0;}
-.ticket-reponse{background:#3a3b3c;border-radius:8px;padding:8px;margin-top:8px;font-size:0.75rem;}
+.ticket-subject{font-weight:600;margin:10px 0;padding:10px;background:#2a2b2e;border-radius:8px;font-size:0.9rem;}
+.ticket-reponse{background:#3a3b3c;border-radius:8px;padding:10px;margin-top:10px;font-size:0.75rem;}
+.ticket-reponse i{margin-right:6px;color:#f59e0b;}
 .category-select,.priority-select{width:100%;padding:12px;margin:8px 0;border-radius:12px;background:#3a3b3c;border:1px solid #3e4042;color:#e4e6eb;font-size:0.9rem;}
 .confirm-buttons{display:flex;gap:10px;justify-content:center;margin-top:15px;}
 .howtoplay-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);backdrop-filter:blur(12px);z-index:3000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:visibility 0s linear 0.25s,opacity 0.3s;}
@@ -174,11 +228,86 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 </div>
 </div>
 </div>
-<div id="ticketFormPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i><h3>Nouveau ticket</h3><select id="ticketCategory" class="category-select"><option value="">-- Catégorie --</option><option value="Problèmes d'affichage">📱 Problèmes d'affichage</option><option value="Problèmes de batterie">🔋 Problèmes de batterie</option><option value="Problèmes de performance">🐌 Problèmes de performance</option><option value="Problèmes de réseau et connectivité">📡 Problèmes de réseau</option><option value="Problèmes matériels">🔧 Problèmes matériels</option><option value="Problèmes logiciels">💻 Problèmes logiciels</option><option value="Problèmes de surchauffe">🔥 Problèmes de surchauffe</option><option value="Problèmes de stockage">💾 Problèmes de stockage</option></select><input type="text" id="ticketSubject" class="category-select" placeholder="Titre / Description rapide" style="margin-top:8px;"><select id="ticketPriority" class="priority-select"><option value="basse">🟢 Basse priorité</option><option value="moyenne" selected>🟠 Moyenne priorité</option><option value="haute">🔴 Haute priorité</option></select><div class="confirm-buttons"><button class="close-popup-btn" id="submitTicketBtn" style="background:#f59e0b; color:#000;">Envoyer</button><button class="close-popup-btn" id="closeTicketFormBtn">Annuler</button></div></div></div>
-<div id="ticketsListPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i><h3>Mes tickets</h3><div style="display:flex; gap:10px; margin:15px 0; justify-content:center;"><button class="tickets-tab active" data-tab="encours" style="padding:8px 16px; border-radius:20px; background:#3a3b3c; border:none; color:#fff;">📩 En cours</button><button class="tickets-tab" data-tab="resolus" style="padding:8px 16px; border-radius:20px; background:#3a3b3c; border:none; color:#fff;">✅ Résolus</button></div><div id="ticketsListContainer" class="tickets-list"></div><button class="close-popup-btn" id="closeTicketsPopupBtn">Fermer</button></div></div>
-<div id="capPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-chart-line" style="font-size:2rem;color:#f59e0b;"></i><h3>Mes CAP</h3><div id="capsListContainer" class="tickets-list"></div><button class="close-popup-btn" id="closeCapBtn">Fermer</button></div></div>
-<div id="confirmPopup" class="slide-popup"><div class="popup-left"><i class="fas fa-sign-out-alt" style="font-size:2rem;color:#ef4444;"></i><h3>Déconnexion</h3><p>Quitter votre session ?</p><div class="confirm-buttons"><button class="close-popup-btn" id="confirmYes">Oui</button><button class="close-popup-btn" id="confirmNo">Non</button></div></div></div>
-<footer class="footer"><p>© Ne<span style="color:#f59e0b;">TubeX</span> 2026</p></footer>
+
+<!-- FORMULAIRE TICKET - Sans catégorie, liste déroulante des sujets -->
+<div id="ticketFormPopup" class="slide-popup">
+    <div class="popup-left">
+        <i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i>
+        <h3>📬 Nouveau ticket</h3>
+        <p style="font-size:0.8rem; color:#b0b3b8; margin-bottom:15px;">Sélectionnez le sujet de votre demande</p>
+        
+        <select id="ticketSubjectSelect" class="category-select">
+            <option value="">-- Sélectionnez un sujet --</option>
+            <option value="🔐 Je n'arrive pas à me connecter au Panel A">🔐 Je n'arrive pas à me connecter au Panel A</option>
+            <option value="🔐 Je n'arrive pas à me connecter au Panel B">🔐 Je n'arrive pas à me connecter au Panel B</option>
+            <option value="🔐 Je n'arrive pas à me connecter au Panel C">🔐 Je n'arrive pas à me connecter au Panel C</option>
+            <option value="🎮 Les jeux ne se chargent pas sur mon Terminal">🎮 Les jeux ne se chargent pas sur mon Terminal</option>
+            <option value="📊 Mes points ne sont pas comptabilisés correctement">📊 Mes points ne sont pas comptabilisés correctement</option>
+            <option value="💰 Problème de paiement / rémunération mensuelle">💰 Problème de paiement / rémunération mensuelle</option>
+            <option value="🚫 Mon compte Netuber a été bloqué">🚫 Mon compte Netuber a été bloqué</option>
+            <option value="📱 Problème technique sur l'interface NeTubeX">📱 Problème technique sur l'interface NeTubeX</option>
+            <option value="ℹ️ Demande d'information sur les CAP (Contrat d'Activité Personnalisé)">ℹ️ Demande d'information sur les CAP</option>
+            <option value="🔄 Mon Terminal ne reconnaît pas mon code Netuber">🔄 Mon Terminal ne reconnaît pas mon code Netuber</option>
+            <option value="🐌 Lenteur excessive sur les panels de rémunération">🐌 Lenteur excessive sur les panels de rémunération</option>
+            <option value="❌ Erreur 404 / page introuvable sur le site">❌ Erreur 404 / page introuvable sur le site</option>
+            <option value="🔒 Problème de sécurité / authentification à deux facteurs">🔒 Problème de sécurité / authentification à deux facteurs</option>
+            <option value="📧 Je ne reçois pas les emails de confirmation">📧 Je ne reçois pas les emails de confirmation</option>
+            <option value="💾 Mes données de progression ont disparu">💾 Mes données de progression ont disparu</option>
+            <option value="🕐 Mon temps de connexion n'est pas enregistré">🕐 Mon temps de connexion n'est pas enregistré</option>
+            <option value="🎯 Mon objectif mensuel ne se met pas à jour">🎯 Mon objectif mensuel ne se met pas à jour</option>
+            <option value="📱 L'application mobile NeTubeX plante régulièrement">📱 L'application mobile NeTubeX plante régulièrement</option>
+            <option value="🔔 Je ne reçois pas mes notifications de CAP">🔔 Je ne reçois pas mes notifications de CAP</option>
+            <option value="📝 Autre demande (préciser si besoin)">📝 Autre demande (préciser si besoin)</option>
+        </select>
+        
+        <select id="ticketPriority" class="priority-select">
+            <option value="basse">🟢 Priorité basse - Peut attendre 48h</option>
+            <option value="moyenne" selected="selected">🟠 Priorité moyenne - À traiter rapidement</option>
+            <option value="haute">🔴 Priorité haute - Bloquant / Urgent</option>
+        </select>
+        
+        <div class="confirm-buttons">
+            <button class="close-popup-btn" id="submitTicketBtn" style="background:#f59e0b; color:#000;">📨 Envoyer mon ticket</button>
+            <button class="close-popup-btn" id="closeTicketFormBtn">❌ Annuler</button>
+        </div>
+    </div>
+</div>
+
+<div id="ticketsListPopup" class="slide-popup">
+    <div class="popup-left">
+        <i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i>
+        <h3>📋 Mes tickets</h3>
+        <div style="display:flex; gap:10px; margin:15px 0; justify-content:center;">
+            <button class="tickets-tab active" data-tab="encours" style="padding:8px 16px; border-radius:20px; background:#3a3b3c; border:none; color:#fff;">📩 En cours</button>
+            <button class="tickets-tab" data-tab="resolus" style="padding:8px 16px; border-radius:20px; background:#3a3b3c; border:none; color:#fff;">✅ Résolus</button>
+        </div>
+        <div id="ticketsListContainer" class="tickets-list"></div>
+        <button class="close-popup-btn" id="closeTicketsPopupBtn">🔒 Fermer</button>
+    </div>
+</div>
+
+<div id="capPopup" class="slide-popup">
+    <div class="popup-left">
+        <i class="fas fa-chart-line" style="font-size:2rem;color:#f59e0b;"></i>
+        <h3>📋 Mes CAP</h3>
+        <div id="capsListContainer" class="tickets-list"></div>
+        <button class="close-popup-btn" id="closeCapBtn">🔒 Fermer</button>
+    </div>
+</div>
+
+<div id="confirmPopup" class="slide-popup">
+    <div class="popup-left">
+        <i class="fas fa-sign-out-alt" style="font-size:2rem;color:#ef4444;"></i>
+        <h3>🚪 Déconnexion</h3>
+        <p>Quitter votre session ?</p>
+        <div class="confirm-buttons">
+            <button class="close-popup-btn" id="confirmYes" style="background:#10b981;">✅ Oui</button>
+            <button class="close-popup-btn" id="confirmNo" style="background:#3a3b3c;">❌ Non</button>
+        </div>
+    </div>
+</div>
+
+<footer class="footer"><p>© Ne<span style="color:#f59e0b;">TubeX</span> 2026 | Pôle Technique et Support</p></footer>
 
 <script type="importmap">
 {"imports":{"firebase/app":"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js","firebase/auth":"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js","firebase/firestore":"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"}}
@@ -186,9 +315,61 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 
 <script type="module">
 import{initializeApp}from"firebase/app";import{getAuth,onAuthStateChanged,signOut}from"firebase/auth";import{getFirestore,doc,getDoc,updateDoc,arrayUnion,onSnapshot,collection,addDoc}from"firebase/firestore";
+
 const firebaseConfig={apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);
+
 let currentUser=null,userDocRef=null,currentTickets=[],currentCaps=[],pendingPanel=null,pendingPlatform=null,pendingTargetUrl=null,popupOpenTime=null,pageLoadTime=Date.now(),userLastMenuOpen=null,userReadCapsIds=[],userReadTicketResponseIds=[];
+
+// TOASTS PROFESSIONNELS
+let toastContainer=null;
+function getToastContainer(){
+    if(!toastContainer){
+        toastContainer=document.createElement('div');
+        toastContainer.className='toast-container';
+        document.body.appendChild(toastContainer);
+    }
+    return toastContainer;
+}
+function showToast(message,type='success',duration=6000){
+    const container=getToastContainer();
+    const toast=document.createElement('div');
+    toast.className=`toast toast-${type}`;
+    let icon='',title='';
+    switch(type){
+        case 'success':icon='✅';title='Succès';break;
+        case 'error':icon='❌';title='Erreur';break;
+        case 'info':icon='ℹ️';title='Information';break;
+        case 'warning':icon='⚠️';title='Attention';break;
+        default:icon='✅';title='Notification';
+    }
+    toast.innerHTML=`
+        <div class="toast-icon">${icon}</div>
+        <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close">✕</button>
+    `;
+    container.appendChild(toast);
+    const closeBtn=toast.querySelector('.toast-close');
+    closeBtn.addEventListener('click',()=>{
+        toast.classList.add('toast-exit');
+        setTimeout(()=>toast.remove(),300);
+    });
+    setTimeout(()=>{
+        if(toast.parentElement){
+            toast.classList.add('toast-exit');
+            setTimeout(()=>toast.remove(),300);
+        }
+    },duration);
+    toast.addEventListener('click',(e)=>{
+        if(e.target===closeBtn||closeBtn.contains(e.target))return;
+        toast.classList.add('toast-exit');
+        setTimeout(()=>toast.remove(),300);
+    });
+}
+
 const games=[
 {id:1,name:"The Grand Mafia",avatar:"https://netubex.github.io/netubex-/the-grand-mafia.webp",img:"https://netubex.github.io/netubex-/the-grand-mafia.webp",duration:"30j",totalEarning:"217.18",description:"Jeu de stratégie mafieux. Construis ton empire, recrute des soldats et domine la ville."},
 {id:2,name:"Grab A Toy",avatar:"https://netubex.github.io/netubex-/grab-a-toy.png",img:"https://netubex.github.io/netubex-/grab-a-toy.png",duration:"30j",totalEarning:"142.66",description:"Attrape un max de jouets avec précision. Timing et réflexes seront tes alliés."},
@@ -211,46 +392,184 @@ const howToPlayMap={
 8:"Trace le chemin de l'eau • Active les bons éléments • Résous chaque puzzle • Progresse niveau par niveau",
 9:"Fais éclore des œufs • Nourris tes dragons • Construis des bâtiments • Termine les quêtes • Agrandis ton sanctuaire"
 };
+
 function getDeviceUniqueId(){let d=localStorage.getItem('device_permanent_id');if(!d){const s=`${screen.width}x${screen.height}x${screen.colorDepth}|${Intl.DateTimeFormat().resolvedOptions().timeZone}|${navigator.language}|${navigator.platform}`;let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h)+s.charCodeAt(i),h|=0;d=`DEVICE_${Math.abs(h)}`;localStorage.setItem('device_permanent_id',d);}return d;}
 async function sendSecurityAlert(t,e,o={}){try{await addDoc(collection(db,"security_alerts"),{type:t,level:o.level||'info',email:e||null,netuberCode:o.netuberCode||null,netuberId:o.netuberId||null,message:o.message||'',details:{timeSpentSeconds:Math.floor((Date.now()-pageLoadTime)/1000),deviceId:getDeviceUniqueId(),userAgent:navigator.userAgent,language:navigator.language,platform:navigator.platform,...o},timestamp:new Date().toISOString(),read:false});return true;}catch(e){return false;}}
-function showToast(m,e=false){let t=document.createElement('div');t.className='toast-notification';t.style.background=e?'#ef4444':'#10b981';t.innerHTML=(e?'❌ ':'✅ ')+m;document.body.appendChild(t);setTimeout(()=>t.remove(),3500);}
-function closePopup(i){let p=document.getElementById(i);if(p)p.classList.remove('active');}
 function escapeHtml(str){if(!str)return '';return str.replace(/[&<>]/g,m=>m==='&'?'&amp;':(m==='<'?'&lt;':'&gt;'));}
-function renderGames(){let container=document.getElementById('gamesContainer');if(!container)return;container.innerHTML='';games.forEach(g=>{let card=document.createElement('div');card.className='post-card';card.innerHTML=`<div class="post-top"><div class="avatar"><img src="${g.avatar}" alt="${g.name}"></div><div class="post-right"><div class="post-name">${g.name}</div><div class="post-sub">Nouvelle section <i class="fas fa-globe-africa"></i><span class="jeu-remunerateur">Jeu rémunérateur</span></div><div class="post-description">${g.description}</div></div></div><div class="image-wrapper" data-id="${g.id}" data-name="${g.name}" data-earning="${g.totalEarning}" data-howto="${howToPlayMap[g.id]}"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"><div class="image-overlay"><i class="fas fa-info-circle"></i> Cliquer pour voir comment ça marche</div></div><div class="post-stats"><span class="duration"><i class="fas fa-calendar-alt"></i> ${g.duration}</span><span class="earning"><i class="fas fa-coins"></i> ${g.totalEarning}$</span></div>`;container.appendChild(card);});document.querySelectorAll('.image-wrapper').forEach(wrapper=>{wrapper.addEventListener('click',(e)=>{e.stopPropagation();let id=wrapper.dataset.id;let earning=wrapper.dataset.earning;let howto=wrapper.dataset.howto;document.getElementById('howtoText').innerHTML=howto;let formattedEarning=earning.replace('.',',');document.getElementById('rewardAmount').innerHTML=formattedEarning+' $';document.getElementById('rewardMessage').innerHTML=`${formattedEarning} $ seront ajoutés à votre compte de paiement mensuel si vous terminez ce jeu rémunérateur.`;document.getElementById('howtoPopup').classList.add('active');});});}
-function renderTickets(tab){let container=document.getElementById('ticketsListContainer');if(!container)return;let filtered=currentTickets.filter(t=>tab==='encours'?t.status!=='résolu':t.status==='résolu');if(filtered.length===0){container.innerHTML='<p style="text-align:center;color:#b0b3b8;padding:20px;">Aucun ticket</p>';return;}container.innerHTML=filtered.map(t=>{let statusText=t.status==='ouvert'?'En attente':(t.status==='en cours'?'En cours':'Résolu');let statusClass=t.status==='ouvert'?'status-ouvert':(t.status==='en cours'?'status-en-cours':'status-resolu');let reponsesHtml=t.reponses&&t.reponses.length?`<div class="ticket-reponse"><i class="fas fa-reply"></i> Réponse admin: ${escapeHtml(t.reponses[t.reponses.length-1].message)}</div>`:'';return`<div class="ticket-item ${t.status==='résolu'?'resolu':''}"><div class="ticket-header"><span class="ticket-category">${escapeHtml(t.category)}</span><span class="ticket-date">${new Date(t.date).toLocaleDateString('fr-FR')}</span></div><div class="ticket-subject"><strong>${escapeHtml(t.subject)}</strong></div><div style="margin-top:6px;"><span class="ticket-status ${statusClass}">${statusText}</span></div>${reponsesHtml}</div>`;}).join('');}
-function renderCaps(){let container=document.getElementById('capsListContainer');if(!container)return;if(!currentCaps||!currentCaps.length){container.innerHTML='<p style="text-align:center;color:#b0b3b8;padding:20px;">Aucun CAP reçu</p>';return;}container.innerHTML=currentCaps.map(cap=>`<div class="ticket-item" style="border-left-color:#f59e0b;"><div class="ticket-header"><span class="ticket-category"><i class="fas fa-envelope"></i> CAP</span><span class="ticket-date">${new Date(cap.sentDate).toLocaleDateString('fr-FR')}</span></div><div class="ticket-subject">${escapeHtml(cap.message)}</div>${cap.expiryDate?`<div style="font-size:0.7rem;color:#f59e0b;margin-top:5px;">📅 Expire le: ${new Date(cap.expiryDate).toLocaleDateString('fr-FR')}</div>`:''}</div>`).join('');}
-function updateNotificationBadge(){if(!currentUser)return;let lastMenuOpen=userLastMenuOpen||new Date(0).toISOString();let unreadCount=0;let readCapsIds=userReadCapsIds||[];let readTicketResponseIds=userReadTicketResponseIds||[];currentCaps.forEach(cap=>{if(cap.sentDate&&cap.sentDate>lastMenuOpen&&!readCapsIds.includes(cap.id))unreadCount++;});currentTickets.forEach(ticket=>{if(ticket.reponses&&ticket.reponses.length&&!readTicketResponseIds.includes(ticket.id)){let lastResponse=ticket.reponses[ticket.reponses.length-1];if(lastResponse.date&&lastResponse.date>lastMenuOpen)unreadCount++;}});let badge=document.getElementById('notificationBadge');if(badge){if(unreadCount>0){badge.textContent=unreadCount>99?'99+':unreadCount;badge.style.display='flex';}else{badge.style.display='none';}}}
-async function markNotificationsAsRead(){if(!currentUser||!userDocRef)return;let now=new Date().toISOString();await updateDoc(userDocRef,{lastMenuOpen:now});userLastMenuOpen=now;let readCapsIds=currentCaps.map(c=>c.id);let readTicketResponseIds=currentTickets.filter(t=>t.reponses&&t.reponses.length).map(t=>t.id);await updateDoc(userDocRef,{readCapsIds:readCapsIds,readTicketResponseIds:readTicketResponseIds});userReadCapsIds=readCapsIds;userReadTicketResponseIds=readTicketResponseIds;updateNotificationBadge();}
-async function sendTicketToFirebase(category,subject,priority){if(!currentUser)return false;let ticket={id:`TKT_${Date.now()}_${Math.random().toString(36).substr(2,8)}`,category:category,subCategory:"",subject:subject,priority:priority,status:"ouvert",date:new Date().toISOString(),reponses:[]};try{await updateDoc(userDocRef,{ticketsList:arrayUnion(ticket)});showToast("Ticket envoyé !");return true;}catch(e){showToast("Erreur envoi ticket",true);return false;}}
-function listenToTicketsAndCaps(){if(!userDocRef)return;onSnapshot(userDocRef,(snap)=>{if(snap.exists()){let data=snap.data();currentTickets=data.ticketsList||[];currentCaps=data.capsList||[];let activeTab=document.querySelector('.tickets-tab.active')?.dataset.tab||'encours';renderTickets(activeTab);renderCaps();updateNotificationBadge();}});}
+function renderGames(){
+    let container=document.getElementById('gamesContainer');
+    if(!container)return;
+    container.innerHTML='';
+    games.forEach(g=>{
+        let card=document.createElement('div');
+        card.className='post-card';
+        card.innerHTML=`<div class="post-top"><div class="avatar"><img src="${g.avatar}" alt="${g.name}"></div><div class="post-right"><div class="post-name">${g.name}</div><div class="post-sub">Nouvelle section <i class="fas fa-globe-africa"></i><span class="jeu-remunerateur">Jeu rémunérateur</span></div><div class="post-description">${g.description}</div></div></div><div class="image-wrapper" data-id="${g.id}" data-name="${g.name}" data-earning="${g.totalEarning}" data-howto="${howToPlayMap[g.id]}"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"><div class="image-overlay"><i class="fas fa-info-circle"></i> Cliquer pour voir comment ça marche</div></div><div class="post-stats"><span class="duration"><i class="fas fa-calendar-alt"></i> ${g.duration}</span><span class="earning"><i class="fas fa-coins"></i> ${g.totalEarning}$</span></div>`;
+        container.appendChild(card);
+    });
+    document.querySelectorAll('.image-wrapper').forEach(wrapper=>{
+        wrapper.addEventListener('click',(e)=>{
+            e.stopPropagation();
+            let earning=wrapper.dataset.earning;
+            let howto=wrapper.dataset.howto;
+            document.getElementById('howtoText').innerHTML=howto;
+            let formattedEarning=earning.replace('.',',');
+            document.getElementById('rewardAmount').innerHTML=formattedEarning+' $';
+            document.getElementById('rewardMessage').innerHTML=`${formattedEarning} $ seront ajoutés à votre compte de paiement mensuel si vous terminez ce jeu rémunérateur.`;
+            document.getElementById('howtoPopup').classList.add('active');
+        });
+    });
+}
+
+function renderTickets(tab){
+    let container=document.getElementById('ticketsListContainer');
+    if(!container)return;
+    let filtered=currentTickets.filter(t=>tab==='encours'?t.status!=='résolu':t.status==='résolu');
+    if(filtered.length===0){
+        container.innerHTML='<p style="text-align:center;color:#b0b3b8;padding:20px;">📭 Aucun ticket</p>';
+        return;
+    }
+    container.innerHTML=filtered.map(t=>{
+        let statusText=t.status==='ouvert'?'📩 En attente':(t.status==='en cours'?'⚙️ En cours':'✅ Résolu');
+        let statusClass=t.status==='ouvert'?'status-ouvert':(t.status==='en cours'?'status-en-cours':'status-resolu');
+        let reponsesHtml=t.reponses&&t.reponses.length?`<div class="ticket-reponse"><i class="fas fa-headset"></i> <strong>Réponse Pôle Technique:</strong><br>${escapeHtml(t.reponses[t.reponses.length-1].message)}</div>`:'';
+        return`
+        <div class="ticket-item ${t.status==='résolu'?'resolu':''}">
+            <div class="ticket-header">
+                <span class="ticket-date"><i class="far fa-calendar-alt"></i> ${new Date(t.date).toLocaleDateString('fr-FR')}</span>
+            </div>
+            <div class="ticket-subject"><i class="fas fa-comment-dots" style="margin-right:8px;color:#f59e0b;"></i>${escapeHtml(t.subject)}</div>
+            <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center;">
+                <span class="ticket-status ${statusClass}"><i class="fas fa-circle"></i> ${statusText}</span>
+                <span class="ticket-priority">
+                    ${t.priority==='haute'?'🔴 Priorité haute':(t.priority==='moyenne'?'🟠 Priorité moyenne':'🟢 Priorité basse')}
+                </span>
+            </div>
+            ${reponsesHtml}
+        </div>`;
+    }).join('');
+}
+
+function renderCaps(){
+    let container=document.getElementById('capsListContainer');
+    if(!container)return;
+    if(!currentCaps||!currentCaps.length){
+        container.innerHTML='<p style="text-align:center;color:#b0b3b8;padding:20px;">📭 Aucun CAP reçu</p>';
+        return;
+    }
+    container.innerHTML=currentCaps.map(cap=>`<div class="ticket-item" style="border-left-color:#f59e0b;"><div class="ticket-header"><span class="ticket-category"><i class="fas fa-envelope"></i> CAP</span><span class="ticket-date">${new Date(cap.sentDate).toLocaleDateString('fr-FR')}</span></div><div class="ticket-subject"><i class="fas fa-chart-line" style="margin-right:8px;color:#f59e0b;"></i>${escapeHtml(cap.message)}</div>${cap.expiryDate?`<div style="font-size:0.7rem;color:#f59e0b;margin-top:5px;">📅 Expire le: ${new Date(cap.expiryDate).toLocaleDateString('fr-FR')}</div>`:''}</div>`).join('');
+}
+
+function updateNotificationBadge(){
+    if(!currentUser)return;
+    let lastMenuOpen=userLastMenuOpen||new Date(0).toISOString();
+    let unreadCount=0;
+    let readCapsIds=userReadCapsIds||[];
+    let readTicketResponseIds=userReadTicketResponseIds||[];
+    currentCaps.forEach(cap=>{if(cap.sentDate&&cap.sentDate>lastMenuOpen&&!readCapsIds.includes(cap.id))unreadCount++;});
+    currentTickets.forEach(ticket=>{if(ticket.reponses&&ticket.reponses.length&&!readTicketResponseIds.includes(ticket.id)){let lastResponse=ticket.reponses[ticket.reponses.length-1];if(lastResponse.date&&lastResponse.date>lastMenuOpen)unreadCount++;}});
+    let badge=document.getElementById('notificationBadge');
+    if(badge){if(unreadCount>0){badge.textContent=unreadCount>99?'99+':unreadCount;badge.style.display='flex';}else{badge.style.display='none';}}
+}
+
+async function markNotificationsAsRead(){
+    if(!currentUser||!userDocRef)return;
+    let now=new Date().toISOString();
+    await updateDoc(userDocRef,{lastMenuOpen:now});
+    userLastMenuOpen=now;
+    let readCapsIds=currentCaps.map(c=>c.id);
+    let readTicketResponseIds=currentTickets.filter(t=>t.reponses&&t.reponses.length).map(t=>t.id);
+    await updateDoc(userDocRef,{readCapsIds:readCapsIds,readTicketResponseIds:readTicketResponseIds});
+    userReadCapsIds=readCapsIds;
+    userReadTicketResponseIds=readTicketResponseIds;
+    updateNotificationBadge();
+}
+
+async function sendTicketToFirebase(subject,priority){
+    if(!currentUser)return false;
+    if(!subject||subject===''){
+        showToast("Veuillez sélectionner un sujet","error");
+        return false;
+    }
+    let ticket={id:`TKT_${Date.now()}_${Math.random().toString(36).substr(2,8)}`,subject:subject,priority:priority,status:"ouvert",date:new Date().toISOString(),reponses:[]};
+    try{
+        await updateDoc(userDocRef,{ticketsList:arrayUnion(ticket)});
+        showToast("✅ Ticket envoyé avec succès !","success");
+        return true;
+    }catch(e){showToast("❌ Erreur envoi ticket","error");return false;}
+}
+
+function listenToTicketsAndCaps(){
+    if(!userDocRef)return;
+    onSnapshot(userDocRef,(snap)=>{
+        if(snap.exists()){
+            let data=snap.data();
+            currentTickets=data.ticketsList||[];
+            currentCaps=data.capsList||[];
+            let activeTab=document.querySelector('.tickets-tab.active')?.dataset.tab||'encours';
+            renderTickets(activeTab);
+            renderCaps();
+            updateNotificationBadge();
+        }
+    });
+}
+
 async function updateOnlineStatus(){if(currentUser&&userDocRef)await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(()=>{});}
 async function sendRewardConfirmation(panel,platform,url){let decisionTime=(Date.now()-popupOpenTime)/1000;let userSnap=await getDoc(userDocRef);let userData=userSnap.data();let timeSpent=Math.floor((Date.now()-pageLoadTime)/1000);await sendSecurityAlert('reward_session_start',userData?.email,{level:'info',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`✅ ${panel} lancé`,platform:platform,details:{timeSpentSeconds:timeSpent,deviceId:getDeviceUniqueId(),userConfirmed:true,decisionTime:decisionTime,targetUrl:url}});window.open(url,'_blank');}
 function showFlyPopup(panel,letter,color,platform,url){pendingPanel=panel;pendingPlatform=platform;pendingTargetUrl=url;popupOpenTime=Date.now();let popup=document.getElementById('flyPopup');let letterDiv=document.getElementById('popupLetter');let title=document.getElementById('popupTitle');let btns=document.getElementById('popupButtons');letterDiv.textContent=letter;letterDiv.style.backgroundColor=color;title.textContent=panel;let btnClass=color==='#10b981'?'a':(color==='#3b82f6'?'b':'c');btns.innerHTML=`<button class="btn-yes-${btnClass}" id="confirmYesBtn">Oui</button><button class="btn-no" id="confirmNoBtn">Non</button>`;popup.classList.add('active');document.getElementById('confirmYesBtn')?.addEventListener('click',async()=>{if(pendingPanel&&pendingTargetUrl)await sendRewardConfirmation(pendingPanel,pendingPlatform,pendingTargetUrl);document.getElementById('flyPopup').classList.remove('active');pendingPanel=pendingPlatform=pendingTargetUrl=null;},{once:true});document.getElementById('confirmNoBtn')?.addEventListener('click',()=>{document.getElementById('flyPopup').classList.remove('active');pendingPanel=pendingPlatform=pendingTargetUrl=null;},{once:true});}
-async function initUser(user){if(!user)return;let deviceId=getDeviceUniqueId();currentUser=user;userDocRef=doc(db,"users",user.uid);let snap=await getDoc(userDocRef);if(!snap.exists()){showToast("❌ Compte invalide",true);await signOut(auth);window.location.href="login.html";return;}let userData=snap.data();if(!userData.deviceId){await updateDoc(userDocRef,{deviceId:deviceId});showToast("✅ Téléphone associé");await sendSecurityAlert('new_device_linked',userData.email,{level:'info',netuberCode:userData.code,netuberId:user.uid,message:`Nouvel appareil pour ${userData.code}`,registeredDeviceId:deviceId});}else if(userData.deviceId!==deviceId){showToast("❌ Appareil non autorisé",true);await sendSecurityAlert('device_mismatch',userData.email,{level:'critical',netuberCode:userData.code,netuberId:user.uid,message:`Device mismatch ${userData.code}`,registeredDeviceId:userData.deviceId,attemptedDeviceId:deviceId});await signOut(auth);setTimeout(()=>{window.location.href="login.html";},2000);return;}await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(()=>{});document.getElementById('userCodeDisplay').textContent=userData.code||"NETUBER";userLastMenuOpen=userData.lastMenuOpen||new Date(0).toISOString();userReadCapsIds=userData.readCapsIds||[];userReadTicketResponseIds=userData.readTicketResponseIds||[];renderGames();listenToTicketsAndCaps();setInterval(()=>updateOnlineStatus(),30000);}
+async function initUser(user){
+    if(!user)return;
+    let deviceId=getDeviceUniqueId();
+    currentUser=user;
+    userDocRef=doc(db,"users",user.uid);
+    let snap=await getDoc(userDocRef);
+    if(!snap.exists()){showToast("❌ Compte invalide","error");await signOut(auth);window.location.href="login.html";return;}
+    let userData=snap.data();
+    if(!userData.deviceId){
+        await updateDoc(userDocRef,{deviceId:deviceId});
+        showToast("✅ Terminal associé avec succès","success");
+        await sendSecurityAlert('new_device_linked',userData.email,{level:'info',netuberCode:userData.code,netuberId:user.uid,message:`Nouveau terminal pour ${userData.code}`,registeredDeviceId:deviceId});
+    }else if(userData.deviceId!==deviceId){
+        showToast("❌ Terminal non autorisé. Contactez le Pôle Technique","error");
+        await sendSecurityAlert('device_mismatch',userData.email,{level:'critical',netuberCode:userData.code,netuberId:user.uid,message:`Terminal mismatch ${userData.code}`,registeredDeviceId:userData.deviceId,attemptedDeviceId:deviceId});
+        await signOut(auth);
+        setTimeout(()=>{window.location.href="login.html";},2000);
+        return;
+    }
+    await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(()=>{});
+    document.getElementById('userCodeDisplay').textContent=userData.code||"NETUBER";
+    userLastMenuOpen=userData.lastMenuOpen||new Date(0).toISOString();
+    userReadCapsIds=userData.readCapsIds||[];
+    userReadTicketResponseIds=userData.readTicketResponseIds||[];
+    renderGames();
+    listenToTicketsAndCaps();
+    setInterval(()=>updateOnlineStatus(),30000);
+}
 async function performLogout(){if(currentUser&&userDocRef){let userSnap=await getDoc(userDocRef);let userData=userSnap.data();await sendSecurityAlert('logout',userData?.email,{level:'info',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`Déconnexion de ${userData?.code||currentUser?.email}`,sessionDuration:Math.floor((Date.now()-pageLoadTime)/1000)});await updateDoc(userDocRef,{isOnline:false,lastDisconnection:new Date().toISOString()}).catch(()=>{});}await signOut(auth);window.location.href="login.html";}
-document.getElementById('closeTicketsPopupBtn')?.addEventListener('click',()=>closePopup('ticketsListPopup'));
-document.getElementById('closeTicketFormBtn')?.addEventListener('click',()=>closePopup('ticketFormPopup'));
-document.getElementById('closeCapBtn')?.addEventListener('click',()=>closePopup('capPopup'));
-document.getElementById('closeHowtoBtn')?.addEventListener('click',()=>closePopup('howtoPopup'));
-document.getElementById('closeHowtoFooterBtn')?.addEventListener('click',()=>closePopup('howtoPopup'));
+
+// Event Listeners
+document.getElementById('closeTicketsPopupBtn')?.addEventListener('click',()=>{document.getElementById('ticketsListPopup').classList.remove('active');});
+document.getElementById('closeTicketFormBtn')?.addEventListener('click',()=>{document.getElementById('ticketFormPopup').classList.remove('active');document.getElementById('ticketSubjectSelect').value='';document.getElementById('ticketPriority').value='moyenne';});
+document.getElementById('closeCapBtn')?.addEventListener('click',()=>{document.getElementById('capPopup').classList.remove('active');});
+document.getElementById('closeHowtoBtn')?.addEventListener('click',()=>{document.getElementById('howtoPopup').classList.remove('active');});
+document.getElementById('closeHowtoFooterBtn')?.addEventListener('click',()=>{document.getElementById('howtoPopup').classList.remove('active');});
 document.getElementById('menuFloatBtn')?.addEventListener('click',()=>{document.getElementById('menuFloating').classList.toggle('active');markNotificationsAsRead();});
 document.getElementById('menuLogoutBtn')?.addEventListener('click',()=>{document.getElementById('menuFloating').classList.remove('active');document.getElementById('confirmPopup').classList.add('active');});
 document.getElementById('menuTicketsBtn')?.addEventListener('click',()=>{document.getElementById('menuFloating').classList.remove('active');renderTickets('encours');document.getElementById('ticketsListPopup').classList.add('active');});
 document.getElementById('menuNewTicketBtn')?.addEventListener('click',()=>{document.getElementById('menuFloating').classList.remove('active');document.getElementById('ticketFormPopup').classList.add('active');});
 document.getElementById('menuCapBtn')?.addEventListener('click',()=>{document.getElementById('menuFloating').classList.remove('active');renderCaps();document.getElementById('capPopup').classList.add('active');});
 document.querySelectorAll('.tickets-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.tickets-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');renderTickets(tab.dataset.tab);});});
-document.getElementById('submitTicketBtn')?.addEventListener('click',async()=>{let category=document.getElementById('ticketCategory').value;let subject=document.getElementById('ticketSubject').value.trim();let priority=document.getElementById('ticketPriority').value;if(!category||!subject){showToast("Remplissez catégorie et titre",true);return;}await sendTicketToFirebase(category,subject,priority);closePopup('ticketFormPopup');document.getElementById('ticketCategory').value='';document.getElementById('ticketSubject').value='';});
+document.getElementById('submitTicketBtn')?.addEventListener('click',async()=>{let subject=document.getElementById('ticketSubjectSelect').value;let priority=document.getElementById('ticketPriority').value;if(!subject||subject===''){showToast("Veuillez sélectionner un sujet","error");return;}await sendTicketToFirebase(subject,priority);document.getElementById('ticketFormPopup').classList.remove('active');document.getElementById('ticketSubjectSelect').value='';document.getElementById('ticketPriority').value='moyenne';});
 document.getElementById('panelAbtn')?.addEventListener('click',async()=>{let userSnap=await getDoc(userDocRef);let userData=userSnap.data();let uniqueId=userData?.uniqueId||currentUser?.uid;showFlyPopup('Panel A','A','#10b981','timewall',`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`);});
 document.getElementById('panelBbtn')?.addEventListener('click',()=>{showFlyPopup('Panel B','B','#3b82f6','timebucks','https://timebucks.com');});
 document.getElementById('panelCbtn')?.addEventListener('click',()=>{showFlyPopup('Panel C','C','#f59e0b','gaingg','https://gain.gg/earn');});
 document.getElementById('confirmYes')?.addEventListener('click',async()=>{await performLogout();});
-document.getElementById('confirmNo')?.addEventListener('click',()=>closePopup('confirmPopup'));
+document.getElementById('confirmNo')?.addEventListener('click',()=>{document.getElementById('confirmPopup').classList.remove('active');});
+
 document.addEventListener('contextmenu',e=>e.preventDefault());
 document.querySelectorAll('img').forEach(img=>{img.addEventListener('contextmenu',e=>e.preventDefault());img.addEventListener('dragstart',e=>e.preventDefault());});
 document.addEventListener('keydown',e=>{if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C'))||(e.ctrlKey&&e.key==='u')||(e.ctrlKey&&e.key==='s')||e.key==='F5'){e.preventDefault();return false;}});
 let lastScrollTop=0;let header=document.getElementById('mainHeader');window.addEventListener('scroll',function(){let scrollTop=window.pageYOffset||document.documentElement.scrollTop;if(scrollTop>lastScrollTop&&scrollTop>70)header.classList.add('hide');else if(scrollTop<lastScrollTop)header.classList.remove('hide');lastScrollTop=scrollTop<=0?0:scrollTop;});
 onAuthStateChanged(auth,async(user)=>{if(user)await initUser(user);else window.location.href="login.html";});
-window.sendSecurityAlert=sendSecurityAlert;
 </script>
 </body>
 </html>
