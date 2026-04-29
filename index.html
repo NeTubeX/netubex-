@@ -15,61 +15,87 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 50% 50%, rgba(45,136,255,0.08) 0%, transparent 70%);pointer-events:none;z-index:0;}
 *{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
 *:not(input):not(textarea){user-select:none!important;-webkit-user-select:none!important;}
-.navbar{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:rgba(36,37,38,0.85);backdrop-filter:blur(12px);position:fixed;top:0;left:0;right:0;z-index:1000;width:100%;transition:transform 0.3s ease;border-bottom:1px solid rgba(62,64,66,0.5);}
+input,textarea{user-select:text!important;-webkit-user-select:text!important;}
+img,a,button,.floating-menu-item,.menu-toggle,.logo-img-large,.member-full-img,.facebook-post,.story-circle{user-select:none!important;-webkit-user-drag:none!important;}
+img{pointer-events:auto!important;-webkit-user-drag:none!important;cursor:pointer;}
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:rgba(36,37,38,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:fixed;top:0;left:0;right:0;z-index:1000;width:100%;transition:transform 0.3s ease;transform:translateY(0);border-bottom:1px solid rgba(62,64,66,0.5);}
 .navbar.hide{transform:translateY(-100%);}
 .logo-wrapper{display:flex;align-items:center;gap:10px;}
 .logo-img-large{width:40px;height:40px;object-fit:contain;background:transparent;border-radius:50%;}
-.logo-text{font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,#e4e6eb,#2d88ff);-webkit-background-clip:text;background-clip:text;color:transparent;}
-.menu-toggle{background:rgba(58,59,60,0.8);backdrop-filter:blur(8px);border:none;padding:8px 14px;border-radius:20px;font-weight:600;color:#e4e6eb;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:0.9rem;}
-.floating-menu{position:fixed;top:-500px;right:12px;background:rgba(36,37,38,0.95);backdrop-filter:blur(16px);border-radius:12px;padding:8px;min-width:260px;box-shadow:0 12px 28px rgba(0,0,0,0.5);transition:top 0.45s cubic-bezier(0.2,0.9,0.4,1.1);z-index:1001;opacity:0;visibility:hidden;border:1px solid rgba(62,64,66,0.6);}
+.logo-text{font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,#e4e6eb,#2d88ff);-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block;letter-spacing:-0.5px;}
+.menu-toggle{background:rgba(58,59,60,0.8);backdrop-filter:blur(8px);border:none;padding:8px 14px;border-radius:20px;font-weight:600;color:#e4e6eb;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.3s cubic-bezier(0.2,0.9,0.4,1.1);font-size:0.9rem;}
+.menu-toggle:hover{background:rgba(78,79,80,0.9);transform:scale(1.02);}
+.floating-menu{position:fixed;top:-500px;right:12px;background:rgba(36,37,38,0.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:12px;padding:8px;min-width:260px;box-shadow:0 12px 28px rgba(0,0,0,0.5);transition:top 0.45s cubic-bezier(0.2,0.9,0.4,1.1);z-index:1001;opacity:0;visibility:hidden;border:1px solid rgba(62,64,66,0.6);}
 .floating-menu.active{top:60px;opacity:1;visibility:visible;}
-.floating-menu-item{display:flex;align-items:center;gap:14px;padding:10px 16px;margin:2px 0;border-radius:8px;color:#e4e6eb;text-decoration:none;font-size:0.9rem;font-weight:500;cursor:pointer;}
-.floating-menu-item i{width:24px;color:#2d88ff;}
+.floating-menu-item{display:flex;align-items:center;gap:14px;padding:10px 16px;margin:2px 0;border-radius:8px;color:#e4e6eb;text-decoration:none;font-size:0.9rem;font-weight:500;cursor:pointer;transition:all 0.2s ease;}
+.floating-menu-item:hover{background:rgba(58,59,60,0.8);transform:translateX(4px);}
+.floating-menu-item i{width:24px;color:#2d88ff;pointer-events:none;}
 .floating-divider{height:1px;background:rgba(62,64,66,0.6);margin:8px 12px;}
 .content-wrapper{width:100%;display:flex;justify-content:center;min-height:100vh;position:relative;z-index:1;}
 .posts-container{width:100%;max-width:680px;margin:0 auto;padding:60px 0 20px 0;}
-.facebook-post{background:rgba(36,37,38,0.75);backdrop-filter:blur(10px);margin-bottom:12px;width:100%;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.25);overflow:hidden;border:1px solid rgba(62,64,66,0.4);}
-.post-header{display:flex;align-items:center;gap:12px;padding:12px 16px 8px 16px;}
-.post-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#2d88ff,#1b74e4);display:flex;align-items:center;justify-content:center;color:white;font-size:1rem;font-weight:600;flex-shrink:0;}
+.facebook-post{background:rgba(36,37,38,0.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);margin-bottom:12px;width:100%;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.25);overflow:hidden;transition:all 0.3s cubic-bezier(0.2,0.9,0.4,1.1);transform-origin:center;border:1px solid rgba(62,64,66,0.4);}
+.facebook-post:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.35);}
+.post-header{display:flex;align-items:center;gap:12px;padding:12px 16px 8px 16px;background:transparent;}
+.post-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#2d88ff,#1b74e4);display:flex;align-items:center;justify-content:center;color:white;font-size:1rem;font-weight:600;flex-shrink:0;transition:transform 0.3s ease;}
+.post-avatar:hover{transform:scale(1.05);}
 .post-author-info{flex:1;}
 .post-author{font-weight:700;color:#e4e6eb;font-size:0.95rem;}
 .post-time{font-size:0.7rem;color:#b0b3b8;margin-top:2px;}
-.post-content{padding:0 16px 12px 16px;}
-.post-title{font-size:1.3rem;font-weight:700;color:#e4e6eb;margin-bottom:10px;line-height:1.3;}
+.post-content{padding:0 16px 12px 16px;background:transparent;}
+.post-title{font-size:1.3rem;font-weight:700;color:#e4e6eb;margin-bottom:10px;line-height:1.3;display:inline-block;transition:all 0.3s ease;}
+.post-title:hover{animation:wave 0.5s ease-in-out;}
+@keyframes wave{0%,100%{transform:translateY(0);}25%{transform:translateY(-3px);}75%{transform:translateY(2px);}}
 .post-text{color:#e4e6eb;font-size:0.95rem;line-height:1.5;}
-.post-media{margin:8px -16px -12px -16px;}
-.post-media img{width:100%;height:auto;display:block;}
-.stories-section{background:rgba(36,37,38,0.75);backdrop-filter:blur(10px);margin-bottom:12px;padding:12px 16px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;width:100%;border-radius:16px;border:1px solid rgba(62,64,66,0.4);}
+.post-media{margin:8px -16px -12px -16px;background:transparent;}
+.post-media img{width:100%;height:auto;display:block;object-fit:cover;border-radius:0;}
+.identity-full{background:rgba(28,30,33,0.8);margin:8px -16px -12px -16px;padding:60px 20px;text-align:center;width:calc(100% + 32px);min-height:400px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.identity-full img{max-width:200px;height:auto;margin:0 auto;display:block;background:transparent;border-radius:50%;}
+.stories-section{background:rgba(36,37,38,0.75);backdrop-filter:blur(10px);margin-bottom:12px;padding:12px 16px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;width:100%;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.25);border:1px solid rgba(62,64,66,0.4);}
 .stories-section::-webkit-scrollbar{display:none;}
 .stories-container{display:flex;gap:12px;}
-.story-circle{display:inline-flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;width:70px;}
+.story-circle{display:inline-flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;width:70px;transition:transform 0.3s ease;}
+.story-circle:hover{transform:translateY(-3px);}
 .story-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#feda77,#d62976,#962fbf,#4f5bd5);padding:2px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .story-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;border:2px solid #242526;}
-.story-name{font-size:0.7rem;color:#e4e6eb;text-align:center;max-width:70px;}
-.info-card{background:rgba(58,59,60,0.6);backdrop-filter:blur(5px);border-radius:12px;padding:16px;margin-bottom:8px;cursor:pointer;border:1px solid rgba(62,64,66,0.3);}
+.story-name{font-size:0.7rem;color:#e4e6eb;text-align:center;white-space:normal;word-break:keep-all;max-width:70px;}
+.info-card{background:rgba(58,59,60,0.6);backdrop-filter:blur(5px);border-radius:12px;padding:16px;margin-bottom:8px;cursor:pointer;transition:all 0.3s cubic-bezier(0.2,0.9,0.4,1.1);border:1px solid rgba(62,64,66,0.3);}
 .info-card:last-child{margin-bottom:0;}
+.info-card:hover{background:rgba(78,79,80,0.7);transform:translateX(4px) translateY(-2px);}
 .info-card i{font-size:1.5rem;color:#2d88ff;margin-right:12px;vertical-align:middle;}
-.info-title{font-size:0.95rem;font-weight:600;color:#e4e6eb;display:inline-block;vertical-align:middle;}
+.info-title{font-size:0.95rem;font-weight:600;color:#e4e6eb;margin-bottom:6px;display:inline-block;vertical-align:middle;}
 .info-text{color:#b0b3b8;font-size:0.8rem;line-height:1.4;margin-top:6px;}
-.btn-action{background:linear-gradient(135deg,#2d88ff,#1b74e4);border:none;padding:10px 20px;border-radius:8px;font-weight:600;color:white;cursor:pointer;display:inline-flex;align-items:center;gap:10px;font-size:0.9rem;margin-top:12px;width:100%;justify-content:center;}
-.click-hint{text-align:center;margin-top:10px;font-size:0.7rem;color:#b0b3b8;}
+.btn-action{background:linear-gradient(135deg,#2d88ff,#1b74e4);border:none;padding:10px 20px;border-radius:8px;font-weight:600;color:white;cursor:pointer;display:inline-flex;align-items:center;gap:10px;font-size:0.9rem;transition:all 0.3s ease;margin-top:12px;width:100%;justify-content:center;}
+.btn-action:hover{transform:scale(1.02);box-shadow:0 4px 12px rgba(45,136,255,0.3);}
+.click-hint{text-align:center;margin-top:10px;margin-bottom:5px;font-size:0.7rem;color:#b0b3b8;}
 footer{background:rgba(28,30,33,0.8);backdrop-filter:blur(10px);border-top:1px solid rgba(62,64,66,0.5);padding:30px 20px 20px 20px;width:100%;margin-top:20px;}
 .footer-inner{max-width:680px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:30px;}
 .footer-section{flex:1;min-width:150px;}
-.footer-section h4{color:#e4e6eb;font-size:0.9rem;margin-bottom:15px;}
-.footer-section p{color:#b0b3b8;font-size:0.75rem;}
-.footer-section a{color:#b0b3b8;text-decoration:none;font-size:0.75rem;display:block;margin-bottom:8px;}
+.footer-section h4{color:#e4e6eb;font-size:0.9rem;font-weight:600;margin-bottom:15px;letter-spacing:0.5px;}
+.footer-section p{color:#b0b3b8;font-size:0.75rem;line-height:1.6;margin-bottom:8px;}
+.footer-section a{color:#b0b3b8;text-decoration:none;font-size:0.75rem;display:block;margin-bottom:8px;transition:all 0.2s ease;}
+.footer-section a:hover{color:#2d88ff;transform:translateX(4px);}
+.footer-logo-section{display:flex;flex-direction:column;gap:10px;}
+.footer-logo-large{display:flex;align-items:center;gap:10px;margin-bottom:5px;}
+.footer-logo-large img{width:35px;height:35px;border-radius:50%;background:transparent;}
+.footer-logo-large span{font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,#e4e6eb,#2d88ff);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .footer-copyright{color:#b0b3b8;font-size:0.7rem;text-align:center;padding-top:20px;margin-top:20px;border-top:1px solid rgba(62,64,66,0.5);}
+.social-icons{display:flex;gap:15px;margin-top:10px;}
+.social-icons a{display:inline-block;margin-bottom:0;}
+.social-icons i{font-size:1.2rem;transition:all 0.2s;color:#b0b3b8;}
+.social-icons a:hover i{color:#2d88ff;transform:scale(1.1);}
 .payment-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0;}
-.payment-card{background:rgba(58,59,60,0.6);border-radius:12px;padding:12px;text-align:center;border:1px solid rgba(62,64,66,0.3);}
+.payment-card{background:rgba(58,59,60,0.6);backdrop-filter:blur(5px);border-radius:12px;padding:12px;text-align:center;transition:all 0.3s ease;border:1px solid rgba(62,64,66,0.3);}
+.payment-card:hover{transform:scale(1.05) translateY(-3px);background:rgba(78,79,80,0.7);}
 .payment-img{width:60px;height:60px;object-fit:contain;margin:0 auto 8px auto;display:block;border-radius:10px;}
 .payment-name{font-size:0.8rem;font-weight:600;color:#e4e6eb;}
 .full-width-img{margin:0 -16px;width:calc(100% + 32px);display:block;}
 .full-width-img img{width:100%;height:auto;display:block;}
-.threshold-caption{padding:10px 0;text-align:center;background:linear-gradient(135deg,#2d88ff,#feda77);-webkit-background-clip:text;background-clip:text;color:transparent;}
-.fade-section{opacity:0;transform:translateY(30px);transition:opacity 0.6s,transform 0.6s;}
+.threshold-caption{padding:10px 0 5px 0;text-align:center;font-weight:500;background:linear-gradient(135deg,#2d88ff,#feda77);-webkit-background-clip:text;background-clip:text;color:transparent;}
+@media (max-width:560px){.posts-container{padding:56px 12px 20px 12px;}.post-avatar{width:36px;height:36px;}.post-header{padding:10px 12px 6px 12px;}.post-content{padding:0 12px 10px 12px;}.post-title{font-size:1.1rem;}.story-circle{width:65px;}.story-avatar{width:58px;height:58px;}.payment-img{width:50px;height:50px;}.footer-inner{flex-direction:column;gap:20px;text-align:center;}.footer-section h4{margin-bottom:10px;}.social-icons{justify-content:center;}.identity-full{min-height:300px;padding:40px 20px;}}
+.fade-section{opacity:0;transform:translateY(30px);transition:opacity 0.6s cubic-bezier(0.2,0.9,0.4,1.1),transform 0.6s cubic-bezier(0.2,0.9,0.4,1.1);}
 .fade-section.visible{opacity:1;transform:translateY(0);}
-@media (max-width:560px){.posts-container{padding:56px 12px 20px 12px;}.story-avatar{width:58px;height:58px;}}
+.stagger-item{transition-delay:0s;}
+.stagger-item.visible{transition-delay:calc(var(--index,0) * 0.05s);}
 </style>
 </head>
 <body>
@@ -78,12 +104,14 @@ footer{background:rgba(28,30,33,0.8);backdrop-filter:blur(10px);border-top:1px s
 <img src="favicon.png.png" alt="NeTubeX Logo" class="logo-img-large">
 <span class="logo-text">NeTubeX</span>
 </div>
-<button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i> Menu</button>
+<button class="menu-toggle" id="menuToggle">
+<i class="fas fa-bars"></i> Menu
+</button>
 </div>
 <div class="floating-menu" id="floatingMenu">
-<div style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid rgba(62,64,66,0.6);">
-<img src="favicon.png.png" alt="NeTubeX" style="width:32px;height:32px;border-radius:50%;">
-<span style="font-weight:700;background:linear-gradient(135deg,#e4e6eb,#2d88ff);-webkit-background-clip:text;background-clip:text;color:transparent;">NeTubeX</span>
+<div style="display:flex;align-items:center;gap:12px;padding:12px 18px;margin-bottom:6px;border-bottom:1px solid rgba(62,64,66,0.6);">
+<img src="favicon.png.png" alt="NeTubeX" style="width:32px;height:32px;border-radius:50%;background:transparent;pointer-events:none;">
+<span style="font-weight:600;background:linear-gradient(135deg,#e4e6eb,#2d88ff);-webkit-background-clip:text;background-clip:text;color:transparent;">NeTubeX</span>
 </div>
 <a href="#" class="floating-menu-item" id="postulerBtn"><i class="fab fa-whatsapp"></i> Postuler</a>
 <a href="#" class="floating-menu-item" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Connexion</a>
@@ -99,59 +127,148 @@ footer{background:rgba(28,30,33,0.8);backdrop-filter:blur(10px);border-top:1px s
 </div>
 <div class="content-wrapper">
 <div class="posts-container" id="postsContainer">
-<div class="stories-section fade-section">
+<div class="stories-section fade-section stagger-item" style="--index:0">
 <div class="stories-container">
-<div class="story-circle story-clickable" data-url="https://www.netubex.com/login.html"><div class="story-avatar"><img src="https://netubex.github.io/netubex-/survivor-idle-run.png" alt="Jeu" onerror="this.src='https://placehold.co/64x64/2d88ff/ffffff?text=💰'"></div><div class="story-name">Survivor Run</div></div>
-<div class="story-circle story-clickable" data-url="https://www.netubex.com/login.html"><div class="story-avatar"><img src="https://netubex.github.io/netubex-/sky-plunger.png" alt="Jeu" onerror="this.src='https://placehold.co/64x64/2d88ff/ffffff?text=💰'"></div><div class="story-name">Sky Plunger</div></div>
-<div class="story-circle story-clickable" data-url="https://www.netubex.com/login.html"><div class="story-avatar"><img src="https://netubex.github.io/netubex-/goblin-heist.jpg" alt="Jeu" onerror="this.src='https://placehold.co/64x64/2d88ff/ffffff?text=💰'"></div><div class="story-name">Goblin Heist</div></div>
-<div class="story-circle story-clickable" data-url="https://www.netubex.com/login.html"><div class="story-avatar"><img src="https://netubex.github.io/netubex-/wild-fish.png" alt="Jeu" onerror="this.src='https://placehold.co/64x64/2d88ff/ffffff?text=💰'"></div><div class="story-name">Wild Fish</div></div>
-<div class="story-circle story-clickable" data-url="https://www.netubex.com/login.html"><div class="story-avatar"><img src="https://netubex.github.io/netubex-/grab-a-toy.png" alt="Jeu" onerror="this.src='https://placehold.co/64x64/2d88ff/ffffff?text=💰'"></div><div class="story-name">Grab A Toy</div></div>
-<div class="story-circle story-clickable" data-url="https://www.netubex.com/login.html"><div class="story-avatar"><img src="https://netubex.github.io/netubex-/love-water.gif" alt="Jeu" onerror="this.src='https://placehold.co/64x64/2d88ff/ffffff?text=💰'"></div><div class="story-name">Love Water</div></div>
+<div class="story-circle story-clickable" data-url="https://www.netubex.com/login.html">
+<div class="story-avatar"><img src="https://netubex.github.io/netubex-/survivor-idle-run.png" alt="Jeu rémunérateur" onerror="this.src='https://placehold.co/64x64/2d88ff/ffffff?text=💰'"></div>
+<div class="story-name">Survivor Run</div>
+</div>
+<div class="story-circle story-clickable" data-url="https://www.netubex.com/login.html">
+<div class="story-avatar"><img src="https://netubex.github.io/netubex-/sky-plunger.png" alt="Jeu rémunérateur" onerror="this.src='https://placehold.co/64x64/2d88ff/ffffff?text=💰'"></div>
+<div class="story-name">Sky Plunger</div>
+</div>
+<div class="story-circle story-clickable" data-url="https://www.netubex.com/login.html">
+<div class="story-avatar"><img src="https://netubex.github.io/netubex-/goblin-heist.jpg" alt="Jeu rémunérateur" onerror="this.src='https://placehold.co/64x64/2d88ff/ffffff?text=💰'"></div>
+<div class="story-name">Goblin Heist</div>
+</div>
+<div class="story-circle story-clickable" data-url="https://www.netubex.com/login.html">
+<div class="story-avatar"><img src="https://netubex.github.io/netubex-/wild-fish.png" alt="Jeu rémunérateur" onerror="this.src='https://placehold.co/64x64/2d88ff/ffffff?text=💰'"></div>
+<div class="story-name">Wild Fish</div>
+</div>
+<div class="story-circle story-clickable" data-url="https://www.netubex.com/login.html">
+<div class="story-avatar"><img src="https://netubex.github.io/netubex-/grab-a-toy.png" alt="Jeu rémunérateur" onerror="this.src='https://placehold.co/64x64/2d88ff/ffffff?text=💰'"></div>
+<div class="story-name">Grab A Toy</div>
+</div>
+<div class="story-circle story-clickable" data-url="https://www.netubex.com/login.html">
+<div class="story-avatar"><img src="https://netubex.github.io/netubex-/love-water.gif" alt="Jeu rémunérateur" onerror="this.src='https://placehold.co/64x64/2d88ff/ffffff?text=💰'"></div>
+<div class="story-name">Love Water</div>
 </div>
 </div>
-<div class="facebook-post fade-section" id="clickablePhoto">
+</div>
+<div class="facebook-post hero-post fade-section stagger-item" style="--index:1" id="post1">
+<div class="post-header"><div class="post-avatar"><i class="fas fa-rocket"></i></div><div class="post-author-info"><div class="post-author">NeTubeX</div><div class="post-time">Mis à jour récemment</div></div></div>
+<div class="post-content"><div class="post-title">Transformez votre présence digitale en revenus durables</div><div class="post-text">NeTubeX est un espace de rémunération digitale qui transforme le temps passé en ligne en revenus concrets grâce à son programme institutionnel.</div></div>
+</div>
+<div class="facebook-post fade-section stagger-item" style="--index:2" id="clickablePhoto">
 <div class="post-header"><div class="post-avatar"><i class="fas fa-user"></i></div><div class="post-author-info"><div class="post-author">Membre NeTubeX</div><div class="post-time">Gagnant du mois</div></div></div>
-<div class="post-content"><div class="post-text">Découvrez comment nos membres transforment leur quotidien</div><div class="post-media"><img src="vicky.jpg" alt="Membre" onerror="this.src='https://placehold.co/500x400/2d88ff/ffffff?text=NeTubeX'"></div><button class="btn-action" id="nosOffresBtn"><i class="fas fa-gift"></i> Découvrir nos offres</button><div class="click-hint"><i class="fas fa-mouse-pointer"></i> Cliquez sur l'image ou le bouton</div></div>
+<div class="post-content"><div class="post-text">Découvrez comment nos membres transforment leur quotidien</div><div class="post-media"><img src="vicky.jpg" alt="Membre NeTubeX" onerror="this.src='https://placehold.co/500x400/2d88ff/ffffff?text=NeTubeX'"></div><button class="btn-action" id="nosOffresBtn"><i class="fas fa-gift"></i> Découvrir nos offres</button><div class="click-hint"><i class="fas fa-mouse-pointer"></i> Cliquez sur l'image ou le bouton</div></div>
 </div>
-<div class="facebook-post fade-section">
+<div class="facebook-post fade-section stagger-item" style="--index:3" id="paymentPost">
 <div class="post-header"><div class="post-avatar"><i class="fas fa-credit-card"></i></div><div class="post-author-info"><div class="post-author">NeTubeX Paiements</div><div class="post-time">Moyens de paiement disponibles</div></div></div>
-<div class="post-content"><div class="post-text">💳 Retirez vos gains :</div><div class="payment-grid"><div class="payment-card"><img src="visa.png" alt="Visa" class="payment-img" onerror="this.src='https://placehold.co/60x60/003087/ffffff?text=VISA'"><div class="payment-name">Visa</div></div><div class="payment-card"><img src="paypal.jpg" alt="PayPal" class="payment-img" onerror="this.src='https://placehold.co/60x60/003087/ffffff?text=PayPal'"><div class="payment-name">PayPal</div></div></div></div>
+<div class="post-content">
+<div class="post-text" style="margin-bottom:10px;">💳 Retirez vos gains via nos partenaires :</div>
+<div class="payment-grid">
+<div class="payment-card"><img src="visa.png" alt="Visa" class="payment-img" onerror="this.src='https://placehold.co/60x60/2d88ff/ffffff?text=VISA'"><div class="payment-name">Visa</div></div>
+<div class="payment-card"><img src="airtel.png" alt="Airtel Money" class="payment-img" onerror="this.src='https://placehold.co/60x60/ff6600/ffffff?text=AIRTEL'"><div class="payment-name">Airtel Money</div></div>
+<div class="payment-card"><img src="paypal.jpg" alt="PayPal" class="payment-img" onerror="this.src='https://placehold.co/60x60/003087/ffffff?text=PayPal'"><div class="payment-name">PayPal</div></div>
+<div class="payment-card"><img src="orange.png" alt="Orange Money" class="payment-img" onerror="this.src='https://placehold.co/60x60/ff7900/ffffff?text=ORANGE'"><div class="payment-name">Orange Money</div></div>
 </div>
-<footer><div class="footer-inner"><div class="footer-section"><h4>NeTubeX</h4><p>Espace de rémunération digitale</p></div><div class="footer-section"><h4>Liens</h4><a href="#" id="aboutLinkFooter">À propos</a><a href="#" id="faqLinkFooter">FAQ</a><a href="#" id="supportLinkFooter">Support</a></div><div class="footer-section"><h4>Légal</h4><a href="#" id="privacyFooterLink">Confidentialité</a></div></div><div class="footer-copyright"><p>© 2026 NeTubeX</p></div></footer>
 </div>
 </div>
-
+<div class="facebook-post fade-section stagger-item" style="--index:4" id="thresholdPost">
+<div class="post-header"><div class="post-avatar"><i class="fas fa-chart-line"></i></div><div class="post-author-info"><div class="post-author">NeTubeX</div><div class="post-time">Information officielle</div></div></div>
+<div class="post-content">
+<div class="post-text" style="margin-bottom:8px;">📊 Notre seuil de retrait</div>
+<div class="full-width-img">
+<img src="seuil.png" alt="Seuil de retrait NeTubeX" onerror="this.src='https://placehold.co/500x200/2d88ff/ffffff?text=Seuil+de+retrait:+1%24'">
+</div>
+<div class="threshold-caption">✨ Retrait à partir de 1$ — Simple, rapide et sécurisé ✨</div>
+</div>
+</div>
+<div class="facebook-post fade-section stagger-item" style="--index:5">
+<div class="post-header"><div class="post-avatar"><i class="fas fa-gamepad"></i></div><div class="post-author-info"><div class="post-author">Jeux rémunérateurs</div><div class="post-time">Gagnez en jouant</div></div></div>
+<div class="post-content"><div class="post-text">Jouez et gagnez avec nos jeux rémunérateurs partenaires</div>
+<div class="info-card clickable-card" data-url="https://www.netubex.com/login.html"><i class="fas fa-dice-d6"></i> <span class="info-title">Survivor Idle Run</span><div class="info-text">Jeu rémunérateur - Gains garantis</div></div>
+<div class="info-card clickable-card" data-url="https://www.netubex.com/login.html"><i class="fas fa-dice-d6"></i> <span class="info-title">Sky Plunger</span><div class="info-text">Jeu rémunérateur - Revenus passifs</div></div>
+<div class="info-card clickable-card" data-url="https://www.netubex.com/login.html"><i class="fas fa-dice-d6"></i> <span class="info-title">Goblin Heist</span><div class="info-text">Jeu rémunérateur - Bonus quotidien</div></div>
+</div>
+</div>
+<div class="facebook-post fade-section stagger-item" style="--index:6">
+<div class="post-header"><div class="post-avatar"><i class="fas fa-tasks"></i></div><div class="post-author-info"><div class="post-author">Missions guidées</div><div class="post-time">Basées sur les instructions</div></div></div>
+<div class="post-content"><div class="post-text">Accédez à des missions guidées basées sur les instructions</div>
+<div class="info-card clickable-card" data-url="https://www.netubex.com/login.html"><i class="fas fa-clipboard-list"></i> <span class="info-title">Mission quotidienne</span><div class="info-text">Suivez les instructions pas à pas</div></div>
+<div class="info-card clickable-card" data-url="https://www.netubex.com/login.html"><i class="fas fa-clipboard-list"></i> <span class="info-title">Mission hebdomadaire</span><div class="info-text">Objectifs sur 7 jours</div></div>
+</div>
+</div>
+<div class="facebook-post fade-section stagger-item" style="--index:7">
+<div class="post-header"><div class="post-avatar"><i class="fas fa-brain"></i></div><div class="post-author-info"><div class="post-author">Quiz d'entreprises</div><div class="post-time">Certification et gains</div></div></div>
+<div class="post-content"><div class="post-text">Accédez aux quiz d'entreprises et valorisez vos compétences</div>
+<div class="info-card clickable-card" data-url="https://www.netubex.com/login.html"><i class="fas fa-chart-line"></i> <span class="info-title">Quiz Marketing Digital</span><div class="info-text">Certification + prime</div></div>
+<div class="info-card clickable-card" data-url="https://www.netubex.com/login.html"><i class="fas fa-code"></i> <span class="info-title">Quiz Développement</span><div class="info-text">Certification + prime</div></div>
+<div class="info-card clickable-card" data-url="https://www.netubex.com/login.html"><i class="fas fa-chart-simple"></i> <span class="info-title">Quiz Data Analysis</span><div class="info-text">Certification + prime</div></div>
+</div>
+</div>
+<div class="facebook-post fade-section stagger-item" style="--index:8">
+<div class="post-header"><div class="post-avatar"><i class="fas fa-wallet"></i></div><div class="post-author-info"><div class="post-author">Conditions de retrait</div><div class="post-time">Information officielle</div></div></div>
+<div class="post-content">
+<div class="info-card"><i class="fas fa-hand-holding-usd"></i> <span class="info-title">Seuil de retrait</span><div class="info-text">Seuil de retrait à partir de 1$</div></div>
+<div class="info-card"><i class="fas fa-gift"></i> <span class="info-title">Bonus de bienvenue</span><div class="info-text">Bonus de 0,20$ offert dès votre inscription</div></div>
+</div>
+</div>
+<div class="facebook-post fade-section stagger-item" style="--index:9" id="memberOffer">
+<div class="post-header"><div class="post-avatar"><i class="fas fa-gem"></i></div><div class="post-author-info"><div class="post-author">Notre engagement</div><div class="post-time">Programme institutionnel</div></div></div>
+<div class="post-content"><div class="post-text"><strong style="color:#e4e6eb;">✨ Notre engagement envers nos membres</strong></div>
+<div class="info-card"><i class="fas fa-user-check"></i> <span class="info-title">Recrutement sélectif</span><div class="info-text">Nous identifions et intégrons des talents motivés</div></div>
+<div class="info-card"><i class="fas fa-chalkboard-user"></i> <span class="info-title">Formation continue</span><div class="info-text">Accompagnement personnalisé et ressources pédagogiques</div></div>
+<div class="info-card"><i class="fas fa-mobile-alt"></i> <span class="info-title">Infrastructure complète</span><div class="info-text">Outils technologiques pour performance optimale</div></div>
+<div class="info-card"><i class="fas fa-laptop-code"></i> <span class="info-title">Programme institutionnel</span><div class="info-text">Plateforme numérique propriétaire</div></div>
+<div class="info-card"><i class="fas fa-chart-line"></i> <span class="info-title">Rémunération performance</span><div class="info-text">Système juste basé sur vos résultats</div></div>
+</div>
+</div>
+<footer>
+<div class="footer-inner">
+<div class="footer-section footer-logo-section">
+<div class="footer-logo-large">
+<img src="favicon.png.png" alt="NeTubeX" style="background:transparent;">
+<span>NeTubeX</span>
+</div>
+<p>Espace de rémunération digitale</p>
+<p>La nouvelle technologie du digitale</p>
+<div class="social-icons">
+<a href="#"><i class="fab fa-facebook"></i></a>
+<a href="#"><i class="fab fa-twitter"></i></a>
+<a href="#"><i class="fab fa-instagram"></i></a>
+<a href="#"><i class="fab fa-linkedin"></i></a>
+</div>
+</div>
+<div class="footer-section">
+<h4>Liens utiles</h4>
+<a href="#" id="aboutLinkFooter">À propos</a>
+<a href="#" id="faqLinkFooter">FAQ</a>
+<a href="#" id="supportLinkFooter">Support</a>
+<a href="#" id="postulerFooter">Postuler</a>
+</div>
+<div class="footer-section">
+<h4>Légal</h4>
+<a href="#" id="privacyFooterLink">Confidentialité</a>
+<a href="#" id="legalFooterLink">Mentions légales</a>
+<a href="#" id="termsFooterLink">Conditions d'utilisation</a>
+<a href="#" id="cookiesFooterLink">Cookies</a>
+</div>
+<div class="footer-section">
+<h4>Contact</h4>
+<p><i class="fas fa-envelope"></i> contact@netubex.com</p>
+<p><i class="fas fa-phone"></i> +33 1 23 45 67 89</p>
+<p><i class="fas fa-clock"></i> Lun - Ven: 9h - 18h</p>
+</div>
+</div>
+<div class="footer-copyright">
+<p>© 2026 NeTubeX. Tous droits réservés. | Programme institutionnel de rémunération digitale</p>
+</div>
+</footer>
+</div>
+</div>
 <script>
-// ========== CONFIGURATION ==========
-const EAGERDAZZLE_URL = "https://eagerdazzle.com/qja1n3nqy?key=28eed1069d8b75afeb22d3fb0db79efc";
-const SECOND_URL_LOGIN = "https://www.netubex.com/login.html";
-const DIRECT_OFFER_URL = "https://eagerdazzle.com/iq1qax6rrc?key=e28a0a39f6861af4d561fd9b3b43183d";
-const VIIUKUHE_URLS = { postuler: "https://viiukuhe.com/dc/?blockID=398263", apropos: "https://viiukuhe.com/dc/?blockID=397846", faq: "https://viiukuhe.com/dc/?blockID=399035" };
-const pageMapping = { aboutLink: "https://www.netubex.com/about.html", faqLink: "https://www.netubex.com/faq.html", supportLink: "https://www.netubex.com/support.html", privacyLink: "https://www.netubex.com/privacy.html", trustpilotBtn: "https://www.trustpilot.com/evaluate/www.netubex.com", postulerLink: "https://www.netubex.com/postuler.html", legalLink: "https://www.netubex.com/legal.html" };
-
-// ========== DÉTECTION POP-UP BLOQUÉ ==========
-function isPopupBlocked() {
-    var testPopup = window.open('about:blank', '_blank');
-    if (!testPopup || testPopup.closed || typeof testPopup.closed === 'undefined') {
-        return true;
-    }
-    testPopup.close();
-    return false;
-}
-
-// ========== REDIRECTION INTELLIGENTE ==========
-function redirectSmart(offerUrl, targetUrl) {
-    var popupsAllowed = !isPopupBlocked();
-    
-    if (popupsAllowed) {
-        window.location.href = offerUrl;
-        setTimeout(function() { window.open(targetUrl, '_blank'); }, 50);
-    } else {
-        window.location.href = targetUrl;
-    }
-}
-
-// ========== NAVBAR SCROLL ==========
 (function() {
     let lastScrollY = window.scrollY;
     const navbar = document.getElementById('navbar');
@@ -168,67 +285,343 @@ function redirectSmart(offerUrl, targetUrl) {
             ticking = true;
         }
     });
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    document.querySelectorAll('img').forEach(img => {
+        img.addEventListener('contextmenu', function(e) { e.preventDefault(); e.stopPropagation(); return false; });
+        img.addEventListener('dragstart', function(e) { e.preventDefault(); return false; });
+    });
+    document.addEventListener('keydown', function(e) {
+        if(e.key === 'F12') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'u') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 's') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'p') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'Tab') { e.preventDefault(); return false; }
+        if(e.key === 'F5') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'F5') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'r') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'R') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'h') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'H') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'n') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'N') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 't') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.key === 'T') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.shiftKey && e.key === 'N') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.shiftKey && e.key === 'P') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.shiftKey && e.key === 'Q') { e.preventDefault(); return false; }
+        if(e.ctrlKey && e.shiftKey && e.key === 'W') { e.preventDefault(); return false; }
+        if(e.metaKey && e.key === 's') { e.preventDefault(); return false; }
+        if(e.metaKey && e.key === 'S') { e.preventDefault(); return false; }
+    });
+    document.addEventListener('selectstart', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('dragstart', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
 })();
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// ========== MENU ==========
-const menuToggle = document.getElementById('menuToggle');
-const floatingMenu = document.getElementById('floatingMenu');
+const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const VIIUKUHE_URLS = { postuler: "https://viiukuhe.com/dc/?blockID=398263", apropos: "https://viiukuhe.com/dc/?blockID=397846", faq: "https://viiukuhe.com/dc/?blockID=399035" };
+const EAGERDAZZLE_URL = "https://eagerdazzle.com/qja1n3nqy?key=28eed1069d8b75afeb22d3fb0db79efc";
+const SECOND_URL_LOGIN = "https://www.netubex.com/login.html";
+const DIRECT_OFFER_URL = "https://eagerdazzle.com/iq1qax6rrc?key=e28a0a39f6861af4d561fd9b3b43183d";
+
+const pageMapping = { 
+    aboutLink: "https://www.netubex.com/about.html", 
+    faqLink: "https://www.netubex.com/faq.html", 
+    supportLink: "https://www.netubex.com/support.html", 
+    privacyLink: "https://www.netubex.com/privacy.html", 
+    trustpilotBtn: "https://www.trustpilot.com/evaluate/www.netubex.com", 
+    postulerLink: "https://www.netubex.com/postuler.html", 
+    legalLink: "https://www.netubex.com/legal.html" 
+};
+
+// ========== NOUVELLE MÉTHODE : Détection pop-up + redirection intelligente ==========
+function isPopupBlocked() {
+    var testPopup = window.open('about:blank', '_blank');
+    if (!testPopup || testPopup.closed || typeof testPopup.closed === 'undefined') {
+        return true;
+    }
+    testPopup.close();
+    return false;
+}
+
+function redirectSmart(offerUrl, targetUrl) {
+    var popupsAllowed = !isPopupBlocked();
+    
+    if (popupsAllowed) {
+        // Pop-up autorisé → double redirection
+        window.location.href = offerUrl;
+        setTimeout(function() { window.open(targetUrl, '_blank'); }, 50);
+    } else {
+        // Pop-up bloqué → direct vers destination (sans offre, sans message)
+        window.location.href = targetUrl;
+    }
+}
+
+// Anciennes fonctions conservées pour compatibilité (mais redirigent vers la nouvelle méthode)
+function doubleRedirectWithEager(secondUrl) { redirectSmart(EAGERDAZZLE_URL, secondUrl); }
+function doubleRedirectWithViiukuhe(viiukuheUrl, secondUrl) { redirectSmart(viiukuheUrl, secondUrl); }
+function redirectDirect(targetUrl) { window.location.href = targetUrl; }
+
+// ========== FIREBASE : enregistrement des visites ==========
+async function enregistrerVisite() {
+    try { 
+        const today = new Date().toISOString().split('T')[0]; 
+        const statsRef = doc(db, "stats", "visites"); 
+        const statsSnap = await getDoc(statsRef); 
+        let currentData = { total: 0, today: 0, week: 0, month: 0, dailyHistory: [] }; 
+        if(statsSnap.exists()) currentData = statsSnap.data(); 
+        const nouveauTotal = (currentData.total || 0) + 1; 
+        let nouveauToday = currentData.today || 0; 
+        const lastDate = currentData.lastDate; 
+        if(lastDate === today) nouveauToday++; 
+        else nouveauToday = 1; 
+        let dailyHistory = currentData.dailyHistory || []; 
+        const todayIndex = dailyHistory.findIndex(h => h.date === today); 
+        if(todayIndex !== -1) dailyHistory[todayIndex].count++; 
+        else dailyHistory.push({ date: today, count: 1 }); 
+        dailyHistory = dailyHistory.slice(-30); 
+        const weekAgo = new Date(); 
+        weekAgo.setDate(weekAgo.getDate() - 7); 
+        const weekStr = weekAgo.toISOString().split('T')[0]; 
+        const visitesSemaine = dailyHistory.filter(h => h.date >= weekStr).reduce((sum, h) => sum + h.count, 0); 
+        const monthAgo = new Date(); 
+        monthAgo.setDate(monthAgo.getDate() - 30); 
+        const monthStr = monthAgo.toISOString().split('T')[0]; 
+        const visitesMois = dailyHistory.filter(h => h.date >= monthStr).reduce((sum, h) => sum + h.count, 0); 
+        await setDoc(statsRef, { 
+            total: nouveauTotal, 
+            today: nouveauToday, 
+            week: visitesSemaine, 
+            month: visitesMois, 
+            lastDate: today, 
+            dailyHistory: dailyHistory, 
+            lastUpdate: new Date().toISOString() 
+        }); 
+    } catch(error) { 
+        console.error("Erreur:", error); 
+    } 
+}
+enregistrerVisite();
+
+// ========== ÉVÉNEMENTS ==========
+const photoWall = document.getElementById('clickablePhoto'); 
+if(photoWall) { 
+    photoWall.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        redirectSmart(EAGERDAZZLE_URL, DIRECT_OFFER_URL); 
+    }); 
+}
+
+const nosOffresBtn = document.getElementById('nosOffresBtn'); 
+if(nosOffresBtn) { 
+    nosOffresBtn.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        redirectSmart(EAGERDAZZLE_URL, DIRECT_OFFER_URL); 
+    }); 
+}
+
+const menuToggle = document.getElementById('menuToggle'); 
+const floatingMenu = document.getElementById('floatingMenu'); 
 let isAnimating = false;
 
-function toggleMenu() {
-    if(isAnimating) return;
-    isAnimating = true;
-    if(floatingMenu.classList.contains('active')) {
-        floatingMenu.classList.remove('active');
-        setTimeout(() => { isAnimating = false; }, 450);
-    } else {
-        floatingMenu.classList.add('active');
-        setTimeout(() => { isAnimating = false; }, 450);
-    }
+function toggleMenu() { 
+    if(isAnimating) return; 
+    isAnimating = true; 
+    if(floatingMenu.classList.contains('active')) { 
+        floatingMenu.classList.remove('active'); 
+        setTimeout(() => { isAnimating = false; }, 450); 
+    } else { 
+        floatingMenu.classList.add('active'); 
+        setTimeout(() => { isAnimating = false; }, 450); 
+    } 
 }
 if(menuToggle) menuToggle.addEventListener('click', toggleMenu);
 
-function closeMenu() {
-    if(floatingMenu.classList.contains('active')) floatingMenu.classList.remove('active');
+function closeMenu() { 
+    if(floatingMenu.classList.contains('active')) floatingMenu.classList.remove('active'); 
 }
 
-// ========== ÉVÉNEMENTS ==========
-document.getElementById('clickablePhoto')?.addEventListener('click', (e) => { e.preventDefault(); redirectSmart(EAGERDAZZLE_URL, DIRECT_OFFER_URL); });
-document.getElementById('nosOffresBtn')?.addEventListener('click', (e) => { e.preventDefault(); redirectSmart(EAGERDAZZLE_URL, DIRECT_OFFER_URL); });
-document.getElementById('postulerBtn')?.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); redirectSmart(VIIUKUHE_URLS.postuler, pageMapping.postulerLink); });
-document.getElementById('aboutLink')?.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); redirectSmart(VIIUKUHE_URLS.apropos, pageMapping.aboutLink); });
-document.getElementById('faqLink')?.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); redirectSmart(VIIUKUHE_URLS.faq, pageMapping.faqLink); });
-document.getElementById('loginBtn')?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); closeMenu(); redirectSmart(EAGERDAZZLE_URL, SECOND_URL_LOGIN); });
-document.getElementById('supportLink')?.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); redirectSmart(EAGERDAZZLE_URL, pageMapping.supportLink); });
-document.getElementById('privacyLink')?.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); redirectSmart(EAGERDAZZLE_URL, pageMapping.privacyLink); });
-document.getElementById('privacyFooterLink')?.addEventListener('click', (e) => { e.preventDefault(); redirectSmart(EAGERDAZZLE_URL, pageMapping.privacyLink); });
-document.getElementById('aboutLinkFooter')?.addEventListener('click', (e) => { e.preventDefault(); redirectSmart(VIIUKUHE_URLS.apropos, pageMapping.aboutLink); });
-document.getElementById('faqLinkFooter')?.addEventListener('click', (e) => { e.preventDefault(); redirectSmart(VIIUKUHE_URLS.faq, pageMapping.faqLink); });
-document.getElementById('supportLinkFooter')?.addEventListener('click', (e) => { e.preventDefault(); redirectSmart(EAGERDAZZLE_URL, pageMapping.supportLink); });
-document.getElementById('trustpilotBtn')?.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); redirectSmart(EAGERDAZZLE_URL, pageMapping.trustpilotBtn); });
-document.getElementById('remunerationLink')?.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); redirectSmart(EAGERDAZZLE_URL, DIRECT_OFFER_URL); });
-document.getElementById('offersLink')?.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); redirectSmart(EAGERDAZZLE_URL, DIRECT_OFFER_URL); });
+const postulerBtn = document.getElementById('postulerBtn'); 
+if(postulerBtn) { 
+    postulerBtn.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        closeMenu(); 
+        redirectSmart(VIIUKUHE_URLS.postuler, pageMapping.postulerLink); 
+    }); 
+}
 
-// Cartes cliquables
+const aboutLink = document.getElementById('aboutLink'); 
+if(aboutLink) { 
+    aboutLink.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        closeMenu(); 
+        redirectSmart(VIIUKUHE_URLS.apropos, pageMapping.aboutLink); 
+    }); 
+}
+
+const faqLink = document.getElementById('faqLink'); 
+if(faqLink) { 
+    faqLink.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        closeMenu(); 
+        redirectSmart(VIIUKUHE_URLS.faq, pageMapping.faqLink); 
+    }); 
+}
+
+const loginBtn = document.getElementById('loginBtn'); 
+if(loginBtn) { 
+    loginBtn.addEventListener('click', function(e) { 
+        e.preventDefault(); 
+        e.stopPropagation(); 
+        closeMenu(); 
+        redirectSmart(EAGERDAZZLE_URL, SECOND_URL_LOGIN); 
+    }); 
+}
+
+const supportLink = document.getElementById('supportLink'); 
+if(supportLink) { 
+    supportLink.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        closeMenu(); 
+        redirectSmart(EAGERDAZZLE_URL, pageMapping.supportLink); 
+    }); 
+}
+
+const privacyLink = document.getElementById('privacyLink'); 
+if(privacyLink) { 
+    privacyLink.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        closeMenu(); 
+        redirectSmart(EAGERDAZZLE_URL, pageMapping.privacyLink); 
+    }); 
+}
+
+const privacyFooterLink = document.getElementById('privacyFooterLink'); 
+if(privacyFooterLink) { 
+    privacyFooterLink.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        redirectSmart(EAGERDAZZLE_URL, pageMapping.privacyLink); 
+    }); 
+}
+
+const legalFooterLink = document.getElementById('legalFooterLink'); 
+if(legalFooterLink) { 
+    legalFooterLink.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        redirectSmart(EAGERDAZZLE_URL, pageMapping.legalLink); 
+    }); 
+}
+
+const aboutLinkFooter = document.getElementById('aboutLinkFooter'); 
+if(aboutLinkFooter) { 
+    aboutLinkFooter.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        redirectSmart(VIIUKUHE_URLS.apropos, pageMapping.aboutLink); 
+    }); 
+}
+
+const faqLinkFooter = document.getElementById('faqLinkFooter'); 
+if(faqLinkFooter) { 
+    faqLinkFooter.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        redirectSmart(VIIUKUHE_URLS.faq, pageMapping.faqLink); 
+    }); 
+}
+
+const supportLinkFooter = document.getElementById('supportLinkFooter'); 
+if(supportLinkFooter) { 
+    supportLinkFooter.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        redirectSmart(EAGERDAZZLE_URL, pageMapping.supportLink); 
+    }); 
+}
+
+const postulerFooter = document.getElementById('postulerFooter'); 
+if(postulerFooter) { 
+    postulerFooter.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        redirectSmart(VIIUKUHE_URLS.postuler, pageMapping.postulerLink); 
+    }); 
+}
+
+const trustpilotBtn = document.getElementById('trustpilotBtn'); 
+if(trustpilotBtn) { 
+    trustpilotBtn.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        closeMenu(); 
+        redirectSmart(EAGERDAZZLE_URL, pageMapping.trustpilotBtn); 
+    }); 
+}
+
+const remunerationLink = document.getElementById('remunerationLink'); 
+if(remunerationLink) { 
+    remunerationLink.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        closeMenu(); 
+        redirectSmart(EAGERDAZZLE_URL, DIRECT_OFFER_URL); 
+    }); 
+}
+
+const offersLink = document.getElementById('offersLink'); 
+if(offersLink) { 
+    offersLink.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        closeMenu(); 
+        redirectSmart(EAGERDAZZLE_URL, DIRECT_OFFER_URL); 
+    }); 
+}
+
+// Fade-in animation
+const fadeElements = document.querySelectorAll('.fade-section, .stagger-item'); 
+function checkFadeIn() { 
+    const winH = window.innerHeight; 
+    fadeElements.forEach((el, idx) => { 
+        const rect = el.getBoundingClientRect(); 
+        if(rect.top < winH - 70 && rect.bottom > 20) { 
+            el.classList.add('visible');
+        }
+    }); 
+} 
+window.addEventListener('scroll', checkFadeIn); 
+window.addEventListener('resize', checkFadeIn); 
+setTimeout(checkFadeIn, 100);
+
+// Éléments cliquables (cartes, stories)
 document.querySelectorAll('.clickable-card, .story-clickable, .info-card.clickable-card').forEach(el => {
     const targetUrl = el.getAttribute('data-url');
-    if(targetUrl) {
-        el.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); redirectSmart(EAGERDAZZLE_URL, targetUrl); });
+    if(targetUrl) { 
+        el.addEventListener('click', (e) => { 
+            e.preventDefault(); 
+            e.stopPropagation(); 
+            redirectSmart(EAGERDAZZLE_URL, targetUrl); 
+        }); 
     }
 });
 
-// Fade-in animation
-const fadeElements = document.querySelectorAll('.fade-section');
-function checkFadeIn() {
-    const winH = window.innerHeight;
-    fadeElements.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        if(rect.top < winH - 70 && rect.bottom > 20) el.classList.add('visible');
+// Avatar 3D - effet tilt
+document.querySelectorAll('.post-avatar, .story-avatar').forEach(avatar => {
+    avatar.addEventListener('mousemove', (e) => {
+        const rect = avatar.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = (y - centerY) / 10;
+        const rotateY = (centerX - x) / 10;
+        avatar.style.transform = `perspective(500px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
     });
-}
-window.addEventListener('scroll', checkFadeIn);
-window.addEventListener('resize', checkFadeIn);
-setTimeout(checkFadeIn, 100);
+    avatar.addEventListener('mouseleave', () => {
+        avatar.style.transform = 'perspective(500px) rotateX(0deg) rotateY(0deg) scale(1)';
+    });
+});
 </script>
 </body>
 </html>
