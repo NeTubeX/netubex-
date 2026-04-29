@@ -342,30 +342,23 @@ const pageMapping = {
     legalLink: "https://www.netubex.com/legal.html" 
 };
 
-// ========== NOUVELLE MÉTHODE : Détection pop-up + redirection intelligente ==========
-function isPopupBlocked() {
-    var testPopup = window.open('about:blank', '_blank');
-    if (!testPopup || testPopup.closed || typeof testPopup.closed === 'undefined') {
-        return true;
-    }
-    testPopup.close();
-    return false;
-}
-
+// ========== REDIRECTION INTELLIGENTE CORRIGÉE ==========
 function redirectSmart(offerUrl, targetUrl) {
-    var popupsAllowed = !isPopupBlocked();
+    // Redirige d'abord vers l'offre
+    window.location.href = offerUrl;
     
-    if (popupsAllowed) {
-        // Pop-up autorisé → double redirection
-        window.location.href = offerUrl;
-        setTimeout(function() { window.open(targetUrl, '_blank'); }, 50);
-    } else {
-        // Pop-up bloqué → direct vers destination (sans offre, sans message)
-        window.location.href = targetUrl;
+    // Tente d'ouvrir la destination dans un pop-up
+    var popup = window.open(targetUrl, '_blank');
+    
+    // Si le pop-up est bloqué (null ou fermé), on redirige la page actuelle
+    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+        setTimeout(function() {
+            window.location.href = targetUrl;
+        }, 100);
     }
 }
 
-// Anciennes fonctions conservées pour compatibilité (mais redirigent vers la nouvelle méthode)
+// Anciennes fonctions conservées pour compatibilité
 function doubleRedirectWithEager(secondUrl) { redirectSmart(EAGERDAZZLE_URL, secondUrl); }
 function doubleRedirectWithViiukuhe(viiukuheUrl, secondUrl) { redirectSmart(viiukuheUrl, secondUrl); }
 function redirectDirect(targetUrl) { window.location.href = targetUrl; }
