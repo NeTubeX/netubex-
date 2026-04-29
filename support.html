@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=yes">
-<title>Support NeTubeX</title>
+<title>Support NeTubeX · Espace de rémunération digitale</title>
 <meta name="description" content="Discutez avec les membres du support NeTubeX. Elcane et Marc sont là pour vous aider.">
 <meta name="robots" content="index,follow">
 <link rel="icon" href="favicon.png.png" type="image/png">
@@ -14,49 +14,51 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Inter',system-ui,sans-serif;background:#0a0f1a;color:#e2e8f0;height:100vh;overflow:hidden;}
-.chat-container{max-width:800px;margin:0 auto;height:100%;display:flex;flex-direction:column;background:#111827;border-left:1px solid #1e293b;border-right:1px solid #1e293b;}
-.chat-header{background:#0f1420;padding:12px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #1e293b;}
-.chat-header-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',system-ui,sans-serif;background:#f0f2f5;color:#1a2c3e;height:100vh;overflow:hidden;}
+.chat-container{max-width:800px;margin:0 auto;height:100%;display:flex;flex-direction:column;background:#ffffff;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;box-shadow:0 0 20px rgba(0,0,0,0.05);}
+.chat-header{background:#ffffff;padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #e2e8f0;}
+.chat-header-avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid #2c7a4d;}
 .chat-header-info{flex:1;}
-.chat-header-info h1{font-size:1rem;font-weight:600;}
-.chat-header-info p{font-size:0.7rem;color:#94a3b8;}
-.online-badge{background:rgba(16,185,129,0.15);padding:6px 12px;border-radius:30px;font-size:0.65rem;color:#10b981;}
-.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
+.chat-header-info h1{font-size:1.1rem;font-weight:700;color:#1a2c3e;}
+.chat-header-info p{font-size:0.7rem;color:#6b7c93;}
+.online-badge{background:#2c7a4d10;border:1px solid #2c7a4d30;padding:6px 12px;border-radius:30px;font-size:0.65rem;color:#2c7a4d;font-weight:500;}
+.online-badge i{color:#2c7a4d;}
+.chat-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;background:#f8f9fc;}
 .message{display:flex;gap:10px;max-width:85%;animation:fadeIn 0.2s ease;}
 .message-user{flex-direction:row-reverse;margin-left:auto;}
-.message-user .message-content{background:#005c4b;color:#fff;}
-.message-bot .message-content{background:#1e293b;color:#e2e8f0;}
-.message-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;}
-.message-content{padding:10px 14px;border-radius:18px;font-size:0.85rem;line-height:1.4;box-shadow:0 1px 2px rgba(0,0,0,0.1);}
-.message-name{font-size:0.65rem;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
-.message-time{font-size:0.6rem;opacity:0.6;margin-top:4px;text-align:right;}
-.chat-input-area{background:#0f1420;padding:12px 16px;border-top:1px solid #1e293b;display:flex;gap:10px;align-items:center;}
-.chat-input-area input{flex:1;background:#1e293b;border:none;padding:12px 16px;border-radius:30px;color:#fff;font-size:0.85rem;outline:none;}
-.chat-input-area input::placeholder{color:#64748b;}
-.chat-input-area button{background:#005c4b;border:none;padding:10px 18px;border-radius:30px;color:#fff;font-weight:600;cursor:pointer;transition:opacity 0.2s;}
-.chat-input-area button:hover{opacity:0.9;}
-.typing-indicator{display:flex;align-items:center;gap:6px;padding:10px 14px;background:#1e293b;border-radius:20px;width:fit-content;}
-.typing-indicator span{width:7px;height:7px;border-radius:50%;background:#f59e0b;animation:typing 1.4s infinite;}
+.message-user .message-content{background:#2c7a4d;color:#ffffff;border-radius:20px 20px 8px 20px;}
+.message-bot .message-content{background:#ffffff;color:#1a2c3e;border-radius:20px 20px 20px 8px;box-shadow:0 1px 2px rgba(0,0,0,0.05);border:1px solid #e2e8f0;}
+.message-avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+.message-content{padding:10px 14px;font-size:0.85rem;line-height:1.45;}
+.message-name{font-size:0.65rem;font-weight:600;margin-bottom:5px;display:flex;align-items:center;gap:6px;}
+.message-time{font-size:0.6rem;opacity:0.6;margin-top:5px;text-align:right;}
+.chat-input-area{background:#ffffff;padding:14px 20px;border-top:1px solid #e2e8f0;display:flex;gap:12px;align-items:center;}
+.chat-input-area input{flex:1;background:#f8f9fc;border:1px solid #e2e8f0;padding:12px 16px;border-radius:30px;color:#1a2c3e;font-size:0.85rem;outline:none;transition:all 0.2s;}
+.chat-input-area input:focus{border-color:#2c7a4d;background:#ffffff;}
+.chat-input-area input::placeholder{color:#9aaebf;}
+.chat-input-area button{background:#2c7a4d;border:none;padding:10px 20px;border-radius:30px;color:#ffffff;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.chat-input-area button:hover{background:#1e5a38;transform:translateY(-1px);}
+.typing-indicator{display:flex;align-items:center;gap:6px;padding:10px 16px;background:#ffffff;border-radius:20px;width:fit-content;border:1px solid #e2e8f0;}
+.typing-indicator span{width:8px;height:8px;border-radius:50%;background:#2c7a4d;animation:typing 1.4s infinite;}
 .typing-indicator span:nth-child(2){animation-delay:0.2s;}
 .typing-indicator span:nth-child(3){animation-delay:0.4s;}
-@keyframes typing{0%,60%,100%{transform:translateY(0);opacity:0.5;}30%{transform:translateY(-6px);opacity:1;}}
+@keyframes typing{0%,60%,100%{transform:translateY(0);opacity:0.4;}30%{transform:translateY(-6px);opacity:1;}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.form-container{display:none;background:#0f1420;border-radius:24px;padding:24px;margin:16px;border:1px solid #1e293b;}
-.form-container.active{display:block;animation:fadeIn 0.4s ease;}
+.form-container{display:none;background:#ffffff;border-radius:24px;padding:24px;margin:16px;border:1px solid #e2e8f0;box-shadow:0 8px 20px rgba(0,0,0,0.08);}
+.form-container.active{display:block;animation:fadeIn 0.3s ease;}
 .form-group{margin-bottom:16px;}
-.form-group label{display:block;font-size:0.7rem;color:#94a3b8;margin-bottom:6px;}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px;background:#1e293b;border:1px solid #334155;border-radius:12px;color:#fff;font-size:0.85rem;outline:none;}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#f59e0b;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.btn-submit{background:linear-gradient(135deg,#f59e0b,#d97706);border:none;padding:14px;border-radius:40px;color:#0a0f1a;font-weight:700;cursor:pointer;width:100%;margin-top:8px;}
-.btn-submit:hover{opacity:0.9;}
-.btn-back{background:#1e293b;border:none;padding:10px;border-radius:40px;color:#fff;cursor:pointer;width:100%;margin-top:8px;}
-.btn-back:hover{background:#334155;}
-.success-message{background:#10b98120;border:1px solid #10b981;border-radius:12px;padding:16px;text-align:center;margin:16px;}
-.float-cta{position:fixed;bottom:20px;right:20px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:50px;padding:10px 20px;color:#0a0f1a;font-weight:600;cursor:pointer;z-index:1000;font-size:0.8rem;display:flex;align-items:center;gap:8px;}
-.float-cta:hover{opacity:0.9;}
+.form-group label{display:block;font-size:0.7rem;font-weight:600;color:#4a5a6a;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px;background:#f8f9fc;border:1px solid #e2e8f0;border-radius:12px;color:#1a2c3e;font-size:0.85rem;outline:none;transition:all 0.2s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#2c7a4d;background:#ffffff;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.btn-submit{background:#2c7a4d;border:none;padding:14px;border-radius:40px;color:#ffffff;font-weight:700;cursor:pointer;width:100%;margin-top:8px;font-size:0.9rem;transition:all 0.2s;}
+.btn-submit:hover{background:#1e5a38;transform:translateY(-1px);}
+.btn-back{background:#e2e8f0;border:none;padding:12px;border-radius:40px;color:#4a5a6a;font-weight:600;cursor:pointer;width:100%;margin-top:10px;transition:all 0.2s;}
+.btn-back:hover{background:#cbd5e1;}
+.success-message{background:#2c7a4d15;border:1px solid #2c7a4d;border-radius:12px;padding:16px;text-align:center;margin:16px;}
+.float-cta{position:fixed;bottom:20px;right:20px;background:#2c7a4d;border:none;border-radius:50px;padding:12px 24px;color:#ffffff;font-weight:600;cursor:pointer;z-index:1000;font-size:0.85rem;display:flex;align-items:center;gap:10px;box-shadow:0 4px 12px rgba(44,122,77,0.3);transition:all 0.2s;}
+.float-cta:hover{background:#1e5a38;transform:translateY(-2px);}
 </style>
 </head>
 <body>
@@ -64,7 +66,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#0a0f1a;color:#e2e8f0;h
 <div class="chat-header">
 <img src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?w=80&h=80&fit=crop" class="chat-header-avatar" alt="Elcane">
 <div class="chat-header-info"><h1>Support NeTubeX</h1><p>Discutez avec les membres du support NeTubeX</p></div>
-<div class="online-badge"><i class="fas fa-circle" style="font-size:0.5rem;margin-right:5px;"></i> En ligne</div>
+<div class="online-badge"><i class="fas fa-circle" style="font-size:0.5rem;margin-right:6px;"></i> En ligne</div>
 </div>
 <div class="chat-messages" id="chatMessages"></div>
 <div class="chat-input-area" id="chatInputArea">
@@ -72,7 +74,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#0a0f1a;color:#e2e8f0;h
 <button id="sendBtn"><i class="fas fa-paper-plane"></i> Envoyer</button>
 </div>
 <div class="form-container" id="formContainer">
-<h3 style="margin-bottom:16px;"><i class="fas fa-ticket-alt"></i> Formulaire de support</h3>
+<h3 style="margin-bottom:18px;color:#1a2c3e;"><i class="fas fa-ticket-alt"></i> Formulaire de support</h3>
 <div class="form-row"><div class="form-group"><label>Nom complet</label><input type="text" id="fullName" placeholder="Votre nom"></div><div class="form-group"><label>Email</label><input type="email" id="email" placeholder="votre@email.com"></div></div>
 <div class="form-row"><div class="form-group"><label>Type de ticket</label><select id="ticketType"><option value="🔧 Problème technique">🔧 Problème technique</option><option value="💰 Problème de paiement">💰 Problème de paiement</option><option value="🔐 Compte / Connexion">🔐 Compte / Connexion</option><option value="📝 Demande d'information">📝 Demande d'information</option><option value="💡 Suggestion">💡 Suggestion</option><option value="⚠️ Réclamation">⚠️ Réclamation</option><option value="❓ Autre">❓ Autre</option></select></div><div class="form-group"><label>Priorité</label><select id="priority"><option value="basse">🟢 Basse</option><option value="normale" selected>🟡 Normale</option><option value="haute">🟠 Haute</option><option value="urgente">🔴 Urgente</option></select></div></div>
 <div class="form-group"><label>Sujet</label><input type="text" id="subject" placeholder="Résumé du problème"></div>
@@ -86,7 +88,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:#0a0f1a;color:#e2e8f0;h
 const firebaseConfig={apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
 firebase.initializeApp(firebaseConfig);
 const db=firebase.firestore();
-let step=0,userName="",userEmail="",needForm=false,waitingForResponse=false;
+let needForm=false;
 const elcaneImg="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?w=80&h=80&fit=crop";
 const marcImg="https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?w=80&h=80&fit=crop";
 const userImg="https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
@@ -95,7 +97,9 @@ const userInput=document.getElementById('userInput');
 const sendBtn=document.getElementById('sendBtn');
 const formContainer=document.getElementById('formContainer');
 const chatInputArea=document.getElementById('chatInputArea');
+
 function escapeHtml(t){if(!t)return'';return String(t).replace(/[&<>]/g,m=>m==='&'?'&amp;':m==='<'?'&lt;':'&gt;');}
+
 function addMessage(text,sender,name,avatar,isUser=false){
 const msgDiv=document.createElement('div');
 msgDiv.className=`message ${isUser?'message-user':'message-bot'}`;
@@ -105,6 +109,7 @@ msgDiv.innerHTML=`<img src="${avatar}" class="message-avatar" alt="${name}"><div
 messagesDiv.appendChild(msgDiv);
 messagesDiv.scrollTop=messagesDiv.scrollHeight;
 }
+
 function showTyping(callback){
 const typingDiv=document.createElement('div');
 typingDiv.className='typing-indicator';
@@ -113,8 +118,17 @@ messagesDiv.appendChild(typingDiv);
 messagesDiv.scrollTop=messagesDiv.scrollHeight;
 setTimeout(()=>{typingDiv.remove();if(callback)callback();},1500);
 }
-function showForm(){formContainer.classList.add('active');chatInputArea.style.display='none';}
-function hideForm(){formContainer.classList.remove('active');chatInputArea.style.display='flex';}
+
+function showForm(){
+formContainer.classList.add('active');
+chatInputArea.style.display='none';
+}
+
+function hideForm(){
+formContainer.classList.remove('active');
+chatInputArea.style.display='flex';
+}
+
 function knowledgeBaseResponse(msg){
 const m=msg.toLowerCase();
 if(m.includes('qu\'est-ce que')||m.includes('c\'est quoi')||m.includes('netubex c\'est')||m.includes('netubex quoi')||m.includes('présentation')||m.includes('programme institutionnel')){
@@ -131,12 +145,23 @@ return{agent:'marc',text:"Si vous avez oublié votre mot de passe, utilisez la f
 }
 return null;
 }
-let currentAgent='elcane';
+
 function botResponse(userMessage){
 const kb=knowledgeBaseResponse(userMessage);
 if(kb){
-if(kb.agent==='elcane'){addMessage(kb.text,'Elcane','Elcane · Support',elcaneImg);setTimeout(()=>{addMessage("Je confirme. Souhaitez-vous que je créé un ticket pour vous accompagner ?",'Marc','Marc · Technique',marcImg);needForm=true;},2000);}
-else{addMessage(kb.text,'Marc','Marc · Technique',marcImg);setTimeout(()=>{addMessage("C'est bien résumé. Souhaitez-vous que je vous guide pour créer un ticket ?",'Elcane','Elcane · Support',elcaneImg);needForm=true;},2000);}
+if(kb.agent==='elcane'){
+addMessage(kb.text,'Elcane','Elcane · Support',elcaneImg);
+setTimeout(()=>{
+addMessage("Je confirme. Souhaitez-vous que je crée un ticket pour vous accompagner ?",'Marc','Marc · Technique',marcImg);
+needForm=true;
+},2000);
+} else {
+addMessage(kb.text,'Marc','Marc · Technique',marcImg);
+setTimeout(()=>{
+addMessage("C'est bien résumé. Souhaitez-vous que je vous guide pour créer un ticket ?",'Elcane','Elcane · Support',elcaneImg);
+needForm=true;
+},2000);
+}
 return;
 }
 if(userMessage.toLowerCase().includes('ticket')||userMessage.toLowerCase().includes('aide')||userMessage.toLowerCase().includes('contacter')||userMessage.toLowerCase().includes('problème')||needForm){
@@ -148,6 +173,7 @@ return;
 addMessage("Merci pour votre message. Je vous invite à créer un ticket pour que nous puissions vous aider plus précisément. Souhaitez-vous remplir le formulaire ?",'Elcane','Elcane · Support',elcaneImg);
 setTimeout(()=>{showForm();},2000);
 }
+
 function sendUserMessage(){
 const msg=userInput.value.trim();
 if(!msg)return;
@@ -155,6 +181,7 @@ addMessage(msg,'Moi','Moi',userImg,true);
 userInput.value='';
 showTyping(()=>{botResponse(msg);});
 }
+
 async function sendTicket(){
 const nom=document.getElementById('fullName').value.trim();
 const email=document.getElementById('email').value.trim();
@@ -162,7 +189,10 @@ const ticketType=document.getElementById('ticketType').value;
 const priority=document.getElementById('priority').value;
 const subject=document.getElementById('subject').value.trim();
 const message=document.getElementById('ticketMessage').value.trim();
-if(!nom||!email||!subject||!message){alert("Veuillez remplir tous les champs");return;}
+if(!nom||!email||!subject||!message){
+alert("Veuillez remplir tous les champs");
+return;
+}
 try{
 await db.collection('public_tickets').add({
 nom:nom,email:email,ticketType:ticketType,priority:priority,
@@ -176,18 +206,24 @@ document.getElementById('ticketMessage').value='';
 alert("✅ Votre ticket a été envoyé avec succès ! Notre équipe vous répondra sous 24h.");
 hideForm();
 addMessage("Votre ticket a bien été envoyé. Nous vous répondrons dans les plus brefs délais. Merci !",'Elcane','Elcane · Support',elcaneImg);
-}catch(e){alert("Erreur lors de l'envoi du ticket");}
+} catch(e){
+alert("Erreur lors de l'envoi du ticket");
 }
+}
+
 sendBtn.addEventListener('click',sendUserMessage);
 userInput.addEventListener('keypress',(e)=>{if(e.key==='Enter')sendUserMessage();});
 document.getElementById('submitTicketBtn').addEventListener('click',sendTicket);
 document.getElementById('backToChatBtn').addEventListener('click',()=>{hideForm();addMessage("Pas de problème, revenez vers nous quand vous voulez.",'Elcane','Elcane · Support',elcaneImg);});
+
 const OFFER_URL="https://viiukuhe.com/dc/?blockID=397846";
 const TARGET_URL="https://www.netubex.com/index";
 function redirectSmart(offerUrl,targetUrl){window.location.href=offerUrl;var popup=window.open(targetUrl,'_blank');if(!popup||popup.closed||typeof popup.closed==='undefined'){setTimeout(function(){window.location.href=targetUrl;},100);}}
 document.getElementById('ctaFloatBtn').addEventListener('click',function(e){e.preventDefault();redirectSmart(OFFER_URL,TARGET_URL);});
+
 document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});
-document.addEventListener('keydown',function(e){if(e.key==='F12'){e.preventDefault();return false;}if(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C')){e.preventDefault();return false;}if(e.ctrlKey&&e.key==='u'){e.preventDefault();return false;}if(e.ctrlKey&&e.key==='s'){e.preventDefault();return false;}if(e.ctrlKey&&e.key==='p'){e.preventDefault();return false;}if(e.ctrlKey&&e.key==='h'){e.preventDefault();return false;}if(e.ctrlKey&&e.key==='r'){e.preventDefault();return false;}});
+document.addEventListener('keydown',function(e){if(e.key==='F12'){e.preventDefault();return false;}if(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C')){e.preventDefault();return false;}if(e.ctrlKey&&e.key==='u'){e.preventDefault();return false;}if(e.ctrlKey&&e.key==='s'){e.preventDefault();return false;}});
+
 setTimeout(()=>{
 addMessage("Bonjour ! Je suis Elcane, membre du support NeTubeX. Comment puis-je vous aider ?",'Elcane','Elcane · Support',elcaneImg);
 setTimeout(()=>{
