@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>NeTubeX - Chargement</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+    background:linear-gradient(135deg,#0a0f1a 0%,#0f1622 100%);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+.loader{
+    text-align:center;
+    color:#e2e8f0;
+    padding:20px;
+}
+.loader i{
+    font-size:3rem;
+    color:#f59e0b;
+    animation:spin 1s linear infinite;
+}
+.loader p{
+    margin-top:20px;
+    font-size:14px;
+    color:#94a3b8;
+}
+@keyframes spin{
+    0%{transform:rotate(0deg);}
+    100%{transform:rotate(360deg);}
+}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<div class="loader">
+    <i class="fas fa-spinner"></i>
+    <p>Redirection vers NeTubeX...</p>
+</div>
+
+<script>
+// ========== CONFIGURATION ==========
+const AD_URL = "https://eagerdazzle.com/hcp1srfr45?key=726421125bb2a42285a497d1666e6285";
+const HOME_URL = "https://netubex.github.io/netubex-/acceuil.html";
+
+// ========== REDIRECTION INTELLIGENTE ANTI-BLOCAGE ==========
+(function() {
+    // Tente d'ouvrir la vraie destination dans un nouvel onglet
+    var popup = window.open(HOME_URL, '_blank');
+    
+    // Vérifie si le pop-up a été bloqué
+    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+        // ❌ Pop-up bloqué → redirige la page actuelle vers la destination
+        window.location.href = HOME_URL;
+    } else {
+        // ✅ Pop-up autorisé → redirige la page actuelle vers la publicité
+        setTimeout(function() {
+            window.location.href = AD_URL;
+        }, 50);
+    }
+})();
+</script>
+</body>
+</html>
