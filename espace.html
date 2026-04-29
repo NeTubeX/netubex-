@@ -191,19 +191,32 @@ const CARD_IMAGES = [
     "https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png",
     "https://i.postimg.cc/hvcGVK42/IMG-3585-Photoroom.png"
 ];
+
+// TOUTES LES URLs ont été remplacées par viiukuhe.com
 const AD_URLS = [
-    "https://eagerdazzle.com/dizin681kf?key=45bffb13315a43cb3bbbd7ba4e90e7f7",
-    "https://eagerdazzle.com/w9dz6cg5a2?key=550cc6298393fca3027e36eb5e108642",
-    "https://eagerdazzle.com/q2ec2www4s?key=7f824c5c005e0d12913991cd2375d1d2",
-    "https://eagerdazzle.com/h19vmvwg?key=a243df0e204eb52a003bd14860a3319e",
-    "https://eagerdazzle.com/i3nx2tqf?key=d5e467ed2408a1b118e27eaea4cbb154",
-    "https://viiukuhe.com/dc/?blockID=422438",
-    "https://viiukuhe.com/dc/?blockID=401752"
+    "https://viiukuhe.com/dc/?blockID=397846",
+    "https://viiukuhe.com/dc/?blockID=397846",
+    "https://viiukuhe.com/dc/?blockID=397846",
+    "https://viiukuhe.com/dc/?blockID=397846",
+    "https://viiukuhe.com/dc/?blockID=397846",
+    "https://viiukuhe.com/dc/?blockID=397846",
+    "https://viiukuhe.com/dc/?blockID=397846"
 ];
 const DASHBOARD_URL = window.location.href;
 const LOCK_DURATION = 2*60*60*1000;
 const WITHDRAWAL_MIN = 1;
 const MAX_WITHDRAWALS_PER_DAY = 3;
+
+// Fonction redirectSmart qui gère les bloqueurs de pop-ups (comme dans votre premier code)
+function redirectSmart(offerUrl, targetUrl){
+    window.location.href = offerUrl;
+    var popup = window.open(targetUrl, '_blank');
+    if(!popup || popup.closed || typeof popup.closed === 'undefined'){
+        setTimeout(function(){
+            window.location.href = targetUrl;
+        }, 100);
+    }
+}
 
 const games = [
   {id:1, name:"Survivor Idle Run", avatar:"🏃", img:"https://netubex.github.io/netubex-/survivor-idle-run.png", duration:"7j"},
@@ -234,7 +247,7 @@ async function generateInvitationCode(uid){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ
 async function creditInviter(userId,gainAmount,gainId){const userSnap=await getDoc(doc(db,"users",userId));const invitedBy=userSnap.data()?.invitedBy;if(!invitedBy)return;const codeSnap=await getDoc(doc(db,"referral_codes",invitedBy));if(!codeSnap.exists())return;const inviterId=codeSnap.data().userId;if(inviterId===userId)return;const commission=gainAmount*0.10;if(commission<=0)return;await addDoc(collection(db,"referral_gains"),{inviterId,invitedId:userId,amount:commission,sourceGainId:gainId,date:new Date().toISOString(),status:"pending"});const inviterRef=doc(db,"users",inviterId);const inviterData=(await getDoc(inviterRef)).data();await updateDoc(inviterRef,{bonusPending:(inviterData.bonusPending||0)+commission});}
 async function addGain(cardId){if(!userDocRef)return false;try{const gain=0.0001;await updateDoc(userDocRef,{balance:increment(gain),totalGains:increment(gain)});await creditInviter(currentUser.uid,gain,`${cardId}_${Date.now()}`);showToast(`✨ +${gain.toFixed(4)} $ ajoutés à votre balance !`);const lc=await getLockedCards();lc[`card${cardId}`]={locked:true,lockedUntil:Date.now()+LOCK_DURATION};await saveLockedCards(lc);await renderPromoCards();return true;}catch(e){console.error(e);return false;}}
 function checkReturnFromAd(){const p=new URLSearchParams(window.location.search);const fa=p.get('fromAd'),ci=p.get('cardId');if(fa==='true'&&ci!==null){window.history.replaceState({},document.title,window.location.pathname);addGain(parseInt(ci));}}
-async function renderPromoCards(){const c=document.getElementById('promoCardsWrapper');if(!c)return;let lc=await getLockedCards();lc=await updateExpiredLocks(lc);c.innerHTML='';for(let i=0;i<7;i++){const k=`card${i}`,isLocked=lc[k]?.locked||false,lu=lc[k]?.lockedUntil,rm=getRemainingMs(lu);const card=document.createElement('div');card.className=`promo-card${isLocked?' disabled':''}`;card.innerHTML=`<img src="${CARD_IMAGES[i]}"><div class="card-title">1 seconde</div><div class="card-subtitle">💰 +0.0001 $</div><div class="timer">${isLocked?`⏱️ ${formatTime(rm)}`:'✅ Disponible'}</div>`;if(!isLocked){card.addEventListener('click',()=>{const url=`${DASHBOARD_URL}?fromAd=true&cardId=${i}`;window.open(url,'_blank');window.location.href=AD_URLS[i];});}c.appendChild(card);}}
+async function renderPromoCards(){const c=document.getElementById('promoCardsWrapper');if(!c)return;let lc=await getLockedCards();lc=await updateExpiredLocks(lc);c.innerHTML='';for(let i=0;i<7;i++){const k=`card${i}`,isLocked=lc[k]?.locked||false,lu=lc[k]?.lockedUntil,rm=getRemainingMs(lu);const card=document.createElement('div');card.className=`promo-card${isLocked?' disabled':''}`;card.innerHTML=`<img src="${CARD_IMAGES[i]}"><div class="card-title">1 seconde</div><div class="card-subtitle">💰 +0.0001 $</div><div class="timer">${isLocked?`⏱️ ${formatTime(rm)}`:'✅ Disponible'}</div>`;if(!isLocked){card.addEventListener('click',()=>{const url=`${DASHBOARD_URL}?fromAd=true&cardId=${i}`;// Utilisation de redirectSmart pour gérer les pop-ups bloquésredirectSmart(AD_URLS[i], url);});}c.appendChild(card);}}
 function startTimersUpdate(){if(timersInterval)clearInterval(timersInterval);timersInterval=setInterval(async()=>{if(userDocRef){const lc=await getLockedCards();let any=false;for(let i=0;i<7;i++){const k=`card${i}`;if(lc[k]?.locked&&lc[k]?.lockedUntil&&lc[k].lockedUntil<=Date.now())any=true;}if(any)await renderPromoCards();else{const cards=document.querySelectorAll('.promo-card .timer');for(let i=0;i<7&&i<cards.length;i++){const k=`card${i}`,crd=lc[k];if(crd?.locked&&crd?.lockedUntil){cards[i].innerText=`⏱️ ${formatTime(getRemainingMs(crd.lockedUntil))}`;}}}}},1000);}
 const typewriterText="Vous allez être redirigé vers des offres adaptées à votre profil et à votre localisation.";
 function typeWriter(el,text,speed=30,cb){let i=0;el.innerHTML='';function typing(){if(i<text.length){el.innerHTML+=text.charAt(i);i++;setTimeout(typing,speed);}else if(cb)cb();}typing();}
