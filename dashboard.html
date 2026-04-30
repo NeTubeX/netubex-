@@ -26,23 +26,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 .blinking-dot{width:8px;height:8px;background:#10b981;border-radius:50%;animation:blink 1.2s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
 .feed-container{max-width:680px;margin:0 auto;padding-bottom:1rem;}
-.premium-card{margin:0 16px 20px 16px;background:linear-gradient(135deg,#1e2a3a,#0f172a);border-radius:20px;border:2px solid rgba(245,158,11,0.4);overflow:hidden;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);position:relative;}
-.premium-card::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(245,158,11,0.15),transparent);transition:left 0.5s ease;}
-.premium-card:hover::before{left:100%;}
-.premium-card:hover{transform:translateY(-3px);border-color:#f59e0b;box-shadow:0 10px 30px rgba(245,158,11,0.25);}
-.premium-card-inner{padding:18px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:15px;}
-.premium-card-left{display:flex;align-items:center;gap:16px;flex:2;}
-.premium-icon{width:55px;height:55px;background:linear-gradient(145deg,#f59e0b,#d97706);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#fff;box-shadow:0 5px 15px rgba(245,158,11,0.4);}
-.premium-text{flex:1;}
-.premium-title{font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,#fff,#f59e0b);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:5px;}
-.premium-desc{font-size:0.75rem;color:#94a3b8;margin-bottom:6px;}
-.premium-features{display:flex;gap:12px;flex-wrap:wrap;}
-.premium-feature{font-size:0.65rem;color:#cbd5e1;display:flex;align-items:center;gap:5px;}
-.premium-feature i{color:#f59e0b;font-size:0.6rem;}
-.premium-badge{background:linear-gradient(135deg,#f59e0b,#d97706);padding:6px 16px;border-radius:40px;font-weight:700;font-size:0.8rem;color:#0a0f1a;display:flex;align-items:center;gap:6px;white-space:nowrap;animation:pulse-badge 1.5s infinite;}
-@keyframes pulse-badge{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.85;transform:scale(1.02);}}
-.premium-arrow{background:rgba(255,255,255,0.1);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f59e0b;font-size:0.9rem;transition:all 0.3s;}
-.premium-card:hover .premium-arrow{transform:translateX(5px);background:#f59e0b;color:#0a0f1a;}
 .feed-separator{height:1px;background:linear-gradient(90deg,transparent,#3e4042,transparent);margin:0 16px 16px;}
 .games-list{display:flex;flex-direction:column;gap:8px;}
 .post-card{background:#242526;border-radius:12px;overflow:hidden;}
@@ -117,7 +100,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 @keyframes slideInDown{from{opacity:0;transform:translateX(50px) translateY(-20px);}to{opacity:1;transform:translateX(0) translateY(0);}}
 @keyframes slideOutUp{from{opacity:1;transform:translateX(0) translateY(0);}to{opacity:0;transform:translateX(50px) translateY(-20px);}}
 .toast-exit{animation:slideOutUp 0.3s ease forwards;}
-@media (max-width:640px){.toast-container{top:70px;right:12px;left:12px;max-width:none;min-width:auto;}.toast{padding:14px 16px;}.premium-card-inner{padding:14px 18px;}.premium-icon{width:45px;height:45px;font-size:1.3rem;}.premium-title{font-size:0.95rem;}.premium-desc{font-size:0.7rem;}.premium-feature{font-size:0.6rem;}.premium-badge{font-size:0.7rem;padding:4px 12px;}}
+@media (max-width:640px){.toast-container{top:70px;right:12px;left:12px;max-width:none;min-width:auto;}.toast{padding:14px 16px;}}
 .tickets-list{max-height:400px;overflow-y:auto;}
 .ticket-item{background:#18191A;border-radius:12px;padding:12px;margin-bottom:10px;border-left:3px solid #3b82f6;}
 .ticket-item.resolu{border-left-color:#10b981;opacity:0.7;}
@@ -194,26 +177,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 </header>
 
 <div class="feed-container">
-    <div class="premium-card" id="premiumTimeWallCard">
-        <div class="premium-card-inner">
-            <div class="premium-card-left">
-                <div class="premium-icon"><i class="fas fa-clock"></i></div>
-                <div class="premium-text">
-                    <div class="premium-title">Transforme ton temps en revenu chaque jour</div>
-                    <div class="premium-desc">Terminez des jeux, sondages ou tâches pour débloquer vos récompenses</div>
-                    <div class="premium-features">
-                        <span class="premium-feature"><i class="fas fa-gamepad"></i> Jeux</span>
-                        <span class="premium-feature"><i class="fas fa-chart-simple"></i> Sondages</span>
-                        <span class="premium-feature"><i class="fas fa-tasks"></i> Tâches</span>
-                        <span class="premium-feature"><i class="fas fa-mouse-pointer"></i> Cliquez & gagnez</span>
-                    </div>
-                </div>
-            </div>
-            <div class="premium-badge"><i class="fas fa-bolt"></i> PROMO 50%</div>
-            <div class="premium-arrow"><i class="fas fa-arrow-right"></i></div>
-        </div>
-    </div>
-
     <div class="feed-separator"></div>
     <div class="games-list" id="gamesContainer"></div>
 </div>
@@ -356,7 +319,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
     </div>
 </div>
 
-<footer class="footer"><p>© Ne<span style="color:#f59e0b;">TubeX</span> 2026 | Pôle Technique et Support</p></footer>
+<footer class="footer"><p>© Ne<span style="color:#f59e0b;">TubeX</span> 2026 | Pôle Stratégie et Innovation</p></footer>
 
 <script type="importmap">
 {"imports":{"firebase/app":"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js","firebase/auth":"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js","firebase/firestore":"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"}}
@@ -369,8 +332,8 @@ let currentUser=null,userDocRef=null,currentTickets=[],currentCaps=[],pendingPan
 let toastContainer=null;
 function getToastContainer(){if(!toastContainer){toastContainer=document.createElement('div');toastContainer.className='toast-container';document.body.appendChild(toastContainer);}return toastContainer;}
 function showToast(message,type='success',duration=6000){const container=getToastContainer();const toast=document.createElement('div');toast.className=`toast toast-${type}`;let icon='',title='';switch(type){case 'success':icon='✅';title='Succès';break;case 'error':icon='❌';title='Erreur';break;case 'info':icon='ℹ️';title='Information';break;default:icon='✅';title='Notification';}toast.innerHTML=`<div class="toast-icon">${icon}</div><div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${message}</div></div><button class="toast-close">✕</button>`;container.appendChild(toast);const closeBtn=toast.querySelector('.toast-close');closeBtn.addEventListener('click',()=>{toast.classList.add('toast-exit');setTimeout(()=>toast.remove(),300);});setTimeout(()=>{if(toast.parentElement){toast.classList.add('toast-exit');setTimeout(()=>toast.remove(),300);}},duration);toast.addEventListener('click',(e)=>{if(e.target===closeBtn||closeBtn.contains(e.target))return;toast.classList.add('toast-exit');setTimeout(()=>toast.remove(),300);});}
-const games=[{id:1,name:"The Grand Mafia",avatar:"https://netubex.github.io/netubex-/the-grand-mafia.webp",img:"https://netubex.github.io/netubex-/the-grand-mafia.webp",duration:"30j",totalEarning:"217.18",description:"Jeu de stratégie mafieux. Construis ton empire, recrute des soldats et domine la ville."},{id:2,name:"Grab A Toy",avatar:"https://netubex.github.io/netubex-/grab-a-toy.png",img:"https://netubex.github.io/netubex-/grab-a-toy.png",duration:"30j",totalEarning:"142.66",description:"Attrape un max de jouets avec précision. Timing et réflexes seront tes alliés."},{id:3,name:"Wild Fish Explorer",avatar:"https://netubex.github.io/netubex-/wild-fish.png",img:"https://netubex.github.io/netubex-/wild-fish.png",duration:"30j",totalEarning:"137.37",description:"Explore les océans, capture des poissons rares et complète ta collection."},{id:4,name:"Sky Plunger",avatar:"https://netubex.github.io/netubex-/sky-plunger.png",img:"https://netubex.github.io/netubex-/sky-plunger.png",duration:"30j",totalEarning:"109.42",description:"Chute libre à travers les cieux. Évite les obstacles et bats ton record."},{id:5,name:"Goblin Heist",avatar:"https://netubex.github.io/netubex-/goblin-heist.jpg",img:"https://netubex.github.io/netubex-/goblin-heist.jpg",duration:"60j",totalEarning:"96.79",description:"Incarne un gobelin voleur. Infiltre-toi, évite les gardes et prends les trésors."},{id:6,name:"Survivor Idle Run",avatar:"https://netubex.github.io/netubex-/survivor-idle-run.png",img:"https://netubex.github.io/netubex-/survivor-idle-run.png",duration:"30j",totalEarning:"65.03",description:"Course automatique et survie. Améliore tes compétences, collecte des rewards."},{id:7,name:"Zombies Waves",avatar:"https://netubex.github.io/netubex-/zombie-waves.jpg",img:"https://netubex.github.io/netubex-/zombie-waves.jpg",duration:"30j",totalEarning:"58.35",description:"Survis aux vagues de zombies. Améliore ton arsenal et tiens le plus longtemps."},{id:8,name:"Love Water",avatar:"https://netubex.github.io/netubex-/love-water.gif",img:"https://netubex.github.io/netubex-/love-water.gif",duration:"30j",totalEarning:"13.37",description:"Puzzle aquatique. Guide l'eau avec logique pour résoudre chaque niveau."},{id:9,name:"Dragon Farm",avatar:"https://netubex.github.io/netubex-/dragon-farm.webp",img:"https://netubex.github.io/netubex-/dragon-farm.webp",duration:"30j",totalEarning:"28.45",description:"Élève des dragons et développe ta ferme légendaire."}];
-const howToPlayMap={1:"Construis ton manoir • Entraîne des soldats • Attaque d'autres joueurs • Rejoins une alliance • Fais les missions quotidiennes",2:"Vise avec précision • Attrape les jouets rares • Gère ton timing • Débloque des niveaux secrets • Multiplie tes gains",3:"Plonge dans l'océan • Capture des poissons légendaires • Améliore ton matériel • Complète le bestiaire • Ouvre des zones cachées",4:"Contrôle ta chute • Évite les obstacles • Collecte des bonus • Va toujours plus loin • Débloque des skins uniques",5:"Déplace-toi en silence • Évite gardes et pièges • Collecte tous les trésors • Utilise tes compétences • Deviens le roi des voleurs",6:"Lance la course auto • Améliore tes stats • Gagne même hors ligne • Survie maximale • Débloque des héros puissants",7:"Tire sur les zombies • Ne te fais pas encercler • Améliore tes armes • Tiens un max de vagues • Affronte des boss",8:"Trace le chemin de l'eau • Active les bons éléments • Résous chaque puzzle • Progresse niveau par niveau",9:"Fais éclore des œufs • Nourris tes dragons • Construis des bâtiments • Termine les quêtes • Agrandis ton sanctuaire"};
+const games=[{id:1,name:"The Grand Mafia",avatar:"https://netubex.github.io/netubex-/the-grand-mafia.webp",img:"https://netubex.github.io/netubex-/the-grand-mafia.webp",duration:"30j",totalEarning:"217.18",description:"Jeu de stratégie mafieux. Construis ton empire, recrute des soldats et domine la ville."},{id:2,name:"Grab A Toy",avatar:"https://netubex.github.io/netubex-/grab-a-toy.png",img:"https://netubex.github.io/netubex-/grab-a-toy.png",duration:"30j",totalEarning:"142.66",description:"Attrape un max de jouets avec précision. Timing et réflexes seront tes alliés."},{id:3,name:"Wild Fish Explorer",avatar:"https://netubex.github.io/netubex-/wild-fish.png",img:"https://netubex.github.io/netubex-/wild-fish.png",duration:"30j",totalEarning:"137.37",description:"Explore les océans, capture des poissons rares et complète ta collection."},{id:4,name:"Sky Plunger",avatar:"https://netubex.github.io/netubex-/sky-plunger.png",img:"https://netubex.github.io/netubex-/sky-plunger.png",duration:"30j",totalEarning:"109.42",description:"Chute libre à travers les cieux. Évite les obstacles et bats ton record."},{id:5,name:"Goblin Heist",avatar:"https://netubex.github.io/netubex-/goblin-heist.jpg",img:"https://netubex.github.io/netubex-/goblin-heist.jpg",duration:"60j",totalEarning:"96.79",description:"Incarne un gobelin voleur. Infiltre-toi, évite les gardes et prends les trésors."},{id:6,name:"Survivor Idle Run",avatar:"https://netubex.github.io/netubex-/survivor-idle-run.png",img:"https://netubex.github.io/netubex-/survivor-idle-run.png",duration:"30j",totalEarning:"65.03",description:"Course automatique et survie. Améliore tes compétences, collecte des rewards."},{id:7,name:"Zombies Waves",avatar:"https://netubex.github.io/netubex-/zombie-waves.jpg",img:"https://netubex.github.io/netubex-/zombie-waves.jpg",duration:"30j",totalEarning:"58.35",description:"Survis aux vagues de zombies. Améliore ton arsenal et tiens le plus longtemps."},{id:8,name:"Love Water",avatar:"https://netubex.github.io/netubex-/love-water.gif",img:"https://netubex.github.io/netubex-/love-water.gif",duration:"30j",totalEarning:"13.37",description:"Puzzle aquatique. Guide l'eau avec logique pour résoudre chaque niveau."}];
+const howToPlayMap={1:"Construis ton manoir • Entraîne des soldats • Attaque d'autres joueurs • Rejoins une alliance • Fais les missions quotidiennes",2:"Vise avec précision • Attrape les jouets rares • Gère ton timing • Débloque des niveaux secrets • Multiplie tes gains",3:"Plonge dans l'océan • Capture des poissons légendaires • Améliore ton matériel • Complète le bestiaire • Ouvre des zones cachées",4:"Contrôle ta chute • Évite les obstacles • Collecte des bonus • Va toujours plus loin • Débloque des skins uniques",5:"Déplace-toi en silence • Évite gardes et pièges • Collecte tous les trésors • Utilise tes compétences • Deviens le roi des voleurs",6:"Lance la course auto • Améliore tes stats • Gagne même hors ligne • Survie maximale • Débloque des héros puissants",7:"Tire sur les zombies • Ne te fais pas encercler • Améliore tes armes • Tiens un max de vagues • Affronte des boss",8:"Trace le chemin de l'eau • Active les bons éléments • Résous chaque puzzle • Progresse niveau par niveau"};
 function getDeviceUniqueId(){let d=localStorage.getItem('device_permanent_id');if(!d){const s=`${screen.width}x${screen.height}x${screen.colorDepth}|${Intl.DateTimeFormat().resolvedOptions().timeZone}|${navigator.language}|${navigator.platform}`;let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h)+s.charCodeAt(i),h|=0;d=`DEVICE_${Math.abs(h)}`;localStorage.setItem('device_permanent_id',d);}return d;}
 async function sendSecurityAlert(t,e,o={}){try{await addDoc(collection(db,"security_alerts"),{type:t,email:e||null,netuberCode:o.netuberCode||null,netuberId:o.netuberId||null,message:o.message||'',details:{timeSpentSeconds:Math.floor((Date.now()-pageLoadTime)/1000),deviceId:getDeviceUniqueId(),userAgent:navigator.userAgent,language:navigator.language,platform:navigator.platform,...o},timestamp:new Date().toISOString(),read:false});return true;}catch(e){return false;}}
 function escapeHtml(str){if(!str)return '';return str.replace(/[&<>]/g,m=>m==='&'?'&amp;':(m==='<'?'&lt;':'&gt;'));}
@@ -420,7 +383,6 @@ document.getElementById('panelBbtn')?.addEventListener('click',async()=>{let use
 document.getElementById('panelCbtn')?.addEventListener('click',()=>{showFlyPopup('Panel C','C','#f59e0b','gaingg','https://gain.gg/earn');});
 document.getElementById('confirmYes')?.addEventListener('click',async()=>{await performLogout();});
 document.getElementById('confirmNo')?.addEventListener('click',()=>{document.getElementById('confirmPopup').classList.remove('active');});
-document.getElementById('premiumTimeWallCard')?.addEventListener('click',async()=>{await openTimeWallUnlimited();});
 document.addEventListener('contextmenu',e=>e.preventDefault());
 document.querySelectorAll('img').forEach(img=>{img.addEventListener('contextmenu',e=>e.preventDefault());img.addEventListener('dragstart',e=>e.preventDefault());});
 document.addEventListener('keydown',e=>{if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C'))||(e.ctrlKey&&e.key==='u')||(e.ctrlKey&&e.key==='s')||e.key==='F5'){e.preventDefault();return false;}});
