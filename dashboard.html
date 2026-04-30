@@ -83,37 +83,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 .menu-item.danger i{color:#ef4444;}
 .footer{background:#242526;border-top:1px solid #3e4042;padding:1rem;text-align:center;}
 .footer p{color:#b0b3b8;font-size:0.7rem;}
-
-/* TOASTS PROFESSIONNELS */
-.toast-container{
-    position:fixed;
-    top:80px;
-    right:20px;
-    z-index:10000;
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-    max-width:400px;
-    min-width:320px;
-    pointer-events:none;
-}
-.toast{
-    pointer-events:auto;
-    background:rgba(15,23,42,0.95);
-    backdrop-filter:blur(16px);
-    border-radius:12px;
-    padding:16px 20px;
-    color:#f1f5f9;
-    font-size:14px;
-    font-weight:500;
-    box-shadow:0 20px 35px -10px rgba(0,0,0,0.4),0 0 0 1px rgba(255,255,255,0.08);
-    border-left:4px solid;
-    animation:slideInDown 0.4s cubic-bezier(0.68,-0.55,0.265,1.55) forwards;
-    display:flex;
-    align-items:flex-start;
-    gap:14px;
-    cursor:pointer;
-}
+.iframe-slide-container{position:fixed;top:70px;left:0;right:0;bottom:0;background:#18191A;z-index:150;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.2,0.9,0.4,1.1);display:flex;flex-direction:column;overflow:hidden;}
+.iframe-slide-container.active{transform:translateY(0);}
+.iframe-slide-header{background:#242526;border-bottom:1px solid #3e4042;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.iframe-title{display:flex;align-items:center;gap:10px;font-weight:700;color:#e4e6eb;font-size:1rem;}
+.close-iframe-slide-btn{background:#3a3b3c;border:none;padding:8px 20px;border-radius:30px;color:#e4e6eb;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;font-size:0.85rem;}
+.close-iframe-slide-btn:hover{background:#ef4444;color:white;}
+.iframe-slide-content{flex:1;width:100%;border:none;background:white;}
+.toast-container{position:fixed;top:80px;right:20px;z-index:10000;display:flex;flex-direction:column;gap:12px;max-width:400px;min-width:320px;pointer-events:none;}
+.toast{pointer-events:auto;background:rgba(15,23,42,0.95);backdrop-filter:blur(16px);border-radius:12px;padding:16px 20px;color:#f1f5f9;font-size:14px;font-weight:500;box-shadow:0 20px 35px -10px rgba(0,0,0,0.4),0 0 0 1px rgba(255,255,255,0.08);border-left:4px solid;animation:slideInDown 0.4s cubic-bezier(0.68,-0.55,0.265,1.55) forwards;display:flex;align-items:flex-start;gap:14px;cursor:pointer;}
 .toast:hover{transform:translateX(-4px);}
 .toast-success{border-left-color:#10b981;background:linear-gradient(135deg,rgba(16,185,129,0.98),rgba(6,95,70,0.98));}
 .toast-error{border-left-color:#ef4444;background:linear-gradient(135deg,rgba(239,68,68,0.98),rgba(185,28,28,0.98));}
@@ -125,20 +103,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 .toast-message{font-size:12.5px;opacity:0.9;line-height:1.45;}
 .toast-close{background:rgba(255,255,255,0.12);border:none;width:26px;height:26px;border-radius:13px;cursor:pointer;color:white;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
 .toast-close:hover{background:rgba(255,255,255,0.25);transform:scale(1.05);}
-@keyframes slideInDown{
-    from{opacity:0;transform:translateX(50px) translateY(-20px);}
-    to{opacity:1;transform:translateX(0) translateY(0);}
-}
-@keyframes slideOutUp{
-    from{opacity:1;transform:translateX(0) translateY(0);}
-    to{opacity:0;transform:translateX(50px) translateY(-20px);}
-}
+@keyframes slideInDown{from{opacity:0;transform:translateX(50px) translateY(-20px);}to{opacity:1;transform:translateX(0) translateY(0);}}
+@keyframes slideOutUp{from{opacity:1;transform:translateX(0) translateY(0);}to{opacity:0;transform:translateX(50px) translateY(-20px);}}
 .toast-exit{animation:slideOutUp 0.3s ease forwards;}
-@media (max-width:640px){
-    .toast-container{top:70px;right:12px;left:12px;max-width:none;min-width:auto;}
-    .toast{padding:14px 16px;}
-}
-
+@media (max-width:640px){.toast-container{top:70px;right:12px;left:12px;max-width:none;min-width:auto;}.toast{padding:14px 16px;}.iframe-slide-container{top:65px;}}
 .tickets-list{max-height:400px;overflow-y:auto;}
 .ticket-item{background:#18191A;border-radius:12px;padding:12px;margin-bottom:10px;border-left:3px solid #3b82f6;}
 .ticket-item.resolu{border-left-color:#10b981;opacity:0.7;}
@@ -228,14 +196,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 </div>
 </div>
 </div>
-
-<!-- FORMULAIRE TICKET - Sans catégorie, liste déroulante des sujets -->
 <div id="ticketFormPopup" class="slide-popup">
     <div class="popup-left">
         <i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i>
         <h3>📬 Nouveau ticket</h3>
         <p style="font-size:0.8rem; color:#b0b3b8; margin-bottom:15px;">Sélectionnez le sujet de votre demande</p>
-        
         <select id="ticketSubjectSelect" class="category-select">
             <option value="">-- Sélectionnez un sujet --</option>
             <option value="🔐 Je n'arrive pas à me connecter au Panel A">🔐 Je n'arrive pas à me connecter au Panel A</option>
@@ -259,20 +224,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
             <option value="🔔 Je ne reçois pas mes notifications de CAP">🔔 Je ne reçois pas mes notifications de CAP</option>
             <option value="📝 Autre demande (préciser si besoin)">📝 Autre demande (préciser si besoin)</option>
         </select>
-        
         <select id="ticketPriority" class="priority-select">
             <option value="basse">🟢 Priorité basse - Peut attendre 48h</option>
             <option value="moyenne" selected="selected">🟠 Priorité moyenne - À traiter rapidement</option>
             <option value="haute">🔴 Priorité haute - Bloquant / Urgent</option>
         </select>
-        
         <div class="confirm-buttons">
             <button class="close-popup-btn" id="submitTicketBtn" style="background:#f59e0b; color:#000;">📨 Envoyer mon ticket</button>
             <button class="close-popup-btn" id="closeTicketFormBtn">❌ Annuler</button>
         </div>
     </div>
 </div>
-
 <div id="ticketsListPopup" class="slide-popup">
     <div class="popup-left">
         <i class="fas fa-ticket-alt" style="font-size:2rem;color:#f59e0b;"></i>
@@ -285,7 +247,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
         <button class="close-popup-btn" id="closeTicketsPopupBtn">🔒 Fermer</button>
     </div>
 </div>
-
 <div id="capPopup" class="slide-popup">
     <div class="popup-left">
         <i class="fas fa-chart-line" style="font-size:2rem;color:#f59e0b;"></i>
@@ -294,7 +255,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
         <button class="close-popup-btn" id="closeCapBtn">🔒 Fermer</button>
     </div>
 </div>
-
 <div id="confirmPopup" class="slide-popup">
     <div class="popup-left">
         <i class="fas fa-sign-out-alt" style="font-size:2rem;color:#ef4444;"></i>
@@ -306,247 +266,42 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
         </div>
     </div>
 </div>
-
+<div id="iframeGemiwallContainer" class="iframe-slide-container">
+    <div class="iframe-slide-header">
+        <div class="iframe-title"><i class="fas fa-globe" style="color:#f59e0b;"></i> Panel B · Gemiwall</div>
+        <button id="closeGemiwallIframeBtn" class="close-iframe-slide-btn"><i class="fas fa-times"></i> Retour</button>
+    </div>
+    <iframe id="gemiwallIframe" src="about:blank" class="iframe-slide-content"></iframe>
+</div>
 <footer class="footer"><p>© Ne<span style="color:#f59e0b;">TubeX</span> 2026 | Pôle Technique et Support</p></footer>
-
 <script type="importmap">
 {"imports":{"firebase/app":"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js","firebase/auth":"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js","firebase/firestore":"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"}}
 </script>
-
 <script type="module">
 import{initializeApp}from"firebase/app";import{getAuth,onAuthStateChanged,signOut}from"firebase/auth";import{getFirestore,doc,getDoc,updateDoc,arrayUnion,onSnapshot,collection,addDoc}from"firebase/firestore";
-
 const firebaseConfig={apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);
-
 let currentUser=null,userDocRef=null,currentTickets=[],currentCaps=[],pendingPanel=null,pendingPlatform=null,pendingTargetUrl=null,popupOpenTime=null,pageLoadTime=Date.now(),userLastMenuOpen=null,userReadCapsIds=[],userReadTicketResponseIds=[];
-
-// TOASTS PROFESSIONNELS
 let toastContainer=null;
-function getToastContainer(){
-    if(!toastContainer){
-        toastContainer=document.createElement('div');
-        toastContainer.className='toast-container';
-        document.body.appendChild(toastContainer);
-    }
-    return toastContainer;
-}
-function showToast(message,type='success',duration=6000){
-    const container=getToastContainer();
-    const toast=document.createElement('div');
-    toast.className=`toast toast-${type}`;
-    let icon='',title='';
-    switch(type){
-        case 'success':icon='✅';title='Succès';break;
-        case 'error':icon='❌';title='Erreur';break;
-        case 'info':icon='ℹ️';title='Information';break;
-        case 'warning':icon='⚠️';title='Attention';break;
-        default:icon='✅';title='Notification';
-    }
-    toast.innerHTML=`
-        <div class="toast-icon">${icon}</div>
-        <div class="toast-content">
-            <div class="toast-title">${title}</div>
-            <div class="toast-message">${message}</div>
-        </div>
-        <button class="toast-close">✕</button>
-    `;
-    container.appendChild(toast);
-    const closeBtn=toast.querySelector('.toast-close');
-    closeBtn.addEventListener('click',()=>{
-        toast.classList.add('toast-exit');
-        setTimeout(()=>toast.remove(),300);
-    });
-    setTimeout(()=>{
-        if(toast.parentElement){
-            toast.classList.add('toast-exit');
-            setTimeout(()=>toast.remove(),300);
-        }
-    },duration);
-    toast.addEventListener('click',(e)=>{
-        if(e.target===closeBtn||closeBtn.contains(e.target))return;
-        toast.classList.add('toast-exit');
-        setTimeout(()=>toast.remove(),300);
-    });
-}
-
-const games=[
-{id:1,name:"The Grand Mafia",avatar:"https://netubex.github.io/netubex-/the-grand-mafia.webp",img:"https://netubex.github.io/netubex-/the-grand-mafia.webp",duration:"30j",totalEarning:"217.18",description:"Jeu de stratégie mafieux. Construis ton empire, recrute des soldats et domine la ville."},
-{id:2,name:"Grab A Toy",avatar:"https://netubex.github.io/netubex-/grab-a-toy.png",img:"https://netubex.github.io/netubex-/grab-a-toy.png",duration:"30j",totalEarning:"142.66",description:"Attrape un max de jouets avec précision. Timing et réflexes seront tes alliés."},
-{id:3,name:"Wild Fish Explorer",avatar:"https://netubex.github.io/netubex-/wild-fish.png",img:"https://netubex.github.io/netubex-/wild-fish.png",duration:"30j",totalEarning:"137.37",description:"Explore les océans, capture des poissons rares et complète ta collection."},
-{id:4,name:"Sky Plunger",avatar:"https://netubex.github.io/netubex-/sky-plunger.png",img:"https://netubex.github.io/netubex-/sky-plunger.png",duration:"30j",totalEarning:"109.42",description:"Chute libre à travers les cieux. Évite les obstacles et bats ton record."},
-{id:5,name:"Goblin Heist",avatar:"https://netubex.github.io/netubex-/goblin-heist.jpg",img:"https://netubex.github.io/netubex-/goblin-heist.jpg",duration:"60j",totalEarning:"96.79",description:"Incarne un gobelin voleur. Infiltre-toi, évite les gardes et prends les trésors."},
-{id:6,name:"Survivor Idle Run",avatar:"https://netubex.github.io/netubex-/survivor-idle-run.png",img:"https://netubex.github.io/netubex-/survivor-idle-run.png",duration:"30j",totalEarning:"65.03",description:"Course automatique et survie. Améliore tes compétences, collecte des rewards."},
-{id:7,name:"Zombies Waves",avatar:"https://netubex.github.io/netubex-/zombie-waves.jpg",img:"https://netubex.github.io/netubex-/zombie-waves.jpg",duration:"30j",totalEarning:"58.35",description:"Survis aux vagues de zombies. Améliore ton arsenal et tiens le plus longtemps."},
-{id:8,name:"Love Water",avatar:"https://netubex.github.io/netubex-/love-water.gif",img:"https://netubex.github.io/netubex-/love-water.gif",duration:"30j",totalEarning:"13.37",description:"Puzzle aquatique. Guide l'eau avec logique pour résoudre chaque niveau."},
-{id:9,name:"Dragon Farm",avatar:"https://netubex.github.io/netubex-/dragon-farm.webp",img:"https://netubex.github.io/netubex-/dragon-farm.webp",duration:"30j",totalEarning:"28.45",description:"Élève des dragons et développe ta ferme légendaire."}
-];
-const howToPlayMap={
-1:"Construis ton manoir • Entraîne des soldats • Attaque d'autres joueurs • Rejoins une alliance • Fais les missions quotidiennes",
-2:"Vise avec précision • Attrape les jouets rares • Gère ton timing • Débloque des niveaux secrets • Multiplie tes gains",
-3:"Plonge dans l'océan • Capture des poissons légendaires • Améliore ton matériel • Complète le bestiaire • Ouvre des zones cachées",
-4:"Contrôle ta chute • Évite les obstacles • Collecte des bonus • Va toujours plus loin • Débloque des skins uniques",
-5:"Déplace-toi en silence • Évite gardes et pièges • Collecte tous les trésors • Utilise tes compétences • Deviens le roi des voleurs",
-6:"Lance la course auto • Améliore tes stats • Gagne même hors ligne • Survie maximale • Débloque des héros puissants",
-7:"Tire sur les zombies • Ne te fais pas encercler • Améliore tes armes • Tiens un max de vagues • Affronte des boss",
-8:"Trace le chemin de l'eau • Active les bons éléments • Résous chaque puzzle • Progresse niveau par niveau",
-9:"Fais éclore des œufs • Nourris tes dragons • Construis des bâtiments • Termine les quêtes • Agrandis ton sanctuaire"
-};
-
+function getToastContainer(){if(!toastContainer){toastContainer=document.createElement('div');toastContainer.className='toast-container';document.body.appendChild(toastContainer);}return toastContainer;}
+function showToast(message,type='success',duration=6000){const container=getToastContainer();const toast=document.createElement('div');toast.className=`toast toast-${type}`;let icon='',title='';switch(type){case 'success':icon='✅';title='Succès';break;case 'error':icon='❌';title='Erreur';break;case 'info':icon='ℹ️';title='Information';break;default:icon='✅';title='Notification';}toast.innerHTML=`<div class="toast-icon">${icon}</div><div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${message}</div></div><button class="toast-close">✕</button>`;container.appendChild(toast);const closeBtn=toast.querySelector('.toast-close');closeBtn.addEventListener('click',()=>{toast.classList.add('toast-exit');setTimeout(()=>toast.remove(),300);});setTimeout(()=>{if(toast.parentElement){toast.classList.add('toast-exit');setTimeout(()=>toast.remove(),300);}},duration);toast.addEventListener('click',(e)=>{if(e.target===closeBtn||closeBtn.contains(e.target))return;toast.classList.add('toast-exit');setTimeout(()=>toast.remove(),300);});}
+const games=[{id:1,name:"The Grand Mafia",avatar:"https://netubex.github.io/netubex-/the-grand-mafia.webp",img:"https://netubex.github.io/netubex-/the-grand-mafia.webp",duration:"30j",totalEarning:"217.18",description:"Jeu de stratégie mafieux. Construis ton empire, recrute des soldats et domine la ville."},{id:2,name:"Grab A Toy",avatar:"https://netubex.github.io/netubex-/grab-a-toy.png",img:"https://netubex.github.io/netubex-/grab-a-toy.png",duration:"30j",totalEarning:"142.66",description:"Attrape un max de jouets avec précision. Timing et réflexes seront tes alliés."},{id:3,name:"Wild Fish Explorer",avatar:"https://netubex.github.io/netubex-/wild-fish.png",img:"https://netubex.github.io/netubex-/wild-fish.png",duration:"30j",totalEarning:"137.37",description:"Explore les océans, capture des poissons rares et complète ta collection."},{id:4,name:"Sky Plunger",avatar:"https://netubex.github.io/netubex-/sky-plunger.png",img:"https://netubex.github.io/netubex-/sky-plunger.png",duration:"30j",totalEarning:"109.42",description:"Chute libre à travers les cieux. Évite les obstacles et bats ton record."},{id:5,name:"Goblin Heist",avatar:"https://netubex.github.io/netubex-/goblin-heist.jpg",img:"https://netubex.github.io/netubex-/goblin-heist.jpg",duration:"60j",totalEarning:"96.79",description:"Incarne un gobelin voleur. Infiltre-toi, évite les gardes et prends les trésors."},{id:6,name:"Survivor Idle Run",avatar:"https://netubex.github.io/netubex-/survivor-idle-run.png",img:"https://netubex.github.io/netubex-/survivor-idle-run.png",duration:"30j",totalEarning:"65.03",description:"Course automatique et survie. Améliore tes compétences, collecte des rewards."},{id:7,name:"Zombies Waves",avatar:"https://netubex.github.io/netubex-/zombie-waves.jpg",img:"https://netubex.github.io/netubex-/zombie-waves.jpg",duration:"30j",totalEarning:"58.35",description:"Survis aux vagues de zombies. Améliore ton arsenal et tiens le plus longtemps."},{id:8,name:"Love Water",avatar:"https://netubex.github.io/netubex-/love-water.gif",img:"https://netubex.github.io/netubex-/love-water.gif",duration:"30j",totalEarning:"13.37",description:"Puzzle aquatique. Guide l'eau avec logique pour résoudre chaque niveau."},{id:9,name:"Dragon Farm",avatar:"https://netubex.github.io/netubex-/dragon-farm.webp",img:"https://netubex.github.io/netubex-/dragon-farm.webp",duration:"30j",totalEarning:"28.45",description:"Élève des dragons et développe ta ferme légendaire."}];
+const howToPlayMap={1:"Construis ton manoir • Entraîne des soldats • Attaque d'autres joueurs • Rejoins une alliance • Fais les missions quotidiennes",2:"Vise avec précision • Attrape les jouets rares • Gère ton timing • Débloque des niveaux secrets • Multiplie tes gains",3:"Plonge dans l'océan • Capture des poissons légendaires • Améliore ton matériel • Complète le bestiaire • Ouvre des zones cachées",4:"Contrôle ta chute • Évite les obstacles • Collecte des bonus • Va toujours plus loin • Débloque des skins uniques",5:"Déplace-toi en silence • Évite gardes et pièges • Collecte tous les trésors • Utilise tes compétences • Deviens le roi des voleurs",6:"Lance la course auto • Améliore tes stats • Gagne même hors ligne • Survie maximale • Débloque des héros puissants",7:"Tire sur les zombies • Ne te fais pas encercler • Améliore tes armes • Tiens un max de vagues • Affronte des boss",8:"Trace le chemin de l'eau • Active les bons éléments • Résous chaque puzzle • Progresse niveau par niveau",9:"Fais éclore des œufs • Nourris tes dragons • Construis des bâtiments • Termine les quêtes • Agrandis ton sanctuaire"};
 function getDeviceUniqueId(){let d=localStorage.getItem('device_permanent_id');if(!d){const s=`${screen.width}x${screen.height}x${screen.colorDepth}|${Intl.DateTimeFormat().resolvedOptions().timeZone}|${navigator.language}|${navigator.platform}`;let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h)+s.charCodeAt(i),h|=0;d=`DEVICE_${Math.abs(h)}`;localStorage.setItem('device_permanent_id',d);}return d;}
 async function sendSecurityAlert(t,e,o={}){try{await addDoc(collection(db,"security_alerts"),{type:t,level:o.level||'info',email:e||null,netuberCode:o.netuberCode||null,netuberId:o.netuberId||null,message:o.message||'',details:{timeSpentSeconds:Math.floor((Date.now()-pageLoadTime)/1000),deviceId:getDeviceUniqueId(),userAgent:navigator.userAgent,language:navigator.language,platform:navigator.platform,...o},timestamp:new Date().toISOString(),read:false});return true;}catch(e){return false;}}
 function escapeHtml(str){if(!str)return '';return str.replace(/[&<>]/g,m=>m==='&'?'&amp;':(m==='<'?'&lt;':'&gt;'));}
-function renderGames(){
-    let container=document.getElementById('gamesContainer');
-    if(!container)return;
-    container.innerHTML='';
-    games.forEach(g=>{
-        let card=document.createElement('div');
-        card.className='post-card';
-        card.innerHTML=`<div class="post-top"><div class="avatar"><img src="${g.avatar}" alt="${g.name}"></div><div class="post-right"><div class="post-name">${g.name}</div><div class="post-sub">Nouvelle section <i class="fas fa-globe-africa"></i><span class="jeu-remunerateur">Jeu rémunérateur</span></div><div class="post-description">${g.description}</div></div></div><div class="image-wrapper" data-id="${g.id}" data-name="${g.name}" data-earning="${g.totalEarning}" data-howto="${howToPlayMap[g.id]}"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"><div class="image-overlay"><i class="fas fa-info-circle"></i> Cliquer pour voir comment ça marche</div></div><div class="post-stats"><span class="duration"><i class="fas fa-calendar-alt"></i> ${g.duration}</span><span class="earning"><i class="fas fa-coins"></i> ${g.totalEarning}$</span></div>`;
-        container.appendChild(card);
-    });
-    document.querySelectorAll('.image-wrapper').forEach(wrapper=>{
-        wrapper.addEventListener('click',(e)=>{
-            e.stopPropagation();
-            let earning=wrapper.dataset.earning;
-            let howto=wrapper.dataset.howto;
-            document.getElementById('howtoText').innerHTML=howto;
-            let formattedEarning=earning.replace('.',',');
-            document.getElementById('rewardAmount').innerHTML=formattedEarning+' $';
-            document.getElementById('rewardMessage').innerHTML=`${formattedEarning} $ seront ajoutés à votre compte de paiement mensuel si vous terminez ce jeu rémunérateur.`;
-            document.getElementById('howtoPopup').classList.add('active');
-        });
-    });
-}
-
-function renderTickets(tab){
-    let container=document.getElementById('ticketsListContainer');
-    if(!container)return;
-    let filtered=currentTickets.filter(t=>tab==='encours'?t.status!=='résolu':t.status==='résolu');
-    if(filtered.length===0){
-        container.innerHTML='<p style="text-align:center;color:#b0b3b8;padding:20px;">📭 Aucun ticket</p>';
-        return;
-    }
-    container.innerHTML=filtered.map(t=>{
-        let statusText=t.status==='ouvert'?'📩 En attente':(t.status==='en cours'?'⚙️ En cours':'✅ Résolu');
-        let statusClass=t.status==='ouvert'?'status-ouvert':(t.status==='en cours'?'status-en-cours':'status-resolu');
-        let reponsesHtml=t.reponses&&t.reponses.length?`<div class="ticket-reponse"><i class="fas fa-headset"></i> <strong>Réponse Pôle Technique:</strong><br>${escapeHtml(t.reponses[t.reponses.length-1].message)}</div>`:'';
-        return`
-        <div class="ticket-item ${t.status==='résolu'?'resolu':''}">
-            <div class="ticket-header">
-                <span class="ticket-date"><i class="far fa-calendar-alt"></i> ${new Date(t.date).toLocaleDateString('fr-FR')}</span>
-            </div>
-            <div class="ticket-subject"><i class="fas fa-comment-dots" style="margin-right:8px;color:#f59e0b;"></i>${escapeHtml(t.subject)}</div>
-            <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center;">
-                <span class="ticket-status ${statusClass}"><i class="fas fa-circle"></i> ${statusText}</span>
-                <span class="ticket-priority">
-                    ${t.priority==='haute'?'🔴 Priorité haute':(t.priority==='moyenne'?'🟠 Priorité moyenne':'🟢 Priorité basse')}
-                </span>
-            </div>
-            ${reponsesHtml}
-        </div>`;
-    }).join('');
-}
-
-function renderCaps(){
-    let container=document.getElementById('capsListContainer');
-    if(!container)return;
-    if(!currentCaps||!currentCaps.length){
-        container.innerHTML='<p style="text-align:center;color:#b0b3b8;padding:20px;">📭 Aucun CAP reçu</p>';
-        return;
-    }
-    container.innerHTML=currentCaps.map(cap=>`<div class="ticket-item" style="border-left-color:#f59e0b;"><div class="ticket-header"><span class="ticket-category"><i class="fas fa-envelope"></i> CAP</span><span class="ticket-date">${new Date(cap.sentDate).toLocaleDateString('fr-FR')}</span></div><div class="ticket-subject"><i class="fas fa-chart-line" style="margin-right:8px;color:#f59e0b;"></i>${escapeHtml(cap.message)}</div>${cap.expiryDate?`<div style="font-size:0.7rem;color:#f59e0b;margin-top:5px;">📅 Expire le: ${new Date(cap.expiryDate).toLocaleDateString('fr-FR')}</div>`:''}</div>`).join('');
-}
-
-function updateNotificationBadge(){
-    if(!currentUser)return;
-    let lastMenuOpen=userLastMenuOpen||new Date(0).toISOString();
-    let unreadCount=0;
-    let readCapsIds=userReadCapsIds||[];
-    let readTicketResponseIds=userReadTicketResponseIds||[];
-    currentCaps.forEach(cap=>{if(cap.sentDate&&cap.sentDate>lastMenuOpen&&!readCapsIds.includes(cap.id))unreadCount++;});
-    currentTickets.forEach(ticket=>{if(ticket.reponses&&ticket.reponses.length&&!readTicketResponseIds.includes(ticket.id)){let lastResponse=ticket.reponses[ticket.reponses.length-1];if(lastResponse.date&&lastResponse.date>lastMenuOpen)unreadCount++;}});
-    let badge=document.getElementById('notificationBadge');
-    if(badge){if(unreadCount>0){badge.textContent=unreadCount>99?'99+':unreadCount;badge.style.display='flex';}else{badge.style.display='none';}}
-}
-
-async function markNotificationsAsRead(){
-    if(!currentUser||!userDocRef)return;
-    let now=new Date().toISOString();
-    await updateDoc(userDocRef,{lastMenuOpen:now});
-    userLastMenuOpen=now;
-    let readCapsIds=currentCaps.map(c=>c.id);
-    let readTicketResponseIds=currentTickets.filter(t=>t.reponses&&t.reponses.length).map(t=>t.id);
-    await updateDoc(userDocRef,{readCapsIds:readCapsIds,readTicketResponseIds:readTicketResponseIds});
-    userReadCapsIds=readCapsIds;
-    userReadTicketResponseIds=readTicketResponseIds;
-    updateNotificationBadge();
-}
-
-async function sendTicketToFirebase(subject,priority){
-    if(!currentUser)return false;
-    if(!subject||subject===''){
-        showToast("Veuillez sélectionner un sujet","error");
-        return false;
-    }
-    let ticket={id:`TKT_${Date.now()}_${Math.random().toString(36).substr(2,8)}`,subject:subject,priority:priority,status:"ouvert",date:new Date().toISOString(),reponses:[]};
-    try{
-        await updateDoc(userDocRef,{ticketsList:arrayUnion(ticket)});
-        showToast("✅ Ticket envoyé avec succès !","success");
-        return true;
-    }catch(e){showToast("❌ Erreur envoi ticket","error");return false;}
-}
-
-function listenToTicketsAndCaps(){
-    if(!userDocRef)return;
-    onSnapshot(userDocRef,(snap)=>{
-        if(snap.exists()){
-            let data=snap.data();
-            currentTickets=data.ticketsList||[];
-            currentCaps=data.capsList||[];
-            let activeTab=document.querySelector('.tickets-tab.active')?.dataset.tab||'encours';
-            renderTickets(activeTab);
-            renderCaps();
-            updateNotificationBadge();
-        }
-    });
-}
-
+function renderGames(){let container=document.getElementById('gamesContainer');if(!container)return;container.innerHTML='';games.forEach(g=>{let card=document.createElement('div');card.className='post-card';card.innerHTML=`<div class="post-top"><div class="avatar"><img src="${g.avatar}" alt="${g.name}"></div><div class="post-right"><div class="post-name">${g.name}</div><div class="post-sub">Nouvelle section <i class="fas fa-globe-africa"></i><span class="jeu-remunerateur">Jeu rémunérateur</span></div><div class="post-description">${g.description}</div></div></div><div class="image-wrapper" data-id="${g.id}" data-name="${g.name}" data-earning="${g.totalEarning}" data-howto="${howToPlayMap[g.id]}"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"><div class="image-overlay"><i class="fas fa-info-circle"></i> Cliquer pour voir comment ça marche</div></div><div class="post-stats"><span class="duration"><i class="fas fa-calendar-alt"></i> ${g.duration}</span><span class="earning"><i class="fas fa-coins"></i> ${g.totalEarning}$</span></div>`;container.appendChild(card);});document.querySelectorAll('.image-wrapper').forEach(wrapper=>{wrapper.addEventListener('click',(e)=>{e.stopPropagation();let earning=wrapper.dataset.earning;let howto=wrapper.dataset.howto;document.getElementById('howtoText').innerHTML=howto;let formattedEarning=earning.replace('.',',');document.getElementById('rewardAmount').innerHTML=formattedEarning+' $';document.getElementById('rewardMessage').innerHTML=`${formattedEarning} $ seront ajoutés à votre compte de paiement mensuel si vous terminez ce jeu rémunérateur.`;document.getElementById('howtoPopup').classList.add('active');});});}
+function renderTickets(tab){let container=document.getElementById('ticketsListContainer');if(!container)return;let filtered=currentTickets.filter(t=>tab==='encours'?t.status!=='résolu':t.status==='résolu');if(filtered.length===0){container.innerHTML='<p style="text-align:center;color:#b0b3b8;padding:20px;">📭 Aucun ticket</p>';return;}container.innerHTML=filtered.map(t=>{let statusText=t.status==='ouvert'?'📩 En attente':(t.status==='en cours'?'⚙️ En cours':'✅ Résolu');let statusClass=t.status==='ouvert'?'status-ouvert':(t.status==='en cours'?'status-en-cours':'status-resolu');let reponsesHtml=t.reponses&&t.reponses.length?`<div class="ticket-reponse"><i class="fas fa-headset"></i> <strong>Réponse Pôle Technique:</strong><br>${escapeHtml(t.reponses[t.reponses.length-1].message)}</div>`:'';return`<div class="ticket-item ${t.status==='résolu'?'resolu':''}"><div class="ticket-header"><span class="ticket-date"><i class="far fa-calendar-alt"></i> ${new Date(t.date).toLocaleDateString('fr-FR')}</span></div><div class="ticket-subject"><i class="fas fa-comment-dots" style="margin-right:8px;color:#f59e0b;"></i>${escapeHtml(t.subject)}</div><div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center;"><span class="ticket-status ${statusClass}"><i class="fas fa-circle"></i> ${statusText}</span><span class="ticket-priority">${t.priority==='haute'?'🔴 Priorité haute':(t.priority==='moyenne'?'🟠 Priorité moyenne':'🟢 Priorité basse')}</span></div>${reponsesHtml}</div>`;}).join('');}
+function renderCaps(){let container=document.getElementById('capsListContainer');if(!container)return;if(!currentCaps||!currentCaps.length){container.innerHTML='<p style="text-align:center;color:#b0b3b8;padding:20px;">📭 Aucun CAP reçu</p>';return;}container.innerHTML=currentCaps.map(cap=>`<div class="ticket-item" style="border-left-color:#f59e0b;"><div class="ticket-header"><span class="ticket-category"><i class="fas fa-envelope"></i> CAP</span><span class="ticket-date">${new Date(cap.sentDate).toLocaleDateString('fr-FR')}</span></div><div class="ticket-subject"><i class="fas fa-chart-line" style="margin-right:8px;color:#f59e0b;"></i>${escapeHtml(cap.message)}</div>${cap.expiryDate?`<div style="font-size:0.7rem;color:#f59e0b;margin-top:5px;">📅 Expire le: ${new Date(cap.expiryDate).toLocaleDateString('fr-FR')}</div>`:''}</div>`).join('');}
+function updateNotificationBadge(){if(!currentUser)return;let lastMenuOpen=userLastMenuOpen||new Date(0).toISOString();let unreadCount=0;let readCapsIds=userReadCapsIds||[];let readTicketResponseIds=userReadTicketResponseIds||[];currentCaps.forEach(cap=>{if(cap.sentDate&&cap.sentDate>lastMenuOpen&&!readCapsIds.includes(cap.id))unreadCount++;});currentTickets.forEach(ticket=>{if(ticket.reponses&&ticket.reponses.length&&!readTicketResponseIds.includes(ticket.id)){let lastResponse=ticket.reponses[ticket.reponses.length-1];if(lastResponse.date&&lastResponse.date>lastMenuOpen)unreadCount++;}});let badge=document.getElementById('notificationBadge');if(badge){if(unreadCount>0){badge.textContent=unreadCount>99?'99+':unreadCount;badge.style.display='flex';}else{badge.style.display='none';}}}
+async function markNotificationsAsRead(){if(!currentUser||!userDocRef)return;let now=new Date().toISOString();await updateDoc(userDocRef,{lastMenuOpen:now});userLastMenuOpen=now;let readCapsIds=currentCaps.map(c=>c.id);let readTicketResponseIds=currentTickets.filter(t=>t.reponses&&t.reponses.length).map(t=>t.id);await updateDoc(userDocRef,{readCapsIds:readCapsIds,readTicketResponseIds:readTicketResponseIds});userReadCapsIds=readCapsIds;userReadTicketResponseIds=readTicketResponseIds;updateNotificationBadge();}
+async function sendTicketToFirebase(subject,priority){if(!currentUser)return false;if(!subject||subject===''){showToast("Veuillez sélectionner un sujet","error");return false;}let ticket={id:`TKT_${Date.now()}_${Math.random().toString(36).substr(2,8)}`,subject:subject,priority:priority,status:"ouvert",date:new Date().toISOString(),reponses:[]};try{await updateDoc(userDocRef,{ticketsList:arrayUnion(ticket)});showToast("✅ Ticket envoyé avec succès !","success");return true;}catch(e){showToast("❌ Erreur envoi ticket","error");return false;}}
+function listenToTicketsAndCaps(){if(!userDocRef)return;onSnapshot(userDocRef,(snap)=>{if(snap.exists()){let data=snap.data();currentTickets=data.ticketsList||[];currentCaps=data.capsList||[];let activeTab=document.querySelector('.tickets-tab.active')?.dataset.tab||'encours';renderTickets(activeTab);renderCaps();updateNotificationBadge();}});}
 async function updateOnlineStatus(){if(currentUser&&userDocRef)await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(()=>{});}
-async function sendRewardConfirmation(panel,platform,url){let decisionTime=(Date.now()-popupOpenTime)/1000;let userSnap=await getDoc(userDocRef);let userData=userSnap.data();let timeSpent=Math.floor((Date.now()-pageLoadTime)/1000);await sendSecurityAlert('reward_session_start',userData?.email,{level:'info',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`✅ ${panel} lancé`,platform:platform,details:{timeSpentSeconds:timeSpent,deviceId:getDeviceUniqueId(),userConfirmed:true,decisionTime:decisionTime,targetUrl:url}});window.open(url,'_blank');}
+async function sendRewardConfirmation(panel,platform,url){let decisionTime=(Date.now()-popupOpenTime)/1000;let userSnap=await getDoc(userDocRef);let userData=userSnap.data();let timeSpent=Math.floor((Date.now()-pageLoadTime)/1000);await sendSecurityAlert('reward_session_start',userData?.email,{level:'info',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`✅ ${panel} lancé`,platform:platform,details:{timeSpentSeconds:timeSpent,deviceId:getDeviceUniqueId(),userConfirmed:true,decisionTime:decisionTime,targetUrl:url}});if(panel==='Panel B'&&platform==='gemiwall'){let iframeContainer=document.getElementById('iframeGemiwallContainer');let iframe=document.getElementById('gemiwallIframe');iframe.src=url;iframeContainer.classList.add('active');}else{window.open(url,'_blank');}}
 function showFlyPopup(panel,letter,color,platform,url){pendingPanel=panel;pendingPlatform=platform;pendingTargetUrl=url;popupOpenTime=Date.now();let popup=document.getElementById('flyPopup');let letterDiv=document.getElementById('popupLetter');let title=document.getElementById('popupTitle');let btns=document.getElementById('popupButtons');letterDiv.textContent=letter;letterDiv.style.backgroundColor=color;title.textContent=panel;let btnClass=color==='#10b981'?'a':(color==='#3b82f6'?'b':'c');btns.innerHTML=`<button class="btn-yes-${btnClass}" id="confirmYesBtn">Oui</button><button class="btn-no" id="confirmNoBtn">Non</button>`;popup.classList.add('active');document.getElementById('confirmYesBtn')?.addEventListener('click',async()=>{if(pendingPanel&&pendingTargetUrl)await sendRewardConfirmation(pendingPanel,pendingPlatform,pendingTargetUrl);document.getElementById('flyPopup').classList.remove('active');pendingPanel=pendingPlatform=pendingTargetUrl=null;},{once:true});document.getElementById('confirmNoBtn')?.addEventListener('click',()=>{document.getElementById('flyPopup').classList.remove('active');pendingPanel=pendingPlatform=pendingTargetUrl=null;},{once:true});}
-async function initUser(user){
-    if(!user)return;
-    let deviceId=getDeviceUniqueId();
-    currentUser=user;
-    userDocRef=doc(db,"users",user.uid);
-    let snap=await getDoc(userDocRef);
-    if(!snap.exists()){showToast("❌ Compte invalide","error");await signOut(auth);window.location.href="login.html";return;}
-    let userData=snap.data();
-    if(!userData.deviceId){
-        await updateDoc(userDocRef,{deviceId:deviceId});
-        showToast("✅ Terminal associé avec succès","success");
-        await sendSecurityAlert('new_device_linked',userData.email,{level:'info',netuberCode:userData.code,netuberId:user.uid,message:`Nouveau terminal pour ${userData.code}`,registeredDeviceId:deviceId});
-    }else if(userData.deviceId!==deviceId){
-        showToast("❌ Terminal non autorisé. Contactez le Pôle Technique","error");
-        await sendSecurityAlert('device_mismatch',userData.email,{level:'critical',netuberCode:userData.code,netuberId:user.uid,message:`Terminal mismatch ${userData.code}`,registeredDeviceId:userData.deviceId,attemptedDeviceId:deviceId});
-        await signOut(auth);
-        setTimeout(()=>{window.location.href="login.html";},2000);
-        return;
-    }
-    await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(()=>{});
-    document.getElementById('userCodeDisplay').textContent=userData.code||"NETUBER";
-    userLastMenuOpen=userData.lastMenuOpen||new Date(0).toISOString();
-    userReadCapsIds=userData.readCapsIds||[];
-    userReadTicketResponseIds=userData.readTicketResponseIds||[];
-    renderGames();
-    listenToTicketsAndCaps();
-    setInterval(()=>updateOnlineStatus(),30000);
-}
+async function initUser(user){if(!user)return;let deviceId=getDeviceUniqueId();currentUser=user;userDocRef=doc(db,"users",user.uid);let snap=await getDoc(userDocRef);if(!snap.exists()){showToast("❌ Compte invalide","error");await signOut(auth);window.location.href="login.html";return;}let userData=snap.data();if(!userData.deviceId){await updateDoc(userDocRef,{deviceId:deviceId});showToast("✅ Terminal associé avec succès","success");await sendSecurityAlert('new_device_linked',userData.email,{level:'info',netuberCode:userData.code,netuberId:user.uid,message:`Nouveau terminal pour ${userData.code}`,registeredDeviceId:deviceId});}else if(userData.deviceId!==deviceId){showToast("❌ Terminal non autorisé. Contactez le Pôle Technique","error");await sendSecurityAlert('device_mismatch',userData.email,{level:'critical',netuberCode:userData.code,netuberId:user.uid,message:`Terminal mismatch ${userData.code}`,registeredDeviceId:userData.deviceId,attemptedDeviceId:deviceId});await signOut(auth);setTimeout(()=>{window.location.href="login.html";},2000);return;}await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(()=>{});document.getElementById('userCodeDisplay').textContent=userData.code||"NETUBER";userLastMenuOpen=userData.lastMenuOpen||new Date(0).toISOString();userReadCapsIds=userData.readCapsIds||[];userReadTicketResponseIds=userData.readTicketResponseIds||[];renderGames();listenToTicketsAndCaps();setInterval(()=>updateOnlineStatus(),30000);}
 async function performLogout(){if(currentUser&&userDocRef){let userSnap=await getDoc(userDocRef);let userData=userSnap.data();await sendSecurityAlert('logout',userData?.email,{level:'info',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`Déconnexion de ${userData?.code||currentUser?.email}`,sessionDuration:Math.floor((Date.now()-pageLoadTime)/1000)});await updateDoc(userDocRef,{isOnline:false,lastDisconnection:new Date().toISOString()}).catch(()=>{});}await signOut(auth);window.location.href="login.html";}
-
-// Event Listeners
 document.getElementById('closeTicketsPopupBtn')?.addEventListener('click',()=>{document.getElementById('ticketsListPopup').classList.remove('active');});
 document.getElementById('closeTicketFormBtn')?.addEventListener('click',()=>{document.getElementById('ticketFormPopup').classList.remove('active');document.getElementById('ticketSubjectSelect').value='';document.getElementById('ticketPriority').value='moyenne';});
 document.getElementById('closeCapBtn')?.addEventListener('click',()=>{document.getElementById('capPopup').classList.remove('active');});
@@ -560,11 +315,11 @@ document.getElementById('menuCapBtn')?.addEventListener('click',()=>{document.ge
 document.querySelectorAll('.tickets-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.tickets-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');renderTickets(tab.dataset.tab);});});
 document.getElementById('submitTicketBtn')?.addEventListener('click',async()=>{let subject=document.getElementById('ticketSubjectSelect').value;let priority=document.getElementById('ticketPriority').value;if(!subject||subject===''){showToast("Veuillez sélectionner un sujet","error");return;}await sendTicketToFirebase(subject,priority);document.getElementById('ticketFormPopup').classList.remove('active');document.getElementById('ticketSubjectSelect').value='';document.getElementById('ticketPriority').value='moyenne';});
 document.getElementById('panelAbtn')?.addEventListener('click',async()=>{let userSnap=await getDoc(userDocRef);let userData=userSnap.data();let uniqueId=userData?.uniqueId||currentUser?.uid;showFlyPopup('Panel A','A','#10b981','timewall',`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`);});
-document.getElementById('panelBbtn')?.addEventListener('click',()=>{showFlyPopup('Panel B','B','#3b82f6','timebucks','https://timebucks.com');});
+document.getElementById('panelBbtn')?.addEventListener('click',async()=>{let userId=currentUser?.uid;showFlyPopup('Panel B','B','#3b82f6','gemiwall',`https://gemiwall.com/69f304688bb8875fc339fe24/${userId}`);});
 document.getElementById('panelCbtn')?.addEventListener('click',()=>{showFlyPopup('Panel C','C','#f59e0b','gaingg','https://gain.gg/earn');});
 document.getElementById('confirmYes')?.addEventListener('click',async()=>{await performLogout();});
 document.getElementById('confirmNo')?.addEventListener('click',()=>{document.getElementById('confirmPopup').classList.remove('active');});
-
+document.getElementById('closeGemiwallIframeBtn')?.addEventListener('click',()=>{let container=document.getElementById('iframeGemiwallContainer');let iframe=document.getElementById('gemiwallIframe');container.classList.remove('active');setTimeout(()=>{iframe.src='about:blank';},300);});
 document.addEventListener('contextmenu',e=>e.preventDefault());
 document.querySelectorAll('img').forEach(img=>{img.addEventListener('contextmenu',e=>e.preventDefault());img.addEventListener('dragstart',e=>e.preventDefault());});
 document.addEventListener('keydown',e=>{if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C'))||(e.ctrlKey&&e.key==='u')||(e.ctrlKey&&e.key==='s')||e.key==='F5'){e.preventDefault();return false;}});
