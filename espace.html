@@ -9,45 +9,48 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
-body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;min-height:100vh;overflow-x:hidden;}
+body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;min-height:100vh;overflow-x:hidden;overflow-y:auto;}
 .rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;}
 @keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
-.header{background:#e8edf2;border-bottom:1px solid #d0d5dc;padding:0.5rem 1rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+.header{background:#0f1a2f;border-bottom:1px solid #1e2a45;padding:0.5rem 1rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
 .logo{display:flex;align-items:center;gap:8px;cursor:default;}
 .logo img{height:32px;width:auto;}
-.logo h1{font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,#1a1a2e,#3b82f6);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.logo h1{font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,#e2e8f0,#3b82f6);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .logo h1 span{color:#3b82f6;}
 .header-right{display:flex;align-items:center;gap:12px;}
 .online-status{display:flex;align-items:center;gap:6px;background:rgba(16,185,129,0.15);padding:6px 12px;border-radius:40px;font-size:0.7rem;font-weight:500;color:#10b981;}
-.blinking-dot{width:8px;height:8px;background:#10b981;border-radius:50%;animation:blink 1.2s infinite;}
+.blinking-dot{width:8px;height:8px;background-color:#10b981;border-radius:50%;animation:blink 1.2s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
-.balance-header{display:flex;align-items:center;gap:4px;background:rgba(59,130,246,0.15);padding:6px 12px;border-radius:40px;font-size:0.7rem;font-weight:600;color:#3b82f6;cursor:pointer;}
+.balance-header{background:#1e3a5f;padding:8px 16px;border-radius:30px;font-size:0.9rem;font-weight:700;color:#60a5fa;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+.balance-header span{color:#60a5fa;}
 .section{padding:0 1rem;margin-bottom:1.5rem;}
 .section-title{font-size:1rem;font-weight:700;margin-bottom:0.8rem;display:flex;align-items:center;gap:8px;color:#e2e8f0;}
-.special-offers-grid{display:flex;gap:12px;margin-bottom:1.5rem;}
-.special-offer-card{flex:1;background:#0f1a2f;border-radius:16px;padding:1rem;text-align:center;cursor:pointer;border:1px solid #1e2a45;transition:all 0.1s;}
-.special-offer-card:active{transform:scale(0.97);background:#1a2a45;}
-.special-offer-card i{font-size:1.8rem;margin-bottom:8px;color:#3b82f6;}
-.special-offer-card .offer-label{font-weight:700;font-size:0.85rem;}
+.panel-grid{display:flex;gap:12px;margin-bottom:1.5rem;}
+.panel-card{flex:1;background:#0f1a2f;border-radius:16px;padding:1rem;text-align:center;cursor:pointer;border:1px solid #1e2a45;transition:all 0.1s;box-shadow:0 4px 12px rgba(0,0,0,0.2);}
+.panel-card:active{transform:scale(0.97);background:#1a2a45;box-shadow:0 2px 4px rgba(0,0,0,0.3);}
+.panel-card i{font-size:1.8rem;margin-bottom:8px;color:#3b82f6;}
+.panel-card .panel-label{font-weight:700;font-size:0.85rem;}
 .offers-scroll{overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding-bottom:8px;scrollbar-width:thin;}
 .offers-wrapper{display:inline-flex;gap:12px;padding:4px 0;}
-.offer-card{display:inline-flex;flex-direction:column;width:160px;background:#0f1a2f;border-radius:16px;overflow:hidden;border:1px solid #1e2a45;cursor:pointer;transition:all 0.1s;}
-.offer-card:active{transform:scale(0.97);}
+.offer-card{display:inline-flex;flex-direction:column;width:160px;background:#0f1a2f;border-radius:16px;overflow:hidden;border:1px solid #1e2a45;cursor:pointer;transition:all 0.1s;box-shadow:0 2px 6px rgba(0,0,0,0.2);}
+.offer-card:active{transform:scale(0.97);box-shadow:0 1px 2px rgba(0,0,0,0.2);}
 .offer-card img{width:100%;height:140px;object-fit:cover;display:block;}
 .offer-info{padding:10px;}
 .offer-name{font-size:0.8rem;font-weight:700;margin-bottom:4px;white-space:normal;word-break:break-word;}
 .offer-points{font-size:0.7rem;color:#3b82f6;font-weight:600;}
-.games-list{display:flex;flex-direction:column;gap:10px;padding:0 1rem 1rem;}
-.post-card{background:#0f1a2f;border-radius:16px;overflow:hidden;border:1px solid #1e2a45;}
-.post-header{display:flex;align-items:center;gap:12px;padding:12px;}
-.avatar{width:44px;height:44px;background:#1a2a45;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
-.post-meta h4{font-size:0.9rem;font-weight:700;}
-.post-meta span{font-size:0.65rem;color:#94a3b8;}
-.post-image{width:100%;height:120px;object-fit:cover;display:block;}
-.gain-btn{background:#1e3a5f;border:none;padding:12px;font-weight:600;color:#3b82f6;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.1s;font-size:0.8rem;}
-.gain-btn:active{transform:scale(0.98);background:#2a4a6f;}
+.offer-instruction{font-size:0.6rem;color:#10b981;margin-top:6px;white-space:normal;word-break:break-word;background:#1a2a45;padding:4px 6px;border-radius:6px;text-align:center;}
+.games-list{display:flex;flex-direction:column;gap:1px;width:100%;background:#0a1628;}
+.post-card{background:#0f1a2f;overflow:hidden;width:100%;border-bottom:1px solid #1e2a45;transition:0.2s;}
+.post-card:active{background:#1a2a45;}
+.post-header{display:flex;align-items:center;gap:14px;padding:1rem;}
+.avatar{width:52px;height:52px;background:#1a2a45;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;}
+.post-meta h4{font-size:1rem;font-weight:800;margin-bottom:4px;}
+.post-meta span{font-size:0.7rem;color:#94a3b8;}
+.post-image{width:100%;height:auto;min-height:200px;object-fit:cover;display:block;}
+.gain-btn{background:#1e3a5f;border:1px solid #3b82f6;padding:14px;font-weight:700;color:#3b82f6;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:12px;transition:all 0.1s;font-size:0.9rem;}
+.gain-btn:active{transform:scale(0.98);background:#2a4a6f;color:#60a5fa;}
 .floating-group{position:fixed;bottom:30px;right:20px;z-index:200;}
-.float-item{background:#0f1a2f;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;color:#e2e8f0;border:1px solid #1e2a45;transition:all 0.1s;}
+.float-item{background:#0f1a2f;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;color:#e2e8f0;border:1px solid #1e2a45;transition:all 0.1s;box-shadow:0 4px 12px rgba(0,0,0,0.3);}
 .float-item:active{transform:scale(0.95);background:#1a2a45;}
 .menu-floating{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.95);width:280px;background:#0f1a2f;border-radius:24px;border:1px solid #1e2a45;z-index:1001;display:none;box-shadow:0 20px 40px rgba(0,0,0,0.5);opacity:0;transition:opacity 0.3s ease, transform 0.3s ease;}
 .menu-floating.active{display:block;opacity:1;transform:translate(-50%,-50%) scale(1);}
@@ -79,16 +82,6 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .ticket-message{background:#1a2a45;padding:10px;border-radius:10px;margin-bottom:8px;}
 .footer{background:#0f1a2f;border-top:1px solid #1e2a45;padding:0.8rem;text-align:center;margin-top:0.5rem;}
 .footer p{color:#64748b;font-size:0.6rem;}
-.fly-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:2000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:visibility 0s linear 0.25s,opacity 0.25s;}
-.fly-popup.active{visibility:visible;opacity:1;transition:visibility 0s linear 0s,opacity 0.25s;}
-.fly-popup-inner{background:#242526;border-radius:28px;padding:1.8rem;text-align:center;max-width:340px;width:85%;transform:scale(0.2) translateY(50px);opacity:0;transition:transform 0.5s cubic-bezier(0.34,1.2,0.64,1),opacity 0.4s;}
-.fly-popup.active .fly-popup-inner{transform:scale(1) translateY(0);opacity:1;}
-.popup-letter{font-size:3rem;font-weight:800;width:60px;height:60px;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;}
-.popup-buttons{display:flex;gap:15px;justify-content:center;margin-top:1.5rem;}
-.btn-yes{background:#10b981;color:#fff;border:none;padding:12px 28px;border-radius:50px;font-weight:600;cursor:pointer;}
-.btn-yes:active{transform:scale(0.96);}
-.btn-no{background:#3a3b3c;color:#e4e6eb;border:none;padding:12px 28px;border-radius:50px;font-weight:600;cursor:pointer;}
-.btn-no:active{transform:scale(0.96);}
 </style>
 </head>
 <body>
@@ -99,26 +92,26 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
     <div class="logo"><img src="https://netubex.github.io/netubex-/favicon.png.png" alt=""><h1>Ne<span>TubeX</span></h1></div>
     <div class="header-right">
         <div class="online-status"><span class="blinking-dot"></span><span>En ligne</span></div>
-        <div class="balance-header" id="balanceHeader"><span id="balanceAmount">0.00</span> $</div>
+        <div class="balance-header" id="balanceHeader">$ <span id="balanceAmount">0.00</span></div>
     </div>
 </header>
 
-<!-- OFFRES SPECIALES (2 boutons) -->
+<!-- PANEL A & B -->
 <div class="section">
-    <div class="section-title"><i class="fas fa-gem"></i> Offres spéciales</div>
-    <div class="special-offers-grid">
-        <div class="special-offer-card" id="specialOffer1"><i class="fas fa-clock"></i><div class="offer-label">OFFRE N°1</div></div>
-        <div class="special-offer-card" id="specialOffer2"><i class="fab fa-google"></i><div class="offer-label">OFFRE N°2</div></div>
+    <div class="section-title"><i class="fas fa-gem"></i> Panels rémunérateurs</div>
+    <div class="panel-grid">
+        <div class="panel-card" id="panelA"><i class="fas fa-clock"></i><div class="panel-label">PANEL A</div></div>
+        <div class="panel-card" id="panelB"><i class="fab fa-google"></i><div class="panel-label">PANEL B</div></div>
     </div>
 </div>
 
-<!-- OFFRES EXCLUSIVES (scroll horizontal avec images) -->
+<!-- OFFRES EXCLUSIVES -->
 <div class="section">
     <div class="section-title"><i class="fas fa-gift"></i> Offres exclusives</div>
     <div class="offers-scroll"><div class="offers-wrapper" id="offersWrapper"></div></div>
 </div>
 
-<!-- JEUX REMUNERATEURS -->
+<!-- JEUX -->
 <div class="games-list" id="gamesContainer"></div>
 
 <footer class="footer"><p><i class="fas fa-copyright"></i> NeTubeX 2026</p></footer>
@@ -136,19 +129,6 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
     <div class="menu-item" id="menuBonusBtn"><i class="fas fa-gift"></i> Bonus d'invitation</div>
     <div class="menu-item" id="menuWithdrawBtn"><i class="fas fa-money-bill-wave"></i> Retirer</div>
     <div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div>
-</div>
-
-<!-- POPUP CONFIRMATION -->
-<div id="flyPopup" class="fly-popup">
-    <div class="fly-popup-inner">
-        <div class="popup-letter" id="popupLetter">A</div>
-        <h3 id="popupTitle">Redirection</h3>
-        <p id="popupMessage">Voulez-vous accéder à cette offre ?</p>
-        <div class="popup-buttons">
-            <button class="btn-yes" id="confirmYesBtn">Oui</button>
-            <button class="btn-no" id="confirmNoBtn">Non</button>
-        </div>
-    </div>
 </div>
 
 <!-- MODALS -->
@@ -177,24 +157,21 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 let currentUser = null, userDocRef = null, selectedMethod = null;
-let pendingUrl = null, pendingOfferName = null;
 
-// Offres exclusives avec IMAGES
+// Offres exclusives avec URLs de tracking (contiennent {USER_ID})
 const OFFERS = [
-    {id:1, name:"2048 Blast", points:"1 000 pts", img:"https://netubex.github.io/netubex-/merge.jpg", url:"https://play.google.com/store/apps/details?id=com.seaweed.cube.shotblock.run2048.io"},
-    {id:2, name:"WhatsApp Business", points:"900 pts", img:"https://netubex.github.io/netubex-/whatsapp.jpg", url:"https://play.google.com/store/apps/details?id=com.whatsapp.w4b"},
-    {id:3, name:"Instagram", points:"700 pts", img:"https://netubex.github.io/netubex-/instagram.jpg", url:"https://play.google.com/store/apps/details?id=com.instagram.android"},
-    {id:4, name:"TaskPrize", points:"54 700 pts", img:"https://netubex.github.io/netubex-/tasks.jpg", url:null}
+    {id:1, name:"2048 Blast", points:"1 000 pts", instruction:"Installer et jouer 5min", img:"https://netubex.github.io/netubex-/merge.jpg", trackUrl:"https://api.gemiwall.com/api/offers/click?offerId=MXGqYDhxzRNxs8asZgvPG&userId={USER_ID}&placementId=69f304688bb8875fc339fe24"},
+    {id:2, name:"WhatsApp Business", points:"900 pts", instruction:"Installer et ouvrir", img:"https://netubex.github.io/netubex-/whatsapp.jpg", trackUrl:"https://api.gemiwall.com/api/offers/click?offerId=Y7bv7Z86RBa1KPp8YT-XB&userId={USER_ID}&placementId=69f304688bb8875fc339fe24"},
+    {id:3, name:"Instagram", points:"700 pts", instruction:"Installer et suivre 1 compte", img:"https://netubex.github.io/netubex-/instagram.jpg", trackUrl:"https://api.gemiwall.com/api/offers/click?offerId=V9Y_sI-9CLPEGvIiYsHwK&userId={USER_ID}&placementId=69f304688bb8875fc339fe24"},
+    {id:4, name:"TaskPrize", points:"54 700 pts", instruction:"S'inscrire et valider email", img:"https://netubex.github.io/netubex-/tasks.jpg", trackUrl:"https://api.gemiwall.com/api/offers/click?offerId=_6xzha9WpOqWfG7nYG-KQ&userId={USER_ID}&placementId=69f304688bb8875fc339fe24"}
 ];
 
-// Jeux
+// Jeux (supprimé: Goblin Heist, Zombie Waves, Survivor Idle Run)
 const GAMES = [
     {id:2, name:"Sky Plunger", avatar:"🪂", img:"https://netubex.github.io/netubex-/sky-plunger.png", duration:"30j"},
-    {id:3, name:"Goblin Heist", avatar:"👺", img:"https://netubex.github.io/netubex-/goblin-heist.jpg", duration:"30j"},
     {id:4, name:"Wild Fish", avatar:"🐟", img:"https://netubex.github.io/netubex-/wild-fish.png", duration:"30j"},
     {id:5, name:"Grab A Toy", avatar:"🧸", img:"https://netubex.github.io/netubex-/grab-a-toy.png", duration:"30j"},
     {id:6, name:"Love Water", avatar:"💧", img:"https://netubex.github.io/netubex-/love-water.gif", duration:"30j"},
-    {id:7, name:"Zombie Waves", avatar:"🧟", img:"https://netubex.github.io/netubex-/zombie-waves.jpg", duration:"30j"},
     {id:8, name:"The Grand Mafia", avatar:"👑", img:"https://netubex.github.io/netubex-/the-grand-mafia.webp", duration:"30j"},
     {id:9, name:"Dragon Farm", avatar:"🐉", img:"https://netubex.github.io/netubex-/dragon-farm.webp", duration:"30j"}
 ];
@@ -202,36 +179,18 @@ const GAMES = [
 function showToast(msg, isError=false){let t=document.createElement('div');t.className=`toast-notification ${isError?'toast-error':''}`;t.innerHTML=`<i class="fas ${isError?'fa-exclamation-triangle':'fa-check-circle'}"></i> ${msg}`;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);}
 function closeModal(id){document.getElementById(id).classList.remove('active');}
 
-// Popup de confirmation
-function showConfirmPopup(url, offerName, letter, color){
-    pendingUrl = url;
-    pendingOfferName = offerName;
-    const popup = document.getElementById('flyPopup');
-    const letterDiv = document.getElementById('popupLetter');
-    const title = document.getElementById('popupTitle');
-    const message = document.getElementById('popupMessage');
-    letterDiv.textContent = letter;
-    letterDiv.style.backgroundColor = color;
-    title.textContent = offerName;
-    message.textContent = "Voulez-vous accéder à cette offre ?";
-    popup.classList.add('active');
-}
-
-// Récupération STRICTE du userId (pas de fallback)
+// Récupère le uniqueId depuis Firestore (génère si inexistant)
 async function getUserUniqueId(){
     if(!currentUser) return null;
-    try {
-        const snap = await getDoc(doc(db, "users", currentUser.uid));
-        const uniqueId = snap.data()?.uniqueId;
-        if(!uniqueId){
-            console.error("Aucun uniqueId trouvé pour:", currentUser.uid);
-            return null;
-        }
-        return uniqueId;
-    } catch(e){
-        console.error("Erreur récupération userId:", e);
-        return null;
+    if(!userDocRef) return null;
+    const snap = await getDoc(userDocRef);
+    let uniqueId = snap.data()?.uniqueId;
+    if(!uniqueId){
+        uniqueId = "NX" + Math.random().toString(36).substring(2, 15).toUpperCase();
+        await updateDoc(userDocRef, { uniqueId: uniqueId });
+        showToast("✅ ID unique généré", false);
     }
+    return uniqueId;
 }
 
 async function getBalanceValue(){
@@ -246,10 +205,17 @@ async function updateBalanceDisplay(){
     document.getElementById('currentBalanceDisplay').innerText=bal.toFixed(4)+' $';
 }
 
-// Offres exclusives
+// Offres exclusives avec tracking (userId remplacé)
 async function renderOffers(){
     const container=document.getElementById('offersWrapper');
-    container.innerHTML=OFFERS.map(o=>`<div class="offer-card" data-url="${o.url||''}" data-name="${o.name}"><img src="${o.img}" alt="${o.name}" loading="lazy"><div class="offer-info"><div class="offer-name">${o.name}</div><div class="offer-points">🏆 ${o.points}</div></div></div>`).join('');
+    const userId = await getUserUniqueId();
+    container.innerHTML=OFFERS.map(o=>{
+        let trackUrlWithId = o.trackUrl;
+        if(userId && trackUrlWithId){
+            trackUrlWithId = trackUrlWithId.replace(/{USER_ID}/g, userId);
+        }
+        return `<div class="offer-card" data-url="${trackUrlWithId||''}" data-name="${o.name}"><img src="${o.img}" alt="${o.name}" loading="lazy"><div class="offer-info"><div class="offer-name">${o.name}</div><div class="offer-points">🏆 ${o.points}</div><div class="offer-instruction">📋 ${o.instruction}</div></div></div>`;
+    }).join('');
     document.querySelectorAll('.offer-card').forEach(card=>{
         card.addEventListener('click',async()=>{
             const url=card.dataset.url;
@@ -257,7 +223,6 @@ async function renderOffers(){
             if(url){
                 await registerOfferClick(name);
                 window.open(url, '_blank');
-                showToast(`✅ Offre "${name}" ouverte`);
             }else{
                 showToast("Lien indisponible", true);
             }
@@ -273,28 +238,26 @@ async function registerOfferClick(offerName){
 // Jeux
 async function renderGames(){
     const container=document.getElementById('gamesContainer');
-    container.innerHTML=GAMES.map(g=>`<div class="post-card"><div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span>${g.duration}</span></div></div><img class="post-image" src="${g.img}" loading="lazy"><button class="gain-btn" data-game="${g.name}"><i class="fas fa-play-circle"></i> Jouer et gagner</button></div>`).join('');
+    container.innerHTML=GAMES.map(g=>`<div class="post-card"><div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span>${g.duration}</span></div></div><img class="post-image" src="${g.img}" loading="lazy"><button class="gain-btn" data-game="${g.name}"><i class="fas fa-play-circle"></i> Jouer au jeu rémunérateur</button></div>`).join('');
     document.querySelectorAll('.gain-btn').forEach(btn=>{
         btn.addEventListener('click',async()=>{
-            const uid=await getUserUniqueId();
+            const uid = await getUserUniqueId();
             if(uid){
-                showConfirmPopup(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uid}`, "Plateforme de jeux", "🎮", "#f59e0b");
+                window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uid}`, '_blank');
             }else{
-                showToast("❌ Aucun userId trouvé. Contactez le support.", true);
+                showToast("Erreur ID utilisateur", true);
             }
         });
     });
 }
 
-// Offres speciales (Timewall & Gemini)
-async function handleSpecialOffer(baseUrl, name, letter, color){
+// Panel A (Timewall) et Panel B (Gemini)
+async function handlePanel(url, name){
     const uid = await getUserUniqueId();
     if(uid){
-        const fullUrl = baseUrl + uid;
-        console.log("URL générée:", fullUrl);
-        showConfirmPopup(fullUrl, name, letter, color);
+        window.open(url+uid, '_blank');
     }else{
-        showToast("❌ Impossible de récupérer votre identifiant unique. Contactez le support.", true);
+        showToast("Erreur ID utilisateur", true);
     }
 }
 
@@ -357,17 +320,17 @@ async function submitWithdraw(){
     closeModal('withdrawModal');
 }
 
-// Init user et creation du uniqueId si absent
+// Init
 async function initUser(user){
     currentUser=user;
     userDocRef=doc(db,"users",user.uid);
     const snap=await getDoc(userDocRef);
     if(!snap.exists()){
-        const newUniqueId = user.uid;
+        const uniqueId = "NX" + Math.random().toString(36).substring(2, 15).toUpperCase();
         await setDoc(userDocRef,{
             email:user.email,
             balance:0,
-            uniqueId:newUniqueId,
+            uniqueId: uniqueId,
             createdAt:new Date().toISOString(),
             lastLogin:new Date().toISOString(),
             invitationCode:"NX"+Math.random().toString(36).substring(2,10).toUpperCase(),
@@ -375,13 +338,7 @@ async function initUser(user){
             clickedOffers:[],
             capDuJour:"📊 CAP DU JOUR\n\nJouer aux jeux\nInviter des amis\nGagner des bonus"
         });
-        showToast("✅ Compte initialisé avec ID unique");
     }else{
-        const data = snap.data();
-        if(!data.uniqueId){
-            await updateDoc(userDocRef,{uniqueId:user.uid});
-            showToast("✅ ID unique ajouté à votre compte");
-        }
         await updateDoc(userDocRef,{lastLogin:new Date().toISOString()});
     }
     await updateBalanceDisplay();
@@ -390,35 +347,18 @@ async function initUser(user){
     await loadCapMessage();
 }
 
-// Fermer la popup et rediriger
-document.getElementById('confirmYesBtn')?.addEventListener('click', () => {
-    if(pendingUrl){
-        window.open(pendingUrl, '_blank');
-        showToast(`✅ ${pendingOfferName} ouvert`);
-    }
-    document.getElementById('flyPopup').classList.remove('active');
-    pendingUrl = null;
-    pendingOfferName = null;
-});
-
-document.getElementById('confirmNoBtn')?.addEventListener('click', () => {
-    document.getElementById('flyPopup').classList.remove('active');
-    pendingUrl = null;
-    pendingOfferName = null;
-});
-
 // EVENT LISTENERS
 document.getElementById('balanceHeader')?.addEventListener('click',async()=>{await updateBalanceDisplay();showToast("Solde mis à jour");});
-document.getElementById('specialOffer1')?.addEventListener('click',()=>handleSpecialOffer('https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=', "OFFRE N°1", "A", "#10b981"));
-document.getElementById('specialOffer2')?.addEventListener('click',()=>handleSpecialOffer('https://gemiwall.com/69f304688bb8875fc339fe24/', "OFFRE N°2", "B", "#3b82f6"));
+document.getElementById('panelA')?.addEventListener('click',()=>handlePanel('https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=', "Panel A"));
+document.getElementById('panelB')?.addEventListener('click',()=>handlePanel('https://gemiwall.com/69f304688bb8875fc339fe24/', "Panel B"));
 document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
 document.addEventListener('click',(e)=>{const m=document.getElementById('menuFloating');const b=document.getElementById('menuFloatBtn');if(m&&b&&!b.contains(e.target)&&!m.contains(e.target))m.classList.remove('active');});
-document.getElementById('menuCapBtn')?.addEventListener('click',async()=>{await loadCapMessage();document.getElementById('capModal').classList.add('active');document.getElementById('menuFloating').classList.remove('active');});
-document.getElementById('menuProfileBtn')?.addEventListener('click',async()=>{await loadProfile();document.getElementById('profileModal').classList.add('active');document.getElementById('menuFloating').classList.remove('active');});
-document.getElementById('menuTicketsBtn')?.addEventListener('click',async()=>{await loadTickets();document.getElementById('ticketsModal').classList.add('active');document.getElementById('menuFloating').classList.remove('active');});
-document.getElementById('menuBonusBtn')?.addEventListener('click',async()=>{await loadBonusData();document.getElementById('bonusModal').classList.add('active');document.getElementById('menuFloating').classList.remove('active');});
-document.getElementById('menuWithdrawBtn')?.addEventListener('click',async()=>{await updateBalanceDisplay();document.getElementById('withdrawModal').classList.add('active');document.getElementById('menuFloating').classList.remove('active');});
-document.getElementById('menuLogoutBtn')?.addEventListener('click',()=>{document.getElementById('menuFloating').classList.remove('active');document.getElementById('confirmLogoutModal').classList.add('active');});
+document.getElementById('menuCapBtn')?.addEventListener('click',async()=>{await loadCapMessage();closeModal('menuFloating');document.getElementById('capModal').classList.add('active');});
+document.getElementById('menuProfileBtn')?.addEventListener('click',async()=>{await loadProfile();closeModal('menuFloating');document.getElementById('profileModal').classList.add('active');});
+document.getElementById('menuTicketsBtn')?.addEventListener('click',async()=>{await loadTickets();closeModal('menuFloating');document.getElementById('ticketsModal').classList.add('active');});
+document.getElementById('menuBonusBtn')?.addEventListener('click',async()=>{await loadBonusData();closeModal('menuFloating');document.getElementById('bonusModal').classList.add('active');});
+document.getElementById('menuWithdrawBtn')?.addEventListener('click',async()=>{await updateBalanceDisplay();closeModal('menuFloating');document.getElementById('withdrawModal').classList.add('active');});
+document.getElementById('menuLogoutBtn')?.addEventListener('click',()=>{closeModal('menuFloating');document.getElementById('confirmLogoutModal').classList.add('active');});
 document.getElementById('closeCapModal')?.addEventListener('click',()=>closeModal('capModal'));
 document.getElementById('closeCapFooterBtn')?.addEventListener('click',()=>closeModal('capModal'));
 document.getElementById('closeProfileModal')?.addEventListener('click',()=>closeModal('profileModal'));
