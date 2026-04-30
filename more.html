@@ -8,98 +8,81 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#18191a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#e4e6eb;padding:12px;}
 .container{max-width:600px;margin:0 auto;}
-
-/* Carte hero premium */
-.hero-card{background:linear-gradient(135deg,#1e2a3a,#0f172a);border-radius:20px;margin-bottom:20px;overflow:hidden;border:1px solid rgba(245,158,11,0.3);transition:all 0.2s;}
-.hero-card:active{transform:scale(0.98);}
-.hero-content{padding:18px;display:flex;flex-direction:column;gap:14px;}
-.hero-top{display:flex;align-items:center;gap:14px;}
-.hero-icon{width:52px;height:52px;background:linear-gradient(145deg,#f59e0b,#d97706);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#fff;flex-shrink:0;}
-.hero-title{font-size:1rem;font-weight:700;color:#fff;margin-bottom:4px;}
-.hero-desc{font-size:0.7rem;color:#94a3b8;}
-.hero-badge{background:#f59e0b20;border:1px solid #f59e0b;padding:6px 12px;border-radius:30px;font-weight:700;font-size:0.7rem;color:#f59e0b;text-align:center;width:fit-content;}
-.hero-features{display:flex;gap:8px;flex-wrap:wrap;}
-.hero-feature{font-size:0.65rem;color:#b0b3b8;background:#3a3b3c;padding:4px 10px;border-radius:20px;}
-.hero-btn{background:#f59e0b;border:none;padding:12px;border-radius:40px;font-weight:700;font-size:0.85rem;color:#000;cursor:pointer;transition:all 0.2s;width:100%;text-align:center;}
-.hero-btn:active{transform:scale(0.97);}
-
-/* Grille 2 colonnes mobile */
-.offers-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.offers-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .offer-card{background:#242526;border-radius:16px;overflow:hidden;border:1px solid #3e4042;transition:all 0.15s;}
 .offer-card:active{transform:scale(0.97);background:#2a2b2e;}
-.offer-header{display:flex;align-items:center;gap:10px;padding:12px;}
-.offer-icon{width:40px;height:40px;background:#3a3b3c;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
-.offer-info{flex:1;min-width:0;}
-.offer-name{font-weight:700;font-size:0.75rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.offer-name .badge{background:#3a3b3c;color:#b0b3b8;font-size:0.5rem;padding:2px 5px;border-radius:10px;margin-left:5px;}
-.offer-sub{font-size:0.55rem;color:#b0b3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.offer-points{font-weight:700;color:#f59e0b;font-size:0.65rem;margin-top:3px;}
-.offer-palier details{background:#1e1f22;border-radius:10px;padding:6px;font-size:0.6rem;color:#b0b3b8;margin:0 10px 8px 10px;}
-.offer-palier summary{cursor:pointer;font-weight:600;color:#e4e6eb;font-size:0.65rem;}
-.offer-actions{display:flex;gap:6px;padding:10px;border-top:1px solid #3e4042;}
-.btn{flex:1;padding:7px 0;border-radius:30px;font-weight:600;font-size:0.6rem;cursor:pointer;transition:all 0.15s;border:none;text-align:center;}
+.offer-img{width:100%;height:auto;display:block;}
+.offer-img.small{height:120px;object-fit:cover;}
+.offer-info{padding:12px;background:#242526;}
+.offer-name{font-weight:700;font-size:0.85rem;margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;}
+.offer-name .badge{background:#3a3b3c;color:#b0b3b8;font-size:0.55rem;padding:2px 8px;border-radius:12px;}
+.offer-sub{font-size:0.65rem;color:#b0b3b8;margin-bottom:6px;}
+.offer-points{font-weight:700;color:#f59e0b;font-size:0.7rem;margin-bottom:8px;}
+.offer-instruction{background:#1e3a5f;border-left:3px solid #f59e0b;padding:8px 10px;border-radius:8px;margin-bottom:10px;font-size:0.65rem;color:#e4e6eb;font-weight:500;}
+.offer-instruction i{margin-right:6px;color:#f59e0b;}
+.offer-actions{display:flex;gap:8px;padding:10px;border-top:1px solid #3e4042;}
+.btn{flex:1;padding:8px 0;border-radius:30px;font-weight:600;font-size:0.65rem;cursor:pointer;border:none;text-align:center;transition:all 0.1s;}
 .btn-dl{background:#3a3b3c;color:#e4e6eb;}
 .btn-dl:active{background:#4e4f52;}
 .btn-track{background:#f59e0b;color:#000;}
 .btn-track:active{background:#d97706;}
-
-/* Grande carte pour TaskPrize (2 colonnes) */
-.offer-card-large .offer-header{padding:14px;}
-.offer-card-large .offer-icon{width:48px;height:48px;font-size:1.4rem;}
-.offer-card-large .offer-name{font-size:0.85rem;}
-.offer-card-large .offer-points{font-size:0.75rem;}
-.offer-card-large .btn{padding:9px 0;font-size:0.65rem;}
-
-@media(max-width:480px){.offers-grid{grid-template-columns:1fr;}.hero-icon{width:44px;height:44px;font-size:1.3rem;}.hero-title{font-size:0.9rem;}}
+@media(max-width:480px){.offers-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 <div class="container">
-
-<!-- Carte hero -->
-<div class="hero-card">
-<div class="hero-content">
-<div class="hero-top">
-<div class="hero-icon">📈</div>
-<div><div class="hero-title">Augmente ton compte de paiement mensuel</div><div class="hero-desc">Transforme ton temps en revenu</div></div>
-</div>
-<div class="hero-features"><span class="hero-feature">🎮 Jeux</span><span class="hero-feature">📊 Sondages</span><span class="hero-feature">✅ Tâches</span><span class="hero-feature">🔥 Bonus 50%</span></div>
-<div class="hero-badge">🔥 +50% de bonus actif</div>
-<button class="hero-btn" data-url="https://api.gemiwall.com/api/offers/click?offerId=u4ODYDg1M3OY5kp2k10qX&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">🚀 Commencer maintenant →</button>
-</div>
-</div>
-
-<!-- Grille 2 colonnes -->
 <div class="offers-grid">
 
-<!-- 2048 BLAST -->
-<div class="offer-card"><div class="offer-header"><div class="offer-icon">🔢</div><div class="offer-info"><div class="offer-name">2048 Blast <span class="badge">Install</span></div><div class="offer-sub">Merge Numbers Game</div><div class="offer-points">🏆 1 000 pts</div></div></div><div class="offer-palier"><details><summary>📋 Voir palier</summary>Installer → 1 000 points</details></div><div class="offer-actions"><button class="btn btn-dl" data-url="https://play.google.com/store/apps/details?id=com.seaweed.cube.shotblock.run2048.io">📱 DL</button><button class="btn btn-track" data-url="https://api.gemiwall.com/api/offers/click?offerId=MXGqYDhxzRNxs8asZgvPG&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">🚀 Go</button></div></div>
+<div class="offer-card" data-track="https://api.gemiwall.com/api/offers/click?offerId=MXGqYDhxzRNxs8asZgvPG&userId={USER_ID}&placementId=69f304688bb8875fc339fe24" data-dl="https://play.google.com/store/apps/details?id=com.seaweed.cube.shotblock.run2048.io">
+<img class="offer-img small" src="https://netubex.github.io/netubex-/merge.jpg" alt="2048 Blast">
+<div class="offer-info"><div class="offer-name">2048 Blast <span class="badge">Install</span></div><div class="offer-sub">Merge Numbers Game</div><div class="offer-points">🏆 1 000 pts</div><div class="offer-instruction"><i class="fas fa-info-circle"></i> Installer le jeu → 1 000 points</div></div>
+<div class="offer-actions"><button class="btn btn-dl">📱 Installer</button><button class="btn btn-track">🎯 Valider</button></div>
+</div>
 
-<!-- WHATSAPP BUSINESS -->
-<div class="offer-card"><div class="offer-header"><div class="offer-icon">💼</div><div class="offer-info"><div class="offer-name">WhatsApp Business <span class="badge">Install+Open</span></div><div class="offer-sub">Application pro</div><div class="offer-points">🏆 900 pts</div></div></div><div class="offer-palier"><details><summary>📋 Voir palier</summary>Installer et ouvrir → 900 points</details></div><div class="offer-actions"><button class="btn btn-dl" data-url="https://play.google.com/store/apps/details?id=com.whatsapp.w4b">📱 DL</button><button class="btn btn-track" data-url="https://api.gemiwall.com/api/offers/click?offerId=Y7bv7Z86RBa1KPp8YT-XB&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">🚀 Go</button></div></div>
+<div class="offer-card" data-track="https://api.gemiwall.com/api/offers/click?offerId=Y7bv7Z86RBa1KPp8YT-XB&userId={USER_ID}&placementId=69f304688bb8875fc339fe24" data-dl="https://play.google.com/store/apps/details?id=com.whatsapp.w4b">
+<img class="offer-img" src="https://netubex.github.io/netubex-/whatsapp.jpg" alt="WhatsApp Business">
+<div class="offer-info"><div class="offer-name">WhatsApp Business <span class="badge">Install+Open</span></div><div class="offer-sub">Application pro</div><div class="offer-points">🏆 900 pts</div><div class="offer-instruction"><i class="fas fa-info-circle"></i> Installer et ouvrir → 900 points</div></div>
+<div class="offer-actions"><button class="btn btn-dl">📱 Installer</button><button class="btn btn-track">🎯 Valider</button></div>
+</div>
 
-<!-- INSTAGRAM -->
-<div class="offer-card"><div class="offer-header"><div class="offer-icon">📸</div><div class="offer-info"><div class="offer-name">Instagram <span class="badge">Install+Open</span></div><div class="offer-sub">Réseau social</div><div class="offer-points">🏆 700 pts</div></div></div><div class="offer-palier"><details><summary>📋 Voir palier</summary>Installer et ouvrir → 700 points</details></div><div class="offer-actions"><button class="btn btn-dl" data-url="https://play.google.com/store/apps/details?id=com.instagram.android">📱 DL</button><button class="btn btn-track" data-url="https://api.gemiwall.com/api/offers/click?offerId=V9Y_sI-9CLPEGvIiYsHwK&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">🚀 Go</button></div></div>
+<div class="offer-card" data-track="https://api.gemiwall.com/api/offers/click?offerId=V9Y_sI-9CLPEGvIiYsHwK&userId={USER_ID}&placementId=69f304688bb8875fc339fe24" data-dl="https://play.google.com/store/apps/details?id=com.instagram.android">
+<img class="offer-img" src="https://netubex.github.io/netubex-/instagram.jpg" alt="Instagram">
+<div class="offer-info"><div class="offer-name">Instagram <span class="badge">Install+Open</span></div><div class="offer-sub">Réseau social</div><div class="offer-points">🏆 700 pts</div><div class="offer-instruction"><i class="fas fa-info-circle"></i> Installer et ouvrir → 700 points</div></div>
+<div class="offer-actions"><button class="btn btn-dl">📱 Installer</button><button class="btn btn-track">🎯 Valider</button></div>
+</div>
 
-<!-- TASKPRIZE - Carte plus grande -->
-<div class="offer-card offer-card-large"><div class="offer-header"><div class="offer-icon">📋</div><div class="offer-info"><div class="offer-name">TaskPrize <span class="badge">Tâches</span></div><div class="offer-sub">Gagnez en réalisant des tâches</div><div class="offer-points">🏆 54 700 pts</div></div></div><div class="offer-actions"><button class="btn btn-track" data-url="https://api.gemiwall.com/api/offers/click?offerId=_6xzha9WpOqWfG7nYG-KQ&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">🚀 Commencer</button></div></div>
+<div class="offer-card" data-track="https://api.gemiwall.com/api/offers/click?offerId=_6xzha9WpOqWfG7nYG-KQ&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">
+<img class="offer-img" src="https://netubex.github.io/netubex-/tasks.jpg" alt="TaskPrize">
+<div class="offer-info"><div class="offer-name">TaskPrize <span class="badge">Tâches</span></div><div class="offer-sub">Gagnez en réalisant des tâches</div><div class="offer-points">🏆 54 700 pts</div><div class="offer-instruction"><i class="fas fa-info-circle"></i> Compléter des tâches → 54 700 points</div></div>
+<div class="offer-actions"><button class="btn btn-track">🎯 Commencer</button></div>
+</div>
 
-<!-- GOTKASH -->
-<div class="offer-card"><div class="offer-header"><div class="offer-icon">💰</div><div class="offer-info"><div class="offer-name">GotKash <span class="badge">Register</span></div><div class="offer-sub">App de gains</div><div class="offer-points">🏆 25 000 pts</div></div></div><div class="offer-palier"><details><summary>📋 Voir palier</summary>S'inscrire → 25 000 points</details></div><div class="offer-actions"><button class="btn btn-track" data-url="https://api.gemiwall.com/api/offers/click?offerId=8IJ70Mwx&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">🚀 Go</button></div></div>
+<div class="offer-card" data-track="https://api.gemiwall.com/api/offers/click?offerId=8IJ70Mwx&userId={USER_ID}&placementId=69f304688bb8875fc339fe24" data-dl="https://play.google.com/store/apps/details?id=com.gotkash.app">
+<img class="offer-img small" src="https://netubex.github.io/netubex-/gotkash.png" alt="GotKash">
+<div class="offer-info"><div class="offer-name">GotKash <span class="badge">Register</span></div><div class="offer-sub">App de gains</div><div class="offer-points">🏆 25 000 pts</div><div class="offer-instruction"><i class="fas fa-info-circle"></i> S'inscrire sur l'application → 25 000 points</div></div>
+<div class="offer-actions"><button class="btn btn-dl">📱 Installer</button><button class="btn btn-track">🎯 Valider</button></div>
+</div>
 
-<!-- WHATSAPP BINDING -->
-<div class="offer-card"><div class="offer-header"><div class="offer-icon">🔗</div><div class="offer-info"><div class="offer-name">WhatsApp Binding <span class="badge">Liaison</span></div><div class="offer-sub">Associer son compte</div><div class="offer-points">🏆 2 000 pts</div></div></div><div class="offer-palier"><details><summary>📋 Voir palier</summary>Installer et ouvrir → 2 000 points</details></div><div class="offer-actions"><button class="btn btn-track" data-url="https://api.gemiwall.com/api/offers/click?offerId=QUIsEeASWE191dyfGoyG6&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">🚀 Go</button></div></div>
+<div class="offer-card" data-track="https://api.gemiwall.com/api/offers/click?offerId=QUIsEeASWE191dyfGoyG6&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">
+<img class="offer-img" src="https://netubex.github.io/netubex-/binding.jpg" alt="WhatsApp Binding">
+<div class="offer-info"><div class="offer-name">WhatsApp Binding <span class="badge">Liaison</span></div><div class="offer-sub">Associer son compte</div><div class="offer-points">🏆 2 000 pts</div><div class="offer-instruction"><i class="fas fa-info-circle"></i> Associer votre compte → 2 000 points</div></div>
+<div class="offer-actions"><button class="btn btn-track">🎯 Valider</button></div>
+</div>
 
-<!-- MONEYSOCIAL -->
-<div class="offer-card"><div class="offer-header"><div class="offer-icon">👥</div><div class="offer-info"><div class="offer-name">Moneysocial <span class="badge">Register+Login</span></div><div class="offer-sub">Réseau rémunérateur</div><div class="offer-points">🏆 1 000 pts</div></div></div><div class="offer-palier"><details><summary>📋 Voir palier</summary>S'inscrire et se connecter → 1 000 points</details></div><div class="offer-actions"><button class="btn btn-track" data-url="https://api.gemiwall.com/api/offers/click?offerId=8GS3KJpCXTAlcmq21fYQU&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">🚀 Go</button></div></div>
+<div class="offer-card" data-track="https://api.gemiwall.com/api/offers/click?offerId=8GS3KJpCXTAlcmq21fYQU&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">
+<img class="offer-img" src="https://netubex.github.io/netubex-/moneysocial.jpg" alt="Moneysocial">
+<div class="offer-info"><div class="offer-name">Moneysocial <span class="badge">Register+Login</span></div><div class="offer-sub">Réseau rémunérateur</div><div class="offer-points">🏆 1 000 pts</div><div class="offer-instruction"><i class="fas fa-info-circle"></i> S'inscrire et se connecter → 1 000 points</div></div>
+<div class="offer-actions"><button class="btn btn-track">🎯 Valider</button></div>
+</div>
 
 </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script>
-let userId = localStorage.getItem('userId');
-if(!userId) { userId = 'U' + Math.random().toString(36).substr(2, 10).toUpperCase(); localStorage.setItem('userId', userId); }
-function openUrl(url) { window.open(url.replace('{USER_ID}', userId), '_blank'); }
-document.querySelectorAll('[data-url]').forEach(btn => { const url = btn.getAttribute('data-url'); if(url) btn.addEventListener('click', e => { e.preventDefault(); openUrl(url); }); });
+let userId = localStorage.getItem('netubex_user_id');
+if(!userId){userId='NX'+Math.random().toString(36).substring(2,15).toUpperCase();localStorage.setItem('netubex_user_id',userId);}
+function openUrl(url){if(url)window.open(url.replace(/{USER_ID}/g,userId),'_blank');}
+document.querySelectorAll('.offer-card').forEach(c=>{let t=c.dataset.track,d=c.dataset.dl;let tb=c.querySelector('.btn-track'),db=c.querySelector('.btn-dl');if(tb&&t)tb.onclick=()=>openUrl(t);if(db&&d)db.onclick=()=>openUrl(d);});
 </script>
 </body>
 </html>
