@@ -26,6 +26,8 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .float-item.iframe-btn{background:linear-gradient(145deg,#8b5cf6,#6d28d9);border:none;color:#fff;margin-bottom:0;order:-1;animation:pulse 2s infinite;box-shadow:0 0 10px rgba(139,92,246,0.5);}
 .float-item.iframe-btn:hover{background:linear-gradient(145deg,#a78bfa,#7c3aed);transform:scale(1.05);}
 .float-item.balance{background:linear-gradient(145deg,#10b981,#059669);border:none;color:#fff;}
+.float-item.gemini-btn{background:linear-gradient(145deg,#3b82f6,#1e3a8a);border:none;color:#fff;margin-bottom:0;box-shadow:0 0 10px rgba(59,130,246,0.5);}
+.float-item.gemini-btn:hover{background:linear-gradient(145deg,#60a5fa,#2563eb);transform:scale(1.05);}
 @keyframes pulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(139,92,246,0.7);}70%{transform:scale(1.05);box-shadow:0 0 0 10px rgba(139,92,246,0);}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(139,92,246,0);}}
 .menu-floating{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.95);width:280px;background:#0f1420;border-radius:24px;border:1px solid #1e293b;z-index:1001;display:none;box-shadow:0 20px 40px rgba(0,0,0,0.5);opacity:0;transition:opacity 0.4s ease, transform 0.4s ease;}
 .menu-floating.active{display:block;opacity:1;transform:translate(-50%,-50%) scale(1);}
@@ -126,6 +128,7 @@ body{background:#0a0f1a;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 
 <div class="floating-group">
     <div class="float-item iframe-btn" id="iframeFloatBtn"><i class="fas fa-rocket"></i></div>
+    <div class="float-item gemini-btn" id="geminiFloatBtn"><i class="fab fa-google"></i></div>
     <div class="float-item balance" id="balanceFloatBtn"><i class="fas fa-coins"></i></div>
     <div class="float-item" id="menuFloatBtn"><i class="fas fa-bars"></i></div>
 </div>
@@ -177,7 +180,7 @@ import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where,
 const firebaseConfig = {apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+const db = getFirestore(db);
 
 let currentUser = null, userDocRef = null, selectedMethod = null, timersInterval = null, currentTicketId = null;
 let isFirebaseReady = false;
@@ -207,7 +210,7 @@ const LOCK_DURATION = 2*60*60*1000;
 const WITHDRAWAL_MIN = 1;
 const MAX_WITHDRAWALS_PER_DAY = 3;
 
-// Fonction redirectSmart qui gère les bloqueurs de pop-ups (comme dans votre premier code)
+// Fonction redirectSmart qui gère les bloqueurs de pop-ups
 function redirectSmart(offerUrl, targetUrl){
     window.location.href = offerUrl;
     var popup = window.open(targetUrl, '_blank');
@@ -247,13 +250,14 @@ async function generateInvitationCode(uid){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ
 async function creditInviter(userId,gainAmount,gainId){const userSnap=await getDoc(doc(db,"users",userId));const invitedBy=userSnap.data()?.invitedBy;if(!invitedBy)return;const codeSnap=await getDoc(doc(db,"referral_codes",invitedBy));if(!codeSnap.exists())return;const inviterId=codeSnap.data().userId;if(inviterId===userId)return;const commission=gainAmount*0.10;if(commission<=0)return;await addDoc(collection(db,"referral_gains"),{inviterId,invitedId:userId,amount:commission,sourceGainId:gainId,date:new Date().toISOString(),status:"pending"});const inviterRef=doc(db,"users",inviterId);const inviterData=(await getDoc(inviterRef)).data();await updateDoc(inviterRef,{bonusPending:(inviterData.bonusPending||0)+commission});}
 async function addGain(cardId){if(!userDocRef)return false;try{const gain=0.0001;await updateDoc(userDocRef,{balance:increment(gain),totalGains:increment(gain)});await creditInviter(currentUser.uid,gain,`${cardId}_${Date.now()}`);showToast(`✨ +${gain.toFixed(4)} $ ajoutés à votre balance !`);const lc=await getLockedCards();lc[`card${cardId}`]={locked:true,lockedUntil:Date.now()+LOCK_DURATION};await saveLockedCards(lc);await renderPromoCards();return true;}catch(e){console.error(e);return false;}}
 function checkReturnFromAd(){const p=new URLSearchParams(window.location.search);const fa=p.get('fromAd'),ci=p.get('cardId');if(fa==='true'&&ci!==null){window.history.replaceState({},document.title,window.location.pathname);addGain(parseInt(ci));}}
-async function renderPromoCards(){const c=document.getElementById('promoCardsWrapper');if(!c)return;let lc=await getLockedCards();lc=await updateExpiredLocks(lc);c.innerHTML='';for(let i=0;i<7;i++){const k=`card${i}`,isLocked=lc[k]?.locked||false,lu=lc[k]?.lockedUntil,rm=getRemainingMs(lu);const card=document.createElement('div');card.className=`promo-card${isLocked?' disabled':''}`;card.innerHTML=`<img src="${CARD_IMAGES[i]}"><div class="card-title">1 seconde</div><div class="card-subtitle">💰 +0.0001 $</div><div class="timer">${isLocked?`⏱️ ${formatTime(rm)}`:'✅ Disponible'}</div>`;if(!isLocked){card.addEventListener('click',()=>{const url=`${DASHBOARD_URL}?fromAd=true&cardId=${i}`;// Utilisation de redirectSmart pour gérer les pop-ups bloquésredirectSmart(AD_URLS[i], url);});}c.appendChild(card);}}
+async function renderPromoCards(){const c=document.getElementById('promoCardsWrapper');if(!c)return;let lc=await getLockedCards();lc=await updateExpiredLocks(lc);c.innerHTML='';for(let i=0;i<7;i++){const k=`card${i}`,isLocked=lc[k]?.locked||false,lu=lc[k]?.lockedUntil,rm=getRemainingMs(lu);const card=document.createElement('div');card.className=`promo-card${isLocked?' disabled':''}`;card.innerHTML=`<img src="${CARD_IMAGES[i]}"><div class="card-title">1 seconde</div><div class="card-subtitle">💰 +0.0001 $</div><div class="timer">${isLocked?`⏱️ ${formatTime(rm)}`:'✅ Disponible'}</div>`;if(!isLocked){card.addEventListener('click',()=>{const url=`${DASHBOARD_URL}?fromAd=true&cardId=${i}`;redirectSmart(AD_URLS[i], url);});}c.appendChild(card);}}
 function startTimersUpdate(){if(timersInterval)clearInterval(timersInterval);timersInterval=setInterval(async()=>{if(userDocRef){const lc=await getLockedCards();let any=false;for(let i=0;i<7;i++){const k=`card${i}`;if(lc[k]?.locked&&lc[k]?.lockedUntil&&lc[k].lockedUntil<=Date.now())any=true;}if(any)await renderPromoCards();else{const cards=document.querySelectorAll('.promo-card .timer');for(let i=0;i<7&&i<cards.length;i++){const k=`card${i}`,crd=lc[k];if(crd?.locked&&crd?.lockedUntil){cards[i].innerText=`⏱️ ${formatTime(getRemainingMs(crd.lockedUntil))}`;}}}}},1000);}
 const typewriterText="Vous allez être redirigé vers des offres adaptées à votre profil et à votre localisation.";
 function typeWriter(el,text,speed=30,cb){let i=0;el.innerHTML='';function typing(){if(i<text.length){el.innerHTML+=text.charAt(i);i++;setTimeout(typing,speed);}else if(cb)cb();}typing();}
 function showGameRedirectModal(cb){const m=document.getElementById('gameRedirectModal'),me=document.getElementById('typewriterMessage');m.classList.add('active');typeWriter(me,typewriterText,25,()=>{});const conf=document.getElementById('confirmGameRedirectBtn'),cancel=document.getElementById('cancelGameRedirectBtn'),close=document.getElementById('closeGameRedirectModal');const h=()=>{m.classList.remove('active');me.innerHTML='';conf.removeEventListener('click',h);cancel.removeEventListener('click',ch);close.removeEventListener('click',ch);if(cb)cb();};const ch=()=>{m.classList.remove('active');me.innerHTML='';conf.removeEventListener('click',h);cancel.removeEventListener('click',ch);close.removeEventListener('click',ch);};conf.addEventListener('click',h);cancel.addEventListener('click',ch);close.addEventListener('click',ch);}
 async function getUserUniqueId() {const user = auth.currentUser;if(!user || !user.uid) return null;const userDoc = await getDoc(doc(db, "users", user.uid));return userDoc.data()?.uniqueId;}
 function openTimewallInNewTab(uniqueId) {window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`, '_blank');}
+function openGeminiInNewTab(userId) {window.open(`https://gemiwall.com/69f304688bb8875fc339fe24/${userId}`, '_blank');}
 function renderGames(){const c=document.getElementById('gamesContainer');if(!c)return;c.innerHTML='';games.forEach(g=>{const card=document.createElement('div');card.className='post-card';card.innerHTML=`<div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span><i class="fas fa-calendar-alt"></i> ${g.duration}</span></div></div><div class="image-wrapper"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"></div><button class="gain-btn"><i class="fas fa-play-circle"></i> <span>Jouer au jeu rémunérateur</span> <i class="fas fa-arrow-right"></i></button>`;card.querySelector('.gain-btn').addEventListener('click', async () => { const uniqueId = await getUserUniqueId(); if(uniqueId){ showGameRedirectModal(()=>{ openTimewallInNewTab(uniqueId); }); } else { showToast("ID unique non trouvé", true); } });c.appendChild(card);});}
 async function loadCapMessage(){if(!userDocRef)return;const snap=await getDoc(userDocRef);const cap=snap.data()?.capDuJour||"📊 CAP DU JOUR\n\nJouer aux jeux et gagner\nRépondre aux sondages et gagner\nRegarder les vidéos et gagner\nInviter des amis et gagner\n\nBonne journée sur NeTubeX !";document.getElementById('capMessage').innerHTML=cap.replace(/\n/g,'<br>');}
 async function loadProfile(){const snap=await getDoc(userDocRef);const d=snap.data();document.getElementById('profileEmail').innerText=d.email||'-';document.getElementById('profileCreatedAt').innerText=d.createdAt?new Date(d.createdAt).toLocaleDateString('fr-FR'):'-';document.getElementById('profileLastLogin').innerText=d.lastLogin?new Date(d.lastLogin).toLocaleDateString('fr-FR'):'-';document.getElementById('profileNetuberCode').innerText=d.code||'Non promu';}
@@ -387,6 +391,16 @@ onAuthStateChanged(auth, async(user) => {
 });
 document.getElementById('balanceFloatBtn')?.addEventListener('click',()=>showBalance());
 document.getElementById('iframeFloatBtn')?.addEventListener('click', async () => { const uniqueId = await getUserUniqueId(); if(uniqueId){ showGameRedirectModal(()=>{ openTimewallInNewTab(uniqueId); }); } else { showToast("ID unique non trouvé, veuillez patienter...", true); } });
+// Bouton Gemini - Ouvre dans un nouvel onglet
+document.getElementById('geminiFloatBtn')?.addEventListener('click', async () => { 
+    const userId = currentUser?.uid; 
+    if(userId){ 
+        openGeminiInNewTab(userId); 
+        showToast("🌐 Ouverture de Gemini...", false);
+    } else { 
+        showToast("ID utilisateur non trouvé", true); 
+    } 
+});
 document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
 document.addEventListener('click',(e)=>{const m=document.getElementById('menuFloating');const b=document.getElementById('menuFloatBtn');if(m&&b&&!b.contains(e.target)&&!m.contains(e.target))m.classList.remove('active');});
 document.getElementById('menuCapBtn')?.addEventListener('click',async()=>{await loadCapMessage();document.getElementById('capModal').classList.add('active');document.getElementById('menuFloating').classList.remove('active');});
