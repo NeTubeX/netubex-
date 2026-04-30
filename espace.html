@@ -8,130 +8,160 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{background:#f5f7fa;font-family:'Inter',system-ui,sans-serif;color:#1a1a2e;max-width:500px;margin:0 auto;padding-bottom:70px;}
-.header{background:white;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8ecf0;position:sticky;top:0;z-index:100;}
-.logo{display:flex;align-items:center;gap:8px;}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
+body{background:#18191a;font-family:'Inter',system-ui,sans-serif;color:#e4e6eb;min-height:100vh;overflow-x:hidden;}
+.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;}
+@keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+.header{background:#242526;border-bottom:1px solid #3a3b3c;padding:0.5rem 1rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:8px;cursor:default;}
 .logo img{height:32px;width:auto;}
-.logo h1{font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,#1a1a2e,#f59e0b);-webkit-background-clip:text;background-clip:text;color:transparent;}
-.balance-header{background:#f59e0b10;padding:6px 12px;border-radius:30px;display:flex;align-items:center;gap:6px;font-weight:600;font-size:0.85rem;color:#f59e0b;cursor:pointer;}
-.section{display:none;padding:20px;animation:fadeIn 0.2s ease;}
-.section.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
-.section-title{font-size:1.1rem;font-weight:700;margin-bottom:16px;color:#1a1a2e;display:flex;align-items:center;gap:8px;}
-/* Offres speciales - 2 boutons cote a cote */
-.special-buttons{display:flex;gap:12px;margin-bottom:24px;}
-.special-btn{flex:1;background:white;border:1px solid #e8ecf0;border-radius:20px;padding:20px 12px;text-align:center;cursor:pointer;transition:all 0.2s;box-shadow:0 2px 6px rgba(0,0,0,0.04);}
-.special-btn:active{transform:scale(0.97);background:#f8f9fa;}
-.special-btn i{font-size:2rem;margin-bottom:8px;display:block;}
-.special-btn .btn-label{font-weight:700;font-size:0.9rem;color:#1a1a2e;}
-/* Offres exclusives swipe */
-.offers-scroll{overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding:8px 0 16px;scrollbar-width:thin;}
-.offers-wrapper{display:inline-flex;gap:12px;}
-.offer-item{display:inline-flex;flex-direction:column;width:140px;background:white;border-radius:16px;padding:12px;border:1px solid #e8ecf0;cursor:pointer;}
-.offer-icon{font-size:1.8rem;margin-bottom:6px;}
-.offer-name{font-size:0.75rem;font-weight:600;margin-bottom:2px;white-space:normal;word-break:break-word;}
-.offer-points{font-size:0.65rem;color:#f59e0b;font-weight:600;}
-/* Games grid */
-.games-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.game-card{background:white;border-radius:16px;overflow:hidden;border:1px solid #e8ecf0;}
-.game-header{display:flex;align-items:center;gap:10px;padding:12px;}
-.game-avatar{width:40px;height:40px;background:#f0f2f5;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
-.game-info{flex:1;}
-.game-name{font-weight:700;font-size:0.8rem;}
-.game-duration{font-size:0.6rem;color:#94a3b8;}
-.game-img{width:100%;height:100px;object-fit:cover;}
-.game-btn{background:#f59e0b;color:white;border:none;padding:10px;font-size:0.7rem;font-weight:600;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;}
-.game-btn:active{opacity:0.8;}
-/* Bottom Nav */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:500px;margin:0 auto;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-top:1px solid #e8ecf0;display:flex;justify-content:space-around;padding:10px 20px 20px;z-index:200;}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;font-size:0.7rem;color:#94a3b8;cursor:pointer;transition:0.2s;}
-.nav-item i{font-size:1.3rem;}
-.nav-item.active{color:#f59e0b;}
-/* Modal */
-.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:300;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:0.2s;}
+.logo h1{font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,#e4e6eb,#f59e0b);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.logo h1 span{color:#f59e0b;}
+.online-status{display:flex;align-items:center;gap:6px;background:#3a3b3c;padding:6px 12px;border-radius:8px;font-size:0.7rem;font-weight:500;color:#10b981;}
+.blinking-dot{width:8px;height:8px;background-color:#10b981;border-radius:50%;animation:blink 1.2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.feed-container{width:100%;padding:0.5rem 0 1.5rem 0;}
+.games-list{display:flex;flex-direction:column;gap:8px;width:100%;padding:0 12px;}
+.post-card{background:#242526;overflow:hidden;width:100%;border-radius:8px;margin-bottom:0;}
+.post-header{display:flex;align-items:center;gap:12px;padding:12px;}
+.avatar{width:44px;height:44px;background:#3a3b3c;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
+.post-meta h4{font-size:0.9rem;font-weight:700;margin-bottom:2px;}
+.post-meta span{font-size:0.65rem;color:#b0b3b8;}
+.post-image{width:100%;height:auto;min-height:180px;object-fit:cover;display:block;}
+.gain-btn{background:#3a3b3c;border:none;padding:12px;font-weight:600;color:#e4e6eb;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;transition:all 0.15s ease;font-size:0.85rem;border-radius:8px;margin-top:4px;margin-bottom:8px;}
+.gain-btn:active{transform:scale(0.98);background:#4e4f50;}
+.gain-btn i{font-size:1rem;}
+.toast-notification{position:fixed;bottom:20px;left:12px;right:12px;background:#242526;border-left:4px solid #10b981;color:#e4e6eb;padding:12px 16px;border-radius:8px;font-size:0.8rem;z-index:10000;animation:slideUp 0.2s;max-width:400px;margin:0 auto;}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:3000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:all 0.2s ease;}
 .modal-overlay.active{visibility:visible;opacity:1;}
-.modal-container{background:white;border-radius:24px;width:90%;max-width:400px;max-height:80vh;overflow-y:auto;}
-.modal-header{padding:16px;border-bottom:1px solid #e8ecf0;display:flex;justify-content:space-between;align-items:center;}
-.modal-body{padding:16px;}
-.modal-footer{padding:12px 16px;border-top:1px solid #e8ecf0;display:flex;gap:10px;justify-content:flex-end;}
-.btn-confirm{background:#f59e0b;color:white;border:none;padding:10px 20px;border-radius:30px;font-weight:600;cursor:pointer;}
-.btn-cancel{background:#e8ecf0;color:#1a1a2e;border:none;padding:10px 20px;border-radius:30px;cursor:pointer;}
-.toast{position:fixed;bottom:80px;left:20px;right:20px;max-width:460px;margin:0 auto;background:#1a1a2e;color:white;padding:12px 16px;border-radius:12px;font-size:0.8rem;z-index:400;animation:slideUp 0.2s;}
-@keyframes slideUp{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-.input-group{margin-bottom:12px;}
-.input-group label{display:block;font-size:0.7rem;color:#64748b;margin-bottom:4px;}
-.input-group input,.input-group select,.input-group textarea{width:100%;padding:10px;background:#f8f9fa;border:1px solid #e8ecf0;border-radius:12px;font-family:inherit;font-size:0.85rem;}
-.method-option{padding:12px;border-radius:12px;cursor:pointer;margin-bottom:8px;background:#f8f9fa;}
-.method-option.selected{background:#f59e0b20;border:2px solid #f59e0b;}
-.ticket-message{background:#f8f9fa;padding:10px;border-radius:12px;margin-bottom:8px;}
+.modal-container{background:#242526;border-radius:12px;max-width:500px;width:90%;overflow:hidden;max-height:85vh;overflow-y:auto;}
+.modal-header{padding:14px 18px;border-bottom:1px solid #3a3b3c;display:flex;justify-content:space-between;align-items:center;}
+.modal-header h3{font-size:1rem;color:#f59e0b;display:flex;align-items:center;gap:8px;}
+.modal-close{background:#3a3b3c;border:none;width:30px;height:30px;border-radius:8px;color:#e4e6eb;cursor:pointer;}
+.modal-body{padding:18px;}
+.modal-footer{padding:12px 18px;border-top:1px solid #3a3b3c;display:flex;justify-content:flex-end;gap:10px;}
+.modal-footer button{padding:8px 20px;border-radius:8px;border:none;font-weight:600;cursor:pointer;}
+.btn-confirm{background:#f59e0b;color:#1a1a2e;}
+.btn-confirm:active{opacity:0.8;}
+.btn-cancel{background:#3a3b3c;color:#e4e6eb;}
+.input-group{margin-bottom:14px;}
+.input-group label{display:block;color:#b0b3b8;font-size:0.7rem;margin-bottom:4px;}
+.input-group input,.input-group select,.input-group textarea{width:100%;padding:10px;background:#3a3b3c;border:1px solid #4e4f50;border-radius:8px;color:#e4e6eb;outline:none;font-family:inherit;font-size:0.85rem;}
+.input-group input:focus{border-color:#f59e0b;}
+.method-option{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;cursor:pointer;margin-bottom:8px;background:#3a3b3c;transition:0.1s;}
+.method-option.selected-airtel{background:#e2000010;border:2px solid #e20000;}
+.method-option.selected-orange{background:#ff790010;border:2px solid #ff7900;}
+.typewriter-text{font-family:'Courier New',monospace;font-size:0.75rem;color:#10b981;background:#3a3b3c;padding:10px;border-radius:8px;margin-top:8px;}
+.floating-group{position:fixed;bottom:80px;right:12px;display:flex;flex-direction:column;gap:10px;z-index:200;}
+.float-item{background:#242526;width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;color:#b0b3b8;border:1px solid #3a3b3c;transition:0.1s;}
+.float-item:active{transform:scale(0.95);}
+.float-item.iframe-btn{background:#3a3b3c;border-color:#f59e0b;color:#f59e0b;}
+.float-item.gemini-btn{background:#3a3b3c;border-color:#f59e0b;color:#f59e0b;}
+.float-item.balance{background:#10b981;border:none;color:#fff;}
+.float-item.plus-btn{background:#f59e0b;border:none;color:#1a1a2e;font-size:1.3rem;}
+.menu-floating{position:fixed;bottom:90px;right:12px;width:220px;background:#242526;border-radius:8px;border:1px solid #3a3b3c;z-index:1001;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.menu-floating.active{display:block;}
+.menu-header{padding:12px;border-bottom:1px solid #3a3b3c;background:#2d2e2f;border-radius:8px 8px 0 0;font-size:0.85rem;}
+.menu-item{padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid #3a3b3c;color:#e4e6eb;font-size:0.8rem;transition:0.1s;}
+.menu-item:active{background:#3a3b3c;}
+.menu-item i{width:22px;color:#f59e0b;}
+.menu-item.danger{color:#e41e3f;}
+.menu-item.danger i{color:#e41e3f;}
+.footer{background:#242526;border-top:1px solid #3a3b3c;padding:0.8rem;text-align:center;margin-top:0.5rem;}
+.footer p{color:#b0b3b8;font-size:0.6rem;}
+
+/* Offres Popup - Gris sombre */
+.offers-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:2000;display:flex;align-items:flex-start;justify-content:center;visibility:hidden;opacity:0;transition:0.2s;overflow-y:auto;}
+.offers-popup.active{visibility:visible;opacity:1;}
+.offers-container{max-width:550px;width:95%;margin:16px auto;background:#242526;border-radius:12px;padding:16px;}
+.offers-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.offers-header h2{color:#e4e6eb;font-size:1.1rem;display:flex;align-items:center;gap:8px;}
+.close-offers{background:#3a3b3c;border:none;width:36px;height:36px;border-radius:8px;color:#e4e6eb;cursor:pointer;}
+.offers-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.offer-card{background:#2d2e2f;border-radius:8px;overflow:hidden;transition:0.1s;}
+.offer-card:active{transform:scale(0.98);}
+.offer-card.clicked{opacity:0.5;}
+.offer-header{display:flex;align-items:center;gap:8px;padding:10px;}
+.offer-icon{width:36px;height:36px;background:#3a3b3c;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.offer-info{flex:1;}
+.offer-name{font-weight:600;font-size:0.7rem;margin-bottom:2px;color:#e4e6eb;}
+.offer-name .badge{background:#f59e0b;color:#1a1a2e;font-size:0.45rem;padding:2px 5px;border-radius:4px;margin-left:4px;}
+.offer-sub{font-size:0.55rem;color:#b0b3b8;}
+.offer-points{font-weight:600;color:#f59e0b;font-size:0.6rem;margin-top:2px;}
+.offer-palier details{background:#3a3b3c;border-radius:6px;padding:6px;font-size:0.55rem;color:#b0b3b8;margin:0 8px 6px 8px;}
+.offer-palier summary{cursor:pointer;font-weight:600;color:#e4e6eb;}
+.offer-actions{display:flex;gap:6px;padding:8px;border-top:1px solid #3a3b3c;}
+.btn{flex:1;padding:6px 0;border-radius:6px;font-weight:600;font-size:0.55rem;cursor:pointer;border:none;text-align:center;}
+.btn-dl{background:#f59e0b;color:#1a1a2e;}
+.btn-track{background:#3a3b3c;color:#e4e6eb;}
+.btn-track.disabled-track{background:#2d2e2f;opacity:0.5;}
+@media(max-width:480px){.offers-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 
-<div class="header">
-    <div class="logo"><img src="https://netubex.github.io/netubex-/favicon.png.png" alt=""><h1>Ne<span style="color:#f59e0b;">TubeX</span></h1></div>
-    <div class="balance-header" id="balanceHeader"><i class="fas fa-coins"></i> <span id="balanceAmount">0.00</span> $</div>
+<div class="main-content">
+<div class="rainbow-line"></div>
+
+<header class="header">
+    <div class="logo"><img src="https://netubex.github.io/netubex-/favicon.png.png" alt="NeTubeX Logo"><h1>Ne<span>TubeX</span></h1></div>
+    <div class="online-status"><span class="blinking-dot"></span><span>En ligne</span></div>
+</header>
+
+<div class="feed-container"><div class="games-list" id="gamesContainer"></div></div>
+
+<div class="floating-group">
+    <div class="float-item iframe-btn" id="iframeFloatBtn"><i class="fas fa-clock"></i></div>
+    <div class="float-item gemini-btn" id="geminiFloatBtn"><i class="fab fa-google"></i></div>
+    <div class="float-item balance" id="balanceFloatBtn"><i class="fas fa-coins"></i></div>
+    <div class="float-item plus-btn" id="plusBtn"><i class="fas fa-plus"></i></div>
+    <div class="float-item" id="menuFloatBtn"><i class="fas fa-bars"></i></div>
 </div>
 
-<!-- SECTION ACCUEIL -->
-<div id="homeSection" class="section active">
-    <div class="section-title"><i class="fas fa-fire" style="color:#f59e0b;"></i> CAP du jour</div>
-    <div style="background:white;border-radius:20px;padding:16px;border:1px solid #e8ecf0;" id="capContent">Chargement...</div>
+<div id="menuFloating" class="menu-floating">
+    <div class="menu-header"><strong><i class="fas fa-bars"></i> Menu</strong></div>
+    <div class="menu-item" id="menuCapBtn"><i class="fas fa-chart-line"></i> CAP du jour</div>
+    <div class="menu-item" id="menuProfileBtn"><i class="fas fa-user"></i> Mon profil</div>
+    <div class="menu-item" id="menuTicketsBtn"><i class="fas fa-ticket-alt"></i> Mes tickets</div>
+    <div class="menu-item" id="menuBonusBtn"><i class="fas fa-gift"></i> Bonus d'invitation</div>
+    <div class="menu-item" id="menuWithdrawBtn"><i class="fas fa-money-bill-wave"></i> Retirer</div>
+    <div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div>
 </div>
 
-<!-- SECTION OFFRES SPECIALES -->
-<div id="offersSection" class="section">
-    <div class="section-title"><i class="fas fa-gem" style="color:#f59e0b;"></i> Offres spéciales</div>
-    <div class="special-buttons">
-        <div class="special-btn" id="timewallBtn"><i class="fas fa-clock"></i><span class="btn-label">OFFRE N°1</span></div>
-        <div class="special-btn" id="geminiBtn"><i class="fab fa-google"></i><span class="btn-label">OFFRE N°2</span></div>
-    </div>
-    <div class="section-title"><i class="fas fa-gift" style="color:#f59e0b;"></i> Offres exclusives</div>
-    <div class="offers-scroll"><div class="offers-wrapper" id="offersWrapper"></div></div>
+<footer class="footer"><p><i class="fas fa-copyright"></i> NeTubeX 2026</p></footer>
 </div>
 
-<!-- SECTION JEUX -->
-<div id="gamesSection" class="section">
-    <div class="section-title"><i class="fas fa-gamepad" style="color:#f59e0b;"></i> Jeux rémunérateurs</div>
-    <div class="games-grid" id="gamesGrid"></div>
+<!-- Offres Popup -->
+<div id="offersPopup" class="offers-popup">
+<div class="offers-container">
+<div class="offers-header">
+<h2><i class="fas fa-gift" style="color:#f59e0b;"></i> Offres exclusives</h2>
+<button class="close-offers" id="closeOffersBtn"><i class="fas fa-times"></i></button>
+</div>
+<div class="offers-grid" id="offersGridContainer"></div>
+</div>
 </div>
 
-<!-- SECTION PROFIL -->
-<div id="profileSection" class="section">
-    <div class="section-title"><i class="fas fa-user" style="color:#f59e0b;"></i> Mon profil</div>
-    <div style="background:white;border-radius:20px;padding:16px;border:1px solid #e8ecf0;">
-        <p><strong>Email :</strong> <span id="profileEmail">-</span></p>
-        <p style="margin-top:10px;"><strong>Code invitation :</strong> <span id="profileCode">-</span></p>
-        <p style="margin-top:10px;"><strong>Bonus gagnés :</strong> <span id="profileBonus">0$</span></p>
-        <button class="btn-confirm" id="copyCodeBtn" style="margin-top:15px;width:100%;"><i class="fas fa-copy"></i> Copier mon code</button>
-    </div>
-</div>
+<!-- Modals -->
+<div id="capModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-chart-line"></i> CAP du jour</h3><button class="modal-close" id="closeCapModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><p id="capMessage" style="line-height:1.6;">Chargement...</p></div><div class="modal-footer"><button class="btn-cancel" id="closeCapFooterBtn">Fermer</button></div></div></div>
 
-<!-- BOTTOM NAVIGATION -->
-<div class="bottom-nav">
-    <button class="nav-item active" data-section="home"><i class="fas fa-home"></i><span>Accueil</span></button>
-    <button class="nav-item" data-section="offers"><i class="fas fa-gem"></i><span>Offres</span></button>
-    <button class="nav-item" data-section="games"><i class="fas fa-gamepad"></i><span>Jeux</span></button>
-    <button class="nav-item" data-section="profile"><i class="fas fa-user"></i><span>Profil</span></button>
-    <button class="nav-item" id="menuBtn"><i class="fas fa-bars"></i><span>Menu</span></button>
-</div>
+<div id="profileModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-user"></i> Mon profil</h3><button class="modal-close" id="closeProfileModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div style="background:#2d2e2f;border-radius:8px;padding:12px;margin-bottom:12px;"><div style="margin-bottom:8px;"><span style="color:#b0b3b8;">Email :</span><br><strong id="profileEmail">-</strong></div><div><span style="color:#b0b3b8;">Code Netuber :</span><br><strong id="profileNetuberCode">Non promu</strong></div></div><div class="input-group"><label>Nouveau mot de passe</label><input type="password" id="newPassword" placeholder="Laisser vide"></div></div><div class="modal-footer"><button class="btn-confirm" id="updatePasswordBtn">Mettre à jour</button><button class="btn-cancel" id="cancelProfileBtn">Fermer</button></div></div></div>
 
-<!-- MODALS -->
-<div id="menuModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Menu</h3><button class="btn-cancel" onclick="closeModal('menuModal')">✕</button></div><div class="modal-body"><button class="btn-confirm" id="menuTicketsBtn" style="width:100%;margin-bottom:10px;"><i class="fas fa-ticket"></i> Mes tickets</button><button class="btn-confirm" id="menuWithdrawBtn" style="width:100%;margin-bottom:10px;"><i class="fas fa-money-bill"></i> Retraits</button><button class="btn-confirm" id="menuBonusBtn" style="width:100%;margin-bottom:10px;"><i class="fas fa-gift"></i> Bonus invitation</button><button class="btn-cancel" id="menuLogoutBtn" style="width:100%;"><i class="fas fa-sign-out-alt"></i> Déconnexion</button></div></div></div>
+<div id="ticketsModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-ticket-alt"></i> Mes tickets</h3><button class="modal-close" id="closeTicketsModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><button class="btn-confirm" id="newTicketBtn" style="width:100%;margin-bottom:12px;"><i class="fas fa-plus"></i> Nouveau ticket</button><div id="ticketsListContainer" style="max-height:350px;overflow-y:auto;"></div></div><div class="modal-footer"><button class="btn-cancel" id="cancelTicketsBtn">Fermer</button></div></div></div>
 
-<div id="ticketsModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Mes tickets</h3><button class="btn-cancel" onclick="closeModal('ticketsModal')">✕</button></div><div class="modal-body"><button class="btn-confirm" id="newTicketBtn" style="width:100%;margin-bottom:15px;">+ Nouveau ticket</button><div id="ticketsList"></div></div></div></div>
+<div id="bonusModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-gift"></i> Bonus d'invitation</h3><button class="modal-close" id="closeBonusModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Votre code</label><div style="display:flex;gap:8px;"><input type="text" id="invitationCode" readonly style="flex:1;"><button class="btn-confirm" id="copyCodeBtn" style="padding:8px 12px;">Copier</button></div></div><div style="background:#2d2e2f;border-radius:8px;padding:12px;margin:12px 0;"><div style="display:flex;justify-content:space-between;"><span>💰 Bonus :</span><strong id="bonusEarned" style="color:#10b981;">0.0000 $</strong></div><div style="display:flex;justify-content:space-between;margin-top:6px;"><span>👥 Invités :</span><strong id="invitedCount">0</strong></div></div></div><div class="modal-footer"><button class="btn-cancel" id="cancelBonusBtn">Fermer</button></div></div></div>
 
-<div id="withdrawModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Retrait</h3><button class="btn-cancel" onclick="closeModal('withdrawModal')">✕</button></div><div class="modal-body"><p>Solde: <strong id="withdrawBalance">0$</strong></p><div class="input-group"><label>Montant (min 1$)</label><input type="number" id="withdrawAmount" min="1" step="0.01"></div><div class="input-group"><label>Méthode</label><div class="method-option" data-method="orange_money">📱 Orange Money</div><div class="method-option" data-method="airtel_money">📱 Airtel Money</div></div><div class="input-group" id="phoneGroup"><label>Téléphone</label><input type="tel" id="withdrawPhone" placeholder="+243 XX XXX XXXX"></div></div><div class="modal-footer"><button class="btn-confirm" id="submitWithdrawBtn">Valider</button><button class="btn-cancel" onclick="closeModal('withdrawModal')">Annuler</button></div></div></div>
+<div id="withdrawModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-money-bill-wave"></i> Retrait</h3><button class="modal-close" id="closeWithdrawModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div style="background:#2d2e2f;padding:10px;border-radius:8px;margin-bottom:12px;text-align:center;"><span style="color:#b0b3b8;">Solde :</span><strong id="currentBalanceDisplay" style="color:#f59e0b;font-size:1.1rem;display:block;">0.0000 $</strong></div><div class="input-group"><label>Montant (min 1$)</label><input type="number" id="withdrawAmount" step="0.01" min="1"></div><div class="input-group"><label>Méthode</label><div class="method-option" data-method="airtel_money"><i class="fas fa-phone-alt"></i> Airtel Money</div><div class="method-option" data-method="orange_money"><i class="fas fa-phone-alt"></i> Orange Money</div></div><div class="input-group" id="phoneGroup"><label>Téléphone</label><input type="tel" id="walletAddress" placeholder="+243 XX XXX XXXX"></div></div><div class="modal-footer"><button class="btn-confirm" id="submitWithdrawBtn">Valider</button><button class="btn-cancel" id="cancelWithdrawBtn">Annuler</button></div></div></div>
 
-<div id="bonusModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Bonus invitation</h3><button class="btn-cancel" onclick="closeModal('bonusModal')">✕</button></div><div class="modal-body"><p>Votre code: <strong id="inviteCodeDisplay">-</strong></p><p>Invitations: <span id="invitedCount">0</span></p><p>Bonus: <span id="bonusEarned">0$</span></p></div></div></div>
+<div id="confirmLogoutModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Déconnexion</h3><button class="modal-close" id="closeLogoutModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><p>Êtes-vous sûr ?</p></div><div class="modal-footer"><button class="btn-confirm" id="confirmLogoutBtn">Oui</button><button class="btn-cancel" id="cancelLogoutBtn">Non</button></div></div></div>
 
-<div id="typewriterModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Redirection</h3></div><div class="modal-body"><p id="typewriterText" style="font-family:monospace;"></p></div><div class="modal-footer"><button class="btn-confirm" id="confirmRedirectBtn">OK</button></div></div></div>
+<div id="typewriterModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Redirection</h3><button class="modal-close" id="closeTypewriterModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><p id="typewriterText" style="font-family:'Courier New',monospace;font-size:0.85rem;"></p></div><div class="modal-footer"><button class="btn-confirm" id="confirmTypewriterBtn">OK</button></div></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, increment, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, where, getDocs, increment, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
 const app = initializeApp(firebaseConfig);
@@ -141,55 +171,343 @@ const db = getFirestore(app);
 let currentUser = null, userDocRef = null, selectedMethod = null;
 
 const OFFERS = [
-    {id:"offer1", name:"2048 Blast", points:"1 000 pts", icon:"🎮", dlUrl:"https://play.google.com/store/apps/details?id=com.seaweed.cube.shotblock.run2048.io"},
-    {id:"offer2", name:"WhatsApp Business", points:"900 pts", icon:"💼", dlUrl:"https://play.google.com/store/apps/details?id=com.whatsapp.w4b"},
-    {id:"offer3", name:"Instagram", points:"700 pts", icon:"📸", dlUrl:"https://play.google.com/store/apps/details?id=com.instagram.android"},
-    {id:"offer4", name:"TaskPrize", points:"54 700 pts", icon:"📋", dlUrl:null}
+    {id:"offer1", name:"2048 Blast", badge:"Install", sub:"Merge Numbers", points:"1 000 pts", dlUrl:"https://play.google.com/store/apps/details?id=com.seaweed.cube.shotblock.run2048.io", icon:"🎮"},
+    {id:"offer2", name:"WhatsApp Business", badge:"Install", sub:"Application pro", points:"900 pts", dlUrl:"https://play.google.com/store/apps/details?id=com.whatsapp.w4b", icon:"💼"},
+    {id:"offer3", name:"Instagram", badge:"Install", sub:"Réseau social", points:"700 pts", dlUrl:"https://play.google.com/store/apps/details?id=com.instagram.android", icon:"📸"},
+    {id:"offer4", name:"TaskPrize", badge:"Tâches", sub:"Gagnez des points", points:"54 700 pts", dlUrl:null, icon:"📋"}
 ];
 
+// Seulement 4 jeux
 const GAMES = [
     {id:2, name:"Sky Plunger", avatar:"🪂", img:"https://netubex.github.io/netubex-/sky-plunger.png", duration:"30j"},
     {id:3, name:"Goblin Heist", avatar:"👺", img:"https://netubex.github.io/netubex-/goblin-heist.jpg", duration:"30j"},
     {id:4, name:"Wild Fish", avatar:"🐟", img:"https://netubex.github.io/netubex-/wild-fish.png", duration:"30j"},
-    {id:5, name:"Grab A Toy", avatar:"🧸", img:"https://netubex.github.io/netubex-/grab-a-toy.png", duration:"30j"},
-    {id:6, name:"Love Water", avatar:"💧", img:"https://netubex.github.io/netubex-/love-water.gif", duration:"30j"},
-    {id:7, name:"Zombie Waves", avatar:"🧟", img:"https://netubex.github.io/netubex-/zombie-waves.jpg", duration:"30j"},
-    {id:8, name:"The Grand Mafia", avatar:"👑", img:"https://netubex.github.io/netubex-/the-grand-mafia.webp", duration:"30j"},
-    {id:9, name:"Dragon Farm", avatar:"🐉", img:"https://netubex.github.io/netubex-/dragon-farm.webp", duration:"30j"}
+    {id:5, name:"Grab A Toy", avatar:"🧸", img:"https://netubex.github.io/netubex-/grab-a-toy.png", duration:"30j"}
 ];
 
-function showToast(msg){let t=document.createElement('div');t.className='toast';t.innerHTML=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);}
-function closeModal(id){document.getElementById(id).classList.remove('active');}
-async function getUserUniqueId(){if(!currentUser)return null;const snap=await getDoc(doc(db,"users",currentUser.uid));return snap.data()?.uniqueId || currentUser.uid;}
-function typewriterEffect(element,text,callback){let i=0;element.innerHTML='';function type(){if(i<text.length){element.innerHTML+=text.charAt(i);i++;setTimeout(type,25);}else if(callback)callback();}type();}
-function showTypewriterModal(callback){const modal=document.getElementById('typewriterModal');const textEl=document.getElementById('typewriterText');modal.classList.add('active');typewriterEffect(textEl,"Vous allez être redirigé vers des offres adaptées à votre profil et à votre localisation.",()=>{});const confirmBtn=document.getElementById('confirmRedirectBtn');const handler=()=>{modal.classList.remove('active');textEl.innerHTML='';confirmBtn.removeEventListener('click',handler);if(callback)callback();};confirmBtn.addEventListener('click',handler);}
+function showToast(msg, isError = false) {
+    let t = document.createElement('div');
+    t.className = 'toast-notification';
+    t.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${msg}`;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
 
-async function renderOffers(){const container=document.getElementById('offersWrapper');container.innerHTML=OFFERS.map(o=>`<div class="offer-item" data-url="${o.dlUrl||''}"><div class="offer-icon">${o.icon}</div><div class="offer-name">${o.name}</div><div class="offer-points">${o.points}</div></div>`).join('');document.querySelectorAll('.offer-item').forEach(el=>{el.addEventListener('click',async()=>{const url=el.dataset.url;if(url){await registerOfferClick(el.querySelector('.offer-name')?.innerText||'offre');window.open(url,'_blank');}else showToast("Lien indisponible",true);});});}
-async function renderGames(){const container=document.getElementById('gamesGrid');container.innerHTML=GAMES.map(g=>`<div class="game-card"><div class="game-header"><div class="game-avatar">${g.avatar}</div><div class="game-info"><div class="game-name">${g.name}</div><div class="game-duration">${g.duration}</div></div></div><img class="game-img" src="${g.img}" loading="lazy"><button class="game-btn" data-game="${g.name}"><i class="fas fa-play"></i> Jouer</button></div>`).join('');document.querySelectorAll('.game-btn').forEach(btn=>{btn.addEventListener('click',async()=>{const uid=await getUserUniqueId();if(uid){showTypewriterModal(()=>{window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uid}`,'_blank');});}else showToast("Erreur ID utilisateur",true);});});}
-async function registerOfferClick(offerName){if(!userDocRef)return;await updateDoc(userDocRef,{clickedOffers:arrayUnion({name:offerName,date:new Date().toISOString()})});showToast(`✅ Offre "${offerName}" enregistrée`);}
-async function updateBalanceDisplay(){if(!userDocRef)return;const snap=await getDoc(userDocRef);const bal=snap.data()?.balance||0;document.getElementById('balanceAmount').innerText=bal.toFixed(4);document.getElementById('withdrawBalance').innerText=bal.toFixed(2)+'$';}
-async function loadCap(){if(!userDocRef)return;const snap=await getDoc(userDocRef);document.getElementById('capContent').innerHTML=snap.data()?.capDuJour?.replace(/\n/g,'<br>')||"CAP du jour non défini";}
-async function loadProfile(){if(!userDocRef)return;const snap=await getDoc(userDocRef);const d=snap.data();document.getElementById('profileEmail').innerText=d.email||currentUser.email;document.getElementById('profileCode').innerText=d.invitationCode||'Génération...';document.getElementById('profileBonus').innerText=(d.bonusEarnings||0).toFixed(4)+'$';}
-async function loadTickets(){if(!userDocRef)return;const snap=await getDoc(userDocRef);const tickets=snap.data()?.ticketsList||[];const container=document.getElementById('ticketsList');if(tickets.length===0){container.innerHTML='<p>Aucun ticket</p>';return;}container.innerHTML=tickets.map(t=>`<div class="ticket-message"><strong>${t.subject}</strong><br>Statut: ${t.status}<br><small>${new Date(t.date).toLocaleDateString()}</small></div>`).join('');}
-async function createTicket(subject,message){if(!userDocRef)return;const snap=await getDoc(userDocRef);const tickets=snap.data()?.ticketsList||[];const newTicket={id:Date.now().toString(),subject,message,status:'ouvert',date:new Date().toISOString()};await updateDoc(userDocRef,{ticketsList:[...tickets,newTicket]});showToast("✅ Ticket envoyé");loadTickets();}
-async function submitWithdraw(){const amount=parseFloat(document.getElementById('withdrawAmount').value);const phone=document.getElementById('withdrawPhone').value;if(!selectedMethod){showToast("Choisissez une méthode",true);return;}if(isNaN(amount)||amount<1){showToast("Minimum 1$",true);return;}if(!phone){showToast("Numéro requis",true);return;}const snap=await getDoc(userDocRef);const balance=snap.data()?.balance||0;if(amount>balance){showToast("Solde insuffisant",true);return;}await addDoc(collection(db,"withdraw"),{userId:currentUser.uid,amount,method:selectedMethod,phone,status:"pending",date:new Date().toISOString()});await updateDoc(userDocRef,{balance:increment(-amount)});showToast("✅ Demande envoyée");updateBalanceDisplay();closeModal('withdrawModal');}
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-document.getElementById('balanceHeader').addEventListener('click',async()=>{await updateBalanceDisplay();showToast("Solde mis à jour");});
-document.getElementById('timewallBtn').addEventListener('click',async()=>{const uid=await getUserUniqueId();if(uid){showTypewriterModal(()=>{window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uid}`,'_blank');});}});
-document.getElementById('geminiBtn').addEventListener('click',async()=>{const uid=await getUserUniqueId();if(uid){showTypewriterModal(()=>{window.open(`https://gemiwall.com/69f304688bb8875fc339fe24/${uid}`,'_blank');});}});
-document.getElementById('menuBtn').addEventListener('click',()=>document.getElementById('menuModal').classList.add('active'));
-document.getElementById('menuTicketsBtn').addEventListener('click',async()=>{await loadTickets();closeModal('menuModal');document.getElementById('ticketsModal').classList.add('active');});
-document.getElementById('menuWithdrawBtn').addEventListener('click',async()=>{await updateBalanceDisplay();closeModal('menuModal');document.getElementById('withdrawModal').classList.add('active');});
-document.getElementById('menuBonusBtn').addEventListener('click',async()=>{await loadProfile();closeModal('menuModal');document.getElementById('bonusModal').classList.add('active');});
-document.getElementById('menuLogoutBtn').addEventListener('click',async()=>{closeModal('menuModal');await signOut(auth);window.location.href="login.html";});
-document.getElementById('newTicketBtn').addEventListener('click',()=>{const sub=prompt("Sujet du ticket");const msg=prompt("Message");if(sub&&msg)createTicket(sub,msg);});
-document.getElementById('submitWithdrawBtn').addEventListener('click',submitWithdraw);
-document.querySelectorAll('.method-option').forEach(opt=>{opt.addEventListener('click',function(){document.querySelectorAll('.method-option').forEach(o=>o.classList.remove('selected'));this.classList.add('selected');selectedMethod=this.dataset.method;});});
-document.getElementById('copyCodeBtn').addEventListener('click',()=>{const code=document.getElementById('profileCode').innerText;navigator.clipboard.writeText(code);showToast("Code copié !");});
+function typewriterEffect(element, text, callback) {
+    let i = 0;
+    element.innerHTML = '';
+    function type() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(type, 25);
+        } else if (callback) callback();
+    }
+    type();
+}
 
-document.querySelectorAll('.nav-item').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const section=btn.dataset.section;document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));if(section==='home')document.getElementById('homeSection').classList.add('active');if(section==='offers')document.getElementById('offersSection').classList.add('active');if(section==='games')document.getElementById('gamesSection').classList.add('active');if(section==='profile')document.getElementById('profileSection').classList.add('active');});});
+function showTypewriterModal(callback) {
+    const modal = document.getElementById('typewriterModal');
+    const textEl = document.getElementById('typewriterText');
+    modal.classList.add('active');
+    typewriterEffect(textEl, "Vous allez être redirigé vers des offres adaptées à votre profil et à votre localisation.", () => {});
+    const confirmBtn = document.getElementById('confirmTypewriterBtn');
+    const closeBtn = document.getElementById('closeTypewriterModal');
+    const handler = () => {
+        modal.classList.remove('active');
+        textEl.innerHTML = '';
+        confirmBtn.removeEventListener('click', handler);
+        closeBtn.removeEventListener('click', handler);
+        if (callback) callback();
+    };
+    confirmBtn.addEventListener('click', handler);
+    closeBtn.addEventListener('click', handler);
+}
 
-onAuthStateChanged(auth,async(user)=>{if(user){currentUser=user;userDocRef=doc(db,"users",user.uid);const snap=await getDoc(userDocRef);if(!snap.exists()){await updateDoc(userDocRef,{email:user.email,balance:0,createdAt:new Date().toISOString(),capDuJour:"📊 CAP DU JOUR\n\nJouer aux jeux et gagner\nInviter des amis et gagner\nBonne journée !"});}await updateBalanceDisplay();await loadCap();await loadProfile();await renderOffers();await renderGames();}else{window.location.href="login.html";}});
+async function getUserUniqueId() {
+    if (!currentUser) return null;
+    const snap = await getDoc(doc(db, "users", currentUser.uid));
+    return snap.data()?.uniqueId || currentUser.uid;
+}
+
+async function renderOffersPopup() {
+    const container = document.getElementById('offersGridContainer');
+    if (!container) return;
+    container.innerHTML = OFFERS.map(offer => `
+        <div class="offer-card" data-offer-id="${offer.id}">
+            <div class="offer-header">
+                <div class="offer-icon">${offer.icon}</div>
+                <div class="offer-info">
+                    <div class="offer-name">${offer.name} <span class="badge">${offer.badge}</span></div>
+                    <div class="offer-sub">${offer.sub}</div>
+                    <div class="offer-points">🏆 ${offer.points}</div>
+                </div>
+            </div>
+            <div class="offer-actions">
+                ${offer.dlUrl ? `<button class="btn btn-dl" data-url="${offer.dlUrl}" data-name="${offer.name}">📱 Installer</button>` : ''}
+                <button class="btn btn-track" data-url="#" data-name="${offer.name}">🎯 Go</button>
+            </div>
+        </div>
+    `).join('');
+    
+    document.querySelectorAll('.btn-dl').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const url = btn.getAttribute('data-url');
+            const name = btn.getAttribute('data-name');
+            if (url) {
+                await registerOfferClick(name);
+                window.open(url, '_blank');
+            }
+        });
+    });
+}
+
+async function registerOfferClick(offerName) {
+    if (!userDocRef) return;
+    await updateDoc(userDocRef, {
+        clickedOffers: arrayUnion({ name: offerName, date: new Date().toISOString() })
+    });
+    showToast(`✅ Offre "${offerName}" enregistrée`);
+}
+
+function openOffersPopup() {
+    renderOffersPopup();
+    document.getElementById('offersPopup').classList.add('active');
+}
+
+async function renderGames() {
+    const container = document.getElementById('gamesContainer');
+    if (!container) return;
+    container.innerHTML = GAMES.map(g => `
+        <div class="post-card">
+            <div class="post-header">
+                <div class="avatar">${g.avatar}</div>
+                <div class="post-meta">
+                    <h4>${g.name}</h4>
+                    <span><i class="fas fa-calendar-alt"></i> ${g.duration}</span>
+                </div>
+            </div>
+            <img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy">
+            <button class="gain-btn" data-game="${g.name}">
+                <i class="fas fa-play-circle"></i> Jouer et gagner <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    `).join('');
+    
+    document.querySelectorAll('.gain-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const uid = await getUserUniqueId();
+            if (uid) {
+                showTypewriterModal(() => {
+                    window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uid}`, '_blank');
+                });
+            } else {
+                showToast("Erreur ID utilisateur", true);
+            }
+        });
+    });
+}
+
+async function getBalanceValue() {
+    if (!userDocRef) return 0;
+    const snap = await getDoc(userDocRef);
+    return snap.exists() ? (snap.data().balance || 0) : 0;
+}
+
+async function showBalance() {
+    let b = await getBalanceValue();
+    showToast(`💰 Solde : ${b.toFixed(4)} $`);
+}
+
+async function loadCapMessage() {
+    if (!userDocRef) return;
+    const snap = await getDoc(userDocRef);
+    const cap = snap.data()?.capDuJour || "📊 CAP DU JOUR\n\nJouer aux jeux\nInviter des amis\nBonne journée !";
+    document.getElementById('capMessage').innerHTML = cap.replace(/\n/g, '<br>');
+}
+
+async function loadProfile() {
+    const snap = await getDoc(userDocRef);
+    const d = snap.data();
+    document.getElementById('profileEmail').innerText = d.email || '-';
+    document.getElementById('profileNetuberCode').innerText = d.code || 'Non promu';
+}
+
+async function loadBonusData() {
+    const snap = await getDoc(userDocRef);
+    const d = snap.data();
+    const code = d.invitationCode || 'Génération...';
+    document.getElementById('invitationCode').value = code;
+    document.getElementById('bonusEarned').innerText = `${(d.bonusEarnings || 0).toFixed(4)} $`;
+    document.getElementById('invitedCount').innerText = d.invitedCount || 0;
+}
+
+async function loadTickets() {
+    const snap = await getDoc(userDocRef);
+    const tickets = snap.data()?.ticketsList || [];
+    const container = document.getElementById('ticketsListContainer');
+    if (tickets.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:#b0b3b8;">Aucun ticket</p>';
+        return;
+    }
+    container.innerHTML = tickets.map(t => `
+        <div style="background:#2d2e2f;padding:10px;border-radius:8px;margin-bottom:8px;">
+            <strong>${escapeHtml(t.subject)}</strong><br>
+            Statut: ${t.status === 'ouvert' ? '🟡 Ouvert' : '🟢 Résolu'}<br>
+            <small>${new Date(t.date).toLocaleDateString()}</small>
+        </div>
+    `).join('');
+}
+
+async function createTicket(subject, message) {
+    if (!userDocRef) return;
+    const snap = await getDoc(userDocRef);
+    const tickets = snap.data()?.ticketsList || [];
+    const newTicket = {
+        id: Date.now().toString(),
+        subject: subject,
+        message: message,
+        status: 'ouvert',
+        date: new Date().toISOString()
+    };
+    await updateDoc(userDocRef, { ticketsList: [...tickets, newTicket] });
+    showToast("✅ Ticket envoyé");
+    loadTickets();
+}
+
+async function loadWithdrawBalance() {
+    const balance = await getBalanceValue();
+    document.getElementById('currentBalanceDisplay').innerText = `${balance.toFixed(4)} $`;
+}
+
+async function submitWithdraw() {
+    const amount = parseFloat(document.getElementById('withdrawAmount').value);
+    let wallet = document.getElementById('walletAddress').value.trim();
+    
+    if (!selectedMethod) { showToast("Sélectionnez une méthode", true); return; }
+    if (isNaN(amount) || amount < 1) { showToast("Minimum 1$", true); return; }
+    if (!wallet) { showToast("Numéro requis", true); return; }
+    
+    const snap = await getDoc(userDocRef);
+    const balance = snap.data()?.balance || 0;
+    if (amount > balance) { showToast("Solde insuffisant", true); return; }
+    
+    await addDoc(collection(db, "withdraw"), {
+        userId: currentUser.uid,
+        amount: amount,
+        method: selectedMethod,
+        phone: wallet,
+        status: "pending",
+        date: new Date().toISOString()
+    });
+    
+    await updateDoc(userDocRef, { balance: increment(-amount) });
+    showToast("✅ Demande envoyée");
+    closeModal('withdrawModal');
+    document.getElementById('withdrawAmount').value = '';
+    document.getElementById('walletAddress').value = '';
+}
+
+async function initUser(user) {
+    if (!user) return;
+    currentUser = user;
+    userDocRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userDocRef);
+    if (!snap.exists()) {
+        await setDoc(userDocRef, {
+            email: user.email || "",
+            balance: 0,
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString(),
+            invitationCode: "NX" + Math.random().toString(36).substring(2, 10).toUpperCase(),
+            clickedOffers: [],
+            ticketsList: [],
+            capDuJour: "📊 CAP DU JOUR\n\nJouer aux jeux et gagner\nInviter des amis et gagner\nBonne journée sur NeTubeX !"
+        });
+    } else {
+        await updateDoc(userDocRef, { lastLogin: new Date().toISOString() });
+    }
+    await renderGames();
+}
+
+// Event listeners
+document.getElementById('balanceFloatBtn')?.addEventListener('click', () => showBalance());
+document.getElementById('iframeFloatBtn')?.addEventListener('click', async () => {
+    const uid = await getUserUniqueId();
+    if (uid) {
+        showTypewriterModal(() => {
+            window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uid}`, '_blank');
+        });
+    } else showToast("Erreur ID", true);
+});
+document.getElementById('geminiFloatBtn')?.addEventListener('click', async () => {
+    const uid = await getUserUniqueId();
+    if (uid) {
+        showTypewriterModal(() => {
+            window.open(`https://gemiwall.com/69f304688bb8875fc339fe24/${uid}`, '_blank');
+        });
+    } else showToast("Erreur ID", true);
+});
+document.getElementById('plusBtn')?.addEventListener('click', () => openOffersPopup());
+document.getElementById('closeOffersBtn')?.addEventListener('click', () => document.getElementById('offersPopup').classList.remove('active'));
+document.getElementById('menuFloatBtn')?.addEventListener('click', () => document.getElementById('menuFloating').classList.toggle('active'));
+document.getElementById('menuCapBtn')?.addEventListener('click', async () => { await loadCapMessage(); document.getElementById('capModal').classList.add('active'); document.getElementById('menuFloating').classList.remove('active'); });
+document.getElementById('menuProfileBtn')?.addEventListener('click', async () => { await loadProfile(); document.getElementById('profileModal').classList.add('active'); document.getElementById('menuFloating').classList.remove('active'); });
+document.getElementById('menuTicketsBtn')?.addEventListener('click', async () => { await loadTickets(); document.getElementById('ticketsModal').classList.add('active'); document.getElementById('menuFloating').classList.remove('active'); });
+document.getElementById('menuBonusBtn')?.addEventListener('click', async () => { await loadBonusData(); document.getElementById('bonusModal').classList.add('active'); document.getElementById('menuFloating').classList.remove('active'); });
+document.getElementById('menuWithdrawBtn')?.addEventListener('click', async () => { await loadWithdrawBalance(); document.getElementById('withdrawModal').classList.add('active'); document.getElementById('menuFloating').classList.remove('active'); });
+document.getElementById('menuLogoutBtn')?.addEventListener('click', () => { document.getElementById('menuFloating').classList.remove('active'); document.getElementById('confirmLogoutModal').classList.add('active'); });
+
+document.getElementById('closeCapModal')?.addEventListener('click', () => closeModal('capModal'));
+document.getElementById('closeCapFooterBtn')?.addEventListener('click', () => closeModal('capModal'));
+document.getElementById('closeProfileModal')?.addEventListener('click', () => closeModal('profileModal'));
+document.getElementById('cancelProfileBtn')?.addEventListener('click', () => closeModal('profileModal'));
+document.getElementById('closeTicketsModal')?.addEventListener('click', () => closeModal('ticketsModal'));
+document.getElementById('cancelTicketsBtn')?.addEventListener('click', () => closeModal('ticketsModal'));
+document.getElementById('closeBonusModal')?.addEventListener('click', () => closeModal('bonusModal'));
+document.getElementById('cancelBonusBtn')?.addEventListener('click', () => closeModal('bonusModal'));
+document.getElementById('closeWithdrawModal')?.addEventListener('click', () => closeModal('withdrawModal'));
+document.getElementById('cancelWithdrawBtn')?.addEventListener('click', () => closeModal('withdrawModal'));
+document.getElementById('closeLogoutModal')?.addEventListener('click', () => closeModal('confirmLogoutModal'));
+document.getElementById('cancelLogoutBtn')?.addEventListener('click', () => closeModal('confirmLogoutModal'));
+
+document.getElementById('updatePasswordBtn')?.addEventListener('click', async () => {
+    const np = document.getElementById('newPassword').value;
+    if (np) {
+        if (np.length < 6) { showToast("6 caractères minimum", true); return; }
+        try { await updatePassword(currentUser, np); showToast("Mot de passe mis à jour"); document.getElementById('newPassword').value = ''; } 
+        catch(e) { showToast("Erreur", true); }
+    } else showToast("Aucun changement");
+});
+document.getElementById('newTicketBtn')?.addEventListener('click', () => {
+    const sub = prompt("Sujet du ticket");
+    const msg = prompt("Message");
+    if (sub && msg) createTicket(sub, msg);
+});
+document.getElementById('copyCodeBtn')?.addEventListener('click', () => {
+    const code = document.getElementById('invitationCode').value;
+    navigator.clipboard.writeText(code);
+    showToast("Code copié !");
+});
+document.getElementById('submitWithdrawBtn')?.addEventListener('click', submitWithdraw);
+document.getElementById('confirmLogoutBtn')?.addEventListener('click', async () => { closeModal('confirmLogoutModal'); await signOut(auth); window.location.href = "login.html"; });
+
+document.querySelectorAll('.method-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+        document.querySelectorAll('.method-option').forEach(o => o.classList.remove('selected-airtel', 'selected-orange'));
+        if (opt.dataset.method === 'airtel_money') opt.classList.add('selected-airtel');
+        else if (opt.dataset.method === 'orange_money') opt.classList.add('selected-orange');
+        selectedMethod = opt.dataset.method;
+    });
+});
+
+onAuthStateChanged(auth, async (user) => {
+    if (user) { await initUser(user); } 
+    else { window.location.href = "login.html"; }
+});
 </script>
 </body>
 </html>
