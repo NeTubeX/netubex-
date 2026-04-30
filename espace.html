@@ -2,84 +2,85 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
-<title>NeTubeX · Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0, shrink-to-fit=no">
+<title>NeTubeX · Dashboard Netuber</title>
 <link rel="icon" type="image/png" href="https://netubex.github.io/netubex-/favicon.png.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
-body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;min-height:100vh;overflow-x:hidden;overflow-y:auto;}
-.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;}
-@keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
-.header{background:#0f1a2f;border-bottom:1px solid #1e2a45;padding:0.5rem 1rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
-.logo{display:flex;align-items:center;gap:8px;cursor:default;}
-.logo img{height:32px;width:auto;}
-.logo h1{font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,#e2e8f0,#3b82f6);-webkit-background-clip:text;background-clip:text;color:transparent;}
+body{background:#0a1628;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#e2e8f0;padding-top:70px;overflow-x:hidden;}
+.rainbow-line{height:3px;background:linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbow 3s linear infinite;position:fixed;top:0;left:0;right:0;z-index:101;}
+@keyframes rainbow{0%{background-position:0%;}100%{background-position:200%;}}
+.header{position:fixed;top:3px;left:0;right:0;background:#0f1a2f;border-bottom:1px solid #1e2a45;padding:0.5rem 1rem;display:flex;justify-content:space-between;align-items:center;z-index:100;transition:transform 0.25s;}
+.logo{display:flex;align-items:center;gap:8px;}
+.logo img{height:40px;width:auto;}
+.logo h1{font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,#e2e8f0,#3b82f6);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .logo h1 span{color:#3b82f6;}
-.header-right{display:flex;align-items:center;gap:12px;}
-.online-status{display:flex;align-items:center;gap:6px;background:rgba(16,185,129,0.15);padding:6px 12px;border-radius:40px;font-size:0.7rem;font-weight:500;color:#10b981;}
-.blinking-dot{width:8px;height:8px;background-color:#10b981;border-radius:50%;animation:blink 1.2s ease-in-out infinite;}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.user-info{background:#1e2a45;padding:6px 12px;border-radius:20px;font-size:0.7rem;display:flex;align-items:center;gap:6px;}
+.online-status{display:flex;align-items:center;gap:6px;background:rgba(16,185,129,0.15);padding:3px 10px;border-radius:20px;font-size:0.65rem;color:#10b981;}
+.blinking-dot{width:6px;height:6px;background:#10b981;border-radius:50%;animation:blink 1.2s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
-.balance-header{background:#1e3a5f;padding:8px 16px;border-radius:30px;font-size:0.9rem;font-weight:700;color:#60a5fa;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
-.balance-header span{color:#60a5fa;}
-.section{padding:0 1rem;margin-bottom:1.5rem;}
-.section-title{font-size:1rem;font-weight:700;margin-bottom:0.8rem;display:flex;align-items:center;gap:8px;color:#e2e8f0;}
-.panel-grid{display:flex;gap:12px;margin-bottom:1.5rem;}
-.panel-card{flex:1;background:#0f1a2f;border-radius:16px;padding:1rem;text-align:center;cursor:pointer;border:1px solid #1e2a45;transition:all 0.1s;box-shadow:0 4px 12px rgba(0,0,0,0.2);}
-.panel-card:active{transform:scale(0.97);background:#1a2a45;box-shadow:0 2px 4px rgba(0,0,0,0.3);}
-.panel-card i{font-size:1.8rem;margin-bottom:8px;color:#3b82f6;}
-.panel-card .panel-label{font-weight:700;font-size:0.85rem;}
-.offers-scroll{overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding-bottom:8px;scrollbar-width:thin;}
-.offers-wrapper{display:inline-flex;gap:12px;padding:4px 0;}
-.offer-card{display:inline-flex;flex-direction:column;width:160px;background:#0f1a2f;border-radius:16px;overflow:hidden;border:1px solid #1e2a45;cursor:pointer;transition:all 0.1s;box-shadow:0 2px 6px rgba(0,0,0,0.2);}
-.offer-card:active{transform:scale(0.97);box-shadow:0 1px 2px rgba(0,0,0,0.2);}
-.offer-card img{width:100%;height:140px;object-fit:cover;display:block;}
-.offer-info{padding:10px;}
-.offer-name{font-size:0.8rem;font-weight:700;margin-bottom:4px;white-space:normal;word-break:break-word;}
-.offer-points{font-size:0.7rem;color:#3b82f6;font-weight:600;}
-.offer-instruction{font-size:0.6rem;color:#10b981;margin-top:6px;white-space:normal;word-break:break-word;background:#1a2a45;padding:4px 6px;border-radius:6px;text-align:center;}
-.games-list{display:flex;flex-direction:column;gap:1px;width:100%;background:#0a1628;}
-.post-card{background:#0f1a2f;overflow:hidden;width:100%;border-bottom:1px solid #1e2a45;transition:0.2s;}
+.feed-container{max-width:680px;margin:0 auto;padding-bottom:1rem;}
+.games-list{display:flex;flex-direction:column;gap:8px;padding:0 1rem;}
+.post-card{background:#0f1a2f;border-radius:12px;overflow:hidden;border:1px solid #1e2a45;}
 .post-card:active{background:#1a2a45;}
-.post-header{display:flex;align-items:center;gap:14px;padding:1rem;}
-.avatar{width:52px;height:52px;background:#1a2a45;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;}
-.post-meta h4{font-size:1rem;font-weight:800;margin-bottom:4px;}
-.post-meta span{font-size:0.7rem;color:#94a3b8;}
-.post-image{width:100%;height:auto;min-height:200px;object-fit:cover;display:block;}
-.gain-btn{background:#1e3a5f;border:1px solid #3b82f6;padding:14px;font-weight:700;color:#3b82f6;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:12px;transition:all 0.1s;font-size:0.9rem;}
-.gain-btn:active{transform:scale(0.98);background:#2a4a6f;color:#60a5fa;}
-.floating-group{position:fixed;bottom:30px;right:20px;z-index:200;}
-.float-item{background:#0f1a2f;width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;color:#e2e8f0;border:1px solid #1e2a45;transition:all 0.1s;box-shadow:0 4px 12px rgba(0,0,0,0.3);}
-.float-item:active{transform:scale(0.95);background:#1a2a45;}
-.menu-floating{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.95);width:280px;background:#0f1a2f;border-radius:24px;border:1px solid #1e2a45;z-index:1001;display:none;box-shadow:0 20px 40px rgba(0,0,0,0.5);opacity:0;transition:opacity 0.3s ease, transform 0.3s ease;}
+.post-top{padding:12px;display:flex;gap:10px;}
+.avatar{width:44px;height:44px;border-radius:12px;overflow:hidden;flex-shrink:0;background:#1e2a45;display:flex;align-items:center;justify-content:center;font-size:1.5rem;}
+.avatar img{width:100%;height:100%;object-fit:cover;}
+.post-right{flex:1;}
+.post-name{font-size:0.9rem;font-weight:700;margin-bottom:2px;}
+.post-sub{font-size:0.65rem;color:#94a3b8;}
+.post-description{font-size:0.75rem;color:#cbd5e1;margin-top:6px;line-height:1.4;}
+.image-wrapper{display:block;cursor:pointer;position:relative;}
+.post-image{width:100%;height:auto;min-height:160px;object-fit:cover;display:block;}
+.image-overlay{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);padding:4px 10px;border-radius:20px;font-size:0.65rem;display:flex;align-items:center;gap:4px;}
+.post-stats{padding:10px 12px;display:flex;justify-content:space-between;border-top:1px solid #1e2a45;font-size:0.7rem;}
+.post-stats .earning{color:#3b82f6;font-weight:600;}
+.floating-group{position:fixed;bottom:30px;right:20px;display:flex;flex-direction:column;gap:12px;z-index:200;}
+.float-item{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:800;cursor:pointer;transition:all 0.1s;color:#fff;border:none;box-shadow:0 6px 12px rgba(0,0,0,0.3);}
+.float-item:active{transform:scale(0.94);}
+.float-item.panel-a{background:linear-gradient(145deg,#10b981,#047857);}
+.float-item.panel-b{background:linear-gradient(145deg,#3b82f6,#1e3a8a);}
+.float-item.plus-btn{background:linear-gradient(145deg,#8b5cf6,#6d28d9);font-size:1.8rem;font-weight:400;}
+.float-item.menu-btn{background:linear-gradient(145deg,#3b82f6,#2563eb);font-size:1.3rem;}
+.menu-badge{position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;border-radius:50%;min-width:18px;height:18px;font-size:0.6rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+.fly-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:2000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:visibility 0s linear 0.25s,opacity 0.25s;}
+.fly-popup.active{visibility:visible;opacity:1;transition:visibility 0s linear 0s,opacity 0.25s;}
+.fly-popup-inner{background:#0f1a2f;border-radius:28px;padding:1.5rem;text-align:center;max-width:320px;width:85%;border:1px solid #1e2a45;transform:scale(0.2) translateY(50px);opacity:0;transition:transform 0.4s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;}
+.fly-popup.active .fly-popup-inner{transform:scale(1) translateY(0);opacity:1;}
+.popup-letter{font-size:3rem;font-weight:800;width:60px;height:60px;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;}
+.fly-popup-inner h3{font-size:1.3rem;margin-bottom:0.8rem;}
+.fly-popup-inner p{color:#94a3b8;margin-bottom:1.2rem;font-size:0.85rem;}
+.popup-buttons{display:flex;gap:12px;justify-content:center;}
+.popup-buttons button{padding:10px 24px;border-radius:40px;font-weight:600;font-size:0.85rem;cursor:pointer;border:none;transition:transform 0.1s;}
+.popup-buttons button:active{transform:scale(0.96);}
+.btn-yes-a{background:#10b981;color:#fff;}
+.btn-yes-b{background:#3b82f6;color:#fff;}
+.btn-no{background:#1e2a45;color:#e2e8f0;}
+.menu-floating{position:fixed;top:50%;left:50%;width:280px;background:#0f1a2f;border-radius:20px;border:1px solid #1e2a45;z-index:1001;display:none;opacity:0;transform:translate(-50%,-50%) scale(0.9);transition:all 0.3s ease;box-shadow:0 20px 40px rgba(0,0,0,0.5);}
 .menu-floating.active{display:block;opacity:1;transform:translate(-50%,-50%) scale(1);}
-.menu-header{padding:15px;border-bottom:1px solid #1e2a45;background:#1a2a45;border-radius:24px 24px 0 0;color:#fff;font-weight:600;}
-.menu-item{padding:12px 20px;display:flex;align-items:center;gap:12px;cursor:pointer;border-bottom:1px solid #1e2a45;color:#e2e8f0;transition:0.1s;}
+.menu-header{padding:15px;border-bottom:1px solid #1e2a45;background:#1a2a45;border-radius:20px 20px 0 0;font-weight:700;}
+.menu-item{padding:12px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;border-bottom:1px solid #1e2a45;transition:background 0.1s;}
 .menu-item:active{background:#1a2a45;}
 .menu-item i{width:24px;color:#3b82f6;}
 .menu-item.danger{color:#ef4444;}
 .menu-item.danger i{color:#ef4444;}
-.toast-notification{position:fixed;bottom:30px;left:20px;right:20px;background:#0f1a2f;border-left:4px solid #10b981;color:#fff;padding:12px 16px;border-radius:12px;font-size:0.8rem;z-index:10000;animation:slideUp 0.2s;max-width:400px;margin:0 auto;}
+.toast-container{position:fixed;top:80px;right:16px;z-index:10000;display:flex;flex-direction:column;gap:10px;max-width:320px;}
+.toast{background:#0f1a2f;border-left:4px solid;border-radius:12px;padding:12px 16px;font-size:0.75rem;animation:slideIn 0.3s ease;cursor:pointer;backdrop-filter:blur(10px);}
+.toast-success{border-left-color:#10b981;}
 .toast-error{border-left-color:#ef4444;}
-@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:3000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:all 0.2s ease;}
-.modal-overlay.active{visibility:visible;opacity:1;}
-.modal-container{background:#0f1a2f;border-radius:20px;max-width:500px;width:90%;overflow:hidden;max-height:85vh;overflow-y:auto;border:1px solid #1e2a45;}
-.modal-header{padding:15px 18px;border-bottom:1px solid #1e2a45;display:flex;justify-content:space-between;align-items:center;}
-.modal-header h3{font-size:1rem;color:#3b82f6;}
-.modal-close{background:#1e2a45;border:none;width:30px;height:30px;border-radius:8px;color:#fff;cursor:pointer;}
-.modal-body{padding:18px;}
-.modal-footer{padding:12px 18px;border-top:1px solid #1e2a45;display:flex;justify-content:flex-end;gap:10px;}
-.btn-confirm{background:#3b82f6;color:#fff;border:none;padding:8px 20px;border-radius:30px;font-weight:600;cursor:pointer;}
-.btn-cancel{background:#1e2a45;color:#fff;border:none;padding:8px 20px;border-radius:30px;cursor:pointer;}
-.input-group{margin-bottom:12px;}
-.input-group label{display:block;color:#94a3b8;font-size:0.7rem;margin-bottom:4px;}
-.input-group input,.input-group select,.input-group textarea{width:100%;padding:10px;background:#1a2a45;border:1px solid #1e2a45;border-radius:10px;color:#fff;font-family:inherit;}
-.method-option{padding:10px;border-radius:10px;cursor:pointer;margin-bottom:6px;background:#1a2a45;}
-.method-option.selected-airtel{background:rgba(226,0,0,0.25);border:2px solid #E20000;}
-.method-option.selected-orange{background:rgba(255,121,0,0.25);border:2px solid #FF7900;}
-.ticket-message{background:#1a2a45;padding:10px;border-radius:10px;margin-bottom:8px;}
+@keyframes slideIn{from{opacity:0;transform:translateX(50px);}to{opacity:1;transform:translateX(0);}}
+.slide-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:3000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:0.2s;}
+.slide-popup.active{visibility:visible;opacity:1;}
+.popup-left{background:#0f1a2f;border-radius:24px;max-width:450px;width:90%;padding:1.5rem;border:1px solid #1e2a45;text-align:center;}
+.tickets-list{max-height:400px;overflow-y:auto;margin:1rem 0;}
+.ticket-item{background:#1a2a45;border-radius:12px;padding:12px;margin-bottom:10px;text-align:left;}
+.ticket-subject{font-weight:600;margin:8px 0;padding:8px;background:#0f1a2f;border-radius:8px;font-size:0.8rem;}
+.ticket-status{font-size:0.65rem;padding:2px 8px;border-radius:12px;display:inline-block;}
+.status-ouvert{background:#1e3a5f;color:#60a5fa;}
+.status-resolu{background:#1a5c3a;color:#10b981;}
+.close-popup-btn{background:#1e2a45;border:none;padding:10px 24px;border-radius:40px;color:#fff;cursor:pointer;margin-top:10px;}
 .footer{background:#0f1a2f;border-top:1px solid #1e2a45;padding:0.8rem;text-align:center;margin-top:0.5rem;}
 .footer p{color:#64748b;font-size:0.6rem;}
 </style>
@@ -91,297 +92,269 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 <header class="header">
     <div class="logo"><img src="https://netubex.github.io/netubex-/favicon.png.png" alt=""><h1>Ne<span>TubeX</span></h1></div>
     <div class="header-right">
+        <div class="user-info"><i class="fas fa-code"></i> <span id="userCodeDisplay">Chargement...</span></div>
         <div class="online-status"><span class="blinking-dot"></span><span>En ligne</span></div>
-        <div class="balance-header" id="balanceHeader">$ <span id="balanceAmount">0.00</span></div>
     </div>
 </header>
 
-<!-- PANEL A & B -->
-<div class="section">
-    <div class="section-title"><i class="fas fa-gem"></i> Panels rémunérateurs</div>
-    <div class="panel-grid">
-        <div class="panel-card" id="panelA"><i class="fas fa-clock"></i><div class="panel-label">PANEL A</div></div>
-        <div class="panel-card" id="panelB"><i class="fab fa-google"></i><div class="panel-label">PANEL B</div></div>
-    </div>
+<div class="feed-container">
+    <div class="games-list" id="gamesContainer"></div>
 </div>
 
-<!-- OFFRES EXCLUSIVES -->
-<div class="section">
-    <div class="section-title"><i class="fas fa-gift"></i> Offres exclusives</div>
-    <div class="offers-scroll"><div class="offers-wrapper" id="offersWrapper"></div></div>
-</div>
-
-<!-- JEUX -->
-<div class="games-list" id="gamesContainer"></div>
-
-<footer class="footer"><p><i class="fas fa-copyright"></i> NeTubeX 2026</p></footer>
-
-<!-- FLOATING MENU -->
 <div class="floating-group">
-    <div class="float-item" id="menuFloatBtn"><i class="fas fa-bars"></i></div>
+    <div class="float-item plus-btn" id="plusBtn">+</div>
+    <div class="float-item panel-a" id="panelAbtn">A</div>
+    <div class="float-item panel-b" id="panelBbtn">B</div>
+    <div class="float-item menu-btn" id="menuFloatBtn"><i class="fas fa-bars"></i></div>
 </div>
 
 <div id="menuFloating" class="menu-floating">
-    <div class="menu-header"><strong><i class="fas fa-bars"></i> Menu</strong></div>
-    <div class="menu-item" id="menuCapBtn"><i class="fas fa-chart-line"></i> CAP du jour</div>
-    <div class="menu-item" id="menuProfileBtn"><i class="fas fa-user"></i> Mon profil</div>
+    <div class="menu-header"><strong>Menu NeTubeX</strong></div>
     <div class="menu-item" id="menuTicketsBtn"><i class="fas fa-ticket-alt"></i> Mes tickets</div>
-    <div class="menu-item" id="menuBonusBtn"><i class="fas fa-gift"></i> Bonus d'invitation</div>
-    <div class="menu-item" id="menuWithdrawBtn"><i class="fas fa-money-bill-wave"></i> Retirer</div>
+    <div class="menu-item" id="menuNewTicketBtn"><i class="fas fa-plus-circle"></i> Nouveau ticket</div>
+    <div class="menu-item" id="menuCapBtn"><i class="fas fa-chart-line"></i> Voir mes CAP</div>
     <div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div>
 </div>
 
-<!-- MODALS -->
-<div id="capModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-chart-line"></i> CAP du jour</h3><button class="modal-close" id="closeCapModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><p id="capMessage">Chargement...</p></div><div class="modal-footer"><button class="btn-cancel" id="closeCapFooterBtn">Fermer</button></div></div></div>
+<div id="flyPopup" class="fly-popup">
+    <div class="fly-popup-inner">
+        <div class="popup-letter" id="popupLetter">A</div>
+        <h3 id="popupTitle">Panel A</h3>
+        <p>Votre session dans l'espace de rémunération digitale va commencer...</p>
+        <p style="font-size:0.75rem; margin-bottom:1rem;">Êtes-vous sûr de vouloir continuer ?</p>
+        <div class="popup-buttons" id="popupButtons"></div>
+    </div>
+</div>
 
-<div id="profileModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-user"></i> Mon profil</h3><button class="modal-close" id="closeProfileModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div style="background:#1a2a45;border-radius:12px;padding:12px;margin-bottom:12px;"><p><strong>Email :</strong> <span id="profileEmail">-</span></p><p style="margin-top:8px;"><strong>Code :</strong> <span id="profileCode">-</span></p></div><div class="input-group"><label>Nouveau mot de passe</label><input type="password" id="newPassword" placeholder="Laisser vide"></div></div><div class="modal-footer"><button class="btn-confirm" id="updatePasswordBtn">Mettre à jour</button><button class="btn-cancel" id="cancelProfileBtn">Fermer</button></div></div></div>
+<div id="ticketFormPopup" class="slide-popup">
+    <div class="popup-left">
+        <i class="fas fa-ticket-alt" style="font-size:2rem;color:#3b82f6;"></i>
+        <h3>📬 Nouveau ticket</h3>
+        <select id="ticketSubjectSelect" style="width:100%;padding:12px;margin:12px 0;border-radius:12px;background:#1a2a45;border:1px solid #1e2a45;color:#fff;">
+            <option value="">-- Sélectionnez un sujet --</option>
+            <option value="🔐 Je n'arrive pas à me connecter au Panel A">🔐 Je n'arrive pas à me connecter au Panel A</option>
+            <option value="🔐 Je n'arrive pas à me connecter au Panel B">🔐 Je n'arrive pas à me connecter au Panel B</option>
+            <option value="🎮 Les jeux ne se chargent pas">🎮 Les jeux ne se chargent pas</option>
+            <option value="💰 Problème de paiement">💰 Problème de paiement</option>
+        </select>
+        <select id="ticketPriority" style="width:100%;padding:12px;margin:12px 0;border-radius:12px;background:#1a2a45;border:1px solid #1e2a45;color:#fff;">
+            <option value="basse">🟢 Priorité basse</option>
+            <option value="moyenne" selected>🟠 Priorité moyenne</option>
+            <option value="haute">🔴 Priorité haute</option>
+        </select>
+        <div style="display:flex;gap:10px;justify-content:center;">
+            <button class="close-popup-btn" id="submitTicketBtn" style="background:#3b82f6;">📨 Envoyer</button>
+            <button class="close-popup-btn" id="closeTicketFormBtn">❌ Annuler</button>
+        </div>
+    </div>
+</div>
 
-<div id="ticketsModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Mes tickets</h3><button class="modal-close" id="closeTicketsModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><button class="btn-confirm" id="newTicketBtn" style="width:100%;margin-bottom:12px;">+ Nouveau ticket</button><div id="ticketsListContainer"></div></div><div class="modal-footer"><button class="btn-cancel" id="cancelTicketsBtn">Fermer</button></div></div></div>
+<div id="ticketsListPopup" class="slide-popup">
+    <div class="popup-left">
+        <i class="fas fa-ticket-alt" style="font-size:2rem;color:#3b82f6;"></i>
+        <h3>📋 Mes tickets</h3>
+        <div id="ticketsListContainer" class="tickets-list"></div>
+        <button class="close-popup-btn" id="closeTicketsPopupBtn">🔒 Fermer</button>
+    </div>
+</div>
 
-<div id="newTicketModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Créer un ticket</h3><button class="modal-close" id="closeNewTicketModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Type</label><select id="ticketTypeSelect"><option value="">-- Sélectionnez --</option><option value="Problème technique">🔧 Problème technique</option><option value="Retrait">💰 Retrait</option><option value="Compte">🔐 Compte</option><option value="Autre">❓ Autre</option></select></div><div class="input-group"><label>Sujet</label><input type="text" id="ticketSubject" placeholder="Résumé"></div><div class="input-group"><label>Message</label><textarea id="ticketMessage" rows="3" placeholder="Décrivez..."></textarea></div></div><div class="modal-footer"><button class="btn-confirm" id="submitTicketBtn">Envoyer</button><button class="btn-cancel" id="cancelNewTicketBtn">Annuler</button></div></div></div>
+<div id="capPopup" class="slide-popup">
+    <div class="popup-left">
+        <i class="fas fa-chart-line" style="font-size:2rem;color:#3b82f6;"></i>
+        <h3>📋 Mes CAP</h3>
+        <div id="capsListContainer" class="tickets-list"></div>
+        <button class="close-popup-btn" id="closeCapBtn">🔒 Fermer</button>
+    </div>
+</div>
 
-<div id="bonusModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Bonus invitation</h3><button class="modal-close" id="closeBonusModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Votre code</label><div style="display:flex;gap:8px;"><input type="text" id="invitationCode" readonly style="flex:1;"><button class="btn-confirm" id="copyCodeBtn" style="padding:8px 12px;">Copier</button></div></div><div style="background:#1a2a45;border-radius:12px;padding:12px;margin-top:12px;"><p>💰 Bonus: <strong id="bonusEarned">0$</strong></p><p>👥 Invités: <strong id="invitedCount">0</strong></p></div></div><div class="modal-footer"><button class="btn-cancel" id="cancelBonusBtn">Fermer</button></div></div></div>
+<div id="confirmPopup" class="slide-popup">
+    <div class="popup-left">
+        <i class="fas fa-sign-out-alt" style="font-size:2rem;color:#ef4444;"></i>
+        <h3>🚪 Déconnexion</h3>
+        <p>Quitter votre session ?</p>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:15px;">
+            <button class="close-popup-btn" id="confirmYes" style="background:#10b981;">✅ Oui</button>
+            <button class="close-popup-btn" id="confirmNo" style="background:#3a3b3c;">❌ Non</button>
+        </div>
+    </div>
+</div>
 
-<div id="withdrawModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Retrait</h3><button class="modal-close" id="closeWithdrawModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div style="background:#1a2a45;padding:10px;border-radius:12px;margin-bottom:12px;text-align:center;"><strong id="currentBalanceDisplay">0.00 $</strong></div><div class="input-group"><label>Montant (min 1$)</label><input type="number" id="withdrawAmount" min="1" step="0.01"></div><div class="input-group"><label>Méthode</label><div class="method-option" data-method="airtel_money">Airtel Money</div><div class="method-option" data-method="orange_money">Orange Money</div></div><div class="input-group"><label>Téléphone</label><input type="tel" id="walletAddress" placeholder="+243 XX XXX XXXX"></div></div><div class="modal-footer"><button class="btn-confirm" id="submitWithdrawBtn">Valider</button><button class="btn-cancel" id="cancelWithdrawBtn">Annuler</button></div></div></div>
+<footer class="footer"><p>© Ne<span style="color:#3b82f6;">TubeX</span> 2026</p></footer>
 
-<div id="confirmLogoutModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Déconnexion</h3><button class="modal-close" id="closeLogoutModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><p>Êtes-vous sûr ?</p></div><div class="modal-footer"><button class="btn-confirm" id="confirmLogoutBtn">Oui</button><button class="btn-cancel" id="cancelLogoutBtn">Non</button></div></div></div>
-
+<script type="importmap">
+{"imports":{"firebase/app":"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js","firebase/auth":"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js","firebase/firestore":"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"}}
+</script>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, where, getDocs, increment, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getFirestore, doc, getDoc, updateDoc, arrayUnion, onSnapshot, collection, addDoc } from "firebase/firestore";
 
 const firebaseConfig = {apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-let currentUser = null, userDocRef = null, selectedMethod = null;
+let currentUser = null, userDocRef = null, currentTickets = [], currentCaps = [], pendingPanel = null, pendingTargetUrl = null;
 
-// Offres exclusives avec URLs de tracking (contiennent {USER_ID})
-const OFFERS = [
-    {id:1, name:"2048 Blast", points:"1 000 pts", instruction:"Installer et jouer 5min", img:"https://netubex.github.io/netubex-/merge.jpg", trackUrl:"https://api.gemiwall.com/api/offers/click?offerId=MXGqYDhxzRNxs8asZgvPG&userId={USER_ID}&placementId=69f304688bb8875fc339fe24"},
-    {id:2, name:"WhatsApp Business", points:"900 pts", instruction:"Installer et ouvrir", img:"https://netubex.github.io/netubex-/whatsapp.jpg", trackUrl:"https://api.gemiwall.com/api/offers/click?offerId=Y7bv7Z86RBa1KPp8YT-XB&userId={USER_ID}&placementId=69f304688bb8875fc339fe24"},
-    {id:3, name:"Instagram", points:"700 pts", instruction:"Installer et suivre 1 compte", img:"https://netubex.github.io/netubex-/instagram.jpg", trackUrl:"https://api.gemiwall.com/api/offers/click?offerId=V9Y_sI-9CLPEGvIiYsHwK&userId={USER_ID}&placementId=69f304688bb8875fc339fe24"},
-    {id:4, name:"TaskPrize", points:"54 700 pts", instruction:"S'inscrire et valider email", img:"https://netubex.github.io/netubex-/tasks.jpg", trackUrl:"https://api.gemiwall.com/api/offers/click?offerId=_6xzha9WpOqWfG7nYG-KQ&userId={USER_ID}&placementId=69f304688bb8875fc339fe24"}
+const games = [
+    {id:1, name:"The Grand Mafia", avatar:"👑", img:"https://netubex.github.io/netubex-/the-grand-mafia.webp", duration:"30j", earning:"217.18", description:"Jeu de stratégie mafieux. Construis ton empire."},
+    {id:2, name:"Grab A Toy", avatar:"🧸", img:"https://netubex.github.io/netubex-/grab-a-toy.png", duration:"30j", earning:"142.66", description:"Attrape un max de jouets avec précision."},
+    {id:3, name:"Wild Fish Explorer", avatar:"🐟", img:"https://netubex.github.io/netubex-/wild-fish.png", duration:"30j", earning:"137.37", description:"Explore les océans, capture des poissons rares."},
+    {id:4, name:"Sky Plunger", avatar:"🪂", img:"https://netubex.github.io/netubex-/sky-plunger.png", duration:"30j", earning:"109.42", description:"Chute libre à travers les cieux."}
 ];
 
-// Jeux (supprimé: Goblin Heist, Zombie Waves, Survivor Idle Run)
-const GAMES = [
-    {id:2, name:"Sky Plunger", avatar:"🪂", img:"https://netubex.github.io/netubex-/sky-plunger.png", duration:"30j"},
-    {id:4, name:"Wild Fish", avatar:"🐟", img:"https://netubex.github.io/netubex-/wild-fish.png", duration:"30j"},
-    {id:5, name:"Grab A Toy", avatar:"🧸", img:"https://netubex.github.io/netubex-/grab-a-toy.png", duration:"30j"},
-    {id:6, name:"Love Water", avatar:"💧", img:"https://netubex.github.io/netubex-/love-water.gif", duration:"30j"},
-    {id:8, name:"The Grand Mafia", avatar:"👑", img:"https://netubex.github.io/netubex-/the-grand-mafia.webp", duration:"30j"},
-    {id:9, name:"Dragon Farm", avatar:"🐉", img:"https://netubex.github.io/netubex-/dragon-farm.webp", duration:"30j"}
-];
+function showToast(message, type = 'success') {
+    let container = document.querySelector('.toast-container');
+    if(!container){container=document.createElement('div');container.className='toast-container';document.body.appendChild(container);}
+    let toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `<i class="fas ${type==='success'?'fa-check-circle':(type==='error'?'fa-exclamation-triangle':'fa-info-circle')}"></i> ${message}`;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
+}
 
-function showToast(msg, isError=false){let t=document.createElement('div');t.className=`toast-notification ${isError?'toast-error':''}`;t.innerHTML=`<i class="fas ${isError?'fa-exclamation-triangle':'fa-check-circle'}"></i> ${msg}`;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);}
-function closeModal(id){document.getElementById(id).classList.remove('active');}
+function renderGames() {
+    let container = document.getElementById('gamesContainer');
+    if(!container) return;
+    container.innerHTML = games.map(g => `
+        <div class="post-card">
+            <div class="post-top">
+                <div class="avatar">${g.avatar}</div>
+                <div class="post-right">
+                    <div class="post-name">${g.name}</div>
+                    <div class="post-sub">Jeu rémunérateur</div>
+                    <div class="post-description">${g.description}</div>
+                </div>
+            </div>
+            <div class="image-wrapper">
+                <img class="post-image" src="${g.img}" loading="lazy">
+                <div class="image-overlay"><i class="fas fa-play-circle"></i> Jouer</div>
+            </div>
+            <div class="post-stats">
+                <span><i class="fas fa-calendar-alt"></i> ${g.duration}</span>
+                <span class="earning"><i class="fas fa-coins"></i> ${g.earning}$</span>
+            </div>
+        </div>
+    `).join('');
+    document.querySelectorAll('.image-wrapper').forEach(wrapper => {
+        wrapper.addEventListener('click', async () => {
+            const uid = await getUserUniqueId();
+            if(uid) window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uid}`, '_blank');
+            else showToast("Erreur ID", "error");
+        });
+    });
+}
 
-// Récupère le uniqueId depuis Firestore (génère si inexistant)
-async function getUserUniqueId(){
+async function getUserUniqueId() {
     if(!currentUser) return null;
-    if(!userDocRef) return null;
     const snap = await getDoc(userDocRef);
     let uniqueId = snap.data()?.uniqueId;
-    if(!uniqueId){
+    if(!uniqueId) {
         uniqueId = "NX" + Math.random().toString(36).substring(2, 15).toUpperCase();
-        await updateDoc(userDocRef, { uniqueId: uniqueId });
-        showToast("✅ ID unique généré", false);
+        await updateDoc(userDocRef, { uniqueId });
     }
     return uniqueId;
 }
 
-async function getBalanceValue(){
-    if(!userDocRef) return 0;
-    const snap=await getDoc(userDocRef);
-    return snap.exists()?(snap.data().balance||0):0;
+function showFlyPopup(panel, letter, color, url) {
+    pendingPanel = panel;
+    pendingTargetUrl = url;
+    let popup = document.getElementById('flyPopup');
+    let letterDiv = document.getElementById('popupLetter');
+    let title = document.getElementById('popupTitle');
+    let btns = document.getElementById('popupButtons');
+    letterDiv.textContent = letter;
+    letterDiv.style.backgroundColor = color;
+    title.textContent = panel;
+    btns.innerHTML = `<button class="btn-yes-${letter === 'A' ? 'a' : 'b'}" id="confirmYesBtn">Oui</button><button class="btn-no" id="confirmNoBtn">Non</button>`;
+    popup.classList.add('active');
+    document.getElementById('confirmYesBtn')?.addEventListener('click', async () => {
+        if(pendingTargetUrl) window.open(pendingTargetUrl, '_blank');
+        document.getElementById('flyPopup').classList.remove('active');
+        pendingPanel = pendingTargetUrl = null;
+    }, { once: true });
+    document.getElementById('confirmNoBtn')?.addEventListener('click', () => {
+        document.getElementById('flyPopup').classList.remove('active');
+        pendingPanel = pendingTargetUrl = null;
+    }, { once: true });
 }
 
-async function updateBalanceDisplay(){
-    const bal=await getBalanceValue();
-    document.getElementById('balanceAmount').innerText=bal.toFixed(4);
-    document.getElementById('currentBalanceDisplay').innerText=bal.toFixed(4)+' $';
-}
-
-// Offres exclusives avec tracking (userId remplacé)
-async function renderOffers(){
-    const container=document.getElementById('offersWrapper');
-    const userId = await getUserUniqueId();
-    container.innerHTML=OFFERS.map(o=>{
-        let trackUrlWithId = o.trackUrl;
-        if(userId && trackUrlWithId){
-            trackUrlWithId = trackUrlWithId.replace(/{USER_ID}/g, userId);
-        }
-        return `<div class="offer-card" data-url="${trackUrlWithId||''}" data-name="${o.name}"><img src="${o.img}" alt="${o.name}" loading="lazy"><div class="offer-info"><div class="offer-name">${o.name}</div><div class="offer-points">🏆 ${o.points}</div><div class="offer-instruction">📋 ${o.instruction}</div></div></div>`;
-    }).join('');
-    document.querySelectorAll('.offer-card').forEach(card=>{
-        card.addEventListener('click',async()=>{
-            const url=card.dataset.url;
-            const name=card.dataset.name;
-            if(url){
-                await registerOfferClick(name);
-                window.open(url, '_blank');
-            }else{
-                showToast("Lien indisponible", true);
-            }
-        });
-    });
-}
-
-async function registerOfferClick(offerName){
-    if(!userDocRef) return;
-    await updateDoc(userDocRef,{clickedOffers:arrayUnion({name:offerName,date:new Date().toISOString()})});
-}
-
-// Jeux
-async function renderGames(){
-    const container=document.getElementById('gamesContainer');
-    container.innerHTML=GAMES.map(g=>`<div class="post-card"><div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span>${g.duration}</span></div></div><img class="post-image" src="${g.img}" loading="lazy"><button class="gain-btn" data-game="${g.name}"><i class="fas fa-play-circle"></i> Jouer au jeu rémunérateur</button></div>`).join('');
-    document.querySelectorAll('.gain-btn').forEach(btn=>{
-        btn.addEventListener('click',async()=>{
-            const uid = await getUserUniqueId();
-            if(uid){
-                window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uid}`, '_blank');
-            }else{
-                showToast("Erreur ID utilisateur", true);
-            }
-        });
-    });
-}
-
-// Panel A (Timewall) et Panel B (Gemini)
-async function handlePanel(url, name){
-    const uid = await getUserUniqueId();
-    if(uid){
-        window.open(url+uid, '_blank');
-    }else{
-        showToast("Erreur ID utilisateur", true);
-    }
+async function openOffersPopup() {
+    const uniqueId = await getUserUniqueId();
+    if(uniqueId) window.open(`https://api.gemiwall.com/api/offers/click?offerId=MXGqYDhxzRNxs8asZgvPG&userId=${uniqueId}&placementId=69f304688bb8875fc339fe24`, '_blank');
 }
 
 // Tickets
-async function loadTickets(){
-    const snap=await getDoc(userDocRef);
-    const tickets=snap.data()?.ticketsList||[];
-    const container=document.getElementById('ticketsListContainer');
-    if(tickets.length===0){container.innerHTML='<p style="text-align:center;color:#64748b;">Aucun ticket</p>';return;}
-    container.innerHTML=tickets.map(t=>`<div class="ticket-message"><strong>${escapeHtml(t.subject)}</strong><br>Statut: ${t.status}<br><small>${new Date(t.date).toLocaleDateString()}</small></div>`).join('');
+async function loadTickets() {
+    const snap = await getDoc(userDocRef);
+    currentTickets = snap.data()?.ticketsList || [];
+    const container = document.getElementById('ticketsListContainer');
+    if(!container) return;
+    if(currentTickets.length === 0) { container.innerHTML = '<p>Aucun ticket</p>'; return; }
+    container.innerHTML = currentTickets.map(t => `
+        <div class="ticket-item">
+            <div class="ticket-subject">${escapeHtml(t.subject)}</div>
+            <span class="ticket-status ${t.status === 'ouvert' ? 'status-ouvert' : 'status-resolu'}">${t.status}</span>
+            <div style="font-size:0.65rem;margin-top:5px;">${new Date(t.date).toLocaleDateString()}</div>
+        </div>
+    `).join('');
 }
-async function createTicket(subject,msg){
-    const snap=await getDoc(userDocRef);
-    const tickets=snap.data()?.ticketsList||[];
-    const newTicket={id:Date.now().toString(),subject,message:msg,status:'ouvert',date:new Date().toISOString()};
-    await updateDoc(userDocRef,{ticketsList:[...tickets,newTicket]});
+
+async function createTicket(subject, priority) {
+    if(!subject) return;
+    const ticket = { id: Date.now().toString(), subject, priority, status: 'ouvert', date: new Date().toISOString() };
+    await updateDoc(userDocRef, { ticketsList: arrayUnion(ticket) });
     showToast("✅ Ticket envoyé");
     loadTickets();
 }
-function escapeHtml(str){if(!str)return'';return String(str).replace(/[&<>]/g,m=>m==='&'?'&amp;':m==='<'?'&lt;':'&gt;');}
 
-// Bonus
-async function loadBonusData(){
-    const snap=await getDoc(userDocRef);
-    const d=snap.data();
-    document.getElementById('invitationCode').value=d.invitationCode||'N/A';
-    document.getElementById('bonusEarned').innerText=(d.bonusEarnings||0).toFixed(4)+' $';
-    document.getElementById('invitedCount').innerText=d.invitedCount||0;
-}
+function escapeHtml(str){if(!str)return'';return str.replace(/[&<>]/g,m=>m==='&'?'&amp;':(m==='<'?'&lt;':'&gt;'));}
 
-// Profil
-async function loadProfile(){
-    const snap=await getDoc(userDocRef);
-    const d=snap.data();
-    document.getElementById('profileEmail').innerText=d.email||currentUser.email;
-    document.getElementById('profileCode').innerText=d.invitationCode||'N/A';
-}
-
-// CAP
-async function loadCapMessage(){
-    const snap=await getDoc(userDocRef);
-    const cap=snap.data()?.capDuJour||"📊 CAP DU JOUR\n\nJouer aux jeux\nInviter des amis\nBonne journée !";
-    document.getElementById('capMessage').innerHTML=cap.replace(/\n/g,'<br>');
-}
-
-// Retrait
-async function submitWithdraw(){
-    const amount=parseFloat(document.getElementById('withdrawAmount').value);
-    const wallet=document.getElementById('walletAddress').value.trim();
-    if(!selectedMethod){showToast("Choisissez une méthode",true);return;}
-    if(isNaN(amount)||amount<1){showToast("Minimum 1$",true);return;}
-    if(!wallet){showToast("Numéro requis",true);return;}
-    const snap=await getDoc(userDocRef);
-    const balance=snap.data()?.balance||0;
-    if(amount>balance){showToast("Solde insuffisant",true);return;}
-    await addDoc(collection(db,"withdraw"),{userId:currentUser.uid,amount,method:selectedMethod,phone:wallet,status:"pending",date:new Date().toISOString()});
-    await updateDoc(userDocRef,{balance:increment(-amount)});
-    showToast("✅ Demande envoyée");
-    updateBalanceDisplay();
-    closeModal('withdrawModal');
-}
-
-// Init
-async function initUser(user){
-    currentUser=user;
-    userDocRef=doc(db,"users",user.uid);
-    const snap=await getDoc(userDocRef);
-    if(!snap.exists()){
+async function initUser(user) {
+    if(!user) return;
+    currentUser = user;
+    userDocRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userDocRef);
+    if(!snap.exists()) {
         const uniqueId = "NX" + Math.random().toString(36).substring(2, 15).toUpperCase();
-        await setDoc(userDocRef,{
-            email:user.email,
-            balance:0,
-            uniqueId: uniqueId,
-            createdAt:new Date().toISOString(),
-            lastLogin:new Date().toISOString(),
-            invitationCode:"NX"+Math.random().toString(36).substring(2,10).toUpperCase(),
-            ticketsList:[],
-            clickedOffers:[],
-            capDuJour:"📊 CAP DU JOUR\n\nJouer aux jeux\nInviter des amis\nGagner des bonus"
-        });
-    }else{
-        await updateDoc(userDocRef,{lastLogin:new Date().toISOString()});
+        await updateDoc(userDocRef, { email: user.email, uniqueId, code: "NETUBER" + Math.floor(Math.random()*10000), ticketsList: [], capsList: [] });
     }
-    await updateBalanceDisplay();
-    await renderOffers();
-    await renderGames();
-    await loadCapMessage();
+    document.getElementById('userCodeDisplay').textContent = snap.data()?.code || "NETUBER";
+    renderGames();
+    loadTickets();
 }
 
 // EVENT LISTENERS
-document.getElementById('balanceHeader')?.addEventListener('click',async()=>{await updateBalanceDisplay();showToast("Solde mis à jour");});
-document.getElementById('panelA')?.addEventListener('click',()=>handlePanel('https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=', "Panel A"));
-document.getElementById('panelB')?.addEventListener('click',()=>handlePanel('https://gemiwall.com/69f304688bb8875fc339fe24/', "Panel B"));
-document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
-document.addEventListener('click',(e)=>{const m=document.getElementById('menuFloating');const b=document.getElementById('menuFloatBtn');if(m&&b&&!b.contains(e.target)&&!m.contains(e.target))m.classList.remove('active');});
-document.getElementById('menuCapBtn')?.addEventListener('click',async()=>{await loadCapMessage();closeModal('menuFloating');document.getElementById('capModal').classList.add('active');});
-document.getElementById('menuProfileBtn')?.addEventListener('click',async()=>{await loadProfile();closeModal('menuFloating');document.getElementById('profileModal').classList.add('active');});
-document.getElementById('menuTicketsBtn')?.addEventListener('click',async()=>{await loadTickets();closeModal('menuFloating');document.getElementById('ticketsModal').classList.add('active');});
-document.getElementById('menuBonusBtn')?.addEventListener('click',async()=>{await loadBonusData();closeModal('menuFloating');document.getElementById('bonusModal').classList.add('active');});
-document.getElementById('menuWithdrawBtn')?.addEventListener('click',async()=>{await updateBalanceDisplay();closeModal('menuFloating');document.getElementById('withdrawModal').classList.add('active');});
-document.getElementById('menuLogoutBtn')?.addEventListener('click',()=>{closeModal('menuFloating');document.getElementById('confirmLogoutModal').classList.add('active');});
-document.getElementById('closeCapModal')?.addEventListener('click',()=>closeModal('capModal'));
-document.getElementById('closeCapFooterBtn')?.addEventListener('click',()=>closeModal('capModal'));
-document.getElementById('closeProfileModal')?.addEventListener('click',()=>closeModal('profileModal'));
-document.getElementById('cancelProfileBtn')?.addEventListener('click',()=>closeModal('profileModal'));
-document.getElementById('closeTicketsModal')?.addEventListener('click',()=>closeModal('ticketsModal'));
-document.getElementById('cancelTicketsBtn')?.addEventListener('click',()=>closeModal('ticketsModal'));
-document.getElementById('closeNewTicketModal')?.addEventListener('click',()=>closeModal('newTicketModal'));
-document.getElementById('cancelNewTicketBtn')?.addEventListener('click',()=>closeModal('newTicketModal'));
-document.getElementById('closeBonusModal')?.addEventListener('click',()=>closeModal('bonusModal'));
-document.getElementById('cancelBonusBtn')?.addEventListener('click',()=>closeModal('bonusModal'));
-document.getElementById('closeWithdrawModal')?.addEventListener('click',()=>closeModal('withdrawModal'));
-document.getElementById('cancelWithdrawBtn')?.addEventListener('click',()=>closeModal('withdrawModal'));
-document.getElementById('closeLogoutModal')?.addEventListener('click',()=>closeModal('confirmLogoutModal'));
-document.getElementById('cancelLogoutBtn')?.addEventListener('click',()=>closeModal('confirmLogoutModal'));
-document.getElementById('updatePasswordBtn')?.addEventListener('click',async()=>{const np=document.getElementById('newPassword').value;if(np&&np.length>=6){await updatePassword(currentUser,np);showToast("Mot de passe mis à jour");document.getElementById('newPassword').value='';}else if(np)showToast("6 caractères minimum",true);else showToast("Aucun changement");});
-document.getElementById('newTicketBtn')?.addEventListener('click',()=>document.getElementById('newTicketModal').classList.add('active'));
-document.getElementById('submitTicketBtn')?.addEventListener('click',async()=>{const subject=document.getElementById('ticketSubject').value.trim();const msg=document.getElementById('ticketMessage').value.trim();if(!subject||!msg){showToast("Sujet et message requis",true);return;}await createTicket(subject,msg);closeModal('newTicketModal');document.getElementById('ticketSubject').value='';document.getElementById('ticketMessage').value='';});
-document.getElementById('copyCodeBtn')?.addEventListener('click',()=>{const c=document.getElementById('invitationCode').value;navigator.clipboard.writeText(c);showToast("Code copié !");});
-document.getElementById('submitWithdrawBtn')?.addEventListener('click',submitWithdraw);
-document.getElementById('confirmLogoutBtn')?.addEventListener('click',async()=>{closeModal('confirmLogoutModal');await signOut(auth);window.location.href="login.html";});
-document.querySelectorAll('.method-option').forEach(opt=>{opt.addEventListener('click',()=>{document.querySelectorAll('.method-option').forEach(o=>o.classList.remove('selected-airtel','selected-orange'));if(opt.dataset.method==='airtel_money')opt.classList.add('selected-airtel');else if(opt.dataset.method==='orange_money')opt.classList.add('selected-orange');selectedMethod=opt.dataset.method;});});
+document.getElementById('panelAbtn')?.addEventListener('click', async () => {
+    const uniqueId = await getUserUniqueId();
+    showFlyPopup('Panel A', 'A', '#10b981', `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uniqueId}`);
+});
+document.getElementById('panelBbtn')?.addEventListener('click', async () => {
+    const uniqueId = await getUserUniqueId();
+    showFlyPopup('Panel B', 'B', '#3b82f6', `https://gemiwall.com/69f304688bb8875fc339fe24/${uniqueId}`);
+});
+document.getElementById('plusBtn')?.addEventListener('click', openOffersPopup);
+document.getElementById('menuFloatBtn')?.addEventListener('click', () => document.getElementById('menuFloating').classList.toggle('active'));
+document.getElementById('menuTicketsBtn')?.addEventListener('click', () => { document.getElementById('menuFloating').classList.remove('active'); loadTickets(); document.getElementById('ticketsListPopup').classList.add('active'); });
+document.getElementById('menuNewTicketBtn')?.addEventListener('click', () => { document.getElementById('menuFloating').classList.remove('active'); document.getElementById('ticketFormPopup').classList.add('active'); });
+document.getElementById('menuCapBtn')?.addEventListener('click', () => { document.getElementById('menuFloating').classList.remove('active'); document.getElementById('capPopup').classList.add('active'); });
+document.getElementById('menuLogoutBtn')?.addEventListener('click', () => { document.getElementById('menuFloating').classList.remove('active'); document.getElementById('confirmPopup').classList.add('active'); });
+document.getElementById('submitTicketBtn')?.addEventListener('click', async () => {
+    const subject = document.getElementById('ticketSubjectSelect').value;
+    const priority = document.getElementById('ticketPriority').value;
+    if(subject) await createTicket(subject, priority);
+    document.getElementById('ticketFormPopup').classList.remove('active');
+});
+document.getElementById('closeTicketFormBtn')?.addEventListener('click', () => document.getElementById('ticketFormPopup').classList.remove('active'));
+document.getElementById('closeTicketsPopupBtn')?.addEventListener('click', () => document.getElementById('ticketsListPopup').classList.remove('active'));
+document.getElementById('closeCapBtn')?.addEventListener('click', () => document.getElementById('capPopup').classList.remove('active'));
+document.getElementById('confirmYes')?.addEventListener('click', async () => { await signOut(auth); window.location.href = "login.html"; });
+document.getElementById('confirmNo')?.addEventListener('click', () => document.getElementById('confirmPopup').classList.remove('active'));
+document.addEventListener('click', (e) => { const m = document.getElementById('menuFloating'); const b = document.getElementById('menuFloatBtn'); if(m && b && !b.contains(e.target) && !m.contains(e.target)) m.classList.remove('active'); });
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => { if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) e.preventDefault(); });
 
-onAuthStateChanged(auth,async(user)=>{if(user){await initUser(user);}else{window.location.href="login.html";}});
+onAuthStateChanged(auth, async(user) => { if(user) await initUser(user); else window.location.href = "login.html"; });
 </script>
 </body>
 </html>
