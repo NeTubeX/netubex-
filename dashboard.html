@@ -26,8 +26,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 .blinking-dot{width:8px;height:8px;background:#10b981;border-radius:50%;animation:blink 1.2s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
 .feed-container{max-width:680px;margin:0 auto;padding-bottom:1rem;}
-
-/* Carte premium TimeWall - Au-dessus des jeux */
 .premium-card{margin:0 16px 20px 16px;background:linear-gradient(135deg,#1e2a3a,#0f172a);border-radius:20px;border:2px solid rgba(245,158,11,0.4);overflow:hidden;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);position:relative;}
 .premium-card::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(245,158,11,0.15),transparent);transition:left 0.5s ease;}
 .premium-card:hover::before{left:100%;}
@@ -45,7 +43,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 @keyframes pulse-badge{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.85;transform:scale(1.02);}}
 .premium-arrow{background:rgba(255,255,255,0.1);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#f59e0b;font-size:0.9rem;transition:all 0.3s;}
 .premium-card:hover .premium-arrow{transform:translateX(5px);background:#f59e0b;color:#0a0f1a;}
-
 .feed-separator{height:1px;background:linear-gradient(90deg,transparent,#3e4042,transparent);margin:0 16px 16px;}
 .games-list{display:flex;flex-direction:column;gap:8px;}
 .post-card{background:#242526;border-radius:12px;overflow:hidden;}
@@ -72,6 +69,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 .float-item.panel-a{background:linear-gradient(145deg,#10b981,#047857);}
 .float-item.panel-b{background:linear-gradient(145deg,#3b82f6,#1e3a8a);}
 .float-item.panel-c{background:linear-gradient(145deg,#f59e0b,#d97706);}
+.float-item.plus-btn{background:linear-gradient(145deg,#8b5cf6,#6d28d9);font-size:1.8rem;font-weight:400;}
 .float-item.menu-btn{background:linear-gradient(145deg,#3b82f6,#2563eb);font-size:1.3rem;font-weight:400;}
 .menu-badge{position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;border-radius:50%;min-width:20px;height:20px;font-size:0.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px;box-shadow:0 0 0 2px #242526;}
 .fly-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:2000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:visibility 0s linear 0.25s,opacity 0.25s;}
@@ -152,7 +150,37 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 .howtoplay-footer{padding:16px 24px 24px;text-align:center;}
 .howtoplay-footer button{background:#f59e0b;border:none;padding:12px 30px;border-radius:50px;font-weight:700;color:#000;cursor:pointer;transition:transform 0.1s;font-size:0.9rem;}
 .howtoplay-footer button:active{transform:scale(0.96);}
-@media (max-width:640px){.post-image{min-height:180px;}.feed-container{max-width:100%;}.logo img{height:38px;}.logo h1{font-size:1.5rem;}.logo h1 span{font-size:1.5rem;}body{padding-top:65px;}}
+.offers-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);backdrop-filter:blur(12px);z-index:2000;display:flex;align-items:flex-start;justify-content:center;visibility:hidden;opacity:0;transition:visibility 0s linear 0.25s,opacity 0.3s;overflow-y:auto;}
+.offers-popup.active{visibility:visible;opacity:1;transition:visibility 0s linear 0s,opacity 0.3s;}
+.offers-container{max-width:600px;width:100%;margin:20px auto;background:transparent;border-radius:28px;padding:16px;}
+.offers-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:0 8px;}
+.offers-header h2{color:#e4e6eb;font-size:1.4rem;display:flex;align-items:center;gap:10px;}
+.close-offers{background:#3a3b3c;border:none;width:40px;height:40px;border-radius:50%;color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.close-offers:active{transform:scale(0.95);}
+.offers-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.offer-card{background:#242526;border-radius:16px;overflow:hidden;border:1px solid #3e4042;transition:all 0.15s;}
+.offer-card:active{transform:scale(0.97);background:#2a2b2e;}
+.offer-header{display:flex;align-items:center;gap:10px;padding:12px;}
+.offer-icon{width:40px;height:40px;background:#3a3b3c;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.offer-info{flex:1;min-width:0;}
+.offer-name{font-weight:700;font-size:0.75rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.offer-name .badge{background:#3a3b3c;color:#b0b3b8;font-size:0.5rem;padding:2px 5px;border-radius:10px;margin-left:5px;}
+.offer-sub{font-size:0.55rem;color:#b0b3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.offer-points{font-weight:700;color:#f59e0b;font-size:0.65rem;margin-top:3px;}
+.offer-palier details{background:#1e1f22;border-radius:10px;padding:6px;font-size:0.6rem;color:#b0b3b8;margin:0 10px 8px 10px;}
+.offer-palier summary{cursor:pointer;font-weight:600;color:#e4e6eb;font-size:0.65rem;}
+.offer-actions{display:flex;gap:6px;padding:10px;border-top:1px solid #3e4042;}
+.btn{flex:1;padding:7px 0;border-radius:30px;font-weight:600;font-size:0.6rem;cursor:pointer;transition:all 0.15s;border:none;text-align:center;}
+.btn-dl{background:#3a3b3c;color:#e4e6eb;}
+.btn-dl:active{background:#4e4f52;}
+.btn-track{background:#f59e0b;color:#000;}
+.btn-track:active{background:#d97706;}
+.offer-card-large .offer-header{padding:14px;}
+.offer-card-large .offer-icon{width:48px;height:48px;font-size:1.4rem;}
+.offer-card-large .offer-name{font-size:0.85rem;}
+.offer-card-large .offer-points{font-size:0.75rem;}
+.offer-card-large .btn{padding:9px 0;font-size:0.65rem;}
+@media(max-width:480px){.offers-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -166,7 +194,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 </header>
 
 <div class="feed-container">
-    <!-- Carte premium TimeWall - Au-dessus des jeux -->
     <div class="premium-card" id="premiumTimeWallCard">
         <div class="premium-card-inner">
             <div class="premium-card-left">
@@ -195,6 +222,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 <div class="float-item panel-a" id="panelAbtn">A</div>
 <div class="float-item panel-b" id="panelBbtn">B</div>
 <div class="float-item panel-c" id="panelCbtn">C</div>
+<div class="float-item plus-btn" id="plusBtn">+</div>
 <div class="float-item menu-btn" id="menuFloatBtn"><i class="fas fa-bars"></i><span id="notificationBadge" class="menu-badge" style="display:none;">0</span></div>
 </div>
 
@@ -232,6 +260,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 </div>
 <div class="howtoplay-footer">
 <button id="closeHowtoFooterBtn"><i class="fas fa-check-circle"></i> J'ai compris</button>
+</div>
+</div>
+</div>
+
+<div id="offersPopup" class="offers-popup">
+<div class="offers-container">
+<div class="offers-header">
+<h2><i class="fas fa-plus-circle"></i> Offres exclusives</h2>
+<button class="close-offers" id="closeOffersBtn"><i class="fas fa-times"></i></button>
+</div>
+<div class="offers-grid">
+<div class="offer-card"><div class="offer-header"><div class="offer-icon">🔢</div><div class="offer-info"><div class="offer-name">2048 Blast <span class="badge">Install</span></div><div class="offer-sub">Merge Numbers Game</div><div class="offer-points">🏆 1 000 pts</div></div></div><div class="offer-palier"><details><summary>📋 Voir palier</summary>Installer → 1 000 points</details></div><div class="offer-actions"><button class="btn btn-dl" data-url="https://play.google.com/store/apps/details?id=com.seaweed.cube.shotblock.run2048.io">📱 DL</button><button class="btn btn-track" data-track-url="https://api.gemiwall.com/api/offers/click?offerId=MXGqYDhxzRNxs8asZgvPG&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">🚀 Go</button></div></div>
+<div class="offer-card"><div class="offer-header"><div class="offer-icon">💼</div><div class="offer-info"><div class="offer-name">WhatsApp Business <span class="badge">Install+Open</span></div><div class="offer-sub">Application pro</div><div class="offer-points">🏆 900 pts</div></div></div><div class="offer-palier"><details><summary>📋 Voir palier</summary>Installer et ouvrir → 900 points</details></div><div class="offer-actions"><button class="btn btn-dl" data-url="https://play.google.com/store/apps/details?id=com.whatsapp.w4b">📱 DL</button><button class="btn btn-track" data-track-url="https://api.gemiwall.com/api/offers/click?offerId=Y7bv7Z86RBa1KPp8YT-XB&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">🚀 Go</button></div></div>
+<div class="offer-card"><div class="offer-header"><div class="offer-icon">📸</div><div class="offer-info"><div class="offer-name">Instagram <span class="badge">Install+Open</span></div><div class="offer-sub">Réseau social</div><div class="offer-points">🏆 700 pts</div></div></div><div class="offer-palier"><details><summary>📋 Voir palier</summary>Installer et ouvrir → 700 points</details></div><div class="offer-actions"><button class="btn btn-dl" data-url="https://play.google.com/store/apps/details?id=com.instagram.android">📱 DL</button><button class="btn btn-track" data-track-url="https://api.gemiwall.com/api/offers/click?offerId=V9Y_sI-9CLPEGvIiYsHwK&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">🚀 Go</button></div></div>
+<div class="offer-card offer-card-large"><div class="offer-header"><div class="offer-icon">📋</div><div class="offer-info"><div class="offer-name">TaskPrize <span class="badge">Tâches</span></div><div class="offer-sub">Gagnez en réalisant des tâches</div><div class="offer-points">🏆 54 700 pts</div></div></div><div class="offer-actions"><button class="btn btn-track" data-track-url="https://api.gemiwall.com/api/offers/click?offerId=_6xzha9WpOqWfG7nYG-KQ&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">🚀 Commencer</button></div></div>
+<div class="offer-card"><div class="offer-header"><div class="offer-icon">💰</div><div class="offer-info"><div class="offer-name">GotKash <span class="badge">Register</span></div><div class="offer-sub">App de gains</div><div class="offer-points">🏆 25 000 pts</div></div></div><div class="offer-palier"><details><summary>📋 Voir palier</summary>S'inscrire → 25 000 points</details></div><div class="offer-actions"><button class="btn btn-track" data-track-url="https://api.gemiwall.com/api/offers/click?offerId=8IJ70Mwx&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">🚀 Go</button></div></div>
+<div class="offer-card"><div class="offer-header"><div class="offer-icon">🔗</div><div class="offer-info"><div class="offer-name">WhatsApp Binding <span class="badge">Liaison</span></div><div class="offer-sub">Associer son compte</div><div class="offer-points">🏆 2 000 pts</div></div></div><div class="offer-palier"><details><summary>📋 Voir palier</summary>Installer et ouvrir → 2 000 points</details></div><div class="offer-actions"><button class="btn btn-track" data-track-url="https://api.gemiwall.com/api/offers/click?offerId=QUIsEeASWE191dyfGoyG6&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">🚀 Go</button></div></div>
+<div class="offer-card"><div class="offer-header"><div class="offer-icon">👥</div><div class="offer-info"><div class="offer-name">Moneysocial <span class="badge">Register+Login</span></div><div class="offer-sub">Réseau rémunérateur</div><div class="offer-points">🏆 1 000 pts</div></div></div><div class="offer-palier"><details><summary>📋 Voir palier</summary>S'inscrire et se connecter → 1 000 points</details></div><div class="offer-actions"><button class="btn btn-track" data-track-url="https://api.gemiwall.com/api/offers/click?offerId=8GS3KJpCXTAlcmq21fYQU&userId={USER_ID}&placementId=69f304688bb8875fc339fe24">🚀 Go</button></div></div>
 </div>
 </div>
 </div>
@@ -326,7 +372,7 @@ function showToast(message,type='success',duration=6000){const container=getToas
 const games=[{id:1,name:"The Grand Mafia",avatar:"https://netubex.github.io/netubex-/the-grand-mafia.webp",img:"https://netubex.github.io/netubex-/the-grand-mafia.webp",duration:"30j",totalEarning:"217.18",description:"Jeu de stratégie mafieux. Construis ton empire, recrute des soldats et domine la ville."},{id:2,name:"Grab A Toy",avatar:"https://netubex.github.io/netubex-/grab-a-toy.png",img:"https://netubex.github.io/netubex-/grab-a-toy.png",duration:"30j",totalEarning:"142.66",description:"Attrape un max de jouets avec précision. Timing et réflexes seront tes alliés."},{id:3,name:"Wild Fish Explorer",avatar:"https://netubex.github.io/netubex-/wild-fish.png",img:"https://netubex.github.io/netubex-/wild-fish.png",duration:"30j",totalEarning:"137.37",description:"Explore les océans, capture des poissons rares et complète ta collection."},{id:4,name:"Sky Plunger",avatar:"https://netubex.github.io/netubex-/sky-plunger.png",img:"https://netubex.github.io/netubex-/sky-plunger.png",duration:"30j",totalEarning:"109.42",description:"Chute libre à travers les cieux. Évite les obstacles et bats ton record."},{id:5,name:"Goblin Heist",avatar:"https://netubex.github.io/netubex-/goblin-heist.jpg",img:"https://netubex.github.io/netubex-/goblin-heist.jpg",duration:"60j",totalEarning:"96.79",description:"Incarne un gobelin voleur. Infiltre-toi, évite les gardes et prends les trésors."},{id:6,name:"Survivor Idle Run",avatar:"https://netubex.github.io/netubex-/survivor-idle-run.png",img:"https://netubex.github.io/netubex-/survivor-idle-run.png",duration:"30j",totalEarning:"65.03",description:"Course automatique et survie. Améliore tes compétences, collecte des rewards."},{id:7,name:"Zombies Waves",avatar:"https://netubex.github.io/netubex-/zombie-waves.jpg",img:"https://netubex.github.io/netubex-/zombie-waves.jpg",duration:"30j",totalEarning:"58.35",description:"Survis aux vagues de zombies. Améliore ton arsenal et tiens le plus longtemps."},{id:8,name:"Love Water",avatar:"https://netubex.github.io/netubex-/love-water.gif",img:"https://netubex.github.io/netubex-/love-water.gif",duration:"30j",totalEarning:"13.37",description:"Puzzle aquatique. Guide l'eau avec logique pour résoudre chaque niveau."},{id:9,name:"Dragon Farm",avatar:"https://netubex.github.io/netubex-/dragon-farm.webp",img:"https://netubex.github.io/netubex-/dragon-farm.webp",duration:"30j",totalEarning:"28.45",description:"Élève des dragons et développe ta ferme légendaire."}];
 const howToPlayMap={1:"Construis ton manoir • Entraîne des soldats • Attaque d'autres joueurs • Rejoins une alliance • Fais les missions quotidiennes",2:"Vise avec précision • Attrape les jouets rares • Gère ton timing • Débloque des niveaux secrets • Multiplie tes gains",3:"Plonge dans l'océan • Capture des poissons légendaires • Améliore ton matériel • Complète le bestiaire • Ouvre des zones cachées",4:"Contrôle ta chute • Évite les obstacles • Collecte des bonus • Va toujours plus loin • Débloque des skins uniques",5:"Déplace-toi en silence • Évite gardes et pièges • Collecte tous les trésors • Utilise tes compétences • Deviens le roi des voleurs",6:"Lance la course auto • Améliore tes stats • Gagne même hors ligne • Survie maximale • Débloque des héros puissants",7:"Tire sur les zombies • Ne te fais pas encercler • Améliore tes armes • Tiens un max de vagues • Affronte des boss",8:"Trace le chemin de l'eau • Active les bons éléments • Résous chaque puzzle • Progresse niveau par niveau",9:"Fais éclore des œufs • Nourris tes dragons • Construis des bâtiments • Termine les quêtes • Agrandis ton sanctuaire"};
 function getDeviceUniqueId(){let d=localStorage.getItem('device_permanent_id');if(!d){const s=`${screen.width}x${screen.height}x${screen.colorDepth}|${Intl.DateTimeFormat().resolvedOptions().timeZone}|${navigator.language}|${navigator.platform}`;let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h)+s.charCodeAt(i),h|=0;d=`DEVICE_${Math.abs(h)}`;localStorage.setItem('device_permanent_id',d);}return d;}
-async function sendSecurityAlert(t,e,o={}){try{await addDoc(collection(db,"security_alerts"),{type:t,level:o.level||'info',email:e||null,netuberCode:o.netuberCode||null,netuberId:o.netuberId||null,message:o.message||'',details:{timeSpentSeconds:Math.floor((Date.now()-pageLoadTime)/1000),deviceId:getDeviceUniqueId(),userAgent:navigator.userAgent,language:navigator.language,platform:navigator.platform,...o},timestamp:new Date().toISOString(),read:false});return true;}catch(e){return false;}}
+async function sendSecurityAlert(t,e,o={}){try{await addDoc(collection(db,"security_alerts"),{type:t,email:e||null,netuberCode:o.netuberCode||null,netuberId:o.netuberId||null,message:o.message||'',details:{timeSpentSeconds:Math.floor((Date.now()-pageLoadTime)/1000),deviceId:getDeviceUniqueId(),userAgent:navigator.userAgent,language:navigator.language,platform:navigator.platform,...o},timestamp:new Date().toISOString(),read:false});return true;}catch(e){return false;}}
 function escapeHtml(str){if(!str)return '';return str.replace(/[&<>]/g,m=>m==='&'?'&amp;':(m==='<'?'&lt;':'&gt;'));}
 function renderGames(){let container=document.getElementById('gamesContainer');if(!container)return;container.innerHTML='';games.forEach(g=>{let card=document.createElement('div');card.className='post-card';card.innerHTML=`<div class="post-top"><div class="avatar"><img src="${g.avatar}" alt="${g.name}"></div><div class="post-right"><div class="post-name">${g.name}</div><div class="post-sub">Nouvelle section <i class="fas fa-globe-africa"></i><span class="jeu-remunerateur">Jeu rémunérateur</span></div><div class="post-description">${g.description}</div></div></div><div class="image-wrapper" data-id="${g.id}" data-name="${g.name}" data-earning="${g.totalEarning}" data-howto="${howToPlayMap[g.id]}"><img class="post-image" src="${g.img}" alt="${g.name}" loading="lazy"><div class="image-overlay"><i class="fas fa-info-circle"></i> Cliquer pour voir comment ça marche</div></div><div class="post-stats"><span class="duration"><i class="fas fa-calendar-alt"></i> ${g.duration}</span><span class="earning"><i class="fas fa-coins"></i> ${g.totalEarning}$</span></div>`;container.appendChild(card);});document.querySelectorAll('.image-wrapper').forEach(wrapper=>{wrapper.addEventListener('click',(e)=>{e.stopPropagation();let earning=wrapper.dataset.earning;let howto=wrapper.dataset.howto;document.getElementById('howtoText').innerHTML=howto;let formattedEarning=earning.replace('.',',');document.getElementById('rewardAmount').innerHTML=formattedEarning+' $';document.getElementById('rewardMessage').innerHTML=`${formattedEarning} $ seront ajoutés à votre compte de paiement mensuel si vous terminez ce jeu rémunérateur.`;document.getElementById('howtoPopup').classList.add('active');});});}
 function renderTickets(tab){let container=document.getElementById('ticketsListContainer');if(!container)return;let filtered=currentTickets.filter(t=>tab==='encours'?t.status!=='résolu':t.status==='résolu');if(filtered.length===0){container.innerHTML='<p style="text-align:center;color:#b0b3b8;padding:20px;">📭 Aucun ticket</p>';return;}container.innerHTML=filtered.map(t=>{let statusText=t.status==='ouvert'?'📩 En attente':(t.status==='en cours'?'⚙️ En cours':'✅ Résolu');let statusClass=t.status==='ouvert'?'status-ouvert':(t.status==='en cours'?'status-en-cours':'status-resolu');let reponsesHtml=t.reponses&&t.reponses.length?`<div class="ticket-reponse"><i class="fas fa-headset"></i> <strong>Réponse Pôle Technique:</strong><br>${escapeHtml(t.reponses[t.reponses.length-1].message)}</div>`:'';return`<div class="ticket-item ${t.status==='résolu'?'resolu':''}"><div class="ticket-header"><span class="ticket-date"><i class="far fa-calendar-alt"></i> ${new Date(t.date).toLocaleDateString('fr-FR')}</span></div><div class="ticket-subject"><i class="fas fa-comment-dots" style="margin-right:8px;color:#f59e0b;"></i>${escapeHtml(t.subject)}</div><div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center;"><span class="ticket-status ${statusClass}"><i class="fas fa-circle"></i> ${statusText}</span><span class="ticket-priority">${t.priority==='haute'?'🔴 Priorité haute':(t.priority==='moyenne'?'🟠 Priorité moyenne':'🟢 Priorité basse')}</span></div>${reponsesHtml}</div>`;}).join('');}
@@ -340,7 +386,6 @@ async function sendRewardConfirmation(panel,platform,url){let decisionTime=(Date
 window.open(url,'_blank');
 }
 function showFlyPopup(panel,letter,color,platform,url){pendingPanel=panel;pendingPlatform=platform;pendingTargetUrl=url;popupOpenTime=Date.now();let popup=document.getElementById('flyPopup');let letterDiv=document.getElementById('popupLetter');let title=document.getElementById('popupTitle');let btns=document.getElementById('popupButtons');letterDiv.textContent=letter;letterDiv.style.backgroundColor=color;title.textContent=panel;let btnClass=color==='#10b981'?'a':(color==='#3b82f6'?'b':'c');btns.innerHTML=`<button class="btn-yes-${btnClass}" id="confirmYesBtn">Oui</button><button class="btn-no" id="confirmNoBtn">Non</button>`;popup.classList.add('active');document.getElementById('confirmYesBtn')?.addEventListener('click',async()=>{if(pendingPanel&&pendingTargetUrl)await sendRewardConfirmation(pendingPanel,pendingPlatform,pendingTargetUrl);document.getElementById('flyPopup').classList.remove('active');pendingPanel=pendingPlatform=pendingTargetUrl=null;},{once:true});document.getElementById('confirmNoBtn')?.addEventListener('click',()=>{document.getElementById('flyPopup').classList.remove('active');pendingPanel=pendingPlatform=pendingTargetUrl=null;},{once:true});}
-// Fonction pour l'offre TimeWall Unlimited
 async function openTimeWallUnlimited() {
     if(!currentUser) return;
     let userSnap=await getDoc(userDocRef);
@@ -350,13 +395,30 @@ async function openTimeWallUnlimited() {
     window.open(url,'_blank');
     showToast("🚀 Redirection vers TimeWall Unlimited...","info");
 }
-async function initUser(user){if(!user)return;let deviceId=getDeviceUniqueId();currentUser=user;userDocRef=doc(db,"users",user.uid);let snap=await getDoc(userDocRef);if(!snap.exists()){showToast("❌ Compte invalide","error");await signOut(auth);window.location.href="login.html";return;}let userData=snap.data();if(!userData.deviceId){await updateDoc(userDocRef,{deviceId:deviceId});showToast("✅ Terminal associé avec succès","success");await sendSecurityAlert('new_device_linked',userData.email,{level:'info',netuberCode:userData.code,netuberId:user.uid,message:`Nouveau terminal pour ${userData.code}`,registeredDeviceId:deviceId});}else if(userData.deviceId!==deviceId){showToast("❌ Terminal non autorisé. Contactez le Pôle Technique","error");await sendSecurityAlert('device_mismatch',userData.email,{level:'critical',netuberCode:userData.code,netuberId:user.uid,message:`Terminal mismatch ${userData.code}`,registeredDeviceId:userData.deviceId,attemptedDeviceId:deviceId});await signOut(auth);setTimeout(()=>{window.location.href="login.html";},2000);return;}await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(()=>{});document.getElementById('userCodeDisplay').textContent=userData.code||"NETUBER";userLastMenuOpen=userData.lastMenuOpen||new Date(0).toISOString();userReadCapsIds=userData.readCapsIds||[];userReadTicketResponseIds=userData.readTicketResponseIds||[];renderGames();listenToTicketsAndCaps();setInterval(()=>updateOnlineStatus(),30000);}
+let currentUserIdForOffers = null;
+function openOffersPopup() {
+    document.getElementById('offersPopup').classList.add('active');
+    if(currentUserIdForOffers) {
+        document.querySelectorAll('.btn-track[data-track-url]').forEach(btn => {
+            let originalUrl = btn.getAttribute('data-track-url');
+            if(originalUrl && originalUrl.includes('{USER_ID}')) {
+                let newUrl = originalUrl.replace('{USER_ID}', currentUserIdForOffers);
+                btn.setAttribute('data-current-url', newUrl);
+            } else if(originalUrl) {
+                btn.setAttribute('data-current-url', originalUrl);
+            }
+        });
+    }
+}
+async function initUser(user){if(!user)return;let deviceId=getDeviceUniqueId();currentUser=user;userDocRef=doc(db,"users",user.uid);let snap=await getDoc(userDocRef);if(!snap.exists()){showToast("❌ Compte invalide","error");await signOut(auth);window.location.href="login.html";return;}let userData=snap.data();if(!userData.deviceId){await updateDoc(userDocRef,{deviceId:deviceId});showToast("✅ Terminal associé avec succès","success");await sendSecurityAlert('new_device_linked',userData.email,{level:'info',netuberCode:userData.code,netuberId:user.uid,message:`Nouveau terminal pour ${userData.code}`,registeredDeviceId:deviceId});}else if(userData.deviceId!==deviceId){showToast("❌ Terminal non autorisé. Contactez le Pôle Technique","error");await sendSecurityAlert('device_mismatch',userData.email,{level:'critical',netuberCode:userData.code,netuberId:user.uid,message:`Terminal mismatch ${userData.code}`,registeredDeviceId:userData.deviceId,attemptedDeviceId:deviceId});await signOut(auth);setTimeout(()=>{window.location.href="login.html";},2000);return;}await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(()=>{});document.getElementById('userCodeDisplay').textContent=userData.code||"NETUBER";userLastMenuOpen=userData.lastMenuOpen||new Date(0).toISOString();userReadCapsIds=userData.readCapsIds||[];userReadTicketResponseIds=userData.readTicketResponseIds||[];currentUserIdForOffers = userData?.uniqueId || user.uid;renderGames();listenToTicketsAndCaps();setInterval(()=>updateOnlineStatus(),30000);}
 async function performLogout(){if(currentUser&&userDocRef){let userSnap=await getDoc(userDocRef);let userData=userSnap.data();await sendSecurityAlert('logout',userData?.email,{level:'info',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`Déconnexion de ${userData?.code||currentUser?.email}`,sessionDuration:Math.floor((Date.now()-pageLoadTime)/1000)});await updateDoc(userDocRef,{isOnline:false,lastDisconnection:new Date().toISOString()}).catch(()=>{});}await signOut(auth);window.location.href="login.html";}
 document.getElementById('closeTicketsPopupBtn')?.addEventListener('click',()=>{document.getElementById('ticketsListPopup').classList.remove('active');});
 document.getElementById('closeTicketFormBtn')?.addEventListener('click',()=>{document.getElementById('ticketFormPopup').classList.remove('active');document.getElementById('ticketSubjectSelect').value='';document.getElementById('ticketPriority').value='moyenne';});
 document.getElementById('closeCapBtn')?.addEventListener('click',()=>{document.getElementById('capPopup').classList.remove('active');});
 document.getElementById('closeHowtoBtn')?.addEventListener('click',()=>{document.getElementById('howtoPopup').classList.remove('active');});
 document.getElementById('closeHowtoFooterBtn')?.addEventListener('click',()=>{document.getElementById('howtoPopup').classList.remove('active');});
+document.getElementById('closeOffersBtn')?.addEventListener('click',()=>{document.getElementById('offersPopup').classList.remove('active');});
+document.getElementById('plusBtn')?.addEventListener('click',()=>{openOffersPopup();});
 document.getElementById('menuFloatBtn')?.addEventListener('click',()=>{document.getElementById('menuFloating').classList.toggle('active');markNotificationsAsRead();});
 document.getElementById('menuLogoutBtn')?.addEventListener('click',()=>{document.getElementById('menuFloating').classList.remove('active');document.getElementById('confirmPopup').classList.add('active');});
 document.getElementById('menuTicketsBtn')?.addEventListener('click',()=>{document.getElementById('menuFloating').classList.remove('active');renderTickets('encours');document.getElementById('ticketsListPopup').classList.add('active');});
@@ -369,12 +431,20 @@ document.getElementById('panelBbtn')?.addEventListener('click',async()=>{let use
 document.getElementById('panelCbtn')?.addEventListener('click',()=>{showFlyPopup('Panel C','C','#f59e0b','gaingg','https://gain.gg/earn');});
 document.getElementById('confirmYes')?.addEventListener('click',async()=>{await performLogout();});
 document.getElementById('confirmNo')?.addEventListener('click',()=>{document.getElementById('confirmPopup').classList.remove('active');});
-// Événement pour la carte premium TimeWall
 document.getElementById('premiumTimeWallCard')?.addEventListener('click',async()=>{await openTimeWallUnlimited();});
 document.addEventListener('contextmenu',e=>e.preventDefault());
 document.querySelectorAll('img').forEach(img=>{img.addEventListener('contextmenu',e=>e.preventDefault());img.addEventListener('dragstart',e=>e.preventDefault());});
 document.addEventListener('keydown',e=>{if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C'))||(e.ctrlKey&&e.key==='u')||(e.ctrlKey&&e.key==='s')||e.key==='F5'){e.preventDefault();return false;}});
 let lastScrollTop=0;let header=document.getElementById('mainHeader');window.addEventListener('scroll',function(){let scrollTop=window.pageYOffset||document.documentElement.scrollTop;if(scrollTop>lastScrollTop&&scrollTop>70)header.classList.add('hide');else if(scrollTop<lastScrollTop)header.classList.remove('hide');lastScrollTop=scrollTop<=0?0:scrollTop;});
+document.addEventListener('click', function(e) {
+    if(e.target.classList.contains('btn-track') && e.target.getAttribute('data-track-url')) {
+        let url = e.target.getAttribute('data-current-url') || e.target.getAttribute('data-track-url');
+        if(url && url.includes('{USER_ID}') && currentUserIdForOffers) {
+            url = url.replace('{USER_ID}', currentUserIdForOffers);
+        }
+        if(url) window.open(url, '_blank');
+    }
+});
 onAuthStateChanged(auth,async(user)=>{if(user)await initUser(user);else window.location.href="login.html";});
 </script>
 </body>
