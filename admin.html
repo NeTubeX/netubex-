@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -40,8 +39,7 @@ body.dark-soft .message-received{background:#1e293b;color:#e2e8f0;}
 body.dark-soft .message-sent{background:#f59e0b;color:#0a0f1a;}
 body.dark-soft .chat-header{background:linear-gradient(135deg,#0a1a2f,#0e2a3a);}
 body.dark-soft .netubex-logo{color:#facc15;}
-body.dark-soft .toast{background:#f59e0b;color:#0a0f1a;}
-body.dark-soft .toast-error{background:#ef4444;color:#fff;}
+body.dark-soft .toast-container *{color:#fff;}
 body.dark-soft .visite-stats{background:linear-gradient(135deg,#1e293b,#0f1420);}
 body.dark-soft .visite-item{background:#1a2332;}
 body.dark-soft .badge-present{background:rgba(16,185,129,0.2);color:#10b981;}
@@ -84,18 +82,7 @@ body.light-theme .badge-success{background:rgba(16,185,129,0.1);color:#059669;}
 body.light-theme .badge-danger{background:rgba(239,68,68,0.1);color:#dc2626;}
 body.light-theme .status-spot.online{background:rgba(16,185,129,0.1);color:#059669;border-color:rgba(16,185,129,0.3);}
 body.light-theme .status-spot.offline{background:rgba(100,116,139,0.1);color:#64748b;border-color:rgba(100,116,139,0.2);}
-body.light-theme .toast{background:#3b82f6;color:#ffffff;}
-body.light-theme .toast-error{background:#ef4444;}
-body.light-theme .modal-header{background:#ffffff;border-bottom-color:#e2e8f0;}
-body.light-theme .modal-header h2{color:#1e40af;}
-body.light-theme .modal-close{background:#f1f5f9;color:#64748b;}
-body.light-theme .chat-container{background:#f1f5f9;}
-body.light-theme .chat-input-area{background:#ffffff;border-top:1px solid #e2e8f0;}
-body.light-theme .chat-input-area textarea{background:#f8fafc;border-color:#e2e8f0;color:#1e293b;}
-body.light-theme .message-received{background:#ffffff;color:#1e293b;}
-body.light-theme .message-sent{background:#dcfce7;color:#1e293b;}
-body.light-theme .chat-header{background:#ffffff;border-bottom-color:#e2e8f0;}
-body.light-theme .netubex-logo{color:#1e40af;}
+body.light-theme .toast-container *{color:#fff;}
 body.light-theme .visite-stats{background:#ffffff;border-color:#e2e8f0;}
 body.light-theme .visite-item{background:#f8fafc;}
 body.light-theme .visite-item .number{color:#1e40af;}
@@ -175,8 +162,6 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 .input-group label{display:block;font-size:11px;margin-bottom:5px;}
 .input-group input,.input-group select,.input-group textarea{width:100%;padding:10px 14px;border-radius:10px;border:1px solid;outline:none;font-family:inherit;transition:all 0.2s;}
 .action-btn{padding:5px 10px;border-radius:6px;font-size:10px;cursor:pointer;border:none;transition:0.2s;margin:0 2px;}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:40px;font-size:12px;z-index:10000;animation:slideUp 0.3s;}
-@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
 .confirm-dialog{text-align:center;}
 .confirm-dialog i{font-size:48px;margin-bottom:15px;}
 .confirm-buttons{display:flex;gap:12px;justify-content:center;}
@@ -206,6 +191,149 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 .anomaly-popup-close{background:rgba(0,0,0,0.3);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;}
 .anomaly-popup-body{padding:20px;}
 .anomaly-ticket-item{border-radius:12px;padding:12px;margin-bottom:10px;border-left:3px solid;}
+
+/* TOASTS PROFESSIONNELS - HAUT DROIT */
+.toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 400px;
+    min-width: 320px;
+    pointer-events: none;
+}
+
+.toast {
+    pointer-events: auto;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(16px);
+    border-radius: 12px;
+    padding: 16px 20px;
+    color: #f1f5f9;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    border-left: 4px solid;
+    animation: slideInDown 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.3s;
+}
+
+.toast:hover {
+    transform: translateX(-4px);
+}
+
+.toast-success {
+    border-left-color: #10b981;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.98), rgba(6, 95, 70, 0.98));
+}
+
+.toast-error {
+    border-left-color: #ef4444;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.98), rgba(185, 28, 28, 0.98));
+}
+
+.toast-info {
+    border-left-color: #3b82f6;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.98), rgba(29, 78, 216, 0.98));
+}
+
+.toast-warning {
+    border-left-color: #f59e0b;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.98), rgba(217, 119, 6, 0.98));
+}
+
+.toast-icon {
+    font-size: 22px;
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+    letter-spacing: -0.2px;
+}
+
+.toast-message {
+    font-size: 12.5px;
+    opacity: 0.9;
+    line-height: 1.45;
+}
+
+.toast-close {
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 13px;
+    cursor: pointer;
+    color: white;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.toast-close:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateX(50px) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) translateY(0);
+    }
+}
+
+@keyframes slideOutUp {
+    from {
+        opacity: 1;
+        transform: translateX(0) translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(50px) translateY(-20px);
+    }
+}
+
+.toast-exit {
+    animation: slideOutUp 0.3s ease forwards;
+}
+
+@media (max-width: 640px) {
+    .toast-container {
+        top: 70px;
+        right: 12px;
+        left: 12px;
+        max-width: none;
+        min-width: auto;
+    }
+    .toast {
+        padding: 14px 16px;
+    }
+}
 </style>
 </head>
 <body class="dark-soft">
@@ -250,7 +378,7 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <div class="charts-row"><div class="chart-container"><canvas id="ticketsStatusChart" style="max-height:250px; width:100%;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Tickets par statut</p></div><div class="chart-container"><canvas id="ticketsPriorityChart" style="max-height:250px; width:100%;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Tickets par priorité</p></div></div>
 <div class="chart-container"><canvas id="ticketsEvolutionChart" style="max-height:250px; width:100%;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Évolution des tickets (7 derniers jours)</p></div>
 </div>
-<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"></tbody></table></div></div>
+<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></td></thead><tbody id="pendingTableBody"></tbody></table></div></div>
 <div id="utilisateursTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalActiveUsers">0</div><div class="label">Utilisateurs actifs</div></div></div><div class="filters"><input type="text" id="searchActiveUsers" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterActiveUsers()"></div><div class="table-wrapper"><table id="activeUsersTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Contact</th><th>Balance</th><th>Date activation</th><th>deviceId</th><th>firstLogin</th><th>isActive</th><th>lastLogin</th><th>lastUserAgent</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></tr></thead><tbody id="activeUsersTableBody"></tbody></table></div></div>
 <div id="netubersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Netubers</div></div><div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">Connectés</div></div><div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label">Déconnectés</div></div><div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Comptes bloqués</div></div></div><div class="filters"><input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()"><select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">Connectés</option><option value="offline">Déconnectés</option></select><button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button><button class="export-btn" onclick="openAddNetuberModal()" style="background:#8b5cf6;"><i class="fas fa-user-plus"></i> Ajouter Netuber</button></div><div class="table-wrapper"><table id="netubersTable"><thead><tr><th>Code Netuber</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Statut</th><th>Connexion</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></tr></thead><tbody id="netubersTableBody"></tbody></table></div></div>
 <div id="retraitsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalWithdrawalsPending">0</div><div class="label">En attente</div></div><div class="stat-card"><div class="value" id="totalWithdrawalsAmount">0</div><div class="label">Montant total</div></div></div><div class="filters"><select id="withdrawStatusFilter" class="filter-select" onchange="filterWithdrawals()"><option value="all">Tous</option><option value="pending">En attente</option><option value="approved">Approuvés</option><option value="rejected">Rejetés</option></select><button class="export-btn" onclick="exportWithdrawals()"><i class="fas fa-file-excel"></i> Exporter</button></div><div class="table-wrapper"><table id="withdrawalsTable"><thead><tr><th>Utilisateur</th><th>Montant</th><th>Méthode</th><th>Wallet</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="withdrawalsTableBody"></tbody></table></div></div>
@@ -377,6 +505,8 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
         </iframe>
     </div>
 </div>
+
+<!-- MODALS -->
 <div id="addNetuberModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-plus"></i> Ajouter un Netuber</h2><button class="modal-close" onclick="closeModal('addNetuberModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Nom complet</label><input type="text" id="newNetuberNom" placeholder="Nom et prénom"></div><div class="input-group"><label>Email</label><input type="email" id="newNetuberEmail" placeholder="exemple@email.com"></div><div class="input-group"><label>Mot de passe</label><input type="password" id="newNetuberPassword" placeholder="6 caractères minimum"></div><div class="input-group"><label>Code Netuber (unique)</label><input type="text" id="newNetuberCode" placeholder="EX: NX-001"></div><div class="input-group"><label>Contact WhatsApp</label><input type="text" id="newNetuberContact" placeholder="+243 XXX XXX XXX"></div></div><div class="modal-footer"><button onclick="confirmAddNetuber()" style="background:#10b981;color:#fff;padding:10px 24px;border-radius:40px;border:none;">Créer</button><button onclick="closeModal('addNetuberModal')" style="background:#1e293b;color:#fff;padding:10px 24px;border-radius:40px;border:none;">Annuler</button></div></div></div>
 <div id="modifyCodeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-key"></i> Modifier code Netuber</h2><button class="modal-close" onclick="closeModal('modifyCodeModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="modifyCodeSelect"></select></div><div class="input-group"><label>Nouveau code</label><input type="text" id="newCode" placeholder="Ex: MA-NX-99"></div></div><div class="modal-footer"><button onclick="confirmModifyCode()" style="background:#f59e0b;">Modifier</button><button onclick="closeModal('modifyCodeModal')">Annuler</button></div></div></div>
 <div id="blockUnblockModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-ban"></i> Bloquer Netuber</h2><button class="modal-close" onclick="closeModal('blockUnblockModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Sélectionner Netuber</label><select id="blockUnblockSelect"></select></div><div class="input-group"><label>Action</label><select id="blockAction"><option value="block">Bloquer</option><option value="unblock">Débloquer</option></select></div></div><div class="modal-footer"><button onclick="confirmBlockUnblock()" style="background:#f59e0b;">Valider</button><button onclick="closeModal('blockUnblockModal')">Annuler</button></div></div></div>
@@ -388,6 +518,7 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <div id="memorandumModal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-paper-plane"></i> Envoyer un mémorandum</h2><button class="modal-close" onclick="closeModal('memorandumModal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Référence du rapport (Destinataire)</label><input type="text" id="memoReportReference" readonly style="background:#334155;"></div><div class="input-group"><label>Titre du mémorandum</label><input type="text" id="memoTitle" placeholder="Ex: Note d'information - Rapport mensuel"></div><div class="input-group"><label>Message / Contenu</label><textarea id="memoContent" rows="6" placeholder="Contenu du mémorandum associé au rapport..."></textarea></div></div><div class="modal-footer"><button onclick="sendMemorandum()" style="background:#f59e0b;">Envoyer</button><button onclick="closeModal('memorandumModal')">Annuler</button></div></div></div>
 <div class="chat-header"><button id="chatBackBtn" class="chat-back-btn">← Retour</button><div class="netubex-logo">NeTubeX</div></div>
 <div class="rainbow-line"></div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, getDoc, query, orderBy, limit, where, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -409,7 +540,80 @@ let searchPendingTerm = "", searchActiveTerm = "", searchNetuberTerm = "";
 let currentReportReference = null, currentReportDate = null;
 let isAuthenticated = false;
 
-// Vérification de l'authentification - REDIRECTION IMMÉDIATE
+// TOASTS PROFESSIONNELS
+let toastContainer = null;
+
+function getToastContainer() {
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.className = 'toast-container';
+        document.body.appendChild(toastContainer);
+    }
+    return toastContainer;
+}
+
+function showToast(message, type = 'success', duration = 6000) {
+    const container = getToastContainer();
+    
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    
+    let icon = '';
+    let title = '';
+    switch(type) {
+        case 'success':
+            icon = '✅';
+            title = 'Succès';
+            break;
+        case 'error':
+            icon = '❌';
+            title = 'Erreur';
+            break;
+        case 'info':
+            icon = 'ℹ️';
+            title = 'Information';
+            break;
+        case 'warning':
+            icon = '⚠️';
+            title = 'Attention';
+            break;
+        default:
+            icon = '✅';
+            title = 'Notification';
+    }
+    
+    toast.innerHTML = `
+        <div class="toast-icon">${icon}</div>
+        <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close">✕</button>
+    `;
+    
+    container.appendChild(toast);
+    
+    const closeBtn = toast.querySelector('.toast-close');
+    closeBtn.addEventListener('click', () => {
+        toast.classList.add('toast-exit');
+        setTimeout(() => toast.remove(), 300);
+    });
+    
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.classList.add('toast-exit');
+            setTimeout(() => toast.remove(), 300);
+        }
+    }, duration);
+    
+    toast.addEventListener('click', (e) => {
+        if (e.target === closeBtn || closeBtn.contains(e.target)) return;
+        toast.classList.add('toast-exit');
+        setTimeout(() => toast.remove(), 300);
+    });
+}
+
+// Vérification de l'authentification
 onAuthStateChanged(auth, (user) => {
     if (!user) {
         window.location.href = "login.html";
@@ -432,14 +636,6 @@ function generateUniqueId() {
     return `${timestamp}x${random}`;
 }
 
-function showToast(msg, isError = false) {
-    let t = document.createElement('div');
-    t.className = 'toast' + (isError ? ' toast-error' : '');
-    t.innerHTML = (isError ? '❌ ' : '✅ ') + msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 4000);
-}
-
 function openModal(id) { document.getElementById(id).classList.add('active'); }
 window.closeModal = id => document.getElementById(id).classList.remove('active');
 
@@ -453,27 +649,22 @@ function showConfirm(title, message, onConfirm) {
     ok.addEventListener('click', handler); cancel.addEventListener('click', cancelHandler);
 }
 
-// ========== FONCTIONS DE GESTION DES BADGES ==========
+// GESTION DES BADGES
 function updateAllTabBadges() {
-    // Badge pour les inscriptions en attente
     const pendingCount = usersData.filter(u => u.isActive !== true && (!u.role || u.role !== 'netuber')).length;
     updateTabBadge('inscriptions', pendingCount);
     
-    // Badge pour les retraits en attente
     const pendingWithdrawals = withdrawalsData.filter(w => w.status === 'pending').length;
     updateTabBadge('retraits', pendingWithdrawals);
     
-    // Badge pour les tickets non résolus
     const openTickets = ticketsData.filter(t => t.status !== 'résolu').length;
     updateTabBadge('ticketsUsers', openTickets);
     
-    // Badge pour les alertes sécurité non lues
     const unreadAlerts = securityAlerts.filter(a => !a.read).length;
     updateTabBadge('securite', unreadAlerts);
     document.getElementById('alertsBadge').innerText = unreadAlerts;
     document.getElementById('alertsBadge').style.display = unreadAlerts > 0 ? 'inline-block' : 'none';
     
-    // Badge pour les anomalies (netubers avec +3 tickets)
     const ticketsByUser = {};
     ticketsData.forEach(t => {
         const key = t.userEmail || t.userCode;
@@ -496,24 +687,10 @@ function updateTabBadge(tabName, count) {
         badge.className = 'tab-badge';
         badge.innerText = count > 99 ? '99+' : count;
         tabButton.appendChild(badge);
-        
-        // Notification toast pour les nouveaux éléments
-        if(tabName === 'inscriptions' && count > 0) {
-            showToast(`📝 ${count} inscription(s) en attente d'activation`, false);
-        }
-        if(tabName === 'retraits' && count > 0) {
-            showToast(`💰 ${count} demande(s) de retrait en attente`, false);
-        }
-        if(tabName === 'ticketsUsers' && count > 0) {
-            showToast(`🎫 ${count} ticket(s) à traiter`, false);
-        }
-        if(tabName === 'securite' && count > 0) {
-            showToast(`🔒 ${count} nouvelle(s) alerte(s) de sécurité`, false);
-        }
     }
 }
 
-// ========== FONCTIONS DES ALERTES SÉCURITÉ CORRIGÉES ==========
+// ALERTES SÉCURITÉ
 async function loadSecurityAlerts() {
     try {
         const q = query(collection(db, "security_alerts"), orderBy("timestamp", "desc"));
@@ -543,7 +720,6 @@ function updateSecurityAlertsTable() {
     tbody.innerHTML = filtered.map(alert => {
         let typeIcon = '', typeLabel = '', typeColor = '';
         
-        // Déterminer le type d'alerte
         switch(alert.type) {
             case 'device_mismatch':
                 typeIcon = '🔴'; typeLabel = 'Device mismatch'; typeColor = '#ef4444';
@@ -567,7 +743,6 @@ function updateSecurityAlertsTable() {
                 typeIcon = '⚪'; typeLabel = alert.type; typeColor = '#64748b';
         }
         
-        // Détails selon le type d'alerte
         let details = '';
         if(alert.type === 'device_mismatch') {
             details = `Appareil enregistré: ${alert.registeredDeviceId?.substring(0,20) || '?'}<br>Appareil tenté: ${alert.attemptedDeviceId?.substring(0,20) || '?'}`;
@@ -611,9 +786,9 @@ window.filterSecurityAlerts = () => {
 window.markAlertRead = async (alertId) => {
     try {
         await updateDoc(doc(db, "security_alerts", alertId), { read: true });
-        showToast("Alerte marquée comme lue");
+        showToast("Alerte marquée comme lue", "success");
         await loadSecurityAlerts();
-    } catch(e) { showToast("Erreur", true); }
+    } catch(e) { showToast("Erreur", "error"); }
 };
 
 window.markAllAlertsRead = async () => {
@@ -623,7 +798,7 @@ window.markAllAlertsRead = async () => {
                 await updateDoc(doc(db, "security_alerts", alert.id), { read: true });
             } catch(e) {}
         }
-        showToast("Toutes les alertes ont été marquées comme lues");
+        showToast("Toutes les alertes ont été marquées comme lues", "success");
         await loadSecurityAlerts();
     });
 };
@@ -631,7 +806,7 @@ window.markAllAlertsRead = async () => {
 window.deleteAlert = async (alertId) => {
     showConfirm('Suppression', 'Supprimer cette alerte ?', async () => {
         await deleteDoc(doc(db, "security_alerts", alertId));
-        showToast("Alerte supprimée");
+        showToast("Alerte supprimée", "success");
         await loadSecurityAlerts();
     });
 };
@@ -639,10 +814,10 @@ window.deleteAlert = async (alertId) => {
 window.resetNetuberDevice = async (netuberCode) => {
     if(!netuberCode) return;
     const targetUser = usersData.find(u => u.code === netuberCode && u.role === 'netuber');
-    if(!targetUser) { showToast("Netuber non trouvé", true); return; }
+    if(!targetUser) { showToast("Netuber non trouvé", "error"); return; }
     showConfirm('Réinitialisation', `Réinitialiser le deviceId de ${netuberCode} ?`, async () => {
         await updateDoc(doc(db, "users", targetUser.id), { deviceId: null });
-        showToast(`✅ DeviceId réinitialisé pour ${netuberCode}`);
+        showToast(`✅ DeviceId réinitialisé pour ${netuberCode}`, "success");
         await loadAllData();
     });
 };
@@ -674,10 +849,10 @@ window.exportSecurityAlerts = () => {
     link.href = URL.createObjectURL(blob);
     link.download = `security_alerts_${new Date().toISOString().slice(0,19)}.csv`;
     link.click();
-    showToast("Export CSV lancé");
+    showToast("Export CSV lancé", "success");
 };
 
-// ========== FONCTIONS DES TICKETS CORRIGÉES ==========
+// TICKETS
 function openReplyTicketModal(ticketId, userId) { 
     document.getElementById('replyTicketId').value = ticketId; 
     document.getElementById('replyUserId').value = userId;
@@ -692,7 +867,7 @@ async function sendReply() {
     let newStatus = document.getElementById('replyStatus').value; 
     
     if(!message) { 
-        showToast("Message requis", true); 
+        showToast("Message requis", "error"); 
         return; 
     }
     
@@ -710,21 +885,21 @@ async function sendReply() {
             }); 
             ticketsList[ticketIndex].status = newStatus; 
             await updateDoc(doc(db, "users", userId), { ticketsList: ticketsList }); 
-            showToast("✅ Réponse envoyée"); 
+            showToast("✅ Réponse envoyée", "success"); 
             closeModal('replyTicketModal'); 
             document.getElementById('replyMessage').value = ''; 
             await loadTickets(); 
         } else {
-            showToast("Ticket non trouvé", true);
+            showToast("Ticket non trouvé", "error");
         }
     } catch(error) {
         console.error(error);
-        showToast("Erreur lors de l'envoi", true);
+        showToast("Erreur lors de l'envoi", "error");
     }
 }
 window.sendReply = sendReply;
 
-// ========== CHAT ==========
+// CHAT
 function initTabScroll() {
     const tabsWrapper = document.querySelector('.tabs-wrapper');
     const leftArrow = document.getElementById('scrollLeftArrow');
@@ -956,11 +1131,12 @@ async function loadChatMessages() {
 
 async function sendChatMessage() {
     const msg = chatMessageInput.value.trim();
-    if(!msg) { showToast("Message vide", true); return; }
+    if(!msg) { showToast("Message vide", "error"); return; }
     try {
         await addDoc(collection(db, "chat_messages"), { message: msg, sender: "DEO", senderRole: "deo", recipient: "responsable", sentDate: new Date().toISOString(), isEdited: false, status: "envoyé" });
         chatMessageInput.value = ''; await loadChatMessages();
-    } catch(e) { showToast("Erreur envoi", true); }
+        showToast("Message envoyé", "success");
+    } catch(e) { showToast("Erreur envoi", "error"); }
 }
 
 sendChatBtn?.addEventListener('click', sendChatMessage);
@@ -981,6 +1157,7 @@ document.querySelectorAll('.tab').forEach(btn => {
     if(btn.getAttribute('data-tab') === 'chatDeo') { btn.onclick = () => { enableChatFullscreen(); loadChatMessages(); }; }
 });
 
+// CHARGEMENT DES DONNÉES
 async function loadAllData() {
     try {
         let snap = await getDocs(collection(db, "users"));
@@ -1011,7 +1188,7 @@ async function loadAllData() {
         document.getElementById('totalUsersStat').innerText = activeUsersCount;
         document.getElementById('totalPendingStat').innerText = pendingCount;
         document.getElementById('totalWithdrawalsPendingStat').innerText = pendingWithdrawalsCount;
-    } catch(error) { console.error("Erreur chargement:", error); showToast("Erreur de connexion Firebase", true); }
+    } catch(error) { console.error("Erreur chargement:", error); showToast("Erreur de connexion Firebase", "error"); }
 }
 
 async function loadDevices() { let snap = await getDocs(collection(db, "user_devices")); devicesData = []; snap.forEach(d => devicesData.push({ id: d.id, ...d.data() })); }
@@ -1063,10 +1240,10 @@ function updateWithdrawalsTable() {
 }
 
 window.filterWithdrawals = () => { currentWithdrawFilter = document.getElementById('withdrawStatusFilter').value; updateWithdrawalsTable(); };
-window.approveWithdraw = async (id) => { let w = withdrawalsData.find(w => w.id === id); if(!w) return; let userRef = doc(db, "users", w.userId); let userSnap = await getDoc(userRef); let balance = userSnap.exists() ? (userSnap.data().balance || 0) : 0; await updateDoc(userRef, { balance: balance - (w.amount || 0) }); await updateDoc(doc(db, "withdraw", id), { status: "approved", processedAt: new Date().toISOString() }); showToast("Retrait approuvé"); await loadWithdrawals(); await loadAllData(); };
-window.rejectWithdraw = async (id) => { await updateDoc(doc(db, "withdraw", id), { status: "rejected", processedAt: new Date().toISOString() }); showToast("Retrait rejeté"); await loadWithdrawals(); };
-window.deleteWithdraw = async (id) => { showConfirm('Suppression', 'Supprimer cette demande ?', async () => { await deleteDoc(doc(db, "withdraw", id)); showToast("Demande supprimée"); await loadWithdrawals(); }); };
-window.exportWithdrawals = () => { let csv = "Utilisateur,Montant,Méthode,Wallet,Statut,Date\n"; withdrawalsData.forEach(w => { let u = usersData.find(u => u.id === w.userId); csv += `${u?.email || w.userId},${w.amount},${w.method},${w.walletAddress},${w.status},${w.requestedAt}\n`; }); let blob = new Blob([csv]); let link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `retraits.csv`; link.click(); };
+window.approveWithdraw = async (id) => { let w = withdrawalsData.find(w => w.id === id); if(!w) return; let userRef = doc(db, "users", w.userId); let userSnap = await getDoc(userRef); let balance = userSnap.exists() ? (userSnap.data().balance || 0) : 0; await updateDoc(userRef, { balance: balance - (w.amount || 0) }); await updateDoc(doc(db, "withdraw", id), { status: "approved", processedAt: new Date().toISOString() }); showToast("Retrait approuvé", "success"); await loadWithdrawals(); await loadAllData(); };
+window.rejectWithdraw = async (id) => { await updateDoc(doc(db, "withdraw", id), { status: "rejected", processedAt: new Date().toISOString() }); showToast("Retrait rejeté", "warning"); await loadWithdrawals(); };
+window.deleteWithdraw = async (id) => { showConfirm('Suppression', 'Supprimer cette demande ?', async () => { await deleteDoc(doc(db, "withdraw", id)); showToast("Demande supprimée", "success"); await loadWithdrawals(); }); };
+window.exportWithdrawals = () => { let csv = "Utilisateur,Montant,Méthode,Wallet,Statut,Date\n"; withdrawalsData.forEach(w => { let u = usersData.find(u => u.id === w.userId); csv += `${u?.email || w.userId},${w.amount},${w.method},${w.walletAddress},${w.status},${w.requestedAt}\n`; }); let blob = new Blob([csv]); let link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `retraits.csv`; link.click(); showToast("Export CSV lancé", "success"); };
 
 async function loadLastReport() {
     try {
@@ -1197,8 +1374,8 @@ function updateNetubersTable() {
                 <button class="action-btn delete" onclick='blockNetuber("${u.id}")'>${u.isBlocked ? 'Débloquer' : 'Bloquer'}</button>
                 <button class="action-btn" onclick='openModifyNetuberCodeModal("${u.id}")' style="background:#3b82f6;">Modifier Code</button>
                 <button class="action-btn delete" onclick='deleteNetuber("${u.id}")' style="background:#ef4444;">Supprimer</button>
-             </td>
-         </tr>`;
+              </td>
+          </tr>`;
     }).join('');
     document.getElementById('totalNetubers').innerText = netuberUsers.length;
     document.getElementById('totalOnline').innerText = onlineCount;
@@ -1215,9 +1392,9 @@ function updateNetubersTable() {
     }
 }
 
-window.blockNetuber = async (id) => { let u = usersData.find(u => u.id === id); if(u && u.role !== 'netuber') { showToast("Action réservée aux Netubers", true); return; } await updateDoc(doc(db, "users", id), { isBlocked: !u.isBlocked }); showToast(u.isBlocked ? "Netuber débloqué" : "Netuber bloqué"); await loadAllData(); };
-window.deleteNetuber = async (id) => { let u = usersData.find(u => u.id === id); if(u && u.role !== 'netuber') { showToast("Action réservée aux Netubers", true); return; } showConfirm('Suppression', `Supprimer définitivement le Netuber ${u?.code} ?`, async () => { await deleteDoc(doc(db, "users", id)); showToast("Netuber supprimé"); await loadAllData(); }); };
-window.openModifyNetuberCodeModal = async (id) => { let u = usersData.find(u => u.id === id); if(u && u.role !== 'netuber') { showToast("Action réservée aux Netubers", true); return; } let newCode = prompt("Nouveau code Netuber :", u.code); if(newCode && newCode.trim()) { let existing = usersData.find(user => user.code === newCode.toUpperCase() && user.id !== id); if(existing) { showToast("Code déjà utilisé", true); return; } await updateDoc(doc(db, "users", id), { code: newCode.toUpperCase() }); showToast("Code modifié"); await loadAllData(); } };
+window.blockNetuber = async (id) => { let u = usersData.find(u => u.id === id); if(u && u.role !== 'netuber') { showToast("Action réservée aux Netubers", "error"); return; } await updateDoc(doc(db, "users", id), { isBlocked: !u.isBlocked }); showToast(u.isBlocked ? "Netuber débloqué" : "Netuber bloqué", "success"); await loadAllData(); };
+window.deleteNetuber = async (id) => { let u = usersData.find(u => u.id === id); if(u && u.role !== 'netuber') { showToast("Action réservée aux Netubers", "error"); return; } showConfirm('Suppression', `Supprimer définitivement le Netuber ${u?.code} ?`, async () => { await deleteDoc(doc(db, "users", id)); showToast("Netuber supprimé", "success"); await loadAllData(); }); };
+window.openModifyNetuberCodeModal = async (id) => { let u = usersData.find(u => u.id === id); if(u && u.role !== 'netuber') { showToast("Action réservée aux Netubers", "error"); return; } let newCode = prompt("Nouveau code Netuber :", u.code); if(newCode && newCode.trim()) { let existing = usersData.find(user => user.code === newCode.toUpperCase() && user.id !== id); if(existing) { showToast("Code déjà utilisé", "error"); return; } await updateDoc(doc(db, "users", id), { code: newCode.toUpperCase() }); showToast("Code modifié", "success"); await loadAllData(); } };
 
 function updatePendingTable() {
     let tbody = document.getElementById('pendingTableBody');
@@ -1302,11 +1479,11 @@ window.deleteTicket = async (ticketId, userId) => {
                 let ticketsList = userSnap.data().ticketsList || [];
                 const updatedList = ticketsList.filter(t => t.id !== ticketId);
                 await updateDoc(userRef, { ticketsList: updatedList });
-                showToast("Ticket supprimé");
+                showToast("Ticket supprimé", "success");
                 await loadTickets();
                 await loadAllData();
             }
-        } catch(e) { showToast("Erreur lors de la suppression", true); }
+        } catch(e) { showToast("Erreur lors de la suppression", "error"); }
     });
 };
 
@@ -1339,7 +1516,7 @@ function updateAnomaliesTable() {
 
 window.deleteAnomaly = (user) => {
     showConfirm('Suppression', `Supprimer cette anomalie pour ${user} ?`, async () => {
-        showToast(`Anomalie supprimée pour ${user}`);
+        showToast(`Anomalie supprimée pour ${user}`, "success");
         await loadTickets();
     });
 };
@@ -1379,40 +1556,40 @@ async function loadMemos() {
     </tr>`).join(''); }
 }
 
-window.deleteMemorandum = async (id) => { showConfirm('Suppression', 'Supprimer ce mémorandum ?', async () => { await deleteDoc(doc(db, "memorandums", id)); showToast("Mémorandum supprimé"); await loadMemos(); }); };
+window.deleteMemorandum = async (id) => { showConfirm('Suppression', 'Supprimer ce mémorandum ?', async () => { await deleteDoc(doc(db, "memorandums", id)); showToast("Mémorandum supprimé", "success"); await loadMemos(); }); };
 window.sendCAP = async () => { 
     const code = document.getElementById('capNetuberCode').value;
     const msg = document.getElementById('capMessage').value.trim();
     const expiryDate = document.getElementById('capExpiryDate').value;
-    if(!code) { showToast("Code Netuber manquant", true); return; }
-    if(!msg) { showToast("Veuillez écrire un message", true); return; }
+    if(!code) { showToast("Code Netuber manquant", "error"); return; }
+    if(!msg) { showToast("Veuillez écrire un message", "error"); return; }
     const targetUser = usersData.find(u => u.code === code && u.role === 'netuber');
-    if(!targetUser) { showToast("Netuber non trouvé", true); return; }
+    if(!targetUser) { showToast("Netuber non trouvé", "error"); return; }
     try {
         const capsList = targetUser.capsList || [];
         capsList.push({ id: `CAP_${Date.now()}`, message: msg, sentDate: new Date().toISOString(), expiryDate: expiryDate || null, read: false });
         await updateDoc(doc(db, "users", targetUser.id), { capsList: capsList });
         await addDoc(collection(db, "caps"), { netuberCode: code, message: msg, sentDate: new Date().toISOString(), expiryDate: expiryDate });
-        showToast(`✅ CAP envoyé à ${code}`);
+        showToast(`✅ CAP envoyé à ${code}`, "success");
         closeModal('capModal');
         document.getElementById('capMessage').value = '';
         document.getElementById('capExpiryDate').value = '';
         await loadCAPs();
-    } catch(error) { console.error(error); showToast("Erreur lors de l'envoi du CAP", true); }
+    } catch(error) { console.error(error); showToast("Erreur lors de l'envoi du CAP", "error"); }
 };
 window.openCAPModal = (code) => { document.getElementById('capNetuberCode').value = code; document.getElementById('capMessage').value = ''; document.getElementById('capExpiryDate').value = ''; openModal('capModal'); };
-window.openActivateModal = (id) => { let u = usersData.find(u => u.id === id); if(u) { showConfirm('Activation', `Activer ${u.email} ?`, async () => { await updateDoc(doc(db, "users", id), { isActive: true, dateActivation: new Date().toISOString() }); showToast("Compte activé"); await loadAllData(); }); } };
-window.rejectUser = async (id) => { showConfirm('Rejet', `Rejeter cette inscription ?`, async () => { await deleteDoc(doc(db, "users", id)); showToast("Inscription rejetée"); await loadAllData(); }); };
-window.deleteUser = async (id) => { showConfirm('Suppression', `Supprimer définitivement ?`, async () => { await deleteDoc(doc(db, "users", id)); showToast("Utilisateur supprimé"); await loadAllData(); }); };
+window.openActivateModal = (id) => { let u = usersData.find(u => u.id === id); if(u) { showConfirm('Activation', `Activer ${u.email} ?`, async () => { await updateDoc(doc(db, "users", id), { isActive: true, dateActivation: new Date().toISOString() }); showToast("Compte activé", "success"); await loadAllData(); }); } };
+window.rejectUser = async (id) => { showConfirm('Rejet', `Rejeter cette inscription ?`, async () => { await deleteDoc(doc(db, "users", id)); showToast("Inscription rejetée", "warning"); await loadAllData(); }); };
+window.deleteUser = async (id) => { showConfirm('Suppression', `Supprimer définitivement ?`, async () => { await deleteDoc(doc(db, "users", id)); showToast("Utilisateur supprimé", "success"); await loadAllData(); }); };
 window.openModifyCodeModal = async () => { let netubers = usersData.filter(u => u.role === 'netuber'); let select = document.getElementById('modifyCodeSelect'); select.innerHTML = netubers.map(n => `<option value="${n.id}">${n.code}</option>`).join(''); openModal('modifyCodeModal'); };
-window.confirmModifyCode = async () => { let userId = document.getElementById('modifyCodeSelect').value; let newCode = document.getElementById('newCode').value.trim().toUpperCase(); if(!newCode) { showToast("Code requis", true); return; } let existing = usersData.find(u => u.code === newCode && u.id !== userId); if(existing) { showToast("Code déjà utilisé", true); return; } await updateDoc(doc(db, "users", userId), { code: newCode }); showToast("Code modifié"); closeModal('modifyCodeModal'); await loadAllData(); };
+window.confirmModifyCode = async () => { let userId = document.getElementById('modifyCodeSelect').value; let newCode = document.getElementById('newCode').value.trim().toUpperCase(); if(!newCode) { showToast("Code requis", "error"); return; } let existing = usersData.find(u => u.code === newCode && u.id !== userId); if(existing) { showToast("Code déjà utilisé", "error"); return; } await updateDoc(doc(db, "users", userId), { code: newCode }); showToast("Code modifié", "success"); closeModal('modifyCodeModal'); await loadAllData(); };
 window.openBlockUnblockModal = async () => { let netubers = usersData.filter(u => u.role === 'netuber'); let select = document.getElementById('blockUnblockSelect'); select.innerHTML = netubers.map(n => `<option value="${n.id}">${n.code}</option>`).join(''); openModal('blockUnblockModal'); };
-window.confirmBlockUnblock = async () => { let userId = document.getElementById('blockUnblockSelect').value; let action = document.getElementById('blockAction').value; let isBlock = action === 'block'; let u = usersData.find(u => u.id === userId); if(u && u.role !== 'netuber') { showToast("Action réservée aux Netubers", true); return; } if(u && u.isBlocked === isBlock) { showToast(isBlock ? "Déjà bloqué" : "Déjà débloqué", true); return; } await updateDoc(doc(db, "users", userId), { isBlocked: isBlock }); showToast(isBlock ? "Bloqué" : "Débloqué"); closeModal('blockUnblockModal'); await loadAllData(); };
+window.confirmBlockUnblock = async () => { let userId = document.getElementById('blockUnblockSelect').value; let action = document.getElementById('blockAction').value; let isBlock = action === 'block'; let u = usersData.find(u => u.id === userId); if(u && u.role !== 'netuber') { showToast("Action réservée aux Netubers", "error"); return; } if(u && u.isBlocked === isBlock) { showToast(isBlock ? "Déjà bloqué" : "Déjà débloqué", "warning"); return; } await updateDoc(doc(db, "users", userId), { isBlocked: isBlock }); showToast(isBlock ? "Bloqué" : "Débloqué", "success"); closeModal('blockUnblockModal'); await loadAllData(); };
 window.openDeleteNetuberModal = async () => { let netubers = usersData.filter(u => u.role === 'netuber'); let select = document.getElementById('deleteNetuberSelect'); select.innerHTML = netubers.map(n => `<option value="${n.id}">${n.code}</option>`).join(''); openModal('deleteNetuberModal'); };
-window.confirmDeleteNetuber = async () => { let userId = document.getElementById('deleteNetuberSelect').value; let u = usersData.find(u => u.id === userId); if(u && u.role !== 'netuber') { showToast("Action réservée aux Netubers", true); return; } showConfirm('Suppression', 'Supprimer ce Netuber ?', async () => { await deleteDoc(doc(db, "users", userId)); showToast("Netuber supprimé"); closeModal('deleteNetuberModal'); await loadAllData(); }); };
+window.confirmDeleteNetuber = async () => { let userId = document.getElementById('deleteNetuberSelect').value; let u = usersData.find(u => u.id === userId); if(u && u.role !== 'netuber') { showToast("Action réservée aux Netubers", "error"); return; } showConfirm('Suppression', 'Supprimer ce Netuber ?', async () => { await deleteDoc(doc(db, "users", userId)); showToast("Netuber supprimé", "success"); closeModal('deleteNetuberModal'); await loadAllData(); }); };
 window.openDeleteUserModal = async () => { let users = usersData.filter(u => !u.role && u.email); let select = document.getElementById('deleteUserSelect'); select.innerHTML = users.map(u => `<option value="${u.id}">${u.email}</option>`).join(''); openModal('deleteUserModal'); };
-window.confirmDeleteUser = async () => { let userId = document.getElementById('deleteUserSelect').value; showConfirm('Suppression', 'Supprimer cet utilisateur ?', async () => { await deleteDoc(doc(db, "users", userId)); showToast("Utilisateur supprimé"); closeModal('deleteUserModal'); await loadAllData(); }); };
-window.exportNetubers = () => { showToast("Export Netubers"); };
+window.confirmDeleteUser = async () => { let userId = document.getElementById('deleteUserSelect').value; showConfirm('Suppression', 'Supprimer cet utilisateur ?', async () => { await deleteDoc(doc(db, "users", userId)); showToast("Utilisateur supprimé", "success"); closeModal('deleteUserModal'); await loadAllData(); }); };
+window.exportNetubers = () => { showToast("Export Netubers", "info"); };
 window.openAddNetuberModal = () => { document.getElementById('newNetuberNom').value = ''; document.getElementById('newNetuberEmail').value = ''; document.getElementById('newNetuberPassword').value = ''; document.getElementById('newNetuberCode').value = ''; document.getElementById('newNetuberContact').value = ''; openModal('addNetuberModal'); };
 window.confirmAddNetuber = async () => {
     let nom = document.getElementById('newNetuberNom').value.trim();
@@ -1420,12 +1597,12 @@ window.confirmAddNetuber = async () => {
     let password = document.getElementById('newNetuberPassword').value;
     let code = document.getElementById('newNetuberCode').value.trim().toUpperCase();
     let contact = document.getElementById('newNetuberContact').value.trim();
-    if(!nom || !email || !password || !code) { showToast("Tous les champs sont requis", true); return; }
-    if(password.length < 6) { showToast("6 caractères minimum", true); return; }
+    if(!nom || !email || !password || !code) { showToast("Tous les champs sont requis", "error"); return; }
+    if(password.length < 6) { showToast("6 caractères minimum", "error"); return; }
     let existingUser = usersData.find(u => u.code === code);
-    if(existingUser) { showToast("Code existe déjà", true); return; }
+    if(existingUser) { showToast("Code existe déjà", "error"); return; }
     let existingEmail = usersData.find(u => u.email === email);
-    if(existingEmail) { showToast("Email existe déjà", true); return; }
+    if(existingEmail) { showToast("Email existe déjà", "error"); return; }
     try {
         let cred = await createUserWithEmailAndPassword(auth, email, password);
         const uniqueId = generateUniqueId();
@@ -1438,26 +1615,26 @@ window.confirmAddNetuber = async () => {
             balance: 0, ticketsList: [], capsList: [],
             lastSeen: new Date().toISOString(), lastConnection: new Date().toISOString(), isOnline: true
         });
-        showToast(`✅ Netuber ${code} créé avec ID unique`);
+        showToast(`✅ Netuber ${code} créé avec succès`, "success");
         closeModal('addNetuberModal');
         await loadAllData();
-    } catch(e) { showToast("Erreur: " + e.message, true); }
+    } catch(e) { showToast("Erreur: " + e.message, "error"); }
 };
 
 window.sendMemorandum = async () => {
     const title = document.getElementById('memoTitle').value.trim();
     const content = document.getElementById('memoContent').value.trim();
     const reportReference = document.getElementById('memoReportReference').value;
-    if(!title || !content) { showToast("Titre et contenu requis", true); return; }
-    if(!reportReference) { showToast("Aucune référence de rapport", true); return; }
+    if(!title || !content) { showToast("Titre et contenu requis", "error"); return; }
+    if(!reportReference) { showToast("Aucune référence de rapport", "error"); return; }
     try {
         await addDoc(collection(db, "memorandums"), { title: title, content: content, reportReference: reportReference, sentDate: new Date().toISOString() });
-        showToast(`✅ Mémorandum envoyé pour le rapport: ${reportReference}`);
+        showToast(`✅ Mémorandum envoyé pour le rapport: ${reportReference}`, "success");
         closeModal('memorandumModal');
         document.getElementById('memoTitle').value = '';
         document.getElementById('memoContent').value = '';
         await loadMemos();
-    } catch(error) { console.error(error); showToast("Erreur lors de l'envoi", true); }
+    } catch(error) { console.error(error); showToast("Erreur lors de l'envoi", "error"); }
 };
 
 window.filterPendingUsers = () => { searchPendingTerm = document.getElementById('searchPending')?.value.toLowerCase() || ''; updatePendingTable(); };
@@ -1468,7 +1645,7 @@ document.getElementById('sendMemoFromReportBtn')?.addEventListener('click', () =
     if(currentReportReference) {
         document.getElementById('memoReportReference').value = currentReportReference;
         openModal('memorandumModal');
-    } else { showToast("Aucun rapport chargé", true); }
+    } else { showToast("Aucun rapport chargé", "error"); }
 });
 document.getElementById('logoutBtn')?.addEventListener('click', () => showConfirm('Déconnexion', 'Quitter ?', async () => { await signOut(auth); window.location.href = "login.html"; }));
 document.getElementById('refreshBtn')?.addEventListener('click', () => location.reload());
@@ -1477,3 +1654,4 @@ document.getElementById('themeToggle')?.addEventListener('click', () => toggleTh
 document.addEventListener('contextmenu', e => e.preventDefault());
 </script>
 </body>
+</html>
