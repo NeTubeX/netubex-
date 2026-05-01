@@ -141,7 +141,7 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut, updatePassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, onSnapshot, getDocs, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
 const app = initializeApp(firebaseConfig);
@@ -306,7 +306,7 @@ async function loadCapMessage(){
   document.getElementById('capMessage').innerHTML = cap.replace(/\n/g,'<br>');
 }
 
-// ============== RETRAIT AVEC VÉRIFICATION 24h ==============
+// ============== RETRAIT SIMPLIFIÉ (SANS VÉRIFICATION 24h) ==============
 async function submitWithdraw(){
   const submitBtn = document.getElementById('submitWithdrawBtn');
   const originalText = submitBtn.innerHTML;
@@ -327,33 +327,6 @@ async function submitWithdraw(){
   submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement...';
   
   try {
-    // ========== VÉRIFICATION 24h (un retrait par jour) ==========
-    const transactionsRef = collection(db, "users", currentUser.uid, "transactions");
-    const q = query(
-      transactionsRef,
-      where("type", "==", "withdraw"),
-      orderBy("time", "desc"),
-      limit(1)
-    );
-    
-    const querySnapshot = await getDocs(q);
-    
-    if (!querySnapshot.empty) {
-      const lastWithdraw = querySnapshot.docs[0].data();
-      const lastDate = new Date(lastWithdraw.time);
-      const now = new Date();
-      const diffHours = (now - lastDate) / 1000 / 60 / 60;
-      
-      if (diffHours < 24) {
-        const remainingHours = Math.ceil(24 - diffHours);
-        showToast('⚠️ Limite quotidienne', `Vous avez déjà effectué un retrait aujourd'hui. Réessayez dans ${remainingHours} heure(s).`, 'error');
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalText;
-        return;
-      }
-    }
-    // ========== FIN VÉRIFICATION ==========
-    
     // Vérifications PayPal
     if(selectedMethod === 'paypal' && amount < 10){
       showToast('Montant invalide', 'PayPal nécessite un minimum de 10$', 'error');
@@ -395,7 +368,7 @@ async function submitWithdraw(){
       methodName = selectedMethod === 'airtel_money' ? 'Airtel Money' : 'Orange Money';
     }
     
-    // Vérifier solde
+    // Vérifier solde (calculé depuis les transactions)
     const currentBalance = await calculateBalanceFromTransactions();
     
     if(amount > currentBalance){
@@ -463,7 +436,7 @@ async function initUser(user){
       capDuJour: "📊 CAP DU JOUR\n\n• Jouer aux jeux\n• Inviter des amis (10% de leurs gains)\n• Bonne journée !"
     });
     
-    // Bonus de bienvenue
+    // Bonus de bienvenue : ajouter 0.20$ en transaction
     await setDoc(doc(db, "users", user.uid, "transactions", "welcome_bonus"), {
       amount: 0.20,
       revenue: 0,
