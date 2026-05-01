@@ -11,14 +11,12 @@
 body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;padding:16px;}
 .card{background:#111827;border-radius:20px;padding:20px;margin-bottom:16px;border:1px solid #1e293b;}
 .card h2{font-size:18px;color:#f59e0b;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.card p{margin-bottom:8px;font-size:13px;color:#94a3b8;word-break:break-all;}
 input,button{width:100%;padding:14px;border-radius:14px;border:none;font-size:14px;margin-bottom:12px;}
 input{background:#1e293b;border:1px solid #334155;color:#fff;}
 button{background:#f59e0b;color:#0a0f1a;font-weight:700;cursor:pointer;}
 button:active{opacity:0.8;}
 .btn-test{background:#3b82f6;color:#fff;}
 .btn-logout{background:#ef4444;color:#fff;margin-top:20px;}
-pre{background:#0a0f1a;padding:12px;border-radius:12px;font-size:11px;overflow-x:auto;margin-top:12px;border:1px solid #1e293b;color:#10b981;}
 .badge{padding:4px 10px;border-radius:20px;font-size:11px;display:inline-block;}
 .badge-pending{background:rgba(245,158,11,0.2);color:#f59e0b;}
 .badge-approved{background:rgba(16,185,129,0.2);color:#10b981;}
@@ -26,6 +24,7 @@ pre{background:#0a0f1a;padding:12px;border-radius:12px;font-size:11px;overflow-x
 table{width:100%;border-collapse:collapse;font-size:12px;}
 th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #1e293b;}
 .toast{position:fixed;bottom:20px;left:16px;right:16px;background:#111827;border-left:4px solid #10b981;padding:12px;border-radius:12px;font-size:12px;text-align:center;z-index:1000;}
+pre{background:#0a0f1a;padding:12px;border-radius:12px;font-size:10px;overflow-x:auto;margin-top:12px;color:#10b981;}
 </style>
 </head>
 <body>
@@ -40,8 +39,7 @@ th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #1e293b;}
 <div id="adminSection" style="display:none;">
     <div class="card">
         <h2><i class="fas fa-money-bill-wave"></i> Gestion des retraits</h2>
-        <p><strong>⚠️ Important :</strong> Clique sur <strong>"TEST FIREBASE"</strong> pour voir ce que la base retourne</p>
-        <button class="btn-test" id="testBtn"><i class="fas fa-database"></i> TEST FIREBASE (affiche les données)</button>
+        <button class="btn-test" id="testBtn"><i class="fas fa-database"></i> TEST : Voir collection "withdraw"</button>
     </div>
 
     <div class="card">
@@ -59,7 +57,7 @@ th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #1e293b;}
         <div style="overflow-x:auto;">
             <table id="withdrawalsTable">
                 <thead><tr><th>User</th><th>Montant</th><th>Méthode</th><th>Statut</th><th>Actions</th></tr></thead>
-                <tbody id="withdrawalsBody"><tr><td colspan="5" style="text-align:center;">🔐 Connectez-vous d'abord</td></tr></tbody>
+                <tbody id="withdrawalsBody"><tr><td colspan="5" style="text-align:center;">🔐 Connectez-vous</td></tr></tbody>
             </table>
         </div>
         <button id="refreshBtn" style="margin-top:16px;"><i class="fas fa-sync-alt"></i> Rafraîchir</button>
@@ -71,7 +69,7 @@ th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #1e293b;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -99,61 +97,33 @@ function showToast(msg, isError=false){
     setTimeout(()=>{ toast.style.display = 'none'; }, 4000);
 }
 
-async function testFirebase(){
-    showToast("🔍 Test en cours...");
-    let result = "=== RÉSULTAT TEST ===\n\n";
+// TEST : Afficher le contenu de la collection "withdraw"
+async function testWithdrawCollection(){
+    showToast("🔍 Test collection 'withdraw'...");
+    let result = "=== COLLECTION 'withdraw' ===\n\n";
     
     try {
-        const usersSnap = await getDocs(collection(db, "users"));
-        result += `📁 Collection users: ${usersSnap.size} utilisateurs\n\n`;
+        const withdrawSnap = await getDocs(collection(db, "withdraw"));
+        result += `📁 Nombre de documents: ${withdrawSnap.size}\n\n`;
         
-        let totalWithdraws = 0;
-        
-        for(const userDoc of usersSnap.docs){
-            const userId = userDoc.id;
-            const userEmail = userDoc.data().email;
-            const userCode = userDoc.data().code || 'no-code';
-            
-            try {
-                const txSnap = await getDocs(collection(db, "users", userId, "transactions"));
-                let userWithdraws = 0;
-                
-                txSnap.forEach(txDoc => {
-                    const tx = txDoc.data();
-                    if(tx.type === "withdraw"){
-                        userWithdraws++;
-                        totalWithdraws++;
-                    }
-                });
-                
-                result += `👤 ${userCode} (${userEmail})\n`;
-                result += `   └─ Transactions: ${txSnap.size} | Retraits: ${userWithdraws}\n`;
-                
-                if(userWithdraws > 0){
-                    const firstTx = await getDocs(collection(db, "users", userId, "transactions"));
-                    firstTx.forEach(txDoc => {
-                        const tx = txDoc.data();
-                        if(tx.type === "withdraw"){
-                            result += `      💰 ${Math.abs(tx.amount)}$ - ${tx.methodName || tx.method} - ${tx.wallet}\n`;
-                            result += `      📅 ${new Date(tx.time).toLocaleString()}\n`;
-                            result += `      📌 status: ${tx.status || 'pending'}\n`;
-                        }
-                    });
-                }
-                result += "\n";
-                
-            } catch(e) {
-                result += `❌ Erreur accès transactions pour ${userId}: ${e.message}\n\n`;
-            }
-        }
-        
-        result += `\n=== TOTAL RETRAITS TROUVÉS: ${totalWithdraws} ===\n`;
-        
-        if(totalWithdraws === 0){
-            result += "\n⚠️ AUCUN RETRAIT TROUVÉ !\n";
-            result += "Vérifie que:\n";
-            result += "1. Les transactions ont type = 'withdraw'\n";
-            result += "2. L'admin a les droits de lecture\n";
+        if(withdrawSnap.size === 0){
+            result += "⚠️ AUCUN DOCUMENT DANS 'withdraw'\n\n";
+            result += "Vérifie le nom exact de la collection dans Firebase.\n";
+            result += "Les noms possibles :\n";
+            result += " - withdraw\n - withdrawals\n - retraits\n - withdraws\n";
+        } else {
+            withdrawSnap.forEach(docSnap => {
+                const data = docSnap.data();
+                result += `📄 ID: ${docSnap.id}\n`;
+                result += `   userId: ${data.userId || '?'}\n`;
+                result += `   userEmail: ${data.userEmail || '?'}\n`;
+                result += `   amount: ${data.amount || 0}$\n`;
+                result += `   method: ${data.methodName || data.method || '?'}\n`;
+                result += `   status: ${data.status || 'pending'}\n`;
+                result += `   time: ${data.time ? new Date(data.time).toLocaleString() : '?'}\n`;
+                result += `   wallet: ${data.wallet || data.walletAddress || '?'}\n`;
+                result += `\n`;
+            });
         }
         
         alert(result);
@@ -164,111 +134,119 @@ async function testFirebase(){
     }
 }
 
-async function loadWithdrawals(){
+// Charger depuis la collection "withdraw"
+async function loadWithdrawals() {
     withdrawalsData = [];
-    const usersSnap = await getDocs(collection(db, "users"));
     
-    for(const userDoc of usersSnap.docs){
-        const userId = userDoc.id;
-        const userEmail = userDoc.data().email;
-        const userCode = userDoc.data().code || '';
+    try {
+        const withdrawSnap = await getDocs(collection(db, "withdraw"));
+        console.log("📊 Documents dans 'withdraw' :", withdrawSnap.size);
         
-        try {
-            const txSnap = await getDocs(collection(db, "users", userId, "transactions"));
-            txSnap.forEach(txDoc => {
-                const tx = txDoc.data();
-                if(tx.type === "withdraw"){
-                    withdrawalsData.push({
-                        id: txDoc.id,
-                        userId: userId,
-                        userEmail: userEmail,
-                        userCode: userCode,
-                        amount: Math.abs(tx.amount),
-                        method: tx.methodName || tx.method,
-                        wallet: tx.wallet,
-                        requestedAt: tx.time,
-                        status: tx.status || "pending"
-                    });
-                }
+        for (const docSnap of withdrawSnap.docs) {
+            const w = docSnap.data();
+            withdrawalsData.push({
+                id: docSnap.id,
+                userId: w.userId,
+                userEmail: w.userEmail,
+                userCode: w.userCode || '',
+                amount: Math.abs(w.amount || 0),
+                method: w.methodName || w.method,
+                wallet: w.wallet || w.walletAddress,
+                requestedAt: w.time || w.requestedAt,
+                status: w.status || "pending"
             });
-        } catch(e) {
-            console.error("Erreur accès:", e.message);
         }
+        
+        console.log("💰 Retraits chargés :", withdrawalsData.length);
+        withdrawalsData.sort((a,b) => (b.requestedAt || 0) - (a.requestedAt || 0));
+        updateDisplay();
+        
+        if(withdrawalsData.length === 0){
+            showToast("⚠️ Aucun retrait trouvé dans la collection 'withdraw'", true);
+        } else {
+            showToast(`✅ ${withdrawalsData.length} retrait(s) chargé(s)`);
+        }
+        
+    } catch(e) {
+        console.error("Erreur chargement:", e);
+        showToast("❌ Erreur accès collection 'withdraw'", true);
     }
-    
-    withdrawalsData.sort((a,b)=>b.requestedAt - a.requestedAt);
-    updateDisplay();
 }
 
 function updateDisplay(){
     let filtered = withdrawalsData.filter(w=>{
-        const matchSearch = !searchTerm || (w.userCode||'').toLowerCase().includes(searchTerm) || (w.userEmail||'').toLowerCase().includes(searchTerm);
-        const matchStatus = currentFilter==='all' || w.status===currentFilter;
+        const matchSearch = !searchTerm || 
+            (w.userCode || '').toLowerCase().includes(searchTerm) || 
+            (w.userEmail || '').toLowerCase().includes(searchTerm);
+        const matchStatus = currentFilter === 'all' || w.status === currentFilter;
         return matchSearch && matchStatus;
     });
     
-    const pending = withdrawalsData.filter(w=>w.status==='pending');
-    const pendingAmount = pending.reduce((s,w)=>s+w.amount,0);
+    const pending = withdrawalsData.filter(w=>w.status === 'pending');
+    const pendingAmount = pending.reduce((s,w)=>s + w.amount, 0);
     document.getElementById('pendingCount').innerText = pending.length;
     document.getElementById('pendingAmount').innerText = pendingAmount.toFixed(2) + '$';
     
     const tbody = document.getElementById('withdrawalsBody');
-    if(filtered.length===0){
+    if(filtered.length === 0){
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 Aucune demande</td></tr>';
         return;
     }
     
-    tbody.innerHTML = filtered.map(w=>{
-        let badgeClass = w.status==='pending' ? 'badge-pending' : (w.status==='approved' ? 'badge-approved' : 'badge-rejected');
-        let badgeText = w.status==='pending' ? '⏳ En attente' : (w.status==='approved' ? '✅ Approuvé' : '❌ Rejeté');
-        let actions = w.status==='pending' ? 
-            `<button class="approve-btn" data-user="${w.userId}" data-tx="${w.id}" style="background:#10b981; color:#fff; border:none; padding:4px 10px; border-radius:8px; margin-right:6px;">✅</button>
-             <button class="reject-btn" data-user="${w.userId}" data-tx="${w.id}" data-amount="${w.amount}" style="background:#f59e0b; color:#fff; border:none; padding:4px 10px; border-radius:8px;">❌</button>` :
-            `<button class="delete-btn" data-user="${w.userId}" data-tx="${w.id}" style="background:#ef4444; color:#fff; border:none; padding:4px 10px; border-radius:8px;">🗑️</button>`;
-        return `<tr><td><strong>${escapeHtml(w.userCode||w.userEmail)}</strong></td><td style="color:#f59e0b;">${w.amount.toFixed(2)}$</td><td>${escapeHtml(w.method)}</td><td><span class="badge ${badgeClass}">${badgeText}</span></td><td>${actions}</td></tr>`;
+    function escape(s){ return s ? String(s).replace(/[&<>]/g,m=>m==='&'?'&amp;':m==='<'?'&lt;':'&gt;') : ''; }
+    
+    tbody.innerHTML = filtered.map(w => {
+        let badgeClass = w.status === 'pending' ? 'badge-pending' : (w.status === 'approved' ? 'badge-approved' : 'badge-rejected');
+        let badgeText = w.status === 'pending' ? '⏳ En attente' : (w.status === 'approved' ? '✅ Approuvé' : '❌ Rejeté');
+        let actions = w.status === 'pending' ? 
+            `<button class="approve-btn" data-id="${w.id}" style="background:#10b981; color:#fff; border:none; padding:4px 10px; border-radius:8px; margin-right:6px;">✅</button>
+             <button class="reject-btn" data-id="${w.id}" data-amount="${w.amount}" style="background:#f59e0b; color:#fff; border:none; padding:4px 10px; border-radius:8px;">❌</button>` :
+            `<button class="delete-btn" data-id="${w.id}" style="background:#ef4444; color:#fff; border:none; padding:4px 10px; border-radius:8px;">🗑️</button>`;
+        return `<tr>
+            <td><strong>${escape(w.userCode || w.userEmail)}</strong></td>
+            <td style="color:#f59e0b;">${w.amount.toFixed(2)}$</td>
+            <td>${escape(w.method)}</td>
+            <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+            <td>${actions}</td>
+        </tr>`;
     }).join('');
     
-    document.querySelectorAll('.approve-btn').forEach(btn=>{
-        btn.addEventListener('click',()=>approveWithdraw(btn.dataset.user, btn.dataset.tx));
+    document.querySelectorAll('.approve-btn').forEach(btn => {
+        btn.addEventListener('click', () => approveWithdraw(btn.dataset.id));
     });
-    document.querySelectorAll('.reject-btn').forEach(btn=>{
-        btn.addEventListener('click',()=>rejectWithdraw(btn.dataset.user, btn.dataset.tx, parseFloat(btn.dataset.amount)));
+    document.querySelectorAll('.reject-btn').forEach(btn => {
+        btn.addEventListener('click', () => rejectWithdraw(btn.dataset.id, parseFloat(btn.dataset.amount)));
     });
-    document.querySelectorAll('.delete-btn').forEach(btn=>{
-        btn.addEventListener('click',()=>deleteRecord(btn.dataset.user, btn.dataset.tx));
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => deleteRecord(btn.dataset.id));
     });
 }
 
-async function approveWithdraw(userId, txId){
+async function approveWithdraw(id){
     try{
-        await updateDoc(doc(db, "users", userId, "transactions", txId), {status:"approved", processedAt:new Date().toISOString()});
+        await updateDoc(doc(db, "withdraw", id), { status: "approved", processedAt: new Date().toISOString() });
         showToast("✅ Retrait approuvé");
         await loadWithdrawals();
-    }catch(e){ showToast("❌ Erreur", true); }
+    } catch(e){ showToast("❌ Erreur", true); }
 }
 
-async function rejectWithdraw(userId, txId, amount){
+async function rejectWithdraw(id, amount){
     if(!confirm(`Rejeter et rembourser ${amount.toFixed(2)}$ ?`)) return;
     try{
-        await updateDoc(doc(db, "users", userId, "transactions", txId), {status:"rejected", processedAt:new Date().toISOString()});
-        await setDoc(doc(db, "users", userId, "transactions", `refund_${Date.now()}`), {
-            amount: amount, revenue: 0, time: Date.now(), type: "refund", reason: "retrait_rejected"
-        });
-        showToast(`⚠️ Rejeté + remboursé ${amount.toFixed(2)}$`);
+        await updateDoc(doc(db, "withdraw", id), { status: "rejected", processedAt: new Date().toISOString() });
+        showToast(`⚠️ Retrait rejeté`);
         await loadWithdrawals();
-    }catch(e){ showToast("❌ Erreur rejet", true); }
+    } catch(e){ showToast("❌ Erreur", true); }
 }
 
-async function deleteRecord(userId, txId){
+async function deleteRecord(id){
     if(!confirm("Supprimer définitivement ?")) return;
     try{
-        await deleteDoc(doc(db, "users", userId, "transactions", txId));
+        await deleteDoc(doc(db, "withdraw", id));
         showToast("🗑️ Supprimé");
         await loadWithdrawals();
-    }catch(e){ showToast("❌ Erreur", true); }
+    } catch(e){ showToast("❌ Erreur", true); }
 }
-
-function escapeHtml(s){ return s ? String(s).replace(/[&<>]/g,m=>m==='&'?'&amp;':m==='<'?'&lt;':'&gt;') : ''; }
 
 // LOGIN
 const loginSection = document.getElementById('loginSection');
@@ -283,8 +261,8 @@ document.getElementById('loginBtn').addEventListener('click', async()=>{
         loginSection.style.display = 'none';
         adminSection.style.display = 'block';
         await loadWithdrawals();
-        showToast(`Connecté : ${email.split('@')[0]}`);
-    }catch(e){ showToast("Identifiants incorrects", true); }
+        showToast(`Connecté`);
+    } catch(e){ showToast("Identifiants incorrects", true); }
 });
 
 document.getElementById('logoutBtn').addEventListener('click', async()=>{
@@ -296,7 +274,7 @@ document.getElementById('logoutBtn').addEventListener('click', async()=>{
 });
 
 document.getElementById('refreshBtn').addEventListener('click', ()=>loadWithdrawals());
-document.getElementById('testBtn').addEventListener('click', ()=>testFirebase());
+document.getElementById('testBtn').addEventListener('click', ()=>testWithdrawCollection());
 document.getElementById('searchInput').addEventListener('input', (e)=>{ searchTerm = e.target.value.toLowerCase(); updateDisplay(); });
 document.getElementById('statusFilter').addEventListener('change', (e)=>{ currentFilter = e.target.value; updateDisplay(); });
 
@@ -305,7 +283,7 @@ onAuthStateChanged(auth, async(user)=>{
         loginSection.style.display = 'none';
         adminSection.style.display = 'block';
         await loadWithdrawals();
-    }else{
+    } else {
         loginSection.style.display = 'block';
         adminSection.style.display = 'none';
     }
