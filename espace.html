@@ -162,71 +162,119 @@ async function loadBonusData(){const snap=await getDoc(userDocRef);const d=snap.
 async function loadProfile(){const snap=await getDoc(userDocRef);const d=snap.data();document.getElementById('profileEmail').innerText=d.email||currentUser.email;document.getElementById('profileCode').innerText=d.refCode||'N/A';}
 async function loadCapMessage(){const snap=await getDoc(userDocRef);const cap=snap.data()?.capDuJour||"📊 CAP DU JOUR\n\n• Jouer aux jeux\n• Inviter des amis (10% de leurs gains)\n• Bonne journée !";document.getElementById('capMessage').innerHTML=cap.replace(/\n/g,'<br>');}
 async function submitWithdraw(){
-    const amount=parseFloat(document.getElementById('withdrawAmount').value);
-    let wallet;
-    let methodName='';
+    if(!selectedMethod){
+        showToast('Méthode requise', 'Veuillez choisir Airtel Money, Orange Money ou PayPal', 'error');
+        return;
+    }
     
-    // VÉRIFICATION : UN RETRAIT PAR JOUR (24h)
-    const lastWithdrawQuery = await getDocs(
-        query(
-            collection(db, "withdraw"),
-            where("userId", "==", currentUser.uid),
-            orderBy("date", "desc"),
-            limit(1)
-        )
-    );
+    const amount = parseFloat(document.getElementById('withdrawAmount').value);
     
-    if (!lastWithdrawQuery.empty) {
-        const lastWithdraw = lastWithdrawQuery.docs[0].data();
-        const lastDate = new Date(lastWithdraw.date);
-        const now = new Date();
-        const diffHours = (now - lastDate) / 1000 / 60 / 60;
+    if(isNaN(amount) || amount <= 0){
+        showToast('Montant invalide', 'Veuillez entrer un montant valide', 'error');
+        return;
+    }
+    
+    try {
+        const lastWithdrawQuery = await getDocs(
+            query(
+                collection(db, "withdraw"),
+                where("userId", "==", currentUser.uid),
+                orderBy("date", "desc"),
+                limit(1)
+            )
+        );
         
-        if (diffHours < 24) {
-            const hoursLeft = Math.ceil(24 - diffHours);
-            const nextWithdrawTime = new Date(lastDate.getTime() + 24 * 60 * 60 * 1000);
-            const nextWithdrawFormatted = nextWithdrawTime.toLocaleString('fr-FR', {
-                hour: '2-digit',
-                minute: '2-digit',
-                day: 'numeric',
-                month: 'numeric'
-            });
+        if (!lastWithdrawQuery.empty) {
+            const lastWithdraw = lastWithdrawQuery.docs[0].data();
+            const lastDate = new Date(lastWithdraw.date);
+            const now = new Date();
+            const diffHours = (now - lastDate) / 1000 / 60 / 60;
             
-            showToast(
-                "Limite quotidienne atteinte", 
-                `Vous avez déjà effectué un retrait aujourd'hui. Prochain retrait possible : ${nextWithdrawFormatted}`, 
-                "error"
-            );
+            if (diffHours < 24) {
+                const nextWithdrawTime = new Date(lastDate.getTime() + 24 * 60 * 60 * 1000);
+                const nextWithdrawFormatted = nextWithdrawTime.toLocaleString('fr-FR', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    day: 'numeric',
+                    month: 'numeric'
+                });
+                showToast("Limite quotidienne atteinte", `Prochain retrait possible : ${nextWithdrawFormatted}`, "error");
+                return;
+            }
+        }
+    } catch(error) {
+        console.error("Erreur vérification retrait:", error);
+    }
+    
+    if(selectedMethod === 'paypal' && amount < 10){
+        showToast('Montant invalide', 'PayPal nécessite un minimum de 10$', 'error');
+        return;
+    }
+    
+    if(amount < 1){
+        showToast('Montant invalide', 'Le montant minimum est de 1$', 'error');
+        return;
+    }
+    
+    let wallet;
+    let methodName = '';
+    
+    if(selectedMethod === 'paypal'){
+        wallet = document.getElementById('paypalEmail').value.trim();
+        methodName = 'PayPal';
+        if(!wallet || !wallet.includes('@')){
+            showToast('Email invalide', 'Veuillez entrer une adresse email valide', 'error');
             return;
         }
+    } else {
+        const countryCode = document.getElementById('countryCodeSelect').value;
+        const phoneNumber = document.getElementById('walletAddress').value.trim();
+        if(!phoneNumber){
+            showToast('Numéro requis', 'Veuillez entrer votre numéro de téléphone', 'error');
+            return;
+        }
+        wallet = countryCode + phoneNumber;
+        methodName = selectedMethod === 'airtel_money' ? 'Airtel Money' : 'Orange Money';
     }
     
-    if(selectedMethod==='paypal'){
-        wallet=document.getElementById('paypalEmail').value.trim();
-        methodName='PayPal';
-        if(amount<10){showToast('Montant invalide','PayPal nécessite un minimum de 10$','error');return;}
-        if(!wallet||!wallet.includes('@')){showToast('Email invalide','Veuillez entrer une adresse email valide','error');return;}
-    }else{
-        const countryCode=document.getElementById('countryCodeSelect').value;
-        const phoneNumber=document.getElementById('walletAddress').value.trim();
-        if(!phoneNumber){showToast('Numéro requis','Veuillez entrer votre numéro de téléphone','error');return;}
-        wallet=countryCode+phoneNumber;
-        methodName=selectedMethod==='airtel_money'?'Airtel Money':'Orange Money';
+    const snap = await getDoc(userDocRef);
+    const balance = snap.data()?.balance || 0;
+    if(amount > balance){
+        showToast('Solde insuffisant', `Votre solde est de ${balance.toFixed(2)}$`, 'error');
+        return;
     }
-    if(!selectedMethod){showToast('Méthode requise','Choisissez une méthode de retrait','error');return;}
-    if(isNaN(amount)||amount<1){showToast('Montant invalide','Le montant minimum est de 1$','error');return;}
-    if(selectedMethod==='paypal'&&amount<10){showToast('Montant invalide','PayPal nécessite un minimum de 10$','error');return;}
-    const snap=await getDoc(userDocRef);
-    const balance=snap.data()?.balance||0;
-    if(amount>balance){showToast('Solde insuffisant','Vous n\'avez pas assez de fonds','error');return;}
-    await addDoc(collection(db,"withdraw"),{userId:currentUser.uid,amount:amount,method:selectedMethod,methodName:methodName,wallet:wallet,status:"pending",date:new Date().toISOString()});
-    await updateDoc(userDocRef,{balance:increment(-amount)});
-    showToast('Demande envoyée avec succès',`Notre système de paiement va créditer votre compte ${methodName} (${wallet}) du montant de ${amount.toFixed(2)}$ sous 48h ouvrées. Un email de confirmation vous sera envoyé une fois le transfert effectué.`,'success');
-    updateBalanceDisplay();
-    closeModal('withdrawModal');
-    document.getElementById('withdrawAmount').value='';
-    document.getElementById('walletAddress').value='';
-    document.getElementById('paypalEmail').value='';
+    
+    try {
+        await addDoc(collection(db, "withdraw"), {
+            userId: currentUser.uid,
+            amount: amount,
+            method: selectedMethod,
+            methodName: methodName,
+            wallet: wallet,
+            status: "pending",
+            date: new Date().toISOString()
+        });
+        
+        await updateDoc(userDocRef, { balance: increment(-amount) });
+        
+        showToast('Demande envoyée avec succès', `${amount.toFixed(2)}$ seront envoyés sur votre ${methodName} (${wallet}) sous 48h`, 'success');
+        
+        updateBalanceDisplay();
+        closeModal('withdrawModal');
+        
+        document.getElementById('withdrawAmount').value = '';
+        document.getElementById('walletAddress').value = '';
+        document.getElementById('paypalEmail').value = '';
+        selectedMethod = null;
+        
+        document.querySelectorAll('.method-option').forEach(o => {
+            o.classList.remove('selected-airtel', 'selected-orange', 'selected-paypal');
+        });
+        
+    } catch(error) {
+        console.error("Erreur lors du retrait:", error);
+        showToast('Erreur', "Impossible d'effectuer le retrait. Réessayez plus tard.", 'error');
+    }
 }
 async function initUser(user){currentUser=user;userDocRef=doc(db,"users",user.uid);const snap=await getDoc(userDocRef);if(!snap.exists()){const refCode="NX"+Math.random().toString(36).substring(2,10).toUpperCase();await setDoc(userDocRef,{email:user.email,balance:0.20,totalEarned:0.20,uniqueId:"NX"+Math.random().toString(36).substring(2,15).toUpperCase(),refCode:refCode,parrainId:null,invitedCount:0,parrainageGains:0,createdAt:new Date().toISOString(),lastLogin:new Date().toISOString(),ticketsList:[],capDuJour:"📊 CAP DU JOUR\n\n• Jouer aux jeux\n• Inviter des amis (10% de leurs gains)\n• Bonne journée !"});showToast('Bienvenue !','0.20$ vous ont été offerts pour votre inscription','success');}else{await updateDoc(userDocRef,{lastLogin:new Date().toISOString()});}const balanceSnap=await getDoc(userDocRef);lastBalance=balanceSnap.data()?.balance||0;await updateBalanceDisplay();await renderGames();await loadCapMessage();startBalanceListener();}
 document.getElementById('balanceHeader')?.addEventListener('click',async()=>{await updateBalanceDisplay();showToast('Solde mis à jour',`Votre solde actuel est de ${document.getElementById('balanceAmount').innerText}$`,'info');});
