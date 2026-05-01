@@ -3,69 +3,197 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>NeTubeX · Retraits Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>NeTubeX · Administration Retraits</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Inter',sans-serif;background:#0a0f1a;color:#e2e8f0;padding:16px;}
-.card{background:#111827;border-radius:20px;padding:20px;margin-bottom:16px;border:1px solid #1e293b;}
-.card h2{font-size:18px;color:#f59e0b;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-input,button{width:100%;padding:14px;border-radius:14px;border:none;font-size:14px;margin-bottom:12px;}
-input{background:#1e293b;border:1px solid #334155;color:#fff;}
-button{background:#f59e0b;color:#0a0f1a;font-weight:700;cursor:pointer;}
-button:active{opacity:0.8;}
-.btn-test{background:#3b82f6;color:#fff;}
-.btn-logout{background:#ef4444;color:#fff;margin-top:20px;}
-.badge{padding:4px 10px;border-radius:20px;font-size:11px;display:inline-block;}
-.badge-pending{background:rgba(245,158,11,0.2);color:#f59e0b;}
-.badge-approved{background:rgba(16,185,129,0.2);color:#10b981;}
-.badge-rejected{background:rgba(239,68,68,0.2);color:#ef4444;}
-table{width:100%;border-collapse:collapse;font-size:12px;}
-th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #1e293b;}
-.toast{position:fixed;bottom:20px;left:16px;right:16px;background:#111827;border-left:4px solid #10b981;padding:12px;border-radius:12px;font-size:12px;text-align:center;z-index:1000;}
-pre{background:#0a0f1a;padding:12px;border-radius:12px;font-size:10px;overflow-x:auto;margin-top:12px;color:#10b981;}
+body{font-family:'Inter',sans-serif;background:#e9ecef;color:#1e293b;min-height:100vh;}
+
+/* Header */
+.app-header{background:#ffffff;border-bottom:1px solid #e2e8f0;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo i{font-size:24px;color:#3b82f6;}
+.logo h1{font-size:18px;font-weight:700;color:#1e293b;}
+.logo span{font-size:12px;color:#64748b;font-weight:400;margin-left:8px;}
+.header-actions{display:flex;gap:12px;}
+.btn-icon{background:#f1f5f9;border:none;padding:8px 16px;border-radius:30px;cursor:pointer;font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;color:#1e293b;transition:all 0.2s;}
+.btn-icon:hover{background:#e2e8f0;}
+.btn-logout{background:#fee2e2;color:#dc2626;}
+.btn-logout:hover{background:#fecaca;}
+
+/* Container */
+.container{max-width:1400px;margin:0 auto;padding:24px;}
+
+/* Stats Cards */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:28px;}
+@media(max-width:768px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+.stat-card{background:#ffffff;border-radius:20px;padding:20px;border:1px solid #e2e8f0;box-shadow:0 1px 2px rgba(0,0,0,0.03);transition:0.2s;}
+.stat-card:hover{border-color:#cbd5e1;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+.stat-card .value{font-size:32px;font-weight:800;color:#0f172a;}
+.stat-card .label{font-size:13px;color:#64748b;margin-top:8px;display:flex;align-items:center;gap:8px;}
+.stat-card i{font-size:20px;color:#3b82f6;}
+
+/* Filters */
+.filters-bar{background:#ffffff;border-radius:16px;padding:16px 20px;margin-bottom:24px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;border:1px solid #e2e8f0;}
+.search-wrapper{flex:1;min-width:240px;position:relative;}
+.search-wrapper i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:14px;}
+.search-input{width:100%;padding:12px 12px 12px 40px;border:1px solid #e2e8f0;border-radius:12px;font-size:14px;outline:none;transition:0.2s;background:#f8fafc;}
+.search-input:focus{border-color:#3b82f6;background:#ffffff;box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
+.filter-select{padding:12px 20px;border:1px solid #e2e8f0;border-radius:12px;font-size:14px;background:#f8fafc;cursor:pointer;outline:none;min-width:160px;}
+.export-btn{background:#10b981;border:none;padding:12px 24px;border-radius:12px;color:#ffffff;font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:0.2s;}
+.export-btn:hover{background:#059669;}
+.refresh-btn{background:#3b82f6;}
+.refresh-btn:hover{background:#2563eb;}
+
+/* Table Excel Style */
+.table-container{background:#ffffff;border-radius:20px;border:1px solid #e2e8f0;overflow-x:auto;box-shadow:0 1px 3px rgba(0,0,0,0.03);}
+.data-table{width:100%;border-collapse:collapse;font-size:13px;min-width:1000px;}
+.data-table th{text-align:left;padding:16px 16px;background:#f8fafc;color:#475569;font-weight:600;font-size:12px;border-bottom:1px solid #e2e8f0;letter-spacing:0.3px;}
+.data-table td{padding:14px 16px;border-bottom:1px solid #f1f5f9;color:#334155;vertical-align:middle;}
+.data-table tr:hover td{background:#f8fafc;}
+.data-table tr:last-child td{border-bottom:none;}
+
+/* Badges */
+.badge{padding:4px 12px;border-radius:30px;font-size:11px;font-weight:600;display:inline-block;}
+.badge-pending{background:#fef3c7;color:#d97706;}
+.badge-approved{background:#d1fae5;color:#059669;}
+.badge-rejected{background:#fee2e2;color:#dc2626;}
+
+/* User info */
+.user-info{display:flex;flex-direction:column;}
+.user-code{font-weight:700;color:#0f172a;}
+.user-email{font-size:11px;color:#64748b;margin-top:2px;}
+
+/* Action buttons */
+.actions{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-action{padding:6px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;border:none;transition:0.2s;}
+.btn-approve{background:#10b981;color:#ffffff;}
+.btn-approve:hover{background:#059669;transform:scale(1.02);}
+.btn-reject{background:#f59e0b;color:#ffffff;}
+.btn-reject:hover{background:#d97706;}
+.btn-delete{background:#ef4444;color:#ffffff;}
+.btn-delete:hover{background:#dc2626;}
+
+/* Amount column */
+.amount{font-weight:700;color:#0f172a;}
+
+/* Method icon */
+.method-icon{width:28px;height:28px;border-radius:8px;background:#f1f5f9;display:inline-flex;align-items:center;justify-content:center;margin-right:8px;}
+.method-text{font-size:12px;}
+
+/* Empty state */
+.empty-state{text-align:center;padding:60px 20px;color:#94a3b8;}
+.empty-state i{font-size:48px;margin-bottom:16px;opacity:0.5;}
+
+/* Toast */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:1000;display:flex;flex-direction:column;gap:10px;}
+.toast{background:#1e293b;color:#ffffff;padding:12px 20px;border-radius:12px;font-size:13px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.1);animation:slideIn 0.3s ease;border-left:3px solid;}
+.toast-success{border-left-color:#10b981;}
+.toast-error{border-left-color:#ef4444;}
+.toast-warning{border-left-color:#f59e0b;}
+@keyframes slideIn{from{opacity:0;transform:translateX(100px);}to{opacity:1;transform:translateX(0);}}
+
+/* Login */
+.login-container{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);}
+.login-card{background:#ffffff;border-radius:28px;padding:40px;width:100%;max-width:400px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);}
+.login-card h2{font-size:24px;font-weight:700;color:#1e293b;margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+.login-card p{color:#64748b;font-size:13px;margin-bottom:28px;}
+.login-card input{width:100%;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:14px;margin-bottom:16px;outline:none;transition:0.2s;}
+.login-card input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
+.login-card button{width:100%;padding:14px;background:#3b82f6;border:none;border-radius:14px;font-weight:600;font-size:14px;cursor:pointer;color:#ffffff;transition:0.2s;}
+.login-card button:hover{background:#2563eb;}
+.error-msg{background:#fee2e2;color:#dc2626;padding:12px;border-radius:12px;font-size:12px;margin-bottom:16px;display:none;}
 </style>
 </head>
 <body>
 
-<div id="loginSection" class="card">
-    <h2><i class="fas fa-shield-alt"></i> Accès admin</h2>
-    <input type="email" id="adminEmail" placeholder="Email admin" autocomplete="off">
-    <input type="password" id="adminPassword" placeholder="Mot de passe">
-    <button id="loginBtn">Se connecter</button>
+<!-- Login Panel -->
+<div id="loginPanel" class="login-container">
+    <div class="login-card">
+        <h2><i class="fas fa-shield-alt"></i> Administration</h2>
+        <p>Accès sécurisé à la gestion des retraits</p>
+        <div id="loginError" class="error-msg"></div>
+        <input type="email" id="adminEmail" placeholder="Email administrateur">
+        <input type="password" id="adminPassword" placeholder="Mot de passe">
+        <button id="loginBtn">Se connecter</button>
+    </div>
 </div>
 
-<div id="adminSection" style="display:none;">
-    <div class="card">
-        <h2><i class="fas fa-money-bill-wave"></i> Gestion des retraits</h2>
-        <button class="btn-test" id="testBtn"><i class="fas fa-database"></i> TEST : Voir collection "withdraw"</button>
-    </div>
-
-    <div class="card">
-        <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-            <span>📊 En attente: <strong id="pendingCount">0</strong></span>
-            <span>💰 Montant: <strong id="pendingAmount">0$</strong></span>
+<!-- Dashboard Admin -->
+<div id="adminPanel" style="display:none;">
+    <header class="app-header">
+        <div class="logo">
+            <i class="fas fa-chart-line"></i>
+            <h1>NeTubeX · Gestion des retraits</h1>
+            <span>Tableau de bord</span>
         </div>
-        <input type="text" id="searchInput" placeholder="🔍 Rechercher...">
-        <select id="statusFilter" style="width:100%; padding:12px; background:#1e293b; border-radius:12px; color:#fff; margin-bottom:12px;">
-            <option value="all">Tous</option>
-            <option value="pending">En attente</option>
-            <option value="approved">Approuvés</option>
-            <option value="rejected">Rejetés</option>
-        </select>
-        <div style="overflow-x:auto;">
-            <table id="withdrawalsTable">
-                <thead><tr><th>User</th><th>Montant</th><th>Méthode</th><th>Statut</th><th>Actions</th></tr></thead>
-                <tbody id="withdrawalsBody"><tr><td colspan="5" style="text-align:center;">🔐 Connectez-vous</td></tr></tbody>
+        <div class="header-actions">
+            <button class="btn-icon" id="refreshBtn"><i class="fas fa-sync-alt"></i> Rafraîchir</button>
+            <button class="btn-icon btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="value" id="statPending">0</div>
+                <div class="label"><i class="fas fa-clock"></i> En attente</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="statPendingAmount">0,00 €</div>
+                <div class="label"><i class="fas fa-coins"></i> Montant total en attente</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="statApproved">0</div>
+                <div class="label"><i class="fas fa-check-circle"></i> Approuvés</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="statRejected">0</div>
+                <div class="label"><i class="fas fa-times-circle"></i> Rejetés</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Rechercher par code ou email...">
+            </div>
+            <select id="statusFilter" class="filter-select">
+                <option value="all">📋 Tous les statuts</option>
+                <option value="pending">⏳ En attente</option>
+                <option value="approved">✅ Approuvés</option>
+                <option value="rejected">❌ Rejetés</option>
+            </select>
+            <button class="export-btn" id="exportBtn"><i class="fas fa-file-excel"></i> Exporter Excel</button>
+            <button class="export-btn refresh-btn" id="quickRefreshBtn"><i class="fas fa-sync-alt"></i> Actualiser</button>
+        </div>
+
+        <!-- Table Excel Style -->
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>UTILISATEUR</th>
+                        <th>MONTANT</th>
+                        <th>MÉTHODE</th>
+                        <th>WALLET / BÉNÉFICIAIRE</th>
+                        <th>DATE DE LA DEMANDE</th>
+                        <th>STATUT</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="withdrawalsBody">
+                    <tr><td colspan="7" style="text-align:center;padding:60px;">🔐 Authentification en cours...</td></tr>
+                </tbody>
             </table>
         </div>
-        <button id="refreshBtn" style="margin-top:16px;"><i class="fas fa-sync-alt"></i> Rafraîchir</button>
-        <button id="logoutBtn" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
     </div>
 </div>
 
-<div id="toast" style="display:none;" class="toast"></div>
+<div id="toastContainer" class="toast-container"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -85,207 +213,246 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-let withdrawalsData = [];
+let withdrawals = [];
 let currentFilter = "all";
 let searchTerm = "";
 
-function showToast(msg, isError=false){
-    const toast = document.getElementById('toast');
-    toast.style.display = 'block';
-    toast.style.borderLeftColor = isError ? '#ef4444' : '#10b981';
-    toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${msg}`;
-    setTimeout(()=>{ toast.style.display = 'none'; }, 4000);
+function showToast(message, type = "success"){
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    const icon = type === 'success' ? '✅' : (type === 'error' ? '❌' : '⚠️');
+    toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
 }
 
-// TEST : Afficher le contenu de la collection "withdraw"
-async function testWithdrawCollection(){
-    showToast("🔍 Test collection 'withdraw'...");
-    let result = "=== COLLECTION 'withdraw' ===\n\n";
-    
-    try {
-        const withdrawSnap = await getDocs(collection(db, "withdraw"));
-        result += `📁 Nombre de documents: ${withdrawSnap.size}\n\n`;
-        
-        if(withdrawSnap.size === 0){
-            result += "⚠️ AUCUN DOCUMENT DANS 'withdraw'\n\n";
-            result += "Vérifie le nom exact de la collection dans Firebase.\n";
-            result += "Les noms possibles :\n";
-            result += " - withdraw\n - withdrawals\n - retraits\n - withdraws\n";
-        } else {
-            withdrawSnap.forEach(docSnap => {
-                const data = docSnap.data();
-                result += `📄 ID: ${docSnap.id}\n`;
-                result += `   userId: ${data.userId || '?'}\n`;
-                result += `   userEmail: ${data.userEmail || '?'}\n`;
-                result += `   amount: ${data.amount || 0}$\n`;
-                result += `   method: ${data.methodName || data.method || '?'}\n`;
-                result += `   status: ${data.status || 'pending'}\n`;
-                result += `   time: ${data.time ? new Date(data.time).toLocaleString() : '?'}\n`;
-                result += `   wallet: ${data.wallet || data.walletAddress || '?'}\n`;
-                result += `\n`;
+function formatDate(timestamp){
+    if(!timestamp) return '—';
+    return new Date(timestamp).toLocaleString('fr-FR', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+    });
+}
+
+function formatAmount(amount){
+    return new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount) + ' €';
+}
+
+function getMethodIcon(method){
+    const methodLower = (method || '').toLowerCase();
+    if(methodLower.includes('airtel')) return '<i class="fas fa-phone-alt" style="color:#E20000;"></i>';
+    if(methodLower.includes('orange')) return '<i class="fas fa-phone-alt" style="color:#FF7900;"></i>';
+    if(methodLower.includes('paypal')) return '<i class="fab fa-paypal" style="color:#0077B5;"></i>';
+    return '<i class="fas fa-credit-card"></i>';
+}
+
+function escapeHtml(str){
+    if(!str) return '';
+    return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'));
+}
+
+async function loadWithdrawals(){
+    withdrawals = [];
+    try{
+        const snapshot = await getDocs(collection(db, "withdraw"));
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            withdrawals.push({
+                id: doc.id,
+                userId: data.userId,
+                userEmail: data.userEmail,
+                userCode: data.userCode || '',
+                amount: Math.abs(data.amount || 0),
+                method: data.methodName || data.method,
+                wallet: data.wallet || data.walletAddress,
+                requestedAt: data.time || data.requestedAt,
+                status: data.status || "pending"
             });
-        }
-        
-        alert(result);
-        
+        });
+        withdrawals.sort((a,b) => (b.requestedAt || 0) - (a.requestedAt || 0));
+        renderTable();
+        updateStats();
+        showToast(`${withdrawals.length} retrait(s) chargé(s)`, "success");
     } catch(e){
-        alert("❌ ERREUR: " + e.message);
         console.error(e);
+        showToast("Erreur de chargement", "error");
     }
 }
 
-// Charger depuis la collection "withdraw"
-async function loadWithdrawals() {
-    withdrawalsData = [];
-    
-    try {
-        const withdrawSnap = await getDocs(collection(db, "withdraw"));
-        console.log("📊 Documents dans 'withdraw' :", withdrawSnap.size);
-        
-        for (const docSnap of withdrawSnap.docs) {
-            const w = docSnap.data();
-            withdrawalsData.push({
-                id: docSnap.id,
-                userId: w.userId,
-                userEmail: w.userEmail,
-                userCode: w.userCode || '',
-                amount: Math.abs(w.amount || 0),
-                method: w.methodName || w.method,
-                wallet: w.wallet || w.walletAddress,
-                requestedAt: w.time || w.requestedAt,
-                status: w.status || "pending"
-            });
-        }
-        
-        console.log("💰 Retraits chargés :", withdrawalsData.length);
-        withdrawalsData.sort((a,b) => (b.requestedAt || 0) - (a.requestedAt || 0));
-        updateDisplay();
-        
-        if(withdrawalsData.length === 0){
-            showToast("⚠️ Aucun retrait trouvé dans la collection 'withdraw'", true);
-        } else {
-            showToast(`✅ ${withdrawalsData.length} retrait(s) chargé(s)`);
-        }
-        
-    } catch(e) {
-        console.error("Erreur chargement:", e);
-        showToast("❌ Erreur accès collection 'withdraw'", true);
-    }
-}
-
-function updateDisplay(){
-    let filtered = withdrawalsData.filter(w=>{
+function renderTable(){
+    let filtered = withdrawals.filter(w => {
         const matchSearch = !searchTerm || 
             (w.userCode || '').toLowerCase().includes(searchTerm) || 
             (w.userEmail || '').toLowerCase().includes(searchTerm);
         const matchStatus = currentFilter === 'all' || w.status === currentFilter;
         return matchSearch && matchStatus;
     });
-    
-    const pending = withdrawalsData.filter(w=>w.status === 'pending');
-    const pendingAmount = pending.reduce((s,w)=>s + w.amount, 0);
-    document.getElementById('pendingCount').innerText = pending.length;
-    document.getElementById('pendingAmount').innerText = pendingAmount.toFixed(2) + '$';
-    
+
     const tbody = document.getElementById('withdrawalsBody');
+    
     if(filtered.length === 0){
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 Aucune demande</td></tr>';
+        tbody.innerHTML = `<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i><br>Aucune demande de retrait</td></tr>`;
         return;
     }
     
-    function escape(s){ return s ? String(s).replace(/[&<>]/g,m=>m==='&'?'&amp;':m==='<'?'&lt;':'&gt;') : ''; }
-    
     tbody.innerHTML = filtered.map(w => {
-        let badgeClass = w.status === 'pending' ? 'badge-pending' : (w.status === 'approved' ? 'badge-approved' : 'badge-rejected');
-        let badgeText = w.status === 'pending' ? '⏳ En attente' : (w.status === 'approved' ? '✅ Approuvé' : '❌ Rejeté');
-        let actions = w.status === 'pending' ? 
-            `<button class="approve-btn" data-id="${w.id}" style="background:#10b981; color:#fff; border:none; padding:4px 10px; border-radius:8px; margin-right:6px;">✅</button>
-             <button class="reject-btn" data-id="${w.id}" data-amount="${w.amount}" style="background:#f59e0b; color:#fff; border:none; padding:4px 10px; border-radius:8px;">❌</button>` :
-            `<button class="delete-btn" data-id="${w.id}" style="background:#ef4444; color:#fff; border:none; padding:4px 10px; border-radius:8px;">🗑️</button>`;
+        let badgeClass = '', badgeText = '';
+        if(w.status === 'pending'){ badgeClass = 'badge-pending'; badgeText = '⏳ En attente'; }
+        else if(w.status === 'approved'){ badgeClass = 'badge-approved'; badgeText = '✅ Approuvé'; }
+        else{ badgeClass = 'badge-rejected'; badgeText = '❌ Rejeté'; }
+        
+        let actions = '';
+        if(w.status === 'pending'){
+            actions = `
+                <button class="btn-action btn-approve" data-id="${w.id}" data-amount="${w.amount}"><i class="fas fa-check"></i> Approuver</button>
+                <button class="btn-action btn-reject" data-id="${w.id}" data-amount="${w.amount}"><i class="fas fa-times"></i> Rejeter</button>
+            `;
+        } else {
+            actions = `<button class="btn-action btn-delete" data-id="${w.id}"><i class="fas fa-trash-alt"></i> Supprimer</button>`;
+        }
+        
         return `<tr>
-            <td><strong>${escape(w.userCode || w.userEmail)}</strong></td>
-            <td style="color:#f59e0b;">${w.amount.toFixed(2)}$</td>
-            <td>${escape(w.method)}</td>
+            <td>
+                <div class="user-info">
+                    <span class="user-code">${escapeHtml(w.userCode || '—')}</span>
+                    <span class="user-email">${escapeHtml(w.userEmail || '—')}</span>
+                </div>
+            </td>
+            <td class="amount">${formatAmount(w.amount)}</td>
+            <td>
+                <span class="method-icon">${getMethodIcon(w.method)}</span>
+                <span class="method-text">${escapeHtml(w.method || '—')}</span>
+            </td>
+            <td><small>${escapeHtml(w.wallet || '—')}</small></td>
+            <td>${formatDate(w.requestedAt)}</td>
             <td><span class="badge ${badgeClass}">${badgeText}</span></td>
-            <td>${actions}</td>
+            <td class="actions">${actions}</td>
         </tr>`;
     }).join('');
     
-    document.querySelectorAll('.approve-btn').forEach(btn => {
+    // Attach events
+    document.querySelectorAll('.btn-approve').forEach(btn => {
         btn.addEventListener('click', () => approveWithdraw(btn.dataset.id));
     });
-    document.querySelectorAll('.reject-btn').forEach(btn => {
+    document.querySelectorAll('.btn-reject').forEach(btn => {
         btn.addEventListener('click', () => rejectWithdraw(btn.dataset.id, parseFloat(btn.dataset.amount)));
     });
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', () => deleteRecord(btn.dataset.id));
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', () => deleteWithdraw(btn.dataset.id));
     });
 }
 
 async function approveWithdraw(id){
     try{
-        await updateDoc(doc(db, "withdraw", id), { status: "approved", processedAt: new Date().toISOString() });
-        showToast("✅ Retrait approuvé");
+        await updateDoc(doc(db, "withdraw", id), { 
+            status: "approved", 
+            processedAt: new Date().toISOString() 
+        });
+        showToast("✅ Retrait approuvé avec succès", "success");
         await loadWithdrawals();
-    } catch(e){ showToast("❌ Erreur", true); }
+    } catch(e){
+        showToast("Erreur lors de l'approbation", "error");
+    }
 }
 
 async function rejectWithdraw(id, amount){
-    if(!confirm(`Rejeter et rembourser ${amount.toFixed(2)}$ ?`)) return;
+    if(!confirm(`⚠️ Rejeter et rembourser ${formatAmount(amount)} à l'utilisateur ?`)) return;
     try{
-        await updateDoc(doc(db, "withdraw", id), { status: "rejected", processedAt: new Date().toISOString() });
-        showToast(`⚠️ Retrait rejeté`);
+        await updateDoc(doc(db, "withdraw", id), { 
+            status: "rejected", 
+            processedAt: new Date().toISOString() 
+        });
+        showToast(`⚠️ Retrait rejeté - Montant remboursé`, "warning");
         await loadWithdrawals();
-    } catch(e){ showToast("❌ Erreur", true); }
+    } catch(e){
+        showToast("Erreur lors du rejet", "error");
+    }
 }
 
-async function deleteRecord(id){
-    if(!confirm("Supprimer définitivement ?")) return;
+async function deleteWithdraw(id){
+    if(!confirm("🗑️ Supprimer définitivement cette demande ? Cette action est irréversible.")) return;
     try{
         await deleteDoc(doc(db, "withdraw", id));
-        showToast("🗑️ Supprimé");
+        showToast("Demande supprimée", "success");
         await loadWithdrawals();
-    } catch(e){ showToast("❌ Erreur", true); }
+    } catch(e){
+        showToast("Erreur lors de la suppression", "error");
+    }
+}
+
+function updateStats(){
+    const pending = withdrawals.filter(w => w.status === 'pending');
+    const approved = withdrawals.filter(w => w.status === 'approved');
+    const rejected = withdrawals.filter(w => w.status === 'rejected');
+    const pendingAmount = pending.reduce((s,w) => s + w.amount, 0);
+    
+    document.getElementById('statPending').innerText = pending.length;
+    document.getElementById('statPendingAmount').innerText = formatAmount(pendingAmount);
+    document.getElementById('statApproved').innerText = approved.length;
+    document.getElementById('statRejected').innerText = rejected.length;
+}
+
+function exportToCSV(){
+    let csv = "\uFEFFUtilisateur;Email;Montant;Méthode;Wallet;Date demande;Statut\n";
+    withdrawals.forEach(w => {
+        csv += `"${w.userCode || ''}";"${w.userEmail || ''}";${w.amount};"${w.method || ''}";"${w.wallet || ''}";"${formatDate(w.requestedAt)}";"${w.status}"\n`;
+    });
+    const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `retraits_${new Date().toISOString().slice(0,19)}.csv`;
+    link.click();
+    showToast("Export CSV effectué", "success");
 }
 
 // LOGIN
-const loginSection = document.getElementById('loginSection');
-const adminSection = document.getElementById('adminSection');
+const loginPanel = document.getElementById('loginPanel');
+const adminPanel = document.getElementById('adminPanel');
 
-document.getElementById('loginBtn').addEventListener('click', async()=>{
+document.getElementById('loginBtn').addEventListener('click', async () => {
     const email = document.getElementById('adminEmail').value.trim();
     const pwd = document.getElementById('adminPassword').value;
-    if(!email || !pwd){ showToast("Email et mot de passe requis", true); return; }
+    const errorDiv = document.getElementById('loginError');
+    if(!email || !pwd){
+        errorDiv.style.display = 'block';
+        errorDiv.innerText = 'Email et mot de passe requis';
+        return;
+    }
     try{
         await signInWithEmailAndPassword(auth, email, pwd);
-        loginSection.style.display = 'none';
-        adminSection.style.display = 'block';
+        errorDiv.style.display = 'none';
+        loginPanel.style.display = 'none';
+        adminPanel.style.display = 'block';
         await loadWithdrawals();
-        showToast(`Connecté`);
-    } catch(e){ showToast("Identifiants incorrects", true); }
+    } catch(e){
+        errorDiv.style.display = 'block';
+        errorDiv.innerText = 'Email ou mot de passe incorrect';
+    }
 });
 
-document.getElementById('logoutBtn').addEventListener('click', async()=>{
+document.getElementById('logoutBtn').addEventListener('click', async () => {
     await signOut(auth);
-    loginSection.style.display = 'block';
-    adminSection.style.display = 'none';
+    loginPanel.style.display = 'flex';
+    adminPanel.style.display = 'none';
     document.getElementById('adminEmail').value = '';
     document.getElementById('adminPassword').value = '';
 });
 
-document.getElementById('refreshBtn').addEventListener('click', ()=>loadWithdrawals());
-document.getElementById('testBtn').addEventListener('click', ()=>testWithdrawCollection());
-document.getElementById('searchInput').addEventListener('input', (e)=>{ searchTerm = e.target.value.toLowerCase(); updateDisplay(); });
-document.getElementById('statusFilter').addEventListener('change', (e)=>{ currentFilter = e.target.value; updateDisplay(); });
+document.getElementById('refreshBtn').addEventListener('click', () => loadWithdrawals());
+document.getElementById('quickRefreshBtn').addEventListener('click', () => loadWithdrawals());
+document.getElementById('exportBtn').addEventListener('click', () => exportToCSV());
+document.getElementById('searchInput').addEventListener('input', (e) => { searchTerm = e.target.value.toLowerCase(); renderTable(); });
+document.getElementById('statusFilter').addEventListener('change', (e) => { currentFilter = e.target.value; renderTable(); });
 
-onAuthStateChanged(auth, async(user)=>{
+onAuthStateChanged(auth, async (user) => {
     if(user){
-        loginSection.style.display = 'none';
-        adminSection.style.display = 'block';
+        loginPanel.style.display = 'none';
+        adminPanel.style.display = 'block';
         await loadWithdrawals();
     } else {
-        loginSection.style.display = 'block';
-        adminSection.style.display = 'none';
+        loginPanel.style.display = 'flex';
+        adminPanel.style.display = 'none';
     }
 });
 </script>
