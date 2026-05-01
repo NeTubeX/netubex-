@@ -26,10 +26,11 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .section{padding:0 1rem;margin-bottom:1.5rem;}
 .section-title{font-size:1rem;font-weight:700;margin-bottom:0.8rem;display:flex;align-items:center;gap:8px;color:#e2e8f0;}
 .panel-grid{display:flex;gap:12px;margin-bottom:1.5rem;}
-.panel-card{flex:1;background:#0f1a2f;border-radius:16px;padding:1rem;text-align:center;cursor:pointer;border:1px solid #1e2a45;transition:all 0.1s;box-shadow:0 4px 12px rgba(0,0,0,0.2);}
-.panel-card:active{transform:scale(0.97);background:#1a2a45;box-shadow:0 2px 4px rgba(0,0,0,0.3);}
+.panel-card{flex:1;background:#e5e7eb;border-radius:16px;padding:1rem;text-align:center;cursor:pointer;transition:transform 0.2s ease, box-shadow 0.2s ease;box-shadow:0 20px 30px -10px rgba(0,0,0,0.5),0 8px 12px rgba(0,0,0,0.3);transform:translateY(-2px);}
+.panel-card:hover{transform:translateY(-5px) scale(1.02);box-shadow:0 25px 35px -12px rgba(0,0,0,0.6);}
+.panel-card:active{transform:scale(0.98);}
 .panel-card i{font-size:1.8rem;margin-bottom:8px;color:#3b82f6;}
-.panel-card .panel-label{font-weight:700;font-size:0.85rem;}
+.panel-card .panel-label{font-weight:700;font-size:0.85rem;color:#1f2937;}
 .games-list{display:flex;flex-direction:column;gap:1px;width:100%;background:#0a1628;}
 .post-card{background:#0f1a2f;overflow:hidden;width:100%;border-bottom:1px solid #1e2a45;transition:0.2s;}
 .post-card:active{background:#1a2a45;}
@@ -70,11 +71,10 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .method-option{padding:10px;border-radius:10px;cursor:pointer;margin-bottom:6px;background:#1a2a45;}
 .method-option.selected-airtel{background:rgba(226,0,0,0.25);border:2px solid #E20000;}
 .method-option.selected-orange{background:rgba(255,121,0,0.25);border:2px solid #FF7900;}
+.method-option.selected-paypal{background:rgba(0,119,181,0.25);border:2px solid #0077B5;}
 .ticket-message{background:#1a2a45;padding:10px;border-radius:10px;margin-bottom:8px;}
 .footer{background:#0f1a2f;border-top:1px solid #1e2a45;padding:0.8rem;text-align:center;margin-top:0.5rem;}
 .footer p{color:#64748b;font-size:0.6rem;}
-
-/* Fly Popup */
 .fly-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:2000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:visibility 0s linear 0.25s,opacity 0.25s;}
 .fly-popup.active{visibility:visible;opacity:1;transition:visibility 0s linear 0s,opacity 0.25s;}
 .fly-popup-inner{background:#0f1a2f;border-radius:28px;padding:1.5rem;text-align:center;max-width:320px;width:85%;border:1px solid #1e2a45;transform:scale(0.2) translateY(50px);opacity:0;transition:transform 0.4s cubic-bezier(0.34,1.2,0.64,1),opacity 0.3s;}
@@ -88,262 +88,53 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .btn-yes-a{background:#10b981;color:#fff;}
 .btn-yes-b{background:#3b82f6;color:#fff;}
 .btn-no{background:#1e2a45;color:#e2e8f0;}
+.country-select{width:100%;padding:10px;background:#1a2a45;border:1px solid #1e2a45;border-radius:10px;color:#fff;font-family:inherit;margin-bottom:12px;}
 </style>
 </head>
 <body>
-
 <div class="rainbow-line"></div>
-
-<header class="header">
-    <div class="logo"><img src="https://netubex.github.io/netubex-/favicon.png.png" alt=""><h1>Ne<span>TubeX</span></h1></div>
-    <div class="header-right">
-        <div class="online-status"><span class="blinking-dot"></span><span>En ligne</span></div>
-        <div class="balance-header" id="balanceHeader">$ <span id="balanceAmount">0.00</span></div>
-    </div>
-</header>
-
-<!-- PANEL A & B -->
-<div class="section">
-    <div class="section-title"><i class="fas fa-gem"></i> Panels rémunérateurs</div>
-    <div class="panel-grid">
-        <div class="panel-card" id="panelA"><i class="fas fa-clock"></i><div class="panel-label">PANEL A</div></div>
-        <div class="panel-card" id="panelB"><i class="fab fa-google"></i><div class="panel-label">PANEL B</div></div>
-    </div>
-</div>
-
-<!-- JEUX -->
+<header class="header"><div class="logo"><img src="https://netubex.github.io/netubex-/favicon.png.png" alt=""><h1>Ne<span>TubeX</span></h1></div><div class="header-right"><div class="online-status"><span class="blinking-dot"></span><span>En ligne</span></div><div class="balance-header" id="balanceHeader">$ <span id="balanceAmount">0.00</span></div></div></header>
+<div class="section"><div class="section-title"><i class="fas fa-gem"></i> Panels rémunérateurs</div><div class="panel-grid"><div class="panel-card" id="panelA"><i class="fas fa-clock"></i><div class="panel-label">PANEL A</div></div><div class="panel-card" id="panelB"><i class="fab fa-google"></i><div class="panel-label">PANEL B</div></div></div></div>
 <div class="games-list" id="gamesContainer"></div>
-
 <footer class="footer"><p><i class="fas fa-copyright"></i> NeTubeX 2026</p></footer>
-
-<!-- FLOATING MENU -->
-<div class="floating-group">
-    <div class="float-item" id="menuFloatBtn"><i class="fas fa-bars"></i></div>
-</div>
-
-<div id="menuFloating" class="menu-floating">
-    <div class="menu-header"><strong><i class="fas fa-bars"></i> Menu</strong></div>
-    <div class="menu-item" id="menuCapBtn"><i class="fas fa-chart-line"></i> CAP du jour</div>
-    <div class="menu-item" id="menuProfileBtn"><i class="fas fa-user"></i> Mon profil</div>
-    <div class="menu-item" id="menuTicketsBtn"><i class="fas fa-ticket-alt"></i> Mes tickets</div>
-    <div class="menu-item" id="menuBonusBtn"><i class="fas fa-gift"></i> Bonus d'invitation</div>
-    <div class="menu-item" id="menuWithdrawBtn"><i class="fas fa-money-bill-wave"></i> Retirer</div>
-    <div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div>
-</div>
-
-<!-- FLY POPUP -->
-<div id="flyPopup" class="fly-popup">
-    <div class="fly-popup-inner">
-        <div class="popup-letter" id="popupLetter">A</div>
-        <h3 id="popupTitle">Panel A</h3>
-        <p>Votre session dans l'espace de rémunération digitale va commencer...</p>
-        <p style="font-size:0.75rem; margin-bottom:1rem;">Êtes-vous sûr de vouloir continuer ?</p>
-        <div class="popup-buttons" id="popupButtons"></div>
-    </div>
-</div>
-
-<!-- MODALS -->
+<div class="floating-group"><div class="float-item" id="menuFloatBtn"><i class="fas fa-bars"></i></div></div>
+<div id="menuFloating" class="menu-floating"><div class="menu-header"><strong><i class="fas fa-bars"></i> Menu</strong></div><div class="menu-item" id="menuCapBtn"><i class="fas fa-chart-line"></i> CAP du jour</div><div class="menu-item" id="menuProfileBtn"><i class="fas fa-user"></i> Mon profil</div><div class="menu-item" id="menuTicketsBtn"><i class="fas fa-ticket-alt"></i> Mes tickets</div><div class="menu-item" id="menuBonusBtn"><i class="fas fa-gift"></i> Parrainage (10%)</div><div class="menu-item" id="menuWithdrawBtn"><i class="fas fa-money-bill-wave"></i> Retirer</div><div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div></div>
+<div id="flyPopup" class="fly-popup"><div class="fly-popup-inner"><div class="popup-letter" id="popupLetter">A</div><h3 id="popupTitle">Panel A</h3><p id="popupMessage">Votre session dans l'espace de rémunération digitale va commencer...</p><p style="font-size:0.75rem; margin-bottom:1rem;">Êtes-vous sûr de vouloir continuer ?</p><div class="popup-buttons" id="popupButtons"></div></div></div>
 <div id="capModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-chart-line"></i> CAP du jour</h3><button class="modal-close" id="closeCapModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><p id="capMessage">Chargement...</p></div><div class="modal-footer"><button class="btn-cancel" id="closeCapFooterBtn">Fermer</button></div></div></div>
-
-<div id="profileModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-user"></i> Mon profil</h3><button class="modal-close" id="closeProfileModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div style="background:#1a2a45;border-radius:12px;padding:12px;margin-bottom:12px;"><p><strong>Email :</strong> <span id="profileEmail">-</span></p><p style="margin-top:8px;"><strong>Code :</strong> <span id="profileCode">-</span></p></div><div class="input-group"><label>Nouveau mot de passe</label><input type="password" id="newPassword" placeholder="Laisser vide"></div></div><div class="modal-footer"><button class="btn-confirm" id="updatePasswordBtn">Mettre à jour</button><button class="btn-cancel" id="cancelProfileBtn">Fermer</button></div></div></div>
-
+<div id="profileModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-user"></i> Mon profil</h3><button class="modal-close" id="closeProfileModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div style="background:#1a2a45;border-radius:12px;padding:12px;margin-bottom:12px;"><p><strong>Email :</strong> <span id="profileEmail">-</span></p><p style="margin-top:8px;"><strong>Code parrainage :</strong> <span id="profileCode">-</span></p></div><div class="input-group"><label>Nouveau mot de passe</label><input type="password" id="newPassword" placeholder="Laisser vide"></div></div><div class="modal-footer"><button class="btn-confirm" id="updatePasswordBtn">Mettre à jour</button><button class="btn-cancel" id="cancelProfileBtn">Fermer</button></div></div></div>
 <div id="ticketsModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Mes tickets</h3><button class="modal-close" id="closeTicketsModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><button class="btn-confirm" id="newTicketBtn" style="width:100%;margin-bottom:12px;">+ Nouveau ticket</button><div id="ticketsListContainer"></div></div><div class="modal-footer"><button class="btn-cancel" id="cancelTicketsBtn">Fermer</button></div></div></div>
-
 <div id="newTicketModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Créer un ticket</h3><button class="modal-close" id="closeNewTicketModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Type</label><select id="ticketTypeSelect"><option value="">-- Sélectionnez --</option><option value="Problème technique">🔧 Problème technique</option><option value="Retrait">💰 Retrait</option><option value="Compte">🔐 Compte</option><option value="Autre">❓ Autre</option></select></div><div class="input-group"><label>Sujet</label><input type="text" id="ticketSubject" placeholder="Résumé"></div><div class="input-group"><label>Message</label><textarea id="ticketMessage" rows="3" placeholder="Décrivez..."></textarea></div></div><div class="modal-footer"><button class="btn-confirm" id="submitTicketBtn">Envoyer</button><button class="btn-cancel" id="cancelNewTicketBtn">Annuler</button></div></div></div>
-
-<div id="bonusModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Bonus invitation</h3><button class="modal-close" id="closeBonusModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Votre code</label><div style="display:flex;gap:8px;"><input type="text" id="invitationCode" readonly style="flex:1;"><button class="btn-confirm" id="copyCodeBtn" style="padding:8px 12px;">Copier</button></div></div><div style="background:#1a2a45;border-radius:12px;padding:12px;margin-top:12px;"><p>💰 Bonus: <strong id="bonusEarned">0$</strong></p><p>👥 Invités: <strong id="invitedCount">0</strong></p></div></div><div class="modal-footer"><button class="btn-cancel" id="cancelBonusBtn">Fermer</button></div></div></div>
-
-<div id="withdrawModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Retrait</h3><button class="modal-close" id="closeWithdrawModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div style="background:#1a2a45;padding:10px;border-radius:12px;margin-bottom:12px;text-align:center;"><strong id="currentBalanceDisplay">0.00 $</strong></div><div class="input-group"><label>Montant (min 1$)</label><input type="number" id="withdrawAmount" min="1" step="0.01"></div><div class="input-group"><label>Méthode</label><div class="method-option" data-method="airtel_money">Airtel Money</div><div class="method-option" data-method="orange_money">Orange Money</div></div><div class="input-group"><label>Téléphone</label><input type="tel" id="walletAddress" placeholder="+243 XX XXX XXXX"></div></div><div class="modal-footer"><button class="btn-confirm" id="submitWithdrawBtn">Valider</button><button class="btn-cancel" id="cancelWithdrawBtn">Annuler</button></div></div></div>
-
-<div id="confirmLogoutModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Déconnexion</h3><button class="modal-close" id="closeLogoutModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><p>Êtes-vous sûr ?</p></div><div class="modal-footer"><button class="btn-confirm" id="confirmLogoutBtn">Oui</button><button class="btn-cancel" id="cancelLogoutBtn">Non</button></div></div></div>
-
+<div id="bonusModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Parrainage (10% des gains de vos invités)</h3><button class="modal-close" id="closeBonusModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="input-group"><label>Votre lien d'invitation (à partager)</label><div style="display:flex;gap:8px;"><input type="text" id="invitationLink" readonly style="flex:1;"><button class="btn-confirm" id="copyLinkBtn" style="padding:8px 12px;">Copier</button></div></div><div class="input-group"><label>Ou code manuel</label><input type="text" id="invitationCode" readonly></div><div style="background:#1a2a45;border-radius:12px;padding:12px;margin-top:12px;"><p>💰 Gains des parrainages (10%): <strong id="bonusEarned">0$</strong></p><p>👥 Nombre d'invités: <strong id="invitedCount">0</strong></p><p><small style="color:#60a5fa;">💡 Chaque fois que votre invité gagne, vous recevez 10% automatiquement !</small></p></div></div><div class="modal-footer"><button class="btn-cancel" id="cancelBonusBtn">Fermer</button></div></div></div>
+<div id="withdrawModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Retrait</h3><button class="modal-close" id="closeWithdrawModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div style="background:#1a2a45;padding:10px;border-radius:12px;margin-bottom:12px;text-align:center;"><strong id="currentBalanceDisplay">0.00 $</strong></div><div class="input-group"><label>Montant (min 1$ / PayPal min 10$)</label><input type="number" id="withdrawAmount" min="1" step="0.01"></div><div class="input-group"><label>Pays</label><select id="countrySelect" class="country-select"><option value="">Sélectionnez votre pays</option><option value="CI">Côte d'Ivoire</option><option value="SN">Sénégal</option><option value="CM">Cameroun</option><option value="ML">Mali</option><option value="BF">Burkina Faso</option><option value="BJ">Bénin</option><option value="TG">Togo</option><option value="GN">Guinée</option><option value="CD">RDC</option><option value="CG">Congo</option><option value="GA">Gabon</option><option value="NE">Niger</option><option value="TD">Tchad</option><option value="CF">RCA</option><option value="FR">France</option><option value="BE">Belgique</option><option value="CH">Suisse</option><option value="CA">Canada</option><option value="US">USA</option><option value="GB">Royaume-Uni</option><option value="DE">Allemagne</option><option value="ES">Espagne</option><option value="IT">Italie</option></select></div><div class="input-group"><label>Méthode</label><div class="method-option" data-method="airtel_money" data-needs-phone="true">Airtel Money</div><div class="method-option" data-method="orange_money" data-needs-phone="true">Orange Money</div><div class="method-option" data-method="paypal" data-needs-email="true">PayPal (min 10$)</div></div><div class="input-group" id="phoneField"><label>Téléphone (format +243 XX XXX XXXX)</label><input type="tel" id="walletAddress" placeholder="+243 XX XXX XXXX"></div><div class="input-group" id="emailField" style="display:none;"><label>Email PayPal</label><input type="email" id="paypalEmail" placeholder="exemple@gmail.com"></div></div><div class="modal-footer"><button class="btn-confirm" id="submitWithdrawBtn">Valider</button><button class="btn-cancel" id="cancelWithdrawBtn">Annuler</button></div></div></div>
+<div id="confirmLogoutModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Déconnexion</h3><button class="modal-close" id="closeLogoutModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><p>Êtes-vous sûr de vouloir vous déconnecter ?</p></div><div class="modal-footer"><button class="btn-confirm" id="confirmLogoutBtn">Oui</button><button class="btn-cancel" id="cancelLogoutBtn">Non</button></div></div></div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, where, getDocs, increment, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 const firebaseConfig = {apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
 let currentUser = null, userDocRef = null, selectedMethod = null, pendingTargetUrl = null;
-
-// Jeux
-const GAMES = [
-    {id:2, name:"Sky Plunger", avatar:"🪂", img:"https://netubex.github.io/netubex-/sky-plunger.png", duration:"30j"},
-    {id:4, name:"Wild Fish", avatar:"🐟", img:"https://netubex.github.io/netubex-/wild-fish.png", duration:"30j"},
-    {id:5, name:"Grab A Toy", avatar:"🧸", img:"https://netubex.github.io/netubex-/grab-a-toy.png", duration:"30j"},
-    {id:6, name:"Love Water", avatar:"💧", img:"https://netubex.github.io/netubex-/love-water.gif", duration:"30j"},
-    {id:8, name:"The Grand Mafia", avatar:"👑", img:"https://netubex.github.io/netubex-/the-grand-mafia.webp", duration:"30j"},
-    {id:9, name:"Dragon Farm", avatar:"🐉", img:"https://netubex.github.io/netubex-/dragon-farm.webp", duration:"30j"}
-];
-
+const GAMES = [{id:2,name:"Sky Plunger",avatar:"🪂",img:"https://netubex.github.io/netubex-/sky-plunger.png",duration:"30j"},{id:4,name:"Wild Fish",avatar:"🐟",img:"https://netubex.github.io/netubex-/wild-fish.png",duration:"30j"},{id:5,name:"Grab A Toy",avatar:"🧸",img:"https://netubex.github.io/netubex-/grab-a-toy.png",duration:"30j"},{id:6,name:"Love Water",avatar:"💧",img:"https://netubex.github.io/netubex-/love-water.gif",duration:"30j"},{id:8,name:"The Grand Mafia",avatar:"👑",img:"https://netubex.github.io/netubex-/the-grand-mafia.webp",duration:"30j"},{id:9,name:"Dragon Farm",avatar:"🐉",img:"https://netubex.github.io/netubex-/dragon-farm.webp",duration:"30j"}];
 function showToast(msg, isError=false){let t=document.createElement('div');t.className=`toast-notification ${isError?'toast-error':''}`;t.innerHTML=`<i class="fas ${isError?'fa-exclamation-triangle':'fa-check-circle'}"></i> ${msg}`;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);}
 function closeModal(id){document.getElementById(id).classList.remove('active');}
-
-// Récupère le uniqueId depuis Firestore
-async function getUserUniqueId(){
-    if(!currentUser) return null;
-    if(!userDocRef) return null;
-    const snap = await getDoc(userDocRef);
-    let uniqueId = snap.data()?.uniqueId;
-    if(!uniqueId){
-        uniqueId = "NX" + Math.random().toString(36).substring(2, 15).toUpperCase();
-        await updateDoc(userDocRef, { uniqueId: uniqueId });
-    }
-    return uniqueId;
-}
-
-async function getBalanceValue(){
-    if(!userDocRef) return 0;
-    const snap=await getDoc(userDocRef);
-    return snap.exists()?(snap.data().balance||0):0;
-}
-
-async function updateBalanceDisplay(){
-    const bal=await getBalanceValue();
-    document.getElementById('balanceAmount').innerText=bal.toFixed(4);
-    document.getElementById('currentBalanceDisplay').innerText=bal.toFixed(4)+' $';
-}
-
-// Fly Popup pour Panel A et B
-function showFlyPopup(panel, letter, color, url) {
-    pendingTargetUrl = url;
-    let popup = document.getElementById('flyPopup');
-    let letterDiv = document.getElementById('popupLetter');
-    let title = document.getElementById('popupTitle');
-    let btns = document.getElementById('popupButtons');
-    letterDiv.textContent = letter;
-    letterDiv.style.backgroundColor = color;
-    title.textContent = panel;
-    btns.innerHTML = `<button class="btn-yes-${letter === 'A' ? 'a' : 'b'}" id="confirmYesBtn">Oui</button><button class="btn-no" id="confirmNoBtn">Non</button>`;
-    popup.classList.add('active');
-    document.getElementById('confirmYesBtn')?.addEventListener('click', () => {
-        if(pendingTargetUrl) window.open(pendingTargetUrl, '_blank');
-        document.getElementById('flyPopup').classList.remove('active');
-        pendingTargetUrl = null;
-    }, { once: true });
-    document.getElementById('confirmNoBtn')?.addEventListener('click', () => {
-        document.getElementById('flyPopup').classList.remove('active');
-        pendingTargetUrl = null;
-    }, { once: true });
-}
-
-// Jeux
-async function renderGames(){
-    const container=document.getElementById('gamesContainer');
-    container.innerHTML=GAMES.map(g=>`<div class="post-card"><div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span>${g.duration}</span></div></div><img class="post-image" src="${g.img}" loading="lazy"><button class="gain-btn" data-game="${g.name}"><i class="fas fa-play-circle"></i> Jouer au jeu rémunérateur</button></div>`).join('');
-    document.querySelectorAll('.gain-btn').forEach(btn=>{
-        btn.addEventListener('click',async()=>{
-            const uid = await getUserUniqueId();
-            if(uid){
-                window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uid}`, '_blank');
-            }else{
-                showToast("Erreur ID utilisateur", true);
-            }
-        });
-    });
-}
-
-// Panel A (Timewall) et Panel B (Gemini)
-async function handlePanel(url, panelName, letter, color){
-    const uid = await getUserUniqueId();
-    if(uid){
-        showFlyPopup(panelName, letter, color, url + uid);
-    }else{
-        showToast("Erreur ID utilisateur", true);
-    }
-}
-
-// Tickets
-async function loadTickets(){
-    const snap=await getDoc(userDocRef);
-    const tickets=snap.data()?.ticketsList||[];
-    const container=document.getElementById('ticketsListContainer');
-    if(tickets.length===0){container.innerHTML='<p style="text-align:center;color:#64748b;">Aucun ticket</p>';return;}
-    container.innerHTML=tickets.map(t=>`<div class="ticket-message"><strong>${escapeHtml(t.subject)}</strong><br>Statut: ${t.status}<br><small>${new Date(t.date).toLocaleDateString()}</small></div>`).join('');
-}
-async function createTicket(subject,msg){
-    const snap=await getDoc(userDocRef);
-    const tickets=snap.data()?.ticketsList||[];
-    const newTicket={id:Date.now().toString(),subject,message:msg,status:'ouvert',date:new Date().toISOString()};
-    await updateDoc(userDocRef,{ticketsList:[...tickets,newTicket]});
-    showToast("✅ Ticket envoyé");
-    loadTickets();
-}
+async function getUserUniqueId(){if(!currentUser)return null;const snap=await getDoc(userDocRef);let uniqueId=snap.data()?.uniqueId;if(!uniqueId){uniqueId="NX"+Math.random().toString(36).substring(2,15).toUpperCase();await updateDoc(userDocRef,{uniqueId:uniqueId});}return uniqueId;}
+async function getBalanceValue(){if(!userDocRef)return 0;const snap=await getDoc(userDocRef);return snap.exists()?(snap.data().balance||0):0;}
+async function updateBalanceDisplay(){const bal=await getBalanceValue();document.getElementById('balanceAmount').innerText=bal.toFixed(4);document.getElementById('currentBalanceDisplay').innerText=bal.toFixed(4)+' $';}
+function showFlyPopup(panel, letter, color, url, specialMessage=null){pendingTargetUrl=url;let popup=document.getElementById('flyPopup');let letterDiv=document.getElementById('popupLetter');let title=document.getElementById('popupTitle');let msgP=document.getElementById('popupMessage');let btns=document.getElementById('popupButtons');letterDiv.textContent=letter;letterDiv.style.backgroundColor=color;title.textContent=panel;if(specialMessage){msgP.innerHTML=specialMessage;}else{msgP.innerHTML='Votre session dans l\'espace de rémunération digitale va commencer...';}btns.innerHTML=`<button class="btn-yes-${letter==='A'?'a':'b'}" id="confirmYesBtn">Oui</button><button class="btn-no" id="confirmNoBtn">Non</button>`;popup.classList.add('active');document.getElementById('confirmYesBtn')?.addEventListener('click',()=>{if(pendingTargetUrl)window.open(pendingTargetUrl,'_blank');document.getElementById('flyPopup').classList.remove('active');pendingTargetUrl=null;},{once:true});document.getElementById('confirmNoBtn')?.addEventListener('click',()=>{document.getElementById('flyPopup').classList.remove('active');pendingTargetUrl=null;},{once:true});}
+async function renderGames(){const container=document.getElementById('gamesContainer');container.innerHTML=GAMES.map(g=>`<div class="post-card"><div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span>${g.duration}</span></div></div><img class="post-image" src="${g.img}" loading="lazy"><button class="gain-btn" data-game="${g.name}"><i class="fas fa-play-circle"></i> Jouer au jeu rémunérateur</button></div>`).join('');document.querySelectorAll('.gain-btn').forEach(btn=>{btn.addEventListener('click',async()=>{const uid=await getUserUniqueId();if(uid){window.open(`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${uid}`,'_blank');}else{showToast("Erreur ID utilisateur",true);}});});}
+async function loadTickets(){const snap=await getDoc(userDocRef);const tickets=snap.data()?.ticketsList||[];const container=document.getElementById('ticketsListContainer');if(tickets.length===0){container.innerHTML='<p style="text-align:center;color:#64748b;">Aucun ticket</p>';return;}container.innerHTML=tickets.map(t=>`<div class="ticket-message"><strong>${escapeHtml(t.subject)}</strong><br>Statut: ${t.status}<br><small>${new Date(t.date).toLocaleDateString()}</small></div>`).join('');}
+async function createTicket(subject,msg){const snap=await getDoc(userDocRef);const tickets=snap.data()?.ticketsList||[];const newTicket={id:Date.now().toString(),subject,message:msg,status:'ouvert',date:new Date().toISOString()};await updateDoc(userDocRef,{ticketsList:[...tickets,newTicket]});showToast("✅ Ticket envoyé");loadTickets();}
 function escapeHtml(str){if(!str)return'';return String(str).replace(/[&<>]/g,m=>m==='&'?'&amp;':m==='<'?'&lt;':'&gt;');}
-
-// Bonus
-async function loadBonusData(){
-    const snap=await getDoc(userDocRef);
-    const d=snap.data();
-    document.getElementById('invitationCode').value=d.invitationCode||'N/A';
-    document.getElementById('bonusEarned').innerText=(d.bonusEarnings||0).toFixed(4)+' $';
-    document.getElementById('invitedCount').innerText=d.invitedCount||0;
-}
-
-// Profil
-async function loadProfile(){
-    const snap=await getDoc(userDocRef);
-    const d=snap.data();
-    document.getElementById('profileEmail').innerText=d.email||currentUser.email;
-    document.getElementById('profileCode').innerText=d.invitationCode||'N/A';
-}
-
-// CAP
-async function loadCapMessage(){
-    const snap=await getDoc(userDocRef);
-    const cap=snap.data()?.capDuJour||"📊 CAP DU JOUR\n\nJouer aux jeux\nInviter des amis\nBonne journée !";
-    document.getElementById('capMessage').innerHTML=cap.replace(/\n/g,'<br>');
-}
-
-// Retrait
-async function submitWithdraw(){
-    const amount=parseFloat(document.getElementById('withdrawAmount').value);
-    const wallet=document.getElementById('walletAddress').value.trim();
-    if(!selectedMethod){showToast("Choisissez une méthode",true);return;}
-    if(isNaN(amount)||amount<1){showToast("Minimum 1$",true);return;}
-    if(!wallet){showToast("Numéro requis",true);return;}
-    const snap=await getDoc(userDocRef);
-    const balance=snap.data()?.balance||0;
-    if(amount>balance){showToast("Solde insuffisant",true);return;}
-    await addDoc(collection(db,"withdraw"),{userId:currentUser.uid,amount,method:selectedMethod,phone:wallet,status:"pending",date:new Date().toISOString()});
-    await updateDoc(userDocRef,{balance:increment(-amount)});
-    showToast("✅ Demande envoyée");
-    updateBalanceDisplay();
-    closeModal('withdrawModal');
-}
-
-// Init
-async function initUser(user){
-    currentUser=user;
-    userDocRef=doc(db,"users",user.uid);
-    const snap=await getDoc(userDocRef);
-    if(!snap.exists()){
-        const uniqueId = "NX" + Math.random().toString(36).substring(2, 15).toUpperCase();
-        await setDoc(userDocRef,{
-            email:user.email,
-            balance:0,
-            uniqueId: uniqueId,
-            createdAt:new Date().toISOString(),
-            lastLogin:new Date().toISOString(),
-            invitationCode:"NX"+Math.random().toString(36).substring(2,10).toUpperCase(),
-            ticketsList:[],
-            capDuJour:"📊 CAP DU JOUR\n\nJouer aux jeux\nInviter des amis\nGagner des bonus"
-        });
-    }else{
-        await updateDoc(userDocRef,{lastLogin:new Date().toISOString()});
-    }
-    await updateBalanceDisplay();
-    await renderGames();
-    await loadCapMessage();
-}
-
-// EVENT LISTENERS
+async function loadBonusData(){const snap=await getDoc(userDocRef);const d=snap.data();const refCode=d.refCode||'N/A';const baseUrl=window.location.origin;document.getElementById('invitationLink').value=`${baseUrl}/login.html?ref=${refCode}`;document.getElementById('invitationCode').value=refCode;document.getElementById('bonusEarned').innerText=(d.parrainageGains||0).toFixed(4)+' $';document.getElementById('invitedCount').innerText=d.invitedCount||0;}
+async function loadProfile(){const snap=await getDoc(userDocRef);const d=snap.data();document.getElementById('profileEmail').innerText=d.email||currentUser.email;document.getElementById('profileCode').innerText=d.refCode||'N/A';}
+async function loadCapMessage(){const snap=await getDoc(userDocRef);const cap=snap.data()?.capDuJour||"📊 CAP DU JOUR\n\n• Jouer aux jeux\n• Inviter des amis (10% de leurs gains)\n• Bonne journée !";document.getElementById('capMessage').innerHTML=cap.replace(/\n/g,'<br>');}
+async function submitWithdraw(){const amount=parseFloat(document.getElementById('withdrawAmount').value);let wallet;if(selectedMethod==='paypal'){wallet=document.getElementById('paypalEmail').value.trim();if(amount<10){showToast("PayPal nécessite un minimum de 10$",true);return;}}else{wallet=document.getElementById('walletAddress').value.trim();}if(!selectedMethod){showToast("Choisissez une méthode",true);return;}if(isNaN(amount)||amount<1){showToast("Minimum 1$",true);return;}if(!wallet){showToast("Coordonnées requises",true);return;}const snap=await getDoc(userDocRef);const balance=snap.data()?.balance||0;if(amount>balance){showToast("Solde insuffisant",true);return;}await addDoc(collection(db,"withdraw"),{userId:currentUser.uid,amount,method:selectedMethod,wallet:wallet,status:"pending",date:new Date().toISOString()});await updateDoc(userDocRef,{balance:increment(-amount)});showToast("✅ Demande envoyée");updateBalanceDisplay();closeModal('withdrawModal');}
+async function initUser(user){currentUser=user;userDocRef=doc(db,"users",user.uid);const snap=await getDoc(userDocRef);if(!snap.exists()){const refCode="NX"+Math.random().toString(36).substring(2,10).toUpperCase();await setDoc(userDocRef,{email:user.email,balance:0,uniqueId:"NX"+Math.random().toString(36).substring(2,15).toUpperCase(),refCode:refCode,parrainId:null,invitedCount:0,parrainageGains:0,createdAt:new Date().toISOString(),lastLogin:new Date().toISOString(),ticketsList:[],capDuJour:"📊 CAP DU JOUR\n\n• Jouer aux jeux\n• Inviter des amis (10% de leurs gains)\n• Gagner des bonus"});}else{await updateDoc(userDocRef,{lastLogin:new Date().toISOString()});}await updateBalanceDisplay();await renderGames();await loadCapMessage();}
 document.getElementById('balanceHeader')?.addEventListener('click',async()=>{await updateBalanceDisplay();showToast("Solde mis à jour");});
-document.getElementById('panelA')?.addEventListener('click',()=>handlePanel('https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=', "Panel A", "A", "#10b981"));
-document.getElementById('panelB')?.addEventListener('click',()=>handlePanel('https://gemiwall.com/69f304688bb8875fc339fe24/', "Panel B", "B", "#3b82f6"));
+document.getElementById('panelA')?.addEventListener('click',()=>{const msgPanelA="📢 Vous serez dirigé vers les offres adaptées à votre localisation.<br><br>💰 Si vous totalisez 500 points là-bas, veuillez cliquer sur le bouton Retirer afin de convertir en argent réel retirable.";showFlyPopup("Panel A","A","#10b981","https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=",msgPanelA);});
+document.getElementById('panelB')?.addEventListener('click',()=>showFlyPopup("Panel B","B","#3b82f6","https://gemiwall.com/69f304688bb8875fc339fe24/",null));
 document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
 document.addEventListener('click',(e)=>{const m=document.getElementById('menuFloating');const b=document.getElementById('menuFloatBtn');if(m&&b&&!b.contains(e.target)&&!m.contains(e.target))m.classList.remove('active');});
 document.getElementById('menuCapBtn')?.addEventListener('click',async()=>{await loadCapMessage();closeModal('menuFloating');document.getElementById('capModal').classList.add('active');});
@@ -369,11 +160,10 @@ document.getElementById('cancelLogoutBtn')?.addEventListener('click',()=>closeMo
 document.getElementById('updatePasswordBtn')?.addEventListener('click',async()=>{const np=document.getElementById('newPassword').value;if(np&&np.length>=6){await updatePassword(currentUser,np);showToast("Mot de passe mis à jour");document.getElementById('newPassword').value='';}else if(np)showToast("6 caractères minimum",true);else showToast("Aucun changement");});
 document.getElementById('newTicketBtn')?.addEventListener('click',()=>document.getElementById('newTicketModal').classList.add('active'));
 document.getElementById('submitTicketBtn')?.addEventListener('click',async()=>{const subject=document.getElementById('ticketSubject').value.trim();const msg=document.getElementById('ticketMessage').value.trim();if(!subject||!msg){showToast("Sujet et message requis",true);return;}await createTicket(subject,msg);closeModal('newTicketModal');document.getElementById('ticketSubject').value='';document.getElementById('ticketMessage').value='';});
-document.getElementById('copyCodeBtn')?.addEventListener('click',()=>{const c=document.getElementById('invitationCode').value;navigator.clipboard.writeText(c);showToast("Code copié !");});
+document.getElementById('copyLinkBtn')?.addEventListener('click',()=>{const c=document.getElementById('invitationLink').value;navigator.clipboard.writeText(c);showToast("Lien copié !");});
 document.getElementById('submitWithdrawBtn')?.addEventListener('click',submitWithdraw);
 document.getElementById('confirmLogoutBtn')?.addEventListener('click',async()=>{closeModal('confirmLogoutModal');await signOut(auth);window.location.href="login.html";});
-document.querySelectorAll('.method-option').forEach(opt=>{opt.addEventListener('click',()=>{document.querySelectorAll('.method-option').forEach(o=>o.classList.remove('selected-airtel','selected-orange'));if(opt.dataset.method==='airtel_money')opt.classList.add('selected-airtel');else if(opt.dataset.method==='orange_money')opt.classList.add('selected-orange');selectedMethod=opt.dataset.method;});});
-
+document.querySelectorAll('.method-option').forEach(opt=>{opt.addEventListener('click',()=>{document.querySelectorAll('.method-option').forEach(o=>o.classList.remove('selected-airtel','selected-orange','selected-paypal'));if(opt.dataset.method==='airtel_money')opt.classList.add('selected-airtel');else if(opt.dataset.method==='orange_money')opt.classList.add('selected-orange');else if(opt.dataset.method==='paypal')opt.classList.add('selected-paypal');selectedMethod=opt.dataset.method;const phoneField=document.getElementById('phoneField');const emailField=document.getElementById('emailField');if(selectedMethod==='paypal'){phoneField.style.display='none';emailField.style.display='block';}else{phoneField.style.display='block';emailField.style.display='none';}});});
 onAuthStateChanged(auth,async(user)=>{if(user){await initUser(user);}else{window.location.href="login.html";}});
 </script>
 </body>
