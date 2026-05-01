@@ -462,23 +462,31 @@ document.getElementById('balanceHeader')?.addEventListener('click', async () => 
 });
 
 document.getElementById('panelA')?.addEventListener('click', () => {
+  const userId = currentUser ? currentUser.uid : '';
+  const urlWithUserId = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${userId}`;
   const msgPanelA = "📢 Vous serez dirigé vers les offres adaptées à votre localisation.<br><br>💰 Chaque offre complétée vous rapporte des points X.<br><br>📍 Taux de conversion : <strong style='color:#ffd700'>500 X = 0.03$</strong>";
-  showFlyPopup("Panel A", "A", "#10b981", "https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=", msgPanelA);
+  showFlyPopup("Panel A", "A", "#10b981", urlWithUserId, msgPanelA);
 });
 
 document.getElementById('panelB')?.addEventListener('click', () => {
-  showFlyPopup("Panel B", "B", "#3b82f6", "https://gemiwall.com/69f304688bb8875fc339fe24/", null);
+  const userId = currentUser ? currentUser.uid : '';
+  const urlWithUserId = `https://gemiwall.com/69f304688bb8875fc339fe24/?user_id=${userId}`;
+  showFlyPopup("Panel B", "B", "#3b82f6", urlWithUserId, null);
 });
 
 document.getElementById('goToPanelA')?.addEventListener('click', () => {
   document.getElementById('gameChoicePopup').classList.remove('active');
+  const userId = currentUser ? currentUser.uid : '';
+  const urlWithUserId = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${userId}`;
   const msgPanelA = "📢 Vous serez dirigé vers les offres adaptées à votre localisation.<br><br>💰 Chaque offre complétée vous rapporte des points X.<br><br>📍 Taux de conversion : <strong style='color:#ffd700'>500 X = 0.03$</strong>";
-  showFlyPopup("Panel A", "A", "#10b981", "https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=", msgPanelA);
+  showFlyPopup("Panel A", "A", "#10b981", urlWithUserId, msgPanelA);
 });
 
 document.getElementById('goToPanelB')?.addEventListener('click', () => {
   document.getElementById('gameChoicePopup').classList.remove('active');
-  showFlyPopup("Panel B", "B", "#3b82f6", "https://gemiwall.com/69f304688bb8875fc339fe24/", null);
+  const userId = currentUser ? currentUser.uid : '';
+  const urlWithUserId = `https://gemiwall.com/69f304688bb8875fc339fe24/?user_id=${userId}`;
+  showFlyPopup("Panel B", "B", "#3b82f6", urlWithUserId, null);
 });
 
 document.getElementById('closeGamePopup')?.addEventListener('click', () => {
