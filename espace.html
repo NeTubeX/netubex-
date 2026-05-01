@@ -53,7 +53,7 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .menu-item.danger{color:#ef4444;}
 .menu-item.danger i{color:#ef4444;}
 .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:10000;display:flex;flex-direction:column;gap:12px;max-width:420px;width:90%;pointer-events:none;}
-.toast{background:rgba(15,23,42,0.95);backdrop-filter:blur(12px);border-radius:20px;padding:16px 20px;color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;gap:14px;box-shadow:0 20px 35px -10px rgba(0,0,0,0.3),0 0 0 1px rgba(59,130,246,0.2);animation:toastSlideDown 0.4s cubic-bezier(0.16,1,0.3,1);pointer-events:auto;border-left:4px solid;}
+.toast{background:rgba(15,23,42,0.95);backdrop-filter:blur(12px);border-radius:20px;padding:16px 20px;color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;gap:14px;box-shadow:0 20px 35px -10px rgba(0,0,0,0.3),0 0 0 1px rgba(59,130,246,0.2);pointer-events:auto;border-left:4px solid;}
 .toast-success{border-left-color:#10b981;}
 .toast-success i{color:#10b981;}
 .toast-error{border-left-color:#ef4444;}
@@ -75,7 +75,8 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .modal-close{background:#1e2a45;border:none;width:30px;height:30px;border-radius:8px;color:#fff;cursor:pointer;}
 .modal-body{padding:18px;}
 .modal-footer{padding:12px 18px;border-top:1px solid #1e2a45;display:flex;justify-content:flex-end;gap:10px;}
-.btn-confirm{background:#3b82f6;color:#fff;border:none;padding:8px 20px;border-radius:30px;font-weight:600;cursor:pointer;}
+.btn-confirm{background:#3b82f6;color:#fff;border:none;padding:8px 20px;border-radius:30px;font-weight:600;cursor:pointer;transition:opacity 0.2s;}
+.btn-confirm:disabled{opacity:0.6;cursor:not-allowed;}
 .btn-cancel{background:#1e2a45;color:#fff;border:none;padding:8px 20px;border-radius:30px;cursor:pointer;}
 .input-group{margin-bottom:12px;}
 .input-group label{display:block;color:#94a3b8;font-size:0.7rem;margin-bottom:4px;}
@@ -140,103 +141,550 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut, updatePassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, deleteDoc, onSnapshot, query, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 const firebaseConfig = {apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-let currentUser = null, userDocRef = null, selectedMethod = null, pendingTargetUrl = null, lastBalance = 0;
-const GAMES = [{id:2,name:"Sky Plunger",avatar:"🪂",img:"https://netubex.github.io/netubex-/sky-plunger.png",duration:"30j"},{id:4,name:"Wild Fish",avatar:"🐟",img:"https://netubex.github.io/netubex-/wild-fish.png",duration:"30j"},{id:5,name:"Grab A Toy",avatar:"🧸",img:"https://netubex.github.io/netubex-/grab-a-toy.png",duration:"30j"},{id:6,name:"Love Water",avatar:"💧",img:"https://netubex.github.io/netubex-/love-water.gif",duration:"30j"},{id:8,name:"The Grand Mafia",avatar:"👑",img:"https://netubex.github.io/netubex-/the-grand-mafia.webp",duration:"30j"},{id:9,name:"Dragon Farm",avatar:"🐉",img:"https://netubex.github.io/netubex-/dragon-farm.webp",duration:"30j"}];
-function showToast(title, message, type='success'){const container=document.getElementById('toastContainer');const toast=document.createElement('div');toast.className=`toast toast-${type}`;toast.innerHTML=`<i class="fas ${type==='success'?'fa-check-circle':type==='error'?'fa-exclamation-circle':'fa-info-circle'}"></i><div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${message}</div></div><button class="toast-close"><i class="fas fa-times"></i></button>`;container.appendChild(toast);const closeBtn=toast.querySelector('.toast-close');closeBtn.addEventListener('click',()=>toast.remove());setTimeout(()=>{if(toast.parentNode)toast.remove();},9000);}
-function closeModal(id){document.getElementById(id).classList.remove('active');}
-async function getUserUniqueId(){if(!currentUser)return null;const snap=await getDoc(userDocRef);let uniqueId=snap.data()?.uniqueId;if(!uniqueId){uniqueId="NX"+Math.random().toString(36).substring(2,15).toUpperCase();await updateDoc(userDocRef,{uniqueId:uniqueId});}return uniqueId;}
-async function getBalanceValue(){if(!userDocRef)return 0;const snap=await getDoc(userDocRef);return snap.exists()?(snap.data().balance||0):0;}
-async function updateBalanceDisplay(){const bal=await getBalanceValue();document.getElementById('balanceAmount').innerText=bal.toFixed(4);document.getElementById('currentBalanceDisplay').innerText=bal.toFixed(4)+' $';}
-function startBalanceListener(){if(!userDocRef)return;onSnapshot(userDocRef,(snap)=>{if(snap.exists()){const newBalance=snap.data().balance||0;if(lastBalance!==0&&newBalance>lastBalance){const gain=(newBalance-lastBalance).toFixed(4);showToast('Gain reçu',`+${gain}$ ajouté à votre solde !`,'success');}lastBalance=newBalance;document.getElementById('balanceAmount').innerText=newBalance.toFixed(4);document.getElementById('currentBalanceDisplay').innerText=newBalance.toFixed(4)+' $';}});}
-function showFlyPopup(panel, letter, color, url, specialMessage=null){pendingTargetUrl=url;let popup=document.getElementById('flyPopup');let letterDiv=document.getElementById('popupLetter');let title=document.getElementById('popupTitle');let msgP=document.getElementById('popupMessage');let btns=document.getElementById('popupButtons');letterDiv.textContent=letter;letterDiv.style.backgroundColor=color;title.textContent=panel;if(specialMessage){msgP.innerHTML=specialMessage;}else{msgP.innerHTML='Votre session dans l\'espace de rémunération digitale va commencer...';}btns.innerHTML=`<button class="btn-yes-${letter==='A'?'a':'b'}" id="confirmYesBtn">Oui</button><button class="btn-no" id="confirmNoBtn">Non</button>`;popup.classList.add('active');document.getElementById('confirmYesBtn')?.addEventListener('click',()=>{if(pendingTargetUrl)window.open(pendingTargetUrl,'_blank');document.getElementById('flyPopup').classList.remove('active');pendingTargetUrl=null;},{once:true});document.getElementById('confirmNoBtn')?.addEventListener('click',()=>{document.getElementById('flyPopup').classList.remove('active');pendingTargetUrl=null;},{once:true});}
-async function renderGames(){const container=document.getElementById('gamesContainer');container.innerHTML=GAMES.map(g=>`<div class="post-card"><div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span>${g.duration}</span></div></div><img class="post-image" src="${g.img}" loading="lazy"><button class="gain-btn" data-game="${g.name}"><i class="fas fa-play-circle"></i> Jouer au jeu rémunérateur</button></div>`).join('');document.querySelectorAll('.gain-btn').forEach(btn=>{btn.addEventListener('click',()=>{document.getElementById('gameChoicePopup').classList.add('active');});});}
-async function loadTickets(){const snap=await getDoc(userDocRef);const tickets=snap.data()?.ticketsList||[];const container=document.getElementById('ticketsListContainer');if(tickets.length===0){container.innerHTML='<p style="text-align:center;color:#64748b;">Aucun ticket</p>';return;}container.innerHTML=tickets.map(t=>`<div class="ticket-message"><strong>${escapeHtml(t.subject)}</strong><br>Statut: ${t.status}<br><small>${new Date(t.date).toLocaleDateString()}</small></div>`).join('');}
-async function createTicket(subject,msg){const snap=await getDoc(userDocRef);const tickets=snap.data()?.ticketsList||[];const newTicket={id:Date.now().toString(),subject,message:msg,status:'ouvert',date:new Date().toISOString()};await updateDoc(userDocRef,{ticketsList:[...tickets,newTicket]});showToast('Ticket envoyé','Notre équipe traitera votre demande sous 48h','success');loadTickets();}
-function escapeHtml(str){if(!str)return'';return String(str).replace(/[&<>]/g,m=>m==='&'?'&amp;':m==='<'?'&lt;':'&gt;');}
-async function loadBonusData(){const snap=await getDoc(userDocRef);const d=snap.data();const refCode=d.refCode||'N/A';const baseUrl=window.location.origin;document.getElementById('invitationLink').value=`${baseUrl}/login.html?ref=${refCode}`;document.getElementById('invitationCode').value=refCode;document.getElementById('bonusEarned').innerText=(d.parrainageGains||0).toFixed(4)+' $';document.getElementById('invitedCount').innerText=d.invitedCount||0;}
-async function loadProfile(){const snap=await getDoc(userDocRef);const d=snap.data();document.getElementById('profileEmail').innerText=d.email||currentUser.email;document.getElementById('profileCode').innerText=d.refCode||'N/A';}
-async function loadCapMessage(){const snap=await getDoc(userDocRef);const cap=snap.data()?.capDuJour||"📊 CAP DU JOUR\n\n• Jouer aux jeux\n• Inviter des amis (10% de leurs gains)\n• Bonne journée !";document.getElementById('capMessage').innerHTML=cap.replace(/\n/g,'<br>');}
-async function submitWithdraw(){const amount=parseFloat(document.getElementById('withdrawAmount').value);let wallet;let methodName='';if(selectedMethod==='paypal'){wallet=document.getElementById('paypalEmail').value.trim();methodName='PayPal';if(amount<10){showToast('Montant invalide','PayPal nécessite un minimum de 10$','error');return;}if(!wallet||!wallet.includes('@')){showToast('Email invalide','Veuillez entrer une adresse email valide','error');return;}}else{const countryCode=document.getElementById('countryCodeSelect').value;const phoneNumber=document.getElementById('walletAddress').value.trim();if(!phoneNumber){showToast('Numéro requis','Veuillez entrer votre numéro de téléphone','error');return;}wallet=countryCode+phoneNumber;methodName=selectedMethod==='airtel_money'?'Airtel Money':'Orange Money';}if(!selectedMethod){showToast('Méthode requise','Choisissez une méthode de retrait','error');return;}if(isNaN(amount)||amount<1){showToast('Montant invalide','Le montant minimum est de 1$','error');return;}if(selectedMethod==='paypal'&&amount<10){showToast('Montant invalide','PayPal nécessite un minimum de 10$','error');return;}const snap=await getDoc(userDocRef);const balance=snap.data()?.balance||0;if(amount>balance){showToast('Solde insuffisant','Vous n\'avez pas assez de fonds','error');return;}await addDoc(collection(db,"withdraw"),{userId:currentUser.uid,amount:amount,method:selectedMethod,methodName:methodName,wallet:wallet,status:"pending",date:new Date().toISOString()});await updateDoc(userDocRef,{balance:increment(-amount)});showToast('Demande envoyée avec succès',`Notre système de paiement va créditer votre compte ${methodName} (${wallet}) du montant de ${amount.toFixed(2)}$ sous 48h ouvrées. Un email de confirmation vous sera envoyé une fois le transfert effectué.`,'success');updateBalanceDisplay();closeModal('withdrawModal');document.getElementById('withdrawAmount').value='';document.getElementById('walletAddress').value='';document.getElementById('paypalEmail').value='';}
-async function initUser(user){currentUser=user;userDocRef=doc(db,"users",user.uid);const snap=await getDoc(userDocRef);if(!snap.exists()){const refCode="NX"+Math.random().toString(36).substring(2,10).toUpperCase();await setDoc(userDocRef,{email:user.email,balance:0.20,totalEarned:0.20,uniqueId:"NX"+Math.random().toString(36).substring(2,15).toUpperCase(),refCode:refCode,parrainId:null,invitedCount:0,parrainageGains:0,createdAt:new Date().toISOString(),lastLogin:new Date().toISOString(),ticketsList:[],capDuJour:"📊 CAP DU JOUR\n\n• Jouer aux jeux\n• Inviter des amis (10% de leurs gains)\n• Bonne journée !"});showToast('Bienvenue !','0.20$ vous ont été offerts pour votre inscription','success');}else{await updateDoc(userDocRef,{lastLogin:new Date().toISOString()});}const balanceSnap=await getDoc(userDocRef);lastBalance=balanceSnap.data()?.balance||0;await updateBalanceDisplay();await renderGames();await loadCapMessage();startBalanceListener();}
-document.getElementById('balanceHeader')?.addEventListener('click',async()=>{await updateBalanceDisplay();showToast('Solde mis à jour',`Votre solde actuel est de ${document.getElementById('balanceAmount').innerText}$`,'info');});
-document.getElementById('panelA')?.addEventListener('click',()=>{const msgPanelA="📢 Vous serez dirigé vers les offres adaptées à votre localisation.<br><br>💰 Si vous totalisez 500 X là-bas, veuillez cliquer sur le bouton Retirer afin de convertir en argent réel retirable.<br><br>📍 Taux de conversion : <strong style='color:#ffd700'>500 X = 0.025$</strong>";showFlyPopup("Panel A","A","#10b981","https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=",msgPanelA);});
-document.getElementById('panelB')?.addEventListener('click',()=>showFlyPopup("Panel B","B","#3b82f6","https://gemiwall.com/69f304688bb8875fc339fe24/",null));
-document.getElementById('goToPanelA')?.addEventListener('click',()=>{document.getElementById('gameChoicePopup').classList.remove('active');const msgPanelA="📢 Vous serez dirigé vers les offres adaptées à votre localisation.<br><br>💰 Si vous totalisez 500 X là-bas, veuillez cliquer sur le bouton Retirer afin de convertir en argent réel retirable.<br><br>📍 Taux de conversion : <strong style='color:#ffd700'>500 X = 0.025$</strong>";showFlyPopup("Panel A","A","#10b981","https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=",msgPanelA);});
-document.getElementById('goToPanelB')?.addEventListener('click',()=>{document.getElementById('gameChoicePopup').classList.remove('active');showFlyPopup("Panel B","B","#3b82f6","https://gemiwall.com/69f304688bb8875fc339fe24/",null);});
-document.getElementById('closeGamePopup')?.addEventListener('click',()=>{document.getElementById('gameChoicePopup').classList.remove('active');});
-document.getElementById('menuFloatBtn')?.addEventListener('click',()=>document.getElementById('menuFloating').classList.toggle('active'));
-document.getElementById('menuConversionBtn')?.addEventListener('click',()=>{closeModal('menuFloating');document.getElementById('conversionModal').classList.add('active');});
-document.getElementById('closeConversionModal')?.addEventListener('click',()=>closeModal('conversionModal'));
-document.getElementById('closeConversionFooterBtn')?.addEventListener('click',()=>closeModal('conversionModal'));
-document.addEventListener('click',(e)=>{const m=document.getElementById('menuFloating');const b=document.getElementById('menuFloatBtn');if(m&&b&&!b.contains(e.target)&&!m.contains(e.target))m.classList.remove('active');});
-document.getElementById('menuCapBtn')?.addEventListener('click',async()=>{await loadCapMessage();closeModal('menuFloating');document.getElementById('capModal').classList.add('active');});
-document.getElementById('menuProfileBtn')?.addEventListener('click',async()=>{await loadProfile();closeModal('menuFloating');document.getElementById('profileModal').classList.add('active');});
-document.getElementById('menuTicketsBtn')?.addEventListener('click',async()=>{await loadTickets();closeModal('menuFloating');document.getElementById('ticketsModal').classList.add('active');});
-document.getElementById('menuBonusBtn')?.addEventListener('click',async()=>{await loadBonusData();closeModal('menuFloating');document.getElementById('bonusModal').classList.add('active');});
-document.getElementById('menuWithdrawBtn')?.addEventListener('click',async()=>{await updateBalanceDisplay();closeModal('menuFloating');document.getElementById('withdrawModal').classList.add('active');});
-document.getElementById('menuLogoutBtn')?.addEventListener('click',()=>{closeModal('menuFloating');document.getElementById('confirmLogoutModal').classList.add('active');});
-document.getElementById('closeCapModal')?.addEventListener('click',()=>closeModal('capModal'));
-document.getElementById('closeCapFooterBtn')?.addEventListener('click',()=>closeModal('capModal'));
-document.getElementById('closeProfileModal')?.addEventListener('click',()=>closeModal('profileModal'));
-document.getElementById('cancelProfileBtn')?.addEventListener('click',()=>closeModal('profileModal'));
-document.getElementById('closeTicketsModal')?.addEventListener('click',()=>closeModal('ticketsModal'));
-document.getElementById('cancelTicketsBtn')?.addEventListener('click',()=>closeModal('ticketsModal'));
-document.getElementById('closeNewTicketModal')?.addEventListener('click',()=>closeModal('newTicketModal'));
-document.getElementById('cancelNewTicketBtn')?.addEventListener('click',()=>closeModal('newTicketModal'));
-document.getElementById('closeBonusModal')?.addEventListener('click',()=>closeModal('bonusModal'));
-document.getElementById('cancelBonusBtn')?.addEventListener('click',()=>closeModal('bonusModal'));
-document.getElementById('closeWithdrawModal')?.addEventListener('click',()=>closeModal('withdrawModal'));
-document.getElementById('cancelWithdrawBtn')?.addEventListener('click',()=>closeModal('withdrawModal'));
-document.getElementById('closeLogoutModal')?.addEventListener('click',()=>closeModal('confirmLogoutModal'));
-document.getElementById('cancelLogoutBtn')?.addEventListener('click',()=>closeModal('confirmLogoutModal'));
-document.getElementById('updatePasswordBtn')?.addEventListener('click', async () => {
-    const oldPassword = document.getElementById('oldPassword').value;
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmNewPassword = document.getElementById('confirmNewPassword').value;
-    if(!oldPassword){showToast('Ancien mot de passe requis','Veuillez entrer votre mot de passe actuel','error');return;}
-    if(!newPassword){showToast('Nouveau mot de passe requis','Veuillez entrer un nouveau mot de passe','error');return;}
-    if(newPassword.length<6){showToast('Mot de passe trop court','6 caractères minimum requis','error');return;}
-    if(newPassword !== confirmNewPassword){showToast('Confirmation incorrecte','Les nouveaux mots de passe ne correspondent pas','error');return;}
-    if(oldPassword === newPassword){showToast('Mots de passe identiques','Le nouveau mot de passe doit être différent','error');return;}
-    const updateBtn = document.getElementById('updatePasswordBtn');
-    updateBtn.disabled = true;
-    updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
-    try {
-        await signInWithEmailAndPassword(auth, currentUser.email, oldPassword);
-        updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mise à jour...';
-        await updatePassword(currentUser, newPassword);
-        showToast('Mot de passe mis à jour','Votre mot de passe a été changé avec succès','success');
-        document.getElementById('oldPassword').value = '';
-        document.getElementById('newPassword').value = '';
-        document.getElementById('confirmNewPassword').value = '';
-    } catch(error) {
-        if(error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential'){
-            showToast('Ancien mot de passe incorrect','Veuillez vérifier votre mot de passe actuel','error');
-        } else if(error.code === 'auth/too-many-requests'){
-            showToast('Trop de tentatives','Réessayez plus tard','error');
-        } else {
-            showToast('Erreur technique','Impossible de modifier le mot de passe','error');
-        }
-    } finally {
-        updateBtn.disabled = false;
-        updateBtn.innerHTML = '<i class="fas fa-save"></i> Mettre à jour';
+
+let currentUser = null;
+let userDocRef = null;
+let selectedMethod = null;
+let pendingTargetUrl = null;
+let unsubscribeTransactions = null;
+
+const GAMES = [
+  {id:2,name:"Sky Plunger",avatar:"🪂",img:"https://netubex.github.io/netubex-/sky-plunger.png",duration:"30j"},
+  {id:4,name:"Wild Fish",avatar:"🐟",img:"https://netubex.github.io/netubex-/wild-fish.png",duration:"30j"},
+  {id:5,name:"Grab A Toy",avatar:"🧸",img:"https://netubex.github.io/netubex-/grab-a-toy.png",duration:"30j"},
+  {id:6,name:"Love Water",avatar:"💧",img:"https://netubex.github.io/netubex-/love-water.gif",duration:"30j"},
+  {id:8,name:"The Grand Mafia",avatar:"👑",img:"https://netubex.github.io/netubex-/the-grand-mafia.webp",duration:"30j"},
+  {id:9,name:"Dragon Farm",avatar:"🐉",img:"https://netubex.github.io/netubex-/dragon-farm.webp",duration:"30j"}
+];
+
+function showToast(title, message, type='success'){
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.innerHTML = `<i class="fas ${type==='success'?'fa-check-circle':type==='error'?'fa-exclamation-circle':'fa-info-circle'}"></i><div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${message}</div></div><button class="toast-close"><i class="fas fa-times"></i></button>`;
+  container.appendChild(toast);
+  const closeBtn = toast.querySelector('.toast-close');
+  closeBtn.addEventListener('click', () => toast.remove());
+  setTimeout(() => { if(toast.parentNode) toast.remove(); }, 9000);
+}
+
+function closeModal(id){
+  document.getElementById(id).classList.remove('active');
+}
+
+// ============== CALCUL DE LA BALANCE PAR SOMME DES TRANSACTIONS ==============
+async function calculateBalanceFromTransactions() {
+  if (!currentUser) return 0;
+  
+  const transactionsRef = collection(db, "users", currentUser.uid, "transactions");
+  const snapshot = await getDocs(transactionsRef);
+  
+  let balance = 0;
+  snapshot.forEach(doc => {
+    const amount = doc.data().amount || 0;
+    balance += amount;
+  });
+  
+  return balance;
+}
+
+async function updateBalanceDisplay() {
+  if (!currentUser) return;
+  const balance = await calculateBalanceFromTransactions();
+  document.getElementById('balanceAmount').innerText = balance.toFixed(4);
+  document.getElementById('currentBalanceDisplay').innerText = balance.toFixed(4) + ' $';
+  return balance;
+}
+
+// Listener temps réel sur les transactions
+function startTransactionsListener() {
+  if (!currentUser) return;
+  
+  const transactionsRef = collection(db, "users", currentUser.uid, "transactions");
+  
+  unsubscribeTransactions = onSnapshot(transactionsRef, async (snapshot) => {
+    let totalBalance = 0;
+    snapshot.forEach(doc => {
+      totalBalance += doc.data().amount || 0;
+    });
+    
+    document.getElementById('balanceAmount').innerText = totalBalance.toFixed(4);
+    document.getElementById('currentBalanceDisplay').innerText = totalBalance.toFixed(4) + ' $';
+  });
+}
+
+// ============== FIN CALCUL BALANCE ==============
+
+function showFlyPopup(panel, letter, color, url, specialMessage=null){
+  pendingTargetUrl = url;
+  let popup = document.getElementById('flyPopup');
+  let letterDiv = document.getElementById('popupLetter');
+  let title = document.getElementById('popupTitle');
+  let msgP = document.getElementById('popupMessage');
+  let btns = document.getElementById('popupButtons');
+  letterDiv.textContent = letter;
+  letterDiv.style.backgroundColor = color;
+  title.textContent = panel;
+  if(specialMessage){
+    msgP.innerHTML = specialMessage;
+  }else{
+    msgP.innerHTML = 'Votre session dans l\'espace de rémunération digitale va commencer...';
+  }
+  btns.innerHTML = `<button class="btn-yes-${letter==='A'?'a':'b'}" id="confirmYesBtn">Oui</button><button class="btn-no" id="confirmNoBtn">Non</button>`;
+  popup.classList.add('active');
+  document.getElementById('confirmYesBtn')?.addEventListener('click',()=>{
+    if(pendingTargetUrl) window.open(pendingTargetUrl,'_blank');
+    document.getElementById('flyPopup').classList.remove('active');
+    pendingTargetUrl = null;
+  },{once:true});
+  document.getElementById('confirmNoBtn')?.addEventListener('click',()=>{
+    document.getElementById('flyPopup').classList.remove('active');
+    pendingTargetUrl = null;
+  },{once:true});
+}
+
+async function renderGames(){
+  const container = document.getElementById('gamesContainer');
+  container.innerHTML = GAMES.map(g => `<div class="post-card"><div class="post-header"><div class="avatar">${g.avatar}</div><div class="post-meta"><h4>${g.name}</h4><span>${g.duration}</span></div></div><img class="post-image" src="${g.img}" loading="lazy"><button class="gain-btn" data-game="${g.name}"><i class="fas fa-play-circle"></i> Jouer au jeu rémunérateur</button></div>`).join('');
+  document.querySelectorAll('.gain-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('gameChoicePopup').classList.add('active');
+    });
+  });
+}
+
+async function loadTickets(){
+  const snap = await getDoc(userDocRef);
+  const tickets = snap.data()?.ticketsList || [];
+  const container = document.getElementById('ticketsListContainer');
+  if(tickets.length === 0){
+    container.innerHTML = '<p style="text-align:center;color:#64748b;">Aucun ticket</p>';
+    return;
+  }
+  container.innerHTML = tickets.map(t => `<div class="ticket-message"><strong>${escapeHtml(t.subject)}</strong><br>Statut: ${t.status}<br><small>${new Date(t.date).toLocaleDateString()}</small></div>`).join('');
+}
+
+async function createTicket(subject,msg){
+  const snap = await getDoc(userDocRef);
+  const tickets = snap.data()?.ticketsList || [];
+  const newTicket = {id:Date.now().toString(), subject, message:msg, status:'ouvert', date:new Date().toISOString()};
+  await updateDoc(userDocRef, {ticketsList: [...tickets, newTicket]});
+  showToast('Ticket envoyé','Notre équipe traitera votre demande sous 48h','success');
+  loadTickets();
+}
+
+function escapeHtml(str){
+  if(!str) return '';
+  return String(str).replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'&gt;');
+}
+
+async function loadBonusData(){
+  const snap = await getDoc(userDocRef);
+  const d = snap.data();
+  const refCode = d.refCode || 'N/A';
+  const baseUrl = window.location.origin;
+  document.getElementById('invitationLink').value = `${baseUrl}/login.html?ref=${refCode}`;
+  document.getElementById('invitationCode').value = refCode;
+  document.getElementById('bonusEarned').innerText = (d.parrainageGains || 0).toFixed(4) + ' $';
+  document.getElementById('invitedCount').innerText = d.invitedCount || 0;
+}
+
+async function loadProfile(){
+  const snap = await getDoc(userDocRef);
+  const d = snap.data();
+  document.getElementById('profileEmail').innerText = d.email || currentUser.email;
+  document.getElementById('profileCode').innerText = d.refCode || 'N/A';
+}
+
+async function loadCapMessage(){
+  const snap = await getDoc(userDocRef);
+  const cap = snap.data()?.capDuJour || "📊 CAP DU JOUR\n\n• Jouer aux jeux\n• Inviter des amis (10% de leurs gains)\n• Bonne journée !";
+  document.getElementById('capMessage').innerHTML = cap.replace(/\n/g,'<br>');
+}
+
+async function submitWithdraw(){
+  const submitBtn = document.getElementById('submitWithdrawBtn');
+  const originalText = submitBtn.innerHTML;
+  
+  if(!selectedMethod){
+    showToast('Méthode requise', 'Veuillez choisir Airtel Money, Orange Money ou PayPal', 'error');
+    return;
+  }
+  
+  const amount = parseFloat(document.getElementById('withdrawAmount').value);
+  
+  if(isNaN(amount) || amount <= 0){
+    showToast('Montant invalide', 'Veuillez entrer un montant valide', 'error');
+    return;
+  }
+  
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement...';
+  
+  try {
+    // Vérifier un retrait par jour
+    const lastWithdrawQuery = await getDocs(
+      query(
+        collection(db, "withdraw"),
+        where("userId", "==", currentUser.uid),
+        orderBy("date", "desc"),
+        limit(1)
+      )
+    );
+    
+    if (!lastWithdrawQuery.empty) {
+      const lastWithdraw = lastWithdrawQuery.docs[0].data();
+      const lastDate = new Date(lastWithdraw.date);
+      const now = new Date();
+      const diffHours = (now - lastDate) / 1000 / 60 / 60;
+      
+      if (diffHours < 24) {
+        const nextWithdrawTime = new Date(lastDate.getTime() + 24 * 60 * 60 * 1000);
+        const nextWithdrawFormatted = nextWithdrawTime.toLocaleString('fr-FR', {
+          hour: '2-digit',
+          minute: '2-digit',
+          day: 'numeric',
+          month: 'numeric'
+        });
+        showToast("Limite quotidienne atteinte", `Prochain retrait possible : ${nextWithdrawFormatted}`, "error");
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        return;
+      }
     }
+    
+    if(selectedMethod === 'paypal' && amount < 10){
+      showToast('Montant invalide', 'PayPal nécessite un minimum de 10$', 'error');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+      return;
+    }
+    
+    if(amount < 1){
+      showToast('Montant invalide', 'Le montant minimum est de 1$', 'error');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+      return;
+    }
+    
+    let wallet;
+    let methodName = '';
+    
+    if(selectedMethod === 'paypal'){
+      wallet = document.getElementById('paypalEmail').value.trim();
+      methodName = 'PayPal';
+      if(!wallet || !wallet.includes('@')){
+        showToast('Email invalide', 'Veuillez entrer une adresse email valide', 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        return;
+      }
+    } else {
+      const countryCode = document.getElementById('countryCodeSelect').value;
+      const phoneNumber = document.getElementById('walletAddress').value.trim();
+      if(!phoneNumber){
+        showToast('Numéro requis', 'Veuillez entrer votre numéro de téléphone', 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        return;
+      }
+      wallet = countryCode + phoneNumber;
+      methodName = selectedMethod === 'airtel_money' ? 'Airtel Money' : 'Orange Money';
+    }
+    
+    // Lire la balance actuelle (calculée depuis les transactions)
+    const currentBalance = await calculateBalanceFromTransactions();
+    
+    if(amount > currentBalance){
+      showToast('Solde insuffisant', `Votre solde est de ${currentBalance.toFixed(2)}$`, 'error');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+      return;
+    }
+    
+    // Créer la demande de retrait
+    await addDoc(collection(db, "withdraw"), {
+      userId: currentUser.uid,
+      amount: amount,
+      method: selectedMethod,
+      methodName: methodName,
+      wallet: wallet,
+      status: "pending",
+      date: new Date().toISOString()
+    });
+    
+    // Créer une transaction NEGATIVE pour débiter le solde
+    const negativeTxId = `withdraw_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+    const negativeAmount = -amount;
+    
+    await setDoc(doc(db, "users", currentUser.uid, "transactions", negativeTxId), {
+      amount: negativeAmount,
+      revenue: 0,
+      time: Date.now(),
+      type: "withdraw"
+    });
+    
+    showToast('Demande envoyée avec succès', `${amount.toFixed(2)}$ seront envoyés sur votre ${methodName} (${wallet}) sous 48h`, 'success');
+    
+    // La balance se mettra à jour automatiquement via onSnapshot
+    closeModal('withdrawModal');
+    
+    document.getElementById('withdrawAmount').value = '';
+    document.getElementById('walletAddress').value = '';
+    document.getElementById('paypalEmail').value = '';
+    selectedMethod = null;
+    
+    document.querySelectorAll('.method-option').forEach(o => {
+      o.classList.remove('selected-airtel', 'selected-orange', 'selected-paypal');
+    });
+    
+  } catch(error) {
+    console.error("Erreur lors du retrait:", error);
+    showToast('Erreur', "Impossible d'effectuer le retrait. Réessayez plus tard.", 'error');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = originalText;
+  }
+}
+
+async function initUser(user){
+  currentUser = user;
+  userDocRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userDocRef);
+  
+  if(!snap.exists()){
+    const refCode = "NX" + Math.random().toString(36).substring(2,10).toUpperCase();
+    await setDoc(userDocRef, {
+      email: user.email,
+      totalEarned: 0,
+      uniqueId: "NX" + Math.random().toString(36).substring(2,15).toUpperCase(),
+      refCode: refCode,
+      parrainId: null,
+      invitedCount: 0,
+      parrainageGains: 0,
+      createdAt: new Date().toISOString(),
+      lastLogin: new Date().toISOString(),
+      ticketsList: [],
+      capDuJour: "📊 CAP DU JOUR\n\n• Jouer aux jeux\n• Inviter des amis (10% de leurs gains)\n• Bonne journée !"
+    });
+    
+    // Bonus de bienvenue : ajouter 0.20$ en transaction
+    await setDoc(doc(db, "users", user.uid, "transactions", "welcome_bonus"), {
+      amount: 0.20,
+      revenue: 0,
+      time: Date.now(),
+      type: "bonus"
+    });
+    
+    showToast('Bienvenue !', '0.20$ vous ont été offerts pour votre inscription', 'success');
+  } else {
+    await updateDoc(userDocRef, { lastLogin: new Date().toISOString() });
+  }
+  
+  await updateBalanceDisplay();
+  await renderGames();
+  await loadCapMessage();
+  startTransactionsListener();
+}
+
+// Événements
+document.getElementById('balanceHeader')?.addEventListener('click', async () => {
+  const balance = await calculateBalanceFromTransactions();
+  showToast('Solde', `Votre solde actuel est de ${balance.toFixed(4)}$`, 'info');
 });
-document.getElementById('newTicketBtn')?.addEventListener('click',()=>document.getElementById('newTicketModal').classList.add('active'));
-document.getElementById('submitTicketBtn')?.addEventListener('click',async()=>{const subject=document.getElementById('ticketSubject').value.trim();const msg=document.getElementById('ticketMessage').value.trim();if(!subject||!msg){showToast('Champs requis','Sujet et message sont obligatoires','error');return;}await createTicket(subject,msg);closeModal('newTicketModal');document.getElementById('ticketSubject').value='';document.getElementById('ticketMessage').value='';});
-document.getElementById('copyLinkBtn')?.addEventListener('click',()=>{const c=document.getElementById('invitationLink').value;navigator.clipboard.writeText(c);showToast('Lien copié','Partagez ce lien avec vos amis','success');});
-document.getElementById('submitWithdrawBtn')?.addEventListener('click',submitWithdraw);
-document.getElementById('confirmLogoutBtn')?.addEventListener('click',async()=>{closeModal('confirmLogoutModal');await signOut(auth);window.location.href="login.html";});
-document.querySelectorAll('.method-option').forEach(opt=>{opt.addEventListener('click',()=>{document.querySelectorAll('.method-option').forEach(o=>o.classList.remove('selected-airtel','selected-orange','selected-paypal'));if(opt.dataset.method==='airtel_money')opt.classList.add('selected-airtel');else if(opt.dataset.method==='orange_money')opt.classList.add('selected-orange');else if(opt.dataset.method==='paypal')opt.classList.add('selected-paypal');selectedMethod=opt.dataset.method;const phoneField=document.getElementById('phoneField');const emailField=document.getElementById('emailField');if(selectedMethod==='paypal'){phoneField.style.display='none';emailField.style.display='block';}else{phoneField.style.display='block';emailField.style.display='none';}});});
-document.addEventListener('contextmenu', function(e){e.preventDefault();return false;});
-document.addEventListener('selectstart', function(e){e.preventDefault();return false;});
-document.addEventListener('dragstart', function(e){e.preventDefault();return false;});
-onAuthStateChanged(auth,async(user)=>{if(user){await initUser(user);}else{window.location.href="login.html";}});
+
+document.getElementById('panelA')?.addEventListener('click', () => {
+  const msgPanelA = "📢 Vous serez dirigé vers les offres adaptées à votre localisation.<br><br>💰 Chaque offre complétée vous rapporte des points X.<br><br>📍 Taux de conversion : <strong style='color:#ffd700'>500 X = 0.025$</strong>";
+  showFlyPopup("Panel A", "A", "#10b981", "https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=", msgPanelA);
+});
+
+document.getElementById('panelB')?.addEventListener('click', () => {
+  showFlyPopup("Panel B", "B", "#3b82f6", "https://gemiwall.com/69f304688bb8875fc339fe24/", null);
+});
+
+document.getElementById('goToPanelA')?.addEventListener('click', () => {
+  document.getElementById('gameChoicePopup').classList.remove('active');
+  const msgPanelA = "📢 Vous serez dirigé vers les offres adaptées à votre localisation.<br><br>💰 Chaque offre complétée vous rapporte des points X.<br><br>📍 Taux de conversion : <strong style='color:#ffd700'>500 X = 0.025$</strong>";
+  showFlyPopup("Panel A", "A", "#10b981", "https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=", msgPanelA);
+});
+
+document.getElementById('goToPanelB')?.addEventListener('click', () => {
+  document.getElementById('gameChoicePopup').classList.remove('active');
+  showFlyPopup("Panel B", "B", "#3b82f6", "https://gemiwall.com/69f304688bb8875fc339fe24/", null);
+});
+
+document.getElementById('closeGamePopup')?.addEventListener('click', () => {
+  document.getElementById('gameChoicePopup').classList.remove('active');
+});
+
+document.getElementById('menuFloatBtn')?.addEventListener('click', () => {
+  document.getElementById('menuFloating').classList.toggle('active');
+});
+
+document.getElementById('menuConversionBtn')?.addEventListener('click', () => {
+  closeModal('menuFloating');
+  document.getElementById('conversionModal').classList.add('active');
+});
+
+document.getElementById('closeConversionModal')?.addEventListener('click', () => closeModal('conversionModal'));
+document.getElementById('closeConversionFooterBtn')?.addEventListener('click', () => closeModal('conversionModal'));
+
+document.addEventListener('click', (e) => {
+  const m = document.getElementById('menuFloating');
+  const b = document.getElementById('menuFloatBtn');
+  if(m && b && !b.contains(e.target) && !m.contains(e.target)) m.classList.remove('active');
+});
+
+document.getElementById('menuCapBtn')?.addEventListener('click', async () => {
+  await loadCapMessage();
+  closeModal('menuFloating');
+  document.getElementById('capModal').classList.add('active');
+});
+
+document.getElementById('menuProfileBtn')?.addEventListener('click', async () => {
+  await loadProfile();
+  closeModal('menuFloating');
+  document.getElementById('profileModal').classList.add('active');
+});
+
+document.getElementById('menuTicketsBtn')?.addEventListener('click', async () => {
+  await loadTickets();
+  closeModal('menuFloating');
+  document.getElementById('ticketsModal').classList.add('active');
+});
+
+document.getElementById('menuBonusBtn')?.addEventListener('click', async () => {
+  await loadBonusData();
+  closeModal('menuFloating');
+  document.getElementById('bonusModal').classList.add('active');
+});
+
+document.getElementById('menuWithdrawBtn')?.addEventListener('click', async () => {
+  await updateBalanceDisplay();
+  closeModal('menuFloating');
+  document.getElementById('withdrawModal').classList.add('active');
+});
+
+document.getElementById('menuLogoutBtn')?.addEventListener('click', () => {
+  closeModal('menuFloating');
+  document.getElementById('confirmLogoutModal').classList.add('active');
+});
+
+document.getElementById('closeCapModal')?.addEventListener('click', () => closeModal('capModal'));
+document.getElementById('closeCapFooterBtn')?.addEventListener('click', () => closeModal('capModal'));
+document.getElementById('closeProfileModal')?.addEventListener('click', () => closeModal('profileModal'));
+document.getElementById('cancelProfileBtn')?.addEventListener('click', () => closeModal('profileModal'));
+document.getElementById('closeTicketsModal')?.addEventListener('click', () => closeModal('ticketsModal'));
+document.getElementById('cancelTicketsBtn')?.addEventListener('click', () => closeModal('ticketsModal'));
+document.getElementById('closeNewTicketModal')?.addEventListener('click', () => closeModal('newTicketModal'));
+document.getElementById('cancelNewTicketBtn')?.addEventListener('click', () => closeModal('newTicketModal'));
+document.getElementById('closeBonusModal')?.addEventListener('click', () => closeModal('bonusModal'));
+document.getElementById('cancelBonusBtn')?.addEventListener('click', () => closeModal('bonusModal'));
+document.getElementById('closeWithdrawModal')?.addEventListener('click', () => closeModal('withdrawModal'));
+document.getElementById('cancelWithdrawBtn')?.addEventListener('click', () => closeModal('withdrawModal'));
+document.getElementById('closeLogoutModal')?.addEventListener('click', () => closeModal('confirmLogoutModal'));
+document.getElementById('cancelLogoutBtn')?.addEventListener('click', () => closeModal('confirmLogoutModal'));
+
+document.getElementById('updatePasswordBtn')?.addEventListener('click', async () => {
+  const oldPassword = document.getElementById('oldPassword').value;
+  const newPassword = document.getElementById('newPassword').value;
+  const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+  if(!oldPassword){ showToast('Ancien mot de passe requis','Veuillez entrer votre mot de passe actuel','error'); return; }
+  if(!newPassword){ showToast('Nouveau mot de passe requis','Veuillez entrer un nouveau mot de passe','error'); return; }
+  if(newPassword.length<6){ showToast('Mot de passe trop court','6 caractères minimum requis','error'); return; }
+  if(newPassword !== confirmNewPassword){ showToast('Confirmation incorrecte','Les nouveaux mots de passe ne correspondent pas','error'); return; }
+  if(oldPassword === newPassword){ showToast('Mots de passe identiques','Le nouveau mot de passe doit être différent','error'); return; }
+  
+  const updateBtn = document.getElementById('updatePasswordBtn');
+  updateBtn.disabled = true;
+  updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
+  try {
+    await signInWithEmailAndPassword(auth, currentUser.email, oldPassword);
+    updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mise à jour...';
+    await updatePassword(currentUser, newPassword);
+    showToast('Mot de passe mis à jour','Votre mot de passe a été changé avec succès','success');
+    document.getElementById('oldPassword').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmNewPassword').value = '';
+  } catch(error) {
+    if(error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential'){
+      showToast('Ancien mot de passe incorrect','Veuillez vérifier votre mot de passe actuel','error');
+    } else if(error.code === 'auth/too-many-requests'){
+      showToast('Trop de tentatives','Réessayez plus tard','error');
+    } else {
+      showToast('Erreur technique','Impossible de modifier le mot de passe','error');
+    }
+  } finally {
+    updateBtn.disabled = false;
+    updateBtn.innerHTML = '<i class="fas fa-save"></i> Mettre à jour';
+  }
+});
+
+document.getElementById('newTicketBtn')?.addEventListener('click', () => {
+  document.getElementById('newTicketModal').classList.add('active');
+});
+
+document.getElementById('submitTicketBtn')?.addEventListener('click', async () => {
+  const subject = document.getElementById('ticketSubject').value.trim();
+  const msg = document.getElementById('ticketMessage').value.trim();
+  if(!subject || !msg){ showToast('Champs requis','Sujet et message sont obligatoires','error'); return; }
+  await createTicket(subject, msg);
+  closeModal('newTicketModal');
+  document.getElementById('ticketSubject').value = '';
+  document.getElementById('ticketMessage').value = '';
+});
+
+document.getElementById('copyLinkBtn')?.addEventListener('click', () => {
+  const c = document.getElementById('invitationLink').value;
+  navigator.clipboard.writeText(c);
+  showToast('Lien copié','Partagez ce lien avec vos amis','success');
+});
+
+document.getElementById('submitWithdrawBtn')?.addEventListener('click', submitWithdraw);
+
+document.getElementById('confirmLogoutBtn')?.addEventListener('click', async () => {
+  closeModal('confirmLogoutModal');
+  if(unsubscribeTransactions) unsubscribeTransactions();
+  await signOut(auth);
+  window.location.href = "login.html";
+});
+
+document.querySelectorAll('.method-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('.method-option').forEach(o => o.classList.remove('selected-airtel','selected-orange','selected-paypal'));
+    if(opt.dataset.method === 'airtel_money') opt.classList.add('selected-airtel');
+    else if(opt.dataset.method === 'orange_money') opt.classList.add('selected-orange');
+    else if(opt.dataset.method === 'paypal') opt.classList.add('selected-paypal');
+    selectedMethod = opt.dataset.method;
+    const phoneField = document.getElementById('phoneField');
+    const emailField = document.getElementById('emailField');
+    if(selectedMethod === 'paypal'){
+      phoneField.style.display = 'none';
+      emailField.style.display = 'block';
+    } else {
+      phoneField.style.display = 'block';
+      emailField.style.display = 'none';
+    }
+  });
+});
+
+document.addEventListener('contextmenu', function(e){ e.preventDefault(); return false; });
+document.addEventListener('selectstart', function(e){ e.preventDefault(); return false; });
+document.addEventListener('dragstart', function(e){ e.preventDefault(); return false; });
+
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    await initUser(user);
+  } else {
+    window.location.href = "login.html";
+  }
+});
 </script>
 </body>
 </html>
