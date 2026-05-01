@@ -66,11 +66,35 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1e293b;padding:12p
 .login-card button{width:100%;padding:14px;background:#3b82f6;border:none;border-radius:30px;font-weight:600;font-size:14px;color:#fff;cursor:pointer;}
 .login-card button:active{transform:scale(0.98);}
 .error-msg{background:#fee2e2;color:#dc2626;padding:10px;border-radius:16px;font-size:12px;margin-bottom:16px;display:none;}
-.toast-container{position:fixed;bottom:20px;left:12px;right:12px;z-index:1000;display:flex;flex-direction:column;gap:8px;}
-.toast{background:#1e293b;color:#fff;padding:12px 16px;border-radius:16px;font-size:13px;display:flex;align-items:center;gap:10px;border-left:3px solid #10b981;animation:slideUp 0.3s ease;}
-.toast-error{border-left-color:#ef4444;}
-.toast-warning{border-left-color:#f59e0b;}
-@keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+
+/* TOASTS PROFESSIONNELS 8 secondes */
+.toast-container{position:fixed;top:70px;left:12px;right:12px;z-index:10000;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
+.toast{pointer-events:auto;background:#1e293b;color:#fff;padding:14px 18px;border-radius:20px;font-size:13px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.15);border-left:4px solid;animation:slideDown 0.3s ease;backdrop-filter:blur(10px);}
+.toast-success{border-left-color:#10b981;background:linear-gradient(135deg,#1e293b,#0f1724);}
+.toast-error{border-left-color:#ef4444;background:linear-gradient(135deg,#1e293b,#0f1724);}
+.toast-warning{border-left-color:#f59e0b;background:linear-gradient(135deg,#1e293b,#0f1724);}
+.toast-info{border-left-color:#3b82f6;background:linear-gradient(135deg,#1e293b,#0f1724);}
+.toast-icon{font-size:20px;width:28px;text-align:center;}
+.toast-content{flex:1;}
+.toast-title{font-weight:700;font-size:13px;margin-bottom:3px;}
+.toast-message{font-size:11px;opacity:0.9;}
+.toast-close{background:rgba(255,255,255,0.1);border:none;width:26px;height:26px;border-radius:13px;cursor:pointer;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;transition:0.2s;}
+.toast-close:hover{background:rgba(255,255,255,0.25);}
+@keyframes slideDown{from{opacity:0;transform:translateY(-30px);}to{opacity:1;transform:translateY(0);}}
+
+/* MODAL CONFIRMATION PROFESSIONNELLE */
+.modal-confirm{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:20000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:0.2s;}
+.modal-confirm.active{visibility:visible;opacity:1;}
+.modal-confirm-content{background:#fff;border-radius:32px;max-width:320px;width:85%;padding:24px;text-align:center;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);animation:popIn 0.3s ease;}
+.modal-confirm-content i{font-size:48px;margin-bottom:16px;}
+.modal-confirm-content h3{font-size:18px;font-weight:700;margin-bottom:8px;color:#0f172a;}
+.modal-confirm-content p{font-size:13px;color:#475569;margin-bottom:24px;}
+.modal-confirm-buttons{display:flex;gap:12px;justify-content:center;}
+.modal-confirm-buttons button{padding:10px 24px;border-radius:40px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:0.1s;}
+.modal-confirm-buttons button:active{transform:scale(0.96);}
+.btn-confirm-yes{background:#10b981;color:#fff;}
+.btn-confirm-no{background:#e2e8f0;color:#1e293b;}
+@keyframes popIn{from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);}}
 </style>
 </head>
 <body>
@@ -115,9 +139,23 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1e293b;padding:12p
 </div>
 </div>
 <div id="toastContainer" class="toast-container"></div>
+
+<!-- Modal confirmation personnalisé -->
+<div id="confirmModal" class="modal-confirm">
+<div class="modal-confirm-content">
+<i class="fas fa-question-circle" style="color:#f59e0b;"></i>
+<h3 id="confirmTitle">Confirmation</h3>
+<p id="confirmMessage">Êtes-vous sûr de vouloir effectuer cette action ?</p>
+<div class="modal-confirm-buttons">
+<button class="btn-confirm-no" id="confirmNoBtn">Annuler</button>
+<button class="btn-confirm-yes" id="confirmYesBtn">Confirmer</button>
+</div>
+</div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -139,6 +177,36 @@ let searchTerm = "";
 let sortDescending = true;
 let userEmailCache = new Map();
 let userCodeCache = new Map();
+let pendingConfirm = null;
+
+function showToast(message, type="success", duration=8000){
+const container = document.getElementById('toastContainer');
+const toast = document.createElement('div');
+toast.className = `toast toast-${type}`;
+let icon = type==='success'?'✅':type==='error'?'❌':type==='warning'?'⚠️':'ℹ️';
+let title = type==='success'?'Succès':type==='error'?'Erreur':type==='warning'?'Attention':'Information';
+toast.innerHTML = `<div class="toast-icon">${icon}</div><div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${message}</div></div><button class="toast-close">✕</button>`;
+container.appendChild(toast);
+const closeBtn = toast.querySelector('.toast-close');
+closeBtn.addEventListener('click',()=>{ toast.style.animation='slideDown 0.2s reverse'; setTimeout(()=>toast.remove(),200); });
+setTimeout(()=>{ if(toast.parentNode){ toast.style.animation='slideDown 0.2s reverse'; setTimeout(()=>toast.remove(),200); } }, duration);
+}
+
+function showConfirm(title, message, onConfirm){
+document.getElementById('confirmTitle').innerText = title;
+document.getElementById('confirmMessage').innerText = message;
+document.getElementById('confirmModal').classList.add('active');
+pendingConfirm = onConfirm;
+}
+
+document.getElementById('confirmYesBtn').onclick = ()=>{
+document.getElementById('confirmModal').classList.remove('active');
+if(pendingConfirm){ pendingConfirm(); pendingConfirm = null; }
+};
+document.getElementById('confirmNoBtn').onclick = ()=>{
+document.getElementById('confirmModal').classList.remove('active');
+pendingConfirm = null;
+};
 
 async function getUserInfo(userId){
 if(!userId) return { email: null, code: null };
@@ -156,15 +224,6 @@ return { email, code };
 }
 return { email: null, code: null };
 }catch(e){ return { email: null, code: null }; }
-}
-
-function showToast(msg, type="success"){
-const container = document.getElementById('toastContainer');
-const toast = document.createElement('div');
-toast.className = `toast toast-${type}`;
-toast.innerHTML = `<span>${type==='success'?'✅':type==='error'?'❌':'⚠️'}</span><span>${msg}</span>`;
-container.appendChild(toast);
-setTimeout(()=>toast.remove(), 4000);
 }
 
 function formatDate(timestamp){
@@ -231,8 +290,8 @@ withdrawals = tempWithdrawals;
 sortWithdrawals();
 renderList();
 updateStats();
-showToast(`${withdrawals.length} retrait(s)`,"success");
-}catch(e){ console.error(e); showToast("Erreur chargement","error"); }
+showToast(`${withdrawals.length} retrait(s) chargé(s)`,"success",5000);
+}catch(e){ console.error(e); showToast("Erreur chargement","error",8000); }
 }
 
 function renderList(){
@@ -268,9 +327,9 @@ return `<div class="withdraw-card">
 <div class="actions">${actions}</div>
 </div>`;
 }).join('');
-document.querySelectorAll('.btn-approve').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); approveWithdraw(btn.dataset.user, btn.dataset.id); }); });
-document.querySelectorAll('.btn-reject').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); rejectWithdraw(btn.dataset.user, btn.dataset.id, parseFloat(btn.dataset.amount)); }); });
-document.querySelectorAll('.btn-delete').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); deleteWithdraw(btn.dataset.user, btn.dataset.id); }); });
+document.querySelectorAll('.btn-approve').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); confirmApprove(btn.dataset.user, btn.dataset.id); }); });
+document.querySelectorAll('.btn-reject').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); confirmReject(btn.dataset.user, btn.dataset.id, parseFloat(btn.dataset.amount)); }); });
+document.querySelectorAll('.btn-delete').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); confirmDelete(btn.dataset.user, btn.dataset.id); }); });
 }
 
 function updateStats(){
@@ -284,21 +343,32 @@ document.getElementById('statApproved').innerText = approved.length;
 document.getElementById('statRejected').innerText = rejected.length;
 }
 
-async function approveWithdraw(userId, txId){
-try{ await updateDoc(doc(db, "users", userId, "transactions", txId), { status: "approved", processedAt: new Date().toISOString() }); showToast("✅ Approuvé","success"); await loadWithdrawals(); }
-catch(e){ showToast("Erreur","error"); }
+function confirmApprove(userId, txId){
+showConfirm('Approuver le retrait', 'Confirmez-vous l\'approbation de cette demande ? Le montant sera débité définitivement.', async () => {
+try{ await updateDoc(doc(db, "users", userId, "transactions", txId), { status: "approved", processedAt: new Date().toISOString() }); showToast("✅ Retrait approuvé avec succès","success",8000); await loadWithdrawals(); }
+catch(e){ showToast("Erreur lors de l'approbation","error",8000); }
+});
 }
 
-async function rejectWithdraw(userId, txId, amount){
-if(!confirm(`Rejeter ${amount.toFixed(2)}$ ?`)) return;
-try{ await updateDoc(doc(db, "users", userId, "transactions", txId), { status: "rejected", processedAt: new Date().toISOString() }); showToast(`⚠️ Rejeté`,"warning"); await loadWithdrawals(); }
-catch(e){ showToast("Erreur","error"); }
+function confirmReject(userId, txId, amount){
+showConfirm('Rejeter le retrait', `Confirmez-vous le rejet de ${amount.toFixed(2)}$ ? L'utilisateur sera automatiquement remboursé.`, async () => {
+try{
+await updateDoc(doc(db, "users", userId, "transactions", txId), { status: "rejected", processedAt: new Date().toISOString() });
+const refundId = `refund_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+await setDoc(doc(db, "users", userId, "transactions", refundId), {
+amount: amount, revenue: 0, time: Date.now(), type: "refund", reason: "retrait_rejected", originalWithdrawId: txId
+});
+showToast(`⚠️ Retrait rejeté et remboursé (${amount.toFixed(2)}$)`,`warning`,8000);
+await loadWithdrawals();
+} catch(e){ showToast("Erreur lors du rejet","error",8000); }
+});
 }
 
-async function deleteWithdraw(userId, txId){
-if(!confirm("Supprimer définitivement ?")) return;
-try{ await deleteDoc(doc(db, "users", userId, "transactions", txId)); showToast("Supprimé","success"); await loadWithdrawals(); }
-catch(e){ showToast("Erreur","error"); }
+function confirmDelete(userId, txId){
+showConfirm('Supprimer la demande', 'Cette action est irréversible. Voulez-vous vraiment supprimer cette demande ?', async () => {
+try{ await deleteDoc(doc(db, "users", userId, "transactions", txId)); showToast("Demande supprimée","success",8000); await loadWithdrawals(); }
+catch(e){ showToast("Erreur lors de la suppression","error",8000); }
+});
 }
 
 function exportCSV(){
@@ -312,7 +382,7 @@ const link = document.createElement('a');
 link.href = URL.createObjectURL(blob);
 link.download = `retraits_${new Date().toISOString().slice(0,19)}.csv`;
 link.click();
-showToast("Export CSV","success");
+showToast("Export CSV effectué","success",5000);
 }
 
 function toggleSort(){
@@ -333,10 +403,10 @@ const pwd = document.getElementById('adminPassword').value;
 const errorDiv = document.getElementById('loginError');
 if(!email || !pwd){ errorDiv.style.display='block'; errorDiv.innerText='Email et mot de passe requis'; return; }
 try{ await signInWithEmailAndPassword(auth, email, pwd); errorDiv.style.display='none'; document.getElementById('loginPanel').style.display='none'; document.getElementById('adminPanel').style.display='block'; await loadWithdrawals(); }
-catch(e){ errorDiv.style.display='block'; errorDiv.innerText='Identifiants incorrects'; }
+catch(e){ errorDiv.style.display='block'; errorDiv.innerText='Identifiants incorrects'; showToast("Échec de connexion","error",8000); }
 });
 
-document.getElementById('logoutBtn').addEventListener('click', async()=>{ await signOut(auth); document.getElementById('loginPanel').style.display='flex'; document.getElementById('adminPanel').style.display='none'; document.getElementById('adminEmail').value=''; document.getElementById('adminPassword').value=''; });
+document.getElementById('logoutBtn').addEventListener('click', async()=>{ await signOut(auth); document.getElementById('loginPanel').style.display='flex'; document.getElementById('adminPanel').style.display='none'; document.getElementById('adminEmail').value=''; document.getElementById('adminPassword').value=''; showToast("Déconnecté","info",5000); });
 document.getElementById('refreshBtn').addEventListener('click',()=>loadWithdrawals());
 document.getElementById('exportBtn').addEventListener('click',()=>exportCSV());
 document.getElementById('sortBtn').addEventListener('click',()=>toggleSort());
