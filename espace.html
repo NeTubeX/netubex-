@@ -436,15 +436,8 @@ async function initUser(user){
       capDuJour: "📊 CAP DU JOUR\n\n• Jouer aux jeux\n• Inviter des amis (10% de leurs gains)\n• Bonne journée !"
     });
     
-    // Bonus de bienvenue : ajouter 0.20$ en transaction
-    await setDoc(doc(db, "users", user.uid, "transactions", "welcome_bonus"), {
-      amount: 0.20,
-      revenue: 0,
-      time: Date.now(),
-      type: "bonus"
-    });
-    
-    showToast('Bienvenue !', '0.20$ vous ont été offerts pour votre inscription', 'success');
+    // Bonus de bienvenue supprimé - plus aucun crédit automatique
+    // showToast('Bienvenue !', 'Votre compte a été créé avec succès', 'success');
   } else {
     await updateDoc(userDocRef, { lastLogin: new Date().toISOString() });
   }
