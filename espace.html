@@ -53,7 +53,7 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .menu-item.danger{color:#ef4444;}
 .menu-item.danger i{color:#ef4444;}
 .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:10000;display:flex;flex-direction:column;gap:12px;max-width:420px;width:90%;pointer-events:none;}
-.toast{background:rgba(15,23,42,0.95);backdrop-filter:blur(12px);border-radius:20px;padding:16px 20px;color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;gap:14px;box-shadow:0 20px 35px -10px rgba(0,0,0,0.3),0 0 0 1px rgba(59,130,246,0.2);animation:toastSlideDown 0.4s cubic-bezier(0.16,1,0.3,1);pointer-events:auto;border-left:4px solid;}
+.toast{background:rgba(15,23,42,0.95);backdrop-filter:blur(12px);border-radius:20px;padding:16px 20px;color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;gap:14px;box-shadow:0 20px 35px -10px rgba(0,0,0,0.3),0 0 0 1px rgba(59,130,246,0.2);pointer-events:auto;border-left:4px solid;}
 .toast-success{border-left-color:#10b981;}
 .toast-success i{color:#10b981;}
 .toast-error{border-left-color:#ef4444;}
@@ -140,7 +140,7 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut, updatePassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, increment, onSnapshot, query, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 const firebaseConfig = {apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -161,7 +161,73 @@ function escapeHtml(str){if(!str)return'';return String(str).replace(/[&<>]/g,m=
 async function loadBonusData(){const snap=await getDoc(userDocRef);const d=snap.data();const refCode=d.refCode||'N/A';const baseUrl=window.location.origin;document.getElementById('invitationLink').value=`${baseUrl}/login.html?ref=${refCode}`;document.getElementById('invitationCode').value=refCode;document.getElementById('bonusEarned').innerText=(d.parrainageGains||0).toFixed(4)+' $';document.getElementById('invitedCount').innerText=d.invitedCount||0;}
 async function loadProfile(){const snap=await getDoc(userDocRef);const d=snap.data();document.getElementById('profileEmail').innerText=d.email||currentUser.email;document.getElementById('profileCode').innerText=d.refCode||'N/A';}
 async function loadCapMessage(){const snap=await getDoc(userDocRef);const cap=snap.data()?.capDuJour||"📊 CAP DU JOUR\n\n• Jouer aux jeux\n• Inviter des amis (10% de leurs gains)\n• Bonne journée !";document.getElementById('capMessage').innerHTML=cap.replace(/\n/g,'<br>');}
-async function submitWithdraw(){const amount=parseFloat(document.getElementById('withdrawAmount').value);let wallet;let methodName='';if(selectedMethod==='paypal'){wallet=document.getElementById('paypalEmail').value.trim();methodName='PayPal';if(amount<10){showToast('Montant invalide','PayPal nécessite un minimum de 10$','error');return;}if(!wallet||!wallet.includes('@')){showToast('Email invalide','Veuillez entrer une adresse email valide','error');return;}}else{const countryCode=document.getElementById('countryCodeSelect').value;const phoneNumber=document.getElementById('walletAddress').value.trim();if(!phoneNumber){showToast('Numéro requis','Veuillez entrer votre numéro de téléphone','error');return;}wallet=countryCode+phoneNumber;methodName=selectedMethod==='airtel_money'?'Airtel Money':'Orange Money';}if(!selectedMethod){showToast('Méthode requise','Choisissez une méthode de retrait','error');return;}if(isNaN(amount)||amount<1){showToast('Montant invalide','Le montant minimum est de 1$','error');return;}if(selectedMethod==='paypal'&&amount<10){showToast('Montant invalide','PayPal nécessite un minimum de 10$','error');return;}const snap=await getDoc(userDocRef);const balance=snap.data()?.balance||0;if(amount>balance){showToast('Solde insuffisant','Vous n\'avez pas assez de fonds','error');return;}await addDoc(collection(db,"withdraw"),{userId:currentUser.uid,amount:amount,method:selectedMethod,methodName:methodName,wallet:wallet,status:"pending",date:new Date().toISOString()});await updateDoc(userDocRef,{balance:increment(-amount)});showToast('Demande envoyée avec succès',`Notre système de paiement va créditer votre compte ${methodName} (${wallet}) du montant de ${amount.toFixed(2)}$ sous 48h ouvrées. Un email de confirmation vous sera envoyé une fois le transfert effectué.`,'success');updateBalanceDisplay();closeModal('withdrawModal');document.getElementById('withdrawAmount').value='';document.getElementById('walletAddress').value='';document.getElementById('paypalEmail').value='';}
+async function submitWithdraw(){
+    const amount=parseFloat(document.getElementById('withdrawAmount').value);
+    let wallet;
+    let methodName='';
+    
+    // VÉRIFICATION : UN RETRAIT PAR JOUR (24h)
+    const lastWithdrawQuery = await getDocs(
+        query(
+            collection(db, "withdraw"),
+            where("userId", "==", currentUser.uid),
+            orderBy("date", "desc"),
+            limit(1)
+        )
+    );
+    
+    if (!lastWithdrawQuery.empty) {
+        const lastWithdraw = lastWithdrawQuery.docs[0].data();
+        const lastDate = new Date(lastWithdraw.date);
+        const now = new Date();
+        const diffHours = (now - lastDate) / 1000 / 60 / 60;
+        
+        if (diffHours < 24) {
+            const hoursLeft = Math.ceil(24 - diffHours);
+            const nextWithdrawTime = new Date(lastDate.getTime() + 24 * 60 * 60 * 1000);
+            const nextWithdrawFormatted = nextWithdrawTime.toLocaleString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                day: 'numeric',
+                month: 'numeric'
+            });
+            
+            showToast(
+                "Limite quotidienne atteinte", 
+                `Vous avez déjà effectué un retrait aujourd'hui. Prochain retrait possible : ${nextWithdrawFormatted}`, 
+                "error"
+            );
+            return;
+        }
+    }
+    
+    if(selectedMethod==='paypal'){
+        wallet=document.getElementById('paypalEmail').value.trim();
+        methodName='PayPal';
+        if(amount<10){showToast('Montant invalide','PayPal nécessite un minimum de 10$','error');return;}
+        if(!wallet||!wallet.includes('@')){showToast('Email invalide','Veuillez entrer une adresse email valide','error');return;}
+    }else{
+        const countryCode=document.getElementById('countryCodeSelect').value;
+        const phoneNumber=document.getElementById('walletAddress').value.trim();
+        if(!phoneNumber){showToast('Numéro requis','Veuillez entrer votre numéro de téléphone','error');return;}
+        wallet=countryCode+phoneNumber;
+        methodName=selectedMethod==='airtel_money'?'Airtel Money':'Orange Money';
+    }
+    if(!selectedMethod){showToast('Méthode requise','Choisissez une méthode de retrait','error');return;}
+    if(isNaN(amount)||amount<1){showToast('Montant invalide','Le montant minimum est de 1$','error');return;}
+    if(selectedMethod==='paypal'&&amount<10){showToast('Montant invalide','PayPal nécessite un minimum de 10$','error');return;}
+    const snap=await getDoc(userDocRef);
+    const balance=snap.data()?.balance||0;
+    if(amount>balance){showToast('Solde insuffisant','Vous n\'avez pas assez de fonds','error');return;}
+    await addDoc(collection(db,"withdraw"),{userId:currentUser.uid,amount:amount,method:selectedMethod,methodName:methodName,wallet:wallet,status:"pending",date:new Date().toISOString()});
+    await updateDoc(userDocRef,{balance:increment(-amount)});
+    showToast('Demande envoyée avec succès',`Notre système de paiement va créditer votre compte ${methodName} (${wallet}) du montant de ${amount.toFixed(2)}$ sous 48h ouvrées. Un email de confirmation vous sera envoyé une fois le transfert effectué.`,'success');
+    updateBalanceDisplay();
+    closeModal('withdrawModal');
+    document.getElementById('withdrawAmount').value='';
+    document.getElementById('walletAddress').value='';
+    document.getElementById('paypalEmail').value='';
+}
 async function initUser(user){currentUser=user;userDocRef=doc(db,"users",user.uid);const snap=await getDoc(userDocRef);if(!snap.exists()){const refCode="NX"+Math.random().toString(36).substring(2,10).toUpperCase();await setDoc(userDocRef,{email:user.email,balance:0.20,totalEarned:0.20,uniqueId:"NX"+Math.random().toString(36).substring(2,15).toUpperCase(),refCode:refCode,parrainId:null,invitedCount:0,parrainageGains:0,createdAt:new Date().toISOString(),lastLogin:new Date().toISOString(),ticketsList:[],capDuJour:"📊 CAP DU JOUR\n\n• Jouer aux jeux\n• Inviter des amis (10% de leurs gains)\n• Bonne journée !"});showToast('Bienvenue !','0.20$ vous ont été offerts pour votre inscription','success');}else{await updateDoc(userDocRef,{lastLogin:new Date().toISOString()});}const balanceSnap=await getDoc(userDocRef);lastBalance=balanceSnap.data()?.balance||0;await updateBalanceDisplay();await renderGames();await loadCapMessage();startBalanceListener();}
 document.getElementById('balanceHeader')?.addEventListener('click',async()=>{await updateBalanceDisplay();showToast('Solde mis à jour',`Votre solde actuel est de ${document.getElementById('balanceAmount').innerText}$`,'info');});
 document.getElementById('panelA')?.addEventListener('click',()=>{const msgPanelA="📢 Vous serez dirigé vers les offres adaptées à votre localisation.<br><br>💰 Si vous totalisez 500 X là-bas, veuillez cliquer sur le bouton Retirer afin de convertir en argent réel retirable.<br><br>📍 Taux de conversion : <strong style='color:#ffd700'>500 X = 0.025$</strong>";showFlyPopup("Panel A","A","#10b981","https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=",msgPanelA);});
