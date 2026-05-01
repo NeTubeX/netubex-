@@ -4,94 +4,93 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <title>NeTubeX · Authentification</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
-body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;}
-.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ff0000,#ff8000,#ffff00,#00ff00,#0000ff,#4b0082,#9400d3);background-size:200% 100%;animation:rainbowMove 3s linear infinite;position:fixed;top:0;left:0;right:0;z-index:100;}
+body{background:linear-gradient(135deg,#fef9e6 0%,#fdf4d6 100%);font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;}
+.rainbow-line{height:3px;width:100%;background:linear-gradient(90deg,#ffd700,#ffb347,#ff8c00,#daa520,#b8860b,#d4af37,#ffd700);background-size:200% 100%;animation:rainbowMove 3s linear infinite;position:fixed;top:0;left:0;right:0;z-index:100;}
 @keyframes rainbowMove{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
-.login-container{max-width:480px;width:100%;margin:0 auto;}
-.login-card{background:#ffffff;border-radius:24px;padding:40px 36px;box-shadow:0 4px 20px rgba(0,0,0,0.05);border:1px solid #e2e8f0;}
+.login-container{max-width:500px;width:100%;margin:0 auto;}
+.login-card{background:#ffffff;border-radius:40px;padding:40px 36px;box-shadow:0 30px 50px -20px rgba(0,0,0,0.15);border:1px solid rgba(218,165,32,0.3);}
 .logo{text-align:center;margin-bottom:28px;}
-.logo h1{font-size:28px;font-weight:800;color:#1e293b;letter-spacing:-0.5px;}
-.logo h1 span{color:#3b82f6;background:linear-gradient(135deg,#3b82f6,#2563eb);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.logo p{font-size:12px;color:#64748b;margin-top:8px;font-weight:500;}
-.error-message{background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:12px 16px;margin-bottom:24px;color:#dc2626;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;}
+.logo h1{font-size:32px;font-weight:800;background:linear-gradient(135deg,#b8860b,#daa520,#ffd700);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.5px;}
+.logo p{font-size:13px;color:#5a4a2a;margin-top:8px;font-weight:500;}
+.error-message{background:#fef2f2;border:1px solid #fecaca;border-radius:16px;padding:12px 16px;margin-bottom:24px;color:#dc2626;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;}
 .error-message.hidden{display:none;}
 .input-group{margin-bottom:20px;}
-.input-group label{display:block;font-size:12px;font-weight:600;color:#475569;margin-bottom:6px;}
-.input-group input{width:100%;padding:12px 14px;background:#ffffff;border:1.5px solid #e2e8f0;border-radius:12px;color:#1e293b;font-size:14px;font-family:'Inter',sans-serif;transition:all 0.2s;outline:none;}
-.input-group input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
-.login-btn{width:100%;padding:12px;background:#3b82f6;border:none;border-radius:12px;color:#ffffff;font-weight:600;font-size:15px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;}
-.login-btn:hover{background:#2563eb;}
-.login-btn:disabled{background:#94a3b8;cursor:not-allowed;}
-.footer-links{text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid #e2e8f0;}
-.footer-links a{color:#64748b;font-size:12px;text-decoration:none;margin:0 8px;cursor:pointer;}
-.footer-links a:hover{color:#3b82f6;}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;font-size:13px;font-weight:500;z-index:10000;animation:slideUp 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
-.toast-success{background:#10b981;color:#fff;}
-.toast-error{background:#ef4444;color:#fff;}
-.toast-info{background:#3b82f6;color:#fff;}
-@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
-.bottom-buttons{position:fixed;bottom:20px;left:0;right:0;display:flex;justify-content:center;gap:16px;z-index:99;}
-.bottom-btn{background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);border:none;padding:10px 24px;border-radius:40px;color:#fff;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s;text-decoration:none;}
-.bottom-btn:hover{background:#3b82f6;}
+.input-group label{display:block;font-size:13px;font-weight:600;color:#5a4a2a;margin-bottom:6px;letter-spacing:0.3px;}
+.input-group input,.input-group select{width:100%;padding:14px 16px;background:#ffffff;border:1.5px solid #e0d0b0;border-radius:16px;color:#1a1a1a;font-size:14px;font-family:'Inter',sans-serif;transition:all 0.2s;outline:none;}
+.input-group input:focus,.input-group select:focus{border-color:#daa520;box-shadow:0 0 0 4px rgba(218,165,32,0.15);}
+.input-group select{cursor:pointer;background:#fff;color:#1a1a1a;}
+.input-group option{color:#1a1a1a;}
+.login-btn{width:100%;padding:14px;background:linear-gradient(135deg,#daa520,#ffd700);border:none;border-radius:16px;color:#2a1a00;font-weight:800;font-size:15px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;}
+.login-btn:hover{background:linear-gradient(135deg,#ffd700,#daa520);transform:translateY(-1px);}
+.login-btn:disabled{background:#d4c4a0;cursor:not-allowed;transform:none;}
+.footer-links{text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid #e0d0b0;}
+.footer-links a{color:#5a4a2a;font-size:13px;text-decoration:none;margin:0 8px;cursor:pointer;transition:color 0.2s;}
+.footer-links a:hover{color:#daa520;}
+.toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:10000;display:flex;flex-direction:column;gap:12px;max-width:420px;width:90%;pointer-events:none;}
+.toast{background:rgba(30,20,10,0.95);backdrop-filter:blur(12px);border-radius:20px;padding:16px 20px;color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;gap:14px;box-shadow:0 20px 35px -10px rgba(0,0,0,0.3);animation:toastSlideDown 0.4s cubic-bezier(0.16,1,0.3,1);pointer-events:auto;border-left:4px solid;}
+.toast-success{border-left-color:#ffd700;}
+.toast-success i{color:#ffd700;}
+.toast-error{border-left-color:#ef4444;}
+.toast-error i{color:#ef4444;}
+.toast-info{border-left-color:#ffd700;}
+.toast-info i{color:#ffd700;}
+.toast i{font-size:20px;width:24px;text-align:center;}
+.toast-content{flex:1;line-height:1.4;}
+.toast-title{font-weight:700;margin-bottom:4px;font-size:14px;}
+.toast-message{font-size:12.5px;opacity:0.9;}
+.toast-close{background:rgba(255,255,255,0.1);border:none;width:28px;height:28px;border-radius:40px;cursor:pointer;color:#fff;font-size:12px;transition:all 0.2s;}
+.toast-close:hover{background:rgba(255,255,255,0.2);}
+@keyframes toastSlideDown{from{opacity:0;transform:translateX(-50%) translateY(-30px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
 .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;}
 .modal-overlay.active{visibility:visible;}
-.modal-content{background:#ffffff;border-radius:28px;max-width:750px;width:90%;max-height:85vh;overflow-y:auto;transform:scale(0.95);transition:transform 0.2s;}
+.modal-content{background:#ffffff;border-radius:32px;max-width:600px;width:90%;max-height:85vh;overflow-y:auto;transform:scale(0.95);transition:transform 0.2s;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);}
 .modal-overlay.active .modal-content{transform:scale(1);}
-.modal-content.small{max-width:450px;}
-.modal-header{position:sticky;top:0;background:#ffffff;padding:20px 24px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;}
-.modal-header h2{font-size:20px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;}
-.modal-header h2 i{color:#3b82f6;}
-.modal-close{background:#f1f5f9;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;color:#64748b;}
+.modal-header{position:sticky;top:0;background:#ffffff;padding:20px 24px;border-bottom:1px solid #e0d0b0;display:flex;justify-content:space-between;align-items:center;}
+.modal-header h2{font-size:20px;font-weight:700;color:#2a1a00;display:flex;align-items:center;gap:8px;}
+.modal-header h2 i{color:#daa520;}
+.modal-close{background:#fef9e6;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:16px;color:#5a4a2a;transition:all 0.2s;}
+.modal-close:hover{background:#e0d0b0;}
 .modal-body{padding:24px;}
-.modal-footer{padding:16px 24px;border-top:1px solid #e2e8f0;background:#f8fafc;}
-@media (max-width:640px){.modal-content{width:95%;}}
+.modal-footer{padding:16px 24px;border-top:1px solid #e0d0b0;background:#fef9e6;border-radius:0 0 32px 32px;}
 .gender-row{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;}
-.gender-option{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#ffffff;border-radius:12px;border:1px solid #e2e8f0;cursor:pointer;}
-.gender-option.selected{background:rgba(59,130,246,0.05);border-color:#3b82f6;}
-.gender-option input{width:18px;height:18px;accent-color:#3b82f6;margin:0;}
-.gender-option label{cursor:pointer;font-size:14px;color:#1e293b;}
-.contact-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
-@media (max-width:560px){.contact-row{grid-template-columns:1fr;}}
-.contact-card{background:#ffffff;border-radius:16px;padding:14px;border:1px solid #e2e8f0;cursor:pointer;}
-.contact-card.selected{border-color:#3b82f6;background:rgba(59,130,246,0.05);}
-.contact-card label{display:flex;align-items:center;gap:12px;cursor:pointer;font-weight:500;}
-.contact-card input[type="radio"]{width:18px;height:18px;accent-color:#3b82f6;margin:0;}
-.contact-hint{font-size:11px;color:#64748b;margin-top:6px;margin-left:30px;}
-.contact-value-input{margin-top:10px;}
-.contact-value-input input{width:100%;padding:10px 14px;border-radius:12px;border:1px solid #e2e8f0;}
-.country-select-row{display:flex;gap:10px;}
-.country-select-row select{flex:1;padding:10px 12px;border-radius:12px;border:1px solid #e2e8f0;}
-.country-select-row input{flex:2;}
+.gender-option{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#ffffff;border-radius:16px;border:1.5px solid #e0d0b0;cursor:pointer;transition:all 0.2s;}
+.gender-option.selected{background:rgba(218,165,32,0.1);border-color:#daa520;}
+.gender-option input{width:18px;height:18px;accent-color:#daa520;margin:0;}
+.gender-option label{cursor:pointer;font-size:14px;color:#1a1a1a;font-weight:500;}
+.gender-option i{color:#daa520;}
 .checkbox-group{margin:20px 0;display:flex;align-items:flex-start;gap:12px;}
-.checkbox-group input{width:18px;height:18px;margin-top:2px;accent-color:#3b82f6;}
-.checkbox-group label{font-size:12px;color:#475569;line-height:1.4;}
-.checkbox-group a{color:#3b82f6;text-decoration:none;}
-.btn-submit{width:100%;padding:14px;background:#3b82f6;border:none;border-radius:40px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:10px;}
-.btn-submit:hover{background:#2563eb;}
-.password-strength{height:4px;margin-top:8px;border-radius:4px;background:#e2e8f0;}
+.checkbox-group input{width:20px;height:20px;margin-top:2px;accent-color:#daa520;}
+.checkbox-group label{font-size:13px;color:#3a2a10;line-height:1.4;}
+.checkbox-group a{color:#daa520;text-decoration:none;font-weight:500;}
+.btn-submit{width:100%;padding:16px;background:linear-gradient(135deg,#daa520,#ffd700);border:none;border-radius:20px;color:#2a1a00;font-size:15px;font-weight:800;cursor:pointer;margin-top:10px;transition:all 0.2s;}
+.btn-submit:hover{background:linear-gradient(135deg,#ffd700,#daa520);transform:translateY(-1px);}
+.password-strength{height:4px;margin-top:8px;border-radius:4px;background:#e0d0b0;}
 .password-strength.weak{width:25%;background:#ef4444;}
 .password-strength.medium{width:50%;background:#f59e0b;}
-.password-strength.strong{width:75%;background:#10b981;}
+.password-strength.strong{width:75%;background:#daa520;}
 .password-strength.very-strong{width:100%;background:#10b981;}
-.strength-text{font-size:11px;margin-top:5px;color:#64748b;}
-.info-message{background:#f0f9ff;border-radius:16px;padding:14px;margin-top:20px;text-align:center;}
-.info-message p{font-size:12px;color:#475569;}
-.loading-spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:8px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.form-section-title{font-size:14px;font-weight:600;color:#1e293b;margin:20px 0 12px 0;padding-bottom:6px;border-bottom:2px solid #e2e8f0;display:flex;align-items:center;gap:8px;}
+.strength-text{font-size:11px;margin-top:5px;color:#5a4a2a;}
+.form-section-title{font-size:16px;font-weight:700;color:#2a1a00;margin:20px 0 12px 0;padding-bottom:8px;border-bottom:2px solid #e0d0b0;display:flex;align-items:center;gap:8px;}
+.form-section-title i{color:#daa520;}
+.country-select{width:100%;padding:14px 16px;border-radius:16px;border:1.5px solid #e0d0b0;background:#fff;font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;color:#1a1a1a;max-height:300px;overflow-y:auto;}
+.country-select:focus{outline:none;border-color:#daa520;}
+.country-select option{color:#1a1a1a;padding:8px;}
+.bottom-buttons{position:fixed;bottom:20px;left:0;right:0;display:flex;justify-content:center;gap:16px;z-index:99;}
+.bottom-btn{background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);border:none;padding:10px 24px;border-radius:40px;color:#fff;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:8px;text-decoration:none;transition:all 0.2s;}
+.bottom-btn:hover{background:#daa520;color:#2a1a00;}
 </style>
 </head>
 <body>
-<div class="rainbow-line"></div>
+<div class="toast-container" id="toastContainer"></div>
 <div class="login-container">
 <div class="login-card">
 <div class="logo">
 <h1>Ne<span>TubeX</span></h1>
-<p>Espace professionnel de rémunération digitale</p>
+<p>Gagnez de l'argent en toute simplicité</p>
 </div>
 <div id="errorMessage" class="error-message hidden">
 <i class="fas fa-exclamation-circle"></i>
@@ -99,8 +98,8 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 </div>
 <form id="loginForm">
 <div class="input-group">
-<label><i class="fas fa-envelope"></i> Adresse email</label>
-<input type="email" id="email" placeholder="exemple@domaine.com" required>
+<label><i class="fas fa-envelope"></i> Email</label>
+<input type="email" id="email" placeholder="exemple@email.com" required>
 </div>
 <div class="input-group">
 <label><i class="fas fa-lock"></i> Mot de passe</label>
@@ -121,16 +120,12 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 <div id="applyModal" class="modal-overlay">
 <div class="modal-content">
 <div class="modal-header">
-<h2><i class="fas fa-user-plus"></i> Créer mon compte</h2>
+<h2><i class="fas fa-user-plus"></i> Créer un compte</h2>
 <button class="modal-close" onclick="closeApplyModal()"><i class="fas fa-times"></i></button>
 </div>
 <div class="modal-body">
 <form id="registerForm">
-<div class="form-section-title"><i class="fas fa-user-circle"></i> Informations personnelles</div>
-<div class="input-group">
-<label>Prénom (identifiant d'affichage)</label>
-<input type="text" id="regDisplayName" placeholder="Votre prénom" required>
-</div>
+<div class="form-section-title"><i class="fas fa-user"></i> Informations</div>
 <div class="input-group">
 <label>Sexe</label>
 <div class="gender-row" id="genderGroup">
@@ -141,12 +136,11 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 <input type="radio" name="gender" value="femme" id="femaleRadio"> <label for="femaleRadio"><i class="fas fa-venus"></i> Femme</label>
 </div>
 </div>
-<div id="genderError" class="error-message" style="display:none; background:transparent; padding:0; margin-top:8px;"></div>
+<div id="genderError" class="error-message" style="display:none; background:transparent; padding:0; margin-top:8px; color:#dc2626;"></div>
 </div>
-<div class="form-section-title"><i class="fas fa-envelope"></i> Identifiants de connexion</div>
 <div class="input-group">
 <label>Email</label>
-<input type="email" id="regEmail" placeholder="exemple@domaine.com" required>
+<input type="email" id="regEmail" placeholder="exemple@email.com" required>
 </div>
 <div class="input-group">
 <label>Mot de passe</label>
@@ -155,63 +149,229 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 <div id="strengthText" class="strength-text"></div>
 </div>
 <div class="input-group">
-<label>Confirmer mot de passe</label>
+<label>Confirmer le mot de passe</label>
 <input type="password" id="regConfirmPassword" placeholder="Retapez votre mot de passe" required>
-<div id="pwdMatchError" class="error-message" style="display:none; background:transparent; padding:0;"></div>
+<div id="pwdMatchError" class="error-message" style="display:none; background:transparent; padding:0; color:#dc2626;"></div>
 </div>
-<div class="form-section-title"><i class="fas fa-phone-alt"></i> Contact</div>
-<div class="contact-row">
-<div class="contact-card" id="contactWhatsappCard" onclick="selectContactMethod('whatsapp')">
-<label><input type="radio" name="contactMethod" value="whatsapp"> <i class="fab fa-whatsapp"></i> WhatsApp</label>
-<div class="contact-hint">Contact via numéro de téléphone</div>
-<div class="contact-value-input" id="whatsappInput" style="display:none;">
-<div class="country-select-row">
-<select id="countryCode">
-<option value="+243" selected>🇨🇩 RDC (+243)</option>
-<option value="+33">🇫🇷 France (+33)</option>
-<option value="+1">🇺🇸 États-Unis (+1)</option>
-<option value="+44">🇬🇧 Royaume-Uni (+44)</option>
-<option value="+49">🇩🇪 Allemagne (+49)</option>
+<div class="input-group">
+<label>Pays</label>
+<select id="countrySelect" class="country-select" size="8">
+<option value="">Sélectionnez votre pays</option>
+<option value="AF">🇦🇫 Afghanistan</option>
+<option value="ZA">🇿🇦 Afrique du Sud</option>
+<option value="AL">🇦🇱 Albanie</option>
+<option value="DZ">🇩🇿 Algérie</option>
+<option value="DE">🇩🇪 Allemagne</option>
+<option value="AD">🇦🇩 Andorre</option>
+<option value="AO">🇦🇴 Angola</option>
+<option value="AG">🇦🇬 Antigua-et-Barbuda</option>
+<option value="SA">🇸🇦 Arabie saoudite</option>
+<option value="AR">🇦🇷 Argentine</option>
+<option value="AM">🇦🇲 Arménie</option>
+<option value="AU">🇦🇺 Australie</option>
+<option value="AT">🇦🇹 Autriche</option>
+<option value="AZ">🇦🇿 Azerbaïdjan</option>
+<option value="BS">🇧🇸 Bahamas</option>
+<option value="BH">🇧🇭 Bahreïn</option>
+<option value="BD">🇧🇩 Bangladesh</option>
+<option value="BB">🇧🇧 Barbade</option>
+<option value="BE">🇧🇪 Belgique</option>
+<option value="BZ">🇧🇿 Belize</option>
+<option value="BJ">🇧🇯 Bénin</option>
+<option value="BT">🇧🇹 Bhoutan</option>
+<option value="BY">🇧🇾 Biélorussie</option>
+<option value="MM">🇲🇲 Birmanie</option>
+<option value="BO">🇧🇴 Bolivie</option>
+<option value="BA">🇧🇦 Bosnie-Herzégovine</option>
+<option value="BW">🇧🇼 Botswana</option>
+<option value="BR">🇧🇷 Brésil</option>
+<option value="BN">🇧🇳 Brunéi</option>
+<option value="BG">🇧🇬 Bulgarie</option>
+<option value="BF">🇧🇫 Burkina Faso</option>
+<option value="BI">🇧🇮 Burundi</option>
+<option value="KH">🇰🇭 Cambodge</option>
+<option value="CM">🇨🇲 Cameroun</option>
+<option value="CA">🇨🇦 Canada</option>
+<option value="CV">🇨🇻 Cap-Vert</option>
+<option value="CF">🇨🇫 République centrafricaine</option>
+<option value="CL">🇨🇱 Chili</option>
+<option value="CN">🇨🇳 Chine</option>
+<option value="CY">🇨🇾 Chypre</option>
+<option value="CO">🇨🇴 Colombie</option>
+<option value="KM">🇰🇲 Comores</option>
+<option value="CG">🇨🇬 Congo</option>
+<option value="CD">🇨🇩 RDC</option>
+<option value="KP">🇰🇵 Corée du Nord</option>
+<option value="KR">🇰🇷 Corée du Sud</option>
+<option value="CR">🇨🇷 Costa Rica</option>
+<option value="CI">🇨🇮 Côte d'Ivoire</option>
+<option value="HR">🇭🇷 Croatie</option>
+<option value="CU">🇨🇺 Cuba</option>
+<option value="DK">🇩🇰 Danemark</option>
+<option value="DJ">🇩🇯 Djibouti</option>
+<option value="DM">🇩🇲 Dominique</option>
+<option value="EG">🇪🇬 Égypte</option>
+<option value="SV">🇸🇻 Salvador</option>
+<option value="AE">🇦🇪 Émirats arabes unis</option>
+<option value="EC">🇪🇨 Équateur</option>
+<option value="ER">🇪🇷 Érythrée</option>
+<option value="ES">🇪🇸 Espagne</option>
+<option value="EE">🇪🇪 Estonie</option>
+<option value="SZ">🇸🇿 Eswatini</option>
+<option value="US">🇺🇸 États-Unis</option>
+<option value="ET">🇪🇹 Éthiopie</option>
+<option value="FJ">🇫🇯 Fidji</option>
+<option value="FI">🇫🇮 Finlande</option>
+<option value="FR">🇫🇷 France</option>
+<option value="GA">🇬🇦 Gabon</option>
+<option value="GM">🇬🇲 Gambie</option>
+<option value="GE">🇬🇪 Géorgie</option>
+<option value="GH">🇬🇭 Ghana</option>
+<option value="GR">🇬🇷 Grèce</option>
+<option value="GD">🇬🇩 Grenade</option>
+<option value="GT">🇬🇹 Guatemala</option>
+<option value="GN">🇬🇳 Guinée</option>
+<option value="GW">🇬🇼 Guinée-Bissau</option>
+<option value="GQ">🇬🇶 Guinée équatoriale</option>
+<option value="GY">🇬🇾 Guyana</option>
+<option value="HT">🇭🇹 Haïti</option>
+<option value="HN">🇭🇳 Honduras</option>
+<option value="HU">🇭🇺 Hongrie</option>
+<option value="IN">🇮🇳 Inde</option>
+<option value="ID">🇮🇩 Indonésie</option>
+<option value="IQ">🇮🇶 Irak</option>
+<option value="IR">🇮🇷 Iran</option>
+<option value="IE">🇮🇪 Irlande</option>
+<option value="IS">🇮🇸 Islande</option>
+<option value="IL">🇮🇱 Israël</option>
+<option value="IT">🇮🇹 Italie</option>
+<option value="JM">🇯🇲 Jamaïque</option>
+<option value="JP">🇯🇵 Japon</option>
+<option value="JO">🇯🇴 Jordanie</option>
+<option value="KZ">🇰🇿 Kazakhstan</option>
+<option value="KE">🇰🇪 Kenya</option>
+<option value="KG">🇰🇬 Kirghizistan</option>
+<option value="KI">🇰🇮 Kiribati</option>
+<option value="KW">🇰🇼 Koweït</option>
+<option value="LA">🇱🇦 Laos</option>
+<option value="LS">🇱🇸 Lesotho</option>
+<option value="LV">🇱🇻 Lettonie</option>
+<option value="LB">🇱🇧 Liban</option>
+<option value="LR">🇱🇷 Libéria</option>
+<option value="LY">🇱🇾 Libye</option>
+<option value="LI">🇱🇮 Liechtenstein</option>
+<option value="LT">🇱🇹 Lituanie</option>
+<option value="LU">🇱🇺 Luxembourg</option>
+<option value="MK">🇲🇰 Macédoine du Nord</option>
+<option value="MG">🇲🇬 Madagascar</option>
+<option value="MY">🇲🇾 Malaisie</option>
+<option value="MW">🇲🇼 Malawi</option>
+<option value="MV">🇲🇻 Maldives</option>
+<option value="ML">🇲🇱 Mali</option>
+<option value="MT">🇲🇹 Malte</option>
+<option value="MA">🇲🇦 Maroc</option>
+<option value="MH">🇲🇭 Îles Marshall</option>
+<option value="MU">🇲🇺 Maurice</option>
+<option value="MR">🇲🇷 Mauritanie</option>
+<option value="MX">🇲🇽 Mexique</option>
+<option value="FM">🇫🇲 Micronésie</option>
+<option value="MD">🇲🇩 Moldavie</option>
+<option value="MC">🇲🇨 Monaco</option>
+<option value="MN">🇲🇳 Mongolie</option>
+<option value="ME">🇲🇪 Monténégro</option>
+<option value="MZ">🇲🇿 Mozambique</option>
+<option value="NA">🇳🇦 Namibie</option>
+<option value="NR">🇳🇷 Nauru</option>
+<option value="NP">🇳🇵 Népal</option>
+<option value="NI">🇳🇮 Nicaragua</option>
+<option value="NE">🇳🇪 Niger</option>
+<option value="NG">🇳🇬 Nigeria</option>
+<option value="NO">🇳🇴 Norvège</option>
+<option value="NZ">🇳🇿 Nouvelle-Zélande</option>
+<option value="OM">🇴🇲 Oman</option>
+<option value="UG">🇺🇬 Ouganda</option>
+<option value="UZ">🇺🇿 Ouzbékistan</option>
+<option value="PK">🇵🇰 Pakistan</option>
+<option value="PW">🇵🇼 Palaos</option>
+<option value="PA">🇵🇦 Panama</option>
+<option value="PG">🇵🇬 Papouasie-Nouvelle-Guinée</option>
+<option value="PY">🇵🇾 Paraguay</option>
+<option value="NL">🇳🇱 Pays-Bas</option>
+<option value="PE">🇵🇪 Pérou</option>
+<option value="PH">🇵🇭 Philippines</option>
+<option value="PL">🇵🇱 Pologne</option>
+<option value="PT">🇵🇹 Portugal</option>
+<option value="QA">🇶🇦 Qatar</option>
+<option value="RO">🇷🇴 Roumanie</option>
+<option value="GB">🇬🇧 Royaume-Uni</option>
+<option value="RU">🇷🇺 Russie</option>
+<option value="RW">🇷🇼 Rwanda</option>
+<option value="KN">🇰🇳 Saint-Christophe-et-Niévès</option>
+<option value="SM">🇸🇲 Saint-Marin</option>
+<option value="VC">🇻🇨 Saint-Vincent-et-les-Grenadines</option>
+<option value="LC">🇱🇨 Sainte-Lucie</option>
+<option value="SB">🇸🇧 Îles Salomon</option>
+<option value="WS">🇼🇸 Samoa</option>
+<option value="ST">🇸🇹 Sao Tomé-et-Principe</option>
+<option value="SN">🇸🇳 Sénégal</option>
+<option value="RS">🇷🇸 Serbie</option>
+<option value="SC">🇸🇨 Seychelles</option>
+<option value="SL">🇸🇱 Sierra Leone</option>
+<option value="SG">🇸🇬 Singapour</option>
+<option value="SK">🇸🇰 Slovaquie</option>
+<option value="SI">🇸🇮 Slovénie</option>
+<option value="SO">🇸🇴 Somalie</option>
+<option value="SD">🇸🇩 Soudan</option>
+<option value="SS">🇸🇸 Soudan du Sud</option>
+<option value="LK">🇱🇰 Sri Lanka</option>
+<option value="SE">🇸🇪 Suède</option>
+<option value="CH">🇨🇭 Suisse</option>
+<option value="SR">🇸🇷 Suriname</option>
+<option value="SY">🇸🇾 Syrie</option>
+<option value="TJ">🇹🇯 Tadjikistan</option>
+<option value="TW">🇹🇼 Taïwan</option>
+<option value="TZ">🇹🇿 Tanzanie</option>
+<option value="TD">🇹🇩 Tchad</option>
+<option value="CZ">🇨🇿 Tchéquie</option>
+<option value="TH">🇹🇭 Thaïlande</option>
+<option value="TL">🇹🇱 Timor oriental</option>
+<option value="TG">🇹🇬 Togo</option>
+<option value="TO">🇹🇴 Tonga</option>
+<option value="TT">🇹🇹 Trinité-et-Tobago</option>
+<option value="TN">🇹🇳 Tunisie</option>
+<option value="TM">🇹🇲 Turkménistan</option>
+<option value="TR">🇹🇷 Turquie</option>
+<option value="TV">🇹🇻 Tuvalu</option>
+<option value="UA">🇺🇦 Ukraine</option>
+<option value="UY">🇺🇾 Uruguay</option>
+<option value="VU">🇻🇺 Vanuatu</option>
+<option value="VA">🇻🇦 Vatican</option>
+<option value="VE">🇻🇪 Venezuela</option>
+<option value="VN">🇻🇳 Viêt Nam</option>
+<option value="YE">🇾🇪 Yémen</option>
+<option value="ZM">🇿🇲 Zambie</option>
+<option value="ZW">🇿🇼 Zimbabwe</option>
 </select>
-<input type="tel" id="whatsappNumber" placeholder="XX XXX XXXX">
-</div>
-</div>
-</div>
-<div class="contact-card" id="contactGmailCard" onclick="selectContactMethod('gmail')">
-<label><input type="radio" name="contactMethod" value="gmail"> <i class="fab fa-google"></i> Gmail</label>
-<div class="contact-hint">Contact via adresse Gmail</div>
-<div class="contact-value-input" id="gmailInput" style="display:none;">
-<input type="email" id="gmailAddress" placeholder="exemple@gmail.com">
-</div>
-</div>
 </div>
 <div class="checkbox-group">
 <input type="checkbox" id="acceptCgu">
-<label for="acceptCgu">J'accepte les <a href="#" target="_blank">Conditions Générales d'Utilisation</a></label>
+<label for="acceptCgu">J'accepte les <a href="#" target="_blank">conditions générales</a></label>
 </div>
-<button type="button" class="btn-submit" id="registerSubmitBtn"><i class="fas fa-paper-plane"></i> Créer mon compte</button>
+<button type="button" class="btn-submit" id="registerSubmitBtn"><i class="fas fa-user-plus"></i> Créer mon compte</button>
 </form>
-<div class="info-message">
-<i class="fas fa-info-circle"></i>
-<p>Après validation, l'accès vous sera activé sous 24h ouvrées.</p>
-</div>
 </div>
 </div>
 </div>
 <div id="forgotPasswordModal" class="modal-overlay">
-<div class="modal-content small">
+<div class="modal-content" style="max-width:450px;">
 <div class="modal-header">
 <h2><i class="fas fa-key"></i> Réinitialisation</h2>
 <button class="modal-close" onclick="closeForgotModal()"><i class="fas fa-times"></i></button>
 </div>
 <div class="modal-body">
 <div class="input-group">
-<label><i class="fas fa-envelope"></i> Email professionnel</label>
-<input type="email" id="resetEmail" placeholder="exemple@domaine.com">
-</div>
-<div class="info-message" style="margin-top:10px;">
-<i class="fas fa-info-circle"></i>
-<p>Un lien de réinitialisation sera envoyé à votre adresse email.</p>
+<label>Email</label>
+<input type="email" id="resetEmail" placeholder="exemple@email.com">
 </div>
 </div>
 <div class="modal-footer">
@@ -222,7 +382,8 @@ body{background:#f1f5f9;font-family:'Inter',sans-serif;min-height:100vh;display:
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, doc, getDoc, setDoc, query, where, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, doc, getDoc, setDoc, query, where, getDocs, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 const firebaseConfig = {
 apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
 authDomain: "netubexmoney.firebaseapp.com",
@@ -231,178 +392,54 @@ storageBucket: "netubexmoney.firebasestorage.app",
 messagingSenderId: "856592608176",
 appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
 };
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-let sessionStartTime = Date.now();
-let loginAttempts = 0;
-let actionPerformed = false;
-let regAttempts = 0;
-let regLastAttempt = 0;
-function getDeviceUniqueId(){
-let storedId = localStorage.getItem('device_permanent_id');
-if(!storedId){
-const screenInfo = `${screen.width}x${screen.height}x${screen.colorDepth}`;
-const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-const language = navigator.language;
-const platform = navigator.platform;
-const fingerprint = `${screenInfo}|${timezone}|${language}|${platform}`;
-let hash = 0;
-for(let i=0;i<fingerprint.length;i++){
-hash = ((hash << 5) - hash) + fingerprint.charCodeAt(i);
-hash |= 0;
-}
-storedId = `DEVICE_${Math.abs(hash)}`;
-localStorage.setItem('device_permanent_id', storedId);
-}
-return storedId;
-}
-function isSuspiciousEmail(email){
-const suspiciousDomains = ['tempmail', 'guerrillamail', '10minutemail', 'throwaway', 'mailinator', 'yopmail', 'temp-mail', 'trashmail'];
-const emailLower = email.toLowerCase();
-if(!emailLower.includes('@')) return true;
-for(const domain of suspiciousDomains){
-if(emailLower.includes(domain)) return true;
-}
-return false;
-}
-async function sendSecurityAlert(type, email, details={}){
-try{
-const alertData = {
-type: type,
-level: details.level || 'info',
-email: email || null,
-netuberCode: details.netuberCode || null,
-netuberId: details.netuberId || null,
-message: details.message || '',
-details: {
-timeSpentSeconds: Math.floor((Date.now() - sessionStartTime)/1000),
-deviceId: getDeviceUniqueId(),
-userAgent: navigator.userAgent,
-language: navigator.language,
-platform: navigator.platform,
-...details
-},
-timestamp: new Date().toISOString(),
-read: false
-};
-await addDoc(collection(db,"security_alerts"), alertData);
-return true;
-}catch(error){ console.error("Erreur envoi alerte:", error); return false; }
-}
-function showToast(message, type='error'){
+
+function showToast(message, type='success'){
+const container = document.getElementById('toastContainer');
 const toast = document.createElement('div');
 toast.className = `toast toast-${type}`;
-toast.innerHTML = message;
-document.body.appendChild(toast);
-setTimeout(()=>toast.remove(),4000);
+const icons = {success:'fa-check-circle', error:'fa-exclamation-circle', info:'fa-info-circle'};
+const titles = {success:'Succès', error:'Erreur', info:'Information'};
+toast.innerHTML = `
+<i class="fas ${icons[type]}"></i>
+<div class="toast-content">
+<div class="toast-title">${titles[type]}</div>
+<div class="toast-message">${message}</div>
+</div>
+<button class="toast-close"><i class="fas fa-times"></i></button>
+`;
+container.appendChild(toast);
+const closeBtn = toast.querySelector('.toast-close');
+closeBtn.addEventListener('click',()=>{toast.remove();});
+setTimeout(()=>{if(toast.parentNode) toast.remove();}, 8000);
 }
+
 function showErrorMessage(message){
 const errorDiv = document.getElementById('errorMessage');
 const errorText = document.getElementById('errorText');
 errorText.textContent = message;
 errorDiv.classList.remove('hidden');
+setTimeout(()=>errorDiv.classList.add('hidden'), 8000);
 }
+
 function hideErrorMessage(){
 document.getElementById('errorMessage').classList.add('hidden');
 }
-setTimeout(()=>{
-sendSecurityAlert('page_loaded', null, {
-level: 'info',
-message: 'Page de connexion chargée'
-});
-},100);
-window.addEventListener('beforeunload', ()=>{
-if(!actionPerformed){
-const timeSpent = Math.floor((Date.now() - sessionStartTime)/1000);
-sendSecurityAlert('page_abandoned', null, {
-level: 'low',
-message: `Abandon après ${timeSpent} secondes`
-});
+
+function getRefCodeFromUrl(){
+const urlParams = new URLSearchParams(window.location.search);
+return urlParams.get('ref');
 }
-});
-document.getElementById('loginForm').addEventListener('submit', async (e)=>{
-e.preventDefault();
-hideErrorMessage();
-const email = document.getElementById('email').value.trim();
-const password = document.getElementById('password').value;
-const loginBtn = document.getElementById('loginBtn');
-if(!email || !password){
-showErrorMessage('Veuillez renseigner email et mot de passe');
-return;
+
+function generateRefCode(){
+return "NX"+Math.random().toString(36).substring(2,10).toUpperCase();
 }
-if(isSuspiciousEmail(email)){
-await sendSecurityAlert('suspicious_email_format', email, { level: 'medium', message: `Email suspect: ${email}` });
-}
-const timeToAction = Math.floor((Date.now() - sessionStartTime)/1000);
-actionPerformed = true;
-await sendSecurityAlert('time_to_action', email, { level: 'info', message: `Action après ${timeToAction}s` });
-loginAttempts++;
-loginBtn.disabled = true;
-loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authentification...';
-try{
-const userCredential = await signInWithEmailAndPassword(auth, email, password);
-const user = userCredential.user;
-const userSnap = await getDoc(doc(db,"users",user.uid));
-const userData = userSnap.exists() ? userSnap.data() : null;
-const netuberCode = userData?.code || null;
-const role = userData?.role || null;
-const currentDeviceId = getDeviceUniqueId();
-const registeredDeviceId = userData?.deviceId;
-const isActive = userData?.isActive === true;
-if(!isActive && userData){
-await sendSecurityAlert('inactive_account_login_attempt', email, {
-level: 'medium',
-message: `Tentative sur compte inactif: ${email}`
-});
-showToast('Compte en cours d\'activation.', 'error');
-loginBtn.disabled = false;
-loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
-return;
-}
-if(registeredDeviceId && registeredDeviceId !== currentDeviceId){
-await sendSecurityAlert('device_changed', email, {
-level: 'high',
-message: `Nouvel appareil détecté`,
-details: { oldDeviceId: registeredDeviceId, newDeviceId: currentDeviceId }
-});
-await updateDoc(doc(db,"users",user.uid), { deviceId: currentDeviceId });
-}
-await sendSecurityAlert('login_success', email, {
-level: 'info',
-message: `Authentification réussie pour ${netuberCode || email}`
-});
-let welcomeMessage = role === 'admin' ? 'Accès panel administration.' : (role === 'netuber' ? 'Accès espace rémunération.' : (role === 'pilote' ? 'Accès espace pilotage.' : 'Authentification réussie.'));
-showToast(welcomeMessage, 'success');
-setTimeout(()=>{
-if(role === 'admin') window.location.href = "admin.html";
-else if(role === 'netuber') window.location.href = "dashboard.html";
-else if(role === 'pilote') window.location.href = "pilote.html";
-else window.location.href = "espace.html";
-},1000);
-}catch(error){
-let alertType = 'login_failed';
-let userMessage = '';
-if(error.code === 'auth/user-not-found'){
-alertType = 'account_not_found';
-userMessage = 'Aucun compte associé à cet email';
-}else if(error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential'){
-alertType = 'login_failed';
-userMessage = 'Email ou mot de passe incorrect';
-}else if(error.code === 'auth/too-many-requests'){
-alertType = 'login_failed';
-userMessage = 'Trop de tentatives. Réessayez plus tard.';
-}else{
-userMessage = 'Erreur technique. Veuillez réessayer.';
-}
-showErrorMessage(userMessage);
-await sendSecurityAlert(alertType, email, { level: 'high', message: `Échec authentification pour ${email}`, errorCode: error.code });
-loginBtn.disabled = false;
-loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
-}
-});
-let selectedMethod = null;
+
 let selectedGender = null;
+
 function selectGender(gender){
 selectedGender = gender;
 document.getElementById('genderMale').classList.remove('selected');
@@ -416,212 +453,178 @@ document.getElementById('femaleRadio').checked=true;
 }
 document.getElementById('genderError').style.display='none';
 }
-function selectContactMethod(method){
-selectedMethod = method;
-document.getElementById('contactWhatsappCard').classList.remove('selected');
-document.getElementById('contactGmailCard').classList.remove('selected');
-document.getElementById('whatsappInput').style.display='none';
-document.getElementById('gmailInput').style.display='none';
-if(method==='whatsapp'){
-document.getElementById('contactWhatsappCard').classList.add('selected');
-document.getElementById('whatsappInput').style.display='block';
-document.getElementById('whatsappNumber').required=true;
-document.getElementById('gmailAddress').required=false;
-}else{
-document.getElementById('contactGmailCard').classList.add('selected');
-document.getElementById('gmailInput').style.display='block';
-document.getElementById('gmailAddress').required=true;
-document.getElementById('whatsappNumber').required=false;
-}
-}
+
 window.selectGender = selectGender;
-window.selectContactMethod = selectContactMethod;
+
 function checkPasswordStrength(pwd){
 const strengthBar = document.getElementById('passwordStrength');
 const strengthText = document.getElementById('strengthText');
 strengthBar.className = 'password-strength';
 if(pwd.length===0){ strengthText.textContent=''; return; }
-let score = 0;
+let score=0;
+if(pwd.length>=6) score++;
 if(pwd.length>=8) score++;
 if(/[A-Z]/.test(pwd)) score++;
 if(/[0-9]/.test(pwd)) score++;
 if(/[^A-Za-z0-9]/.test(pwd)) score++;
-switch(score){
-case 0:case 1: strengthBar.classList.add('weak'); strengthText.textContent('Sécurité faible'); break;
-case 2: strengthBar.classList.add('medium'); strengthText.textContent('Sécurité moyenne'); break;
-case 3: strengthBar.classList.add('strong'); strengthText.textContent('Sécurité forte'); break;
-case 4: strengthBar.classList.add('very-strong'); strengthText.textContent('Sécurité très forte'); break;
+if(score<=2){ strengthBar.classList.add('weak'); strengthText.textContent='Faible'; }
+else if(score<=3){ strengthBar.classList.add('medium'); strengthText.textContent='Moyen'; }
+else if(score<=4){ strengthBar.classList.add('strong'); strengthText.textContent='Fort'; }
+else{ strengthBar.classList.add('very-strong'); strengthText.textContent='Très fort'; }
 }
-}
+
 document.getElementById('regPassword')?.addEventListener('input', function(){ checkPasswordStrength(this.value); checkPasswordMatch(); });
+
 function checkPasswordMatch(){
 const pwd = document.getElementById('regPassword').value;
 const confirm = document.getElementById('regConfirmPassword').value;
 const errorDiv = document.getElementById('pwdMatchError');
-if(confirm && pwd !== confirm){ errorDiv.style.display='block'; return false; }
+if(confirm && pwd !== confirm){ errorDiv.style.display='block'; errorDiv.innerHTML='<i class="fas fa-times"></i> Les mots de passe ne correspondent pas'; return false; }
 else{ errorDiv.style.display='none'; return true; }
 }
+
 document.getElementById('regConfirmPassword')?.addEventListener('input', checkPasswordMatch);
-function validateWhatsApp(number){ const clean = number.replace(/\s+/g,''); const regex = /^[0-9]{6,12}$/; return regex.test(clean); }
-async function checkEmailExists(email){
-const usersRef = collection(db,"users");
-const q = query(usersRef, where("email","==",email));
-const snapshot = await getDocs(q);
-return !snapshot.empty;
+
+document.getElementById('loginForm').addEventListener('submit', async (e)=>{
+e.preventDefault();
+hideErrorMessage();
+const email = document.getElementById('email').value.trim();
+const password = document.getElementById('password').value;
+const loginBtn = document.getElementById('loginBtn');
+if(!email || !password){ showErrorMessage('Veuillez renseigner email et mot de passe'); return; }
+loginBtn.disabled = true;
+loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
+try{
+const userCredential = await signInWithEmailAndPassword(auth, email, password);
+const user = userCredential.user;
+const userSnap = await getDoc(doc(db,"users",user.uid));
+const role = userSnap.exists() ? userSnap.data().role : null;
+showToast('Connexion réussie !', 'success');
+setTimeout(()=>{
+if(role === 'admin'){
+window.location.href = "admin.html";
+} else if(role === 'pilote'){
+window.location.href = "pilote.html";
+} else if(role === 'netuber'){
+window.location.href = "dashboard.html";
+} else {
+window.location.href = "espace.html";
 }
-function generateUniqueId(){ return `${Date.now()}x${Math.floor(Math.random()*1000000000000000000)}`; }
+}, 1500);
+}catch(error){
+let userMessage = '';
+if(error.code === 'auth/user-not-found') userMessage = 'Aucun compte associé à cet email';
+else if(error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') userMessage = 'Email ou mot de passe incorrect';
+else if(error.code === 'auth/too-many-requests') userMessage = 'Trop de tentatives. Réessayez plus tard';
+else userMessage = 'Erreur technique. Veuillez réessayer';
+showErrorMessage(userMessage);
+loginBtn.disabled = false;
+loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
+}
+});
+
 document.getElementById('registerSubmitBtn')?.addEventListener('click', async () => {
-const now = Date.now();
-if(now - regLastAttempt < 5000 && regAttempts >= 2){
-await sendSecurityAlert('suspicious_registration', document.getElementById('regEmail').value, { level: 'medium', message: 'Inscriptions suspectes (rythme anormal)' });
-showToast('Trop de tentatives. Veuillez patienter.', 'error');
-return;
-}
-regAttempts++;
-regLastAttempt = now;
-const displayName = document.getElementById('regDisplayName').value.trim();
+const displayName = 'User';
 const email = document.getElementById('regEmail').value.trim();
 const password = document.getElementById('regPassword').value;
 const confirmPassword = document.getElementById('regConfirmPassword').value;
 const acceptCgu = document.getElementById('acceptCgu').checked;
-if(!displayName || !email || !password){
-await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Champs obligatoires manquants' });
-showToast("Tous les champs sont requis", 'error');
-return;
-}
-if(!selectedGender){
-document.getElementById('genderError').style.display='block';
-document.getElementById('genderError').innerHTML = 'Veuillez sélectionner votre sexe';
-await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Sexe non sélectionné' });
-return;
-}
-if(password.length<6){
-await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Mot de passe trop court' });
-showToast("Le mot de passe doit contenir au moins 6 caractères", 'error');
-return;
-}
-if(password !== confirmPassword){
-await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Mots de passe non concordants' });
-showToast("Les mots de passe ne correspondent pas", 'error');
-return;
-}
-if(!acceptCgu){
-await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'CGU non acceptées' });
-showToast("Vous devez accepter les conditions générales", 'error');
-return;
-}
-let contactValue = '';
-if(selectedMethod === 'whatsapp'){
-const countryCode = document.getElementById('countryCode').value;
-const localNumber = document.getElementById('whatsappNumber').value.trim();
-if(!localNumber || !validateWhatsApp(localNumber)){
-await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Numéro WhatsApp invalide' });
-showToast("Numéro WhatsApp invalide", 'error');
-return;
-}
-contactValue = countryCode + localNumber;
-}else if(selectedMethod === 'gmail'){
-contactValue = document.getElementById('gmailAddress').value.trim();
-if(!contactValue || !contactValue.includes('@gmail.com')){
-await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Adresse Gmail invalide' });
-showToast("Veuillez entrer une adresse Gmail valide", 'error');
-return;
-}
-}else{
-await sendSecurityAlert('invalid_registration', email, { level: 'low', message: 'Moyen de contact non sélectionné' });
-showToast("Sélectionnez un moyen de contact", 'error');
-return;
-}
-if(await checkEmailExists(email)){
-await sendSecurityAlert('invalid_registration', email, { level: 'medium', message: 'Email déjà utilisé' });
-showToast("Cet email est déjà utilisé", 'error');
-return;
-}
-if(isSuspiciousEmail(email)){
-await sendSecurityAlert('suspicious_email_format', email, { level: 'medium', message: `Inscription avec email suspect: ${email}` });
-}
+const country = document.getElementById('countrySelect').value;
+
+if(!email || !password){ showToast("Tous les champs sont requis", 'error'); return; }
+if(!selectedGender){ document.getElementById('genderError').style.display='block'; document.getElementById('genderError').innerHTML = '<i class="fas fa-exclamation-circle"></i> Veuillez sélectionner votre sexe'; return; }
+if(password.length<6){ showToast("Le mot de passe doit contenir au moins 6 caractères", 'error'); return; }
+if(password !== confirmPassword){ showToast("Les mots de passe ne correspondent pas", 'error'); return; }
+if(!acceptCgu){ showToast("Vous devez accepter les conditions générales", 'error'); return; }
+if(!country){ showToast("Veuillez sélectionner votre pays", 'error'); return; }
+
 const submitBtn = document.getElementById('registerSubmitBtn');
 submitBtn.disabled = true;
-submitBtn.innerHTML = '<span class="loading-spinner"></span> Création en cours...';
+submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Création...';
+
 try{
 const userCred = await createUserWithEmailAndPassword(auth, email, password);
 await updateProfile(userCred.user, { displayName: displayName });
-const uniqueId = generateUniqueId();
+const refCode = generateRefCode();
+const refParrain = getRefCodeFromUrl();
+let parrainId = null;
+if(refParrain){
+const usersRef = collection(db,"users");
+const q = query(usersRef, where("refCode","==",refParrain));
+const snapshot = await getDocs(q);
+if(!snapshot.empty) parrainId = snapshot.docs[0].id;
+}
 await setDoc(doc(db,"users",userCred.user.uid),{
 username: displayName,
 sexe: selectedGender,
 email: email,
-moyenContact: selectedMethod,
-contactValue: contactValue,
-isActive: false,
+pays: country,
+isActive: true,
 isBlocked: false,
 role: null,
-code: null,
-uniqueId: uniqueId,
-deviceId: getDeviceUniqueId(),
+refCode: refCode,
+parrainId: parrainId || null,
+invitedCount: 0,
+parrainageGains: 0,
+balance: 0,
+totalEarned: 0,
 dateInscription: new Date().toISOString(),
-lastSeen: new Date().toISOString()
+lastSeen: new Date().toISOString(),
+ticketsList: [],
+capDuJour: "📊 CAP DU JOUR\n\n• Jouer aux jeux\n• Inviter des amis (10% de leurs gains)\n• Bonne journée !"
 });
-await sendSecurityAlert('new_registration', email, {
-level: 'info',
-message: `Nouvel inscrit : ${displayName} (${email}) via ${selectedMethod}`
-});
-showToast("Inscription enregistrée. Activation sous 24h.", "success");
-setTimeout(()=>{ closeApplyModal(); window.location.href = "index.html"; },2000);
+showToast("✅ Compte créé avec succès !", "success");
+setTimeout(async () => {
+await signInWithEmailAndPassword(auth, email, password);
+window.location.href = "espace.html";
+}, 2000);
 }catch(error){
-let errorMsg = "Erreur lors de la création du compte";
+let errorMsg = "Erreur lors de la création";
 if(error.code === 'auth/email-already-in-use') errorMsg = "Cet email est déjà utilisé";
-await sendSecurityAlert('invalid_registration', email, { level: 'medium', message: `Erreur: ${error.code}` });
 showToast(errorMsg, 'error');
 submitBtn.disabled = false;
-submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Créer mon compte';
+submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Créer mon compte';
 }
 });
-function openApplyModal(){ document.getElementById('applyModal').classList.add('active'); actionPerformed = true; }
-function closeApplyModal(){ document.getElementById('applyModal').classList.remove('active'); }
-document.getElementById('applyNowBtn')?.addEventListener('click', openApplyModal);
-document.getElementById('forgotPasswordBtn')?.addEventListener('click', ()=>{ document.getElementById('forgotPasswordModal').classList.add('active'); actionPerformed = true; });
-function closeForgotModal(){ document.getElementById('forgotPasswordModal').classList.remove('active'); }
+
+document.getElementById('applyNowBtn')?.addEventListener('click', ()=>{document.getElementById('applyModal').classList.add('active');});
+document.getElementById('forgotPasswordBtn')?.addEventListener('click', ()=>{document.getElementById('forgotPasswordModal').classList.add('active');});
+
+function closeApplyModal(){document.getElementById('applyModal').classList.remove('active');}
+function closeForgotModal(){document.getElementById('forgotPasswordModal').classList.remove('active');}
+
 window.closeApplyModal = closeApplyModal;
 window.closeForgotModal = closeForgotModal;
+
 document.getElementById('sendResetLinkBtn')?.addEventListener('click', async () => {
 const email = document.getElementById('resetEmail').value.trim();
 const btn = document.getElementById('sendResetLinkBtn');
 if(!email){ showToast("Veuillez entrer votre email", 'error'); return; }
-if(isSuspiciousEmail(email)){
-await sendSecurityAlert('suspicious_email_format', email, { level: 'medium', message: `Réinitialisation avec email suspect: ${email}` });
-}
-actionPerformed = true;
 btn.disabled = true;
-btn.innerHTML = '<span class="loading-spinner"></span> Envoi...';
+btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
 try{
 await sendPasswordResetEmail(auth, email);
-await sendSecurityAlert('password_reset_request', email, { level: 'info', message: `Demande de réinitialisation pour ${email}` });
 showToast("Lien de réinitialisation envoyé", 'success');
 closeForgotModal();
 document.getElementById('resetEmail').value = '';
 }catch(error){
-if(error.code === 'auth/user-not-found'){
-await sendSecurityAlert('password_reset_failed', email, { level: 'low', message: `Compte inexistant: ${email}` });
-showToast("Aucun compte associé à cet email", 'error');
-}else{
-await sendSecurityAlert('password_reset_failed', email, { level: 'low', message: `Erreur technique: ${error.code}` });
-showToast("Erreur technique. Veuillez réessayer.", 'error');
-}
+if(error.code === 'auth/user-not-found') showToast("Aucun compte associé à cet email", 'error');
+else showToast("Erreur technique", 'error');
 }finally{
 btn.disabled = false;
 btn.innerHTML = 'Envoyer';
 }
 });
+
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
 overlay.addEventListener('click', (e) => { if(e.target === overlay) overlay.classList.remove('active'); });
 });
+
 document.addEventListener('contextmenu', e=>e.preventDefault());
 document.addEventListener('keydown', function(e){
 if(e.key==='F12'){ e.preventDefault(); return false; }
 if(e.ctrlKey && e.shiftKey && (e.key==='I'||e.key==='J'||e.key==='C')){ e.preventDefault(); return false; }
 if(e.ctrlKey && e.key==='u'){ e.preventDefault(); return false; }
-if(e.ctrlKey && e.key==='s'){ e.preventDefault(); return false; }
 });
 </script>
 </body>
