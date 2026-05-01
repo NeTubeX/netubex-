@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-<title>NeTubeX · Retraits</title>
+<title>NeTubeX · Retraits Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -119,6 +119,7 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1e293b;padding:12p
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 const firebaseConfig = {
 apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
 authDomain:"netubexmoney.firebaseapp.com",
@@ -127,24 +128,36 @@ storageBucket:"netubexmoney.firebasestorage.app",
 messagingSenderId:"856592608176",
 appId:"1:856592608176:web:69f9df9cfd4f8c28630475"
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+
 let withdrawals = [];
 let currentFilter = "all";
 let searchTerm = "";
 let sortDescending = true;
 let userEmailCache = new Map();
-async function getUserEmail(userId){
-if(!userId) return null;
-if(userEmailCache.has(userId)) return userEmailCache.get(userId);
+let userCodeCache = new Map();
+
+async function getUserInfo(userId){
+if(!userId) return { email: null, code: null };
+if(userEmailCache.has(userId) && userCodeCache.has(userId)){
+return { email: userEmailCache.get(userId), code: userCodeCache.get(userId) };
+}
 try{
 const userDoc = await getDoc(doc(db, "users", userId));
-const email = userDoc.exists() ? userDoc.data().email : null;
+if(userDoc.exists()){
+const email = userDoc.data().email;
+const code = userDoc.data().code;
 userEmailCache.set(userId, email);
-return email;
-}catch(e){ return null; }
+userCodeCache.set(userId, code);
+return { email, code };
 }
+return { email: null, code: null };
+}catch(e){ return { email: null, code: null }; }
+}
+
 function showToast(msg, type="success"){
 const container = document.getElementById('toastContainer');
 const toast = document.createElement('div');
@@ -153,102 +166,65 @@ toast.innerHTML = `<span>${type==='success'?'✅':type==='error'?'❌':'⚠️'}
 container.appendChild(toast);
 setTimeout(()=>toast.remove(), 4000);
 }
-function formatDate(dateStr){
-if(!dateStr) return '—';
-try{ return new Date(dateStr).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+
+function formatDate(timestamp){
+if(!timestamp) return '—';
+try{ return new Date(timestamp).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
 catch(e){ return '—'; }
 }
+
 function getCountryInfo(wallet){
 if(!wallet) return { flag: '🌍', name: 'Inconnu' };
 const countries = [
 { code:'+93', flag:'🇦🇫', name:'Afghanistan' },{ code:'+355', flag:'🇦🇱', name:'Albanie' },{ code:'+213', flag:'🇩🇿', name:'Algérie' },
-{ code:'+376', flag:'🇦🇩', name:'Andorre' },{ code:'+244', flag:'🇦🇴', name:'Angola' },{ code:'+54', flag:'🇦🇷', name:'Argentine' },
-{ code:'+374', flag:'🇦🇲', name:'Arménie' },{ code:'+61', flag:'🇦🇺', name:'Australie' },{ code:'+43', flag:'🇦🇹', name:'Autriche' },
-{ code:'+994', flag:'🇦🇿', name:'Azerbaïdjan' },{ code:'+973', flag:'🇧🇭', name:'Bahreïn' },{ code:'+880', flag:'🇧🇩', name:'Bangladesh' },
-{ code:'+32', flag:'🇧🇪', name:'Belgique' },{ code:'+229', flag:'🇧🇯', name:'Bénin' },{ code:'+591', flag:'🇧🇴', name:'Bolivie' },
-{ code:'+55', flag:'🇧🇷', name:'Brésil' },{ code:'+359', flag:'🇧🇬', name:'Bulgarie' },{ code:'+226', flag:'🇧🇫', name:'Burkina Faso' },
-{ code:'+257', flag:'🇧🇮', name:'Burundi' },{ code:'+855', flag:'🇰🇭', name:'Cambodge' },{ code:'+237', flag:'🇨🇲', name:'Cameroun' },
-{ code:'+1', flag:'🇺🇸', name:'États-Unis/Canada' },{ code:'+238', flag:'🇨🇻', name:'Cap-Vert' },{ code:'+236', flag:'🇨🇫', name:'Centrafrique' },
-{ code:'+56', flag:'🇨🇱', name:'Chili' },{ code:'+86', flag:'🇨🇳', name:'Chine' },{ code:'+57', flag:'🇨🇴', name:'Colombie' },
-{ code:'+242', flag:'🇨🇬', name:'Congo' },{ code:'+243', flag:'🇨🇩', name:'RDC' },{ code:'+506', flag:'🇨🇷', name:'Costa Rica' },
-{ code:'+225', flag:'🇨🇮', name:'Côte d\'Ivoire' },{ code:'+385', flag:'🇭🇷', name:'Croatie' },{ code:'+53', flag:'🇨🇺', name:'Cuba' },
-{ code:'+45', flag:'🇩🇰', name:'Danemark' },{ code:'+253', flag:'🇩🇯', name:'Djibouti' },{ code:'+20', flag:'🇪🇬', name:'Égypte' },
-{ code:'+503', flag:'🇸🇻', name:'Salvador' },{ code:'+240', flag:'🇬🇶', name:'Guinée équatoriale' },{ code:'+291', flag:'🇪🇷', name:'Érythrée' },
-{ code:'+372', flag:'🇪🇪', name:'Estonie' },{ code:'+251', flag:'🇪🇹', name:'Éthiopie' },{ code:'+679', flag:'🇫🇯', name:'Fidji' },
-{ code:'+358', flag:'🇫🇮', name:'Finlande' },{ code:'+33', flag:'🇫🇷', name:'France' },{ code:'+241', flag:'🇬🇦', name:'Gabon' },
-{ code:'+220', flag:'🇬🇲', name:'Gambie' },{ code:'+995', flag:'🇬🇪', name:'Géorgie' },{ code:'+233', flag:'🇬🇭', name:'Ghana' },
-{ code:'+30', flag:'🇬🇷', name:'Grèce' },{ code:'+502', flag:'🇬🇹', name:'Guatemala' },{ code:'+224', flag:'🇬🇳', name:'Guinée' },
-{ code:'+245', flag:'🇬🇼', name:'Guinée-Bissau' },{ code:'+592', flag:'🇬🇾', name:'Guyana' },{ code:'+509', flag:'🇭🇹', name:'Haïti' },
-{ code:'+504', flag:'🇭🇳', name:'Honduras' },{ code:'+36', flag:'🇭🇺', name:'Hongrie' },{ code:'+91', flag:'🇮🇳', name:'Inde' },
-{ code:'+62', flag:'🇮🇩', name:'Indonésie' },{ code:'+98', flag:'🇮🇷', name:'Iran' },{ code:'+964', flag:'🇮🇶', name:'Irak' },
-{ code:'+353', flag:'🇮🇪', name:'Irlande' },{ code:'+354', flag:'🇮🇸', name:'Islande' },{ code:'+972', flag:'🇮🇱', name:'Israël' },
-{ code:'+39', flag:'🇮🇹', name:'Italie' },{ code:'+81', flag:'🇯🇵', name:'Japon' },{ code:'+962', flag:'🇯🇴', name:'Jordanie' },
-{ code:'+7', flag:'🇰🇿', name:'Kazakhstan' },{ code:'+254', flag:'🇰🇪', name:'Kenya' },{ code:'+996', flag:'🇰🇬', name:'Kirghizistan' },
-{ code:'+965', flag:'🇰🇼', name:'Koweït' },{ code:'+856', flag:'🇱🇦', name:'Laos' },{ code:'+371', flag:'🇱🇻', name:'Lettonie' },
-{ code:'+961', flag:'🇱🇧', name:'Liban' },{ code:'+266', flag:'🇱🇸', name:'Lesotho' },{ code:'+231', flag:'🇱🇷', name:'Libéria' },
-{ code:'+218', flag:'🇱🇾', name:'Libye' },{ code:'+423', flag:'🇱🇮', name:'Liechtenstein' },{ code:'+370', flag:'🇱🇹', name:'Lituanie' },
-{ code:'+352', flag:'🇱🇺', name:'Luxembourg' },{ code:'+261', flag:'🇲🇬', name:'Madagascar' },{ code:'+265', flag:'🇲🇼', name:'Malawi' },
-{ code:'+60', flag:'🇲🇾', name:'Malaisie' },{ code:'+960', flag:'🇲🇻', name:'Maldives' },{ code:'+223', flag:'🇲🇱', name:'Mali' },
-{ code:'+356', flag:'🇲🇹', name:'Malte' },{ code:'+222', flag:'🇲🇷', name:'Mauritanie' },{ code:'+230', flag:'🇲🇺', name:'Maurice' },
-{ code:'+52', flag:'🇲🇽', name:'Mexique' },{ code:'+691', flag:'🇫🇲', name:'Micronésie' },{ code:'+373', flag:'🇲🇩', name:'Moldavie' },
-{ code:'+377', flag:'🇲🇨', name:'Monaco' },{ code:'+976', flag:'🇲🇳', name:'Mongolie' },{ code:'+382', flag:'🇲🇪', name:'Monténégro' },
-{ code:'+212', flag:'🇲🇦', name:'Maroc' },{ code:'+258', flag:'🇲🇿', name:'Mozambique' },{ code:'+95', flag:'🇲🇲', name:'Birmanie' },
-{ code:'+264', flag:'🇳🇦', name:'Namibie' },{ code:'+977', flag:'🇳🇵', name:'Népal' },{ code:'+31', flag:'🇳🇱', name:'Pays-Bas' },
-{ code:'+64', flag:'🇳🇿', name:'Nouvelle-Zélande' },{ code:'+505', flag:'🇳🇮', name:'Nicaragua' },{ code:'+227', flag:'🇳🇪', name:'Niger' },
-{ code:'+234', flag:'🇳🇬', name:'Nigeria' },{ code:'+47', flag:'🇳🇴', name:'Norvège' },{ code:'+968', flag:'🇴🇲', name:'Oman' },
-{ code:'+92', flag:'🇵🇰', name:'Pakistan' },{ code:'+507', flag:'🇵🇦', name:'Panama' },{ code:'+675', flag:'🇵🇬', name:'Papouasie-Nouvelle-Guinée' },
-{ code:'+595', flag:'🇵🇾', name:'Paraguay' },{ code:'+51', flag:'🇵🇪', name:'Pérou' },{ code:'+63', flag:'🇵🇭', name:'Philippines' },
-{ code:'+48', flag:'🇵🇱', name:'Pologne' },{ code:'+351', flag:'🇵🇹', name:'Portugal' },{ code:'+974', flag:'🇶🇦', name:'Qatar' },
-{ code:'+40', flag:'🇷🇴', name:'Roumanie' },{ code:'+250', flag:'🇷🇼', name:'Rwanda' },{ code:'+685', flag:'🇼🇸', name:'Samoa' },
-{ code:'+378', flag:'🇸🇲', name:'Saint-Marin' },{ code:'+239', flag:'🇸🇹', name:'Sao Tomé-et-Principe' },{ code:'+966', flag:'🇸🇦', name:'Arabie saoudite' },
-{ code:'+221', flag:'🇸🇳', name:'Sénégal' },{ code:'+381', flag:'🇷🇸', name:'Serbie' },{ code:'+248', flag:'🇸🇨', name:'Seychelles' },
-{ code:'+232', flag:'🇸🇱', name:'Sierra Leone' },{ code:'+65', flag:'🇸🇬', name:'Singapour' },{ code:'+421', flag:'🇸🇰', name:'Slovaquie' },
-{ code:'+386', flag:'🇸🇮', name:'Slovénie' },{ code:'+677', flag:'🇸🇧', name:'Îles Salomon' },{ code:'+252', flag:'🇸🇴', name:'Somalie' },
-{ code:'+27', flag:'🇿🇦', name:'Afrique du Sud' },{ code:'+34', flag:'🇪🇸', name:'Espagne' },{ code:'+94', flag:'🇱🇰', name:'Sri Lanka' },
-{ code:'+249', flag:'🇸🇩', name:'Soudan' },{ code:'+597', flag:'🇸🇷', name:'Suriname' },{ code:'+46', flag:'🇸🇪', name:'Suède' },
-{ code:'+41', flag:'🇨🇭', name:'Suisse' },{ code:'+963', flag:'🇸🇾', name:'Syrie' },{ code:'+886', flag:'🇹🇼', name:'Taïwan' },
-{ code:'+992', flag:'🇹🇯', name:'Tadjikistan' },{ code:'+255', flag:'🇹🇿', name:'Tanzanie' },{ code:'+66', flag:'🇹🇭', name:'Thaïlande' },
-{ code:'+228', flag:'🇹🇬', name:'Togo' },{ code:'+676', flag:'🇹🇴', name:'Tonga' },{ code:'+216', flag:'🇹🇳', name:'Tunisie' },
-{ code:'+90', flag:'🇹🇷', name:'Turquie' },{ code:'+993', flag:'🇹🇲', name:'Turkménistan' },{ code:'+688', flag:'🇹🇻', name:'Tuvalu' },
-{ code:'+256', flag:'🇺🇬', name:'Ouganda' },{ code:'+380', flag:'🇺🇦', name:'Ukraine' },{ code:'+971', flag:'🇦🇪', name:'Émirats arabes unis' },
-{ code:'+44', flag:'🇬🇧', name:'Royaume-Uni' },{ code:'+598', flag:'🇺🇾', name:'Uruguay' },{ code:'+998', flag:'🇺🇿', name:'Ouzbékistan' },
-{ code:'+678', flag:'🇻🇺', name:'Vanuatu' },{ code:'+58', flag:'🇻🇪', name:'Venezuela' },{ code:'+84', flag:'🇻🇳', name:'Vietnam' },
-{ code:'+967', flag:'🇾🇪', name:'Yémen' },{ code:'+260', flag:'🇿🇲', name:'Zambie' },{ code:'+263', flag:'🇿🇼', name:'Zimbabwe' }
+{ code:'+33', flag:'🇫🇷', name:'France' },{ code:'+243', flag:'🇨🇩', name:'RDC' },{ code:'+1', flag:'🇺🇸', name:'États-Unis/Canada' },
+{ code:'+44', flag:'🇬🇧', name:'Royaume-Uni' },{ code:'+91', flag:'🇮🇳', name:'Inde' },{ code:'+86', flag:'🇨🇳', name:'Chine' }
 ];
 for(let c of countries){
 if(wallet.startsWith(c.code)) return { flag: c.flag, name: c.name };
 }
 return { flag: '🌍', name: 'Inconnu' };
 }
+
 function escapeHtml(str){ if(!str) return ''; return String(str).replace(/[&<>]/g, m=>m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
+
 function sortWithdrawals(){
 if(sortDescending){
-withdrawals.sort((a,b)=>new Date(b.date) - new Date(a.date));
+withdrawals.sort((a,b)=>b.time - a.time);
 }else{
-withdrawals.sort((a,b)=>new Date(a.date) - new Date(b.date));
+withdrawals.sort((a,b)=>a.time - b.time);
 }
 }
+
 async function loadWithdrawals(){
 withdrawals = [];
 try{
-const snapshot = await getDocs(collection(db, "withdraw"));
+const usersSnap = await getDocs(collection(db, "users"));
 const tempWithdrawals = [];
 const promises = [];
-for(const docSnap of snapshot.docs){
-const d = docSnap.data();
+
+for(const userDoc of usersSnap.docs){
+const userId = userDoc.id;
+const transactionsSnap = await getDocs(collection(db, "users", userId, "transactions"));
+transactionsSnap.forEach(txDoc => {
+const tx = txDoc.data();
+if(tx.type === "withdraw" && tx.amount < 0){
 const w = {
-id: docSnap.id,
-userId: d.userId,
-userEmail: null,
-userCode: d.userCode,
-amount: Math.abs(d.amount || 0),
-method: d.methodName || d.method,
-wallet: d.wallet,
-date: d.date,
-status: d.status || "pending"
+id: txDoc.id,
+userId: userId,
+amount: Math.abs(tx.amount),
+method: tx.methodName || tx.method,
+wallet: tx.wallet,
+time: tx.time,
+status: tx.status || "pending"
 };
 tempWithdrawals.push(w);
-promises.push(getUserEmail(d.userId).then(email => { w.userEmail = email; }));
+promises.push(getUserInfo(userId).then(info => {
+w.userEmail = info.email;
+w.userCode = info.code;
+}));
+}
+});
 }
 await Promise.all(promises);
 withdrawals = tempWithdrawals;
@@ -258,6 +234,7 @@ updateStats();
 showToast(`${withdrawals.length} retrait(s)`,"success");
 }catch(e){ console.error(e); showToast("Erreur chargement","error"); }
 }
+
 function renderList(){
 let filtered = withdrawals.filter(w=>{
 const matchSearch = !searchTerm || (w.userCode||'').toLowerCase().includes(searchTerm) || (w.userEmail||'').toLowerCase().includes(searchTerm) || (w.userId||'').toLowerCase().includes(searchTerm);
@@ -273,9 +250,9 @@ else if(w.status==='approved'){ badgeClass='badge-approved'; badgeText='✅ Appr
 else{ badgeClass='badge-rejected'; badgeText='❌ Rejeté'; }
 let actions = '';
 if(w.status==='pending'){
-actions = `<button class="btn-action btn-approve" data-id="${w.id}"><i class="fas fa-check"></i> OK</button><button class="btn-action btn-reject" data-id="${w.id}" data-amount="${w.amount}"><i class="fas fa-times"></i> Rejeter</button>`;
+actions = `<button class="btn-action btn-approve" data-id="${w.id}" data-user="${w.userId}"><i class="fas fa-check"></i> OK</button><button class="btn-action btn-reject" data-id="${w.id}" data-user="${w.userId}" data-amount="${w.amount}"><i class="fas fa-times"></i> Rejeter</button>`;
 }else{
-actions = `<button class="btn-action btn-delete" data-id="${w.id}"><i class="fas fa-trash-alt"></i> Supprimer</button>`;
+actions = `<button class="btn-action btn-delete" data-id="${w.id}" data-user="${w.userId}"><i class="fas fa-trash-alt"></i> Supprimer</button>`;
 }
 const country = getCountryInfo(w.wallet);
 return `<div class="withdraw-card">
@@ -286,15 +263,16 @@ return `<div class="withdraw-card">
 <div class="row"><span class="label"><i class="fas fa-coins"></i> MONTANT</span><span class="value amount">${w.amount.toFixed(2)} $</span></div>
 <div class="row"><span class="label"><i class="fas fa-credit-card"></i> MÉTHODE</span><span class="value">${escapeHtml(w.method)}</span></div>
 <div class="row"><span class="label"><i class="fas fa-wallet"></i> WALLET</span><span class="value" style="font-size:12px;">${escapeHtml(w.wallet||'—')}</span></div>
-<div class="row"><span class="label"><i class="fas fa-calendar"></i> DATE</span><span class="value">${formatDate(w.date)}</span></div>
+<div class="row"><span class="label"><i class="fas fa-calendar"></i> DATE</span><span class="value">${formatDate(w.time)}</span></div>
 <div class="row"><span class="label"><i class="fas fa-chart-simple"></i> STATUT</span><span class="value"><span class="badge ${badgeClass}">${badgeText}</span></span></div>
 <div class="actions">${actions}</div>
 </div>`;
 }).join('');
-document.querySelectorAll('.btn-approve').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); approveWithdraw(btn.dataset.id); }); });
-document.querySelectorAll('.btn-reject').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); rejectWithdraw(btn.dataset.id, parseFloat(btn.dataset.amount)); }); });
-document.querySelectorAll('.btn-delete').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); deleteWithdraw(btn.dataset.id); }); });
+document.querySelectorAll('.btn-approve').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); approveWithdraw(btn.dataset.user, btn.dataset.id); }); });
+document.querySelectorAll('.btn-reject').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); rejectWithdraw(btn.dataset.user, btn.dataset.id, parseFloat(btn.dataset.amount)); }); });
+document.querySelectorAll('.btn-delete').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); deleteWithdraw(btn.dataset.user, btn.dataset.id); }); });
 }
+
 function updateStats(){
 const pending = withdrawals.filter(w=>w.status==='pending');
 const approved = withdrawals.filter(w=>w.status==='approved');
@@ -305,25 +283,29 @@ document.getElementById('statPendingAmount').innerText = pendingAmount.toFixed(2
 document.getElementById('statApproved').innerText = approved.length;
 document.getElementById('statRejected').innerText = rejected.length;
 }
-async function approveWithdraw(id){
-try{ await updateDoc(doc(db,"withdraw",id),{status:"approved",processedAt:new Date().toISOString()}); showToast("✅ Approuvé","success"); await loadWithdrawals(); }
+
+async function approveWithdraw(userId, txId){
+try{ await updateDoc(doc(db, "users", userId, "transactions", txId), { status: "approved", processedAt: new Date().toISOString() }); showToast("✅ Approuvé","success"); await loadWithdrawals(); }
 catch(e){ showToast("Erreur","error"); }
 }
-async function rejectWithdraw(id,amount){
+
+async function rejectWithdraw(userId, txId, amount){
 if(!confirm(`Rejeter ${amount.toFixed(2)}$ ?`)) return;
-try{ await updateDoc(doc(db,"withdraw",id),{status:"rejected",processedAt:new Date().toISOString()}); showToast(`⚠️ Rejeté`,"warning"); await loadWithdrawals(); }
+try{ await updateDoc(doc(db, "users", userId, "transactions", txId), { status: "rejected", processedAt: new Date().toISOString() }); showToast(`⚠️ Rejeté`,"warning"); await loadWithdrawals(); }
 catch(e){ showToast("Erreur","error"); }
 }
-async function deleteWithdraw(id){
+
+async function deleteWithdraw(userId, txId){
 if(!confirm("Supprimer définitivement ?")) return;
-try{ await deleteDoc(doc(db,"withdraw",id)); showToast("Supprimé","success"); await loadWithdrawals(); }
+try{ await deleteDoc(doc(db, "users", userId, "transactions", txId)); showToast("Supprimé","success"); await loadWithdrawals(); }
 catch(e){ showToast("Erreur","error"); }
 }
+
 function exportCSV(){
 let csv = "\uFEFFCode;Email;UserId;Pays;Montant;Méthode;Wallet;Date;Statut\n";
 withdrawals.forEach(w=>{
 const country = getCountryInfo(w.wallet);
-csv += `"${w.userCode||''}";"${w.userEmail||''}";"${w.userId||''}";"${country.name}";${w.amount};"${w.method}";"${w.wallet||''}";"${formatDate(w.date)}";"${w.status}"\n`;
+csv += `"${w.userCode||''}";"${w.userEmail||''}";"${w.userId||''}";"${country.name}";${w.amount};"${w.method}";"${w.wallet||''}";"${formatDate(w.time)}";"${w.status}"\n`;
 });
 const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
 const link = document.createElement('a');
@@ -332,6 +314,7 @@ link.download = `retraits_${new Date().toISOString().slice(0,19)}.csv`;
 link.click();
 showToast("Export CSV","success");
 }
+
 function toggleSort(){
 sortDescending = !sortDescending;
 const btn = document.getElementById('toggleSortBtn');
@@ -343,6 +326,7 @@ btn.innerHTML = '<i class="fas fa-arrow-up-wide-short"></i> Tri: du plus ancien 
 sortWithdrawals();
 renderList();
 }
+
 document.getElementById('loginBtn').addEventListener('click', async()=>{
 const email = document.getElementById('adminEmail').value.trim();
 const pwd = document.getElementById('adminPassword').value;
@@ -351,6 +335,7 @@ if(!email || !pwd){ errorDiv.style.display='block'; errorDiv.innerText='Email et
 try{ await signInWithEmailAndPassword(auth, email, pwd); errorDiv.style.display='none'; document.getElementById('loginPanel').style.display='none'; document.getElementById('adminPanel').style.display='block'; await loadWithdrawals(); }
 catch(e){ errorDiv.style.display='block'; errorDiv.innerText='Identifiants incorrects'; }
 });
+
 document.getElementById('logoutBtn').addEventListener('click', async()=>{ await signOut(auth); document.getElementById('loginPanel').style.display='flex'; document.getElementById('adminPanel').style.display='none'; document.getElementById('adminEmail').value=''; document.getElementById('adminPassword').value=''; });
 document.getElementById('refreshBtn').addEventListener('click',()=>loadWithdrawals());
 document.getElementById('exportBtn').addEventListener('click',()=>exportCSV());
@@ -358,7 +343,9 @@ document.getElementById('sortBtn').addEventListener('click',()=>toggleSort());
 document.getElementById('toggleSortBtn').addEventListener('click',()=>toggleSort());
 document.getElementById('searchInput').addEventListener('input',(e)=>{ searchTerm = e.target.value.toLowerCase(); renderList(); });
 document.getElementById('statusFilter').addEventListener('change',(e)=>{ currentFilter = e.target.value; renderList(); });
+
 onAuthStateChanged(auth, async(user)=>{ if(user){ document.getElementById('loginPanel').style.display='none'; document.getElementById('adminPanel').style.display='block'; await loadWithdrawals(); }else{ document.getElementById('loginPanel').style.display='flex'; document.getElementById('adminPanel').style.display='none'; } });
+
 document.addEventListener('contextmenu',function(e){ e.preventDefault(); return false; });
 document.addEventListener('selectstart',function(e){ e.preventDefault(); return false; });
 document.addEventListener('dragstart',function(e){ e.preventDefault(); return false; });
