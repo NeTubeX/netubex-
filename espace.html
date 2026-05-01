@@ -461,6 +461,7 @@ document.getElementById('balanceHeader')?.addEventListener('click', async () => 
   showToast('Solde', `Votre solde actuel est de ${balance.toFixed(4)}$`, 'info');
 });
 
+// PANEL A - Timewall avec userId injecté
 document.getElementById('panelA')?.addEventListener('click', () => {
   const userId = currentUser ? currentUser.uid : '';
   const urlWithUserId = `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${userId}`;
@@ -468,12 +469,14 @@ document.getElementById('panelA')?.addEventListener('click', () => {
   showFlyPopup("Panel A", "A", "#10b981", urlWithUserId, msgPanelA);
 });
 
+// PANEL B - Gemimi avec userId injecté au format /PLACEMENT_ID/USER_ID
 document.getElementById('panelB')?.addEventListener('click', () => {
   const userId = currentUser ? currentUser.uid : '';
-  const urlWithUserId = `https://gemiwall.com/69f304688bb8875fc339fe24/?user_id=${userId}`;
+  const urlWithUserId = `https://gemiwall.com/69f304688bb8875fc339fe24/${userId}`;
   showFlyPopup("Panel B", "B", "#3b82f6", urlWithUserId, null);
 });
 
+// Popup de choix - Panel A
 document.getElementById('goToPanelA')?.addEventListener('click', () => {
   document.getElementById('gameChoicePopup').classList.remove('active');
   const userId = currentUser ? currentUser.uid : '';
@@ -482,10 +485,11 @@ document.getElementById('goToPanelA')?.addEventListener('click', () => {
   showFlyPopup("Panel A", "A", "#10b981", urlWithUserId, msgPanelA);
 });
 
+// Popup de choix - Panel B
 document.getElementById('goToPanelB')?.addEventListener('click', () => {
   document.getElementById('gameChoicePopup').classList.remove('active');
   const userId = currentUser ? currentUser.uid : '';
-  const urlWithUserId = `https://gemiwall.com/69f304688bb8875fc339fe24/?user_id=${userId}`;
+  const urlWithUserId = `https://gemiwall.com/69f304688bb8875fc339fe24/${userId}`;
   showFlyPopup("Panel B", "B", "#3b82f6", urlWithUserId, null);
 });
 
