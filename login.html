@@ -75,7 +75,388 @@ body{background:linear-gradient(135deg,#fef9e6 0%,#fdf4d6 100%);font-family:'Int
 .form-section-title{font-size:15px;font-weight:700;color:#b8860b;margin:20px 0 12px 0;padding-bottom:8px;border-bottom:2px solid #f0e0c0;display:flex;align-items:center;gap:8px;}
 .country-select{width:100%;padding:14px 16px;border-radius:16px;border:1.5px solid #f0e0c0;background:#fff;font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;}
 .country-select:focus{outline:none;border-color:#daa520;}
+.bottom-buttons{position:fixed;bottom:20px;left:0;right:0;display:flex;justify-content:center;gap:16px;z-index:99;}
+.bottom-btn{background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);border:none;padding:10px 24px;border-radius:40px;color:#fff;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:8px;text-decoration:none;transition:all 0.2s;}
+.bottom-btn:hover{background:#daa520;color:#5c3d00;}
 </style>
 </head>
 <body>
-<div class="toast-container" id="to
+<div class="toast-container" id="toastContainer"></div>
+<div class="login-container">
+<div class="login-card">
+<div class="logo">
+<h1>Ne<span>TubeX</span></h1>
+<p>Gagnez de l'argent en toute simplicité</p>
+</div>
+<div id="errorMessage" class="error-message hidden">
+<i class="fas fa-exclamation-circle"></i>
+<span id="errorText"></span>
+</div>
+<form id="loginForm">
+<div class="input-group">
+<label><i class="fas fa-envelope"></i> Email</label>
+<input type="email" id="email" placeholder="exemple@email.com" required>
+</div>
+<div class="input-group">
+<label><i class="fas fa-lock"></i> Mot de passe</label>
+<input type="password" id="password" placeholder="••••••••" required>
+</div>
+<button type="submit" class="login-btn" id="loginBtn">
+<i class="fas fa-sign-in-alt"></i> Se connecter
+</button>
+</form>
+<div class="footer-links">
+<a id="forgotPasswordBtn">Mot de passe oublié</a> • <a id="applyNowBtn">Créer un compte</a>
+</div>
+</div>
+</div>
+<div class="bottom-buttons">
+<a href="index.html" class="bottom-btn"><i class="fas fa-home"></i> Accueil</a>
+</div>
+<div id="applyModal" class="modal-overlay">
+<div class="modal-content">
+<div class="modal-header">
+<h2><i class="fas fa-user-plus"></i> Créer un compte</h2>
+<button class="modal-close" onclick="closeApplyModal()"><i class="fas fa-times"></i></button>
+</div>
+<div class="modal-body">
+<form id="registerForm">
+<div class="form-section-title"><i class="fas fa-user"></i> Informations</div>
+<div class="input-group">
+<label>Sexe</label>
+<div class="gender-row" id="genderGroup">
+<div class="gender-option" id="genderMale" onclick="selectGender('homme')">
+<input type="radio" name="gender" value="homme" id="maleRadio"> <label for="maleRadio"><i class="fas fa-mars"></i> Homme</label>
+</div>
+<div class="gender-option" id="genderFemale" onclick="selectGender('femme')">
+<input type="radio" name="gender" value="femme" id="femaleRadio"> <label for="femaleRadio"><i class="fas fa-venus"></i> Femme</label>
+</div>
+</div>
+<div id="genderError" class="error-message" style="display:none; background:transparent; padding:0; margin-top:8px;"></div>
+</div>
+<div class="input-group">
+<label>Email</label>
+<input type="email" id="regEmail" placeholder="exemple@email.com" required>
+</div>
+<div class="input-group">
+<label>Mot de passe</label>
+<input type="password" id="regPassword" placeholder="Min 6 caractères" required>
+<div class="password-strength" id="passwordStrength"></div>
+<div id="strengthText" class="strength-text"></div>
+</div>
+<div class="input-group">
+<label>Confirmer le mot de passe</label>
+<input type="password" id="regConfirmPassword" placeholder="Retapez votre mot de passe" required>
+<div id="pwdMatchError" class="error-message" style="display:none; background:transparent; padding:0;"></div>
+</div>
+<div class="input-group">
+<label>Pays</label>
+<select id="countrySelect" class="country-select">
+<option value="">Sélectionnez votre pays</option>
+<option value="FR">🇫🇷 France</option>
+<option value="CI">🇨🇮 Côte d'Ivoire</option>
+<option value="SN">🇸🇳 Sénégal</option>
+<option value="CM">🇨🇲 Cameroun</option>
+<option value="CD">🇨🇩 RDC</option>
+<option value="ML">🇲🇱 Mali</option>
+<option value="BF">🇧🇫 Burkina Faso</option>
+<option value="TG">🇹🇬 Togo</option>
+<option value="BJ">🇧🇯 Bénin</option>
+<option value="NE">🇳🇪 Niger</option>
+<option value="TD">🇹🇩 Tchad</option>
+<option value="GA">🇬🇦 Gabon</option>
+<option value="CG">🇨🇬 Congo</option>
+<option value="CA">🇨🇦 Canada</option>
+<option value="BE">🇧🇪 Belgique</option>
+<option value="CH">🇨🇭 Suisse</option>
+<option value="US">🇺🇸 États-Unis</option>
+<option value="GB">🇬🇧 Royaume-Uni</option>
+<option value="DE">🇩🇪 Allemagne</option>
+<option value="ES">🇪🇸 Espagne</option>
+<option value="IT">🇮🇹 Italie</option>
+<option value="PT">🇵🇹 Portugal</option>
+<option value="MA">🇲🇦 Maroc</option>
+<option value="TN">🇹🇳 Tunisie</option>
+<option value="DZ">🇩🇿 Algérie</option>
+<option value="EG">🇪🇬 Égypte</option>
+<option value="NG">🇳🇬 Nigeria</option>
+<option value="ZA">🇿🇦 Afrique du Sud</option>
+<option value="BR">🇧🇷 Brésil</option>
+<option value="IN">🇮🇳 Inde</option>
+<option value="CN">🇨🇳 Chine</option>
+<option value="JP">🇯🇵 Japon</option>
+<option value="KR">🇰🇷 Corée du Sud</option>
+<option value="RU">🇷🇺 Russie</option>
+<option value="AU">🇦🇺 Australie</option>
+</select>
+</div>
+<div class="checkbox-group">
+<input type="checkbox" id="acceptCgu">
+<label for="acceptCgu">J'accepte les <a href="#" target="_blank">conditions générales</a></label>
+</div>
+<button type="button" class="btn-submit" id="registerSubmitBtn"><i class="fas fa-user-plus"></i> Créer mon compte</button>
+</form>
+</div>
+</div>
+</div>
+<div id="forgotPasswordModal" class="modal-overlay">
+<div class="modal-content" style="max-width:450px;">
+<div class="modal-header">
+<h2><i class="fas fa-key"></i> Réinitialisation</h2>
+<button class="modal-close" onclick="closeForgotModal()"><i class="fas fa-times"></i></button>
+</div>
+<div class="modal-body">
+<div class="input-group">
+<label>Email</label>
+<input type="email" id="resetEmail" placeholder="exemple@email.com">
+</div>
+</div>
+<div class="modal-footer">
+<button class="btn-submit" id="sendResetLinkBtn" style="margin-top:0;">Envoyer</button>
+</div>
+</div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, doc, getDoc, setDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
+authDomain: "netubexmoney.firebaseapp.com",
+projectId: "netubexmoney",
+storageBucket: "netubexmoney.firebasestorage.app",
+messagingSenderId: "856592608176",
+appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+function showToast(message, type='success'){
+const container = document.getElementById('toastContainer');
+const toast = document.createElement('div');
+toast.className = `toast toast-${type}`;
+const icons = {success:'fa-check-circle', error:'fa-exclamation-circle', info:'fa-info-circle'};
+const titles = {success:'Succès', error:'Erreur', info:'Information'};
+toast.innerHTML = `
+<i class="fas ${icons[type]}"></i>
+<div class="toast-content">
+<div class="toast-title">${titles[type]}</div>
+<div class="toast-message">${message}</div>
+</div>
+<button class="toast-close"><i class="fas fa-times"></i></button>
+`;
+container.appendChild(toast);
+const closeBtn = toast.querySelector('.toast-close');
+closeBtn.addEventListener('click',()=>{toast.remove();});
+setTimeout(()=>{if(toast.parentNode) toast.remove();}, 8000);
+}
+
+function showErrorMessage(message){
+const errorDiv = document.getElementById('errorMessage');
+const errorText = document.getElementById('errorText');
+errorText.textContent = message;
+errorDiv.classList.remove('hidden');
+setTimeout(()=>errorDiv.classList.add('hidden'), 8000);
+}
+
+function hideErrorMessage(){
+document.getElementById('errorMessage').classList.add('hidden');
+}
+
+function getRefCodeFromUrl(){
+const urlParams = new URLSearchParams(window.location.search);
+return urlParams.get('ref');
+}
+
+function generateRefCode(){
+return "NX"+Math.random().toString(36).substring(2,10).toUpperCase();
+}
+
+let selectedGender = null;
+
+function selectGender(gender){
+selectedGender = gender;
+document.getElementById('genderMale').classList.remove('selected');
+document.getElementById('genderFemale').classList.remove('selected');
+if(gender==='homme'){
+document.getElementById('genderMale').classList.add('selected');
+document.getElementById('maleRadio').checked=true;
+}else{
+document.getElementById('genderFemale').classList.add('selected');
+document.getElementById('femaleRadio').checked=true;
+}
+document.getElementById('genderError').style.display='none';
+}
+
+window.selectGender = selectGender;
+
+function checkPasswordStrength(pwd){
+const strengthBar = document.getElementById('passwordStrength');
+const strengthText = document.getElementById('strengthText');
+strengthBar.className = 'password-strength';
+if(pwd.length===0){ strengthText.textContent=''; return; }
+let score=0;
+if(pwd.length>=6) score++;
+if(pwd.length>=8) score++;
+if(/[A-Z]/.test(pwd)) score++;
+if(/[0-9]/.test(pwd)) score++;
+if(/[^A-Za-z0-9]/.test(pwd)) score++;
+if(score<=2){ strengthBar.classList.add('weak'); strengthText.textContent='Faible'; }
+else if(score<=3){ strengthBar.classList.add('medium'); strengthText.textContent='Moyen'; }
+else if(score<=4){ strengthBar.classList.add('strong'); strengthText.textContent='Fort'; }
+else{ strengthBar.classList.add('very-strong'); strengthText.textContent='Très fort'; }
+}
+
+document.getElementById('regPassword')?.addEventListener('input', function(){ checkPasswordStrength(this.value); checkPasswordMatch(); });
+
+function checkPasswordMatch(){
+const pwd = document.getElementById('regPassword').value;
+const confirm = document.getElementById('regConfirmPassword').value;
+const errorDiv = document.getElementById('pwdMatchError');
+if(confirm && pwd !== confirm){ errorDiv.style.display='block'; errorDiv.innerHTML='<i class="fas fa-times"></i> Les mots de passe ne correspondent pas'; return false; }
+else{ errorDiv.style.display='none'; return true; }
+}
+
+document.getElementById('regConfirmPassword')?.addEventListener('input', checkPasswordMatch);
+
+document.getElementById('loginForm').addEventListener('submit', async (e)=>{
+e.preventDefault();
+hideErrorMessage();
+const email = document.getElementById('email').value.trim();
+const password = document.getElementById('password').value;
+const loginBtn = document.getElementById('loginBtn');
+if(!email || !password){ showErrorMessage('Veuillez renseigner email et mot de passe'); return; }
+loginBtn.disabled = true;
+loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
+try{
+const userCredential = await signInWithEmailAndPassword(auth, email, password);
+const user = userCredential.user;
+const userSnap = await getDoc(doc(db,"users",user.uid));
+const userData = userSnap.exists() ? userSnap.data() : null;
+const role = userData?.role || null;
+showToast('Connexion réussie !', 'success');
+setTimeout(()=>{
+if(role === 'admin') window.location.href = "admin.html";
+else if(role === 'pilote') window.location.href = "pilote.html";
+else window.location.href = "dashboard.html";
+}, 1500);
+}catch(error){
+let userMessage = '';
+if(error.code === 'auth/user-not-found') userMessage = 'Aucun compte associé à cet email';
+else if(error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') userMessage = 'Email ou mot de passe incorrect';
+else if(error.code === 'auth/too-many-requests') userMessage = 'Trop de tentatives. Réessayez plus tard';
+else userMessage = 'Erreur technique. Veuillez réessayer';
+showErrorMessage(userMessage);
+loginBtn.disabled = false;
+loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
+}
+});
+
+document.getElementById('registerSubmitBtn')?.addEventListener('click', async () => {
+const displayName = 'User';
+const email = document.getElementById('regEmail').value.trim();
+const password = document.getElementById('regPassword').value;
+const confirmPassword = document.getElementById('regConfirmPassword').value;
+const acceptCgu = document.getElementById('acceptCgu').checked;
+const country = document.getElementById('countrySelect').value;
+
+if(!email || !password){ showToast("Tous les champs sont requis", 'error'); return; }
+if(!selectedGender){ document.getElementById('genderError').style.display='block'; document.getElementById('genderError').innerHTML = 'Veuillez sélectionner votre sexe'; return; }
+if(password.length<6){ showToast("Le mot de passe doit contenir au moins 6 caractères", 'error'); return; }
+if(password !== confirmPassword){ showToast("Les mots de passe ne correspondent pas", 'error'); return; }
+if(!acceptCgu){ showToast("Vous devez accepter les conditions générales", 'error'); return; }
+if(!country){ showToast("Veuillez sélectionner votre pays", 'error'); return; }
+
+const submitBtn = document.getElementById('registerSubmitBtn');
+submitBtn.disabled = true;
+submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Création...';
+
+try{
+const userCred = await createUserWithEmailAndPassword(auth, email, password);
+await updateProfile(userCred.user, { displayName: displayName });
+const refCode = generateRefCode();
+const refParrain = getRefCodeFromUrl();
+let parrainId = null;
+if(refParrain){
+const usersRef = collection(db,"users");
+const q = query(usersRef, where("refCode","==",refParrain));
+const snapshot = await getDocs(q);
+if(!snapshot.empty) parrainId = snapshot.docs[0].id;
+}
+await setDoc(doc(db,"users",userCred.user.uid),{
+username: displayName,
+sexe: selectedGender,
+email: email,
+pays: country,
+isActive: true,
+isBlocked: false,
+role: null,
+refCode: refCode,
+parrainId: parrainId || null,
+invitedCount: 0,
+parrainageGains: 0,
+balance: 0,
+dateInscription: new Date().toISOString(),
+lastSeen: new Date().toISOString(),
+ticketsList: [],
+capDuJour: "📊 CAP DU JOUR\n\n• Jouer aux jeux\n• Inviter des amis (10% de leurs gains)\n• Bonne journée !"
+});
+showToast("✅ Compte créé avec succès !", "success");
+setTimeout(async () => {
+await signInWithEmailAndPassword(auth, email, password);
+window.location.href = "dashboard.html";
+}, 2000);
+}catch(error){
+let errorMsg = "Erreur lors de la création";
+if(error.code === 'auth/email-already-in-use') errorMsg = "Cet email est déjà utilisé";
+showToast(errorMsg, 'error');
+submitBtn.disabled = false;
+submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Créer mon compte';
+}
+});
+
+document.getElementById('applyNowBtn')?.addEventListener('click', ()=>{document.getElementById('applyModal').classList.add('active');});
+document.getElementById('forgotPasswordBtn')?.addEventListener('click', ()=>{document.getElementById('forgotPasswordModal').classList.add('active');});
+
+function closeApplyModal(){document.getElementById('applyModal').classList.remove('active');}
+function closeForgotModal(){document.getElementById('forgotPasswordModal').classList.remove('active');}
+
+window.closeApplyModal = closeApplyModal;
+window.closeForgotModal = closeForgotModal;
+
+document.getElementById('sendResetLinkBtn')?.addEventListener('click', async () => {
+const email = document.getElementById('resetEmail').value.trim();
+const btn = document.getElementById('sendResetLinkBtn');
+if(!email){ showToast("Veuillez entrer votre email", 'error'); return; }
+btn.disabled = true;
+btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
+try{
+await sendPasswordResetEmail(auth, email);
+showToast("Lien de réinitialisation envoyé", 'success');
+closeForgotModal();
+document.getElementById('resetEmail').value = '';
+}catch(error){
+if(error.code === 'auth/user-not-found') showToast("Aucun compte associé à cet email", 'error');
+else showToast("Erreur technique", 'error');
+}finally{
+btn.disabled = false;
+btn.innerHTML = 'Envoyer';
+}
+});
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+overlay.addEventListener('click', (e) => { if(e.target === overlay) overlay.classList.remove('active'); });
+});
+
+document.addEventListener('contextmenu', e=>e.preventDefault());
+document.addEventListener('keydown', function(e){
+if(e.key==='F12'){ e.preventDefault(); return false; }
+if(e.ctrlKey && e.shiftKey && (e.key==='I'||e.key==='J'||e.key==='C')){ e.preventDefault(); return false; }
+if(e.ctrlKey && e.key==='u'){ e.preventDefault(); return false; }
+});
+</script>
+</body>
+</html>
