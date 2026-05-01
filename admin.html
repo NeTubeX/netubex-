@@ -378,12 +378,12 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <div class="charts-row"><div class="chart-container"><canvas id="ticketsStatusChart" style="max-height:250px; width:100%;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Tickets par statut</p></div><div class="chart-container"><canvas id="ticketsPriorityChart" style="max-height:250px; width:100%;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Tickets par priorité</p></div></div>
 <div class="chart-container"><canvas id="ticketsEvolutionChart" style="max-height:250px; width:100%;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Évolution des tickets (7 derniers jours)</p></div>
 </div>
-<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></td></thead><tbody id="pendingTableBody"></tbody></table></div></div>
+<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"></tbody></table></div></div>
 <div id="utilisateursTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalActiveUsers">0</div><div class="label">Utilisateurs actifs</div></div></div><div class="filters"><input type="text" id="searchActiveUsers" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterActiveUsers()"></div><div class="table-wrapper"><table id="activeUsersTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Contact</th><th>Balance</th><th>Date activation</th><th>deviceId</th><th>firstLogin</th><th>isActive</th><th>lastLogin</th><th>lastUserAgent</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></tr></thead><tbody id="activeUsersTableBody"></tbody></table></div></div>
-<div id="netubersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Netubers</div></div><div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">Connectés</div></div><div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label">Déconnectés</div></div><div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Comptes bloqués</div></div></div><div class="filters"><input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()"><select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">Connectés</option><option value="offline">Déconnectés</option></select><button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button><button class="export-btn" onclick="openAddNetuberModal()" style="background:#8b5cf6;"><i class="fas fa-user-plus"></i> Ajouter Netuber</button></div><div class="table-wrapper"><table id="netubersTable"><thead><tr><th>Code Netuber</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Statut</th><th>Connexion</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></tr></thead><tbody id="netubersTableBody"></tbody></table></div></div>
+<div id="netubersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Netubers</div></div><div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">Connectés</div></div><div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label">Déconnectés</div></div><div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Comptes bloqués</div></div></div><div class="filters"><input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()"><select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">Connectés</option><option value="offline">Déconnectés</option></select><button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button><button class="export-btn" onclick="openAddNetuberModal()" style="background:#8b5cf6;"><i class="fas fa-user-plus"></i> Ajouter Netuber</button></div><div class="table-wrapper"><table id="netubersTable"><thead><tr><th>Code Netuber</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Statut</th><th>Connexion</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></tr></thead><tbody id="netubersTableBody"></tbody></td></div></div>
 <div id="retraitsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalWithdrawalsPending">0</div><div class="label">En attente</div></div><div class="stat-card"><div class="value" id="totalWithdrawalsAmount">0</div><div class="label">Montant total</div></div></div><div class="filters"><select id="withdrawStatusFilter" class="filter-select" onchange="filterWithdrawals()"><option value="all">Tous</option><option value="pending">En attente</option><option value="approved">Approuvés</option><option value="rejected">Rejetés</option></select><button class="export-btn" onclick="exportWithdrawals()"><i class="fas fa-file-excel"></i> Exporter</button></div><div class="table-wrapper"><table id="withdrawalsTable"><thead><tr><th>Utilisateur</th><th>Montant</th><th>Méthode</th><th>Wallet</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="withdrawalsTableBody"></tbody></table></div></div>
 <div id="financeTab" class="tab-content"><div class="finance-buttons"><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source A</h3></div><button class="finance-btn" onclick="window.open('https://siteowner.timewall.io/','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source B</h3></div><button class="finance-btn" onclick="window.open('https://beta.partners.adsterra.com/login','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source C</h3></div><button class="finance-btn" onclick="window.open('https://gain.gg/earn','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div></div></div>
-<div id="ticketsUsersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="ticketsUsersOpen">0</div><div class="label">Tickets ouverts</div></div><div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Tickets résolus</div></div><div class="stat-card"><div class="value" id="ticketsInProgress">0</div><div class="label">Tickets en cours</div></div></div><div class="table-wrapper"><table id="ticketsUsersTable"><thead><tr><th>Utilisateur</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th><th>Supprimer</th></tr></thead><tbody id="ticketsUsersBody"></tbody></table></div></div>
+<div id="ticketsUsersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="ticketsUsersOpen">0</div><div class="label">Tickets ouverts</div></div><div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Tickets résolus</div></div><div class="stat-card"><div class="value" id="ticketsInProgress">0</div><div class="label">Tickets en cours</div></div></div><div class="table-wrapper"><table id="ticketsUsersTable"><thead><tr><th>Utilisateur</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th><th>Supprimer</th></table></thead><tbody id="ticketsUsersBody"></tbody></table></div></div>
 <div id="rapportsTab" class="tab-content">
 <div class="stats-grid">
 <div class="stat-card"><div class="value" id="reportCount">0</div><div class="label">Netubers dans le rapport</div></div>
@@ -773,8 +773,8 @@ function updateSecurityAlertsTable() {
                 ${!alert.read ? `<button class="action-btn" onclick='markAlertRead("${alert.id}")' style="background:#3b82f6;">✓ Marquer lu</button>` : ''}
                 ${alert.type === 'device_mismatch' ? `<button class="action-btn" onclick='resetNetuberDevice("${alert.netuberCode}")' style="background:#f59e0b;">🔄 Réinit device</button>` : ''}
                 <button class="action-btn delete" onclick='deleteAlert("${alert.id}")' style="background:#ef4444;">🗑️</button>
-              </td>
-          </tr>`;
+               </td>
+           </tr>`;
     }).join('');
 }
 
@@ -1157,6 +1157,170 @@ document.querySelectorAll('.tab').forEach(btn => {
     if(btn.getAttribute('data-tab') === 'chatDeo') { btn.onclick = () => { enableChatFullscreen(); loadChatMessages(); }; }
 });
 
+// ============ GESTION DES RETRAITS (CORRIGÉE) ============
+
+async function loadWithdrawals() {
+    withdrawalsData = [];
+    const allUsersSnap = await getDocs(collection(db, "users"));
+    
+    for (const userDoc of allUsersSnap.docs) {
+        const userId = userDoc.id;
+        const userEmail = userDoc.data().email;
+        const userCode = userDoc.data().code || '';
+        
+        const transactionsSnap = await getDocs(collection(db, "users", userId, "transactions"));
+        transactionsSnap.forEach(transactionDoc => {
+            const tx = transactionDoc.data();
+            if (tx.type === "withdraw") {
+                withdrawalsData.push({
+                    id: transactionDoc.id,
+                    userId: userId,
+                    userEmail: userEmail,
+                    userCode: userCode,
+                    amount: Math.abs(tx.amount),
+                    method: tx.methodName || tx.method,
+                    wallet: tx.wallet,
+                    requestedAt: tx.time,
+                    status: tx.status || "pending"
+                });
+            }
+        });
+    }
+    
+    withdrawalsData.sort((a, b) => b.requestedAt - a.requestedAt);
+    updateWithdrawalsTable();
+    
+    const pendingCount = withdrawalsData.filter(w => w.status === "pending").length;
+    const pendingAmount = withdrawalsData.filter(w => w.status === "pending").reduce((s, w) => s + w.amount, 0);
+    
+    document.getElementById('totalWithdrawalsPending').innerText = pendingCount;
+    document.getElementById('totalWithdrawalsAmount').innerText = pendingAmount.toFixed(2);
+    document.getElementById('totalWithdrawalsPendingStat').innerText = pendingCount;
+}
+
+function updateWithdrawalsTable() {
+    const tbody = document.getElementById('withdrawalsTableBody');
+    if (!tbody) return;
+    
+    let filtered = withdrawalsData;
+    if (currentWithdrawFilter !== 'all') {
+        filtered = withdrawalsData.filter(w => w.status === currentWithdrawFilter);
+    }
+    
+    tbody.innerHTML = filtered.map(w => {
+        let statusClass = w.status === 'pending' ? 'badge-warning' :
+                          (w.status === 'approved' ? 'badge-success' : 'badge-danger');
+        let statusText = w.status === 'pending' ? 'En attente' :
+                         (w.status === 'approved' ? 'Approuvé' : 'Rejeté');
+        
+        return `<tr>
+            <td><strong>${escapeHtml(w.userCode || w.userEmail)}</strong></td>
+            <td>${w.amount.toFixed(2)} $</td>
+            <td>${escapeHtml(w.method)}</td>
+            <td>${escapeHtml(w.wallet)}</td>
+            <td>${formatDateShort(w.requestedAt)}</td>
+            <td><span class="badge ${statusClass}">${statusText}</span></td>
+            <td>
+                ${w.status === 'pending' ? 
+                    `<button class="action-btn approve" onclick='approveWithdraw("${w.userId}", "${w.id}")' style="background:#10b981;">✅ Approuver</button>
+                     <button class="action-btn delete" onclick='rejectWithdraw("${w.userId}", "${w.id}")' style="background:#f59e0b;">❌ Rejeter</button>` :
+                    `<button class="action-btn delete" onclick='deleteWithdrawRecord("${w.userId}", "${w.id}")' style="background:#ef4444;">🗑️ Supprimer</button>`
+                }
+             </td>
+         </tr>`;
+    }).join('');
+}
+
+window.filterWithdrawals = () => { 
+    currentWithdrawFilter = document.getElementById('withdrawStatusFilter').value; 
+    updateWithdrawalsTable(); 
+};
+
+window.approveWithdraw = async (userId, transactionId) => {
+    try {
+        const txRef = doc(db, "users", userId, "transactions", transactionId);
+        await updateDoc(txRef, { 
+            status: "approved", 
+            processedAt: new Date().toISOString() 
+        });
+        showToast("✅ Retrait approuvé", "success");
+        await loadWithdrawals();
+        await loadAllData();
+    } catch(error) {
+        console.error(error);
+        showToast("Erreur lors de l'approbation", "error");
+    }
+};
+
+window.rejectWithdraw = async (userId, transactionId) => {
+    try {
+        const txRef = doc(db, "users", userId, "transactions", transactionId);
+        const txSnap = await getDoc(txRef);
+        
+        if (!txSnap.exists()) {
+            showToast("Transaction introuvable", "error");
+            return;
+        }
+        
+        const originalAmount = Math.abs(txSnap.data().amount);
+        
+        // 1. Marquer la transaction originale comme rejetée
+        await updateDoc(txRef, { 
+            status: "rejected", 
+            processedAt: new Date().toISOString() 
+        });
+        
+        // 2. Ajouter une transaction de remboursement (recrédit)
+        const refundId = `refund_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+        
+        await setDoc(doc(db, "users", userId, "transactions", refundId), {
+            amount: originalAmount,
+            revenue: 0,
+            time: Date.now(),
+            type: "refund",
+            reason: "retrait_rejected",
+            originalWithdrawId: transactionId
+        });
+        
+        showToast(`⚠️ Retrait rejeté et remboursé (${originalAmount.toFixed(2)} $)`, "warning");
+        
+        await loadWithdrawals();
+        await loadAllData();
+        
+    } catch(error) {
+        console.error("Erreur lors du rejet:", error);
+        showToast("Erreur technique lors du rejet", "error");
+    }
+};
+
+window.deleteWithdrawRecord = async (userId, transactionId) => {
+    showConfirm('Suppression', 'Supprimer cette demande définitivement ?', async () => {
+        try {
+            await deleteDoc(doc(db, "users", userId, "transactions", transactionId));
+            showToast("Demande supprimée", "success");
+            await loadWithdrawals();
+            await loadAllData();
+        } catch(error) {
+            showToast("Erreur lors de la suppression", "error");
+        }
+    });
+};
+
+window.exportWithdrawals = () => {
+    let csv = "Utilisateur,Montant,Méthode,Wallet,Statut,Date\n";
+    withdrawalsData.forEach(w => {
+        csv += `"${w.userCode || w.userEmail}",${w.amount},"${w.method}","${w.wallet}","${w.status}","${new Date(w.requestedAt).toLocaleString('fr-FR')}"\n`;
+    });
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `retraits_${new Date().toISOString().slice(0,19)}.csv`;
+    link.click();
+    showToast("Export CSV lancé", "success");
+};
+
+// FIN GESTION RETRAITS
+
 // CHARGEMENT DES DONNÉES
 async function loadAllData() {
     try {
@@ -1182,12 +1346,10 @@ async function loadAllData() {
         const netubersCount = usersData.filter(u => u.role === 'netuber' && u.isActive === true).length;
         const activeUsersCount = usersData.filter(u => u.isActive === true && (!u.role || u.role !== 'netuber') && u.email).length;
         const pendingCount = usersData.filter(u => u.isActive !== true).length;
-        const pendingWithdrawalsCount = withdrawalsData.filter(w => w.status === 'pending').length;
         
         document.getElementById('totalNetubersStat').innerText = netubersCount;
         document.getElementById('totalUsersStat').innerText = activeUsersCount;
         document.getElementById('totalPendingStat').innerText = pendingCount;
-        document.getElementById('totalWithdrawalsPendingStat').innerText = pendingWithdrawalsCount;
     } catch(error) { console.error("Erreur chargement:", error); showToast("Erreur de connexion Firebase", "error"); }
 }
 
@@ -1206,44 +1368,6 @@ async function loadVisitesStats() {
         }
     } catch(e) { console.error(e); }
 }
-
-async function loadWithdrawals() {
-    let snap = await getDocs(collection(db, "withdraw"));
-    withdrawalsData = []; snap.forEach(d => withdrawalsData.push({ id: d.id, ...d.data() }));
-    updateWithdrawalsTable();
-    document.getElementById('totalWithdrawalsPending').innerText = withdrawalsData.filter(w => w.status === 'pending').length;
-    document.getElementById('totalWithdrawalsAmount').innerText = withdrawalsData.filter(w => w.status === 'pending').reduce((s, w) => s + (w.amount || 0), 0).toFixed(2);
-}
-
-function updateWithdrawalsTable() {
-    let tbody = document.getElementById('withdrawalsTableBody');
-    if(!tbody) return;
-    let filtered = withdrawalsData.filter(w => currentWithdrawFilter === 'all' || w.status === currentWithdrawFilter);
-    tbody.innerHTML = filtered.map(w => {
-        let u = usersData.find(u => u.id === w.userId);
-        let statusClass = w.status === 'pending' ? 'badge-warning' : (w.status === 'approved' ? 'badge-success' : 'badge-danger');
-        let statusText = w.status === 'pending' ? 'En attente' : (w.status === 'approved' ? 'Approuvé' : 'Rejeté');
-        return `<tr>
-            <td>${escapeHtml(u?.email || w.userId)}</td>
-            <td>${(w.amount || 0).toFixed(2)} $</td>
-            <td>${w.method || '-'}</td>
-            <td>${escapeHtml(w.walletAddress || '-')}</td>
-            <td>${formatDateShort(w.requestedAt)}</td>
-            <td><span class="badge ${statusClass}">${statusText}</span></td>
-            <td>${w.status === 'pending' ? 
-                `<button class="action-btn approve" onclick='approveWithdraw("${w.id}")'>Approuver</button>
-                 <button class="action-btn delete" onclick='rejectWithdraw("${w.id}")'>Rejeter</button>` : 
-                `<button class="action-btn delete" onclick='deleteWithdraw("${w.id}")'>🗑️ Supprimer</button>`
-             }</td>
-          </tr>`;
-    }).join('');
-}
-
-window.filterWithdrawals = () => { currentWithdrawFilter = document.getElementById('withdrawStatusFilter').value; updateWithdrawalsTable(); };
-window.approveWithdraw = async (id) => { let w = withdrawalsData.find(w => w.id === id); if(!w) return; let userRef = doc(db, "users", w.userId); let userSnap = await getDoc(userRef); let balance = userSnap.exists() ? (userSnap.data().balance || 0) : 0; await updateDoc(userRef, { balance: balance - (w.amount || 0) }); await updateDoc(doc(db, "withdraw", id), { status: "approved", processedAt: new Date().toISOString() }); showToast("Retrait approuvé", "success"); await loadWithdrawals(); await loadAllData(); };
-window.rejectWithdraw = async (id) => { await updateDoc(doc(db, "withdraw", id), { status: "rejected", processedAt: new Date().toISOString() }); showToast("Retrait rejeté", "warning"); await loadWithdrawals(); };
-window.deleteWithdraw = async (id) => { showConfirm('Suppression', 'Supprimer cette demande ?', async () => { await deleteDoc(doc(db, "withdraw", id)); showToast("Demande supprimée", "success"); await loadWithdrawals(); }); };
-window.exportWithdrawals = () => { let csv = "Utilisateur,Montant,Méthode,Wallet,Statut,Date\n"; withdrawalsData.forEach(w => { let u = usersData.find(u => u.id === w.userId); csv += `${u?.email || w.userId},${w.amount},${w.method},${w.walletAddress},${w.status},${w.requestedAt}\n`; }); let blob = new Blob([csv]); let link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `retraits.csv`; link.click(); showToast("Export CSV lancé", "success"); };
 
 async function loadLastReport() {
     try {
@@ -1374,8 +1498,8 @@ function updateNetubersTable() {
                 <button class="action-btn delete" onclick='blockNetuber("${u.id}")'>${u.isBlocked ? 'Débloquer' : 'Bloquer'}</button>
                 <button class="action-btn" onclick='openModifyNetuberCodeModal("${u.id}")' style="background:#3b82f6;">Modifier Code</button>
                 <button class="action-btn delete" onclick='deleteNetuber("${u.id}")' style="background:#ef4444;">Supprimer</button>
-              </td>
-          </tr>`;
+               </td>
+           </tr>`;
     }).join('');
     document.getElementById('totalNetubers').innerText = netuberUsers.length;
     document.getElementById('totalOnline').innerText = onlineCount;
@@ -1408,7 +1532,7 @@ function updatePendingTable() {
         <td>${escapeHtml(u.contactValue || '-')}</td>
         <td>${formatDateShort(u.dateInscription)}</td>
         <td><button class="action-btn validate" onclick='openActivateModal("${u.id}")'>✅ Activer</button><button class="action-btn reject" onclick='rejectUser("${u.id}")'>🗑️ Rejeter</button><button class="action-btn delete" onclick='deleteUser("${u.id}")'>❌ Supprimer</button></td>
-    </tr>`).join('');
+     </tr>`).join('');
     document.getElementById('totalPending').innerText = pending.length;
 }
 
@@ -1438,7 +1562,7 @@ function updateActiveUsersTable() {
             <td>${lastConnection ? formatDateTime(lastConnection) : '-'}</td>
             <td>${lastDisconnection ? formatDateTime(lastDisconnection) : '-'}</td>
             <td><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Supprimer</button></td>
-        </tr>`;
+         </tr>`;
     }).join('');
     document.getElementById('totalActiveUsers').innerText = activeUsers.length;
 }
@@ -1464,7 +1588,7 @@ async function loadTickets() {
             <td>${formatDateShort(t.date)}</td>
             <td><button class="action-btn reply" onclick='openReplyTicketModal("${t.id}","${t.userId}")'>Répondre</button></td>
             <td><button class="action-btn delete" onclick='deleteTicket("${t.id}","${t.userId}")' style="background:#ef4444;">🗑️</button></td>
-        </tr>`).join('');
+         </tr>`).join('');
     }
     updateTicketsStats();
     updateAnomaliesTable();
@@ -1509,7 +1633,7 @@ function updateAnomaliesTable() {
             <td><span class="badge badge-danger">${a.count}</span></td>
             <td><button class="action-btn view" onclick='viewAnomalyTickets("${escapeHtml(a.user)}",${JSON.stringify(a.tickets).replace(/"/g, '&quot;')})'>Voir</button></td>
             <td><button class="action-btn delete" onclick='deleteAnomaly("${escapeHtml(a.user)}")' style="background:#ef4444;">🗑️</button></td>
-        </tr>`).join('');
+         </tr>`).join('');
         document.getElementById('totalAnomalies').innerText = anomalies.length;
     }
 }
@@ -1538,7 +1662,7 @@ async function loadCAPs() {
         <td>${escapeHtml(c.message.substring(0, 60))}${c.message.length > 60 ? '...' : ''}</td>
         <td>${formatDateTime(c.sentDate)}</td>
         <td>${formatDateShort(c.expiryDate)}</td>
-    </tr>`).join(''); }
+     </tr>`).join(''); }
 }
 
 async function loadMemos() {
@@ -1553,7 +1677,7 @@ async function loadMemos() {
         <td>${formatDateTime(m.sentDate)}</td>
         <td>${escapeHtml(m.content.substring(0, 50))}${m.content.length > 50 ? '...' : ''}</td>
         <td><button class="action-btn delete" onclick='deleteMemorandum("${m.id}")'>Supprimer</button></td>
-    </tr>`).join(''); }
+     </tr>`).join(''); }
 }
 
 window.deleteMemorandum = async (id) => { showConfirm('Suppression', 'Supprimer ce mémorandum ?', async () => { await deleteDoc(doc(db, "memorandums", id)); showToast("Mémorandum supprimé", "success"); await loadMemos(); }); };
