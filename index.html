@@ -285,37 +285,53 @@ import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/fireb
 const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const EAGERDAZZLE_URL = "https://viiukuhe.com/dc/?blockID=397846";
+const OFFER_URLS = [
+  "https://viiukuhe.com/dc/?blockID=397846",
+  "https://viiukuhe.com/dc/?blockID=422998"
+];
+let offerIndex = 0;
+function getNextOfferUrl() {
+  const url = OFFER_URLS[offerIndex];
+  offerIndex = (offerIndex + 1) % OFFER_URLS.length;
+  return url;
+}
 const SECOND_URL_LOGIN = "https://www.netubex.com/login.html";
 const POSTULER_URL = "https://www.netubex.com/postuler.html";
 const pageMapping = { aboutLink: "https://www.netubex.com/about.html", faqLink: "https://www.netubex.com/faq.html", supportLink: "https://www.netubex.com/support.html", privacyLink: "https://www.netubex.com/privacy.html", trustpilotBtn: "https://www.trustpilot.com/evaluate/www.netubex.com", postulerLink: "https://www.netubex.com/postuler.html", legalLink: "https://www.netubex.com/legal.html" };
-function redirectSmart(offerUrl, targetUrl){window.location.href=offerUrl;var popup=window.open(targetUrl,'_blank');if(!popup||popup.closed||typeof popup.closed==='undefined'){setTimeout(function(){window.location.href=targetUrl;},100);}}
+function redirectSmart(targetUrl){
+  const offerUrl = getNextOfferUrl();
+  window.location.href = offerUrl;
+  var popup = window.open(targetUrl, '_blank');
+  if(!popup || popup.closed || typeof popup.closed === 'undefined'){
+    setTimeout(function(){ window.location.href = targetUrl; }, 100);
+  }
+}
 async function enregistrerVisite(){try{const today=new Date().toISOString().split('T')[0];const statsRef=doc(db,"stats","visites");const statsSnap=await getDoc(statsRef);let currentData={total:0,today:0,week:0,month:0,dailyHistory:[]};if(statsSnap.exists())currentData=statsSnap.data();const nouveauTotal=(currentData.total||0)+1;let nouveauToday=currentData.today||0;const lastDate=currentData.lastDate;if(lastDate===today)nouveauToday++;else nouveauToday=1;let dailyHistory=currentData.dailyHistory||[];const todayIndex=dailyHistory.findIndex(h=>h.date===today);if(todayIndex!==-1)dailyHistory[todayIndex].count++;else dailyHistory.push({date:today,count:1});dailyHistory=dailyHistory.slice(-30);const weekAgo=new Date();weekAgo.setDate(weekAgo.getDate()-7);const weekStr=weekAgo.toISOString().split('T')[0];const visitesSemaine=dailyHistory.filter(h=>h.date>=weekStr).reduce((sum,h)=>sum+h.count,0);const monthAgo=new Date();monthAgo.setDate(monthAgo.getDate()-30);const monthStr=monthAgo.toISOString().split('T')[0];const visitesMois=dailyHistory.filter(h=>h.date>=monthStr).reduce((sum,h)=>sum+h.count,0);await setDoc(statsRef,{total:nouveauTotal,today:nouveauToday,week:visitesSemaine,month:visitesMois,lastDate:today,dailyHistory:dailyHistory,lastUpdate:new Date().toISOString()});}catch(error){console.error("Erreur:",error);}}
 enregistrerVisite();
-const photoWall=document.getElementById('clickablePhoto');if(photoWall){photoWall.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(EAGERDAZZLE_URL,SECOND_URL_LOGIN);});}
-const nosOffresBtn=document.getElementById('nosOffresBtn');if(nosOffresBtn){nosOffresBtn.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(EAGERDAZZLE_URL,SECOND_URL_LOGIN);});}
+const photoWall=document.getElementById('clickablePhoto');if(photoWall){photoWall.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(SECOND_URL_LOGIN);});}
+const nosOffresBtn=document.getElementById('nosOffresBtn');if(nosOffresBtn){nosOffresBtn.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(SECOND_URL_LOGIN);});}
 const menuToggle=document.getElementById('menuToggle');const floatingMenu=document.getElementById('floatingMenu');let isAnimating=false;
 function toggleMenu(){if(isAnimating)return;isAnimating=true;if(floatingMenu.classList.contains('active')){floatingMenu.classList.remove('active');setTimeout(()=>{isAnimating=false;},450);}else{floatingMenu.classList.add('active');setTimeout(()=>{isAnimating=false;},450);}}
 if(menuToggle)menuToggle.addEventListener('click',toggleMenu);
 function closeMenu(){if(floatingMenu.classList.contains('active'))floatingMenu.classList.remove('active');}
-const postulerBtn=document.getElementById('postulerBtn');if(postulerBtn){postulerBtn.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(EAGERDAZZLE_URL,POSTULER_URL);});}
-const aboutLink=document.getElementById('aboutLink');if(aboutLink){aboutLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(EAGERDAZZLE_URL,pageMapping.aboutLink);});}
-const faqLink=document.getElementById('faqLink');if(faqLink){faqLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(EAGERDAZZLE_URL,pageMapping.faqLink);});}
-const loginBtn=document.getElementById('loginBtn');if(loginBtn){loginBtn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();closeMenu();redirectSmart(EAGERDAZZLE_URL,SECOND_URL_LOGIN);});}
-const supportLink=document.getElementById('supportLink');if(supportLink){supportLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(EAGERDAZZLE_URL,pageMapping.supportLink);});}
-const privacyLink=document.getElementById('privacyLink');if(privacyLink){privacyLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(EAGERDAZZLE_URL,pageMapping.privacyLink);});}
-const privacyFooterLink=document.getElementById('privacyFooterLink');if(privacyFooterLink){privacyFooterLink.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(EAGERDAZZLE_URL,pageMapping.privacyLink);});}
-const legalFooterLink=document.getElementById('legalFooterLink');if(legalFooterLink){legalFooterLink.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(EAGERDAZZLE_URL,pageMapping.legalLink);});}
-const aboutLinkFooter=document.getElementById('aboutLinkFooter');if(aboutLinkFooter){aboutLinkFooter.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(EAGERDAZZLE_URL,pageMapping.aboutLink);});}
-const faqLinkFooter=document.getElementById('faqLinkFooter');if(faqLinkFooter){faqLinkFooter.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(EAGERDAZZLE_URL,pageMapping.faqLink);});}
-const supportLinkFooter=document.getElementById('supportLinkFooter');if(supportLinkFooter){supportLinkFooter.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(EAGERDAZZLE_URL,pageMapping.supportLink);});}
-const postulerFooter=document.getElementById('postulerFooter');if(postulerFooter){postulerFooter.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(EAGERDAZZLE_URL,POSTULER_URL);});}
-const trustpilotBtn=document.getElementById('trustpilotBtn');if(trustpilotBtn){trustpilotBtn.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(EAGERDAZZLE_URL,pageMapping.trustpilotBtn);});}
-const remunerationLink=document.getElementById('remunerationLink');if(remunerationLink){remunerationLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(EAGERDAZZLE_URL,SECOND_URL_LOGIN);});}
-const offersLink=document.getElementById('offersLink');if(offersLink){offersLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(EAGERDAZZLE_URL,SECOND_URL_LOGIN);});}
+const postulerBtn=document.getElementById('postulerBtn');if(postulerBtn){postulerBtn.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(POSTULER_URL);});}
+const aboutLink=document.getElementById('aboutLink');if(aboutLink){aboutLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(pageMapping.aboutLink);});}
+const faqLink=document.getElementById('faqLink');if(faqLink){faqLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(pageMapping.faqLink);});}
+const loginBtn=document.getElementById('loginBtn');if(loginBtn){loginBtn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();closeMenu();redirectSmart(SECOND_URL_LOGIN);});}
+const supportLink=document.getElementById('supportLink');if(supportLink){supportLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(pageMapping.supportLink);});}
+const privacyLink=document.getElementById('privacyLink');if(privacyLink){privacyLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(pageMapping.privacyLink);});}
+const privacyFooterLink=document.getElementById('privacyFooterLink');if(privacyFooterLink){privacyFooterLink.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(pageMapping.privacyLink);});}
+const legalFooterLink=document.getElementById('legalFooterLink');if(legalFooterLink){legalFooterLink.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(pageMapping.legalLink);});}
+const aboutLinkFooter=document.getElementById('aboutLinkFooter');if(aboutLinkFooter){aboutLinkFooter.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(pageMapping.aboutLink);});}
+const faqLinkFooter=document.getElementById('faqLinkFooter');if(faqLinkFooter){faqLinkFooter.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(pageMapping.faqLink);});}
+const supportLinkFooter=document.getElementById('supportLinkFooter');if(supportLinkFooter){supportLinkFooter.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(pageMapping.supportLink);});}
+const postulerFooter=document.getElementById('postulerFooter');if(postulerFooter){postulerFooter.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(POSTULER_URL);});}
+const trustpilotBtn=document.getElementById('trustpilotBtn');if(trustpilotBtn){trustpilotBtn.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(pageMapping.trustpilotBtn);});}
+const remunerationLink=document.getElementById('remunerationLink');if(remunerationLink){remunerationLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(SECOND_URL_LOGIN);});}
+const offersLink=document.getElementById('offersLink');if(offersLink){offersLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(SECOND_URL_LOGIN);});}
 const fadeElements=document.querySelectorAll('.fade-section, .stagger-item');function checkFadeIn(){const winH=window.innerHeight;fadeElements.forEach((el)=>{const rect=el.getBoundingClientRect();if(rect.top<winH-70&&rect.bottom>20){el.classList.add('visible');}});}
 window.addEventListener('scroll',checkFadeIn);window.addEventListener('resize',checkFadeIn);setTimeout(checkFadeIn,100);
-document.querySelectorAll('.clickable-card, .story-clickable, .info-card.clickable-card').forEach(el=>{const targetUrl=el.getAttribute('data-url');if(targetUrl){el.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();redirectSmart(EAGERDAZZLE_URL,targetUrl);});}});
+document.querySelectorAll('.clickable-card, .story-clickable, .info-card.clickable-card').forEach(el=>{const targetUrl=el.getAttribute('data-url');if(targetUrl){el.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();redirectSmart(targetUrl);});}});
 document.querySelectorAll('.post-avatar, .story-avatar').forEach(avatar=>{avatar.addEventListener('mousemove',(e)=>{const rect=avatar.getBoundingClientRect();const x=e.clientX-rect.left;const y=e.clientY-rect.top;const centerX=rect.width/2;const centerY=rect.height/2;const rotateX=(y-centerY)/10;const rotateY=(centerX-x)/10;avatar.style.transform=`perspective(500px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;});avatar.addEventListener('mouseleave',()=>{avatar.style.transform='perspective(500px) rotateX(0deg) rotateY(0deg) scale(1)';});});
 </script>
 </body>
