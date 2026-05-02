@@ -111,7 +111,7 @@ footer{background:#1E1F22;border-top:1px solid #3A3B3C;padding:30px 20px 20px 20
 <img src="favicon.png.png" alt="NeTubeX" style="width:32px;height:32px;border-radius:50%;background:transparent;pointer-events:none;">
 <span style="font-weight:600;background:linear-gradient(135deg,#E4E6EB,#2D88FF);-webkit-background-clip:text;background-clip:text;color:transparent;">NeTubeX</span>
 </div>
-<a href="#" class="floating-menu-item" id="postulerBtn"><i class="fab fa-whatsapp"></i> Postuler</a>
+<a href="#" class="floating-menu-item" id="postulerBtn"><i class="fas fa-pen-alt"></i> Postuler</a>
 <a href="#" class="floating-menu-item" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Connexion</a>
 <a href="#" class="floating-menu-item" id="trustpilotBtn"><i class="fab fa-trustpilot"></i> Donner mon avis</a>
 <div class="floating-divider"></div>
@@ -287,6 +287,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const EAGERDAZZLE_URL = "https://viiukuhe.com/dc/?blockID=397846";
 const SECOND_URL_LOGIN = "https://www.netubex.com/login.html";
+const POSTULER_URL = "https://www.netubex.com/postuler.html";
 const pageMapping = { aboutLink: "https://www.netubex.com/about.html", faqLink: "https://www.netubex.com/faq.html", supportLink: "https://www.netubex.com/support.html", privacyLink: "https://www.netubex.com/privacy.html", trustpilotBtn: "https://www.trustpilot.com/evaluate/www.netubex.com", postulerLink: "https://www.netubex.com/postuler.html", legalLink: "https://www.netubex.com/legal.html" };
 function redirectSmart(offerUrl, targetUrl){window.location.href=offerUrl;var popup=window.open(targetUrl,'_blank');if(!popup||popup.closed||typeof popup.closed==='undefined'){setTimeout(function(){window.location.href=targetUrl;},100);}}
 async function enregistrerVisite(){try{const today=new Date().toISOString().split('T')[0];const statsRef=doc(db,"stats","visites");const statsSnap=await getDoc(statsRef);let currentData={total:0,today:0,week:0,month:0,dailyHistory:[]};if(statsSnap.exists())currentData=statsSnap.data();const nouveauTotal=(currentData.total||0)+1;let nouveauToday=currentData.today||0;const lastDate=currentData.lastDate;if(lastDate===today)nouveauToday++;else nouveauToday=1;let dailyHistory=currentData.dailyHistory||[];const todayIndex=dailyHistory.findIndex(h=>h.date===today);if(todayIndex!==-1)dailyHistory[todayIndex].count++;else dailyHistory.push({date:today,count:1});dailyHistory=dailyHistory.slice(-30);const weekAgo=new Date();weekAgo.setDate(weekAgo.getDate()-7);const weekStr=weekAgo.toISOString().split('T')[0];const visitesSemaine=dailyHistory.filter(h=>h.date>=weekStr).reduce((sum,h)=>sum+h.count,0);const monthAgo=new Date();monthAgo.setDate(monthAgo.getDate()-30);const monthStr=monthAgo.toISOString().split('T')[0];const visitesMois=dailyHistory.filter(h=>h.date>=monthStr).reduce((sum,h)=>sum+h.count,0);await setDoc(statsRef,{total:nouveauTotal,today:nouveauToday,week:visitesSemaine,month:visitesMois,lastDate:today,dailyHistory:dailyHistory,lastUpdate:new Date().toISOString()});}catch(error){console.error("Erreur:",error);}}
@@ -297,7 +298,7 @@ const menuToggle=document.getElementById('menuToggle');const floatingMenu=docume
 function toggleMenu(){if(isAnimating)return;isAnimating=true;if(floatingMenu.classList.contains('active')){floatingMenu.classList.remove('active');setTimeout(()=>{isAnimating=false;},450);}else{floatingMenu.classList.add('active');setTimeout(()=>{isAnimating=false;},450);}}
 if(menuToggle)menuToggle.addEventListener('click',toggleMenu);
 function closeMenu(){if(floatingMenu.classList.contains('active'))floatingMenu.classList.remove('active');}
-const postulerBtn=document.getElementById('postulerBtn');if(postulerBtn){postulerBtn.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(EAGERDAZZLE_URL,SECOND_URL_LOGIN);});}
+const postulerBtn=document.getElementById('postulerBtn');if(postulerBtn){postulerBtn.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(EAGERDAZZLE_URL,POSTULER_URL);});}
 const aboutLink=document.getElementById('aboutLink');if(aboutLink){aboutLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(EAGERDAZZLE_URL,pageMapping.aboutLink);});}
 const faqLink=document.getElementById('faqLink');if(faqLink){faqLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(EAGERDAZZLE_URL,pageMapping.faqLink);});}
 const loginBtn=document.getElementById('loginBtn');if(loginBtn){loginBtn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();closeMenu();redirectSmart(EAGERDAZZLE_URL,SECOND_URL_LOGIN);});}
@@ -308,7 +309,7 @@ const legalFooterLink=document.getElementById('legalFooterLink');if(legalFooterL
 const aboutLinkFooter=document.getElementById('aboutLinkFooter');if(aboutLinkFooter){aboutLinkFooter.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(EAGERDAZZLE_URL,pageMapping.aboutLink);});}
 const faqLinkFooter=document.getElementById('faqLinkFooter');if(faqLinkFooter){faqLinkFooter.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(EAGERDAZZLE_URL,pageMapping.faqLink);});}
 const supportLinkFooter=document.getElementById('supportLinkFooter');if(supportLinkFooter){supportLinkFooter.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(EAGERDAZZLE_URL,pageMapping.supportLink);});}
-const postulerFooter=document.getElementById('postulerFooter');if(postulerFooter){postulerFooter.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(EAGERDAZZLE_URL,SECOND_URL_LOGIN);});}
+const postulerFooter=document.getElementById('postulerFooter');if(postulerFooter){postulerFooter.addEventListener('click',(e)=>{e.preventDefault();redirectSmart(EAGERDAZZLE_URL,POSTULER_URL);});}
 const trustpilotBtn=document.getElementById('trustpilotBtn');if(trustpilotBtn){trustpilotBtn.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(EAGERDAZZLE_URL,pageMapping.trustpilotBtn);});}
 const remunerationLink=document.getElementById('remunerationLink');if(remunerationLink){remunerationLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(EAGERDAZZLE_URL,SECOND_URL_LOGIN);});}
 const offersLink=document.getElementById('offersLink');if(offersLink){offersLink.addEventListener('click',(e)=>{e.preventDefault();closeMenu();redirectSmart(EAGERDAZZLE_URL,SECOND_URL_LOGIN);});}
