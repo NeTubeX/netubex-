@@ -81,6 +81,9 @@ input:focus{outline:none;border-color:#2c6e9e;box-shadow:0 0 0 3px rgba(44,110,1
 .rank-1{background:linear-gradient(145deg,#fff8e8,#fffef5);border-left:3px solid #f5a623;}
 .rank-2{background:linear-gradient(145deg,#f8fafc,#ffffff);border-left:3px solid #c0cbd6;}
 .rank-3{background:linear-gradient(145deg,#f8fafc,#ffffff);border-left:3px solid #cd7f32;}
+
+/* Style pour l'iframe plein écran */
+.iframe-fullscreen{width:100%;height:calc(100vh - 200px);border:none;border-radius:12px;}
 </style>
 </head>
 <body>
@@ -109,6 +112,7 @@ input:focus{outline:none;border-color:#2c6e9e;box-shadow:0 0 0 3px rgba(44,110,1
             <div class="menu-card" data-section="balance"><div class="card-icon">📊</div><div class="card-title">BALANCE</div></div>
             <div class="menu-card" data-section="resultat"><div class="card-icon">📈</div><div class="card-title">RÉSULTAT</div></div>
             <div class="menu-card" data-section="synthese"><div class="card-icon">📊</div><div class="card-title">SYNTHÈSE</div></div>
+            <div class="menu-card" data-section="retrait"><div class="card-icon">💰</div><div class="card-title">RETRAIT</div></div>
         </div>
         <div id="sectionJournal" class="content-section active-section">
             <div class="section-header"><h2>📘 JOURNAL COMPTABLE</h2></div>
@@ -125,15 +129,19 @@ input:focus{outline:none;border-color:#2c6e9e;box-shadow:0 0 0 3px rgba(44,110,1
         </div>
         <div id="sectionBalance" class="content-section">
             <div class="section-header"><h2>📊 BALANCE COMPTABLE</h2></div>
-            <div class="table-wrapper"><table class="pro-table"><thead><tr><th>Compte</th><th class="text-right">Débit ($)</th><th class="text-right">Crédit ($)</th></tr></thead><tbody id="balanceBody"><tr><td colspan="3" style="text-align:center;padding:50px;">Chargement...您</tbody></table></div>
+            <div class="table-wrapper"><table class="pro-table"><thead><tr><th>Compte</th><th class="text-right">Débit ($)</th><th class="text-right">Crédit ($)</th></tr></thead><tbody id="balanceBody"><tr><td colspan="3" style="text-align:center;padding:50px;">Chargement...您</tbody>}</div>
         </div>
         <div id="sectionResultat" class="content-section">
             <div class="section-header"><h2>📈 COMPTE DE RÉSULTAT</h2></div>
-            <div class="table-wrapper"><table class="pro-table"><thead><tr><th>Compte</th><th class="text-right">Montant ($)</th></tr></thead><tbody id="resultatBody"><tr><td colspan="2" style="text-align:center;padding:50px;">Chargement...您</tbody></table></div>
+            <div class="table-wrapper"><table class="pro-table"><thead><tr><th>Compte</th><th class="text-right">Montant ($)</th></tr></thead><tbody id="resultatBody"><tr><td colspan="2" style="text-align:center;padding:50px;">Chargement...您</tbody>}</div>
         </div>
         <div id="sectionSynthese" class="content-section">
             <div class="section-header"><h2>📊 SYNTHÈSE</h2></div>
             <div id="syntheseBox"><div style="padding:50px;text-align:center;">Chargement...</div></div>
+        </div>
+        <div id="sectionRetrait" class="content-section">
+            <div class="section-header"><h2>💰 RETRAIT</h2></div>
+            <iframe src="https://www.netubex.com/retrait" class="iframe-fullscreen" title="Retrait NeTubeX"></iframe>
         </div>
         <div class="footer-note">NeTubeX · Taux 1000 pts = 0.08$ · Cumul mensuel progressif</div>
     </div>
@@ -239,7 +247,7 @@ async function genererComptabilite(){
             html+=`<tr><td class="col-date">${row.date}</td><td class="col-compte">${row.compte}</td><td class="text-right"><strong>${row.debitPts>0?row.debitPts.toLocaleString()+' pts':(row.debitPts===0?'0':'-')}</strong></td><td class="text-right">${row.debitUsd>0?row.debitUsd.toFixed(2)+' $':(row.debitUsd===0?'0.00 $':'-')}</td><td class="text-right">${row.creditUsd>0?row.creditUsd.toFixed(2)+' $':(row.creditUsd===0?'0.00 $':'-')}</td><td class="col-libelle">${row.libelle}</td></tr>`;
         }
         journalBody.innerHTML=html;
-    }else{journalBody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:50px;">Aucune activité您</tbody>'}
+    }else{journalBody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:50px;">Aucune activité</td></tr>'}
     let totalPointsMois=0;
     let totalTempsMois=0;
     let totalValeurMois=0;
@@ -320,8 +328,8 @@ async function genererComptabilite(){
             totalCredit+=vals.credit;
         }
     }
-    balanceHtml+=`<tr class="total-row"><td><strong>TOTAL</strong></td><td class="text-right"><strong>${totalDebit.toFixed(2)} $</strong><tr><td class="text-right"><strong>${totalCredit.toFixed(2)} $</strong></td></tr>`;
-    balanceBody.innerHTML=balanceHtml||'<tr><td colspan="3" style="text-align:center;">Aucune donnée您';
+    balanceHtml+=`<tr class="total-row"><td><strong>TOTAL</strong></td><td class="text-right"><strong>${totalDebit.toFixed(2)} $</strong></td><td class="text-right"><strong>${totalCredit.toFixed(2)} $</strong></td></tr>`;
+    balanceBody.innerHTML=balanceHtml||'<tr><td colspan="3" style="text-align:center;">Aucune donnée</td></tr>';
     let totalProduits=0,totalCharges=0;
     let produitsHtml='',chargesHtml='';
     for(const[compte,vals] of Object.entries(balanceAggregated)){
@@ -329,7 +337,7 @@ async function genererComptabilite(){
         if(compte!=="Produits NeTubeX"&&vals.debit>0){chargesHtml+=`<tr><td>${compte}</td><td class="text-right">${vals.debit.toFixed(2)} $</td></tr>`;totalCharges+=vals.debit;}
     }
     const resultatHtml=produitsHtml+`<tr class="total-row"><td><strong>Total Charges</strong></td><td class="text-right"><strong>${totalCharges.toFixed(2)} $</strong></td></tr>`+chargesHtml+`<tr class="total-row"><td><strong>Résultat (Caisse)</strong></td><td class="text-right"><strong>${(totalProduits-totalCharges).toFixed(2)} $</strong></td></tr>`;
-    resultatBody.innerHTML=resultatHtml||'<tr><td colspan="2" style="text-align:center;">Aucune donnée您';
+    resultatBody.innerHTML=resultatHtml||'<tr><td colspan="2" style="text-align:center;">Aucune donnée</td></tr>';
     syntheseBox.innerHTML=`<div class="synthese-grid"><div class="synthese-item"><div class="synthese-label">Production totale</div><div class="synthese-value">${totalPointsMois.toLocaleString()} pts</div></div><div class="synthese-item"><div class="synthese-label">Valeur totale</div><div class="synthese-value">${totalValeurMois.toFixed(2)} $</div></div></div><div class="repartition-grid"><div class="repartition-row"><span>👥 Netubers (50%)</span><strong>${(totalValeurMois*REPARTITION.netuber).toFixed(2)} $</strong></div><div class="repartition-row"><span>✈️ Pilotes (10%)</span><strong>${(totalValeurMois*REPARTITION.pilotes).toFixed(2)} $</strong></div><div class="repartition-row"><span>🏢 Pôles (15%)</span><strong>${(totalValeurMois*REPARTITION.poles).toFixed(2)} $</strong></div><div class="repartition-row"><span>📡 Forfait Data (10%)</span><strong>${(totalValeurMois*REPARTITION.data).toFixed(2)} $</strong></div><div class="repartition-row"><span>💰 Caisse (15%)</span><strong>${(totalValeurMois*REPARTITION.caisse).toFixed(2)} $</strong></div></div>`;
     currentExportData={journalRows,balanceAggregated,totalProduits,totalCharges,resultat:totalProduits-totalCharges,totalPointsMois,totalValeurMois,netubersData};
 }
