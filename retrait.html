@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-<title>NeTubeX · Retraits Admin</title>
+<title>NeTubeX · Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -12,6 +12,12 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1e293b;padding:12p
 .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:8px;flex-wrap:wrap;}
 .top-bar h1{font-size:18px;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:6px;}
 .top-bar h1 i{color:#3b82f6;font-size:20px;}
+.tabs{display:flex;gap:8px;margin-bottom:16px;background:#fff;border-radius:40px;padding:6px;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+.tab-btn{flex:1;padding:10px 16px;border:none;border-radius:40px;font-weight:600;font-size:13px;cursor:pointer;background:transparent;color:#64748b;transition:0.2s;font-family:inherit;}
+.tab-btn.active{background:#0b2b26;color:#fff;}
+.tab-btn i{margin-right:6px;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
 .btn{background:#fff;border:none;padding:10px 16px;border-radius:40px;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,0.08);transition:0.1s;}
 .btn:active{transform:scale(0.96);background:#e2e8f0;}
 .btn-logout{background:#fee2e2;color:#dc2626;}
@@ -25,38 +31,20 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1e293b;padding:12p
 .btn-admin i{color:#fff;}
 .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
 .stat-card{background:#fff;border-radius:20px;padding:14px;box-shadow:0 8px 20px rgba(0,0,0,0.12);border:1px solid #e9ecef;}
-.stat-card.pending{background:#ffedd5;border-left:4px solid #ea580c;}
-.stat-card.amount{background:#ffedd5;border-left:4px solid #ea580c;}
-.stat-card.approved{background:#d1fae5;border-left:4px solid #059669;}
-.stat-card.rejected{background:#fee2e2;border-left:4px solid #dc2626;}
+.stat-card.candidature{background:#e0e7ff;border-left:4px solid #3b82f6;}
 .stat-card .value{font-size:26px;font-weight:800;color:#0f172a;}
 .stat-card .label{font-size:11px;color:#475569;margin-top:6px;display:flex;align-items:center;gap:4px;font-weight:500;}
 .filters-bar{background:#fff;border-radius:20px;padding:12px;margin-bottom:16px;border:1px solid #e9ecef;box-shadow:0 4px 12px rgba(0,0,0,0.06);}
 .search-input{width:100%;padding:12px 14px;border:1px solid #e2e8f0;border-radius:40px;font-size:14px;background:#f8fafc;margin-bottom:10px;outline:none;}
 .search-input:focus{border-color:#3b82f6;background:#fff;}
 .filter-select{width:100%;padding:12px 14px;border:1px solid #e2e8f0;border-radius:40px;font-size:14px;background:#f8fafc;outline:none;}
-.sort-info{display:flex;justify-content:flex-end;margin-bottom:8px;}
-.sort-info button{background:transparent;border:none;font-size:11px;color:#3b82f6;display:flex;align-items:center;gap:4px;cursor:pointer;}
-.withdraw-list{display:flex;flex-direction:column;gap:14px;}
-.withdraw-card{background:#fff;border-radius:24px;padding:16px;box-shadow:0 12px 28px rgba(0,0,0,0.15);border:1px solid #eef2f6;}
-.withdraw-card:active{transform:scale(0.99);}
-.row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;}
-.row:last-child{margin-bottom:0;}
-.label{font-size:11px;color:#64748b;font-weight:500;text-transform:uppercase;letter-spacing:0.3px;}
-.value{font-size:14px;font-weight:600;color:#0f172a;word-break:break-all;text-align:right;}
-.user-code{font-weight:800;color:#3b82f6;font-size:15px;}
-.user-id{font-size:10px;color:#94a3b8;font-family:monospace;}
-.amount{font-size:18px;font-weight:800;color:#f59e0b;}
-.badge{padding:4px 10px;border-radius:30px;font-size:11px;font-weight:600;display:inline-block;}
-.badge-pending{background:#ffedd5;color:#ea580c;}
-.badge-approved{background:#d1fae5;color:#059669;}
-.badge-rejected{background:#fee2e2;color:#dc2626;}
-.actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end;}
-.btn-action{padding:8px 14px;border-radius:30px;font-size:12px;font-weight:600;border:none;cursor:pointer;transition:0.1s;}
-.btn-action:active{transform:scale(0.95);}
-.btn-approve{background:#059669;color:#fff;}
-.btn-reject{background:#ea580c;color:#fff;}
-.btn-delete{background:#dc2626;color:#fff;}
+.candidature-list{display:flex;flex-direction:column;gap:14px;}
+.candidature-card{background:#fff;border-radius:24px;padding:16px;box-shadow:0 12px 28px rgba(0,0,0,0.15);border:1px solid #eef2f6;}
+.candidature-card .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;}
+.candidature-card .row:last-child{margin-bottom:0;}
+.candidature-card .label{font-size:11px;color:#64748b;font-weight:500;text-transform:uppercase;letter-spacing:0.3px;}
+.candidature-card .value{font-size:14px;font-weight:600;color:#0f172a;word-break:break-all;text-align:right;}
+.badge-candidature{background:#e0e7ff;color:#3b82f6;padding:4px 12px;border-radius:30px;font-size:11px;font-weight:600;}
 .empty-state{text-align:center;padding:40px;color:#94a3b8;}
 .empty-state i{font-size:40px;margin-bottom:12px;opacity:0.5;}
 .login-container{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f0f2f5;padding:20px;}
@@ -68,8 +56,6 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1e293b;padding:12p
 .login-card button{width:100%;padding:14px;background:#3b82f6;border:none;border-radius:30px;font-weight:600;font-size:14px;color:#fff;cursor:pointer;}
 .login-card button:active{transform:scale(0.98);}
 .error-msg{background:#fee2e2;color:#dc2626;padding:10px;border-radius:16px;font-size:12px;margin-bottom:16px;display:none;}
-
-/* TOASTS PROFESSIONNELS 8 secondes */
 .toast-container{position:fixed;top:70px;left:12px;right:12px;z-index:10000;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
 .toast{pointer-events:auto;background:#1e293b;color:#fff;padding:14px 18px;border-radius:20px;font-size:13px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.15);border-left:4px solid;animation:slideDown 0.3s ease;backdrop-filter:blur(10px);}
 .toast-success{border-left-color:#10b981;background:linear-gradient(135deg,#1e293b,#0f1724);}
@@ -83,8 +69,6 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1e293b;padding:12p
 .toast-close{background:rgba(255,255,255,0.1);border:none;width:26px;height:26px;border-radius:13px;cursor:pointer;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;transition:0.2s;}
 .toast-close:hover{background:rgba(255,255,255,0.25);}
 @keyframes slideDown{from{opacity:0;transform:translateY(-30px);}to{opacity:1;transform:translateY(0);}}
-
-/* MODAL CONFIRMATION PROFESSIONNELLE */
 .modal-confirm{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:20000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:0.2s;}
 .modal-confirm.active{visibility:visible;opacity:1;}
 .modal-confirm-content{background:#fff;border-radius:32px;max-width:320px;width:85%;padding:24px;text-align:center;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);animation:popIn 0.3s ease;}
@@ -99,11 +83,11 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1e293b;padding:12p
 @keyframes popIn{from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);}}
 </style>
 </head>
-<body>
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
 <div id="loginPanel" class="login-container">
 <div class="login-card">
 <h2><i class="fas fa-shield-alt"></i> Admin</h2>
-<p>Accès gestion retraits</p>
+<p>Accès gestion retraits & candidatures</p>
 <div id="loginError" class="error-msg"></div>
 <input type="email" id="adminEmail" placeholder="Email">
 <input type="password" id="adminPassword" placeholder="Mot de passe">
@@ -113,15 +97,17 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1e293b;padding:12p
 <div id="adminPanel" style="display:none;">
 <div class="mobile-container">
 <div class="top-bar">
-<h1><i class="fas fa-money-bill-wave"></i> Retraits</h1>
+<h1><i class="fas fa-chart-line"></i> NeTubeX Admin</h1>
 <div style="display:flex; gap:8px;">
-<button class="btn btn-admin" id="adminSiteBtn"><i class="fas fa-globe"></i> Admin Site</button>
 <button class="btn btn-refresh" id="refreshBtn"><i class="fas fa-sync-alt"></i></button>
-<button class="btn btn-sort" id="sortBtn"><i class="fas fa-arrow-down-wide-short"></i> Date</button>
-<button class="btn btn-export" id="exportBtn"><i class="fas fa-file-excel"></i> CSV</button>
 <button class="btn btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
 </div>
 </div>
+<div class="tabs">
+<button class="tab-btn active" data-tab="withdraws"><i class="fas fa-money-bill-wave"></i> Retraits</button>
+<button class="tab-btn" data-tab="candidatures"><i class="fas fa-users"></i> Candidatures</button>
+</div>
+<div id="withdrawsTab" class="tab-content active">
 <div class="stats-grid">
 <div class="stat-card pending"><div class="value" id="statPending">0</div><div class="label"><i class="fas fa-clock"></i> En attente</div></div>
 <div class="stat-card amount"><div class="value" id="statPendingAmount">0$</div><div class="label"><i class="fas fa-coins"></i> Montant total</div></div>
@@ -138,12 +124,30 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1e293b;padding:12p
 </select>
 <div class="sort-info"><button id="toggleSortBtn"><i class="fas fa-arrow-down-wide-short"></i> Tri: du plus récent au plus ancien</button></div>
 </div>
-<div id="withdrawList" class="withdraw-list"><div class="empty-state"><i class="fas fa-spinner fa-pulse"></i><br>Chargement...</div></div>
+<div id="withdrawList" class="candidature-list"><div class="empty-state"><i class="fas fa-spinner fa-pulse"></i><br>Chargement...</div></div>
+</div>
+<div id="candidaturesTab" class="tab-content">
+<div class="stats-grid">
+<div class="stat-card candidature"><div class="value" id="candidatureTotal">0</div><div class="label"><i class="fas fa-users"></i> Total candidatures</div></div>
+<div class="stat-card candidature"><div class="value" id="candidatureToday">0</div><div class="label"><i class="fas fa-calendar-day"></i> Aujourd'hui</div></div>
+<div class="stat-card candidature"><div class="value" id="candidatureLubumbashi">0</div><div class="label"><i class="fas fa-map-marker-alt"></i> Lubumbashi</div></div>
+<div class="stat-card candidature"><div class="value" id="candidatureKolwezi">0</div><div class="label"><i class="fas fa-map-marker-alt"></i> Kolwezi</div></div>
+</div>
+<div class="filters-bar">
+<input type="text" id="candidatureSearch" class="search-input" placeholder="🔍 Nom, email ou ville...">
+<select id="cityFilter" class="filter-select">
+<option value="all">🌍 Toutes les villes</option>
+<option value="Lubumbashi">📍 Lubumbashi</option>
+<option value="Kolwezi">📍 Kolwezi</option>
+<option value="Kasumbalesa">📍 Kasumbalesa</option>
+</select>
+<button id="exportCandidatureBtn" class="btn btn-export" style="width:100%;margin-top:8px;"><i class="fas fa-file-excel"></i> Exporter CSV</button>
+</div>
+<div id="candidatureList" class="candidature-list"><div class="empty-state"><i class="fas fa-spinner fa-pulse"></i><br>Chargement des candidatures...</div></div>
+</div>
 </div>
 </div>
 <div id="toastContainer" class="toast-container"></div>
-
-<!-- Modal confirmation personnalisé -->
 <div id="confirmModal" class="modal-confirm">
 <div class="modal-confirm-content">
 <i class="fas fa-question-circle" style="color:#f59e0b;"></i>
@@ -155,7 +159,6 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1e293b;padding:12p
 </div>
 </div>
 </div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -175,9 +178,12 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 let withdrawals = [];
+let candidatures = [];
 let currentFilter = "all";
 let searchTerm = "";
 let sortDescending = true;
+let currentCityFilter = "all";
+let candidatureSearchTerm = "";
 let userEmailCache = new Map();
 let userCodeCache = new Map();
 let pendingConfirm = null;
@@ -235,17 +241,10 @@ try{ return new Date(timestamp).toLocaleString('fr-FR',{day:'2-digit',month:'2-d
 catch(e){ return '—'; }
 }
 
-function getCountryInfo(wallet){
-if(!wallet) return { flag: '🌍', name: 'Inconnu' };
-const countries = [
-{ code:'+93', flag:'🇦🇫', name:'Afghanistan' },{ code:'+355', flag:'🇦🇱', name:'Albanie' },{ code:'+213', flag:'🇩🇿', name:'Algérie' },
-{ code:'+33', flag:'🇫🇷', name:'France' },{ code:'+243', flag:'🇨🇩', name:'RDC' },{ code:'+1', flag:'🇺🇸', name:'États-Unis/Canada' },
-{ code:'+44', flag:'🇬🇧', name:'Royaume-Uni' },{ code:'+91', flag:'🇮🇳', name:'Inde' },{ code:'+86', flag:'🇨🇳', name:'Chine' }
-];
-for(let c of countries){
-if(wallet.startsWith(c.code)) return { flag: c.flag, name: c.name };
-}
-return { flag: '🌍', name: 'Inconnu' };
+function formatDateSimple(dateString){
+if(!dateString) return '—';
+try{ return new Date(dateString).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+catch(e){ return '—'; }
 }
 
 function escapeHtml(str){ if(!str) return ''; return String(str).replace(/[&<>]/g, m=>m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
@@ -264,7 +263,6 @@ try{
 const usersSnap = await getDocs(collection(db, "users"));
 const tempWithdrawals = [];
 const promises = [];
-
 for(const userDoc of usersSnap.docs){
 const userId = userDoc.id;
 const transactionsSnap = await getDocs(collection(db, "users", userId, "transactions"));
@@ -291,13 +289,13 @@ w.userCode = info.code;
 await Promise.all(promises);
 withdrawals = tempWithdrawals;
 sortWithdrawals();
-renderList();
-updateStats();
+renderWithdrawList();
+updateWithdrawStats();
 showToast(`${withdrawals.length} retrait(s) chargé(s)`,"success",5000);
-}catch(e){ console.error(e); showToast("Erreur chargement","error",8000); }
+}catch(e){ console.error(e); showToast("Erreur chargement retraits","error",8000); }
 }
 
-function renderList(){
+function renderWithdrawList(){
 let filtered = withdrawals.filter(w=>{
 const matchSearch = !searchTerm || (w.userCode||'').toLowerCase().includes(searchTerm) || (w.userEmail||'').toLowerCase().includes(searchTerm) || (w.userId||'').toLowerCase().includes(searchTerm);
 const matchStatus = currentFilter==='all' || w.status===currentFilter;
@@ -312,22 +310,18 @@ else if(w.status==='approved'){ badgeClass='badge-approved'; badgeText='✅ Appr
 else{ badgeClass='badge-rejected'; badgeText='❌ Rejeté'; }
 let actions = '';
 if(w.status==='pending'){
-actions = `<button class="btn-action btn-approve" data-id="${w.id}" data-user="${w.userId}"><i class="fas fa-check"></i> OK</button><button class="btn-action btn-reject" data-id="${w.id}" data-user="${w.userId}" data-amount="${w.amount}"><i class="fas fa-times"></i> Rejeter</button>`;
+actions = `<div class="actions" style="margin-top:12px;"><button class="btn-action btn-approve" data-id="${w.id}" data-user="${w.userId}"><i class="fas fa-check"></i> Approuver</button><button class="btn-action btn-reject" data-id="${w.id}" data-user="${w.userId}" data-amount="${w.amount}"><i class="fas fa-times"></i> Rejeter</button></div>`;
 }else{
-actions = `<button class="btn-action btn-delete" data-id="${w.id}" data-user="${w.userId}"><i class="fas fa-trash-alt"></i> Supprimer</button>`;
+actions = `<div class="actions" style="margin-top:12px;"><button class="btn-action btn-delete" data-id="${w.id}" data-user="${w.userId}"><i class="fas fa-trash-alt"></i> Supprimer</button></div>`;
 }
-const country = getCountryInfo(w.wallet);
-return `<div class="withdraw-card">
-<div class="row"><span class="label"><i class="fas fa-user-circle"></i> CODE</span><span class="value user-code">${escapeHtml(w.userCode||'—')}</span></div>
-<div class="row"><span class="label"><i class="fas fa-envelope"></i> EMAIL</span><span class="value" style="font-size:12px;">${escapeHtml(w.userEmail||'—')}</span></div>
-<div class="row"><span class="label"><i class="fas fa-fingerprint"></i> USER ID</span><span class="value user-id">${escapeHtml(w.userId||'—')}</span></div>
-<div class="row"><span class="label"><i class="fas fa-globe"></i> PAYS</span><span class="value">${country.flag} ${escapeHtml(country.name)}</span></div>
-<div class="row"><span class="label"><i class="fas fa-coins"></i> MONTANT</span><span class="value amount">${w.amount.toFixed(2)} $</span></div>
-<div class="row"><span class="label"><i class="fas fa-credit-card"></i> MÉTHODE</span><span class="value">${escapeHtml(w.method)}</span></div>
-<div class="row"><span class="label"><i class="fas fa-wallet"></i> WALLET</span><span class="value" style="font-size:12px;">${escapeHtml(w.wallet||'—')}</span></div>
-<div class="row"><span class="label"><i class="fas fa-calendar"></i> DATE</span><span class="value">${formatDate(w.time)}</span></div>
-<div class="row"><span class="label"><i class="fas fa-chart-simple"></i> STATUT</span><span class="value"><span class="badge ${badgeClass}">${badgeText}</span></span></div>
-<div class="actions">${actions}</div>
+return `<div class="candidature-card">
+<div class="row"><span class="label">CODE</span><span class="value">${escapeHtml(w.userCode||'—')}</span></div>
+<div class="row"><span class="label">EMAIL</span><span class="value">${escapeHtml(w.userEmail||'—')}</span></div>
+<div class="row"><span class="label">MONTANT</span><span class="value amount">${w.amount.toFixed(2)} $</span></div>
+<div class="row"><span class="label">MÉTHODE</span><span class="value">${escapeHtml(w.method)}</span></div>
+<div class="row"><span class="label">DATE</span><span class="value">${formatDate(w.time)}</span></div>
+<div class="row"><span class="label">STATUT</span><span class="value"><span class="badge ${badgeClass}">${badgeText}</span></span></div>
+${actions}
 </div>`;
 }).join('');
 document.querySelectorAll('.btn-approve').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); confirmApprove(btn.dataset.user, btn.dataset.id); }); });
@@ -335,7 +329,7 @@ document.querySelectorAll('.btn-reject').forEach(btn=>{ btn.addEventListener('cl
 document.querySelectorAll('.btn-delete').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); confirmDelete(btn.dataset.user, btn.dataset.id); }); });
 }
 
-function updateStats(){
+function updateWithdrawStats(){
 const pending = withdrawals.filter(w=>w.status==='pending');
 const approved = withdrawals.filter(w=>w.status==='approved');
 const rejected = withdrawals.filter(w=>w.status==='rejected');
@@ -347,57 +341,114 @@ document.getElementById('statRejected').innerText = rejected.length;
 }
 
 function confirmApprove(userId, txId){
-showConfirm('Approuver le retrait', 'Confirmez-vous l\'approbation de cette demande ? Le montant sera débité définitivement.', async () => {
-try{ await updateDoc(doc(db, "users", userId, "transactions", txId), { status: "approved", processedAt: new Date().toISOString() }); showToast("✅ Retrait approuvé avec succès","success",8000); await loadWithdrawals(); }
-catch(e){ showToast("Erreur lors de l'approbation","error",8000); }
+showConfirm('Approuver le retrait', 'Confirmez-vous l\'approbation de cette demande ?', async () => {
+try{ await updateDoc(doc(db, "users", userId, "transactions", txId), { status: "approved", processedAt: new Date().toISOString() }); showToast("✅ Retrait approuvé","success",8000); await loadWithdrawals(); }
+catch(e){ showToast("Erreur","error",8000); }
 });
 }
 
 function confirmReject(userId, txId, amount){
-showConfirm('Rejeter le retrait', `Confirmez-vous le rejet de ${amount.toFixed(2)}$ ? L'utilisateur sera automatiquement remboursé.`, async () => {
+showConfirm('Rejeter le retrait', `Confirmez-vous le rejet de ${amount.toFixed(2)}$ ?`, async () => {
 try{
 await updateDoc(doc(db, "users", userId, "transactions", txId), { status: "rejected", processedAt: new Date().toISOString() });
 const refundId = `refund_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
 await setDoc(doc(db, "users", userId, "transactions", refundId), {
 amount: amount, revenue: 0, time: Date.now(), type: "refund", reason: "retrait_rejected", originalWithdrawId: txId
 });
-showToast(`⚠️ Retrait rejeté et remboursé (${amount.toFixed(2)}$)`,`warning`,8000);
+showToast(`Rejeté et remboursé (${amount.toFixed(2)}$)`,`warning`,8000);
 await loadWithdrawals();
-} catch(e){ showToast("Erreur lors du rejet","error",8000); }
+} catch(e){ showToast("Erreur","error",8000); }
 });
 }
 
 function confirmDelete(userId, txId){
-showConfirm('Supprimer la demande', 'Cette action est irréversible. Voulez-vous vraiment supprimer cette demande ?', async () => {
-try{ await deleteDoc(doc(db, "users", userId, "transactions", txId)); showToast("Demande supprimée","success",8000); await loadWithdrawals(); }
-catch(e){ showToast("Erreur lors de la suppression","error",8000); }
+showConfirm('Supprimer', 'Cette action est irréversible.', async () => {
+try{ await deleteDoc(doc(db, "users", userId, "transactions", txId)); showToast("Supprimé","success",8000); await loadWithdrawals(); }
+catch(e){ showToast("Erreur","error",8000); }
 });
 }
 
-function exportCSV(){
-let csv = "\uFEFFCode;Email;UserId;Pays;Montant;Méthode;Wallet;Date;Statut\n";
-withdrawals.forEach(w=>{
-const country = getCountryInfo(w.wallet);
-csv += `"${w.userCode||''}";"${w.userEmail||''}";"${w.userId||''}";"${country.name}";${w.amount};"${w.method}";"${w.wallet||''}";"${formatDate(w.time)}";"${w.status}"\n`;
+async function loadCandidatures(){
+candidatures = [];
+try{
+const snapshot = await getDocs(collection(db, "candidature"));
+snapshot.forEach(doc => {
+const data = doc.data();
+candidatures.push({
+id: doc.id,
+nom: data.nom || '',
+postnom: data.postnom || '',
+prenom: data.prenom || '',
+dateNaissance: data.dateNaissance || '',
+adresse: data.adresse || '',
+email: data.email || '',
+telephone: data.telephone || '',
+localisation: data.localisation || '',
+pays: data.pays || '',
+motivation: data.motivation || '',
+poste: data.poste || '',
+dateSoumission: data.dateSoumission || data.timestamp || new Date().toISOString()
+});
+});
+candidatures.sort((a,b)=>new Date(b.dateSoumission) - new Date(a.dateSoumission));
+renderCandidatureList();
+updateCandidatureStats();
+showToast(`${candidatures.length} candidature(s) chargée(s)`,"success",5000);
+}catch(e){ console.error(e); showToast("Erreur chargement candidatures","error",8000); }
+}
+
+function renderCandidatureList(){
+let filtered = candidatures.filter(c=>{
+const matchSearch = !candidatureSearchTerm || 
+c.nom?.toLowerCase().includes(candidatureSearchTerm) ||
+c.postnom?.toLowerCase().includes(candidatureSearchTerm) ||
+c.prenom?.toLowerCase().includes(candidatureSearchTerm) ||
+c.email?.toLowerCase().includes(candidatureSearchTerm) ||
+c.localisation?.toLowerCase().includes(candidatureSearchTerm);
+const matchCity = currentCityFilter==='all' || c.localisation === currentCityFilter;
+return matchSearch && matchCity;
+});
+const container = document.getElementById('candidatureList');
+if(filtered.length===0){ container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><br>Aucune candidature</div>`; return; }
+container.innerHTML = filtered.map(c=>`
+<div class="candidature-card">
+<div class="row"><span class="label"><i class="fas fa-user"></i> Nom complet</span><span class="value">${escapeHtml(c.nom)} ${escapeHtml(c.postnom)} ${escapeHtml(c.prenom)}</span></div>
+<div class="row"><span class="label"><i class="fas fa-calendar"></i> Date naissance</span><span class="value">${escapeHtml(c.dateNaissance)}</span></div>
+<div class="row"><span class="label"><i class="fas fa-home"></i> Adresse</span><span class="value">${escapeHtml(c.adresse)}</span></div>
+<div class="row"><span class="label"><i class="fas fa-envelope"></i> Email</span><span class="value">${escapeHtml(c.email)}</span></div>
+<div class="row"><span class="label"><i class="fas fa-phone"></i> Téléphone</span><span class="value">${escapeHtml(c.telephone)}</span></div>
+<div class="row"><span class="label"><i class="fas fa-map-marker-alt"></i> Ville</span><span class="value"><span class="badge-candidature">${escapeHtml(c.localisation)}</span></span></div>
+<div class="row"><span class="label"><i class="fas fa-globe"></i> Pays</span><span class="value">🇨🇩 ${escapeHtml(c.pays)}</span></div>
+<div class="row"><span class="label"><i class="fas fa-comment"></i> Motivation</span><span class="value" style="font-size:12px;background:#f8fafc;padding:8px;border-radius:16px;margin-top:4px;">${escapeHtml(c.motivation)}</span></div>
+<div class="row"><span class="label"><i class="fas fa-briefcase"></i> Poste</span><span class="value">${escapeHtml(c.poste)}</span></div>
+<div class="row"><span class="label"><i class="fas fa-clock"></i> Date candidature</span><span class="value">${formatDateSimple(c.dateSoumission)}</span></div>
+</div>
+`).join('');
+}
+
+function updateCandidatureStats(){
+const total = candidatures.length;
+const today = new Date().toDateString();
+const todayCount = candidatures.filter(c => new Date(c.dateSoumission).toDateString() === today).length;
+const lubumbashi = candidatures.filter(c => c.localisation === 'Lubumbashi').length;
+const kolwezi = candidatures.filter(c => c.localisation === 'Kolwezi').length;
+document.getElementById('candidatureTotal').innerText = total;
+document.getElementById('candidatureToday').innerText = todayCount;
+document.getElementById('candidatureLubumbashi').innerText = lubumbashi;
+document.getElementById('candidatureKolwezi').innerText = kolwezi;
+}
+
+function exportCandidatureCSV(){
+let csv = "\uFEFFNom;Post-nom;Prénom;Email;Téléphone;Ville;Pays;Motivation;Date\n";
+candidatures.forEach(c=>{
+csv += `"${c.nom||''}";"${c.postnom||''}";"${c.prenom||''}";"${c.email||''}";"${c.telephone||''}";"${c.localisation||''}";"${c.pays||''}";"${(c.motivation||'').replace(/"/g,'""')}";"${formatDateSimple(c.dateSoumission)}"\n`;
 });
 const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
 const link = document.createElement('a');
 link.href = URL.createObjectURL(blob);
-link.download = `retraits_${new Date().toISOString().slice(0,19)}.csv`;
+link.download = `candidatures_${new Date().toISOString().slice(0,19)}.csv`;
 link.click();
-showToast("Export CSV effectué","success",5000);
-}
-
-function toggleSort(){
-sortDescending = !sortDescending;
-const btn = document.getElementById('toggleSortBtn');
-if(sortDescending){
-btn.innerHTML = '<i class="fas fa-arrow-down-wide-short"></i> Tri: du plus récent au plus ancien';
-}else{
-btn.innerHTML = '<i class="fas fa-arrow-up-wide-short"></i> Tri: du plus ancien au plus récent';
-}
-sortWithdrawals();
-renderList();
+showToast("Export CSV candidatures effectué","success",5000);
 }
 
 document.getElementById('loginBtn').addEventListener('click', async()=>{
@@ -405,28 +456,36 @@ const email = document.getElementById('adminEmail').value.trim();
 const pwd = document.getElementById('adminPassword').value;
 const errorDiv = document.getElementById('loginError');
 if(!email || !pwd){ errorDiv.style.display='block'; errorDiv.innerText='Email et mot de passe requis'; return; }
-try{ await signInWithEmailAndPassword(auth, email, pwd); errorDiv.style.display='none'; document.getElementById('loginPanel').style.display='none'; document.getElementById('adminPanel').style.display='block'; await loadWithdrawals(); }
+try{ await signInWithEmailAndPassword(auth, email, pwd); errorDiv.style.display='none'; document.getElementById('loginPanel').style.display='none'; document.getElementById('adminPanel').style.display='block'; await loadWithdrawals(); await loadCandidatures(); }
 catch(e){ errorDiv.style.display='block'; errorDiv.innerText='Identifiants incorrects'; showToast("Échec de connexion","error",8000); }
 });
 
-document.getElementById('logoutBtn').addEventListener('click', async()=>{ await signOut(auth); document.getElementById('loginPanel').style.display='flex'; document.getElementById('adminPanel').style.display='none'; document.getElementById('adminEmail').value=''; document.getElementById('adminPassword').value=''; showToast("Déconnecté","info",5000); });
-document.getElementById('refreshBtn').addEventListener('click',()=>loadWithdrawals());
-document.getElementById('exportBtn').addEventListener('click',()=>exportCSV());
-document.getElementById('sortBtn').addEventListener('click',()=>toggleSort());
-document.getElementById('toggleSortBtn').addEventListener('click',()=>toggleSort());
-document.getElementById('searchInput').addEventListener('input',(e)=>{ searchTerm = e.target.value.toLowerCase(); renderList(); });
-document.getElementById('statusFilter').addEventListener('change',(e)=>{ currentFilter = e.target.value; renderList(); });
-
-// Bouton pour accéder à l'URL admin
-document.getElementById('adminSiteBtn').addEventListener('click', () => {
-window.open('https://www.netubex.com/admin', '_blank');
+document.getElementById('logoutBtn').addEventListener('click', async()=>{ await signOut(auth); document.getElementById('loginPanel').style.display='flex'; document.getElementById('adminPanel').style.display='none'; showToast("Déconnecté","info",5000); });
+document.getElementById('refreshBtn').addEventListener('click',()=>{ loadWithdrawals(); loadCandidatures(); });
+document.getElementById('searchInput').addEventListener('input',(e)=>{ searchTerm = e.target.value.toLowerCase(); renderWithdrawList(); });
+document.getElementById('statusFilter').addEventListener('change',(e)=>{ currentFilter = e.target.value; renderWithdrawList(); });
+document.getElementById('toggleSortBtn').addEventListener('click',()=>{ sortDescending = !sortDescending; sortWithdrawals(); renderWithdrawList(); });
+document.getElementById('candidatureSearch').addEventListener('input',(e)=>{ candidatureSearchTerm = e.target.value.toLowerCase(); renderCandidatureList(); });
+document.getElementById('cityFilter').addEventListener('change',(e)=>{ currentCityFilter = e.target.value; renderCandidatureList(); });
+document.getElementById('exportCandidatureBtn').addEventListener('click',()=>exportCandidatureCSV());
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+btn.addEventListener('click',()=>{
+document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+document.getElementById('withdrawsTab').classList.toggle('active',btn.dataset.tab==='withdraws');
+document.getElementById('candidaturesTab').classList.toggle('active',btn.dataset.tab==='candidatures');
+if(btn.dataset.tab==='candidatures') renderCandidatureList();
 });
-
-onAuthStateChanged(auth, async(user)=>{ if(user){ document.getElementById('loginPanel').style.display='none'; document.getElementById('adminPanel').style.display='block'; await loadWithdrawals(); }else{ document.getElementById('loginPanel').style.display='flex'; document.getElementById('adminPanel').style.display='none'; } });
-
+});
+onAuthStateChanged(auth, async(user)=>{ if(user){ document.getElementById('loginPanel').style.display='none'; document.getElementById('adminPanel').style.display='block'; await loadWithdrawals(); await loadCandidatures(); }else{ document.getElementById('loginPanel').style.display='flex'; document.getElementById('adminPanel').style.display='none'; } });
 document.addEventListener('contextmenu',function(e){ e.preventDefault(); return false; });
 document.addEventListener('selectstart',function(e){ e.preventDefault(); return false; });
 document.addEventListener('dragstart',function(e){ e.preventDefault(); return false; });
+document.addEventListener('keydown',function(e){
+if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I')||(e.ctrlKey&&e.shiftKey&&e.key==='C')||(e.ctrlKey&&e.shiftKey&&e.key==='J')||(e.ctrlKey&&e.key==='u')||(e.ctrlKey&&e.key==='s')){
+e.preventDefault(); return false;
+}
+});
 </script>
 </body>
 </html>
