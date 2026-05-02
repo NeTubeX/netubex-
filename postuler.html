@@ -14,6 +14,11 @@ body{background:linear-gradient(135deg,#66788a 0%,#1a2a3a 100%);font-family:syst
 .header h1 span{color:#f5c542;background:rgba(245,197,66,0.2);padding:2px 10px;border-radius:40px;display:inline-block;}
 .header .subtitle{font-size:0.8rem;opacity:0.85;margin-top:8px;font-weight:400;}
 .header .badge{display:inline-block;background:#f5c542;color:#0a2e28;font-size:0.7rem;font-weight:700;padding:4px 12px;border-radius:40px;margin-top:10px;}
+.nav-buttons-top{display:flex;justify-content:space-between;padding:12px 22px 0 22px;background:#fff;gap:12px;}
+.btn-nav{flex:1;padding:10px 16px;border-radius:40px;font-weight:700;font-size:0.8rem;cursor:pointer;transition:0.15s;border:none;font-family:inherit;background:#f1f5f9;color:#1e293b;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-nav-home{background:#0a2e28;color:white;}
+.btn-nav-home:active{background:#f5c542;color:#0a2e28;transform:scale(0.96);}
+.btn-nav:hover{transform:scale(1.02);}
 .progress-section{padding:20px 20px 0 20px;background:#fff;}
 .steps-row{display:flex;justify-content:space-between;align-items:flex-start;position:relative;margin-bottom:8px;}
 .step-item{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;z-index:2;}
@@ -61,7 +66,7 @@ textarea{resize:vertical;min-height:90px;}
 .popup-footer-note{font-size:0.85rem;color:#f5c542;background:#0a2e28;padding:10px;border-radius:40px;margin-top:16px;}
 .popup-btn{background:#0a2e28;color:white;border:none;padding:14px 32px;border-radius:44px;font-weight:700;font-size:1rem;cursor:pointer;transition:0.2s;width:100%;}
 .popup-btn:hover{background:#f5c542;color:#0a2e28;}
-@media (max-width:500px){body{padding:12px;}.step-circle{width:36px;height:36px;font-size:0.8rem;}.step-label{font-size:0.5rem;}.tab-pane{padding:16px 18px;}.nav-actions{padding:10px 18px 20px 18px;}.btn{padding:10px 18px;}.popup-card{padding:24px 20px;}}
+@media (max-width:500px){body{padding:12px;}.step-circle{width:36px;height:36px;font-size:0.8rem;}.step-label{font-size:0.5rem;}.tab-pane{padding:16px 18px;}.nav-actions{padding:10px 18px 20px 18px;}.btn{padding:10px 18px;}.popup-card{padding:24px 20px;}.btn-nav{padding:8px 12px;font-size:0.7rem;}}
 </style>
 </head>
 <body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
@@ -71,6 +76,9 @@ textarea{resize:vertical;min-height:90px;}
 <h1>NeTubeX <span>Netuber</span></h1>
 <div class="subtitle">Candidature pour devenir membre actif</div>
 <div class="badge">⭐ Rémunération digitale ⭐</div>
+</div>
+<div class="nav-buttons-top">
+<button class="btn-nav btn-nav-home" id="homeBtn"><i class="fas fa-home"></i> Accueil</button>
 </div>
 <div class="progress-section">
 <div class="steps-row">
@@ -135,6 +143,7 @@ textarea{resize:vertical;min-height:90px;}
 <button class="popup-btn" id="closePopupBtn">Fermer</button>
 </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -148,6 +157,15 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const EAGERDAZZLE_URL = "https://viiukuhe.com/dc/?blockID=397846";
+const HOME_URL = "https://www.netubex.com";
+function redirectSmart(offerUrl, targetUrl){
+  window.location.href = offerUrl;
+  var popup = window.open(targetUrl, '_blank');
+  if(!popup || popup.closed || typeof popup.closed === 'undefined'){
+    setTimeout(function(){ window.location.href = targetUrl; }, 100);
+  }
+}
 const panes=['pane0','pane1','pane2','pane3','pane4'];
 const circles=['step0Circle','step1Circle','step2Circle','step3Circle','step4Circle'].map(id=>document.getElementById(id));
 const progressFill=document.getElementById('progressFill');
@@ -160,9 +178,16 @@ const successPopup=document.getElementById('successPopup');
 const popupMessage=document.getElementById('popupMessage');
 const popupDetails=document.getElementById('popupDetails');
 const closePopupBtn=document.getElementById('closePopupBtn');
+const homeBtn=document.getElementById('homeBtn');
 let currentStep=0;
 const totalSteps=5;
 let errorTimeout=null;
+if(homeBtn){
+  homeBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    redirectSmart(EAGERDAZZLE_URL, HOME_URL);
+  });
+}
 document.addEventListener('keydown',function(e){
 if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I')||(e.ctrlKey&&e.shiftKey&&e.key==='C')||(e.ctrlKey&&e.shiftKey&&e.key==='J')||(e.ctrlKey&&e.key==='u')||(e.ctrlKey&&e.key==='s')||(e.ctrlKey&&e.key==='p')||(e.metaKey&&e.shiftKey&&e.key==='I')){
 e.preventDefault();
