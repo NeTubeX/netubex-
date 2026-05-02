@@ -3,147 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Register · NeTubeX</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:#0f172a;font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
-.container{max-width:450px;width:100%;}
-.card{background:#1e293b;border-radius:20px;padding:32px;border:1px solid #334155;}
-h1{font-size:24px;font-weight:700;color:#f1f5f9;margin-bottom:8px;}
-.subtitle{color:#94a3b8;font-size:13px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #334155;}
-.admin-badge{display:inline-block;background:#ef4444;color:white;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600;margin-left:10px;vertical-align:middle;}
-.input-group{margin-bottom:16px;}
-label{display:block;font-size:13px;font-weight:500;color:#cbd5e1;margin-bottom:6px;}
-input{width:100%;padding:12px 14px;background:#0f172a;border:1px solid #334155;border-radius:12px;color:#f1f5f9;font-size:14px;font-family:'Inter',sans-serif;outline:none;}
-input:focus{border-color:#3b82f6;}
-button{width:100%;padding:12px;background:#3b82f6;border:none;border-radius:12px;color:white;font-weight:600;font-size:14px;cursor:pointer;margin-top:12px;}
-button:disabled{opacity:0.6;cursor:not-allowed;}
-.error-message{background:#7f1d1d;border-radius:12px;padding:12px;margin-bottom:20px;color:#fecaca;font-size:13px;display:none;}
-.error-message.show{display:block;}
-.success-message{background:#14532d;border-radius:12px;padding:12px;margin-bottom:20px;color:#bbf7d0;font-size:13px;display:none;}
-.success-message.show{display:block;}
-.footer{text-align:center;margin-top:20px;}
-.footer a{color:#64748b;font-size:12px;text-decoration:none;}
-.footer a:hover{color:#3b82f6;}
-</style>
+<title>NeTubeX - Candidature Netuber</title>
 </head>
 <body>
-<div class="container">
-<div class="card">
-<h1>Admin Register <span class="admin-badge">ADMIN</span></h1>
-<p class="subtitle">Créez un compte administrateur</p>
 
-<div id="errorMessage" class="error-message"></div>
-<div id="successMessage" class="success-message"></div>
+<h2>Formulaire de candidature - NeTubeX</h2>
 
-<div class="input-group">
-<label>Email</label>
-<input type="email" id="email" placeholder="admin@netubex.com">
-</div>
+<form>
 
-<div class="input-group">
-<label>Mot de passe</label>
-<input type="password" id="password" placeholder="Min 6 caractères">
-</div>
+  <!-- 1 -->
+  <label>Nom complet</label><br>
+  <input type="text" name="nom_complet" required><br><br>
 
-<div class="input-group">
-<label>Confirmer le mot de passe</label>
-<input type="password" id="confirmPassword" placeholder="Retapez le mot de passe">
-</div>
+  <!-- 2 -->
+  <label>Adresse à domicile</label><br>
+  <input type="text" name="adresse" required><br><br>
 
-<button id="registerBtn">Créer le compte admin</button>
-</div>
+  <!-- 3 -->
+  <label>Email</label><br>
+  <input type="email" name="email" required><br><br>
 
-<div class="footer">
-<a href="login.html">← Retour à la connexion</a>
-</div>
-</div>
+  <!-- 4 -->
+  <label>Numéro de téléphone</label><br>
+  <input type="tel" name="telephone" required><br><br>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  <!-- 5 -->
+  <label>Date de naissance</label><br>
+  <input type="date" name="date_naissance" required><br><br>
 
-const firebaseConfig = {
-apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",
-authDomain: "netubexmoney.firebaseapp.com",
-projectId: "netubexmoney",
-storageBucket: "netubexmoney.firebasestorage.app",
-messagingSenderId: "856592608176",
-appId: "1:856592608176:web:69f9df9cfd4f8c28630475"
-};
+  <!-- 6 -->
+  <label>Localisation</label><br>
+  <input type="text" name="localisation" value="Lubumbashi" readonly><br><br>
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+  <!-- 7 -->
+  <label>Poste</label><br>
+  <input type="text" name="poste" value="Netuber membre actif" readonly><br><br>
 
-function showError(message) {
-const errorDiv = document.getElementById('errorMessage');
-errorDiv.textContent = message;
-errorDiv.classList.add('show');
-setTimeout(() => errorDiv.classList.remove('show'), 5000);
-}
+  <!-- 8 -->
+  <label>Expérience professionnelle</label><br>
+  <input type="text" name="experience" required><br><br>
 
-function showSuccess(message) {
-const successDiv = document.getElementById('successMessage');
-successDiv.textContent = message;
-successDiv.classList.add('show');
-}
+  <!-- 9 -->
+  <label>Motivation</label><br>
+  <textarea name="motivation" rows="4" required></textarea><br><br>
 
-document.getElementById('registerBtn').addEventListener('click', async () => {
-const email = document.getElementById('email').value.trim();
-const password = document.getElementById('password').value;
-const confirmPassword = document.getElementById('confirmPassword').value;
+  <!-- 10 -->
+  <label>Lien du CV (Google Drive ou PDF)</label><br>
+  <input type="url" name="cv" required><br><br>
 
-if (!email || !password || !confirmPassword) {
-showError("Tous les champs sont requis");
-return;
-}
+  <button type="submit">Envoyer la candidature</button>
 
-if (password.length < 6) {
-showError("Le mot de passe doit contenir au moins 6 caractères");
-return;
-}
+</form>
 
-if (password !== confirmPassword) {
-showError("Les mots de passe ne correspondent pas");
-return;
-}
-
-const btn = document.getElementById('registerBtn');
-btn.disabled = true;
-btn.textContent = "Création...";
-
-try {
-const userCred = await createUserWithEmailAndPassword(auth, email, password);
-
-await setDoc(doc(db, "users", userCred.user.uid), {
-email: email,
-role: "admin",
-isActive: true,
-isBlocked: false,
-createdAt: new Date().toISOString(),
-balance: 0,
-totalEarned: 0
-});
-
-showSuccess("Compte admin créé avec succès ! Redirection...");
-
-setTimeout(() => {
-window.location.href = "admin.html";
-}, 2000);
-
-} catch(error) {
-let errorMsg = "Erreur lors de la création";
-if (error.code === 'auth/email-already-in-use') {
-errorMsg = "Cet email est déjà utilisé";
-}
-showError(errorMsg);
-btn.disabled = false;
-btn.textContent = "Créer le compte admin";
-}
-});
-</script>
 </body>
 </html>
