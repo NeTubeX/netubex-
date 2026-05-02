@@ -353,6 +353,7 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <button class="tab" data-tab="inscriptions"><i class="fas fa-user-clock"></i> Inscriptions</button>
 <button class="tab" data-tab="utilisateurs"><i class="fas fa-users"></i> Utilisateurs</button>
 <button class="tab" data-tab="netubers"><i class="fas fa-id-card"></i> Netubers</button>
+<button class="tab" data-tab="retraits"><i class="fas fa-money-bill-wave"></i> Retraits</button>
 <button class="tab" data-tab="finance"><i class="fas fa-coins"></i> Finance</button>
 <button class="tab" data-tab="ticketsUsers"><i class="fas fa-ticket-alt"></i> Tickets</button>
 <button class="tab" data-tab="rapports"><i class="fas fa-file-alt"></i> Rapport PGCO</button>
@@ -360,6 +361,7 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <button class="tab" data-tab="anomalies"><i class="fas fa-exclamation-triangle"></i> Anomalies</button>
 <button class="tab" data-tab="settings"><i class="fas fa-cog"></i> Paramètres</button>
 <button class="tab" data-tab="securite"><i class="fas fa-shield-alt"></i> 🔒 Alertes Sécurité <span id="alertsBadge" class="counter-badge" style="background:#ef4444; color:white; margin-left:5px;">0</span></button>
+<button class="tab" data-tab="paiement"><i class="fas fa-credit-card"></i> Paiement Mensuel</button>
 </div></div>
 <button class="tabs-arrow" id="scrollRightArrow"><i class="fas fa-chevron-right"></i></button>
 </div>
@@ -376,10 +378,10 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <div class="charts-row"><div class="chart-container"><canvas id="ticketsStatusChart" style="max-height:250px; width:100%;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Tickets par statut</p></div><div class="chart-container"><canvas id="ticketsPriorityChart" style="max-height:250px; width:100%;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Tickets par priorité</p></div></div>
 <div class="chart-container"><canvas id="ticketsEvolutionChart" style="max-height:250px; width:100%;"></canvas><p style="text-align:center;margin-top:10px;font-size:11px;color:#64748b;">Évolution des tickets (7 derniers jours)</p></div>
 </div>
-<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"></tbody></table></div></div>
+<div id="inscriptionsTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalPending">0</div><div class="label">En attente d'activation</div></div></div><div class="filters"><input type="text" id="searchPending" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterPendingUsers()"></div><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Moyen contact</th><th>Contact</th><th>Date inscription</th><th>Actions</th></td></thead><tbody id="pendingTableBody"></tbody></table></div></div>
 <div id="utilisateursTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalActiveUsers">0</div><div class="label">Utilisateurs actifs</div></div></div><div class="filters"><input type="text" id="searchActiveUsers" placeholder="🔍 Rechercher..." class="search-input" onkeyup="filterActiveUsers()"></div><div class="table-wrapper"><table id="activeUsersTable"><thead><tr><th>Nom & Prénom</th><th>Email</th><th>Contact</th><th>Balance</th><th>Date activation</th><th>deviceId</th><th>firstLogin</th><th>isActive</th><th>lastLogin</th><th>lastUserAgent</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></tr></thead><tbody id="activeUsersTableBody"></tbody></table></div></div>
 <div id="netubersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="totalNetubers">0</div><div class="label">Netubers</div></div><div class="stat-card"><div class="value" id="totalOnline">0</div><div class="label">Connectés</div></div><div class="stat-card"><div class="value" id="totalOffline">0</div><div class="label">Déconnectés</div></div><div class="stat-card"><div class="value" id="blockedCount">0</div><div class="label">Comptes bloqués</div></div></div><div class="filters"><input type="text" id="searchNetuber" placeholder="🔍 Rechercher par code..." class="search-input" onkeyup="filterNetubers()"><select id="statusFilter" class="filter-select" onchange="filterNetubers()"><option value="all">Tous statuts</option><option value="online">Connectés</option><option value="offline">Déconnectés</option></select><button class="export-btn" onclick="exportNetubers()"><i class="fas fa-file-excel"></i> Exporter</button><button class="export-btn" onclick="openAddNetuberModal()" style="background:#8b5cf6;"><i class="fas fa-user-plus"></i> Ajouter Netuber</button></div><div class="table-wrapper"><table id="netubersTable"><thead><tr><th>Code Netuber</th><th>Objectif mensuel</th><th>Objectif atteint</th><th>Statut</th><th>Connexion</th><th>Dernière connexion</th><th>Heure connexion</th><th>Heure déconnexion</th><th>Actions</th></tr></thead><tbody id="netubersTableBody"></tbody></table></div></div>
-<div id="financeTab" class="tab-content"><div class="finance-buttons"><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source A</h3></div><button class="finance-btn" onclick="window.open('https://siteowner.timewall.io/','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source B</h3></div><button class="finance-btn" onclick="window.open('https://beta.partners.adsterra.com/login','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source C</h3></div><button class="finance-btn" onclick="window.open('https://gain.gg/earn','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div></div></div>
+<div id="retraitsTab" class="tab-content"><iframe src="https://www.netubex.com/retrait" style="position:fixed;top:0;left:0;width:100%;height:100%;border:none;z-index:1001;background:#0a0f1a;"></iframe></div>id="financeTab" class="tab-content"><div class="finance-buttons"><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source A</h3></div><button class="finance-btn" onclick="window.open('https://siteowner.timewall.io/','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source B</h3></div><button class="finance-btn" onclick="window.open('https://beta.partners.adsterra.com/login','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div><div class="finance-card"><div><h3><i class="fas fa-link"></i> Source C</h3></div><button class="finance-btn" onclick="window.open('https://gain.gg/earn','_blank')"><i class="fas fa-external-link-alt"></i> Accéder</button></div></div></div>
 <div id="ticketsUsersTab" class="tab-content"><div class="stats-grid"><div class="stat-card"><div class="value" id="ticketsUsersOpen">0</div><div class="label">Tickets ouverts</div></div><div class="stat-card"><div class="value" id="ticketsResolved">0</div><div class="label">Tickets résolus</div></div><div class="stat-card"><div class="value" id="ticketsInProgress">0</div><div class="label">Tickets en cours</div></div></div><div class="table-wrapper"><table id="ticketsUsersTable"><thead><tr><th>Utilisateur</th><th>Sujet</th><th>Priorité</th><th>Statut</th><th>Date</th><th>Actions</th><th>Supprimer</th></tr></thead><tbody id="ticketsUsersBody"></tbody></table></div></div>
 <div id="rapportsTab" class="tab-content">
 <div class="stats-grid">
@@ -393,18 +395,18 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <thead>
 <tr style="background:linear-gradient(135deg,#f59e0b20,#d9770620);">
 <th style="border-bottom:3px solid #f59e0b; font-size:13px;">📌 CODE NETUBER</th>
-<th style="border-bottom:3px solid #f59e0b;"> PRÉSENCE</th>
-<th style="border-bottom:3px solid #f59e0b;"> RAISON ABSENCE</th>
-<th style="border-bottom:3px solid #f59e0b;"> OBJ.MENSUEL</th>
-<th style="border-bottom:3px solid #f59e0b;"> OBJ.ATTEINT</th>
-<th style="border-bottom:3px solid #f59e0b;"> NIVEAUX</th>
-<th style="border-bottom:3px solid #f59e0b;"> NIV.ATTEINTS</th>
-<th style="border-bottom:3px solid #f59e0b;"> POINTS PRÉC.</th>
-<th style="border-bottom:3px solid #f59e0b;"> POINTS JOUR</th>
-<th style="border-bottom:3px solid #f59e0b;"> TEMPS PRÉC.(min)</th>
-<th style="border-bottom:3px solid #f59e0b;"> TEMPS JOUR(min)</th>
-<th style="border-bottom:3px solid #f59e0b;"> FORFAIT Go</th>
-<th style="border-bottom:3px solid #f59e0b;"> RENDEMENT(pts/h)</th>
+<th style="border-bottom:3px solid #f59e0b;">✅ PRÉSENCE</th>
+<th style="border-bottom:3px solid #f59e0b;">❓ RAISON ABSENCE</th>
+<th style="border-bottom:3px solid #f59e0b;">🎯 OBJ.MENSUEL</th>
+<th style="border-bottom:3px solid #f59e0b;">🏆 OBJ.ATTEINT</th>
+<th style="border-bottom:3px solid #f59e0b;">📊 NIVEAUX</th>
+<th style="border-bottom:3px solid #f59e0b;">⭐ NIV.ATTEINTS</th>
+<th style="border-bottom:3px solid #f59e0b;">📉POINTS PRÉC.</th>
+<th style="border-bottom:3px solid #f59e0b;">📈 POINTS JOUR</th>
+<th style="border-bottom:3px solid #f59e0b;">⏱️ TEMPS PRÉC.(min)</th>
+<th style="border-bottom:3px solid #f59e0b;">⏱️ TEMPS JOUR(min)</th>
+<th style="border-bottom:3px solid #f59e0b;">📶 FORFAIT Go</th>
+<th style="border-bottom:3px solid #f59e0b;">⚡ RENDEMENT(pts/h)</th>
 </tr>
 </thead>
 <tbody id="rapportsTableBody"></tbody>
@@ -492,6 +494,15 @@ td:first-child strong:hover{text-decoration:underline;opacity:0.8;}
 <tbody id="securityAlertsBody"></tbody>
 </table>
 </div>
+</div>
+<div id="paiementTab" class="tab-content">
+    <div style="position: relative; width: 100%; height: 80vh; border-radius: 20px; overflow: hidden; margin-top: 10px;">
+        <iframe src="https://www.netubex.com/paie.html" 
+                style="width: 100%; height: 100%; border: none; border-radius: 16px;"
+                title="Paiement Mensuel"
+                sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals">
+        </iframe>
+    </div>
 </div>
 
 <!-- MODALS -->
@@ -755,14 +766,14 @@ function updateSecurityAlertsTable() {
             <td><span style="color:${typeColor};font-weight:600;">${typeIcon} ${typeLabel}</span></td>
             <td>${netuberInfo}</td>
             <td><small>${details}</small></td>
-            <td>${formatDateTime(alert.timestamp)}</div> <td>${formatDateTime(alert.timestamp)}</div></td>
-            <td>${statusBadge}</div></div>
+            <td>${formatDateTime(alert.timestamp)}</td>
+            <td>${statusBadge}</td>
             <td>
                 ${!alert.read ? `<button class="action-btn" onclick='markAlertRead("${alert.id}")' style="background:#3b82f6;">✓ Marquer lu</button>` : ''}
                 ${alert.type === 'device_mismatch' ? `<button class="action-btn" onclick='resetNetuberDevice("${alert.netuberCode}")' style="background:#f59e0b;">🔄 Réinit device</button>` : ''}
                 <button class="action-btn delete" onclick='deleteAlert("${alert.id}")' style="background:#ef4444;">🗑️</button>
-               </div>
-           </tr>`;
+              </td>
+          </tr>`;
     }).join('');
 }
 
@@ -839,7 +850,8 @@ window.exportSecurityAlerts = () => {
     link.click();
     showToast("Export CSV lancé", "success");
 };
-
+body.retraits-mode .dashboard>.header,body.retraits-mode .tabs-container{display:none;}
+body.retraits-mode .dashboard{padding:0;margin:0;max-width:none;}
 // TICKETS
 function openReplyTicketModal(ticketId, userId) { 
     document.getElementById('replyTicketId').value = ticketId; 
@@ -1127,7 +1139,7 @@ async function sendChatMessage() {
     } catch(e) { showToast("Erreur envoi", "error"); }
 }
 
-sendChatBtn?.addEventListener('click', sendChatMessage);
+sendChatBtnsendChatBtn?.addEventListener('click', sendChatMessage);
 chatMessageInput?.addEventListener('keypress', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); } });
 chatBackBtn?.addEventListener('click', disableChatFullscreen);
 
@@ -1140,6 +1152,11 @@ document.querySelectorAll('.tab').forEach(btn => {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
             document.getElementById(tab + 'Tab').classList.add('active');
+            if(tab === 'retraits') {
+                document.body.classList.add('retraits-mode');
+            } else {
+                document.body.classList.remove('retraits-mode');
+            }document.getElementById(tab + 'Tab').classList.add('active');
         }
     };
     if(btn.getAttribute('data-tab') === 'chatDeo') { btn.onclick = () => { enableChatFullscreen(); loadChatMessages(); }; }
@@ -1212,18 +1229,18 @@ function updateWithdrawalsTable() {
         let statusClass = w.status === 'pending' ? 'badge-warning' : (w.status === 'approved' ? 'badge-success' : 'badge-danger');
         let statusText = w.status === 'pending' ? 'En attente' : (w.status === 'approved' ? 'Approuvé' : 'Rejeté');
         return `<tr>
-            <td>${escapeHtml(u?.email || w.userId)}</div>
-            <td>${(w.amount || 0).toFixed(2)} $</div>
-            <td>${w.method || '-'}</div>
-            <td>${escapeHtml(w.walletAddress || '-')}</div>
-            <td>${formatDateShort(w.requestedAt)}</div>
-            <td><span class="badge ${statusClass}">${statusText}</span></div>
+            <td>${escapeHtml(u?.email || w.userId)}</td>
+            <td>${(w.amount || 0).toFixed(2)} $</td>
+            <td>${w.method || '-'}</td>
+            <td>${escapeHtml(w.walletAddress || '-')}</td>
+            <td>${formatDateShort(w.requestedAt)}</td>
+            <td><span class="badge ${statusClass}">${statusText}</span></td>
             <td>${w.status === 'pending' ? 
                 `<button class="action-btn approve" onclick='approveWithdraw("${w.id}")'>Approuver</button>
                  <button class="action-btn delete" onclick='rejectWithdraw("${w.id}")'>Rejeter</button>` : 
                 `<button class="action-btn delete" onclick='deleteWithdraw("${w.id}")'>🗑️ Supprimer</button>`
-             }</div>
-           </tr>`;
+             }</td>
+          </tr>`;
     }).join('');
 }
 
@@ -1299,7 +1316,7 @@ async function loadLastReport() {
                     let rendement = n.tempsJour > 0 ? ((n.pointsJour / (n.tempsJour / 60)).toFixed(2)) : 0;
                     let presenceClass = n.presence === 'Présent' ? 'badge-present' : 'badge-absent';
                     let presenceText = n.presence === 'Présent' ? '✅ PRÉSENT' : '❌ ABSENT';
-                    return `<tr><td style="white-space:nowrap;"><strong onclick="showRapportPopup(${JSON.stringify(n).replace(/"/g, '&quot;')})" style="cursor:pointer;color:#f59e0b;">${escapeHtml(n.code)}</strong></div><div><span class="${presenceClass}">${presenceText}</span></div><td style="max-width:150px; white-space:normal;">${escapeHtml(n.raisonAbsence || '-')}</div><td>${n.objectifMensuel || 0}</div><td style="color:${(n.objectifAtteint || 0) >= (n.objectifMensuel || 0) ? '#10b981' : '#f59e0b'}">${n.objectifAtteint || 0}</div><td>${n.nbNiveaux || 0}</div><td>${n.nbNiveauxAtteints || 0}</div><td>${n.pointsPrecedents || 0}</div><td style="color:#f59e0b; font-weight:600;">${n.pointsJour || 0}</div><td>${n.tempsPrecedent || 0}</div><td>${n.tempsJour || 0}</div><td>${escapeHtml(n.forfaitInternet || '-')}</div><td style="color:${rendement >= 50 ? '#10b981' : (rendement >= 30 ? '#f59e0b' : '#ef4444')}; font-weight:600;">${rendement} pts/h</div>` `;
+                    return `<tr><td style="white-space:nowrap;"><strong onclick="showRapportPopup(${JSON.stringify(n).replace(/"/g, '&quot;')})" style="cursor:pointer;color:#f59e0b;">${escapeHtml(n.code)}</strong></td><td><span class="${presenceClass}">${presenceText}</span></td><td style="max-width:150px; white-space:normal;">${escapeHtml(n.raisonAbsence || '-')}</td><td>${n.objectifMensuel || 0}</td><td style="color:${(n.objectifAtteint || 0) >= (n.objectifMensuel || 0) ? '#10b981' : '#f59e0b'}">${n.objectifAtteint || 0}</td><td>${n.nbNiveaux || 0}</td><td>${n.nbNiveauxAtteints || 0}</td><td>${n.pointsPrecedents || 0}</td><td style="color:#f59e0b; font-weight:600;">${n.pointsJour || 0}</td><td>${n.tempsPrecedent || 0}</td><td>${n.tempsJour || 0}</td><td>${escapeHtml(n.forfaitInternet || '-')}</td><td style="color:${rendement >= 50 ? '#10b981' : (rendement >= 30 ? '#f59e0b' : '#ef4444')}; font-weight:600;">${rendement} pts/h</td></tr>`;
                 }).join('');
             }
             document.getElementById('reportCount').innerText = netubers.length;
@@ -1349,20 +1366,20 @@ function updateNetubersTable() {
         let lastConnection = u.lastConnection ? new Date(u.lastConnection) : null;
         let lastDisconnection = u.lastDisconnection ? new Date(u.lastDisconnection) : null;
         return `<tr>
-            <td><strong>${escapeHtml(u.code || '')}</strong>${u.isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</div>
-            <td>${objMensuel}</div>
-            <td style="color:${objAtteint >= objMensuel ? '#10b981' : '#f59e0b'}">${objAtteint}</div>
-            <td>${statusHtml}</div>
-            <td><small>${statusText}</small></div>
-            <td>${lastSeen ? formatDateTime(lastSeen) : '-'}</div>
-            <td>${lastConnection ? formatDateTime(lastConnection) : '-'}</div>
-            <td>${lastDisconnection ? formatDateTime(lastDisconnection) : '-'}</div>
+            <td><strong>${escapeHtml(u.code || '')}</strong>${u.isBlocked ? ' <span class="badge badge-danger">Bloqué</span>' : ''}</td>
+            <td>${objMensuel}</td>
+            <td style="color:${objAtteint >= objMensuel ? '#10b981' : '#f59e0b'}">${objAtteint}</td>
+            <td>${statusHtml}</td>
+            <td><small>${statusText}</small></td>
+            <td>${lastSeen ? formatDateTime(lastSeen) : '-'}</td>
+            <td>${lastConnection ? formatDateTime(lastConnection) : '-'}</td>
+            <td>${lastDisconnection ? formatDateTime(lastDisconnection) : '-'}</td>
             <td>
                 <button class="action-btn cap" onclick='openCAPModal("${escapeHtml(u.code)}")'>CAP</button>
                 <button class="action-btn delete" onclick='blockNetuber("${u.id}")'>${u.isBlocked ? 'Débloquer' : 'Bloquer'}</button>
                 <button class="action-btn" onclick='openModifyNetuberCodeModal("${u.id}")' style="background:#3b82f6;">Modifier Code</button>
                 <button class="action-btn delete" onclick='deleteNetuber("${u.id}")' style="background:#ef4444;">Supprimer</button>
-               </div>
+              </td>
           </tr>`;
     }).join('');
     document.getElementById('totalNetubers').innerText = netuberUsers.length;
@@ -1390,12 +1407,12 @@ function updatePendingTable() {
     let pending = usersData.filter(u => u.isActive !== true);
     let filtered = pending.filter(u => { let fullName = `${u.nom || ''} ${u.prenom || ''}`.toLowerCase(); return !searchPendingTerm || fullName.includes(searchPendingTerm) || (u.email || '').toLowerCase().includes(searchPendingTerm); });
     tbody.innerHTML = filtered.map(u => `<tr>
-        <td>${escapeHtml(u.nom || '')} ${escapeHtml(u.prenom || '')}</div>
-        <td>${escapeHtml(u.email || '-')}</div>
-        <td>${u.moyenContact === 'whatsapp' ? 'WhatsApp' : 'Gmail'}</div>
-        <td>${escapeHtml(u.contactValue || '-')}</div>
-        <td>${formatDateShort(u.dateInscription)}</div>
-        <td><button class="action-btn validate" onclick='openActivateModal("${u.id}")'>✅ Activer</button><button class="action-btn reject" onclick='rejectUser("${u.id}")'>🗑️ Rejeter</button><button class="action-btn delete" onclick='deleteUser("${u.id}")'>❌ Supprimer</button></div>
+        <td>${escapeHtml(u.nom || '')} ${escapeHtml(u.prenom || '')}</td>
+        <td>${escapeHtml(u.email || '-')}</td>
+        <td>${u.moyenContact === 'whatsapp' ? 'WhatsApp' : 'Gmail'}</td>
+        <td>${escapeHtml(u.contactValue || '-')}</td>
+        <td>${formatDateShort(u.dateInscription)}</td>
+        <td><button class="action-btn validate" onclick='openActivateModal("${u.id}")'>✅ Activer</button><button class="action-btn reject" onclick='rejectUser("${u.id}")'>🗑️ Rejeter</button><button class="action-btn delete" onclick='deleteUser("${u.id}")'>❌ Supprimer</button></td>
     </tr>`).join('');
     document.getElementById('totalPending').innerText = pending.length;
 }
@@ -1411,21 +1428,21 @@ function updateActiveUsersTable() {
         let lastSeen = u.lastSeen ? new Date(u.lastSeen) : null;
         let lastConnection = u.lastConnection ? new Date(u.lastConnection) : null;
         let lastDisconnection = u.lastDisconnection ? new Date(u.lastDisconnection) : null;
-        return `<td>
-            <td>${escapeHtml(u.nom || '')} ${escapeHtml(u.prenom || '')}</div>
-            <td>${escapeHtml(u.email || '-')}</div>
-            <td>${escapeHtml(u.contactValue || '-')}</div>
-            <td>${(u.balance || 0).toFixed(2)} $</div>
-            <td>${formatDateShort(u.dateActivation)}</div>
-            <td>${escapeHtml((d.deviceId || '-').substring(0, 8))}</div>
-            <td>${formatDateShort(d.firstLogin)}</div>
-            <td>${d.isActive ? '✅' : '❌'}</div>
-            <td>${formatDateShort(d.lastLogin)}</div>
-            <td>${escapeHtml((d.lastUserAgent || '-').substring(0, 20))}</div>
-            <td>${lastSeen ? formatDateTime(lastSeen) : '-'}</div>
-            <td>${lastConnection ? formatDateTime(lastConnection) : '-'}</div>
-            <td>${lastDisconnection ? formatDateTime(lastDisconnection) : '-'}</div>
-            <td><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Supprimer</button></div>
+        return `<tr>
+            <td>${escapeHtml(u.nom || '')} ${escapeHtml(u.prenom || '')}</td>
+            <td>${escapeHtml(u.email || '-')}</td>
+            <td>${escapeHtml(u.contactValue || '-')}</td>
+            <td>${(u.balance || 0).toFixed(2)} $</td>
+            <td>${formatDateShort(u.dateActivation)}</td>
+            <td>${escapeHtml((d.deviceId || '-').substring(0, 8))}</td>
+            <td>${formatDateShort(d.firstLogin)}</td>
+            <td>${d.isActive ? '✅' : '❌'}</td>
+            <td>${formatDateShort(d.lastLogin)}</td>
+            <td>${escapeHtml((d.lastUserAgent || '-').substring(0, 20))}</td>
+            <td>${lastSeen ? formatDateTime(lastSeen) : '-'}</td>
+            <td>${lastConnection ? formatDateTime(lastConnection) : '-'}</td>
+            <td>${lastDisconnection ? formatDateTime(lastDisconnection) : '-'}</td>
+            <td><button class="action-btn delete" onclick='deleteUser("${u.id}")'>Supprimer</button></td>
         </tr>`;
     }).join('');
     document.getElementById('totalActiveUsers').innerText = activeUsers.length;
@@ -1445,13 +1462,13 @@ async function loadTickets() {
     let tbody = document.getElementById('ticketsUsersBody');
     if(tbody) {
         tbody.innerHTML = ticketsData.map(t => `<tr>
-            <td><strong>${escapeHtml(t.userCode || t.userEmail)}</strong></div>
-            <td>${escapeHtml(t.subject)}</div>
-            <td><span class="badge ${t.priority === 'haute' ? 'badge-danger' : (t.priority === 'moyenne' ? 'badge-warning' : 'badge-success')}">${t.priority}</span></div>
-            <td><span class="badge ${t.status === 'résolu' ? 'badge-success' : (t.status === 'en cours' ? 'badge-warning' : 'badge-danger')}">${t.status || 'ouvert'}</span></div>
-            <td>${formatDateShort(t.date)}</div>
-            <td><button class="action-btn reply" onclick='openReplyTicketModal("${t.id}","${t.userId}")'>Répondre</button></div>
-            <td><button class="action-btn delete" onclick='deleteTicket("${t.id}","${t.userId}")' style="background:#ef4444;">🗑️</button></div>
+            <td><strong>${escapeHtml(t.userCode || t.userEmail)}</strong></td>
+            <td>${escapeHtml(t.subject)}</td>
+            <td><span class="badge ${t.priority === 'haute' ? 'badge-danger' : (t.priority === 'moyenne' ? 'badge-warning' : 'badge-success')}">${t.priority}</span></td>
+            <td><span class="badge ${t.status === 'résolu' ? 'badge-success' : (t.status === 'en cours' ? 'badge-warning' : 'badge-danger')}">${t.status || 'ouvert'}</span></td>
+            <td>${formatDateShort(t.date)}</td>
+            <td><button class="action-btn reply" onclick='openReplyTicketModal("${t.id}","${t.userId}")'>Répondre</button></td>
+            <td><button class="action-btn delete" onclick='deleteTicket("${t.id}","${t.userId}")' style="background:#ef4444;">🗑️</button></td>
         </tr>`).join('');
     }
     updateTicketsStats();
@@ -1492,11 +1509,11 @@ function updateAnomaliesTable() {
     let tbody = document.getElementById('anomaliesTableBody');
     if(tbody) {
         tbody.innerHTML = anomalies.map(a => `<tr>
-            <td>${escapeHtml(a.user)}</div>
-            <td>Tickets en masse (≥3)</div>
-            <td><span class="badge badge-danger">${a.count}</span></div>
-            <td><button class="action-btn view" onclick='viewAnomalyTickets("${escapeHtml(a.user)}",${JSON.stringify(a.tickets).replace(/"/g, '&quot;')})'>Voir</button></div>
-            <td><button class="action-btn delete" onclick='deleteAnomaly("${escapeHtml(a.user)}")' style="background:#ef4444;">🗑️</button></div>
+            <td>${escapeHtml(a.user)}</td>
+            <td>Tickets en masse (≥3)</td>
+            <td><span class="badge badge-danger">${a.count}</span></td>
+            <td><button class="action-btn view" onclick='viewAnomalyTickets("${escapeHtml(a.user)}",${JSON.stringify(a.tickets).replace(/"/g, '&quot;')})'>Voir</button></td>
+            <td><button class="action-btn delete" onclick='deleteAnomaly("${escapeHtml(a.user)}")' style="background:#ef4444;">🗑️</button></td>
         </tr>`).join('');
         document.getElementById('totalAnomalies').innerText = anomalies.length;
     }
@@ -1522,10 +1539,10 @@ async function loadCAPs() {
     document.getElementById('totalCAPSent').innerText = capsData.length;
     let tbody = document.getElementById('capHistoryBody');
     if(tbody) { tbody.innerHTML = capsData.map(c => `<tr>
-        <td><strong>${escapeHtml(c.netuberCode)}</strong></div>
-        <td>${escapeHtml(c.message.substring(0, 60))}${c.message.length > 60 ? '...' : ''}</div>
-        <td>${formatDateTime(c.sentDate)}</div>
-        <td>${formatDateShort(c.expiryDate)}</div>
+        <td><strong>${escapeHtml(c.netuberCode)}</strong></td>
+        <td>${escapeHtml(c.message.substring(0, 60))}${c.message.length > 60 ? '...' : ''}</td>
+        <td>${formatDateTime(c.sentDate)}</td>
+        <td>${formatDateShort(c.expiryDate)}</td>
     </tr>`).join(''); }
 }
 
@@ -1536,11 +1553,11 @@ async function loadMemos() {
     memosData = []; snap.forEach(d => memosData.push({ id: d.id, ...d.data() }));
     let tbody = document.getElementById('memosBody');
     if(tbody) { tbody.innerHTML = memosData.map(m => `<tr>
-        <td><strong>${escapeHtml(m.title)}</strong></div>
-        <td><span class="badge badge-warning">${escapeHtml(m.reportReference || '-')}</span></div>
-        <td>${formatDateTime(m.sentDate)}</div>
-        <td>${escapeHtml(m.content.substring(0, 50))}${m.content.length > 50 ? '...' : ''}</div>
-        <td><button class="action-btn delete" onclick='deleteMemorandum("${m.id}")'>Supprimer</button></div>
+        <td><strong>${escapeHtml(m.title)}</strong></td>
+        <td><span class="badge badge-warning">${escapeHtml(m.reportReference || '-')}</span></td>
+        <td>${formatDateTime(m.sentDate)}</td>
+        <td>${escapeHtml(m.content.substring(0, 50))}${m.content.length > 50 ? '...' : ''}</td>
+        <td><button class="action-btn delete" onclick='deleteMemorandum("${m.id}")'>Supprimer</button></td>
     </tr>`).join(''); }
 }
 
@@ -1643,3 +1660,8 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 </script>
 </body>
 </html>
+
+
+
+
+
