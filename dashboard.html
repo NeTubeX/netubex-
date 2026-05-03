@@ -25,8 +25,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 .online-status{display:flex;align-items:center;gap:5px;background:rgba(16,185,129,0.15);padding:2px 8px;border-radius:20px;font-size:0.65rem;color:#10b981;}
 .blinking-dot{width:8px;height:8px;background:#10b981;border-radius:50%;animation:blink 1.2s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
-.score-floating{position:fixed;left:20px;bottom:100px;width:56px;height:56px;border-radius:50%;background:linear-gradient(145deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;z-index:150;border:1px solid rgba(250,204,21,0.5);box-shadow:0 10px 20px rgba(0,0,0,0.4),0 4px 8px rgba(0,0,0,0.2);cursor:pointer;transition:all 0.3s cubic-bezier(0.34,1.2,0.64,1);overflow:hidden;}
-.score-icon-only{font-size:1.6rem;font-weight:400;color:#fff;display:flex;align-items:center;justify-content:center;transition:all 0.3s;}
+.score-floating{position:fixed;left:20px;bottom:100px;width:56px;height:56px;border-radius:50%;background:#2d2d2d;display:flex;align-items:center;justify-content:center;z-index:150;border:1px solid rgba(255,255,255,0.2);box-shadow:0 10px 20px rgba(0,0,0,0.4),0 4px 8px rgba(0,0,0,0.2);cursor:pointer;transition:all 0.3s cubic-bezier(0.34,1.2,0.64,1);overflow:hidden;}
+.score-icon-only{font-size:1.6rem;font-weight:400;display:flex;align-items:center;justify-content:center;transition:all 0.3s;}
+.score-icon-only i{transition:all 0.3s;}
+.score-floating[data-score="high"] .score-icon-only i{color:#10b981;text-shadow:0 0 8px rgba(16,185,129,0.5);}
+.score-floating[data-score="medium"] .score-icon-only i{color:#f59e0b;text-shadow:0 0 8px rgba(245,158,11,0.5);}
+.score-floating[data-score="low"] .score-icon-only i{color:#ef4444;text-shadow:0 0 8px rgba(239,68,68,0.5);}
 .score-details{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity 0.3s,visibility 0.3s;white-space:nowrap;}
 .score-floating.expanded{width:auto;min-width:160px;height:auto;border-radius:24px;padding:12px 18px;background:linear-gradient(145deg,#1e3a5f,#0f2d45);box-shadow:0 15px 35px rgba(0,0,0,0.5),0 0 0 1px rgba(250,204,21,0.3);}
 .score-floating.expanded .score-icon-only{display:none;}
@@ -185,7 +189,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 <div class="online-status"><span class="blinking-dot"></span><span>En ligne</span></div>
 </div>
 </header>
-<div class="score-floating" id="scoreFloating">
+<div class="score-floating" id="scoreFloating" data-score="medium">
 <div class="score-icon-only"><i class="fas fa-lightbulb"></i></div>
 <div class="score-details">
 <div class="score-label">📊 RENDEMENT</div>
@@ -359,6 +363,15 @@ window.open(url,'_blank');
 function showFlyPopup(panel,letter,color,platform,url){pendingPanel=panel;pendingPlatform=platform;pendingTargetUrl=url;popupOpenTime=Date.now();let popup=document.getElementById('flyPopup');let letterDiv=document.getElementById('popupLetter');let title=document.getElementById('popupTitle');let btns=document.getElementById('popupButtons');letterDiv.textContent=letter;letterDiv.style.backgroundColor=color;title.textContent=panel;let btnClass=color==='#10b981'?'a':(color==='#3b82f6'?'b':'c');btns.innerHTML=`<button class="btn-yes-${btnClass}" id="confirmYesBtn">Oui</button><button class="btn-no" id="confirmNoBtn">Non</button>`;popup.classList.add('active');document.getElementById('confirmYesBtn')?.addEventListener('click',async()=>{if(pendingPanel&&pendingTargetUrl)await sendRewardConfirmation(pendingPanel,pendingPlatform,pendingTargetUrl);document.getElementById('flyPopup').classList.remove('active');pendingPanel=pendingPlatform=pendingTargetUrl=null;},{once:true});document.getElementById('confirmNoBtn')?.addEventListener('click',()=>{document.getElementById('flyPopup').classList.remove('active');pendingPanel=pendingPlatform=pendingTargetUrl=null;},{once:true});}
 let currentUserIdForOffers = null;
 function openOffersPopup() {document.getElementById('offersPopup').classList.add('active');}
+function updateLampColor(score){
+const lampElement = document.getElementById('scoreFloating');
+if(!lampElement) return;
+let colorLevel = 'low';
+if(score >= 70) colorLevel = 'high';
+else if(score >= 50) colorLevel = 'medium';
+else colorLevel = 'low';
+lampElement.setAttribute('data-score', colorLevel);
+}
 async function calculateAndDisplayScore() {
 if(!currentUser) return;
 try {
@@ -367,6 +380,7 @@ if(!userSnap.exists()) {
 document.getElementById('netuberScore').innerHTML = '--';
 document.getElementById('scoreEmoji').innerHTML = '⚪';
 document.getElementById('scoreDate').innerHTML = 'Compte invalide';
+updateLampColor(0);
 return;
 }
 const netuberCode = userSnap.data().code;
@@ -374,6 +388,7 @@ if(!netuberCode) {
 document.getElementById('netuberScore').innerHTML = '--';
 document.getElementById('scoreEmoji').innerHTML = '⚠️';
 document.getElementById('scoreDate').innerHTML = 'Code manquant';
+updateLampColor(0);
 return;
 }
 const reportsQuery = query(collection(db, "reports"), orderBy("createdAt", "desc"), limit(1));
@@ -382,6 +397,7 @@ if(snapshot.empty) {
 document.getElementById('netuberScore').innerHTML = '--';
 document.getElementById('scoreEmoji').innerHTML = '📭';
 document.getElementById('scoreDate').innerHTML = 'Aucun rapport';
+updateLampColor(0);
 return;
 }
 const latestReport = snapshot.docs[0].data();
@@ -396,6 +412,7 @@ if(!netuberData) {
 document.getElementById('netuberScore').innerHTML = '--';
 document.getElementById('scoreEmoji').innerHTML = '🔍';
 document.getElementById('scoreDate').innerHTML = 'Données manquantes';
+updateLampColor(0);
 return;
 }
 let objectifMensuel = netuberData.objectifMensuel || 1;
@@ -434,10 +451,12 @@ reportDate = new Date(latestReport.createdAt);
 reportDate = new Date();
 }
 document.getElementById('scoreDate').innerHTML = reportDate.toLocaleDateString('fr-FR');
+updateLampColor(totalScore);
 } catch(error) {
 document.getElementById('netuberScore').innerHTML = '--';
 document.getElementById('scoreEmoji').innerHTML = '❌';
 document.getElementById('scoreDate').innerHTML = 'Erreur';
+updateLampColor(0);
 }
 }
 function showPopup(title, message, leftText, rightText, onLeftClick, onRightClick, rightClass='primary'){
@@ -508,7 +527,7 @@ this.classList.add('expanded');
 if(this.timeoutId) clearTimeout(this.timeoutId);
 this.timeoutId = setTimeout(() => {
 this.classList.remove('expanded');
-}, 7000);
+}, 8000);
 });
 onAuthStateChanged(auth,async(user)=>{if(user)await initUser(user);else window.location.href="login.html";});
 </script>
