@@ -371,89 +371,118 @@ function showFlyPopup(panel,letter,color,platform,url){pendingPanel=panel;pendin
 let currentUserIdForOffers = null;
 function openOffersPopup() {document.getElementById('offersPopup').classList.add('active');}
 
-// FONCTION RENDEMENT CORRIGÉE - Version adaptée à votre structure Firebase
+// FONCTION RENDEMENT CORRIGÉE - Version compatible avec la structure du PGCO
 async function calculateAndDisplayScore() {
     if(!currentUser) return;
     
     try {
         const userSnap = await getDoc(userDocRef);
         if(!userSnap.exists()) {
-            console.log("User document not found");
+            document.getElementById('netuberScore').innerHTML = '--';
+            document.getElementById('scoreEmoji').innerHTML = '⚪';
+            document.getElementById('scoreDate').innerHTML = 'Compte invalide';
             return;
         }
         
         const netuberCode = userSnap.data().code;
         if(!netuberCode) {
-            console.log("No netuber code found");
+            document.getElementById('netuberScore').innerHTML = '--';
+            document.getElementById('scoreEmoji').innerHTML = '⚠️';
+            document.getElementById('scoreDate').innerHTML = 'Code manquant';
             return;
         }
         
-        // Requête pour trouver le report avec le code correspondant
-        const reportsQuery = query(collection(db, "reports"), where("code", "==", netuberCode), orderBy("createdAt", "desc"), limit(1));
+        // Récupérer le dernier report
+        const reportsQuery = query(collection(db, "reports"), orderBy("createdAt", "desc"), limit(1));
         const snapshot = await getDocs(reportsQuery);
         
         if(snapshot.empty) {
-            console.log("No report found for code:", netuberCode);
             document.getElementById('netuberScore').innerHTML = '--';
-            document.getElementById('scoreEmoji').innerHTML = '⚪';
-            document.getElementById('scoreDate').innerHTML = 'En attente données';
+            document.getElementById('scoreEmoji').innerHTML = '📭';
+            document.getElementById('scoreDate').innerHTML = 'Aucun rapport';
             return;
         }
         
         const latestReport = snapshot.docs[0].data();
         
-        // Récupération directe des valeurs depuis le document
-        const objectifMensuel = latestReport.objectifMensuel || 1;
-        const objectifAtteint = latestReport.objectifAtteint || 0;
-        const nbNiveaux = latestReport.nbNiveaux || 1;
-        const nbNiveauxAtteints = latestReport.nbNiveauxAtteints || 0;
-        const pointsJour = latestReport.pointsJour || 0;
-        const tempsJour = latestReport.tempsJour || 0;
+        // 🔥 CORRECTION IMPORTANTE - Chercher dans le tableau "netubers"
+        let netuberData = null;
         
-        // Calcul des pourcentages
-        const objPercent = Math.min(100, (objectifAtteint / objectifMensuel) * 100);
-        const objScore = objPercent * 0.35;
-        
-        const lvlPercent = Math.min(100, (nbNiveauxAtteints / nbNiveaux) * 100);
-        const lvlScore = lvlPercent * 0.25;
-        
-        // Récupération du max de points pour le calcul
-        const allReportsQuery = query(collection(db, "reports"), orderBy("createdAt", "desc"), limit(50));
-        const allSnapshot = await getDocs(allReportsQuery);
-        let maxPoints = 1;
-        if(!allSnapshot.empty){
-            let maxFound = 0;
-            allSnapshot.forEach(doc => {
-                const data = doc.data();
-                if(data.pointsJour && data.pointsJour > maxFound) maxFound = data.pointsJour;
-            });
-            maxPoints = maxFound > 0 ? maxFound : 1;
+        // Vérifier si le tableau netubers existe et chercher le bon code
+        if(latestReport.netubers && Array.isArray(latestReport.netubers)) {
+            netuberData = latestReport.netubers.find(n => n.code === netuberCode);
         }
         
-        const pointsPercent = Math.min(100, (pointsJour / maxPoints) * 100);
-        const pointsScore = pointsPercent * 0.30;
+        // Si pas trouvé dans netubers, essayer à la racine (fallback)
+        if(!netuberData && latestReport.code === netuberCode) {
+            netuberData = latestReport;
+        }
         
-        const tempsPercent = Math.min(100, (tempsJour / 480) * 100);
-        const tempsScore = tempsPercent * 0.10;
+        if(!netuberData) {
+            console.log("Netuber non trouvé:", netuberCode);
+            document.getElementById('netuberScore').innerHTML = '--';
+            document.getElementById('scoreEmoji').innerHTML = '🔍';
+            document.getElementById('scoreDate').innerHTML = 'Données manquantes';
+            return;
+        }
         
-        let totalScore = objScore + lvlScore + pointsScore + tempsScore;
-        totalScore = Math.min(100, Math.max(0, totalScore));
+        // Extraire les valeurs depuis l'objet trouvé
+        let objectifMensuel = netuberData.objectifMensuel || 1;
+        let objectifAtteint = netuberData.objectifAtteint || 0;
+        let nbNiveaux = netuberData.nbNiveaux || 1;
+        let nbNiveauxAtteints = netuberData.nbNiveauxAtteints || 0;
+        let pointsJour = netuberData.pointsJour || 0;
+        let tempsJour = netuberData.tempsJour || 0;
+        
+        // Éviter les divisions par zéro
+        if(objectifMensuel <= 0) objectifMensuel = 1;
+        if(nbNiveaux <= 0) nbNiveaux = 1;
+        
+        // Calcul du score
+        let objPercent = (objectifAtteint / objectifMensuel) * 100;
+        objPercent = Math.min(100, Math.max(0, objPercent));
+        
+        let lvlPercent = (nbNiveauxAtteints / nbNiveaux) * 100;
+        lvlPercent = Math.min(100, Math.max(0, lvlPercent));
+        
+        // Pour les points : trouver le max dans tous les netubers du report
+        let maxPoints = 1;
+        if(latestReport.netubers && Array.isArray(latestReport.netubers) && latestReport.netubers.length > 0) {
+            const pointsList = latestReport.netubers.map(n => n.pointsJour || 0);
+            maxPoints = Math.max(...pointsList, 1);
+        }
+        let pointsPercent = (pointsJour / maxPoints) * 100;
+        pointsPercent = Math.min(100, Math.max(0, pointsPercent));
+        
+        // Temps sur 480 minutes (8h)
+        let tempsPercent = (tempsJour / 480) * 100;
+        tempsPercent = Math.min(100, Math.max(0, tempsPercent));
+        
+        // Pondération
+        let totalScore = (objPercent * 0.35) + (lvlPercent * 0.25) + (pointsPercent * 0.30) + (tempsPercent * 0.10);
+        totalScore = Math.min(100, Math.max(0, Math.round(totalScore)));
         
         // Affichage
-        document.getElementById('netuberScore').innerHTML = Math.round(totalScore) + '%';
-        const emoji = totalScore >= 50 ? '🟢' : '🔴';
-        document.getElementById('scoreEmoji').innerHTML = emoji;
+        document.getElementById('netuberScore').innerHTML = totalScore + '%';
+        document.getElementById('scoreEmoji').innerHTML = totalScore >= 50 ? '🟢' : '🔴';
         
-        const reportDate = latestReport.createdAt?.toDate?.() || new Date();
+        let reportDate;
+        if(latestReport.createdAt) {
+            if(typeof latestReport.createdAt.toDate === 'function') {
+                reportDate = latestReport.createdAt.toDate();
+            } else {
+                reportDate = new Date(latestReport.createdAt);
+            }
+        } else {
+            reportDate = new Date();
+        }
         document.getElementById('scoreDate').innerHTML = reportDate.toLocaleDateString('fr-FR');
         
-        console.log("Score calculé:", Math.round(totalScore) + "%", "pour code:", netuberCode);
-        
     } catch(error) {
-        console.error("Erreur calcul rendement:", error);
+        console.error("Erreur:", error);
         document.getElementById('netuberScore').innerHTML = '--';
-        document.getElementById('scoreEmoji').innerHTML = '⚠️';
-        document.getElementById('scoreDate').innerHTML = 'Erreur calcul';
+        document.getElementById('scoreEmoji').innerHTML = '❌';
+        document.getElementById('scoreDate').innerHTML = 'Erreur';
     }
 }
 
