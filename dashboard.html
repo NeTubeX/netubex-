@@ -25,6 +25,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 .online-status{display:flex;align-items:center;gap:6px;background:rgba(16,185,129,0.15);padding:3px 10px;border-radius:20px;font-size:0.7rem;color:#10b981;}
 .blinking-dot{width:8px;height:8px;background:#10b981;border-radius:50%;animation:blink 1.2s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.score-floating{position:fixed;left:20px;bottom:100px;background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:20px;padding:10px 14px;text-align:center;z-index:150;border:1px solid rgba(250,204,21,0.3);box-shadow:0 4px 15px rgba(0,0,0,0.3);backdrop-filter:blur(10px);min-width:90px;cursor:pointer;transition:transform 0.2s;}
+.score-floating:hover{transform:scale(1.05);}
+.score-label{font-size:0.6rem;color:#b0b3b8;letter-spacing:0.5px;}
+.score-value{font-size:1.6rem;font-weight:800;color:#facc15;line-height:1.2;}
+.score-emoji{font-size:1rem;margin-top:4px;}
+.score-date{font-size:0.5rem;color:#7dd3fc;margin-top:5px;opacity:0.8;}
 .feed-container{max-width:680px;margin:0 auto;padding-bottom:1rem;}
 .feed-separator{height:1px;background:linear-gradient(90deg,transparent,#3e4042,transparent);margin:0 16px 16px;}
 .games-list{display:flex;flex-direction:column;gap:8px;}
@@ -176,6 +182,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 </div>
 </header>
 
+<div class="score-floating" id="scoreFloating">
+    <div class="score-label">📊 RENDEMENT</div>
+    <div class="score-value" id="netuberScore">--</div>
+    <div class="score-emoji" id="scoreEmoji">⚪</div>
+    <div class="score-date" id="scoreDate">--</div>
+</div>
+
 <div class="feed-container">
     <div class="feed-separator"></div>
     <div class="games-list" id="gamesContainer"></div>
@@ -325,7 +338,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 {"imports":{"firebase/app":"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js","firebase/auth":"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js","firebase/firestore":"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"}}
 </script>
 <script type="module">
-import{initializeApp}from"firebase/app";import{getAuth,onAuthStateChanged,signOut}from"firebase/auth";import{getFirestore,doc,getDoc,updateDoc,arrayUnion,onSnapshot,collection,addDoc}from"firebase/firestore";
+import{initializeApp}from"firebase/app";import{getAuth,onAuthStateChanged,signOut}from"firebase/auth";import{getFirestore,doc,getDoc,updateDoc,arrayUnion,onSnapshot,collection,addDoc,query,where,orderBy,limit,getDocs}from"firebase/firestore";
 const firebaseConfig={apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);
 let currentUser=null,userDocRef=null,currentTickets=[],currentCaps=[],pendingPanel=null,pendingPlatform=null,pendingTargetUrl=null,popupOpenTime=null,pageLoadTime=Date.now(),userLastMenuOpen=null,userReadCapsIds=[],userReadTicketResponseIds=[];
@@ -362,7 +375,56 @@ let currentUserIdForOffers = null;
 function openOffersPopup() {
     document.getElementById('offersPopup').classList.add('active');
 }
-async function initUser(user){if(!user)return;let deviceId=getDeviceUniqueId();currentUser=user;userDocRef=doc(db,"users",user.uid);let snap=await getDoc(userDocRef);if(!snap.exists()){showToast("❌ Compte invalide","error");await signOut(auth);window.location.href="login.html";return;}let userData=snap.data();currentUserIdForOffers = user.uid;if(!userData.deviceId){await updateDoc(userDocRef,{deviceId:deviceId});showToast("✅ Terminal associé avec succès","success");await sendSecurityAlert('new_device_linked',userData.email,{level:'info',netuberCode:userData.code,netuberId:user.uid,message:`Nouveau terminal pour ${userData.code}`,registeredDeviceId:deviceId});}else if(userData.deviceId!==deviceId){showToast("❌ Terminal non autorisé. Contactez le Pôle Technique","error");await sendSecurityAlert('device_mismatch',userData.email,{level:'critical',netuberCode:userData.code,netuberId:user.uid,message:`Terminal mismatch ${userData.code}`,registeredDeviceId:userData.deviceId,attemptedDeviceId:deviceId});await signOut(auth);setTimeout(()=>{window.location.href="login.html";},2000);return;}await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(()=>{});document.getElementById('userCodeDisplay').textContent=userData.code||"NETUBER";userLastMenuOpen=userData.lastMenuOpen||new Date(0).toISOString();userReadCapsIds=userData.readCapsIds||[];userReadTicketResponseIds=userData.readTicketResponseIds||[];renderGames();listenToTicketsAndCaps();setInterval(()=>updateOnlineStatus(),30000);}
+async function calculateAndDisplayScore() {
+    if(!currentUser) return;
+    const userSnap=await getDoc(userDocRef);
+    if(!userSnap.exists()) return;
+    const netuberCode=userSnap.data().code;
+    if(!netuberCode) return;
+    const reportsQuery=query(collection(db,"reports"),where("netuberCode","==",netuberCode),orderBy("createdAt","desc"),limit(1));
+    const snapshot=await getDocs(reportsQuery);
+    if(snapshot.empty){
+        document.getElementById('netuberScore').innerHTML='--';
+        document.getElementById('scoreEmoji').innerHTML='⚪';
+        document.getElementById('scoreDate').innerHTML='Aucun rapport';
+        return;
+    }
+    const latestReport=snapshot.docs[0].data();
+    const netuberData=latestReport.netubers?.find(n=>n.code===netuberCode);
+    if(!netuberData){
+        document.getElementById('netuberScore').innerHTML='--';
+        document.getElementById('scoreEmoji').innerHTML='⚪';
+        document.getElementById('scoreDate').innerHTML='Données manquantes';
+        return;
+    }
+    const allReportsQuery=query(collection(db,"reports"),orderBy("createdAt","desc"),limit(1));
+    const allSnapshot=await getDocs(allReportsQuery);
+    let maxPoints=1;
+    if(!allSnapshot.empty){
+        const latestAll=allSnapshot.docs[0].data();
+        if(latestAll.netubers && latestAll.netubers.length>0){
+            maxPoints=Math.max(...latestAll.netubers.map(n=>n.pointsJour||0));
+            if(maxPoints===0) maxPoints=1;
+        }
+    }
+    const objPercent=Math.min(100,(netuberData.objectifAtteint||0)/(netuberData.objectifMensuel||1)*100);
+    const objScore=objPercent*0.35;
+    const lvlPercent=Math.min(100,(netuberData.nbNiveauxAtteints||0)/(netuberData.nbNiveaux||1)*100);
+    const lvlScore=lvlPercent*0.25;
+    const pointsPercent=Math.min(100,((netuberData.pointsJour||0)/maxPoints)*100);
+    const pointsScore=pointsPercent*0.30;
+    const tempsPercent=Math.min(100,((netuberData.tempsJour||0)/480)*100);
+    const tempsScore=tempsPercent*0.10;
+    let totalScore=objScore+lvlScore+pointsScore+tempsScore;
+    totalScore=Math.min(100,Math.max(0,totalScore));
+    document.getElementById('netuberScore').innerHTML=Math.round(totalScore)+'%';
+    const emoji=totalScore>=50?'🟢':'🔴';
+    document.getElementById('scoreEmoji').innerHTML=emoji;
+    const reportDate=latestReport.createdAt?.toDate?.()||new Date(latestReport.createdAt);
+    document.getElementById('scoreDate').innerHTML=reportDate.toLocaleDateString('fr-FR');
+}
+async function initUser(user){if(!user)return;let deviceId=getDeviceUniqueId();currentUser=user;userDocRef=doc(db,"users",user.uid);let snap=await getDoc(userDocRef);if(!snap.exists()){showToast("❌ Compte invalide","error");await signOut(auth);window.location.href="login.html";return;}let userData=snap.data();currentUserIdForOffers=user.uid;if(!userData.deviceId){await updateDoc(userDocRef,{deviceId:deviceId});showToast("✅ Terminal associé avec succès","success");await sendSecurityAlert('new_device_linked',userData.email,{level:'info',netuberCode:userData.code,netuberId:user.uid,message:`Nouveau terminal pour ${userData.code}`,registeredDeviceId:deviceId});}else if(userData.deviceId!==deviceId){showToast("❌ Terminal non autorisé. Contactez le Pôle Technique","error");await sendSecurityAlert('device_mismatch',userData.email,{level:'critical',netuberCode:userData.code,netuberId:user.uid,message:`Terminal mismatch ${userData.code}`,registeredDeviceId:userData.deviceId,attemptedDeviceId:deviceId});await signOut(auth);setTimeout(()=>{window.location.href="login.html";},2000);return;}await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(()=>{});document.getElementById('userCodeDisplay').textContent=userData.code||"NETUBER";userLastMenuOpen=userData.lastMenuOpen||new Date(0).toISOString();userReadCapsIds=userData.readCapsIds||[];userReadTicketResponseIds=userData.readTicketResponseIds||[];renderGames();listenToTicketsAndCaps();setInterval(()=>updateOnlineStatus(),30000);await calculateAndDisplayScore();
+const reportsUnsubscribe=onSnapshot(collection(db,"reports"),()=>{calculateAndDisplayScore();});}
 async function performLogout(){if(currentUser&&userDocRef){let userSnap=await getDoc(userDocRef);let userData=userSnap.data();await sendSecurityAlert('logout',userData?.email,{level:'info',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`Déconnexion de ${userData?.code||currentUser?.email}`,sessionDuration:Math.floor((Date.now()-pageLoadTime)/1000)});await updateDoc(userDocRef,{isOnline:false,lastDisconnection:new Date().toISOString()}).catch(()=>{});}await signOut(auth);window.location.href="login.html";}
 document.getElementById('closeTicketsPopupBtn')?.addEventListener('click',()=>{document.getElementById('ticketsListPopup').classList.remove('active');});
 document.getElementById('closeTicketFormBtn')?.addEventListener('click',()=>{document.getElementById('ticketFormPopup').classList.remove('active');document.getElementById('ticketSubjectSelect').value='';document.getElementById('ticketPriority').value='moyenne';});
