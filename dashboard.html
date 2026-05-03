@@ -423,7 +423,35 @@ async function calculateAndDisplayScore() {
     const reportDate=latestReport.createdAt?.toDate?.()||new Date(latestReport.createdAt);
     document.getElementById('scoreDate').innerHTML=reportDate.toLocaleDateString('fr-FR');
 }
-async function initUser(user){if(!user)return;let deviceId=getDeviceUniqueId();currentUser=user;userDocRef=doc(db,"users",user.uid);let snap=await getDoc(userDocRef);if(!snap.exists()){showToast("❌ Compte invalide","error");await signOut(auth);window.location.href="login.html";return;}let userData=snap.data();currentUserIdForOffers=user.uid;if(!userData.deviceId){await updateDoc(userDocRef,{deviceId:deviceId});showToast("✅ Terminal associé avec succès","success");await sendSecurityAlert('new_device_linked',userData.email,{level:'info',netuberCode:userData.code,netuberId:user.uid,message:`Nouveau terminal pour ${userData.code}`,registeredDeviceId:deviceId});}else if(userData.deviceId!==deviceId){showToast("❌ Terminal non autorisé. Contactez le Pôle Technique","error");await sendSecurityAlert('device_mismatch',userData.email,{level:'critical',netuberCode:userData.code,netuberId:user.uid,message:`Terminal mismatch ${userData.code}`,registeredDeviceId:userData.deviceId,attemptedDeviceId:deviceId});await signOut(auth);setTimeout(()=>{window.location.href="login.html";},2000);return;}await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(()=>{});document.getElementById('userCodeDisplay').textContent=userData.code||"NETUBER";userLastMenuOpen=userData.lastMenuOpen||new Date(0).toISOString();userReadCapsIds=userData.readCapsIds||[];userReadTicketResponseIds=userData.readTicketResponseIds||[];renderGames();listenToTicketsAndCaps();setInterval(()=>updateOnlineStatus(),30000);await calculateAndDisplayScore();
+let popupOverlay, popupTitle, popupMessageDiv, popupBtnLeft, popupBtnRight;
+function initPopupElements(){
+    popupOverlay=document.getElementById('popupOverlay');
+    popupTitle=document.getElementById('popupTitle');
+    popupMessageDiv=document.getElementById('popupMessage');
+    popupBtnLeft=document.getElementById('popupBtnLeft');
+    popupBtnRight=document.getElementById('popupBtnRight');
+}
+function showPopup(title, message, leftText, rightText, onLeftClick, onRightClick, rightClass='primary'){
+    popupTitle.textContent=title;
+    popupMessageDiv.innerHTML=message.replace(/\n/g,'<br>');
+    popupBtnLeft.textContent=leftText||'';
+    popupBtnRight.textContent=rightText;
+    if(leftText){
+        popupBtnLeft.style.display='flex';
+        popupBtnLeft.onclick=()=>{
+            popupOverlay.classList.remove('active');
+            if(onLeftClick) onLeftClick();
+        };
+    } else {
+        popupBtnLeft.style.display='none';
+    }
+    popupBtnRight.onclick=()=>{
+        popupOverlay.classList.remove('active');
+        if(onRightClick) onRightClick();
+    };
+    popupOverlay.classList.add('active');
+}
+async function initUser(user){if(!user)return;let deviceId=getDeviceUniqueId();currentUser=user;userDocRef=doc(db,"users",user.uid);let snap=await getDoc(userDocRef);if(!snap.exists()){showToast("❌ Compte invalide","error");await signOut(auth);window.location.href="login.html";return;}let userData=snap.data();currentUserIdForOffers=user.uid;if(!userData.deviceId){await updateDoc(userDocRef,{deviceId:deviceId});showToast("✅ Terminal associé avec succès","success");await sendSecurityAlert('new_device_linked',userData.email,{level:'info',netuberCode:userData.code,netuberId:user.uid,message:`Nouveau terminal pour ${userData.code}`,registeredDeviceId:deviceId});}else if(userData.deviceId!==deviceId){const message=`ACCÈS REFUSÉ\n\nCes identifiants n'appartiennent pas à ce terminal.\nIls sont associés à un autre terminal.\n\nContacter le pôle technique pour plus d'informations.`;showPopup("ACCÈS BLOQUÉ",message,"","Déconnexion",null,async()=>{await sendSecurityAlert('device_mismatch',userData.email,{level:'critical',netuberCode:userData.code,netuberId:user.uid,message:`Tentative de connexion depuis un terminal non autorisé pour ${userData.code}`,registeredDeviceId:userData.deviceId,attemptedDeviceId:deviceId});await signOut(auth);window.location.href="login.html";},'primary');return;}await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(()=>{});document.getElementById('userCodeDisplay').textContent=userData.code||"NETUBER";userLastMenuOpen=userData.lastMenuOpen||new Date(0).toISOString();userReadCapsIds=userData.readCapsIds||[];userReadTicketResponseIds=userData.readTicketResponseIds||[];renderGames();listenToTicketsAndCaps();setInterval(()=>updateOnlineStatus(),30000);await calculateAndDisplayScore();
 const reportsUnsubscribe=onSnapshot(collection(db,"reports"),()=>{calculateAndDisplayScore();});}
 async function performLogout(){if(currentUser&&userDocRef){let userSnap=await getDoc(userDocRef);let userData=userSnap.data();await sendSecurityAlert('logout',userData?.email,{level:'info',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`Déconnexion de ${userData?.code||currentUser?.email}`,sessionDuration:Math.floor((Date.now()-pageLoadTime)/1000)});await updateDoc(userDocRef,{isOnline:false,lastDisconnection:new Date().toISOString()}).catch(()=>{});}await signOut(auth);window.location.href="login.html";}
 document.getElementById('closeTicketsPopupBtn')?.addEventListener('click',()=>{document.getElementById('ticketsListPopup').classList.remove('active');});
@@ -462,6 +490,7 @@ document.addEventListener('click', function(e) {
         if(url) window.open(url, '_blank');
     }
 });
+initPopupElements();
 onAuthStateChanged(auth,async(user)=>{if(user)await initUser(user);else window.location.href="login.html";});
 </script>
 </body>
