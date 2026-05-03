@@ -130,7 +130,7 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 <div id="menuFloating" class="menu-floating"><div class="menu-header"><strong><i class="fas fa-bars"></i> Menu</strong></div><div class="menu-item" id="menuConversionBtn"><i class="fas fa-exchange-alt"></i> Conversion</div><div class="menu-item" id="menuCapBtn"><i class="fas fa-chart-line"></i> CAP du jour</div><div class="menu-item" id="menuProfileBtn"><i class="fas fa-user"></i> Mon profil</div><div class="menu-item" id="menuTicketsBtn"><i class="fas fa-ticket-alt"></i> Mes tickets</div><div class="menu-item" id="menuBonusBtn"><i class="fas fa-gift"></i> Parrainage (10%)</div><div class="menu-item" id="menuWithdrawBtn"><i class="fas fa-money-bill-wave"></i> Retirer</div><div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div></div>
 <div id="flyPopup" class="fly-popup"><div class="fly-popup-inner"><div class="popup-letter" id="popupLetter">A</div><h3 id="popupTitle">Panel A</h3><p id="popupMessage">Votre session dans l'espace de rémunération digitale va commencer...</p><p style="font-size:0.75rem; margin-bottom:1rem;">Êtes-vous sûr de vouloir continuer ?</p><div class="popup-buttons" id="popupButtons"></div></div></div>
 <div id="gameChoicePopup" class="fly-popup"><div class="fly-popup-inner"><div class="popup-letter" style="background:#3b82f6;">🎮</div><h3>Choix requis</h3><p>Veuillez choisir entre le Panel A et le Panel B pour commencer votre session adaptée à votre localisation.</p><div class="popup-buttons"><button class="btn-yes-a" id="goToPanelA">Panel A</button><button class="btn-yes-b" id="goToPanelB">Panel B</button><button class="btn-no" id="closeGamePopup">Fermer</button></div></div></div>
-<div id="conversionModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-exchange-alt"></i> Conversion</h3><button class="modal-close" id="closeConversionModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="conversion-card"><div class="conversion-rate">500 X = 0.03 $</div><div class="conversion-desc">Taux de conversion officiel</div><div class="conversion-note"><p><i class="fas fa-info-circle"></i> Les points X sont accumulés via les panels rémunérateurs. Une fois 500 X atteints, vous pouvez les convertir en argent réel via le bouton "Retirer".</p></div></div></div><div class="modal-footer"><button class="btn-cancel" id="closeConversionFooterBtn">Fermer</button></div></div></div>
+<div id="conversionModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-exchange-alt"></i> Conversion</h3><button class="modal-close" id="closeConversionModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="conversion-card"><div class="conversion-rate">500 points = 0.03 $</div><div class="conversion-desc">Taux de conversion officiel</div><div class="conversion-note"><p><i class="fas fa-info-circle"></i> Les points sont accumulés via les panels rémunérateurs. Une fois 500 points atteints, vous pouvez les convertir en argent réel via le bouton "Retirer".</p></div></div></div><div class="modal-footer"><button class="btn-cancel" id="closeConversionFooterBtn">Fermer</button></div></div></div>
 <div id="capModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-chart-line"></i> CAP du jour</h3><button class="modal-close" id="closeCapModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><p id="capMessage">Chargement...</p></div><div class="modal-footer"><button class="btn-cancel" id="closeCapFooterBtn">Fermer</button></div></div></div>
 <div id="profileModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-user"></i> Mon profil</h3><button class="modal-close" id="closeProfileModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div style="background:#1a2a45;border-radius:12px;padding:12px;margin-bottom:12px;"><p><strong>Email :</strong> <span id="profileEmail">-</span></p><p style="margin-top:8px;"><strong>Code parrainage :</strong> <span id="profileCode">-</span></p></div><div class="input-group"><label>Ancien mot de passe</label><input type="password" id="oldPassword" placeholder="Entrez votre mot de passe actuel"></div><div class="input-group"><label>Nouveau mot de passe</label><input type="password" id="newPassword" placeholder="Min 6 caractères"></div><div class="input-group"><label>Confirmer nouveau mot de passe</label><input type="password" id="confirmNewPassword" placeholder="Retapez le nouveau mot de passe"></div></div><div class="modal-footer"><button class="btn-confirm" id="updatePasswordBtn">Mettre à jour</button><button class="btn-cancel" id="cancelProfileBtn">Fermer</button></div></div></div>
 <div id="ticketsModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3>Mes tickets</h3><button class="modal-close" id="closeTicketsModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><button class="btn-confirm" id="newTicketBtn" style="width:100%;margin-bottom:12px;">+ Nouveau ticket</button><div id="ticketsListContainer"></div></div><div class="modal-footer"><button class="btn-cancel" id="cancelTicketsBtn">Fermer</button></div></div></div>
@@ -178,19 +178,15 @@ function closeModal(id){
   document.getElementById(id).classList.remove('active');
 }
 
-// ============== CALCUL DE LA BALANCE PAR SOMME DES TRANSACTIONS ==============
 async function calculateBalanceFromTransactions() {
   if (!currentUser) return 0;
-  
   const transactionsRef = collection(db, "users", currentUser.uid, "transactions");
   const snapshot = await getDocs(transactionsRef);
-  
   let balance = 0;
   snapshot.forEach(doc => {
     const amount = doc.data().amount || 0;
     balance += amount;
   });
-  
   return balance;
 }
 
@@ -202,18 +198,14 @@ async function updateBalanceDisplay() {
   return balance;
 }
 
-// Listener temps réel sur les transactions
 function startTransactionsListener() {
   if (!currentUser) return;
-  
   const transactionsRef = collection(db, "users", currentUser.uid, "transactions");
-  
   unsubscribeTransactions = onSnapshot(transactionsRef, async (snapshot) => {
     let totalBalance = 0;
     snapshot.forEach(doc => {
       totalBalance += doc.data().amount || 0;
     });
-    
     document.getElementById('balanceAmount').innerText = totalBalance.toFixed(4);
     document.getElementById('currentBalanceDisplay').innerText = totalBalance.toFixed(4) + ' $';
   });
@@ -306,46 +298,44 @@ async function loadCapMessage(){
   document.getElementById('capMessage').innerHTML = cap.replace(/\n/g,'<br>');
 }
 
-// ============== RETRAIT SIMPLIFIÉ (SANS VÉRIFICATION 24h) ==============
+async function getFirestoreUserId() {
+  if (!currentUser) return null;
+  const userDoc = await getDoc(userDocRef);
+  if (userDoc.exists()) {
+    return userDoc.data().userId || userDoc.data().customId || userDoc.data().numericId || userDoc.data().uniqueId || currentUser.uid;
+  }
+  return currentUser.uid;
+}
+
 async function submitWithdraw(){
   const submitBtn = document.getElementById('submitWithdrawBtn');
   const originalText = submitBtn.innerHTML;
-  
   if(!selectedMethod){
     showToast('Méthode requise', 'Veuillez choisir Airtel Money, Orange Money ou PayPal', 'error');
     return;
   }
-  
   const amount = parseFloat(document.getElementById('withdrawAmount').value);
-  
   if(isNaN(amount) || amount <= 0){
     showToast('Montant invalide', 'Veuillez entrer un montant valide', 'error');
     return;
   }
-  
   submitBtn.disabled = true;
   submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement...';
-  
   try {
-    // Vérifications PayPal
     if(selectedMethod === 'paypal' && amount < 10){
       showToast('Montant invalide', 'PayPal nécessite un minimum de 10$', 'error');
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalText;
       return;
     }
-    
     if(amount < 1){
       showToast('Montant invalide', 'Le montant minimum est de 1$', 'error');
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalText;
       return;
     }
-    
-    // Récupérer wallet
     let wallet;
     let methodName = '';
-    
     if(selectedMethod === 'paypal'){
       wallet = document.getElementById('paypalEmail').value.trim();
       methodName = 'PayPal';
@@ -367,20 +357,14 @@ async function submitWithdraw(){
       wallet = countryCode + phoneNumber;
       methodName = selectedMethod === 'airtel_money' ? 'Airtel Money' : 'Orange Money';
     }
-    
-    // Vérifier solde (calculé depuis les transactions)
     const currentBalance = await calculateBalanceFromTransactions();
-    
     if(amount > currentBalance){
       showToast('Solde insuffisant', `Votre solde est de ${currentBalance.toFixed(2)}$`, 'error');
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalText;
       return;
     }
-    
-    // Créer une transaction NEGATIVE pour débiter
     const negativeTxId = `withdraw_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
-    
     await setDoc(doc(db, "users", currentUser.uid, "transactions", negativeTxId), {
       amount: -amount,
       revenue: 0,
@@ -390,21 +374,15 @@ async function submitWithdraw(){
       methodName: methodName,
       wallet: wallet
     });
-    
     showToast('✅ Demande envoyée', `${amount.toFixed(2)}$ seront débités de votre solde. Le virement sera traité sous 48h.`, 'success');
-    
     closeModal('withdrawModal');
-    
-    // Réinitialisation
     document.getElementById('withdrawAmount').value = '';
     document.getElementById('walletAddress').value = '';
     document.getElementById('paypalEmail').value = '';
     selectedMethod = null;
-    
     document.querySelectorAll('.method-option').forEach(o => {
       o.classList.remove('selected-airtel', 'selected-orange', 'selected-paypal');
     });
-    
   } catch(error) {
     console.error("Erreur détaillée:", error);
     showToast('Erreur', "Impossible d'effectuer le retrait. Réessayez plus tard.", 'error');
@@ -414,12 +392,10 @@ async function submitWithdraw(){
   }
 }
 
-// ============== INITIALISATION UTILISATEUR ==============
 async function initUser(user){
   currentUser = user;
   userDocRef = doc(db, "users", user.uid);
   const snap = await getDoc(userDocRef);
-  
   if(!snap.exists()){
     const refCode = "NX" + Math.random().toString(36).substring(2,10).toUpperCase();
     await setDoc(userDocRef, {
@@ -435,50 +411,53 @@ async function initUser(user){
       ticketsList: [],
       capDuJour: "📊 CAP DU JOUR\n\n• Jouer aux jeux\n• Inviter des amis (10% de leurs gains)\n• Bonne journée !"
     });
-    
-    // Bonus de bienvenue : ajouter 0.20$ en transaction
     await setDoc(doc(db, "users", user.uid, "transactions", "welcome_bonus"), {
       amount: 0.20,
       revenue: 0,
       time: Date.now(),
       type: "bonus"
     });
-    
     showToast('Bienvenue !', '0.20$ vous ont été offerts pour votre inscription', 'success');
   } else {
     await updateDoc(userDocRef, { lastLogin: new Date().toISOString() });
   }
-  
   await updateBalanceDisplay();
   await renderGames();
   await loadCapMessage();
   startTransactionsListener();
 }
 
-// ============== ÉVÉNEMENTS ==============
 document.getElementById('balanceHeader')?.addEventListener('click', async () => {
   const balance = await calculateBalanceFromTransactions();
   showToast('Solde', `Votre solde actuel est de ${balance.toFixed(4)}$`, 'info');
 });
 
-document.getElementById('panelA')?.addEventListener('click', () => {
-  const msgPanelA = "📢 Vous serez dirigé vers les offres adaptées à votre localisation.<br><br>💰 Chaque offre complétée vous rapporte des points X.<br><br>📍 Taux de conversion : <strong style='color:#ffd700'>500 X = 0.03$</strong>";
-  showFlyPopup("Panel A", "A", "#10b981", "https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=", msgPanelA);
+document.getElementById('panelA')?.addEventListener('click', async () => {
+  if (!currentUser) return;
+  const userId = await getFirestoreUserId();
+  const msgPanelA = "📢 Vous serez dirigé vers les offres adaptées à votre localisation.<br><br>💰 Chaque offre complétée vous rapporte des points.<br><br>📍 Taux de conversion : <strong style='color:#ffd700'>500 points = 0.03$</strong>";
+  showFlyPopup("Panel A", "A", "#10b981", `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${userId}`, msgPanelA);
 });
 
-document.getElementById('panelB')?.addEventListener('click', () => {
-  showFlyPopup("Panel B", "B", "#3b82f6", "https://gemiwall.com/69f304688bb8875fc339fe24/", null);
+document.getElementById('panelB')?.addEventListener('click', async () => {
+  if (!currentUser) return;
+  const userId = await getFirestoreUserId();
+  showFlyPopup("Panel B", "B", "#3b82f6", `https://gemiwall.com/69f304688bb8875fc339fe24/${userId}`, null);
 });
 
-document.getElementById('goToPanelA')?.addEventListener('click', () => {
+document.getElementById('goToPanelA')?.addEventListener('click', async () => {
+  if (!currentUser) return;
   document.getElementById('gameChoicePopup').classList.remove('active');
-  const msgPanelA = "📢 Vous serez dirigé vers les offres adaptées à votre localisation.<br><br>💰 Chaque offre complétée vous rapporte des points X.<br><br>📍 Taux de conversion : <strong style='color:#ffd700'>500 X = 0.03$</strong>";
-  showFlyPopup("Panel A", "A", "#10b981", "https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=", msgPanelA);
+  const userId = await getFirestoreUserId();
+  const msgPanelA = "📢 Vous serez dirigé vers les offres adaptées à votre localisation.<br><br>💰 Chaque offre complétée vous rapporte des points.<br><br>📍 Taux de conversion : <strong style='color:#ffd700'>500 points = 0.03$</strong>";
+  showFlyPopup("Panel A", "A", "#10b981", `https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${userId}`, msgPanelA);
 });
 
-document.getElementById('goToPanelB')?.addEventListener('click', () => {
+document.getElementById('goToPanelB')?.addEventListener('click', async () => {
+  if (!currentUser) return;
   document.getElementById('gameChoicePopup').classList.remove('active');
-  showFlyPopup("Panel B", "B", "#3b82f6", "https://gemiwall.com/69f304688bb8875fc339fe24/", null);
+  const userId = await getFirestoreUserId();
+  showFlyPopup("Panel B", "B", "#3b82f6", `https://gemiwall.com/69f304688bb8875fc339fe24/${userId}`, null);
 });
 
 document.getElementById('closeGamePopup')?.addEventListener('click', () => {
@@ -562,7 +541,6 @@ document.getElementById('updatePasswordBtn')?.addEventListener('click', async ()
   if(newPassword.length<6){ showToast('Mot de passe trop court','6 caractères minimum requis','error'); return; }
   if(newPassword !== confirmNewPassword){ showToast('Confirmation incorrecte','Les nouveaux mots de passe ne correspondent pas','error'); return; }
   if(oldPassword === newPassword){ showToast('Mots de passe identiques','Le nouveau mot de passe doit être différent','error'); return; }
-  
   const updateBtn = document.getElementById('updatePasswordBtn');
   updateBtn.disabled = true;
   updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
