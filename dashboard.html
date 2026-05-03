@@ -25,16 +25,116 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 .online-status{display:flex;align-items:center;gap:5px;background:rgba(16,185,129,0.15);padding:2px 8px;border-radius:20px;font-size:0.65rem;color:#10b981;}
 .blinking-dot{width:8px;height:8px;background:#10b981;border-radius:50%;animation:blink 1.2s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
-.score-floating{position:fixed;left:20px;bottom:100px;background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:20px;padding:6px 12px;text-align:center;z-index:150;border:1px solid rgba(250,204,21,0.3);box-shadow:0 4px 15px rgba(0,0,0,0.3);backdrop-filter:blur(10px);min-width:65px;cursor:pointer;transition:all 0.3s cubic-bezier(0.34,1.2,0.64,1);}
-.score-floating.expanded{padding:15px 24px;min-width:140px;border-radius:24px;box-shadow:0 10px 30px rgba(0,0,0,0.5);}
-.score-label{font-size:0.55rem;color:#b0b3b8;letter-spacing:0.5px;transition:font-size 0.3s;white-space:nowrap;}
-.score-floating.expanded .score-label{font-size:0.75rem;}
-.score-value{font-size:1.2rem;font-weight:800;color:#facc15;line-height:1.2;transition:font-size 0.3s;}
-.score-floating.expanded .score-value{font-size:1.8rem;}
-.score-emoji{font-size:0.8rem;margin-top:2px;transition:font-size 0.3s;}
-.score-floating.expanded .score-emoji{font-size:1.2rem;margin-top:5px;}
-.score-date{font-size:0.45rem;color:#7dd3fc;margin-top:3px;opacity:0.8;transition:font-size 0.3s;}
-.score-floating.expanded .score-date{font-size:0.6rem;margin-top:5px;}
+
+/* NOUVEAU BOUTON RENDEMENT - Icône uniquement comme les autres boutons flottants */
+.score-floating {
+    position: fixed;
+    left: 20px;
+    bottom: 100px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #1e3a5f, #0f2d45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 150;
+    border: 1px solid rgba(250,204,21,0.3);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+    overflow: hidden;
+}
+
+/* Icône par défaut (cachée mais visible) */
+.score-icon-only {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #facc15;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+/* Contenu détaillé - caché par défaut */
+.score-details {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    white-space: nowrap;
+}
+
+/* Version expansée - devient rectangulaire */
+.score-floating.expanded {
+    width: auto;
+    min-width: 140px;
+    height: auto;
+    border-radius: 24px;
+    padding: 12px 18px;
+    background: linear-gradient(145deg, #1e3a5f, #0f2d45);
+}
+
+.score-floating.expanded .score-icon-only {
+    display: none;
+}
+
+.score-floating.expanded .score-details {
+    position: relative;
+    opacity: 1;
+    visibility: visible;
+}
+
+.score-label {
+    font-size: 0.65rem;
+    color: #b0b3b8;
+    letter-spacing: 0.5px;
+}
+
+.score-value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #facc15;
+    line-height: 1.2;
+}
+
+.score-emoji {
+    font-size: 0.9rem;
+    margin-top: 2px;
+}
+
+.score-date {
+    font-size: 0.5rem;
+    color: #7dd3fc;
+    margin-top: 3px;
+    opacity: 0.8;
+}
+
+/* Redimensionnement pour les écrans très petits */
+@media (max-width: 480px) {
+    .score-floating {
+        left: 15px;
+        bottom: 90px;
+        width: 50px;
+        height: 50px;
+    }
+    .score-icon-only {
+        font-size: 1.4rem;
+    }
+    .score-floating.expanded {
+        min-width: 120px;
+        padding: 10px 14px;
+    }
+    .score-value {
+        font-size: 1.2rem;
+    }
+}
+
 .feed-container{max-width:680px;margin:0 auto;padding-bottom:1rem;}
 .feed-separator{height:1px;background:linear-gradient(90deg,transparent,#3e4042,transparent);margin:0 16px 16px;}
 .games-list{display:flex;flex-direction:column;gap:8px;}
@@ -186,11 +286,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 </div>
 </header>
 
+<!-- NOUVEAU BOUTON RENDEMENT - Icône uniquement par défaut -->
 <div class="score-floating" id="scoreFloating">
-    <div class="score-label">📊 RENDEMENT</div>
-    <div class="score-value" id="netuberScore">--</div>
-    <div class="score-emoji" id="scoreEmoji">⚪</div>
-    <div class="score-date" id="scoreDate">--</div>
+    <div class="score-icon-only">
+        <i class="fas fa-chart-simple"></i>
+    </div>
+    <div class="score-details">
+        <div class="score-label">📊 RENDEMENT</div>
+        <div class="score-value" id="netuberScore">--</div>
+        <div class="score-emoji" id="scoreEmoji">⚪</div>
+        <div class="score-date" id="scoreDate">--</div>
+    </div>
 </div>
 
 <div class="feed-container">
@@ -371,62 +477,47 @@ function showFlyPopup(panel,letter,color,platform,url){pendingPanel=panel;pendin
 let currentUserIdForOffers = null;
 function openOffersPopup() {document.getElementById('offersPopup').classList.add('active');}
 
-// FONCTION RENDEMENT CORRIGÉE - Version compatible avec la structure du PGCO
+// FONCTION RENDEMENT CORRIGÉE
 async function calculateAndDisplayScore() {
     if(!currentUser) return;
     
     try {
         const userSnap = await getDoc(userDocRef);
         if(!userSnap.exists()) {
-            document.getElementById('netuberScore').innerHTML = '--';
-            document.getElementById('scoreEmoji').innerHTML = '⚪';
-            document.getElementById('scoreDate').innerHTML = 'Compte invalide';
+            updateScoreDisplay('--', '⚪', 'Compte invalide');
             return;
         }
         
         const netuberCode = userSnap.data().code;
         if(!netuberCode) {
-            document.getElementById('netuberScore').innerHTML = '--';
-            document.getElementById('scoreEmoji').innerHTML = '⚠️';
-            document.getElementById('scoreDate').innerHTML = 'Code manquant';
+            updateScoreDisplay('--', '⚠️', 'Code manquant');
             return;
         }
         
-        // Récupérer le dernier report
         const reportsQuery = query(collection(db, "reports"), orderBy("createdAt", "desc"), limit(1));
         const snapshot = await getDocs(reportsQuery);
         
         if(snapshot.empty) {
-            document.getElementById('netuberScore').innerHTML = '--';
-            document.getElementById('scoreEmoji').innerHTML = '📭';
-            document.getElementById('scoreDate').innerHTML = 'Aucun rapport';
+            updateScoreDisplay('--', '📭', 'Aucun rapport');
             return;
         }
         
         const latestReport = snapshot.docs[0].data();
         
-        // 🔥 CORRECTION IMPORTANTE - Chercher dans le tableau "netubers"
         let netuberData = null;
-        
-        // Vérifier si le tableau netubers existe et chercher le bon code
         if(latestReport.netubers && Array.isArray(latestReport.netubers)) {
             netuberData = latestReport.netubers.find(n => n.code === netuberCode);
         }
         
-        // Si pas trouvé dans netubers, essayer à la racine (fallback)
         if(!netuberData && latestReport.code === netuberCode) {
             netuberData = latestReport;
         }
         
         if(!netuberData) {
-            console.log("Netuber non trouvé:", netuberCode);
-            document.getElementById('netuberScore').innerHTML = '--';
-            document.getElementById('scoreEmoji').innerHTML = '🔍';
-            document.getElementById('scoreDate').innerHTML = 'Données manquantes';
+            updateScoreDisplay('--', '🔍', 'Données manquantes');
             return;
         }
         
-        // Extraire les valeurs depuis l'objet trouvé
         let objectifMensuel = netuberData.objectifMensuel || 1;
         let objectifAtteint = netuberData.objectifAtteint || 0;
         let nbNiveaux = netuberData.nbNiveaux || 1;
@@ -434,37 +525,23 @@ async function calculateAndDisplayScore() {
         let pointsJour = netuberData.pointsJour || 0;
         let tempsJour = netuberData.tempsJour || 0;
         
-        // Éviter les divisions par zéro
         if(objectifMensuel <= 0) objectifMensuel = 1;
         if(nbNiveaux <= 0) nbNiveaux = 1;
         
-        // Calcul du score
-        let objPercent = (objectifAtteint / objectifMensuel) * 100;
-        objPercent = Math.min(100, Math.max(0, objPercent));
+        let objPercent = Math.min(100, Math.max(0, (objectifAtteint / objectifMensuel) * 100));
+        let lvlPercent = Math.min(100, Math.max(0, (nbNiveauxAtteints / nbNiveaux) * 100));
         
-        let lvlPercent = (nbNiveauxAtteints / nbNiveaux) * 100;
-        lvlPercent = Math.min(100, Math.max(0, lvlPercent));
-        
-        // Pour les points : trouver le max dans tous les netubers du report
         let maxPoints = 1;
         if(latestReport.netubers && Array.isArray(latestReport.netubers) && latestReport.netubers.length > 0) {
             const pointsList = latestReport.netubers.map(n => n.pointsJour || 0);
             maxPoints = Math.max(...pointsList, 1);
         }
-        let pointsPercent = (pointsJour / maxPoints) * 100;
-        pointsPercent = Math.min(100, Math.max(0, pointsPercent));
+        let pointsPercent = Math.min(100, Math.max(0, (pointsJour / maxPoints) * 100));
         
-        // Temps sur 480 minutes (8h)
-        let tempsPercent = (tempsJour / 480) * 100;
-        tempsPercent = Math.min(100, Math.max(0, tempsPercent));
+        let tempsPercent = Math.min(100, Math.max(0, (tempsJour / 480) * 100));
         
-        // Pondération
         let totalScore = (objPercent * 0.35) + (lvlPercent * 0.25) + (pointsPercent * 0.30) + (tempsPercent * 0.10);
         totalScore = Math.min(100, Math.max(0, Math.round(totalScore)));
-        
-        // Affichage
-        document.getElementById('netuberScore').innerHTML = totalScore + '%';
-        document.getElementById('scoreEmoji').innerHTML = totalScore >= 50 ? '🟢' : '🔴';
         
         let reportDate;
         if(latestReport.createdAt) {
@@ -476,14 +553,22 @@ async function calculateAndDisplayScore() {
         } else {
             reportDate = new Date();
         }
-        document.getElementById('scoreDate').innerHTML = reportDate.toLocaleDateString('fr-FR');
+        
+        updateScoreDisplay(totalScore + '%', totalScore >= 50 ? '🟢' : '🔴', reportDate.toLocaleDateString('fr-FR'));
         
     } catch(error) {
         console.error("Erreur:", error);
-        document.getElementById('netuberScore').innerHTML = '--';
-        document.getElementById('scoreEmoji').innerHTML = '❌';
-        document.getElementById('scoreDate').innerHTML = 'Erreur';
+        updateScoreDisplay('--', '❌', 'Erreur');
     }
+}
+
+function updateScoreDisplay(score, emoji, date) {
+    const scoreValue = document.getElementById('netuberScore');
+    const scoreEmoji = document.getElementById('scoreEmoji');
+    const scoreDate = document.getElementById('scoreDate');
+    if(scoreValue) scoreValue.innerHTML = score;
+    if(scoreEmoji) scoreEmoji.innerHTML = emoji;
+    if(scoreDate) scoreDate.innerHTML = date;
 }
 
 function showPopup(title, message, leftText, rightText, onLeftClick, onRightClick, rightClass='primary'){
@@ -513,7 +598,6 @@ if(onRightClick) onRightClick();
 popupOverlay.classList.add('active');
 }
 async function initUser(user){if(!user)return;currentUser=user;userDocRef=doc(db,"users",user.uid);let snap=await getDoc(userDocRef);if(!snap.exists()){showToast("❌ Compte invalide","error");await signOut(auth);window.location.href="login.html";return;}let userData=snap.data();currentUserIdForOffers=user.uid;await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(()=>{});document.getElementById('userCodeDisplay').textContent=userData.code||"NETUBER";userLastMenuOpen=userData.lastMenuOpen||new Date(0).toISOString();userReadCapsIds=userData.readCapsIds||[];userReadTicketResponseIds=userData.readTicketResponseIds||[];renderGames();listenToTicketsAndCaps();setInterval(()=>updateOnlineStatus(),30000);await calculateAndDisplayScore();
-// Écouter les changements dans reports
 onSnapshot(collection(db,"reports"), () => { calculateAndDisplayScore(); });}
 async function performLogout(){if(currentUser&&userDocRef){let userSnap=await getDoc(userDocRef);let userData=userSnap.data();await sendSecurityAlert('logout',userData?.email,{level:'info',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`Déconnexion de ${userData?.code||currentUser?.email}`,sessionDuration:Math.floor((Date.now()-pageLoadTime)/1000)});await updateDoc(userDocRef,{isOnline:false,lastDisconnection:new Date().toISOString()}).catch(()=>{});}await signOut(auth);window.location.href="login.html";}
 document.getElementById('closeTicketsPopupBtn')?.addEventListener('click',()=>{document.getElementById('ticketsListPopup').classList.remove('active');});
@@ -536,7 +620,7 @@ document.getElementById('panelCbtn')?.addEventListener('click',()=>{showFlyPopup
 document.getElementById('confirmYes')?.addEventListener('click',async()=>{await performLogout();});
 document.getElementById('confirmNo')?.addEventListener('click',()=>{document.getElementById('confirmPopup').classList.remove('active');});
 document.addEventListener('contextmenu',e=>e.preventDefault());
-document.querySelectorAll('img').forEach(img=>{img.addEventListener('contextmenu',e=>e.preventDefault());img.addEventListener('dragstart',e=>e.preventDefault());});
+document.querySelectorAll('img').forEach(img=>{img.addEventListener('contextmenu',e=>e.preventDefault());img.addEventListener('dragstart',e=>e.preventDefault(););});
 document.addEventListener('keydown',e=>{if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C'))||(e.ctrlKey&&e.key==='u')||(e.ctrlKey&&e.key==='s')||e.key==='F5'){e.preventDefault();return false;}});
 let lastScrollTop=0;let header=document.getElementById('mainHeader');window.addEventListener('scroll',function(){let scrollTop=window.pageYOffset||document.documentElement.scrollTop;if(scrollTop>lastScrollTop&&scrollTop>70)header.classList.add('hide');else if(scrollTop<lastScrollTop)header.classList.remove('hide');lastScrollTop=scrollTop<=0?0:scrollTop;});
 document.addEventListener('click', function(e) {
@@ -550,7 +634,19 @@ let url = e.target.getAttribute('data-dl-url');
 if(url) window.open(url, '_blank');
 }
 });
-document.getElementById('scoreFloating')?.addEventListener('click', function() {this.classList.toggle('expanded');setTimeout(()=>{this.classList.remove('expanded');},3000);});
+
+// Gestion du clic sur le bouton rendement
+document.getElementById('scoreFloating')?.addEventListener('click', function(e) {
+    e.stopPropagation();
+    this.classList.toggle('expanded');
+    // Se referme automatiquement après 4 secondes
+    if(this.classList.contains('expanded')) {
+        setTimeout(() => {
+            this.classList.remove('expanded');
+        }, 4000);
+    }
+});
+
 onAuthStateChanged(auth,async(user)=>{if(user)await initUser(user);else window.location.href="login.html";});
 </script>
 </body>
