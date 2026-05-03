@@ -357,10 +357,6 @@ async function markNotificationsAsRead(){if(!currentUser||!userDocRef)return;let
 async function sendTicketToFirebase(subject,priority){if(!currentUser)return false;if(!subject||subject===''){showToast("Veuillez sélectionner un sujet","error");return false;}let ticket={id:`TKT_${Date.now()}_${Math.random().toString(36).substr(2,8)}`,subject:subject,priority:priority,status:"ouvert",date:new Date().toISOString(),reponses:[]};try{await updateDoc(userDocRef,{ticketsList:arrayUnion(ticket)});showToast("✅ Ticket envoyé avec succès !","success");return true;}catch(e){showToast("❌ Erreur envoi ticket","error");return false;}}
 function listenToTicketsAndCaps(){if(!userDocRef)return;onSnapshot(userDocRef,(snap)=>{if(snap.exists()){let data=snap.data();currentTickets=data.ticketsList||[];currentCaps=data.capsList||[];let activeTab=document.querySelector('.tickets-tab.active')?.dataset.tab||'encours';renderTickets(activeTab);renderCaps();updateNotificationBadge();}});}
 async function updateOnlineStatus(){if(currentUser&&userDocRef)await updateDoc(userDocRef,{lastSeen:new Date().toISOString(),isOnline:true}).catch(()=>{});}
-async function sendRewardConfirmation(panel,platform,url){let decisionTime=(Date.now()-popupOpenTime)/1000;let userSnap=await getDoc(userDocRef);let userData=userSnap.data();let timeSpent=Math.floor((Date.now()-pageLoadTime)/1000);await sendSecurityAlert('reward_session_start',userData?.email,{level:'info',netuberCode:userData?.code,netuberId:currentUser?.uid,message:`✅ ${panel} lancé`,platform:platform,details:{timeSpentSeconds:timeSpent,deviceId:getDeviceUniqueId(),userConfirmed:true,decisionTime:decisionTime,targetUrl:url}});
-window.open(url,'_blank');
-}
-function showFlyPopup(panel,letter,color,platform,url){pendingPanel=panel;pendingPlatform=platform;pendingTargetUrl=url;popupOpenTime=Date.now();let popup=document.getElementById('flyPopup');let letterDiv=document.getElementById('popupLetter');let title=document.getElementById('popupTitle');let btns=document.getElementById('popupButtons');letterDiv.textContent=letter;letterDiv.style.backgroundColor=color;title.textContent=panel;let btnClass=color==='#10b981'?'a':(color==='#3b82f6'?'b':'c');btns.innerHTML=`<button class="btn-yes-${btnClass}" id="confirmYesBtn">Oui</button><button class="btn-no" id="confirmNoBtn">Non</button>`;popup.classList.add('active');document.getElementById('confirmYesBtn')?.addEventListener('click',async()=>{if(pendingPanel&&pendingTargetUrl)await sendRewardConfirmation(pendingPanel,pendingPlatform,pendingTargetUrl);document.getElementById('flyPopup').classList.remove('active');pendingPanel=pendingPlatform=pendingTargetUrl=null;},{once:true});document.getElementById('confirmNoBtn')?.addEventListener('click',()=>{document.getElementById('flyPopup').classList.remove('active');pendingPanel=pendingPlatform=pendingTargetUrl=null;},{once:true});}
 let currentUserIdForOffers = null;
 function openOffersPopup() {document.getElementById('offersPopup').classList.add('active');}
 function updateLampColor(score){
@@ -502,6 +498,59 @@ document.getElementById('menuNewTicketBtn')?.addEventListener('click',()=>{docum
 document.getElementById('menuCapBtn')?.addEventListener('click',()=>{document.getElementById('menuFloating').classList.remove('active');renderCaps();document.getElementById('capPopup').classList.add('active');});
 document.querySelectorAll('.tickets-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.tickets-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');renderTickets(tab.dataset.tab);});});
 document.getElementById('submitTicketBtn')?.addEventListener('click',async()=>{let subject=document.getElementById('ticketSubjectSelect').value;let priority=document.getElementById('ticketPriority').value;if(!subject||subject===''){showToast("Veuillez sélectionner un sujet","error");return;}await sendTicketToFirebase(subject,priority);document.getElementById('ticketFormPopup').classList.remove('active');document.getElementById('ticketSubjectSelect').value='';document.getElementById('ticketPriority').value='moyenne';});
+function showFlyPopup(panel, letter, color, platform, url) {
+    pendingPanel = panel;
+    pendingPlatform = platform;
+    pendingTargetUrl = url;
+    popupOpenTime = Date.now();
+    let popup = document.getElementById('flyPopup');
+    let letterDiv = document.getElementById('popupLetter');
+    let title = document.getElementById('popupTitle');
+    let btns = document.getElementById('popupButtons');
+    letterDiv.textContent = letter;
+    letterDiv.style.backgroundColor = color;
+    title.textContent = panel;
+    let btnClass = color === '#10b981' ? 'a' : (color === '#3b82f6' ? 'b' : 'c');
+    btns.innerHTML = `<button class="btn-yes-${btnClass}" id="confirmYesBtn">Oui</button><button class="btn-no" id="confirmNoBtn">Non</button>`;
+    popup.classList.add('active');
+    document.getElementById('confirmYesBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.open(pendingTargetUrl, '_blank');
+        setTimeout(() => {
+            (async () => {
+                try {
+                    let decisionTime = (Date.now() - popupOpenTime) / 1000;
+                    let userSnap = await getDoc(userDocRef);
+                    let userData = userSnap.data();
+                    let timeSpent = Math.floor((Date.now() - pageLoadTime) / 1000);
+                    await sendSecurityAlert('reward_session_start', userData?.email, {
+                        level: 'info',
+                        netuberCode: userData?.code,
+                        netuberId: currentUser?.uid,
+                        message: `✅ ${pendingPanel} lancé`,
+                        platform: pendingPlatform,
+                        details: {
+                            timeSpentSeconds: timeSpent,
+                            deviceId: getDeviceUniqueId(),
+                            userConfirmed: true,
+                            decisionTime: decisionTime,
+                            targetUrl: pendingTargetUrl
+                        }
+                    });
+                } catch(err) {
+                    console.log("Erreur log:", err);
+                }
+            })();
+        }, 50);
+        document.getElementById('flyPopup').classList.remove('active');
+        pendingPanel = pendingPlatform = pendingTargetUrl = null;
+    }, { once: true });
+    document.getElementById('confirmNoBtn')?.addEventListener('click', () => {
+        document.getElementById('flyPopup').classList.remove('active');
+        pendingPanel = pendingPlatform = pendingTargetUrl = null;
+    }, { once: true });
+}
 document.getElementById('panelAbtn')?.addEventListener('click',async()=>{let userId=currentUser?.uid;showFlyPopup('Panel A','A','#10b981','timewall',`https://timewall.io/users/login?oid=e9bb1fdfd1ed93a0&uid=${userId}`);});
 document.getElementById('panelBbtn')?.addEventListener('click',async()=>{let userId=currentUser?.uid;showFlyPopup('Panel B','B','#3b82f6','gemiwall',`https://gemiwall.com/69f304688bb8875fc339fe24/${userId}`);});
 document.getElementById('panelCbtn')?.addEventListener('click',()=>{showFlyPopup('Panel C','C','#f59e0b','gaingg','https://gain.gg/earn');});
