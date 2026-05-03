@@ -332,6 +332,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
     </div>
 </div>
 
+<div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
+
 <footer class="footer"><p>© Ne<span style="color:#f59e0b;">TubeX</span> 2026 | Pôle Stratégie et Innovation</p></footer>
 
 <script type="importmap">
@@ -423,15 +425,13 @@ async function calculateAndDisplayScore() {
     const reportDate=latestReport.createdAt?.toDate?.()||new Date(latestReport.createdAt);
     document.getElementById('scoreDate').innerHTML=reportDate.toLocaleDateString('fr-FR');
 }
-let popupOverlay, popupTitle, popupMessageDiv, popupBtnLeft, popupBtnRight;
-function initPopupElements(){
-    popupOverlay=document.getElementById('popupOverlay');
-    popupTitle=document.getElementById('popupTitle');
-    popupMessageDiv=document.getElementById('popupMessage');
-    popupBtnLeft=document.getElementById('popupBtnLeft');
-    popupBtnRight=document.getElementById('popupBtnRight');
-}
 function showPopup(title, message, leftText, rightText, onLeftClick, onRightClick, rightClass='primary'){
+    const popupOverlay=document.getElementById('popupOverlay');
+    const popupTitle=document.getElementById('popupTitle');
+    const popupMessageDiv=document.getElementById('popupMessage');
+    const popupBtnLeft=document.getElementById('popupBtnLeft');
+    const popupBtnRight=document.getElementById('popupBtnRight');
+    if(!popupOverlay) return;
     popupTitle.textContent=title;
     popupMessageDiv.innerHTML=message.replace(/\n/g,'<br>');
     popupBtnLeft.textContent=leftText||'';
@@ -490,7 +490,6 @@ document.addEventListener('click', function(e) {
         if(url) window.open(url, '_blank');
     }
 });
-initPopupElements();
 onAuthStateChanged(auth,async(user)=>{if(user)await initUser(user);else window.location.href="login.html";});
 </script>
 </body>
