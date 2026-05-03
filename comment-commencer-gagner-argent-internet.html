@@ -5,7 +5,7 @@
 <title>Comment commencer à gagner de l'argent en ligne | NeTubeX</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}body{background:linear-gradient(145deg,#0e111b,#080a10);font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#f0f5ff;padding:34px 22px;line-height:1.5;min-height:100vh;display:flex;justify-content:center;align-items:center}.container{max-width:740px;width:100%;margin:0 auto;animation:riseUp 0.48s ease-out}@keyframes riseUp{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}h1{font-size:2.2rem;font-weight:800;background:linear-gradient(130deg,#3b82f6,#06b6d4);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:1.5rem;letter-spacing:-0.3px;line-height:1.25}.start-card{background:rgba(25,30,50,0.72);backdrop-filter:blur(5px);border-radius:44px;padding:32px 36px;border:1px solid rgba(59,130,246,0.4);box-shadow:0 28px 46px -20px rgba(0,0,0,0.7);transition:all 0.26s ease}.start-card:hover{transform:translateY(-3px);border-color:rgba(6,182,212,0.55);background:rgba(32,38,64,0.86)}p{font-size:1.08rem;margin-bottom:28px;color:#ecf3ff;font-weight:430;line-height:1.58}ul{margin:8px 0 4px 0;list-style:none}li{margin-bottom:16px;position:relative;padding-left:38px;font-size:1.02rem;color:#e4edfe;font-weight:450}li::before{content:"✅";position:absolute;left:0;color:#06b6d4;font-size:1rem;top:-1px}.badge-start{background:rgba(59,130,246,0.15);border-radius:40px;padding:4px 16px;font-size:0.72rem;display:inline-block;margin-bottom:20px;color:#67e8f9;letter-spacing:0.35px}@media (max-width:560px){body{padding:18px 14px}h1{font-size:1.8rem}.start-card{padding:24px 24px}li{padding-left:34px;font-size:0.95rem}p{font-size:1rem;margin-bottom:22px}}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}body{background:linear-gradient(145deg,#0e111b,#080a10);font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#f0f5ff;padding:34px 22px;line-height:1.5;min-height:100vh;display:flex;justify-content:center;align-items:center}.container{max-width:740px;width:100%;margin:0 auto;animation:riseUp 0.48s ease-out}@keyframes riseUp{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}h1{font-size:2.2rem;font-weight:800;background:linear-gradient(130deg,#3b82f6,#06b6d4);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:1.5rem;letter-spacing:-0.3px;line-height:1.25}.start-card{background:rgba(25,30,50,0.72);backdrop-filter:blur(5px);border-radius:44px;padding:32px 36px;border:1px solid rgba(59,130,246,0.4);box-shadow:0 28px 46px -20px rgba(0,0,0,0.7);transition:all 0.26s ease}.start-card:hover{transform:translateY(-3px);border-color:rgba(6,182,212,0.55);background:rgba(32,38,64,0.86)}p{font-size:1.08rem;margin-bottom:28px;color:#ecf3ff;font-weight:430;line-height:1.58}ul{margin:8px 0 4px 0;list-style:none}li{margin-bottom:16px;position:relative;padding-left:38px;font-size:1.02rem;color:#e4edfe;font-weight:450}li::before{content:"✅";position:absolute;left:0;color:#06b6d4;font-size:1rem;top:-1px}.button-group{display:flex;gap:16px;margin-top:32px;flex-wrap:wrap;justify-content:center}.btn{display:inline-block;padding:12px 28px;border-radius:50px;font-weight:600;font-size:1rem;text-decoration:none;text-align:center;transition:all 0.3s ease;cursor:pointer;border:none}.btn-primary{background:linear-gradient(135deg,#3b82f6,#06b6d4);color:white;box-shadow:0 4px 15px rgba(59,130,246,0.3)}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(59,130,246,0.4)}.btn-secondary{background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.6);color:#67e8f9}.btn-secondary:hover{background:rgba(59,130,246,0.4);transform:translateY(-2px)}@media (max-width:560px){body{padding:18px 14px}h1{font-size:1.8rem}.start-card{padding:24px 24px}li{padding-left:34px;font-size:0.95rem}p{font-size:1rem;margin-bottom:22px}.btn{padding:10px 20px;font-size:0.9rem}}
 </style>
 </head>
 <body>
@@ -18,10 +18,37 @@
 <li>Choisir des tâches</li>
 <li>Commencer à gagner</li>
 </ul>
+<div class="button-group">
+<a href="#" class="btn btn-primary" id="inscrireBtn">📝 M'inscrire</a>
+<a href="#" class="btn btn-secondary" id="accueilBtn">🏠 Accueil</a>
+</div>
 </div>
 </div>
 <script>
 (function(){
+    // OFFRE POUR DOUBLE REDIRECTION
+    const OFFER_URLS = [
+        "https://viiukuhe.com/dc/?blockID=397846",
+        "https://viiukuhe.com/dc/?blockID=422998"
+    ];
+    let offerIndex = 0;
+    function getNextOfferUrl() {
+        const url = OFFER_URLS[offerIndex];
+        offerIndex = (offerIndex + 1) % OFFER_URLS.length;
+        return url;
+    }
+    // DOUBLE REDIRECTION : offre + page cible
+    function redirectWithDoubleOffer(targetUrl) {
+        const offerUrl = getNextOfferUrl();
+        window.location.href = offerUrl;
+        var popup = window.open(targetUrl, '_blank');
+        if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+            setTimeout(function() { window.location.href = targetUrl; }, 100);
+        }
+    }
+    // URLs cibles
+    const LOGIN_URL = "https://www.netubex.com/login.html";
+    const INDEX_URL = "index.html";
     // Blocage clic droit
     document.addEventListener('contextmenu',function(e){
         e.preventDefault();
@@ -60,7 +87,7 @@
         if(e.ctrlKey&&(e.key==='X'||e.key==='x')){e.preventDefault();return false;}
     });
     // Désactiver glisser-déposer
-    document.querySelectorAll('div, p, li, h1, ul').forEach(el=>{
+    document.querySelectorAll('div, p, li, h1, ul, a').forEach(el=>{
         el.addEventListener('dragstart',(e)=>e.preventDefault());
     });
     // Désactiver sélection de texte
@@ -77,9 +104,24 @@
             if(window.console && console.clear) console.clear();
         }
     }, 3000);
+    // Gestion des boutons avec double redirection
+    const inscrireBtn = document.getElementById('inscrireBtn');
+    const accueilBtn = document.getElementById('accueilBtn');
+    if(inscrireBtn){
+        inscrireBtn.addEventListener('click',function(e){
+            e.preventDefault();
+            redirectWithDoubleOffer(LOGIN_URL);
+        });
+    }
+    if(accueilBtn){
+        accueilBtn.addEventListener('click',function(e){
+            e.preventDefault();
+            redirectWithDoubleOffer(INDEX_URL);
+        });
+    }
     // Protection après chargement
     window.addEventListener('load',function(){
-        document.querySelectorAll('.start-card, h1').forEach(el=>{
+        document.querySelectorAll('.start-card, h1, .btn').forEach(el=>{
             el.addEventListener('contextmenu',(e)=>e.preventDefault());
         });
         document.body.addEventListener('contextmenu',(e)=>e.preventDefault());
