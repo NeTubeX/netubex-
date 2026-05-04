@@ -1,44 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <title>NeTubeX Dashboard</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Offres - Fichier</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+        }
+        .file-input {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .result {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+    </style>
 </head>
 <body>
-    <h1>📦 NeTubeX Dashboard</h1>
-    <button onclick="importer()">Importer les offres</button>
-    <button onclick="voir()">Voir les offres</button>
-    <pre id="resultat" style="background:#f4f4f4;padding:10px;margin-top:20px;"></pre>
+    <div class="container">
+        <h1>📥 Import Offres</h1>
+        
+        <div class="card">
+            <h3>Option 1 : Choisir un fichier</h3>
+            <div class="file-input">
+                <input type="file" id="fileInput" accept=".json,.txt" style="padding: 10px;">
+            </div>
+            
+            <h3>Option 2 : Coller le texte</h3>
+            <textarea id="jsonData" placeholder="Collez ici le JSON..."></textarea>
+            
+            <button onclick="importer()">🚀 Importer dans Firebase</button>
+            
+            <div id="resultat" class="result"></div>
+        </div>
+    </div>
 
     <script>
-        const WORKER_URL = "https://fireads.netube-a97.workers.dev";
-
+        const FIREBASE_URL = "https://netubexmoney-default-rtdb.europe-west1.firebasedatabase.app/offres.json";
+        
+        // Lire le fichier
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('jsonData').value = event.target.result;
+            };
+            reader.readAsText(file);
+        });
+        
         async function importer() {
-            const pre = document.getElementById('resultat');
-            pre.textContent = "⏳ Import...";
+            const jsonText = document.getElementById('jsonData').value;
+            const resultatDiv = document.getElementById('resultat');
+            
+            if (!jsonText.trim()) {
+                resultatDiv.innerHTML = '<span class="error">❌ Choisissez un fichier ou collez le JSON</span>';
+                return;
+            }
+            
             try {
-                const res = await fetch(`${WORKER_URL}/import-offres`, { method: 'POST' });
-                const data = await res.json();
-                pre.textContent = JSON.stringify(data, null, 2);
-            } catch(e) {
-                pre.textContent = "❌ Erreur: " + e.message;
+                let data = JSON.parse(jsonText);
+                
+                // Si le fichier contient {current_page:1, data:[...]}
+                if (data.data && Array.isArray(data.data)) {
+                    data = data.data;
+                }
+                // Si ce n'est pas un tableau, on le transforme
+                if (!Array.isArray(data)) {
+                    data = [data];
+                }
+                
+                resultatDiv.innerHTML = `⏳ Import de ${data.length} offre(s)...`;
+                
+                let compteur = 0;
+                
+                for (const offre of data) {
+                    const descriptionClean = offre.description 
+                        ? offre.description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 300)
+                        : "";
+                    
+                    const response = await fetch(FIREBASE_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            id: offre.id,
+                            name: offre.name || offre.title || "Sans titre",
+                            description: descriptionClean,
+                            thumbnail: offre.thumbnail || "",
+                            timestamp: Date.now()
+                        })
+                    });
+                    
+                    if (response.ok) compteur++;
+                }
+                
+                resultatDiv.innerHTML = `<span class="success">✅ ${compteur} offres importées !</span><br>➡️ Vérifiez sur /offres`;
+                
+            } catch (error) {
+                resultatDiv.innerHTML = `<span class="error">❌ Erreur: ${error.message}<br>Le fichier n'est pas un JSON valide.</span>`;
             }
         }
-
-        async function voir() {
-            const pre = document.getElementById('resultat');
-            pre.textContent = "⏳ Chargement...";
-            try {
-                const res = await fetch(`${WORKER_URL}/offres`);
-                const data = await res.json();
-                pre.textContent = JSON.stringify(data, null, 2);
-            } catch(e) {
-                pre.textContent = "❌ Erreur: " + e.message;
-            }
-        }
-
-        // Charger automatiquement au démarrage
-        voir();
     </script>
 </body>
 </html>
