@@ -1,247 +1,44 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
+    <title>NeTubeX Dashboard</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeTubeX - Dashboard Offres</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            color: white;
-            margin-bottom: 10px;
-            font-size: 2.5rem;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: rgba(255,255,255,0.9);
-            margin-bottom: 30px;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .btn-import {
-            background: #4CAF50;
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .btn-refresh {
-            background: white;
-            color: #667eea;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .btn-import:hover, .btn-refresh:hover {
-            transform: scale(1.05);
-        }
-
-        .stats {
-            background: rgba(255,255,255,0.2);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        .offres-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
-        }
-
-        .offre-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: transform 0.3s;
-        }
-
-        .offre-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .offre-name {
-            color: #333;
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        .offre-description {
-            color: #666;
-            line-height: 1.5;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-
-        .offre-id {
-            color: #999;
-            font-size: 11px;
-            margin-top: 10px;
-            border-top: 1px solid #eee;
-            padding-top: 10px;
-        }
-
-        .loading {
-            text-align: center;
-            color: white;
-            padding: 50px;
-            font-size: 18px;
-        }
-
-        .empty {
-            text-align: center;
-            color: white;
-            padding: 50px;
-            font-size: 18px;
-        }
-
-        .error {
-            background: #ff6b6b;
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📦 NeTubeX</h1>
-        <div class="subtitle">Dashboard des offres publicitaires</div>
-
-        <div class="buttons">
-            <button class="btn-import" onclick="importerOffres()">📥 Importer les offres</button>
-            <button class="btn-refresh" onclick="chargerOffres()">🔄 Actualiser</button>
-        </div>
-
-        <div class="stats" id="stats">📊 Chargement...</div>
-
-        <div id="offres-container">
-            <div class="loading">Chargement des offres...</div>
-        </div>
-    </div>
+    <h1>📦 NeTubeX Dashboard</h1>
+    <button onclick="importer()">Importer les offres</button>
+    <button onclick="voir()">Voir les offres</button>
+    <pre id="resultat" style="background:#f4f4f4;padding:10px;margin-top:20px;"></pre>
 
     <script>
-        // L'URL de votre worker Cloudflare
         const WORKER_URL = "https://fireads.netube-a97.workers.dev";
 
-        async function importerOffres() {
-            const statsDiv = document.getElementById('stats');
-            statsDiv.innerHTML = "⏳ Import en cours...";
-            
+        async function importer() {
+            const pre = document.getElementById('resultat');
+            pre.textContent = "⏳ Import...";
             try {
-                const response = await fetch(`${WORKER_URL}/import-offres`, {
-                    method: 'POST'
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    statsDiv.innerHTML = `✅ ${result.message}`;
-                    await chargerOffres();
-                } else {
-                    statsDiv.innerHTML = `❌ Erreur: ${result.error}`;
-                }
-            } catch (error) {
-                statsDiv.innerHTML = `❌ Erreur: ${error.message}`;
+                const res = await fetch(`${WORKER_URL}/import-offres`, { method: 'POST' });
+                const data = await res.json();
+                pre.textContent = JSON.stringify(data, null, 2);
+            } catch(e) {
+                pre.textContent = "❌ Erreur: " + e.message;
             }
         }
 
-        async function chargerOffres() {
-            const container = document.getElementById('offres-container');
-            const statsDiv = document.getElementById('stats');
-            
-            container.innerHTML = '<div class="loading">Chargement des offres...</div>';
-            
+        async function voir() {
+            const pre = document.getElementById('resultat');
+            pre.textContent = "⏳ Chargement...";
             try {
-                const response = await fetch(`${WORKER_URL}/offres`);
-                
-                if (!response.ok) {
-                    throw new Error(`Erreur HTTP: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                const nombreOffres = data ? Object.keys(data).length : 0;
-                statsDiv.innerHTML = `📊 ${nombreOffres} offre(s) disponible(s)`;
-                
-                if (!data || Object.keys(data).length === 0) {
-                    container.innerHTML = '<div class="empty">Aucune offre disponible pour le moment</div>';
-                    return;
-                }
-                
-                const offres = Object.entries(data).map(([id, offre]) => ({
-                    id: id,
-                    ...offre
-                }));
-                
-                container.innerHTML = `
-                    <div class="offres-grid">
-                        ${offres.map(offre => `
-                            <div class="offre-card">
-                                <div class="offre-name">📢 ${escapeHtml(offre.name || 'Sans titre')}</div>
-                                <div class="offre-description">${escapeHtml(offre.description || 'Aucune description')}</div>
-                                <div class="offre-id">🆔 ID Firebase: ${offre.id.substring(0, 8)}...</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                
-            } catch (error) {
-                container.innerHTML = `<div class="error">❌ Erreur: ${error.message}</div>`;
+                const res = await fetch(`${WORKER_URL}/offres`);
+                const data = await res.json();
+                pre.textContent = JSON.stringify(data, null, 2);
+            } catch(e) {
+                pre.textContent = "❌ Erreur: " + e.message;
             }
         }
 
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
-        }
-
-        chargerOffres();
+        // Charger automatiquement au démarrage
+        voir();
     </script>
 </body>
 </html>
