@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>NeTubeX - Dashboard Offres</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .stats {
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .refresh-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.97);
+        }
+
+        .offres-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .offre-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+        }
+
+        .offre-card:active {
+            transform: scale(0.99);
+        }
+
+        .offre-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .offre-description {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .offre-meta {
+            font-size: 11px;
+            color: #999;
+            border-top: 1px solid #eee;
+            padding-top: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .loading, .empty {
+            text-align: center;
+            color: white;
+            padding: 40px;
+        }
+
+        .error {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .badge {
+            background: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 NeTubeX</h1>
+        <div class="subtitle">Offres publicitaires</div>
+
+        <button class="refresh-btn" onclick="chargerOffres()">🔄 Actualiser</button>
+
+        <div class="stats" id="stats">📊 Chargement...</div>
+
+        <div id="offresContainer">
+            <div class="loading">⏳ Chargement des offres...</div>
+        </div>
+    </div>
+
+    <script>
+        // URL de votre worker Cloudflare
+        const WORKER_URL = "https://fireads.netube-a97.workers.dev";
+
+        async function chargerOffres() {
+            const container = document.getElementById('offresContainer');
+            const statsDiv = document.getElementById('stats');
+            
+            container.innerHTML = '<div class="loading">⏳ Chargement...</div>';
+            
+            try {
+                // Appel au worker pour récupérer les offres Firebase
+                const response = await fetch(`${WORKER_URL}/offres`);
+                
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Les offres sont déjà sous forme de tableau
+                const offres = Array.isArray(data) ? data : [];
+                const nombreOffres = offres.length;
+                
+                statsDiv.innerHTML = `📊 ${nombreOffres} offre(s) disponible(s)`;
+                
+                if (nombreOffres === 0) {
+                    container.innerHTML = '<div class="empty">📭 Aucune offre disponible pour le moment</div>';
+                    return;
+                }
+                
+                // Afficher chaque offre
+                container.innerHTML = `
+                    <div class="offres-grid">
+                        ${offres.map(offre => `
+                            <div class="offre-card">
+                                <div class="offre-name">📢 ${escapeHtml(offre.name || 'Sans titre')}</div>
+                                <div class="offre-description">${escapeHtml(offre.description || 'Aucune description')}</div>
+                                <div class="offre-meta">
+                                    <span>🆔 ID: ${offre.id || 'N/A'}</span>
+                                    <span class="badge">${offre.timestamp ? new Date(offre.timestamp).toLocaleDateString('fr-FR') : 'Nouveau'}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                container.innerHTML = `
+                    <div class="error">
+                        ❌ Erreur: ${error.message}<br><br>
+                        Vérifiez que le worker est actif
+                    </div>
+                `;
+            }
+        }
+
+        // Fonction pour nettoyer le texte (sécurité XSS)
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // Charger au démarrage
+        chargerOffres();
+    </script>
+</body>
+</html>
