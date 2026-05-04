@@ -93,7 +93,16 @@
             font-size: 13px;
             color: #666;
             line-height: 1.4;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+        }
+
+        .offre-original {
+            font-size: 11px;
+            color: #999;
+            font-style: italic;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #eee;
         }
 
         .offre-meta {
@@ -103,6 +112,19 @@
             padding-top: 8px;
             display: flex;
             justify-content: space-between;
+            margin-top: 8px;
+        }
+
+        .badge {
+            background: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+        }
+
+        .badge-translated {
+            background: #2196F3;
         }
 
         .loading, .empty {
@@ -119,12 +141,28 @@
             text-align: center;
         }
 
-        .badge {
-            background: #4CAF50;
+        .filter-bar {
+            background: white;
+            border-radius: 30px;
+            padding: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .filter-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 10px;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
             color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 10px;
         }
     </style>
 </head>
@@ -132,6 +170,11 @@
     <div class="container">
         <h1>📦 NeTubeX</h1>
         <div class="subtitle">Offres publicitaires</div>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="setFiltre('tous')">🌍 Tous</button>
+            <button class="filter-btn" onclick="setFiltre('francais')">🇫🇷 Français</button>
+        </div>
 
         <button class="refresh-btn" onclick="chargerOffres()">🔄 Actualiser</button>
 
@@ -143,8 +186,55 @@
     </div>
 
     <script>
-        // URL de votre worker Cloudflare
         const WORKER_URL = "https://fireads.netube-a97.workers.dev";
+        let filtresActuel = 'tous';
+        let toutesLesOffres = [];
+
+        // Détection de la langue polonaise
+        function estPolonais(texte) {
+            if (!texte) return false;
+            const motsPolonais = ['platforma', 'umozliwia', 'dokonywanie', 'tanich', 'bezpiecznych', 'miliony', 'produktow', 'katalogu', 'ogrod', 'elektronika', 'polski', 'wygodne', 'zakupow'];
+            const texteLower = texte.toLowerCase();
+            return motsPolonais.some(mot => texteLower.includes(mot));
+        }
+
+        // Traduction simple (pour les mots clés)
+        function traduireDescription(description, name) {
+            if (!description) return description;
+            
+            let traduit = description;
+            
+            // Dictionnaire de traduction rapide
+            const traductions = {
+                'platforma': 'plateforme',
+                'umozliwia': 'permet',
+                'dokonywanie': 'd\'effectuer',
+                'tanich': 'bon marché',
+                'bezpiecznych': 'sécurisés',
+                'miliony': 'des millions',
+                'produktow': 'de produits',
+                'katalogu': 'catalogue',
+                'dom i ogrod': 'maison et jardin',
+                'dziecko': 'enfant',
+                'elektronika': 'électronique',
+                'firma': 'entreprise',
+                'kolekcje i sztuka': 'collections et art',
+                'kultura i rozrywka': 'culture et divertissement',
+                'moda': 'mode',
+                'motor': 'moto',
+                'wygodne': 'pratiques',
+                'zakupow': 'achats'
+            };
+            
+            for (const [pl, fr] of Object.entries(traductions)) {
+                traduit = traduit.replace(new RegExp(pl, 'gi'), fr);
+            }
+            
+            if (traduit !== description) {
+                return traduit;
+            }
+            return null; // Pas de traduction nécessaire
+        }
 
         async function chargerOffres() {
             const container = document.getElementById('offresContainer');
@@ -153,7 +243,6 @@
             container.innerHTML = '<div class="loading">⏳ Chargement...</div>';
             
             try {
-                // Appel au worker pour récupérer les offres Firebase
                 const response = await fetch(`${WORKER_URL}/offres`);
                 
                 if (!response.ok) {
@@ -161,46 +250,79 @@
                 }
                 
                 const data = await response.json();
+                toutesLesOffres = Array.isArray(data) ? data : [];
                 
-                // Les offres sont déjà sous forme de tableau
-                const offres = Array.isArray(data) ? data : [];
-                const nombreOffres = offres.length;
-                
-                statsDiv.innerHTML = `📊 ${nombreOffres} offre(s) disponible(s)`;
-                
-                if (nombreOffres === 0) {
-                    container.innerHTML = '<div class="empty">📭 Aucune offre disponible pour le moment</div>';
-                    return;
-                }
-                
-                // Afficher chaque offre
-                container.innerHTML = `
-                    <div class="offres-grid">
-                        ${offres.map(offre => `
-                            <div class="offre-card">
-                                <div class="offre-name">📢 ${escapeHtml(offre.name || 'Sans titre')}</div>
-                                <div class="offre-description">${escapeHtml(offre.description || 'Aucune description')}</div>
-                                <div class="offre-meta">
-                                    <span>🆔 ID: ${offre.id || 'N/A'}</span>
-                                    <span class="badge">${offre.timestamp ? new Date(offre.timestamp).toLocaleDateString('fr-FR') : 'Nouveau'}</span>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
+                // Appliquer le filtre
+                afficherOffres();
                 
             } catch (error) {
                 console.error('Erreur:', error);
-                container.innerHTML = `
-                    <div class="error">
-                        ❌ Erreur: ${error.message}<br><br>
-                        Vérifiez que le worker est actif
-                    </div>
-                `;
+                container.innerHTML = `<div class="error">❌ Erreur: ${error.message}</div>`;
             }
         }
 
-        // Fonction pour nettoyer le texte (sécurité XSS)
+        function afficherOffres() {
+            const container = document.getElementById('offresContainer');
+            const statsDiv = document.getElementById('stats');
+            
+            let offresFiltrees = toutesLesOffres;
+            
+            // Filtrer selon l'option choisie
+            if (filtresActuel === 'francais') {
+                offresFiltrees = toutesLesOffres.filter(offre => {
+                    const texte = (offre.name + ' ' + offre.description).toLowerCase();
+                    return !estPolonais(texte);
+                });
+            }
+            
+            const nombreOffres = offresFiltrees.length;
+            const totalOffres = toutesLesOffres.length;
+            
+            if (filtresActuel === 'francais' && totalOffres !== nombreOffres) {
+                statsDiv.innerHTML = `📊 ${nombreOffres} offre(s) française(s) affichée(s) (${totalOffres - nombreOffres} polonaises masquées)`;
+            } else {
+                statsDiv.innerHTML = `📊 ${nombreOffres} offre(s) disponible(s)`;
+            }
+            
+            if (nombreOffres === 0) {
+                container.innerHTML = '<div class="empty">📭 Aucune offre disponible</div>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="offres-grid">
+                    ${offresFiltrees.map(offre => {
+                        const estPol = estPolonais(offre.name + ' ' + offre.description);
+                        const traduction = estPol ? traduireDescription(offre.description, offre.name) : null;
+                        const descriptionAffichee = traduction || offre.description;
+                        const nomAffiche = offre.name || 'Sans titre';
+                        
+                        return `
+                            <div class="offre-card">
+                                <div class="offre-name">📢 ${escapeHtml(nomAffiche)}</div>
+                                <div class="offre-description">${escapeHtml(descriptionAffichee || 'Aucune description')}</div>
+                                ${traduction ? `<div class="offre-original">🇵🇱 Original: ${escapeHtml(offre.description.substring(0, 100))}...</div>` : ''}
+                                <div class="offre-meta">
+                                    <span>🆔 ID: ${offre.id || 'N/A'}</span>
+                                    ${traduction ? '<span class="badge badge-translated">🇫🇷 Traduit</span>' : '<span class="badge">✅ Original</span>'}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function setFiltre(filtre) {
+            filtresActuel = filtre;
+            // Mettre à jour l'apparence des boutons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            afficherOffres();
+        }
+
         function escapeHtml(str) {
             if (!str) return '';
             return str
