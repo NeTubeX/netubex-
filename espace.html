@@ -100,6 +100,7 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 .popup-buttons button:active{transform:scale(0.96);}
 .btn-yes-a{background:#10b981;color:#fff;}
 .btn-yes-b{background:#3b82f6;color:#fff;}
+.btn-yes-c{background:#f59e0b;color:#fff;}
 .btn-no{background:#1e2a45;color:#e2e8f0;}
 .country-select{width:100%;padding:10px;background:#1a2a45;border:1px solid #1e2a45;border-radius:10px;color:#fff;font-family:inherit;margin-bottom:12px;}
 .phone-wrapper{display:flex;gap:10px;align-items:center;}
@@ -123,13 +124,13 @@ body{background:#0a1628;font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;m
 <div class="toast-container" id="toastContainer"></div>
 <div class="rainbow-line"></div>
 <header class="header"><div class="logo"><img src="https://netubex.github.io/netubex-/favicon.png.png" alt=""><h1>Ne<span>TubeX</span></h1></div><div class="header-right"><div class="online-status"><span class="blinking-dot"></span><span>En ligne</span></div><div class="balance-header" id="balanceHeader">$ <span id="balanceAmount">0.00</span></div></div></header>
-<div class="section"><div class="section-title"><i class="fas fa-gem"></i> Panels rémunérateurs</div><div class="panel-grid"><div class="panel-card" id="panelA"><i class="fas fa-clock"></i><div class="panel-label">PANEL A</div></div><div class="panel-card" id="panelB"><i class="fab fa-google"></i><div class="panel-label">PANEL B</div></div></div></div>
+<div class="section"><div class="section-title"><i class="fas fa-gem"></i> Panels rémunérateurs</div><div class="panel-grid"><div class="panel-card" id="panelA"><i class="fas fa-clock"></i><div class="panel-label">PANEL A</div></div><div class="panel-card" id="panelB"><i class="fab fa-google"></i><div class="panel-label">PANEL B</div></div><div class="panel-card" id="panelC"><i class="fas fa-ad"></i><div class="panel-label">PANEL C</div></div></div></div>
 <div class="games-list" id="gamesContainer"></div>
 <footer class="footer"><p><i class="fas fa-copyright"></i> NeTubeX 2026</p></footer>
 <div class="floating-group"><div class="float-item" id="menuFloatBtn"><i class="fas fa-bars"></i></div></div>
 <div id="menuFloating" class="menu-floating"><div class="menu-header"><strong><i class="fas fa-bars"></i> Menu</strong></div><div class="menu-item" id="menuConversionBtn"><i class="fas fa-exchange-alt"></i> Conversion</div><div class="menu-item" id="menuCapBtn"><i class="fas fa-chart-line"></i> CAP du jour</div><div class="menu-item" id="menuProfileBtn"><i class="fas fa-user"></i> Mon profil</div><div class="menu-item" id="menuTicketsBtn"><i class="fas fa-ticket-alt"></i> Mes tickets</div><div class="menu-item" id="menuBonusBtn"><i class="fas fa-gift"></i> Parrainage (10%)</div><div class="menu-item" id="menuWithdrawBtn"><i class="fas fa-money-bill-wave"></i> Retirer</div><div class="menu-item danger" id="menuLogoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</div></div>
 <div id="flyPopup" class="fly-popup"><div class="fly-popup-inner"><div class="popup-letter" id="popupLetter">A</div><h3 id="popupTitle">Panel A</h3><p id="popupMessage">Votre session dans l'espace de rémunération digitale va commencer...</p><p style="font-size:0.75rem; margin-bottom:1rem;">Êtes-vous sûr de vouloir continuer ?</p><div class="popup-buttons" id="popupButtons"></div></div></div>
-<div id="gameChoicePopup" class="fly-popup"><div class="fly-popup-inner"><div class="popup-letter" style="background:#3b82f6;">🎮</div><h3>Choix requis</h3><p>Veuillez choisir entre le Panel A et le Panel B pour commencer votre session adaptée à votre localisation.</p><div class="popup-buttons"><button class="btn-yes-a" id="goToPanelA">Panel A</button><button class="btn-yes-b" id="goToPanelB">Panel B</button><button class="btn-no" id="closeGamePopup">Fermer</button></div></div></div>
+<div id="gameChoicePopup" class="fly-popup"><div class="fly-popup-inner"><div class="popup-letter" style="background:#3b82f6;">🎮</div><h3>Choix requis</h3><p>Veuillez choisir entre le Panel A, Panel B ou Panel C pour commencer votre session adaptée à votre localisation.</p><div class="popup-buttons"><button class="btn-yes-a" id="goToPanelA">Panel A</button><button class="btn-yes-b" id="goToPanelB">Panel B</button><button class="btn-yes-c" id="goToPanelC">Panel C</button><button class="btn-no" id="closeGamePopup">Fermer</button></div></div></div>
 <div id="conversionModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-exchange-alt"></i> Conversion</h3><button class="modal-close" id="closeConversionModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="conversion-card"><div class="conversion-rate">500 points = 0.035 $</div><div class="conversion-desc">Taux de conversion officiel</div><div class="conversion-note"><p><i class="fas fa-info-circle"></i> Les points sont accumulés via les panels rémunérateurs. Une fois 500 points atteints, vous pouvez les convertir en argent réel via le bouton "Retirer".</p></div></div></div><div class="modal-footer"><button class="btn-cancel" id="closeConversionFooterBtn">Fermer</button></div></div></div>
 <div id="capModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-chart-line"></i> CAP du jour</h3><button class="modal-close" id="closeCapModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><p id="capMessage">Chargement...</p></div><div class="modal-footer"><button class="btn-cancel" id="closeCapFooterBtn">Fermer</button></div></div></div>
 <div id="profileModal" class="modal-overlay"><div class="modal-container"><div class="modal-header"><h3><i class="fas fa-user"></i> Mon profil</h3><button class="modal-close" id="closeProfileModal"><i class="fas fa-times"></i></button></div><div class="modal-body"><div style="background:#1a2a45;border-radius:12px;padding:12px;margin-bottom:12px;"><p><strong>Email :</strong> <span id="profileEmail">-</span></p><p style="margin-top:8px;"><strong>Code parrainage :</strong> <span id="profileCode">-</span></p></div><div class="input-group"><label>Ancien mot de passe</label><input type="password" id="oldPassword" placeholder="Entrez votre mot de passe actuel"></div><div class="input-group"><label>Nouveau mot de passe</label><input type="password" id="newPassword" placeholder="Min 6 caractères"></div><div class="input-group"><label>Confirmer nouveau mot de passe</label><input type="password" id="confirmNewPassword" placeholder="Retapez le nouveau mot de passe"></div></div><div class="modal-footer"><button class="btn-confirm" id="updatePasswordBtn">Mettre à jour</button><button class="btn-cancel" id="cancelProfileBtn">Fermer</button></div></div></div>
@@ -399,6 +400,7 @@ async function initUser(user){
       parrainId: null,
       invitedCount: 0,
       parrainageGains: 0,
+      country: "FR",
       createdAt: new Date().toISOString(),
       lastLogin: new Date().toISOString(),
       ticketsList: [],
@@ -438,6 +440,22 @@ document.getElementById('panelB')?.addEventListener('click', async () => {
   showFlyPopup("Panel B", "B", "#3b82f6", `https://gemiwall.com/69f304688bb8875fc339fe24/${encodeURIComponent(userId)}`, null);
 });
 
+document.getElementById('panelC')?.addEventListener('click', async () => {
+  if (!currentUser) return;
+  const username = currentUser.email.split('@')[0];
+  const name = currentUser.displayName || username;
+  let country = "FR";
+  const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+  if (userDoc.exists() && userDoc.data().country) {
+    country = userDoc.data().country;
+  }
+  const email = currentUser.email;
+  const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+  const avatar = currentUser.photoURL || defaultAvatar;
+  const clixwallUrl = `https://www.clixwall.com/wall?api=296B4IXP6FUYLP6EVQOYMAMX3&user=${encodeURIComponent(username)}&name=${encodeURIComponent(name)}&country=${country}&email=${encodeURIComponent(email)}&avatar=${encodeURIComponent(avatar)}`;
+  showFlyPopup("Panel C", "C", "#f59e0b", clixwallUrl, "📢 Accédez à ClixWall et gagnez des points en réalisant des offres !");
+});
+
 document.getElementById('goToPanelA')?.addEventListener('click', async () => {
   if (!currentUser) return;
   document.getElementById('gameChoicePopup').classList.remove('active');
@@ -451,6 +469,23 @@ document.getElementById('goToPanelB')?.addEventListener('click', async () => {
   document.getElementById('gameChoicePopup').classList.remove('active');
   const userId = currentUser.email;
   showFlyPopup("Panel B", "B", "#3b82f6", `https://gemiwall.com/69f304688bb8875fc339fe24/${encodeURIComponent(userId)}`, null);
+});
+
+document.getElementById('goToPanelC')?.addEventListener('click', async () => {
+  if (!currentUser) return;
+  document.getElementById('gameChoicePopup').classList.remove('active');
+  const username = currentUser.email.split('@')[0];
+  const name = currentUser.displayName || username;
+  let country = "FR";
+  const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+  if (userDoc.exists() && userDoc.data().country) {
+    country = userDoc.data().country;
+  }
+  const email = currentUser.email;
+  const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+  const avatar = currentUser.photoURL || defaultAvatar;
+  const clixwallUrl = `https://www.clixwall.com/wall?api=296B4IXP6FUYLP6EVQOYMAMX3&user=${encodeURIComponent(username)}&name=${encodeURIComponent(name)}&country=${country}&email=${encodeURIComponent(email)}&avatar=${encodeURIComponent(avatar)}`;
+  showFlyPopup("Panel C", "C", "#f59e0b", clixwallUrl, "📢 Accédez à ClixWall !");
 });
 
 document.getElementById('closeGamePopup')?.addEventListener('click', () => {
