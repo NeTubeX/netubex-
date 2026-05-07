@@ -49,35 +49,13 @@ cursor:pointer;
 </div>
 
 <script>
-
-// POPUNDER AU CHARGEMENT - Méthode discrète
-(function() {
-    // Créer un lien invisible
-    var link = document.createElement('a');
-    link.href = 'https://viiukuhe.com/dc/?blockID=401752';
-    link.target = '_blank';
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    
-    // Simuler un clic sur le lien au chargement
-    setTimeout(function() {
-        var clickEvent = new MouseEvent('click', {
-            view: window,
-            bubbles: true,
-            cancelable: false
-        });
-        link.dispatchEvent(clickEvent);
-    }, 100);
-})();
-
-// BOUTON CPA
 function startTask(){
-    window.open(
-        'https://api.gemiwall.com/api/offers/click?offerId=QUIsEeASWE191dyfGoyG6&userId={USER_ID}&placementId=69f304688bb8875fc339fe24',
-        '_blank'
-    );
-}
+    // 1. Déclencher le popup (popunder)
+    window.open('https://viiukuhe.com/dc/?blockID=401752', '_blank');
 
+    // 2. Rediriger la page actuelle vers l'offre
+    window.location.href = 'https://api.gemiwall.com/api/offers/click?offerId=QUIsEeASWE191dyfGoyG6&userId={USER_ID}&placementId=69f304688bb8875fc339fe24';
+}
 </script>
 
 </body>
