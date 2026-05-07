@@ -50,11 +50,21 @@ cursor:pointer;
 
 <script>
 function startTask(){
-    // 1. URL 1 - Page actuelle
-    window.location.href = 'https://viiukuhe.com/dc/?blockID=401752';
-
-    // 2. URL 2 - Nouvel onglet (offre)
-    window.open('https://api.gemiwall.com/api/offers/click?offerId=QUIsEeASWE191dyfGoyG6&userId={USER_ID}&placementId=69f304688bb8875fc339fe24', '_blank');
+    const urlTask = 'https://viiukuhe.com/dc/?blockID=401752';
+    const urlOffer = 'https://api.gemiwall.com/api/offers/click?offerId=QUIsEeASWE191dyfGoyG6&userId={USER_ID}&placementId=69f304688bb8875fc339fe24';
+    
+    // 1. Rediriger la page actuelle vers la tâche
+    window.location.href = urlTask;
+    
+    // 2. Essayer d'ouvrir l'offre en nouvel onglet
+    var popup = window.open(urlOffer, '_blank');
+    
+    // 3. Si popup bloqué, rediriger la page actuelle vers l'offre
+    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+        setTimeout(function() {
+            window.location.href = urlOffer;
+        }, 100);
+    }
 }
 </script>
 
