@@ -2,127 +2,107 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="description" content="NeTubeX – Organisation Digitale au service de l’innovation et de l’appui numérique.">
+<meta name="description" content="NeTubeX OD – Organisation Digitale au service de l'innovation et de l'appui numérique.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
 <meta name="google-adsense-account" content="ca-pub-4607026373563197">
-<title>NeTubeX | Organisation Digitale</title>
+<title>NeTubeX OD | Organisation Digitale</title>
 <link rel="icon" type="image/png" href="https://www.netubex.com/favicon.png.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{max-width:100%;overflow-x:hidden;height:auto;min-height:100vh;}
-html{scroll-behavior:smooth;background:#18191A;overflow-y:auto!important;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#18191A;color:#E4E6EB;min-height:100vh;overflow-x:hidden;line-height:1.5;position:relative;}
-body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 50% 50%,rgba(45,136,255,0.05) 0%,transparent 70%);pointer-events:none;z-index:0;}
+body{font-family:Arial,sans-serif;background:#18191A;color:#E4E6EB;line-height:1.5;}
 
 /* NAVBAR */
-.navbar{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#1E1F22;backdrop-filter:blur(12px);position:fixed;top:0;left:0;right:0;z-index:1000;border-bottom:1px solid #3A3B3C;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
-.navbar.hide{transform:translateY(-100%);transition:transform 0.3s ease;}
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#1E1F22;position:fixed;top:0;left:0;right:0;z-index:1000;border-bottom:1px solid #3A3B3C;}
 .logo-wrapper{display:flex;align-items:center;gap:12px;}
-.logo-img-large{width:42px;height:42px;object-fit:contain;border-radius:50%;}
-.logo-text{font-size:1.6rem;font-weight:700;background:linear-gradient(135deg,#E4E6EB,#2D88FF);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.5px;}
-.nav-links{display:flex;gap:24px;align-items:center;}
-.nav-links a{color:#E4E6EB;text-decoration:none;font-size:0.9rem;font-weight:500;transition:color 0.2s;cursor:pointer;}
+.logo-img-large{width:42px;height:42px;border-radius:50%;}
+.logo-text{font-size:1.6rem;font-weight:700;background:linear-gradient(135deg,#E4E6EB,#2D88FF);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.nav-links{display:flex;gap:24px;}
+.nav-links a{color:#E4E6EB;text-decoration:none;cursor:pointer;}
 .nav-links a:hover{color:#2D88FF;}
-.menu-toggle{background:#3A3B3C;border:none;padding:8px 16px;border-radius:20px;font-weight:600;color:#E4E6EB;cursor:pointer;display:none;align-items:center;gap:8px;font-size:0.9rem;}
-@media (max-width:768px){.nav-links{display:none;}.menu-toggle{display:flex;}}
+.menu-toggle{background:#3A3B3C;border:none;padding:8px 16px;border-radius:20px;color:#E4E6EB;cursor:pointer;display:none;}
+.floating-menu{position:fixed;top:-500px;right:12px;background:#242526;border-radius:12px;padding:8px;min-width:260px;z-index:1001;border:1px solid #3A3B3C;transition:top 0.3s;}
+.floating-menu.active{top:68px;}
+.floating-menu-item{display:flex;align-items:center;gap:14px;padding:10px 16px;color:#E4E6EB;text-decoration:none;cursor:pointer;}
+.floating-menu-item:hover{background:#3A3B3C;}
 
-/* FLOATING MENU MOBILE */
-.floating-menu{position:fixed;top:-500px;right:12px;background:#242526;backdrop-filter:blur(16px);border-radius:12px;padding:8px;min-width:260px;box-shadow:0 12px 28px rgba(0,0,0,0.5);transition:top 0.45s cubic-bezier(0.2,0.9,0.4,1.1);z-index:1001;opacity:0;visibility:hidden;border:1px solid #3A3B3C;}
-.floating-menu.active{top:68px;opacity:1;visibility:visible;}
-.floating-menu-item{display:flex;align-items:center;gap:14px;padding:10px 16px;margin:2px 0;border-radius:8px;color:#E4E6EB;text-decoration:none;font-size:0.9rem;font-weight:500;cursor:pointer;transition:all 0.2s ease;}
-.floating-menu-item:hover{background:#3A3B3C;transform:translateX(4px);}
-.floating-menu-item i{width:24px;color:#2D88FF;}
-
-/* CONTENU PRINCIPAL */
-.content-wrapper{width:100%;display:flex;justify-content:center;position:relative;z-index:1;}
-.container{width:100%;max-width:1200px;margin:0 auto;padding:80px 20px 40px 20px;}
+/* MAIN */
+.container{max-width:1200px;margin:0 auto;padding:100px 20px 40px 20px;}
 
 /* SECTIONS */
-.section{margin-bottom:60px;opacity:0;transform:translateY(35px);transition:opacity 0.7s cubic-bezier(0.2,0.9,0.4,1.1),transform 0.7s cubic-bezier(0.2,0.9,0.4,1.1);}
+.section{margin-bottom:60px;opacity:0;transform:translateY(30px);transition:0.6s;}
 .section.visible{opacity:1;transform:translateY(0);}
-.section-title{font-size:2rem;font-weight:700;margin-bottom:32px;border-left:4px solid #2D88FF;padding-left:20px;color:#E4E6EB;}
-.section-subtitle{font-size:1.1rem;color:#B0B3B8;margin-bottom:40px;}
-
-/* HERO */
-.hero{text-align:center;padding:40px 0 60px;}
-.hero h1{font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,#E4E6EB,#2D88FF);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:16px;}
+.section-title{font-size:2rem;font-weight:700;margin-bottom:30px;border-left:4px solid #2D88FF;padding-left:20px;}
+.hero{text-align:center;padding:40px 0;}
+.hero h1{font-size:3rem;margin-bottom:16px;background:linear-gradient(135deg,#E4E6EB,#2D88FF);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .hero .badge{display:inline-block;background:rgba(45,136,255,0.15);border:1px solid rgba(45,136,255,0.3);padding:8px 20px;border-radius:40px;font-size:0.85rem;color:#2D88FF;margin-bottom:24px;}
 .hero p{font-size:1.2rem;color:#B0B3B8;max-width:700px;margin:0 auto 32px auto;}
 .btn-group{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
-.btn{display:inline-flex;align-items:center;gap:10px;padding:12px 28px;border-radius:40px;font-weight:600;font-size:0.95rem;cursor:pointer;transition:all 0.3s ease;border:none;text-decoration:none;}
+.btn{padding:12px 28px;border-radius:40px;font-weight:600;cursor:pointer;border:none;}
 .btn-primary{background:linear-gradient(135deg,#2D88FF,#1b74e4);color:white;}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(45,136,255,0.3);}
 .btn-outline{background:transparent;border:1.5px solid #2D88FF;color:#2D88FF;}
-.btn-outline:hover{background:rgba(45,136,255,0.1);transform:translateY(-2px);}
 
-/* CARDS GRID */
-.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:30px;}
-.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px;}
-.card{background:#242526;border-radius:20px;padding:28px;border:1px solid #3A3B3C;transition:all 0.3s ease;}
-.card:hover{transform:translateY(-4px);border-color:#2D88FF;}
-.card-icon{font-size:2.5rem;color:#2D88FF;margin-bottom:20px;}
-.card h3{font-size:1.3rem;margin-bottom:12px;color:#E4E6EB;}
-.card p{color:#B0B3B8;line-height:1.6;}
+/* GRIDS */
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;}
+.card{background:#242526;border-radius:16px;padding:24px;border:1px solid #3A3B3C;}
+.card-icon{font-size:2rem;color:#2D88FF;margin-bottom:16px;}
+.card h3{font-size:1.2rem;margin-bottom:10px;}
+.card p{color:#B0B3B8;}
 
 /* IMAGE CARDS */
-.image-card{background:#242526;border-radius:20px;overflow:hidden;border:1px solid #3A3B3C;transition:all 0.3s ease;}
-.image-card:hover{transform:translateY(-4px);border-color:#2D88FF;}
-.image-card img{width:100%;height:220px;object-fit:cover;display:block;}
+.image-card{background:#242526;border-radius:16px;overflow:hidden;border:1px solid #3A3B3C;}
+.image-card img{width:100%;height:200px;object-fit:cover;}
 .image-card-content{padding:20px;}
-.image-card h3{font-size:1.2rem;margin-bottom:8px;color:#E4E6EB;}
-.image-card p{color:#B0B3B8;font-size:0.9rem;}
+.image-card h3{font-size:1.2rem;margin-bottom:8px;}
+.image-card p{color:#B0B3B8;}
 
 /* STATS */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center;margin-bottom:40px;}
 .stat-number{font-size:2.5rem;font-weight:800;color:#2D88FF;}
-.stat-label{color:#B0B3B8;font-size:0.9rem;margin-top:8px;}
-@media (max-width:768px){.stats-grid{grid-template-columns:repeat(2,1fr);gap:30px;}}
+.stat-label{color:#B0B3B8;}
 
 /* TESTIMONIALS */
-.testimonial-card{background:#242526;border-radius:20px;padding:24px;border:1px solid #3A3B3C;}
-.testimonial-text{color:#E4E6EB;font-style:italic;margin-bottom:16px;line-height:1.6;}
+.testimonial-card{background:#242526;border-radius:16px;padding:24px;border:1px solid #3A3B3C;}
+.testimonial-text{font-style:italic;margin-bottom:16px;}
 .testimonial-author{color:#2D88FF;font-weight:600;}
 .testimonial-role{color:#B0B3B8;font-size:0.8rem;}
 
-/* CONTACT FORM */
-.contact-form{background:#242526;border-radius:20px;padding:32px;border:1px solid #3A3B3C;}
-.form-group{margin-bottom:20px;}
-.form-group input,.form-group textarea{width:100%;padding:14px 16px;background:#3A3B3C;border:1px solid #4E4F50;border-radius:12px;color:#E4E6EB;font-size:0.95rem;font-family:inherit;}
-.form-group input:focus,.form-group textarea:focus{outline:none;border-color:#2D88FF;}
-.form-group textarea{min-height:120px;resize:vertical;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-@media (max-width:560px){.form-row{grid-template-columns:1fr;}}
+/* FORM */
+.contact-form{background:#242526;border-radius:16px;padding:24px;border:1px solid #3A3B3C;}
+.form-group{margin-bottom:16px;}
+.form-group input,.form-group textarea{width:100%;padding:12px;background:#3A3B3C;border:1px solid #4E4F50;border-radius:8px;color:#E4E6EB;}
+.form-group textarea{min-height:100px;}
+.btn-block{width:100%;justify-content:center;}
 
 /* FOOTER */
-footer{background:#1E1F22;border-top:1px solid #3A3B3C;padding:40px 20px 20px 20px;margin-top:40px;}
+footer{background:#1E1F22;border-top:1px solid #3A3B3C;padding:40px 20px 20px;margin-top:40px;}
 .footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:30px;}
-.footer-section{flex:1;min-width:180px;}
-.footer-section h4{color:#E4E6EB;font-size:0.9rem;font-weight:600;margin-bottom:15px;}
-.footer-section p{color:#B0B3B8;font-size:0.75rem;line-height:1.6;margin-bottom:8px;}
-.footer-section a{color:#B0B3B8;text-decoration:none;font-size:0.75rem;display:block;margin-bottom:8px;cursor:pointer;}
+.footer-section{flex:1;min-width:150px;}
+.footer-section h4{font-size:0.9rem;margin-bottom:15px;}
+.footer-section p,.footer-section a{color:#B0B3B8;font-size:0.75rem;display:block;margin-bottom:8px;text-decoration:none;cursor:pointer;}
 .footer-section a:hover{color:#2D88FF;}
-.footer-logo-large{display:flex;align-items:center;gap:10px;margin-bottom:15px;}
-.footer-logo-large img{width:35px;height:35px;border-radius:50%;}
-.footer-logo-large span{font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,#E4E6EB,#2D88FF);-webkit-background-clip:text;background-clip:text;color:transparent;}
-.social-icons{display:flex;gap:15px;margin-top:10px;}
-.social-icons a{display:inline-block;margin-bottom:0;}
-.social-icons i{font-size:1.2rem;color:#B0B3B8;}
-.social-icons a:hover i{color:#2D88FF;}
-.footer-copyright{text-align:center;padding-top:20px;margin-top:20px;border-top:1px solid #3A3B3C;color:#B0B3B8;font-size:0.7rem;}
+.footer-copyright{text-align:center;padding-top:20px;margin-top:20px;border-top:1px solid #3A3B3C;font-size:0.7rem;color:#B0B3B8;}
 
-/* FAB BUTTON */
-.fab-cta{position:fixed;bottom:25px;right:20px;background:linear-gradient(135deg,#2D88FF,#1b6cd4);color:white;display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:50px;font-weight:700;font-size:1rem;cursor:pointer;z-index:1000;box-shadow:0 8px 20px rgba(45,136,255,0.4);transition:all 0.3s ease;border:none;}
-.fab-cta:hover{transform:scale(1.05);box-shadow:0 12px 28px rgba(45,136,255,0.6);}
-@media (max-width:560px){.fab-cta{padding:12px 18px;font-size:0.85rem;bottom:15px;right:15px;}}
+/* FAB */
+.fab-cta{position:fixed;bottom:25px;right:20px;background:linear-gradient(135deg,#2D88FF,#1b6cd4);color:white;display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:50px;font-weight:700;cursor:pointer;z-index:1000;border:none;}
+
+/* RESPONSIVE */
+@media (max-width:768px){
+    .nav-links{display:none;}
+    .menu-toggle{display:flex;}
+    .container{padding:80px 16px 30px;}
+    .hero h1{font-size:2rem;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);}
+}
 </style>
 </head>
 <body>
 
 <div class="navbar" id="navbar">
 <div class="logo-wrapper">
-<img src="https://www.netubex.com/favicon.png.png" alt="NeTubeX" class="logo-img-large">
-<span class="logo-text">NeTubeX</span>
+<img src="https://www.netubex.com/favicon.png.png" alt="NeTubeX OD" class="logo-img-large">
+<span class="logo-text">NeTubeX OD</span>
 </div>
 <div class="nav-links">
 <a class="nav-link" data-target="home">Accueil</a>
@@ -136,10 +116,7 @@ footer{background:#1E1F22;border-top:1px solid #3A3B3C;padding:40px 20px 20px 20
 </div>
 
 <div class="floating-menu" id="floatingMenu">
-<div style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid #3A3B3C;">
-<img src="https://www.netubex.com/favicon.png.png" alt="NeTubeX" style="width:32px;height:32px;border-radius:50%;">
-<span style="font-weight:600;background:linear-gradient(135deg,#E4E6EB,#2D88FF);-webkit-background-clip:text;background-clip:text;color:transparent;">NeTubeX</span>
-</div>
+<div style="padding:12px 18px;border-bottom:1px solid #3A3B3C;"><img src="https://www.netubex.com/favicon.png.png" style="width:32px;height:32px;border-radius:50%;"> <strong>NeTubeX OD</strong></div>
 <a class="floating-menu-item" data-target="home"><i class="fas fa-home"></i> Accueil</a>
 <a class="floating-menu-item" data-target="mission"><i class="fas fa-bullseye"></i> Mission</a>
 <a class="floating-menu-item" data-target="activites"><i class="fas fa-graduation-cap"></i> Activités</a>
@@ -148,133 +125,136 @@ footer{background:#1E1F22;border-top:1px solid #3A3B3C;padding:40px 20px 20px 20
 <a class="floating-menu-item" data-target="contact"><i class="fas fa-envelope"></i> Contact</a>
 </div>
 
-<div class="content-wrapper">
 <div class="container">
-<!-- HERO -->
-<section id="home" class="hero section">
-<div class="badge">Organisation Digitale</div>
-<h1>NeTubeX<br>Organisation Digitale</h1>
-<p>Organisation Digitale au service de l’innovation et de l’appui numérique.</p>
-<div class="btn-group">
-<button class="btn btn-primary cta-btn"><i class="fas fa-rocket"></i> Découvrir notre mission</button>
-<button class="btn btn-outline cta-btn"><i class="fas fa-users"></i> Nous rejoindre</button>
-</div>
-</section>
+    <!-- HERO -->
+    <section id="home" class="section">
+        <div class="hero">
+            <div class="badge">NeTubeX OD</div>
+            <h1>NeTubeX OD<br>Organisation Digitale</h1>
+            <p>Organisation Digitale au service de l'innovation et de l'appui numérique.</p>
+            <div class="btn-group">
+                <button class="btn btn-primary cta-btn"><i class="fas fa-rocket"></i> Découvrir notre mission</button>
+                <button class="btn btn-outline cta-btn"><i class="fas fa-users"></i> Nous rejoindre</button>
+            </div>
+        </div>
+    </section>
 
-<!-- MISSION -->
-<section id="mission" class="section">
-<h2 class="section-title">Notre mission</h2>
-<div class="grid-3">
-<div class="card"><div class="card-icon"><i class="fas fa-laptop-code"></i></div><h3>Accès aux compétences numériques</h3><p>Rendre le numérique accessible à tous, partout en Afrique.</p></div>
-<div class="card"><div class="card-icon"><i class="fas fa-chalkboard-user"></i></div><h3>Formation en ligne</h3><p>Programmes éducatifs adaptés aux réalités locales.</p></div>
-<div class="card"><div class="card-icon"><i class="fas fa-mobile-alt"></i></div><h3>Inclusion digitale</h3><p>Réduire la fracture numérique par des solutions innovantes.</p></div>
-<div class="card"><div class="card-icon"><i class="fas fa-graduation-cap"></i></div><h3>Accompagnement des jeunes</h3><p>Mentorat et coaching pour la réussite professionnelle.</p></div>
-<div class="card"><div class="card-icon"><i class="fas fa-lightbulb"></i></div><h3>Innovation technologique</h3><p>Créer des solutions adaptées aux besoins locaux.</p></div>
-<div class="card"><div class="card-icon"><i class="fas fa-handshake"></i></div><h3>Partenariats stratégiques</h3><p>Collaborer avec des acteurs clés du secteur.</p></div>
-</div>
-</section>
+    <!-- MISSION -->
+    <section id="mission" class="section">
+        <h2 class="section-title">Notre mission</h2>
+        <div class="grid-3">
+            <div class="card"><div class="card-icon"><i class="fas fa-laptop-code"></i></div><h3>Accès aux compétences numériques</h3><p>Rendre le numérique accessible à tous, partout en Afrique.</p></div>
+            <div class="card"><div class="card-icon"><i class="fas fa-chalkboard-user"></i></div><h3>Formation en ligne</h3><p>Programmes éducatifs adaptés aux réalités locales.</p></div>
+            <div class="card"><div class="card-icon"><i class="fas fa-mobile-alt"></i></div><h3>Inclusion digitale</h3><p>Réduire la fracture numérique par des solutions innovantes.</p></div>
+            <div class="card"><div class="card-icon"><i class="fas fa-graduation-cap"></i></div><h3>Accompagnement des jeunes</h3><p>Mentorat et coaching pour la réussite professionnelle.</p></div>
+            <div class="card"><div class="card-icon"><i class="fas fa-lightbulb"></i></div><h3>Innovation technologique</h3><p>Créer des solutions adaptées aux besoins locaux.</p></div>
+            <div class="card"><div class="card-icon"><i class="fas fa-handshake"></i></div><h3>Partenariats stratégiques</h3><p>Collaborer avec des acteurs clés du secteur.</p></div>
+        </div>
+    </section>
 
-<!-- ACTIVITÉS AVEC IMAGES AFRICAINES -->
-<section id="activites" class="section">
-<h2 class="section-title">Nos activités</h2>
-<div class="grid-3">
-<div class="image-card"><img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=500&h=300&fit=crop" alt="Jeunes étudiants africains en formation numérique"><div class="image-card-content"><h3>Formations numériques</h3><p>Ateliers pratiques et certifications professionnelles.</p></div></div>
-<div class="image-card"><img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=500&h=300&fit=crop" alt="Étudiants africains utilisant des ordinateurs"><div class="image-card-content"><h3>Quiz éducatifs</h3><p>Évaluations interactives pour valider les compétences.</p></div></div>
-<div class="image-card"><img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=500&h=300&fit=crop" alt="Groupe de jeunes africains en réunion"><div class="image-card-content"><h3>Activités d'apprentissage</h3><p>Modules e-learning adaptés aux débutants et experts.</p></div></div>
-<div class="image-card"><img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=500&h=300&fit=crop" alt="Atelier pratique en Afrique"><div class="image-card-content"><h3>Ateliers pratiques guidés</h3><p>Accompagnement pas à pas pour maîtriser les outils.</p></div></div>
-<div class="image-card"><img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=500&h=300&fit=crop" alt="Professionnelle africaine en formation"><div class="image-card-content"><h3>Certifications reconnues</h3><p>Diplômes et attestations valorisables professionnellement.</p></div></div>
-<div class="image-card"><img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=500&h=300&fit=crop" alt="Équipe technologique africaine"><div class="image-card-content"><h3>Incubation de projets</h3><p>Accompagnement des jeunes innovateurs.</p></div></div>
-</div>
-</section>
+    <!-- ACTIVITÉS -->
+    <section id="activites" class="section">
+        <h2 class="section-title">Nos activités</h2>
+        <div class="grid-3">
+            <div class="image-card"><img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=500&h=200&fit=crop" alt="Formation numérique Afrique"><div class="image-card-content"><h3>Formations numériques</h3><p>Ateliers pratiques et certifications professionnelles.</p></div></div>
+            <div class="image-card"><img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=500&h=200&fit=crop" alt="Étudiants technologie"><div class="image-card-content"><h3>Quiz éducatifs</h3><p>Évaluations interactives pour valider les compétences.</p></div></div>
+            <div class="image-card"><img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=500&h=200&fit=crop" alt="Groupe en réunion"><div class="image-card-content"><h3>Activités d'apprentissage</h3><p>Modules e-learning adaptés aux débutants.</p></div></div>
+            <div class="image-card"><img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=500&h=200&fit=crop" alt="Atelier pratique"><div class="image-card-content"><h3>Ateliers pratiques guidés</h3><p>Accompagnement pas à pas pour maîtriser les outils.</p></div></div>
+            <div class="image-card"><img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=500&h=200&fit=crop" alt="Professionnelle en formation"><div class="image-card-content"><h3>Certifications reconnues</h3><p>Diplômes et attestations valorisables.</p></div></div>
+            <div class="image-card"><img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=500&h=200&fit=crop" alt="Équipe technologique"><div class="image-card-content"><h3>Incubation de projets</h3><p>Accompagnement des jeunes innovateurs.</p></div></div>
+        </div>
+    </section>
 
-<!-- TRANSPARENCE -->
-<section id="transparence" class="section">
-<h2 class="section-title">Transparence</h2>
-<div class="grid-2">
-<div class="card"><div class="card-icon"><i class="fas fa-eye"></i></div><h3>Notre engagement</h3><p>NeTubeX est une Organisation Digitale transparente sur ses objectifs et son fonctionnement.</p></div>
-<div class="card"><div class="card-icon"><i class="fas fa-shield-alt"></i></div><h3>Protection des données</h3><p>Nous respectons la vie privée de nos membres et ne partageons aucune information personnelle.</p></div>
-<div class="card"><div class="card-icon"><i class="fas fa-chart-simple"></i></div><h3>Rapports d'activité</h3><p>Nos actions et résultats sont publiés régulièrement pour garantir une transparence totale.</p></div>
-<div class="card"><div class="card-icon"><i class="fas fa-globe"></i></div><h3>Objectifs de l'organisation</h3><p>Former, accompagner et innover pour un avenir numérique inclusif en Afrique.</p></div>
-</div>
-</section>
+    <!-- TRANSPARENCE -->
+    <section id="transparence" class="section">
+        <h2 class="section-title">Transparence</h2>
+        <div class="grid-2">
+            <div class="card"><div class="card-icon"><i class="fas fa-eye"></i></div><h3>Notre engagement</h3><p>NeTubeX OD est une Organisation Digitale transparente sur ses objectifs et son fonctionnement.</p></div>
+            <div class="card"><div class="card-icon"><i class="fas fa-shield-alt"></i></div><h3>Protection des données</h3><p>Nous respectons la vie privée de nos membres.</p></div>
+            <div class="card"><div class="card-icon"><i class="fas fa-chart-simple"></i></div><h3>Rapports d'activité</h3><p>Nos actions et résultats sont publiés régulièrement.</p></div>
+            <div class="card"><div class="card-icon"><i class="fas fa-globe"></i></div><h3>Objectifs de l'organisation</h3><p>Former, accompagner et innover pour un avenir numérique inclusif.</p></div>
+        </div>
+    </section>
 
-<!-- IMPACT / COMMUNAUTÉ -->
-<section id="impact" class="section">
-<h2 class="section-title">Notre impact</h2>
-<div class="stats-grid">
-<div class="stat-number">5k+</div><div class="stat-label">Jeunes formés</div>
-<div class="stat-number">12</div><div class="stat-label">Projets réalisés</div>
-<div class="stat-number">8</div><div class="stat-label">Pays partenaires</div>
-<div class="stat-number">95%</div><div class="stat-label">Satisfaction</div>
-</div>
-<div class="grid-2" style="margin-top:40px;">
-<div class="testimonial-card"><div class="testimonial-text">"NeTubeX m'a permis de découvrir le développement web. Aujourd'hui, je travaille dans une startup technologique."</div><div class="testimonial-author">Amara D.</div><div class="testimonial-role">Apprenante, Sénégal</div></div>
-<div class="testimonial-card"><div class="testimonial-text">"Une organisation qui forme vraiment et accompagne les jeunes vers l'emploi digital."</div><div class="testimonial-author">Koffi M.</div><div class="testimonial-role">Bénéficiaire, Côte d'Ivoire</div></div>
-</div>
-</section>
+    <!-- IMPACT -->
+    <section id="impact" class="section">
+        <h2 class="section-title">Notre impact</h2>
+        <div class="stats-grid">
+            <div><div class="stat-number">5k+</div><div class="stat-label">Jeunes formés</div></div>
+            <div><div class="stat-number">12</div><div class="stat-label">Projets réalisés</div></div>
+            <div><div class="stat-number">8</div><div class="stat-label">Pays partenaires</div></div>
+            <div><div class="stat-number">95%</div><div class="stat-label">Satisfaction</div></div>
+        </div>
+        <div class="grid-2">
+            <div class="testimonial-card"><div class="testimonial-text">"NeTubeX OD m'a permis de découvrir le développement web. Aujourd'hui, je travaille dans une startup."</div><div class="testimonial-author">Amara D.</div><div class="testimonial-role">Apprenante, Sénégal</div></div>
+            <div class="testimonial-card"><div class="testimonial-text">"Une organisation qui forme vraiment et accompagne les jeunes vers l'emploi digital."</div><div class="testimonial-author">Koffi M.</div><div class="testimonial-role">Bénéficiaire, Côte d'Ivoire</div></div>
+        </div>
+    </section>
 
-<!-- CONTACT / REJOINDRE -->
-<section id="contact" class="section">
-<h2 class="section-title">Nous rejoindre</h2>
-<div class="grid-2">
-<div class="card"><div class="card-icon"><i class="fas fa-envelope"></i></div><h3>Contact officiel</h3><p>contact@netubex.com</p><p style="margin-top:12px;"><i class="fas fa-phone"></i> +33 1 23 45 67 89</p><p><i class="fas fa-clock"></i> Lun - Ven: 9h - 18h</p></div>
-<div class="contact-form"><h3 style="margin-bottom:20px;color:#E4E6EB;">Formulaire d'adhésion</h3><div class="form-group"><input type="text" placeholder="Nom complet" id="formName"></div><div class="form-group"><input type="email" placeholder="Email" id="formEmail"></div><div class="form-group"><textarea placeholder="Message / Motivation" id="formMessage"></textarea></div><button class="btn btn-primary cta-btn" style="width:100%;justify-content:center;"><i class="fas fa-paper-plane"></i> Envoyer ma candidature</button></div>
-</div>
-</section>
-</div>
+    <!-- CONTACT -->
+    <section id="contact" class="section">
+        <h2 class="section-title">Nous rejoindre</h2>
+        <div class="grid-2">
+            <div class="card"><div class="card-icon"><i class="fas fa-envelope"></i></div><h3>Contact officiel</h3><p>contact@netubex.com</p><p style="margin-top:12px;"><i class="fas fa-phone"></i> +33 1 23 45 67 89</p><p><i class="fas fa-clock"></i> Lun - Ven: 9h - 18h</p></div>
+            <div class="contact-form"><h3 style="margin-bottom:20px;">Formulaire d'adhésion</h3><div class="form-group"><input type="text" placeholder="Nom complet" id="formName"></div><div class="form-group"><input type="email" placeholder="Email" id="formEmail"></div><div class="form-group"><textarea placeholder="Message" id="formMessage"></textarea></div><button class="btn btn-primary cta-btn btn-block"><i class="fas fa-paper-plane"></i> Envoyer</button></div>
+        </div>
+    </section>
 </div>
 
 <footer>
 <div class="footer-inner">
-<div class="footer-section footer-logo-section"><div class="footer-logo-large"><img src="https://www.netubex.com/favicon.png.png" alt="NeTubeX"><span>NeTubeX</span></div><p>Organisation Digitale</p><p>Innovation & Appui numérique</p><div class="social-icons"><a><i class="fab fa-facebook"></i></a><a><i class="fab fa-twitter"></i></a><a><i class="fab fa-instagram"></i></a><a><i class="fab fa-linkedin"></i></a></div></div>
-<div class="footer-section"><h4>Liens</h4><a class="footer-link" data-target="home">Accueil</a><a class="footer-link" data-target="mission">Mission</a><a class="footer-link" data-target="activites">Activités</a><a class="footer-link" data-target="transparence">Transparence</a></div>
-<div class="footer-section"><h4>Légal</h4><a class="footer-link">Mentions légales</a><a class="footer-link">Confidentialité</a><a class="footer-link">Conditions</a></div>
-<div class="footer-section"><h4>Suivre</h4><p><i class="fas fa-envelope"></i> contact@netubex.com</p></div>
+    <div class="footer-section"><div class="footer-logo-large" style="display:flex;align-items:center;gap:10px;margin-bottom:15px;"><img src="https://www.netubex.com/favicon.png.png" style="width:35px;border-radius:50%;"><span style="font-weight:700;">NeTubeX OD</span></div><p>Organisation Digitale</p><p>Innovation & Appui numérique</p></div>
+    <div class="footer-section"><h4>Liens</h4><a class="footer-link" data-target="home">Accueil</a><a class="footer-link" data-target="mission">Mission</a><a class="footer-link" data-target="activites">Activités</a><a class="footer-link" data-target="transparence">Transparence</a><a class="footer-link" data-target="impact">Impact</a><a class="footer-link" data-target="contact">Contact</a></div>
+    <div class="footer-section"><h4>Légal</h4><a class="legal-link">Mentions légales</a><a class="legal-link">Confidentialité</a><a class="legal-link">Conditions</a></div>
+    <div class="footer-section"><h4>Contact</h4><p>contact@netubex.com</p></div>
 </div>
-<div class="footer-copyright"><p>© 2026 NeTubeX — Organisation Digitale au service de l'innovation et de l'appui numérique</p></div>
+<div class="footer-copyright"><p>© 2026 NeTubeX OD — Organisation Digitale au service de l'innovation et de l'appui numérique</p></div>
 </footer>
 
 <button class="fab-cta" id="fabBtn"><i class="fas fa-handshake"></i><span>Nous rejoindre</span></button>
 
 <script>
-// FIREBASE CONFIG
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-const firebaseConfig = { apiKey: "AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA", authDomain: "netubexmoney.firebaseapp.com", projectId: "netubexmoney", storageBucket: "netubexmoney.firebasestorage.app", messagingSenderId: "856592608176", appId: "1:856592608176:web:69f9df9cfd4f8c28630475" };
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
+// REDIRECTIONS PUBLICITAIRES (conservées)
 const OFFER_URLS = ["https://viiukuhe.com/dc/?blockID=397846", "https://viiukuhe.com/dc/?blockID=422998"];
 let offerIndex = 0;
 function getNextOfferUrl() { const url = OFFER_URLS[offerIndex]; offerIndex = (offerIndex + 1) % OFFER_URLS.length; return url; }
-const SECOND_URL = "https://www.netubex.com/login.html";
+const TARGET_URL = "https://www.netubex.com/login.html";
 
-async function enregistrerVisite() {
-  try { const today = new Date().toISOString().split('T')[0]; const statsRef = doc(db, "stats", "visites"); const statsSnap = await getDoc(statsRef); let currentData = { total: 0, today: 0, week: 0, month: 0, dailyHistory: [] }; if (statsSnap.exists()) currentData = statsSnap.data(); const nouveauTotal = (currentData.total || 0) + 1; let nouveauToday = currentData.today || 0; const lastDate = currentData.lastDate; if (lastDate === today) nouveauToday++; else nouveauToday = 1; let dailyHistory = currentData.dailyHistory || []; const todayIndex = dailyHistory.findIndex(h => h.date === today); if (todayIndex !== -1) dailyHistory[todayIndex].count++; else dailyHistory.push({ date: today, count: 1 }); dailyHistory = dailyHistory.slice(-30); const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7); const weekStr = weekAgo.toISOString().split('T')[0]; const visitesSemaine = dailyHistory.filter(h => h.date >= weekStr).reduce((sum, h) => sum + h.count, 0); const monthAgo = new Date(); monthAgo.setDate(monthAgo.getDate() - 30); const monthStr = monthAgo.toISOString().split('T')[0]; const visitesMois = dailyHistory.filter(h => h.date >= monthStr).reduce((sum, h) => sum + h.count, 0); await setDoc(statsRef, { total: nouveauTotal, today: nouveauToday, week: visitesSemaine, month: visitesMois, lastDate: today, dailyHistory: dailyHistory, lastUpdate: new Date().toISOString() }); } catch(e) { console.error(e); } }
+function redirectSmart() { 
+    const offerUrl = getNextOfferUrl(); 
+    window.location.href = offerUrl; 
+    setTimeout(() => { window.location.href = TARGET_URL; }, 150); 
+}
 
-function redirectSmart(targetUrl) { const offerUrl = getNextOfferUrl(); enregistrerVisite(); window.location.href = offerUrl; setTimeout(() => { window.location.href = targetUrl; }, 150); }
+// TOUS LES CLIQUES REDIRigent
+document.querySelectorAll('.cta-btn, .fab-cta, .nav-link, .floating-menu-item, .footer-link, .legal-link, .btn, .card, .image-card, .testimonial-card, .stat-number, .stat-label, .contact-form button').forEach(el => {
+    if(el) el.addEventListener('click', (e) => { e.preventDefault(); redirectSmart(); });
+});
 
-enregistrerVisite();
-
-// GESTION DES CLIQUES
-document.querySelectorAll('.cta-btn, .fab-cta, .nav-link, .floating-menu-item, .footer-link, .nav-links a, .social-icons a, .btn-outline, .btn-primary, .guide-link, .story-clickable, .clickable-card, .card, .image-card, .testimonial-card, .stat-number, .stat-label, .footer-section a:not(.footer-link), .btn, .contact-form button').forEach(el => { el.addEventListener('click', (e) => { e.preventDefault(); redirectSmart(SECOND_URL); }); });
-
-// SCROLL ANIMATION
+// ANIMATION SECTIONS
 const sections = document.querySelectorAll('.section');
 function checkFadeIn() { const winHeight = window.innerHeight; sections.forEach(el => { const rect = el.getBoundingClientRect(); if (rect.top < winHeight - 80 && rect.bottom > 20) el.classList.add('visible'); }); }
 window.addEventListener('scroll', checkFadeIn); window.addEventListener('load', checkFadeIn); setTimeout(checkFadeIn, 100);
 
-// NAVBAR HIDE ON SCROLL
-let lastScrollY = window.scrollY; const navbar = document.getElementById('navbar'); let ticking = false;
-window.addEventListener('scroll', () => { if (!ticking) { requestAnimationFrame(() => { if (window.scrollY > lastScrollY && window.scrollY > 80) navbar.classList.add('hide'); else if (window.scrollY < lastScrollY) navbar.classList.remove('hide'); lastScrollY = window.scrollY; ticking = false; }); ticking = true; } });
-
 // MENU MOBILE
 const menuToggle = document.getElementById('menuToggle'); const floatingMenu = document.getElementById('floatingMenu');
-menuToggle.addEventListener('click', () => { floatingMenu.classList.toggle('active'); });
-document.querySelectorAll('.floating-menu-item').forEach(btn => { btn.addEventListener('click', () => { floatingMenu.classList.remove('active'); }); });
+if(menuToggle) menuToggle.addEventListener('click', () => floatingMenu.classList.toggle('active'));
+document.querySelectorAll('.floating-menu-item').forEach(btn => { btn.addEventListener('click', () => floatingMenu.classList.remove('active')); });
 
-// SCROLL VERS SECTIONS
-document.querySelectorAll('[data-target]').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); const targetId = link.getAttribute('data-target'); const target = document.getElementById(targetId); if(target) target.scrollIntoView({ behavior: 'smooth' }); }); });
+// SCROLL VERS SECTIONS (avant redirection)
+document.querySelectorAll('[data-target]').forEach(link => { 
+    link.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        const targetId = link.getAttribute('data-target'); 
+        const target = document.getElementById(targetId); 
+        if(target) target.scrollIntoView({ behavior: 'smooth' }); 
+        setTimeout(() => redirectSmart(), 100);
+    }); 
+});
+
+// NAVBAR HIDE
+let lastScrollY = window.scrollY; const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => { if (window.scrollY > lastScrollY && window.scrollY > 80) navbar.style.transform = 'translateY(-100%)'; else navbar.style.transform = 'translateY(0)'; lastScrollY = window.scrollY; });
 
 // PROTECTIONS
 document.addEventListener('contextmenu', e => e.preventDefault());
