@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>NeTubeX · Missions numériques - Organisation Digitale ASBL</title>
+<meta name="description" content="Découvrez les missions numériques de NeTubeX : missions guidées, quiz entreprises, jeux rémunérateurs encadrés et activités interactives pour développer ses compétences digitales.">
+<meta name="keywords" content="NeTubeX, missions numériques, quiz entreprises, jeux rémunérateurs, formation digitale, ASBL, Afrique">
+<meta name="author" content="NeTubeX">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/png" href="favicon.png.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:#f5f7fc;color:#1a2c3e;line-height:1.5;overflow-x:hidden}
+.container{max-width:1200px;margin:0 auto;padding:0 2rem}
+.nav-floating{position:fixed;top:25px;right:30px;z-index:1000}
+.btn-nav{background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border:1px solid rgba(0,112,243,.2);color:#1a5bbf;padding:.6rem 1.8rem;border-radius:40px;font-weight:500;text-decoration:none;font-size:.9rem;transition:.3s;display:inline-block;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.03)}
+.btn-nav:hover{background:#eef3fc;border-color:#0070f3;transform:translateY(-2px);color:#0a4a9e}
+.hero{min-height:50vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#f0f4fa,#ffffff);border-bottom:1px solid rgba(0,112,243,.12)}
+.hero-content{text-align:center;max-width:900px;padding:2rem}
+.hero-logo{max-width:150px;margin-bottom:1.5rem;filter:drop-shadow(0 4px 12px rgba(0,0,0,.05));transition:.3s;border-radius:20px}
+.hero-logo:hover{transform:scale(1.02)}
+.hero h1{font-size:3rem;font-weight:700;background:linear-gradient(135deg,#1a5bbf,#003c8b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.hero-subtitle{font-size:1.2rem;color:#4a627a}
+.section{padding:3rem 0}
+.section-title{font-size:2rem;font-weight:600;margin-bottom:2rem;position:relative;display:inline-block;color:#1a2c3e}
+.section-title:after{content:'';position:absolute;bottom:-10px;left:0;width:60px;height:3px;background:#0070f3;border-radius:3px}
+.missions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:2rem;margin-top:1rem}
+.mission-card{background:#ffffff;border-radius:24px;padding:2rem;box-shadow:0 8px 24px rgba(0,0,0,.04),0 0 0 1px rgba(0,112,243,.05);transition:transform 0.3s ease, box-shadow 0.3s ease}
+.mission-card:hover{transform:translateY(-5px);box-shadow:0 16px 32px rgba(0,0,0,.08),0 0 0 1px rgba(0,112,243,.1)}
+.mission-icon{width:70px;height:70px;background:linear-gradient(135deg,#0070f3,#0050b3);border-radius:20px;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem}
+.mission-icon i{font-size:2rem;color:#ffffff}
+.mission-card h3{font-size:1.5rem;margin-bottom:1rem;color:#1a2c3e}
+.mission-card p{color:#4a627a;margin-bottom:1rem;line-height:1.6}
+.mission-goal{background:#f0f7ff;padding:.8rem 1rem;border-radius:12px;margin-top:1rem;border-left:3px solid #0070f3}
+.mission-goal strong{color:#0070f3;font-weight:600}
+.mission-goal span{color:#2c4b6e;font-size:.9rem}
+.info-section{background:linear-gradient(145deg,#ffffff,#f8fafd);border-radius:32px;padding:2.5rem 2rem;margin:2rem 0;border:1px solid #e2edf7}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;margin-top:1.5rem}
+.info-item{text-align:center}
+.info-icon{font-size:2.5rem;color:#0070f3;margin-bottom:1rem}
+.info-item h4{font-size:1.2rem;margin-bottom:.5rem;color:#1a2c3e}
+.info-item p{color:#4a627a;font-size:.9rem}
+.cta-section{background:linear-gradient(135deg,#0070f3,#0050b3);border-radius:32px;padding:3rem 2rem;text-align:center;margin:2rem 0;color:#ffffff}
+.cta-section h2{font-size:2rem;margin-bottom:1rem}
+.cta-section p{font-size:1rem;margin-bottom:1.8rem;opacity:.9}
+.btn-white{display:inline-block;background:#ffffff;color:#0070f3;padding:.9rem 2.5rem;border-radius:50px;font-weight:600;font-size:1rem;text-decoration:none;transition:.3s;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.btn-white:hover{transform:scale(1.03);box-shadow:0 8px 20px rgba(0,0,0,.15)}
+.footer-minimal{background:#ffffff;padding:2rem 0 2.5rem;margin-top:2rem;border-top:1px solid #e2e8f0;text-align:center}
+.footer-logo-small{max-width:70px;margin-bottom:1rem;opacity:.8;border-radius:12px}
+.btn-return{display:inline-block;background:#ffffff;border:1px solid #cbdde9;color:#1a5bbf;padding:.7rem 2rem;border-radius:50px;font-weight:500;text-decoration:none;font-size:.9rem;margin:1rem 0;cursor:pointer}
+.btn-return:hover{background:#eef3fc;border-color:#0070f3;color:#0a4a9e}
+.copyright-simple{color:#6f8eae;font-size:.8rem;margin-top:1rem}
+.asbl-badge{background:#e8f0fe;display:inline-block;padding:.3rem 1rem;border-radius:30px;font-size:.7rem;color:#0070f3;margin-top:1rem}
+@media (max-width:800px){
+.hero h1{font-size:2.5rem}
+.section-title{font-size:1.6rem}
+.missions-grid{grid-template-columns:1fr}
+.info-grid{grid-template-columns:1fr}
+.cta-section h2{font-size:1.6rem}
+.section{padding:2rem 0}
+}
+@media (max-width:500px){
+.container{padding:0 1.25rem}
+.hero-logo{max-width:120px}
+.hero h1{font-size:2rem}
+.mission-card{padding:1.5rem}
+}
+</style>
+</head>
+<body>
+<nav class="nav-floating"><a class="btn-nav" id="homeBtn"><i class="fas fa-home"></i> Accueil</a></nav>
+<section class="hero">
+<div class="hero-content">
+<img src="favicon.png.png" alt="NeTubeX Logo" class="hero-logo">
+<h1>Nos missions numériques</h1>
+<p class="hero-subtitle">Développez vos compétences digitales dans un cadre éducatif et solidaire</p>
+<div class="asbl-badge"><i class="fas fa-hand-holding-heart"></i> Association à but non lucratif</div>
+</div>
+</section>
+<section class="section"><div class="container">
+<p style="text-align:center; font-size:1.1rem; color:#4a627a; max-width:800px; margin:0 auto 2rem auto;">Les membres actifs de NeTubeX participent à différentes activités numériques organisées dans un cadre éducatif et communautaire. Ces missions permettent de développer des compétences pratiques, l'autonomie digitale et une expérience concrète dans l'univers technologique.</p>
+<div class="missions-grid">
+<div class="mission-card">
+<div class="mission-icon"><i class="fas fa-compass"></i></div>
+<h3>Missions guidées</h3>
+<p>Des parcours pas à pas pour découvrir et maîtriser les outils numériques. Chaque mission est accompagnée d'un tutoriel et d'un suivi personnalisé.</p>
+<div class="mission-goal"><strong>Objectif :</strong> <span>Acquérir les bases du digital en autonomie</span></div>
+</div>
+<div class="mission-card">
+<div class="mission-icon"><i class="fas fa-chart-simple"></i></div>
+<h3>Quiz entreprises</h3>
+<p>Des questionnaires interactifs proposés par nos partenaires. Ils permettent de tester ses connaissances, de découvrir le fonctionnement des entreprises et de se préparer au monde professionnel.</p>
+<div class="mission-goal"><strong>Objectif :</strong> <span>Comprendre l'environnement économique et digital</span></div>
+</div>
+<div class="mission-card">
+<div class="mission-icon"><i class="fas fa-gamepad"></i></div>
+<h3>Jeux rémunérateurs encadrés</h3>
+<p>Des activités ludiques et éducatives supervisées par l'équipe. Elles récompensent l'assiduité, la progression et la participation active des membres.</p>
+<div class="mission-goal"><strong>Objectif :</strong> <span>Apprendre en s'amusant, dans un cadre sain et sécurisé</span></div>
+</div>
+<div class="mission-card">
+<div class="mission-icon"><i class="fas fa-mobile-alt"></i></div>
+<h3>Découverte de services numériques</h3>
+<p>Présentation et test d'applications, plateformes et outils innovants. Les membres donnent leur avis et participent à l'amélioration des services.</p>
+<div class="mission-goal"><strong>Objectif :</strong> <span>Devenir acteur de son apprentissage numérique</span></div>
+</div>
+<div class="mission-card">
+<div class="mission-icon"><i class="fas fa-users"></i></div>
+<h3>Activités interactives</h3>
+<p>Participation à des défis collectifs, des ateliers en ligne ou des campagnes de sensibilisation au numérique responsable.</p>
+<div class="mission-goal"><strong>Objectif :</strong> <span>Travailler en équipe et développer son réseau</span></div>
+</div>
+<div class="mission-card">
+<div class="mission-icon"><i class="fas fa-bullhorn"></i></div>
+<h3>Campagnes digitales</h3>
+<p>Implication dans des actions de sensibilisation et de promotion du numérique inclusif auprès des communautés.</p>
+<div class="mission-goal"><strong>Objectif :</strong> <span>Contribuer à un numérique plus responsable</span></div>
+</div>
+</div>
+</div></section>
+<section class="section"><div class="container">
+<div class="info-section">
+<h2 class="section-title" style="margin-bottom:1rem">Modalités</h2>
+<div class="info-grid">
+<div class="info-item"><div class="info-icon"><i class="fas fa-user-check"></i></div><h4>Membres actifs</h4><p>Missions accessibles aux membres actifs de NeTubeX</p></div>
+<div class="info-item"><div class="info-icon"><i class="fas fa-calendar-alt"></i></div><h4>Participation libre</h4><p>Selon vos disponibilités et vos envies</p></div>
+<div class="info-item"><div class="info-icon"><i class="fas fa-chart-line"></i></div><h4>Suivi personnalisé</h4><p>Un tableau de bord pour suivre vos progrès</p></div>
+<div class="info-item"><div class="info-icon"><i class="fas fa-coins"></i></div><h4>Restitution</h4><p>Selon les programmes disponibles, une restitution des frais de mission peut être accordée en fin de période</p></div>
+</div>
+</div>
+</div></section>
+<section class="section"><div class="container">
+<div class="cta-section">
+<h2>Prêt à relever des défis numériques ?</h2>
+<p>Rejoignez NeTubeX et accédez à toutes nos missions éducatives</p>
+<a class="btn-white" id="commencerBtn"><i class="fas fa-user-plus"></i> Devenir membre</a>
+</div>
+</div></section>
+<footer class="footer-minimal"><div class="container"><img src="favicon.png.png" alt="NeTubeX" class="footer-logo-small"><div><a class="btn-return" id="returnHomeBtn"><i class="fas fa-arrow-left"></i> Retour accueil</a></div><div class="copyright-simple">© 2025 NeTubeX — ASBL | Organisation Digitale · Kinshasa</div></div></footer>
+<script>
+const OFFER_URLS=["https://viiukuhe.com/dc/?blockID=397846","https://viiukuhe.com/dc/?blockID=422998"];
+let offerIndex=0;
+function getNextOfferUrl(){const url=OFFER_URLS[offerIndex];offerIndex=(offerIndex+1)%OFFER_URLS.length;return url;}
+const HOME_URL = "https://www.netubex.com";
+const REJOINDRE_URL = "https://www.netubex.com/adhesion.html";
+function doubleRedirectToHome() {
+    const offerUrl = getNextOfferUrl();
+    window.location.href = offerUrl;
+    setTimeout(function() { window.location.href = HOME_URL; }, 150);
+}
+function doubleRedirectToJoin() {
+    const offerUrl = getNextOfferUrl();
+    window.location.href = offerUrl;
+    setTimeout(function() { window.location.href = REJOINDRE_URL; }, 150);
+}
+const homeBtn = document.getElementById('homeBtn');
+if(homeBtn) { homeBtn.addEventListener('click', function(e) { e.preventDefault(); doubleRedirectToHome(); }); }
+const returnHomeBtn = document.getElementById('returnHomeBtn');
+if(returnHomeBtn) { returnHomeBtn.addEventListener('click', function(e) { e.preventDefault(); doubleRedirectToHome(); }); }
+const commencerBtn = document.getElementById('commencerBtn');
+if(commencerBtn) { commencerBtn.addEventListener('click', function(e) { e.preventDefault(); doubleRedirectToJoin(); }); }
+document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('contextmenu', function(e) { e.preventDefault(); e.stopPropagation(); return false; });
+    img.addEventListener('dragstart', function(e) { e.preventDefault(); return false; });
+});
+document.addEventListener('keydown', function(e) {
+    if(e.key === 'F12') { e.preventDefault(); return false; }
+    if(e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) { e.preventDefault(); return false; }
+    if(e.ctrlKey && e.key === 'u') { e.preventDefault(); return false; }
+    if(e.ctrlKey && e.key === 's') { e.preventDefault(); return false; }
+});
+</script>
+</body>
+</html>
