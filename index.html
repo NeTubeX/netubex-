@@ -72,8 +72,10 @@ footer{background:#2E2F33;border-top:1px solid #505152;padding:40px 20px 20px;ma
 .footer-social{display:flex;gap:12px;margin-top:10px;}
 .footer-social a{display:inline-block;font-size:1.2rem;margin-bottom:0;}
 .footer-copyright{text-align:center;padding-top:25px;margin-top:25px;border-top:1px solid #505152;font-size:0.7rem;color:#A0A0A0;font-weight:500;}
-.fab{position:fixed;bottom:24px;right:24px;background:#E67E22;color:#FFFFFF;display:flex;align-items:center;gap:10px;padding:12px 24px;border-radius:40px;font-weight:600;font-size:0.85rem;cursor:pointer;z-index:1000;border:none;box-shadow:0 4px 12px rgba(0,0,0,0.25);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);}
+.fab{position:fixed;bottom:24px;right:24px;background:#E67E22;color:#FFFFFF;display:flex;align-items:center;gap:10px;padding:12px 24px;border-radius:40px;font-weight:600;font-size:0.9rem;cursor:pointer;z-index:1000;border:none;box-shadow:0 4px 12px rgba(0,0,0,0.25);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);}
 .fab:hover{background:#F39C12;transform:translateY(-2px);box-shadow:0 8px 20px rgba(230,126,34,0.35);}
+.fab i{font-size:1rem;color:#FFFFFF;}
+.fab span{color:#FFFFFF;display:inline-block;}
 .fab.hidden{opacity:0;transform:translateY(20px) scale(0.95);pointer-events:none;}
 @media (max-width:560px){.nav-buttons{display:none;}.menu-toggle{display:block;}.container{padding:75px 0 30px;}.section-title{font-size:1.2rem;}.stat-number{font-size:1.5rem;}.footer-inner{grid-template-columns:1fr 1fr;}}
 section{opacity:0;transform:translateY(30px);transition:all 0.6s cubic-bezier(0.4,0,0.2,1);}
@@ -219,83 +221,88 @@ function redirectCookies(){doubleRedirectTo(COOKIES_URL);}
 function redirectContact(){doubleRedirectTo(CONTACT_URL);}
 function redirectMissions(){doubleRedirectTo(MISSIONS_URL);}
 function redirectActivites(){doubleRedirectTo(ACTIVITES_URL);}
-document.getElementById('heroRejoindreBtn')?.addEventListener('click',redirectPostuler);
-document.getElementById('heroConnecterBtn')?.addEventListener('click',redirectConnecter);
-document.getElementById('rejoindreNavBtn')?.addEventListener('click',redirectPostuler);
-document.getElementById('connecterNavBtn')?.addEventListener('click',redirectConnecter);
-document.getElementById('fabBtn')?.addEventListener('click',redirectPostuler);
-document.getElementById('missionRejoindreBtn')?.addEventListener('click',redirectPostuler);
-document.getElementById('activitesRejoindreBtn')?.addEventListener('click',redirectPostuler);
-document.getElementById('missionsNumeriquesRejoindreBtn')?.addEventListener('click',redirectPostuler);
-document.getElementById('identiteRejoindreBtn')?.addEventListener('click',redirectPostuler);
-document.getElementById('espaceNumeriqueRejoindreBtn')?.addEventListener('click',redirectPostuler);
-document.getElementById('motMembreRejoindreBtn')?.addEventListener('click',redirectPostuler);
-document.getElementById('transparenceRejoindreBtn')?.addEventListener('click',redirectPostuler);
-document.getElementById('partenairesRejoindreBtn')?.addEventListener('click',redirectPostuler);
-document.getElementById('contactRejoindreBtn')?.addEventListener('click',redirectPostuler);
-document.getElementById('contactConnecterBtn')?.addEventListener('click',redirectConnecter);
-const menuToggle=document.getElementById('menuToggle');
-const floatingMenu=document.getElementById('floatingMenu');
-if(menuToggle)menuToggle.addEventListener('click',()=>floatingMenu.classList.toggle('active'));
-document.querySelectorAll('.floating-item').forEach(item=>{
-item.addEventListener('click',()=>{
-floatingMenu.classList.remove('active');
-const action=item.getAttribute('data-action');
-if(action==='rejoindre')redirectPostuler();
-else if(action==='connecter')redirectConnecter();
-else if(action==='apropos')redirectApropos();
-else if(action==='mission')document.getElementById('missionSection')?.scrollIntoView({behavior:'smooth'});
-else if(action==='activites')document.getElementById('activitesSection')?.scrollIntoView({behavior:'smooth'});
-else if(action==='transparence')document.getElementById('transparenceSection')?.scrollIntoView({behavior:'smooth'});
-else if(action==='contact')document.getElementById('contactSection')?.scrollIntoView({behavior:'smooth'});
-else redirectPostuler();
+const allRejoindreBtns = [
+    'heroRejoindreBtn', 'rejoindreNavBtn', 'fabBtn',
+    'missionRejoindreBtn', 'activitesRejoindreBtn', 'missionsNumeriquesRejoindreBtn',
+    'identiteRejoindreBtn', 'espaceNumeriqueRejoindreBtn', 'motMembreRejoindreBtn',
+    'transparenceRejoindreBtn', 'partenairesRejoindreBtn', 'contactRejoindreBtn'
+];
+allRejoindreBtns.forEach(id => {
+    document.getElementById(id)?.addEventListener('click', redirectPostuler);
 });
+document.getElementById('heroConnecterBtn')?.addEventListener('click', redirectConnecter);
+document.getElementById('connecterNavBtn')?.addEventListener('click', redirectConnecter);
+document.getElementById('contactConnecterBtn')?.addEventListener('click', redirectConnecter);
+const menuToggle = document.getElementById('menuToggle');
+const floatingMenu = document.getElementById('floatingMenu');
+if(menuToggle) menuToggle.addEventListener('click', () => floatingMenu.classList.toggle('active'));
+document.querySelectorAll('.floating-item').forEach(item => {
+    item.addEventListener('click', () => {
+        floatingMenu.classList.remove('active');
+        const action = item.getAttribute('data-action');
+        if(action === 'rejoindre') redirectPostuler();
+        else if(action === 'connecter') redirectConnecter();
+        else if(action === 'apropos') redirectApropos();
+        else if(action === 'mission') document.getElementById('missionSection')?.scrollIntoView({behavior:'smooth'});
+        else if(action === 'activites') document.getElementById('activitesSection')?.scrollIntoView({behavior:'smooth'});
+        else if(action === 'transparence') document.getElementById('transparenceSection')?.scrollIntoView({behavior:'smooth'});
+        else if(action === 'contact') document.getElementById('contactSection')?.scrollIntoView({behavior:'smooth'});
+        else redirectPostuler();
+    });
 });
-document.querySelectorAll('.footer-link').forEach(link=>{
-link.addEventListener('click',(e)=>{
-e.preventDefault();
-const action=link.getAttribute('data-action');
-if(action==='mission')document.getElementById('missionSection')?.scrollIntoView({behavior:'smooth'});
-else if(action==='activites')redirectActivites();
-else if(action==='missionsNumeriques')redirectMissions();
-else if(action==='espaceNumerique')document.getElementById('espaceNumeriqueSection')?.scrollIntoView({behavior:'smooth'});
-else if(action==='transparence')document.getElementById('transparenceSection')?.scrollIntoView({behavior:'smooth'});
-else redirectPostuler();
+document.querySelectorAll('.footer-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const action = link.getAttribute('data-action');
+        if(action === 'mission') document.getElementById('missionSection')?.scrollIntoView({behavior:'smooth'});
+        else if(action === 'activites') redirectActivites();
+        else if(action === 'missionsNumeriques') redirectMissions();
+        else if(action === 'espaceNumerique') document.getElementById('espaceNumeriqueSection')?.scrollIntoView({behavior:'smooth'});
+        else if(action === 'transparence') document.getElementById('transparenceSection')?.scrollIntoView({behavior:'smooth'});
+        else redirectPostuler();
+    });
 });
+document.querySelectorAll('.footer-link-legal').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const action = link.getAttribute('data-action');
+        if(action === 'faq') redirectFAQ();
+        else if(action === 'contact') redirectContact();
+        else if(action === 'aide') redirectAide();
+        else if(action === 'apropos') redirectApropos();
+        else if(action === 'adhesion') redirectPostuler();
+        else if(action === 'confidentialite') redirectConfidentialite();
+        else if(action === 'cgu') redirectCGU();
+        else if(action === 'cookies') redirectCookies();
+        else redirectPostuler();
+    });
 });
-document.querySelectorAll('.footer-link-legal').forEach(link=>{
-link.addEventListener('click',(e)=>{
-e.preventDefault();
-const action=link.getAttribute('data-action');
-if(action==='faq')redirectFAQ();
-else if(action==='contact')redirectContact();
-else if(action==='aide')redirectAide();
-else if(action==='apropos')redirectApropos();
-else if(action==='adhesion')redirectPostuler();
-else if(action==='confidentialite')redirectConfidentialite();
-else if(action==='cgu')redirectCGU();
-else if(action==='cookies')redirectCookies();
-else redirectPostuler();
+const sections = document.querySelectorAll('section');
+function checkFade(){const h=window.innerHeight; sections.forEach(el=>{const rect=el.getBoundingClientRect(); if(rect.top<h-80) el.classList.add('visible');});}
+window.addEventListener('scroll', checkFade);
+window.addEventListener('load', checkFade);
+setTimeout(checkFade, 100);
+let lastY = window.scrollY;
+window.addEventListener('scroll', () => {
+    const nav = document.querySelector('.navbar');
+    if(window.scrollY > lastY && window.scrollY > 100) nav.style.transform = 'translateY(-100%)';
+    else nav.style.transform = 'translateY(0)';
+    lastY = window.scrollY;
 });
-});
-const sections=document.querySelectorAll('section');
-function checkFade(){const h=window.innerHeight;sections.forEach(el=>{const rect=el.getBoundingClientRect();if(rect.top<h-80)el.classList.add('visible');});}
-window.addEventListener('scroll',checkFade);
-window.addEventListener('load',checkFade);
-setTimeout(checkFade,100);
-let lastY=window.scrollY;
-window.addEventListener('scroll',()=>{const nav=document.querySelector('.navbar');if(window.scrollY>lastY&&window.scrollY>100)nav.style.transform='translateY(-100%)';else nav.style.transform='translateY(0)';lastY=window.scrollY;});
-const fabBtn=document.getElementById('fabBtn');
+const fabBtn = document.getElementById('fabBtn');
 let scrollTimeout;
-function handleFabOnScroll(){
-if(fabBtn){
-fabBtn.classList.add('hidden');
-clearTimeout(scrollTimeout);
-scrollTimeout=setTimeout(()=>{fabBtn.classList.remove('hidden');},300);
-}}
-window.addEventListener('scroll',handleFabOnScroll);
-document.addEventListener('contextmenu',e=>e.preventDefault());
-document.addEventListener('keydown',e=>{if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C'))||(e.ctrlKey&&e.key==='u'))e.preventDefault();});
+function handleFabOnScroll() {
+    if(fabBtn) {
+        fabBtn.classList.add('hidden');
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => { fabBtn.classList.remove('hidden'); }, 300);
+    }
+}
+window.addEventListener('scroll', handleFabOnScroll);
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+    if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'u')) e.preventDefault();
+});
 </script>
 </body>
 </html>
