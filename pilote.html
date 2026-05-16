@@ -4,204 +4,553 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
 <title>BULLETIN JOURNALIER | Pilote DEO</title>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, doc, getDoc, getDocs, query, where, orderBy, limit, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-const firebaseConfig = {apiKey:"AIzaSyB_GdmPBnWl3w6g99j1cGO7vxDdxmKr4QA",authDomain:"netubexmoney.firebaseapp.com",projectId:"netubexmoney",storageBucket:"netubexmoney.firebasestorage.app",messagingSenderId:"856592608176",appId:"1:856592608176:web:69f9df9cfd4f8c28630475"};
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-window.db = db;
-window.collection = collection;
-window.addDoc = addDoc;
-window.doc = doc;
-window.getDoc = getDoc;
-window.getDocs = getDocs;
-window.query = query;
-window.where = where;
-window.orderBy = orderBy;
-window.limit = limit;
-window.updateDoc = updateDoc;
-window.deleteDoc = deleteDoc;
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow-x:hidden;background:#0a0e1a;}
+body{font-family:'Inter','Courier New',monospace;background:#0a0e1a;color:#EAEAEA;padding-top:80px;}
+.bg-fixed{position:fixed;top:0;left:0;right:0;bottom:0;z-index:-2;background:linear-gradient(135deg,#0a0e1a 0%,#0f172a 50%,#1a2335 100%);}
+.bg-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:-1;background:radial-gradient(circle at 20% 30%, rgba(56,189,248,0.08), transparent 70%);}
+.navbar{position:fixed;top:max(20px, env(safe-area-inset-top, 20px));left:50%;transform:translateX(-50%);width:auto;min-width:280px;max-width:90%;background:rgba(10,14,26,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(56,189,248,0.2);border-radius:60px;padding:12px 24px;z-index:1000;display:flex;justify-content:space-between;align-items:center;gap:24px;box-shadow:0 8px 32px rgba(0,0,0,0.4);transition:all 0.4s cubic-bezier(0.4,0,0.2,1);}
+.navbar.scrolled{top:max(10px, env(safe-area-inset-top, 10px));padding:8px 20px;background:rgba(10,14,26,0.95);border-color:rgba(56,189,248,0.3);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-img{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid rgba(56,189,248,0.3);}
+.logo-text{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#E67E22,#F39C12);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:2px 2px 4px rgba(0,0,0,0.3);}
+.nav-buttons{display:flex;gap:12px;}
+.nav-user-info{background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.3);padding:6px 16px;border-radius:40px;display:flex;align-items:center;gap:8px;font-size:0.85rem;font-weight:600;color:#EAEAEA;}
+.nav-user-info i{color:#F39C12;}
+.nav-online-status{display:flex;align-items:center;gap:6px;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);padding:6px 12px;border-radius:40px;font-size:0.75rem;color:#10b981;font-weight:600;}
+.blinking-dot{width:8px;height:8px;background:#10b981;border-radius:50%;animation:blink 1.2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.app-container{max-width:800px;margin:0 auto;padding:20px 16px 40px 16px;}
+.main-title{text-align:center;margin:20px 0 30px 0;}
+.main-title h1{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#E67E22,#F39C12);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.5px;}
+.question-card{border-radius:24px;padding:28px 24px;margin-bottom:20px;border:1px solid rgba(56,189,248,0.15);background:rgba(15,23,42,0.6);backdrop-filter:blur(8px);}
+.question-card.netuber-0{background:linear-gradient(145deg,rgba(26,42,26,0.8),rgba(15,31,15,0.8));border-color:#facc15;}
+.question-card.netuber-1{background:linear-gradient(145deg,rgba(26,42,58,0.8),rgba(15,26,47,0.8));border-color:#06b6d4;}
+.question-card.netuber-2{background:linear-gradient(145deg,rgba(42,26,42,0.8),rgba(31,15,31,0.8));border-color:#ec4899;}
+.question-card.default-card{background:rgba(15,23,42,0.6);border-color:rgba(56,189,248,0.15);}
+.question-text{font-size:1.1rem;font-weight:700;line-height:1.5;margin-bottom:24px;color:#fff;min-height:80px;}
+.question-meta{border-left:3px solid #F39C12;padding:3px 12px;margin-bottom:12px;font-size:0.7rem;font-weight:700;color:#f1f5f9;}
+.question-num{display:inline-block;background:linear-gradient(135deg,#E67E22,#F39C12);color:#0a0e1a;border-radius:30px;padding:2px 10px;font-size:0.6rem;font-weight:800;margin-right:10px;}
+.input-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px;}
+.input-row select{flex:2;min-width:180px;padding:14px 18px;font-size:0.9rem;border-radius:60px;background:#fff;border:none;font-weight:500;color:#0a0e1a;cursor:pointer;}
+.input-row input{flex:2;min-width:180px;padding:14px 18px;font-size:0.9rem;border-radius:60px;background:#fff;border:none;font-weight:500;color:#0a0e1a;}
+button{background:linear-gradient(135deg,#E67E22,#F39C12);border:none;padding:14px 28px;border-radius:60px;font-weight:700;font-size:0.9rem;color:#fff;cursor:pointer;transition:all 0.3s;box-shadow:0 4px 12px rgba(230,126,34,0.3);}
+button:active{transform:scale(0.97);}
+.choice-row{display:flex;gap:15px;margin-top:16px;}
+.choice-btn{flex:1;text-align:center;padding:14px 0;border-radius:60px;font-weight:700;font-size:0.95rem;cursor:pointer;border:none;}
+.choice-btn.yes{background:#10b981;color:#fff;box-shadow:0 4px 12px rgba(16,185,129,0.3);}
+.choice-btn.no{background:#ef4444;color:#fff;box-shadow:0 4px 12px rgba(239,68,68,0.3);}
+.progress-bar{background:rgba(255,255,255,0.15);border-radius:40px;height:6px;margin:20px 0 8px;}
+.progress-fill{height:6px;border-radius:40px;background:linear-gradient(90deg,#E67E22,#F39C12);width:0%;}
+.step-info{display:flex;justify-content:space-between;font-size:0.7rem;color:#b0b3b8;margin-top:6px;}
+.action-buttons{display:flex;gap:12px;margin-top:20px;}
+.nav-btn{background:rgba(255,255,255,0.1);color:#fff;padding:10px 20px;font-size:0.8rem;box-shadow:none;}
+.reset-btn{background:linear-gradient(145deg,#e74c3c,#c0392b);color:#fff;}
+.hidden{display:none;}
+.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:2000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:visibility 0s linear 0.25s,opacity 0.25s;}
+.popup-overlay.active{visibility:visible;opacity:1;transition:visibility 0s linear 0s,opacity 0.25s;}
+.popup-card{background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:32px;width:92%;max-width:500px;padding:28px 24px;text-align:center;border-top:5px solid #F39C12;box-shadow:0 25px 50px rgba(0,0,0,0.5);transform:scale(0.9);transition:transform 0.3s;}
+.popup-overlay.active .popup-card{transform:scale(1);}
+.popup-title{font-size:1.3rem;font-weight:800;color:#F39C12;margin-bottom:12px;}
+.popup-message{font-size:0.9rem;margin-bottom:20px;color:#e0f2fe;line-height:1.6;white-space:pre-line;}
+.popup-buttons{display:flex;gap:12px;justify-content:center;}
+.popup-btn{padding:10px 24px;border-radius:60px;font-weight:700;font-size:0.85rem;border:none;cursor:pointer;}
+.popup-btn.secondary{background:#2d4e73;color:#fff;}
+.popup-btn.primary{background:#10b981;color:#fff;}
+footer{text-align:center;font-size:0.7rem;color:#5f748d;margin-top:30px;padding:20px;}
+.send-btn-special{background:linear-gradient(145deg,#e67e22,#d35400);color:#fff;margin-top:20px;width:100%;}
+.send-btn-special.hidden{display:none;}
+@media (max-width:640px){body{padding-top:70px;}.navbar{padding:8px 16px;gap:12px;}.logo-text{font-size:1.1rem;}.logo-img{width:32px;height:32px;}.nav-user-info{padding:4px 12px;font-size:0.7rem;}.nav-online-status{padding:4px 8px;font-size:0.65rem;}.nav-online-status span:last-child{display:none;}.main-title h1{font-size:1.4rem;}.question-card{padding:20px 16px;}.question-text{font-size:1rem;}}
+</style>
+</head>
+<body>
+<div class="bg-fixed"></div>
+<div class="bg-overlay"></div>
+<div class="navbar" id="navbar">
+<div class="logo"><img src="favicon.png.png" alt="NeTubeX" class="logo-img" onerror="this.src='https://netubex.github.io/hata/favicon.png.png'"><span class="logo-text">NeTubeX</span></div>
+<div class="nav-buttons">
+<div class="nav-user-info"><i class="fas fa-code"></i> <span id="userCodeDisplay">PGCO</span></div>
+<div class="nav-online-status"><span class="blinking-dot"></span><span>En ligne</span></div>
+</div>
+</div>
+<div class="app-container">
+<div class="main-title">
+<h1>📋 BULLETIN JOURNALIER PGCO</h1>
+</div>
+<div class="question-card" id="questionCard">
+<div id="questionMeta" class="question-meta"></div>
+<div class="question-text" id="questionText"></div>
+<div class="answer-area" id="answerArea">
+<div class="input-row" id="inputRow">
+<select id="answerSelect" style="display:none;"></select>
+<input type="number" id="answerNumber" placeholder="Saisir..." style="display:none;">
+<button id="submitBtn">✓ Valider</button>
+</div>
+<div class="choice-row hidden" id="choiceRow">
+<button class="choice-btn yes" id="yesBtn">✔ Oui</button>
+<button class="choice-btn no" id="noBtn">✘ Non</button>
+</div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="step-info"><span id="stepCounter">0 / 0</span><span id="saveStatus">💾 Auto</span></div>
+<div class="action-buttons">
+<button id="prevBtn" class="nav-btn hidden">◀ Reculer</button>
+<button id="resetBtn" class="reset-btn">🔄 Nouveau rapport</button>
+</div>
+</div>
+<button id="sendReportBtn" class="send-btn-special hidden">📤 ENVOYER À LA DEO</button>
+<footer>© NeTubeX 2026 · Bulletin Journalier PGCO</footer>
+</div>
+<div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
+
+<script>
 const RAISONS_ABSENCE = ["Obligations familiales","Maladie","Absence non justifiée","Déplacement/voyage","Abandon","Problème de santé","Fatigue","Rendez-vous","Deuil","Engagement scolaire"];
 const NETUBERS = [{code:"MA-NX-S1-ZA-01"},{code:"MA-NX-S1-ZA-02"},{code:"MA-NX-S1-ZA-03"}];
 let currentStep = 0, responses = {}, questions = [], waitingYesNo = false, typewriterTimeout = null, formulaireComplete = false;
 let questionText, questionMeta, inputRow, choiceRow, answerSelect, answerNumber, submitBtn, yesBtn, noBtn;
 let progressFill, stepCounterSpan, prevBtn, resetBtn, saveStatus, popupOverlay, popupTitle, popupMessageDiv;
 let popupBtnLeft, popupBtnRight, sendReportBtn, questionCardDiv;
+
 function escapeHtml(t){if(!t)return '';return String(t).replace(/[&<>]/g,function(m){if(m==='&')return '&amp;';if(m==='<')return '&lt;';if(m==='>')return '&gt;';return m;});}
-function formatDate(dateValue){if(!dateValue)return"Date inconnue";try{let d;if(typeof dateValue==='string'){d=new Date(dateValue);}else if(dateValue.toDate){d=dateValue.toDate();}else{d=new Date(dateValue);}if(isNaN(d.getTime()))return"Date inconnue";return d.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}catch(e){return"Date inconnue";}}
-function showPopup(t,m,l,r,onC,onCa,rc='primary',rd=false){popupTitle.textContent=t;popupMessageDiv.innerHTML=m;popupBtnLeft.textContent=l;popupBtnRight.textContent=r;popupBtnRight.className=`popup-btn ${rc}`;if(rd)popupBtnRight.disabled=true;else popupBtnRight.disabled=false;popupOverlay.classList.add('active');popupBtnRight.onclick=()=>{if(popupBtnRight.disabled)return;popupOverlay.classList.remove('active');if(onC)onC();};popupBtnLeft.onclick=()=>{popupOverlay.classList.remove('active');if(onCa)onCa();};}
-function saveLocal(){localStorage.setItem('pgco_rapport',JSON.stringify({responses,currentStep}));saveStatus.innerHTML='💾 OK';setTimeout(()=>saveStatus.innerHTML='💾 Auto',1200);}
-function buildQuestions(){const q=[];let n=0;q.push({num:n++,type:"choice",field:"responsable",meta:"Identification",text:"Qui remplit le rapport aujourd'hui ?",options:["Madame Ursule","Madame Chancelle"]});for(let nu of NETUBERS){q.push({num:n++,type:"yesno",field:`${nu.code}_present`,meta:nu.code,text:`${nu.code} : Était-il présent aujourd'hui ?`});q.push({num:n++,type:"select",field:`${nu.code}_raisonAbsence`,meta:nu.code,text:`${nu.code} : Raison de l'absence ? (si absent)`,options:RAISONS_ABSENCE.map(r=>`<option value="${r}">${r}</option>`).join('')});const questionsPresent=[{type:"select",field:`${nu.code}_objMensuel`,text:`${nu.code} : Quel est son objectif mensuel ?`,options:[...Array(16).keys()].map(i=>`<option value="${i}">${i}</option>`).join('')},{type:"select",field:`${nu.code}_objAtteint`,text:`${nu.code} : Combien d'objectifs a-t-il atteints aujourd'hui ?`,options:[...Array(16).keys()].map(i=>`<option value="${i}">${i}</option>`).join('')},{type:"number",field:`${nu.code}_nbNiveaux`,text:`${nu.code} : Quel est le nombre de niveaux/événements ou mètres ?`,min:0},{type:"number",field:`${nu.code}_nbNiveauxAtteints`,text:`${nu.code} : Combien de niveaux/événements ou mètres a-t-il atteints ?`,min:0},{type:"number",field:`${nu.code}_pointsPrec`,text:`${nu.code} : Combien de points avait-il précédemment ?`,min:0},{type:"number",field:`${nu.code}_pointsJour`,text:`${nu.code} : Combien de points a-t-il aujourd'hui ?`,min:0},{type:"number",field:`${nu.code}_tempsPrec`,text:`${nu.code} : Quel temps avait-il précédemment (en minutes) ?`,min:0},{type:"number",field:`${nu.code}_tempsJour`,text:`${nu.code} : Quel temps a-t-il aujourd'hui (en minutes) ?`,min:0}];for(let pq of questionsPresent){q.push({num:n++,type:pq.type,field:pq.field,meta:nu.code,text:pq.text,options:pq.options,min:pq.min,requiresPresent:true});}}
-q.push({num:n++,type:"text",field:"referenceNumber",meta:"Rapport",text:"Numéro de rapport (3 derniers chiffres personnalisables)",placeholder:"Ex: 001"});return q;}
-function shouldShowQuestion(q){if(!q.requiresPresent)return true;const codeMatch=q.field.match(/(MA-NX-S1-ZA-\d{2})/);if(!codeMatch)return true;const netuberCode=codeMatch[1];const presenceResponse=responses[`${netuberCode}_present`];return presenceResponse==="OUI";}
-function updateCardColor(){if(currentStep>=questions.length){questionCardDiv.classList.add('default-card');return;}
-const q=questions[currentStep];if(!q)return;const idx=getCurrentNetuberIndex();questionCardDiv.classList.remove('netuber-0','netuber-1','netuber-2','default-card');if(idx>=0&&idx<NETUBERS.length)questionCardDiv.classList.add(`netuber-${idx}`);else questionCardDiv.classList.add('default-card');}
-function getCurrentNetuberIndex(){if(currentStep>=questions.length)return-1;const q=questions[currentStep];if(!q||!q.field)return-1;for(let i=0;i<NETUBERS.length;i++)if(q.field.includes(NETUBERS[i].code))return i;return-1;}
-function typewriterEffect(el,txt,speed=25,cb){if(typewriterTimeout)clearTimeout(typewriterTimeout);el.innerHTML='';let i=0;function type(){if(i<txt.length){el.innerHTML=txt.substring(0,i+1);i++;typewriterTimeout=setTimeout(type,speed);}else{if(cb)cb();}}
-type();}
-function findNextValidStep(currentStep){let next=currentStep+1;while(next<questions.length){if(shouldShowQuestion(questions[next]))return next;next++;}
-return questions.length;}
-function findPrevValidStep(currentStep){let prev=currentStep-1;while(prev>=0){if(shouldShowQuestion(questions[prev]))return prev;prev--;}
-return-1;}
-function displayCurrent(){updateCardColor();if(currentStep>=questions.length){formulaireComplete=true;sendReportBtn.classList.remove('hidden');typewriterEffect(questionText,"✅ Formulaire terminé. Cliquez sur 'Envoyer' pour transmettre le rapport.",25);inputRow.classList.add('hidden');choiceRow.classList.add('hidden');return;}
-formulaireComplete=false;sendReportBtn.classList.add('hidden');if(!shouldShowQuestion(questions[currentStep])){currentStep=findNextValidStep(currentStep);displayCurrent();return;}
-const q=questions[currentStep];waitingYesNo=false;inputRow.classList.add('hidden');choiceRow.classList.add('hidden');answerSelect.style.display='none';answerNumber.style.display='none';questionMeta.innerHTML=`<span class="question-num">#${q.num+1}</span> ${q.meta}`;let displayText=q.text;if(q.field.includes('_raisonAbsence')){const netuberCode=q.field.replace('_raisonAbsence','');if(responses[`${netuberCode}_present`]==='OUI'){displayText=`${netuberCode} : Cette question n'est pas applicable (présent). Cliquez sur Suivant.`;}}
-if(q.type==="choice"){choiceRow.classList.remove('hidden');waitingYesNo=true;yesBtn.textContent=q.options[0];noBtn.textContent=q.options[1];typewriterEffect(questionText,displayText,25);}else if(q.type==="yesno"){choiceRow.classList.remove('hidden');waitingYesNo=true;yesBtn.textContent="✔ Oui";noBtn.textContent="✘ Non";typewriterEffect(questionText,displayText,25);}else if(q.type==="select"){inputRow.classList.remove('hidden');answerSelect.style.display='block';answerNumber.style.display='none';answerSelect.innerHTML=q.options;if(responses[q.field])answerSelect.value=responses[q.field];else answerSelect.value="0";typewriterEffect(questionText,displayText,25);}else if(q.type==="number"){inputRow.classList.remove('hidden');answerNumber.style.display='block';answerSelect.style.display='none';answerNumber.type='number';answerNumber.min=q.min||0;answerNumber.value=responses[q.field]||'';answerNumber.placeholder=q.placeholder||"Saisir un nombre";typewriterEffect(questionText,displayText,25);}else if(q.type==="text"){inputRow.classList.remove('hidden');answerNumber.style.display='block';answerSelect.style.display='none';answerNumber.type='text';answerNumber.value=responses[q.field]||'';answerNumber.placeholder=q.placeholder||"Saisir...";typewriterEffect(questionText,displayText,25);}
-const totalVisibleQuestions=questions.filter((_,idx)=>{if(idx===0)return true;const qTemp=questions[idx];if(qTemp.requiresPresent){const codeMatch=qTemp.field.match(/(MA-NX-S1-ZA-\d{2})/);if(codeMatch)return responses[`${codeMatch[1]}_present`]==="OUI";}
-return true;}).length;const currentVisibleIndex=questions.filter((_,idx)=>{if(idx>=currentStep)return false;const qTemp=questions[idx];if(qTemp.requiresPresent){const codeMatch=qTemp.field.match(/(MA-NX-S1-ZA-\d{2})/);if(codeMatch)return responses[`${codeMatch[1]}_present`]==="OUI";}
-return true;}).length;progressFill.style.width=`${((currentVisibleIndex+1)/totalVisibleQuestions)*100}%`;stepCounterSpan.innerText=`${currentVisibleIndex+1}/${totalVisibleQuestions}`;const prevValid=findPrevValidStep(currentStep);prevBtn.classList.toggle('hidden',prevValid===-1);}
-function handleResponse(val){if(currentStep>=questions.length)return;const q=questions[currentStep];responses[q.field]=val;if(q.field.includes('_present')){if(val==='NON'){currentStep++;displayCurrent();autoSave();return;}else if(val==='OUI'){currentStep++;displayCurrent();autoSave();return;}}
-if(q.field.includes('_raisonAbsence')){const netuberCode=q.field.replace('_raisonAbsence','');if(responses[`${netuberCode}_present`]==='OUI'){delete responses[q.field];currentStep=findNextValidStep(currentStep);displayCurrent();autoSave();return;}}
-let nextStep=findNextValidStep(currentStep);currentStep=nextStep;displayCurrent();autoSave();}
-function prevQ(){const prevValid=findPrevValidStep(currentStep);if(prevValid!==-1){currentStep=prevValid;displayCurrent();}}
-function validateCurrent(){if(waitingYesNo||currentStep>=questions.length)return;const q=questions[currentStep];if(q.field.includes('_raisonAbsence')){const netuberCode=q.field.replace('_raisonAbsence','');if(responses[`${netuberCode}_present`]==='OUI'){let nextStep=findNextValidStep(currentStep);currentStep=nextStep;displayCurrent();return;}}
-if(q.type==="select"){handleResponse(answerSelect.value);}else if(q.type==="number"){const val=answerNumber.value.trim();if(val===''){showPopup("⚠️","Veuillez saisir une réponse","Fermer","",()=>{},()=>{});return;}
-if(isNaN(parseFloat(val))){showPopup("⚠️","Nombre valide requis","Fermer","",()=>{},()=>{});return;}
-handleResponse(val);}else if(q.type==="text"){const val=answerNumber.value.trim();if(val===''){showPopup("⚠️","Champ requis","Fermer","",()=>{},()=>{});return;}
-handleResponse(val);}}
-function defaultYes(){if(waitingYesNo&&currentStep<questions.length){const q=questions[currentStep];if(q.type==="choice")handleResponse(yesBtn.textContent);else handleResponse("OUI");}}
-function defaultNo(){if(waitingYesNo&&currentStep<questions.length){const q=questions[currentStep];if(q.type==="choice")handleResponse(noBtn.textContent);else handleResponse("NON");}}
-function resetAllSilently(){responses={};currentStep=0;formulaireComplete=false;sendReportBtn.classList.add('hidden');localStorage.removeItem('pgco_rapport');questions=buildQuestions();displayCurrent();}
-function resetAll(){showPopup("Confirmation","⚠️ Tout recommencer ?","Annuler","Confirmer",()=>{resetAllSilently();showPopup("Succès","Nouveau rapport initialisé","OK","",()=>{},()=>{});},()=>{});}
-function getFullReference(){let num=responses.referenceNumber||"001";num=num.toString().padStart(3,'0').slice(0,3);return`RPT-BLTJRNL-2026-${num}`;}
-async function performSendToFirebase(){const btn=sendReportBtn;const orig=btn.textContent;btn.textContent="⏳ Envoi...";btn.disabled=true;try{let totalPtsP=0,totalPtsJ=0,totalTempsP=0,totalTempsJ=0;const netubersData=[];for(let n of NETUBERS){const present=responses[`${n.code}_present`]==='OUI'?'Présent':'Absent';const raisonAbsence=responses[`${n.code}_raisonAbsence`]||"";const objM=parseInt(responses[`${n.code}_objMensuel`])||0;const objA=parseInt(responses[`${n.code}_objAtteint`])||0;const nbN=parseFloat(responses[`${n.code}_nbNiveaux`])||0;const nbA=parseFloat(responses[`${n.code}_nbNiveauxAtteints`])||0;const ptsP=parseFloat(responses[`${n.code}_pointsPrec`])||0;const ptsJ=parseFloat(responses[`${n.code}_pointsJour`])||0;const tempsP=parseFloat(responses[`${n.code}_tempsPrec`])||0;const tempsJ=parseFloat(responses[`${n.code}_tempsJour`])||0;if(present==='Présent'){totalPtsP+=ptsP;totalPtsJ+=ptsJ;totalTempsP+=tempsP;totalTempsJ+=tempsJ;}
-netubersData.push({code:n.code,presence:present,raisonAbsence:raisonAbsence,objectifMensuel:objM,objectifAtteint:objA,nbNiveaux:nbN,nbNiveauxAtteints:nbA,pointsPrecedents:ptsP,pointsJour:ptsJ,tempsPrecedent:tempsP,tempsJour:tempsJ});}
-const currentRef=getFullReference();const reportData={type:"pgco_report",responsable:responses.responsable||"Non spécifié",zone:"ORG-NX-S1",reference:currentRef,date:new Date().toLocaleDateString('fr-FR'),heure:new Date().toLocaleTimeString('fr-FR'),totalPointsPrecedents:totalPtsP,totalPointsJour:totalPtsJ,totalTempsPrecedent:totalTempsP,totalTempsJour:totalTempsJ,netubers:netubersData,status:"non_traite",createdAt:new Date().toISOString()};const reportsRef=collection(db,"reports");await addDoc(reportsRef,reportData);const confirmationMsg=`Expéditeur: ${responses.responsable||"Non spécifié"}\nRéférence: ${currentRef}\n\n✅ Rapport reçu avec succès`;showPopup("✅ RAPPORT TRANSMIS",confirmationMsg,"Fermer","",()=>{resetAllSilently();},()=>{},'primary');}catch(e){showPopup("❌ ERREUR",`Erreur: ${e.message}`,"Fermer","",()=>{},()=>{},'primary');}finally{btn.textContent=orig;btn.disabled=false;}}
-function sendReportToFirebase(){if(!formulaireComplete){showPopup("⚠️","Veuillez compléter toutes les questions","Fermer","",()=>{},()=>{});return;}
-let missing=[];for(let n of NETUBERS){if(responses[`${n.code}_present`]==='OUI'){if(!responses[`${n.code}_objMensuel`]&&responses[`${n.code}_objMensuel`]!==0)missing.push(`${n.code} - Objectif mensuel`);if(!responses[`${n.code}_objAtteint`]&&responses[`${n.code}_objAtteint`]!==0)missing.push(`${n.code} - Objectif atteint`);if(!responses[`${n.code}_nbNiveaux`]&&responses[`${n.code}_nbNiveaux`]!==0)missing.push(`${n.code} - Nb niveaux`);if(!responses[`${n.code}_nbNiveauxAtteints`]&&responses[`${n.code}_nbNiveauxAtteints`]!==0)missing.push(`${n.code} - Nb niveaux atteints`);if(!responses[`${n.code}_pointsPrec`]&&responses[`${n.code}_pointsPrec`]!==0)missing.push(`${n.code} - Points précédents`);if(!responses[`${n.code}_pointsJour`]&&responses[`${n.code}_pointsJour`]!==0)missing.push(`${n.code} - Points jour`);if(!responses[`${n.code}_tempsPrec`]&&responses[`${n.code}_tempsPrec`]!==0)missing.push(`${n.code} - Temps précédent`);if(!responses[`${n.code}_tempsJour`]&&responses[`${n.code}_tempsJour`]!==0)missing.push(`${n.code} - Temps jour`);}}
-if(!responses.referenceNumber||responses.referenceNumber.trim()==='')missing.push("Numéro de rapport");if(missing.length>0){showPopup("⚠️ Champs manquants",missing.join("\n"),"Fermer","",()=>{},()=>{});return;}
-performSendToFirebase();}
-function autoSave(){saveLocal();}
-function handleLogout(){showPopup("🔓 Déconnexion","Êtes-vous sûr de vouloir vous déconnecter ?","Annuler","Se déconnecter",()=>{signOut(auth).then(()=>{window.location.href="login.html";});},()=>{},'primary');}
-function initApp(){questionText=document.getElementById('questionText');questionMeta=document.getElementById('questionMeta');inputRow=document.getElementById('inputRow');choiceRow=document.getElementById('choiceRow');answerSelect=document.getElementById('answerSelect');answerNumber=document.getElementById('answerNumber');submitBtn=document.getElementById('submitBtn');yesBtn=document.getElementById('yesBtn');noBtn=document.getElementById('noBtn');progressFill=document.getElementById('progressFill');stepCounterSpan=document.getElementById('stepCounter');prevBtn=document.getElementById('prevBtn');resetBtn=document.getElementById('resetBtn');saveStatus=document.getElementById('saveStatus');popupOverlay=document.getElementById('popupOverlay');popupTitle=document.getElementById('popupTitle');popupMessageDiv=document.getElementById('popupMessage');popupBtnLeft=document.getElementById('popupBtnLeft');popupBtnRight=document.getElementById('popupBtnRight');sendReportBtn=document.getElementById('sendReportBtn');questionCardDiv=document.getElementById('questionCard');yesBtn.onclick=defaultYes;noBtn.onclick=defaultNo;submitBtn.onclick=validateCurrent;prevBtn.onclick=prevQ;resetBtn.onclick=resetAll;sendReportBtn.onclick=sendReportToFirebase;questions=buildQuestions();displayCurrent();const saved=localStorage.getItem('pgco_rapport');if(saved){try{const d=JSON.parse(saved);if(d.responses&&Object.keys(d.responses).length>0){responses=d.responses;currentStep=d.currentStep||0;displayCurrent();}}catch(e){}}}
-onAuthStateChanged(auth,(user)=>{if(!user){window.location.href="login.html";}else{const userEmailSpan=document.getElementById("userEmail");if(userEmailSpan)userEmailSpan.textContent=user.email;initApp();}});
-const logoutBtn=document.getElementById("logoutBtn");if(logoutBtn){logoutBtn.onclick=handleLogout;}
-</script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;}
-html,body{width:100%;height:100%;position:fixed;top:0;left:0;right:0;bottom:0;overflow:hidden;}
-body{font-family:'Inter','Courier New',monospace;background:#0a1a2f;background-attachment:fixed;}
-.app-container{width:100%;height:100%;min-height:100vh;display:flex;flex-direction:column;padding:10px 16px;padding-bottom:env(safe-area-inset-bottom,10px);background:#0a1a2f;overflow-y:auto;overflow-x:hidden;}
-.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px;flex-shrink:0;}
-.form-icon-btn{background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);color:#facc15;padding:10px 18px;border-radius:40px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;}
-.form-icon-btn i{font-size:1.1rem;}
-.form-icon-btn:hover{background:#facc15;color:#0a1a2f;}
-.user-info{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.08);padding:6px 12px;border-radius:40px;}
-.user-info span{color:#bbdefb;font-size:0.75rem;font-weight:500;}
-.user-info i{color:#facc15;}
-.logout-btn{background:rgba(220,38,38,0.8);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
-.logout-btn:hover{background:#dc2626;transform:scale(1.05);}
-.main-title{text-align:center;margin:15px 0 20px 0;flex-shrink:0;}
-.main-title h1{font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#facc15,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px;}
-.tabs{display:flex;gap:8px;margin-bottom:12px;flex-shrink:0;flex-wrap:wrap;justify-content:center;}
-.tab-btn{background:rgba(255,255,255,0.1);color:#bbdefb;padding:10px 20px;font-size:0.85rem;font-weight:600;border:none;cursor:pointer;border-radius:40px;transition:all 0.2s;}
-.tab-btn.active{background:#facc15;color:#0a1a2f;}
-.tab-content{display:none;flex:1;overflow-y:auto;padding-right:4px;}
-.tab-content.active{display:block;}
-.question-card{border-radius:24px;padding:24px 20px;margin-bottom:12px;border:1px solid rgba(250,204,21,0.2);}
-.question-card.netuber-0{background:linear-gradient(145deg,#1a2a1a,#0f1f0f);border-color:#facc15;}
-.question-card.netuber-1{background:linear-gradient(145deg,#1a2a3a,#0f1a2f);border-color:#06b6d4;}
-.question-card.netuber-2{background:linear-gradient(145deg,#2a1a2a,#1f0f1f);border-color:#ec4899;}
-.question-card.default-card{background:linear-gradient(145deg,#0f2d45,#0a2538);border-color:rgba(250,204,21,0.2);}
-.question-text{font-size:1.1rem;font-weight:700;line-height:1.5;margin-bottom:20px;color:#fff;min-height:80px;}
-.question-meta{border-left:3px solid #facc15;padding:3px 8px;margin-bottom:10px;font-size:0.65rem;font-weight:700;color:#f1f5f9;}
-.question-num{display:inline-block;background:#facc15;color:#0a1a2f;border-radius:30px;padding:2px 8px;font-size:0.55rem;font-weight:800;margin-right:8px;}
-.input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;}
-.input-row select{flex:2;min-width:150px;padding:14px 16px;font-size:0.9rem;border-radius:60px;background:#fff;border:none;font-weight:500;color:#0a1a2f;}
-.input-row input{flex:2;min-width:150px;padding:14px 16px;font-size:0.9rem;border-radius:60px;background:#fff;border:none;font-weight:500;color:#0a1a2f;}
-button{background:linear-gradient(145deg,#facc15,#e5b800);border:none;padding:14px 24px;border-radius:60px;font-weight:700;font-size:0.85rem;color:#0a1a2f;cursor:pointer;transition:0.2s;}
-button:active{transform:scale(0.97);}
-.choice-row{display:flex;gap:12px;margin-top:12px;}
-.choice-btn{flex:1;text-align:center;padding:14px 0;border-radius:60px;font-weight:700;font-size:0.9rem;cursor:pointer;border:none;}
-.choice-btn.yes{background:#27ae60;color:#fff;}
-.choice-btn.no{background:#c0392b;color:#fff;}
-.progress-bar{background:rgba(255,255,255,0.15);border-radius:40px;height:4px;margin:14px 0 6px;}
-.progress-fill{height:4px;border-radius:40px;}
-.step-info{display:flex;justify-content:space-between;font-size:0.6rem;color:#ccc;margin-top:4px;}
-.action-buttons{display:flex;gap:10px;margin-top:12px;}
-.nav-btn{background:rgba(255,255,255,0.12);color:#fff;padding:8px 16px;font-size:0.7rem;}
-.reset-btn{background:linear-gradient(145deg,#e74c3c,#c0392b);color:#fff;}
-.hidden{display:none;}
-.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;}
-.popup-overlay.active{visibility:visible;}
-.popup-card{background:linear-gradient(145deg,#1e3a5f,#0f2d45);border-radius:28px;width:92%;max-width:500px;padding:24px 20px;text-align:center;border-top:5px solid #facc15;box-shadow:0 5px 30px rgba(0,0,0,0.5);}
-.popup-title{font-size:1.2rem;font-weight:800;color:#facc15;margin-bottom:12px;}
-.popup-message{font-size:0.9rem;margin-bottom:20px;color:#e0f2fe;line-height:1.6;white-space:pre-line;}
-.popup-buttons{display:flex;gap:12px;justify-content:center;}
-.popup-btn{padding:10px 22px;border-radius:60px;font-weight:700;font-size:0.8rem;border:none;cursor:pointer;}
-.popup-btn.secondary{background:#2d4e73;color:#fff;}
-.popup-btn.primary{background:#27ae60;color:#fff;}
-footer{text-align:center;font-size:0.6rem;color:#5f748d;margin-top:16px;}
-.send-btn-special{background:linear-gradient(145deg,#e67e22,#d35400);color:#fff;margin-top:16px;}
-.send-btn-special.hidden{display:none;}
-</style>
-</head>
-<body>
-<div class="app-container">
-    <div class="top-bar">
-        <button id="formIconBtn" class="form-icon-btn">
-            <i class="fas fa-edit"></i>
-            <span>NeTubeX</span>
-        </button>
-        <div class="user-info">
-            <i class="fas fa-envelope"></i>
-            <span id="userEmail">Chargement...</span>
-            <button id="logoutBtn" class="logout-btn" title="Déconnexion"><i class="fas fa-sign-out-alt"></i></button>
-        </div>
-    </div>
-    <div class="main-title">
-        <h1>📋 BULLETIN JOURNALIER</h1>
-    </div>
-    <div class="tabs">
-        <button class="tab-btn active" data-tab="form">📋 FORMULAIRE RAPPORT</button>
-    </div>
-    <div id="tabForm" class="tab-content active">
-        <div class="question-card" id="questionCard">
-            <div id="questionMeta" class="question-meta"></div>
-            <div class="question-text" id="questionText"></div>
-            <div class="answer-area" id="answerArea">
-                <div class="input-row" id="inputRow">
-                    <select id="answerSelect" style="display:none;"></select>
-                    <input type="number" id="answerNumber" placeholder="Saisir..." style="display:none;">
-                    <button id="submitBtn">✓ Valider</button>
-                </div>
-                <div class="choice-row hidden" id="choiceRow">
-                    <button class="choice-btn yes" id="yesBtn">✔ Oui</button>
-                    <button class="choice-btn no" id="noBtn">✘ Non</button>
-                </div>
-            </div>
-            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-            <div class="step-info"><span id="stepCounter">0 / 0</span><span id="saveStatus">💾 Auto</span></div>
-            <div class="action-buttons">
-                <button id="prevBtn" class="nav-btn hidden">◀ Reculer</button>
-                <button id="resetBtn" class="reset-btn">🔄 Nouveau rapport</button>
-            </div>
-        </div>
-        <button id="sendReportBtn" class="send-btn-special hidden">📤 ENVOYER À LA DEO</button>
-        <footer>DEO · NeTubeX · Rapport journalier PGCO</footer>
-    </div>
-</div>
-<div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
-<script>
-document.getElementById('formIconBtn').addEventListener('click', function() {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelector('.tab-btn[data-tab="form"]').classList.add('active');
-    document.getElementById('tabForm').classList.add('active');
+
+function showPopup(t,m,l,r,onC,onCa,rc='primary',rd=false){
+    popupTitle.textContent=t;
+    popupMessageDiv.innerHTML=m;
+    popupBtnLeft.textContent=l;
+    popupBtnRight.textContent=r;
+    popupBtnRight.className=`popup-btn ${rc}`;
+    if(rd)popupBtnRight.disabled=true;
+    else popupBtnRight.disabled=false;
+    popupOverlay.classList.add('active');
+    popupBtnRight.onclick=()=>{
+        if(popupBtnRight.disabled)return;
+        popupOverlay.classList.remove('active');
+        if(onC)onC();
+    };
+    popupBtnLeft.onclick=()=>{
+        popupOverlay.classList.remove('active');
+        if(onCa)onCa();
+    };
+}
+
+function saveLocal(){
+    localStorage.setItem('pgco_rapport',JSON.stringify({responses,currentStep}));
+    saveStatus.innerHTML='💾 OK';
+    setTimeout(()=>saveStatus.innerHTML='💾 Auto',1200);
+}
+
+function buildQuestions(){
+    const q=[];
+    let n=0;
+    q.push({num:n++,type:"choice",field:"responsable",meta:"Identification",text:"Qui remplit le rapport aujourd'hui ?",options:["Madame Ursule","Madame Chancelle"]});
+    for(let nu of NETUBERS){
+        q.push({num:n++,type:"yesno",field:`${nu.code}_present`,meta:nu.code,text:`${nu.code} : Était-il présent aujourd'hui ?`});
+        q.push({num:n++,type:"select",field:`${nu.code}_raisonAbsence`,meta:nu.code,text:`${nu.code} : Raison de l'absence ? (si absent)`,options:RAISONS_ABSENCE.map(r=>`<option value="${r}">${r}</option>`).join('')});
+        const questionsPresent=[
+            {type:"select",field:`${nu.code}_objMensuel`,text:`${nu.code} : Quel est son objectif mensuel ?`,options:[...Array(16).keys()].map(i=>`<option value="${i}">${i}</option>`).join('')},
+            {type:"select",field:`${nu.code}_objAtteint`,text:`${nu.code} : Combien d'objectifs a-t-il atteints aujourd'hui ?`,options:[...Array(16).keys()].map(i=>`<option value="${i}">${i}</option>`).join('')},
+            {type:"number",field:`${nu.code}_nbNiveaux`,text:`${nu.code} : Quel est le nombre de niveaux/événements ou mètres ?`,min:0},
+            {type:"number",field:`${nu.code}_nbNiveauxAtteints`,text:`${nu.code} : Combien de niveaux/événements ou mètres a-t-il atteints ?`,min:0},
+            {type:"number",field:`${nu.code}_pointsPrec`,text:`${nu.code} : Combien de points avait-il précédemment ?`,min:0},
+            {type:"number",field:`${nu.code}_pointsJour`,text:`${nu.code} : Combien de points a-t-il aujourd'hui ?`,min:0},
+            {type:"number",field:`${nu.code}_tempsPrec`,text:`${nu.code} : Quel temps avait-il précédemment (en minutes) ?`,min:0},
+            {type:"number",field:`${nu.code}_tempsJour`,text:`${nu.code} : Quel temps a-t-il aujourd'hui (en minutes) ?`,min:0}
+        ];
+        for(let pq of questionsPresent){
+            q.push({num:n++,type:pq.type,field:pq.field,meta:nu.code,text:pq.text,options:pq.options,min:pq.min,requiresPresent:true});
+        }
+    }
+    q.push({num:n++,type:"text",field:"referenceNumber",meta:"Rapport",text:"Numéro de rapport (3 derniers chiffres personnalisables)",placeholder:"Ex: 001"});
+    return q;
+}
+
+function shouldShowQuestion(q){
+    if(!q.requiresPresent)return true;
+    const codeMatch=q.field.match(/(MA-NX-S1-ZA-\d{2})/);
+    if(!codeMatch)return true;
+    const netuberCode=codeMatch[1];
+    const presenceResponse=responses[`${netuberCode}_present`];
+    return presenceResponse==="OUI";
+}
+
+function updateCardColor(){
+    if(currentStep>=questions.length){
+        questionCardDiv.classList.add('default-card');
+        return;
+    }
+    const q=questions[currentStep];
+    if(!q)return;
+    const idx=getCurrentNetuberIndex();
+    questionCardDiv.classList.remove('netuber-0','netuber-1','netuber-2','default-card');
+    if(idx>=0&&idx<NETUBERS.length)questionCardDiv.classList.add(`netuber-${idx}`);
+    else questionCardDiv.classList.add('default-card');
+}
+
+function getCurrentNetuberIndex(){
+    if(currentStep>=questions.length)return-1;
+    const q=questions[currentStep];
+    if(!q||!q.field)return-1;
+    for(let i=0;i<NETUBERS.length;i++)if(q.field.includes(NETUBERS[i].code))return i;
+    return-1;
+}
+
+function typewriterEffect(el,txt,speed=25,cb){
+    if(typewriterTimeout)clearTimeout(typewriterTimeout);
+    el.innerHTML='';
+    let i=0;
+    function type(){
+        if(i<txt.length){
+            el.innerHTML=txt.substring(0,i+1);
+            i++;
+            typewriterTimeout=setTimeout(type,speed);
+        }else{
+            if(cb)cb();
+        }
+    }
+    type();
+}
+
+function findNextValidStep(currentStep){
+    let next=currentStep+1;
+    while(next<questions.length){
+        if(shouldShowQuestion(questions[next]))return next;
+        next++;
+    }
+    return questions.length;
+}
+
+function findPrevValidStep(currentStep){
+    let prev=currentStep-1;
+    while(prev>=0){
+        if(shouldShowQuestion(questions[prev]))return prev;
+        prev--;
+    }
+    return-1;
+}
+
+function displayCurrent(){
+    updateCardColor();
+    if(currentStep>=questions.length){
+        formulaireComplete=true;
+        sendReportBtn.classList.remove('hidden');
+        typewriterEffect(questionText,"✅ Formulaire terminé. Cliquez sur 'Envoyer' pour transmettre le rapport.",25);
+        inputRow.classList.add('hidden');
+        choiceRow.classList.add('hidden');
+        return;
+    }
+    formulaireComplete=false;
+    sendReportBtn.classList.add('hidden');
+    if(!shouldShowQuestion(questions[currentStep])){
+        currentStep=findNextValidStep(currentStep);
+        displayCurrent();
+        return;
+    }
+    const q=questions[currentStep];
+    waitingYesNo=false;
+    inputRow.classList.add('hidden');
+    choiceRow.classList.add('hidden');
+    answerSelect.style.display='none';
+    answerNumber.style.display='none';
+    questionMeta.innerHTML=`<span class="question-num">#${q.num+1}</span> ${q.meta}`;
+    let displayText=q.text;
+    if(q.field.includes('_raisonAbsence')){
+        const netuberCode=q.field.replace('_raisonAbsence','');
+        if(responses[`${netuberCode}_present`]==='OUI'){
+            displayText=`${netuberCode} : Cette question n'est pas applicable (présent). Cliquez sur Suivant.`;
+        }
+    }
+    if(q.type==="choice"){
+        choiceRow.classList.remove('hidden');
+        waitingYesNo=true;
+        yesBtn.textContent=q.options[0];
+        noBtn.textContent=q.options[1];
+        typewriterEffect(questionText,displayText,25);
+    }else if(q.type==="yesno"){
+        choiceRow.classList.remove('hidden');
+        waitingYesNo=true;
+        yesBtn.textContent="✔ Oui";
+        noBtn.textContent="✘ Non";
+        typewriterEffect(questionText,displayText,25);
+    }else if(q.type==="select"){
+        inputRow.classList.remove('hidden');
+        answerSelect.style.display='block';
+        answerNumber.style.display='none';
+        answerSelect.innerHTML=q.options;
+        if(responses[q.field])answerSelect.value=responses[q.field];
+        else answerSelect.value="0";
+        typewriterEffect(questionText,displayText,25);
+    }else if(q.type==="number"){
+        inputRow.classList.remove('hidden');
+        answerNumber.style.display='block';
+        answerSelect.style.display='none';
+        answerNumber.type='number';
+        answerNumber.min=q.min||0;
+        answerNumber.value=responses[q.field]||'';
+        answerNumber.placeholder=q.placeholder||"Saisir un nombre";
+        typewriterEffect(questionText,displayText,25);
+    }else if(q.type==="text"){
+        inputRow.classList.remove('hidden');
+        answerNumber.style.display='block';
+        answerSelect.style.display='none';
+        answerNumber.type='text';
+        answerNumber.value=responses[q.field]||'';
+        answerNumber.placeholder=q.placeholder||"Saisir...";
+        typewriterEffect(questionText,displayText,25);
+    }
+    const totalVisibleQuestions=questions.filter((_,idx)=>{
+        if(idx===0)return true;
+        const qTemp=questions[idx];
+        if(qTemp.requiresPresent){
+            const codeMatch=qTemp.field.match(/(MA-NX-S1-ZA-\d{2})/);
+            if(codeMatch)return responses[`${codeMatch[1]}_present`]==="OUI";
+        }
+        return true;
+    }).length;
+    const currentVisibleIndex=questions.filter((_,idx)=>{
+        if(idx>=currentStep)return false;
+        const qTemp=questions[idx];
+        if(qTemp.requiresPresent){
+            const codeMatch=qTemp.field.match(/(MA-NX-S1-ZA-\d{2})/);
+            if(codeMatch)return responses[`${codeMatch[1]}_present`]==="OUI";
+        }
+        return true;
+    }).length;
+    progressFill.style.width=`${((currentVisibleIndex+1)/totalVisibleQuestions)*100}%`;
+    stepCounterSpan.innerText=`${currentVisibleIndex+1}/${totalVisibleQuestions}`;
+    const prevValid=findPrevValidStep(currentStep);
+    prevBtn.classList.toggle('hidden',prevValid===-1);
+}
+
+function handleResponse(val){
+    if(currentStep>=questions.length)return;
+    const q=questions[currentStep];
+    responses[q.field]=val;
+    if(q.field.includes('_present')){
+        if(val==='NON'){
+            currentStep++;
+            displayCurrent();
+            autoSave();
+            return;
+        }else if(val==='OUI'){
+            currentStep++;
+            displayCurrent();
+            autoSave();
+            return;
+        }
+    }
+    if(q.field.includes('_raisonAbsence')){
+        const netuberCode=q.field.replace('_raisonAbsence','');
+        if(responses[`${netuberCode}_present`]==='OUI'){
+            delete responses[q.field];
+            currentStep=findNextValidStep(currentStep);
+            displayCurrent();
+            autoSave();
+            return;
+        }
+    }
+    let nextStep=findNextValidStep(currentStep);
+    currentStep=nextStep;
+    displayCurrent();
+    autoSave();
+}
+
+function prevQ(){
+    const prevValid=findPrevValidStep(currentStep);
+    if(prevValid!==-1){
+        currentStep=prevValid;
+        displayCurrent();
+    }
+}
+
+function validateCurrent(){
+    if(waitingYesNo||currentStep>=questions.length)return;
+    const q=questions[currentStep];
+    if(q.field.includes('_raisonAbsence')){
+        const netuberCode=q.field.replace('_raisonAbsence','');
+        if(responses[`${netuberCode}_present`]==='OUI'){
+            let nextStep=findNextValidStep(currentStep);
+            currentStep=nextStep;
+            displayCurrent();
+            return;
+        }
+    }
+    if(q.type==="select"){
+        handleResponse(answerSelect.value);
+    }else if(q.type==="number"){
+        const val=answerNumber.value.trim();
+        if(val===''){
+            showPopup("⚠️","Veuillez saisir une réponse","Fermer","",()=>{},()=>{});
+            return;
+        }
+        if(isNaN(parseFloat(val))){
+            showPopup("⚠️","Nombre valide requis","Fermer","",()=>{},()=>{});
+            return;
+        }
+        handleResponse(val);
+    }else if(q.type==="text"){
+        const val=answerNumber.value.trim();
+        if(val===''){
+            showPopup("⚠️","Champ requis","Fermer","",()=>{},()=>{});
+            return;
+        }
+        handleResponse(val);
+    }
+}
+
+function defaultYes(){
+    if(waitingYesNo&&currentStep<questions.length){
+        const q=questions[currentStep];
+        if(q.type==="choice")handleResponse(yesBtn.textContent);
+        else handleResponse("OUI");
+    }
+}
+
+function defaultNo(){
+    if(waitingYesNo&&currentStep<questions.length){
+        const q=questions[currentStep];
+        if(q.type==="choice")handleResponse(noBtn.textContent);
+        else handleResponse("NON");
+    }
+}
+
+function resetAllSilently(){
+    responses={};
+    currentStep=0;
+    formulaireComplete=false;
+    sendReportBtn.classList.add('hidden');
+    localStorage.removeItem('pgco_rapport');
+    questions=buildQuestions();
+    displayCurrent();
+}
+
+function resetAll(){
+    showPopup("Confirmation","⚠️ Tout recommencer ?","Annuler","Confirmer",()=>{resetAllSilently();showPopup("Succès","Nouveau rapport initialisé","OK","",()=>{},()=>{});},()=>{});
+}
+
+function getFullReference(){
+    let num=responses.referenceNumber||"001";
+    num=num.toString().padStart(3,'0').slice(0,3);
+    return`RPT-BLTJRNL-2026-${num}`;
+}
+
+function autoSave(){
+    saveLocal();
+}
+
+function sendReportToFirebase(){
+    if(!formulaireComplete){
+        showPopup("⚠️","Veuillez compléter toutes les questions","Fermer","",()=>{},()=>{});
+        return;
+    }
+    let missing=[];
+    for(let n of NETUBERS){
+        if(responses[`${n.code}_present`]==='OUI'){
+            if(!responses[`${n.code}_objMensuel`]&&responses[`${n.code}_objMensuel`]!==0)missing.push(`${n.code} - Objectif mensuel`);
+            if(!responses[`${n.code}_objAtteint`]&&responses[`${n.code}_objAtteint`]!==0)missing.push(`${n.code} - Objectif atteint`);
+            if(!responses[`${n.code}_nbNiveaux`]&&responses[`${n.code}_nbNiveaux`]!==0)missing.push(`${n.code} - Nb niveaux`);
+            if(!responses[`${n.code}_nbNiveauxAtteints`]&&responses[`${n.code}_nbNiveauxAtteints`]!==0)missing.push(`${n.code} - Nb niveaux atteints`);
+            if(!responses[`${n.code}_pointsPrec`]&&responses[`${n.code}_pointsPrec`]!==0)missing.push(`${n.code} - Points précédents`);
+            if(!responses[`${n.code}_pointsJour`]&&responses[`${n.code}_pointsJour`]!==0)missing.push(`${n.code} - Points jour`);
+            if(!responses[`${n.code}_tempsPrec`]&&responses[`${n.code}_tempsPrec`]!==0)missing.push(`${n.code} - Temps précédent`);
+            if(!responses[`${n.code}_tempsJour`]&&responses[`${n.code}_tempsJour`]!==0)missing.push(`${n.code} - Temps jour`);
+        }
+    }
+    if(!responses.referenceNumber||responses.referenceNumber.trim()==='')missing.push("Numéro de rapport");
+    if(missing.length>0){
+        showPopup("⚠️ Champs manquants",missing.join("\n"),"Fermer","",()=>{},()=>{});
+        return;
+    }
+    let totalPtsP=0,totalPtsJ=0,totalTempsP=0,totalTempsJ=0;
+    const netubersData=[];
+    for(let n of NETUBERS){
+        const present=responses[`${n.code}_present`]==='OUI'?'Présent':'Absent';
+        const raisonAbsence=responses[`${n.code}_raisonAbsence`]||"";
+        const objM=parseInt(responses[`${n.code}_objMensuel`])||0;
+        const objA=parseInt(responses[`${n.code}_objAtteint`])||0;
+        const nbN=parseFloat(responses[`${n.code}_nbNiveaux`])||0;
+        const nbA=parseFloat(responses[`${n.code}_nbNiveauxAtteints`])||0;
+        const ptsP=parseFloat(responses[`${n.code}_pointsPrec`])||0;
+        const ptsJ=parseFloat(responses[`${n.code}_pointsJour`])||0;
+        const tempsP=parseFloat(responses[`${n.code}_tempsPrec`])||0;
+        const tempsJ=parseFloat(responses[`${n.code}_tempsJour`])||0;
+        if(present==='Présent'){
+            totalPtsP+=ptsP;
+            totalPtsJ+=ptsJ;
+            totalTempsP+=tempsP;
+            totalTempsJ+=tempsJ;
+        }
+        netubersData.push({code:n.code,presence:present,raisonAbsence:raisonAbsence,objectifMensuel:objM,objectifAtteint:objA,nbNiveaux:nbN,nbNiveauxAtteints:nbA,pointsPrecedents:ptsP,pointsJour:ptsJ,tempsPrecedent:tempsP,tempsJour:tempsJ});
+    }
+    const currentRef=getFullReference();
+    const reportData={type:"pgco_report",responsable:responses.responsable||"Non spécifié",zone:"ORG-NX-S1",reference:currentRef,date:new Date().toLocaleDateString('fr-FR'),heure:new Date().toLocaleTimeString('fr-FR'),totalPointsPrecedents:totalPtsP,totalPointsJour:totalPtsJ,totalTempsPrecedent:totalTempsP,totalTempsJour:totalTempsJ,netubers:netubersData,status:"non_traite",createdAt:new Date().toISOString()};
+    console.log("Rapport PGCO à envoyer (simulation):", reportData);
+    const confirmationMsg=`Expéditeur: ${responses.responsable||"Non spécifié"}\nRéférence: ${currentRef}\n\n✅ Rapport prêt à être transmis (mode simulation)\n\n📊 Total points précédents: ${totalPtsP}\n📈 Total points jour: ${totalPtsJ}\n⏱️ Total temps précédent: ${totalTempsP} min\n⏱️ Total temps jour: ${totalTempsJ} min`;
+    showPopup("✅ RAPPORT PRÊT",confirmationMsg,"Fermer","",()=>{resetAllSilently();},()=>{},'primary');
+}
+
+function initApp(){
+    questionText=document.getElementById('questionText');
+    questionMeta=document.getElementById('questionMeta');
+    inputRow=document.getElementById('inputRow');
+    choiceRow=document.getElementById('choiceRow');
+    answerSelect=document.getElementById('answerSelect');
+    answerNumber=document.getElementById('answerNumber');
+    submitBtn=document.getElementById('submitBtn');
+    yesBtn=document.getElementById('yesBtn');
+    noBtn=document.getElementById('noBtn');
+    progressFill=document.getElementById('progressFill');
+    stepCounterSpan=document.getElementById('stepCounter');
+    prevBtn=document.getElementById('prevBtn');
+    resetBtn=document.getElementById('resetBtn');
+    saveStatus=document.getElementById('saveStatus');
+    popupOverlay=document.getElementById('popupOverlay');
+    popupTitle=document.getElementById('popupTitle');
+    popupMessageDiv=document.getElementById('popupMessage');
+    popupBtnLeft=document.getElementById('popupBtnLeft');
+    popupBtnRight=document.getElementById('popupBtnRight');
+    sendReportBtn=document.getElementById('sendReportBtn');
+    questionCardDiv=document.getElementById('questionCard');
+    yesBtn.onclick=defaultYes;
+    noBtn.onclick=defaultNo;
+    submitBtn.onclick=validateCurrent;
+    prevBtn.onclick=prevQ;
+    resetBtn.onclick=resetAll;
+    sendReportBtn.onclick=sendReportToFirebase;
+    questions=buildQuestions();
+    displayCurrent();
+    const saved=localStorage.getItem('pgco_rapport');
+    if(saved){
+        try{
+            const d=JSON.parse(saved);
+            if(d.responses&&Object.keys(d.responses).length>0){
+                responses=d.responses;
+                currentStep=d.currentStep||0;
+                displayCurrent();
+            }
+        }catch(e){}
+    }
+}
+
+let lastScrollTop=0;
+let navbar=document.getElementById('navbar');
+window.addEventListener('scroll',function(){
+    let scrollTop=window.pageYOffset||document.documentElement.scrollTop;
+    if(scrollTop>lastScrollTop&&scrollTop>70)navbar.classList.add('scrolled');
+    else if(scrollTop<lastScrollTop)navbar.classList.remove('scrolled');
+    lastScrollTop=scrollTop<=0?0:scrollTop;
 });
+
+initApp();
+
 document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});
-document.addEventListener('keydown',function(e){const fk=[{key:'F12',p:true},{ctrl:true,shift:true,key:'I',p:true},{ctrl:true,shift:true,key:'J',p:true},{ctrl:true,shift:true,key:'C',p:true},{ctrl:true,key:'U',p:true},{ctrl:true,key:'S',p:true},{ctrl:true,key:'P',p:true},{ctrl:true,key:'R',p:true},{ctrl:true,shift:true,key:'R',p:true},{ctrl:true,key:'F5',p:true},{ctrl:true,key:'E',p:true},{ctrl:true,key:'G',p:true},{ctrl:true,key:'F',p:true},{ctrl:true,key:'H',p:true},{ctrl:true,key:'J',p:true},{ctrl:true,key:'K',p:true},{ctrl:true,key:'O',p:true},{ctrl:true,key:'N',p:true},{ctrl:true,key:'W',p:true},{ctrl:true,key:'T',p:true}];for(let fb of fk){let m=true;if(fb.ctrl&&!e.ctrlKey)m=false;if(fb.shift&&!e.shiftKey)m=false;if(fb.key){const km=e.key===fb.key||(fb.key==='F12'&&e.key==='F12')||(fb.key==='I'&&e.key==='i')||(fb.key==='J'&&e.key==='j')||(fb.key==='C'&&e.key==='c')||(fb.key==='U'&&e.key==='u')||(fb.key==='S'&&e.key==='s')||(fb.key==='P'&&e.key==='p')||(fb.key==='R'&&e.key==='r')||(fb.key==='E'&&e.key==='e')||(fb.key==='G'&&e.key==='g')||(fb.key==='F'&&e.key==='f')||(fb.key==='H'&&e.key==='h')||(fb.key==='K'&&e.key==='k')||(fb.key==='O'&&e.key==='o')||(fb.key==='N'&&e.key==='n')||(fb.key==='W'&&e.key==='w')||(fb.key==='T'&&e.key==='t');if(!km)m=false;}
-if(m&&fb.p){e.preventDefault();e.stopPropagation();return false;}}
-if(e.key==='F12'){e.preventDefault();return false;}
-if(e.ctrlKey&&e.shiftKey&&/^[A-Za-z]$/.test(e.key)){e.preventDefault();return false;}});
+document.addEventListener('keydown',function(e){
+    if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C'))||(e.ctrlKey&&e.key==='u')||(e.ctrlKey&&e.key==='s')){e.preventDefault();return false;}
+});
 document.addEventListener('dragstart',function(e){e.preventDefault();return false;});
 document.addEventListener('selectstart',function(e){e.preventDefault();return false;});
-document.addEventListener('copy',function(e){e.preventDefault();return false;});
 </script>
 </body>
 </html>
