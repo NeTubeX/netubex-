@@ -14,7 +14,7 @@ body{font-family:'Inter','Courier New',monospace;background:#0a0e1a;color:#EAEAE
 .bg-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:-1;background:radial-gradient(circle at 20% 30%, rgba(56,189,248,0.08), transparent 70%);}
 .navbar{position:fixed;top:max(20px, env(safe-area-inset-top, 20px));left:50%;transform:translateX(-50%);width:auto;min-width:280px;max-width:90%;background:rgba(10,14,26,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(56,189,248,0.2);border-radius:60px;padding:12px 24px;z-index:1000;display:flex;justify-content:space-between;align-items:center;gap:24px;box-shadow:0 8px 32px rgba(0,0,0,0.4);transition:all 0.4s cubic-bezier(0.4,0,0.2,1);}
 .navbar.scrolled{top:max(10px, env(safe-area-inset-top, 10px));padding:8px 20px;background:rgba(10,14,26,0.95);border-color:rgba(56,189,248,0.3);}
-.logo{display:flex;align-items:center;gap:10px;}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;}
 .logo-img{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid rgba(56,189,248,0.3);}
 .logo-text{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#E67E22,#F39C12);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:2px 2px 4px rgba(0,0,0,0.3);}
 .nav-buttons{display:flex;gap:12px;}
@@ -26,13 +26,14 @@ body{font-family:'Inter','Courier New',monospace;background:#0a0e1a;color:#EAEAE
 .app-container{max-width:800px;margin:0 auto;padding:20px 16px 40px 16px;}
 .main-title{text-align:center;margin:20px 0 30px 0;}
 .main-title h1{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#E67E22,#F39C12);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.5px;}
-.question-card{border-radius:24px;padding:28px 24px;margin-bottom:20px;border:1px solid rgba(56,189,248,0.15);background:rgba(15,23,42,0.6);backdrop-filter:blur(8px);}
-.question-card.netuber-0{background:linear-gradient(145deg,rgba(26,42,26,0.8),rgba(15,31,15,0.8));border-color:#facc15;}
-.question-card.netuber-1{background:linear-gradient(145deg,rgba(26,42,58,0.8),rgba(15,26,47,0.8));border-color:#06b6d4;}
-.question-card.netuber-2{background:linear-gradient(145deg,rgba(42,26,42,0.8),rgba(31,15,31,0.8));border-color:#ec4899;}
-.question-card.default-card{background:rgba(15,23,42,0.6);border-color:rgba(56,189,248,0.15);}
-.question-text{font-size:1.1rem;font-weight:700;line-height:1.5;margin-bottom:24px;color:#fff;min-height:80px;}
-.question-meta{border-left:3px solid #F39C12;padding:3px 12px;margin-bottom:12px;font-size:0.7rem;font-weight:700;color:#f1f5f9;}
+.question-card{position:relative;border-radius:28px;padding:32px 28px;margin-bottom:24px;background:rgba(15,23,42,0.75);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.08);transform-style:preserve-3d;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);box-shadow:0 25px 45px -12px rgba(0,0,0,0.5),0 0 0 0.5px rgba(255,255,255,0.05);}
+.question-card:hover{transform:translateY(-5px);box-shadow:0 35px 55px -15px rgba(0,0,0,0.6),0 0 0 1px rgba(230,126,34,0.2);}
+.question-card.netuber-0{background:linear-gradient(145deg,rgba(26,42,26,0.85),rgba(15,31,15,0.85));border-left:4px solid #facc15;}
+.question-card.netuber-1{background:linear-gradient(145deg,rgba(26,42,58,0.85),rgba(15,26,47,0.85));border-left:4px solid #06b6d4;}
+.question-card.netuber-2{background:linear-gradient(145deg,rgba(42,26,42,0.85),rgba(31,15,31,0.85));border-left:4px solid #ec4899;}
+.question-card.default-card{background:rgba(15,23,42,0.75);border-left:4px solid #F39C12;}
+.question-text{font-size:1.15rem;font-weight:700;line-height:1.5;margin-bottom:24px;color:#fff;min-height:80px;}
+.question-meta{border-left:3px solid #F39C12;padding:3px 12px;margin-bottom:16px;font-size:0.7rem;font-weight:700;color:#f1f5f9;}
 .question-num{display:inline-block;background:linear-gradient(135deg,#E67E22,#F39C12);color:#0a0e1a;border-radius:30px;padding:2px 10px;font-size:0.6rem;font-weight:800;margin-right:10px;}
 .input-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px;}
 .input-row select{flex:2;min-width:180px;padding:14px 18px;font-size:0.9rem;border-radius:60px;background:#fff;border:none;font-weight:500;color:#0a0e1a;cursor:pointer;}
@@ -49,6 +50,8 @@ button:active{transform:scale(0.97);}
 .action-buttons{display:flex;gap:12px;margin-top:20px;}
 .nav-btn{background:rgba(255,255,255,0.1);color:#fff;padding:10px 20px;font-size:0.8rem;box-shadow:none;}
 .reset-btn{background:linear-gradient(145deg,#e74c3c,#c0392b);color:#fff;}
+.back-dashboard-btn{background:rgba(59,130,246,0.8);color:#fff;padding:10px 20px;font-size:0.8rem;box-shadow:none;display:flex;align-items:center;gap:8px;}
+.back-dashboard-btn i{font-size:0.9rem;}
 .hidden{display:none;}
 .popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:2000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:visibility 0s linear 0.25s,opacity 0.25s;}
 .popup-overlay.active{visibility:visible;opacity:1;transition:visibility 0s linear 0s,opacity 0.25s;}
@@ -63,22 +66,25 @@ button:active{transform:scale(0.97);}
 footer{text-align:center;font-size:0.7rem;color:#5f748d;margin-top:30px;padding:20px;}
 .send-btn-special{background:linear-gradient(145deg,#e67e22,#d35400);color:#fff;margin-top:20px;width:100%;}
 .send-btn-special.hidden{display:none;}
-@media (max-width:640px){body{padding-top:70px;}.navbar{padding:8px 16px;gap:12px;}.logo-text{font-size:1.1rem;}.logo-img{width:32px;height:32px;}.nav-user-info{padding:4px 12px;font-size:0.7rem;}.nav-online-status{padding:4px 8px;font-size:0.65rem;}.nav-online-status span:last-child{display:none;}.main-title h1{font-size:1.4rem;}.question-card{padding:20px 16px;}.question-text{font-size:1rem;}}
+@media (max-width:640px){body{padding-top:70px;}.navbar{padding:8px 16px;gap:12px;}.logo-text{font-size:1.1rem;}.logo-img{width:32px;height:32px;}.nav-user-info{padding:4px 12px;font-size:0.7rem;}.nav-online-status{padding:4px 8px;font-size:0.65rem;}.nav-online-status span:last-child{display:none;}.main-title h1{font-size:1.4rem;}.question-card{padding:20px 16px;}.question-text{font-size:1rem;}.action-buttons{flex-wrap:wrap;}}
 </style>
 </head>
 <body>
 <div class="bg-fixed"></div>
 <div class="bg-overlay"></div>
 <div class="navbar" id="navbar">
-<div class="logo"><img src="favicon.png.png" alt="NeTubeX" class="logo-img" onerror="this.src='https://netubex.github.io/hata/favicon.png.png'"><span class="logo-text">NeTubeX</span></div>
+<div class="logo" id="backDashboardBtn">
+<img src="favicon.png.png" alt="NeTubeX" class="logo-img" onerror="this.src='https://netubex.github.io/hata/favicon.png.png'">
+<span class="logo-text">NeTubeX</span>
+</div>
 <div class="nav-buttons">
-<div class="nav-user-info"><i class="fas fa-code"></i> <span id="userCodeDisplay">PGCO</span></div>
+<div class="nav-user-info"><i class="fas fa-code"></i> <span id="userCodeDisplay">Pilote</span></div>
 <div class="nav-online-status"><span class="blinking-dot"></span><span>En ligne</span></div>
 </div>
 </div>
 <div class="app-container">
 <div class="main-title">
-<h1>📋 BULLETIN JOURNALIER PGCO</h1>
+<h1>📋 BULLETIN JOURNALIER</h1>
 </div>
 <div class="question-card" id="questionCard">
 <div id="questionMeta" class="question-meta"></div>
@@ -99,10 +105,11 @@ footer{text-align:center;font-size:0.7rem;color:#5f748d;margin-top:30px;padding:
 <div class="action-buttons">
 <button id="prevBtn" class="nav-btn hidden">◀ Reculer</button>
 <button id="resetBtn" class="reset-btn">🔄 Nouveau rapport</button>
+<button id="backDashboardBtn2" class="back-dashboard-btn"><i class="fas fa-arrow-left"></i> Tableau de bord</button>
 </div>
 </div>
 <button id="sendReportBtn" class="send-btn-special hidden">📤 ENVOYER À LA DEO</button>
-<footer>© NeTubeX 2026 · Bulletin Journalier PGCO</footer>
+<footer>© NeTubeX 2026 · Bulletin Journalier Pilote</footer>
 </div>
 <div id="popupOverlay" class="popup-overlay"><div class="popup-card"><div id="popupTitle" class="popup-title"></div><div id="popupMessage" class="popup-message"></div><div class="popup-buttons"><button id="popupBtnLeft" class="popup-btn secondary"></button><button id="popupBtnRight" class="popup-btn primary"></button></div></div></div>
 
@@ -113,6 +120,10 @@ let currentStep = 0, responses = {}, questions = [], waitingYesNo = false, typew
 let questionText, questionMeta, inputRow, choiceRow, answerSelect, answerNumber, submitBtn, yesBtn, noBtn;
 let progressFill, stepCounterSpan, prevBtn, resetBtn, saveStatus, popupOverlay, popupTitle, popupMessageDiv;
 let popupBtnLeft, popupBtnRight, sendReportBtn, questionCardDiv;
+
+function goToDashboard(){
+    window.location.href = "dashboard.html";
+}
 
 function escapeHtml(t){if(!t)return '';return String(t).replace(/[&<>]/g,function(m){if(m==='&')return '&amp;';if(m==='<')return '&lt;';if(m==='>')return '&gt;';return m;});}
 
@@ -259,7 +270,7 @@ function displayCurrent(){
     if(q.field.includes('_raisonAbsence')){
         const netuberCode=q.field.replace('_raisonAbsence','');
         if(responses[`${netuberCode}_present`]==='OUI'){
-            displayText=`${netuberCode} : Cette question n'est pas applicable (présent). Cliquez sur Suivant.`;
+            displayText=`${netuberCode} : Cette question n'est pas applicable (présent). Cliquez directement sur Valider.`;
         }
     }
     if(q.type==="choice"){
@@ -374,6 +385,7 @@ function validateCurrent(){
             let nextStep=findNextValidStep(currentStep);
             currentStep=nextStep;
             displayCurrent();
+            autoSave();
             return;
         }
     }
@@ -486,7 +498,7 @@ function sendReportToFirebase(){
     }
     const currentRef=getFullReference();
     const reportData={type:"pgco_report",responsable:responses.responsable||"Non spécifié",zone:"ORG-NX-S1",reference:currentRef,date:new Date().toLocaleDateString('fr-FR'),heure:new Date().toLocaleTimeString('fr-FR'),totalPointsPrecedents:totalPtsP,totalPointsJour:totalPtsJ,totalTempsPrecedent:totalTempsP,totalTempsJour:totalTempsJ,netubers:netubersData,status:"non_traite",createdAt:new Date().toISOString()};
-    console.log("Rapport PGCO à envoyer (simulation):", reportData);
+    console.log("Rapport Pilote à envoyer (simulation):", reportData);
     const confirmationMsg=`Expéditeur: ${responses.responsable||"Non spécifié"}\nRéférence: ${currentRef}\n\n✅ Rapport prêt à être transmis (mode simulation)\n\n📊 Total points précédents: ${totalPtsP}\n📈 Total points jour: ${totalPtsJ}\n⏱️ Total temps précédent: ${totalTempsP} min\n⏱️ Total temps jour: ${totalTempsJ} min`;
     showPopup("✅ RAPPORT PRÊT",confirmationMsg,"Fermer","",()=>{resetAllSilently();},()=>{},'primary');
 }
@@ -542,6 +554,9 @@ window.addEventListener('scroll',function(){
     else if(scrollTop<lastScrollTop)navbar.classList.remove('scrolled');
     lastScrollTop=scrollTop<=0?0:scrollTop;
 });
+
+document.getElementById('backDashboardBtn')?.addEventListener('click', goToDashboard);
+document.getElementById('backDashboardBtn2')?.addEventListener('click', goToDashboard);
 
 initApp();
 
