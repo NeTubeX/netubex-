@@ -8,88 +8,82 @@
 <title>NeTubeX | Organisation Digitale</title>
 <link rel="icon" type="image/png" href="favicon.png.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<meta property="og:title" content="NeTubeX | Organisation Digitale">
-<meta property="og:description" content="Nouvelle technologie du digitale">
-<meta property="og:image" content="https://www.netubex.com/netubex.png">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://www.netubex.com">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#3A3B3C;color:#EAEAEA;font-weight:500;line-height:1.6;}
-/* Glassmorphism Navbar */
-.navbar{display:flex;justify-content:space-between;align-items:center;padding:16px 32px;background:rgba(58,59,60,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);position:fixed;top:0;left:0;right:0;z-index:1000;border-bottom:1px solid rgba(80,81,82,0.5);transition:transform 0.3s ease,box-shadow 0.3s ease;box-shadow:0 4px 20px rgba(0,0,0,0.2);}
-.logo{display:flex;align-items:center;gap:12px;}
-.logo-img{width:48px;height:48px;border-radius:50%;object-fit:cover;box-shadow:0 4px 10px rgba(0,0,0,0.3);transition:transform 0.3s;}
-.logo-img:hover{transform:scale(1.05);}
-.logo-text{font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#E67E22,#F39C12);-webkit-background-clip:text;background-clip:text;color:transparent;}
-.nav-buttons{display:flex;gap:16px;}
-.btn-nav{background:transparent;border:1px solid rgba(80,81,82,0.8);padding:10px 24px;border-radius:30px;color:#EAEAEA;font-weight:600;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);}
-.btn-nav-primary{background:linear-gradient(135deg,#E67E22,#F39C12);border:none;color:#FFFFFF;font-weight:700;box-shadow:0 4px 12px rgba(230,126,34,0.3);}
-.btn-nav-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(230,126,34,0.4);}
-.btn-nav:hover{background:rgba(80,81,82,0.8);transform:translateY(-2px);}
-.menu-toggle{display:none;background:rgba(80,81,82,0.8);backdrop-filter:blur(8px);border:none;padding:10px 20px;border-radius:30px;color:#EAEAEA;font-weight:600;cursor:pointer;transition:all 0.3s;}
-.floating-menu{position:fixed;top:-500px;right:20px;background:rgba(46,47,51,0.95);backdrop-filter:blur(12px);border-radius:20px;padding:12px;min-width:280px;z-index:1001;border:1px solid rgba(80,81,82,0.5);transition:top 0.3s ease;box-shadow:0 15px 35px rgba(0,0,0,0.3);}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#0a0a0a;color:#EAEAEA;font-weight:500;line-height:1.6;overflow-x:hidden;}
+.glass-card{background:rgba(255,255,255,0.03);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.08);border-radius:32px;}
+.navbar{position:fixed;top:20px;left:50%;transform:translateX(-50%);width:auto;min-width:280px;max-width:90%;background:rgba(10,10,10,0.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:60px;padding:12px 24px;z-index:1000;display:flex;justify-content:space-between;align-items:center;gap:24px;box-shadow:0 8px 32px rgba(0,0,0,0.3);transition:all 0.4s cubic-bezier(0.4,0,0.2,1);}
+.navbar.scrolled{top:10px;padding:8px 20px;background:rgba(10,10,10,0.9);box-shadow:0 12px 40px rgba(0,0,0,0.4);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-img{width:40px;height:40px;border-radius:50%;object-fit:cover;}
+.logo-text{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#E67E22,#F39C12);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.nav-buttons{display:flex;gap:12px;}
+.btn-nav{background:transparent;border:1px solid rgba(255,255,255,0.2);padding:8px 20px;border-radius:40px;color:#EAEAEA;font-weight:600;cursor:pointer;transition:all 0.3s;}
+.btn-nav-primary{background:linear-gradient(135deg,#E67E22,#F39C12);border:none;color:#FFFFFF;box-shadow:0 2px 10px rgba(230,126,34,0.3);}
+.btn-nav-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(230,126,34,0.5);}
+.btn-nav:hover{background:rgba(255,255,255,0.1);transform:translateY(-2px);}
+.menu-toggle{display:none;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);padding:8px 16px;border-radius:40px;color:#EAEAEA;font-weight:600;cursor:pointer;}
+.floating-menu{position:fixed;top:-500px;right:20px;background:rgba(10,10,10,0.95);backdrop-filter:blur(20px);border-radius:24px;padding:12px;min-width:260px;z-index:1001;border:1px solid rgba(255,255,255,0.1);transition:top 0.3s;box-shadow:0 20px 40px rgba(0,0,0,0.4);}
 .floating-menu.active{top:80px;}
-.floating-item{display:flex;align-items:center;gap:14px;padding:14px 20px;color:#EAEAEA;font-weight:600;cursor:pointer;border-radius:12px;transition:all 0.3s;}
-.floating-item:hover{background:linear-gradient(135deg,#E67E22,#F39C12);transform:translateX(8px);color:#fff;}
-.container{max-width:1200px;margin:0 auto;padding:100px 24px 60px 24px;}
-.hero-description{background:rgba(255,255,255,0.05);border-radius:24px;padding:48px 32px;text-align:center;margin-bottom:48px;border:1px solid rgba(80,81,82,0.3);}
-.hero-description p{font-size:1.2rem;line-height:1.6;max-width:800px;margin:0 auto;color:#EAEAEA;font-weight:600;}
-/* Sections aérées */
-section{margin-bottom:64px;background:rgba(255,255,255,0.03);border-radius:24px;overflow:hidden;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);}
-section:hover{transform:translateY(-5px);box-shadow:0 20px 35px rgba(0,0,0,0.3);}
-.section-header{display:flex;align-items:center;gap:16px;padding:28px 32px 12px 32px;}
-.section-icon{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#E67E22,#F39C12);display:flex;align-items:center;justify-content:center;color:#FFFFFF;font-size:1.5rem;box-shadow:0 8px 20px rgba(230,126,34,0.3);transition:all 0.3s;}
-.section-icon:hover{transform:rotateY(10deg) scale(1.05);}
-.section-title{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#E67E22,#F39C12);-webkit-background-clip:text;background-clip:text;color:transparent;}
-.section-content{padding:0 32px 32px 32px;}
-.section-text{color:#EAEAEA;font-weight:500;line-height:1.7;margin-bottom:24px;font-size:1rem;}
-.section-text ul{margin-left:24px;margin-top:12px;}
-.section-text li{margin-bottom:10px;}
-.section-media{margin:24px -32px 0 -32px;}
-.section-media img{width:100%;height:auto;max-height:500px;object-fit:cover;display:block;}
-/* Stats modernes */
-.stats-grid{display:flex;justify-content:space-around;padding:32px 0;flex-wrap:wrap;gap:32px;}
-.stat-item{text-align:center;background:rgba(255,255,255,0.05);padding:24px 32px;border-radius:24px;transition:all 0.4s;backdrop-filter:blur(5px);min-width:140px;}
-.stat-item:hover{transform:translateY(-8px) scale(1.05);background:rgba(255,255,255,0.1);box-shadow:0 20px 30px rgba(0,0,0,0.3);}
-.stat-number{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,#E67E22,#F39C12);-webkit-background-clip:text;background-clip:text;color:transparent;}
-.stat-label{color:#C0C0C0;font-weight:500;font-size:0.85rem;margin-top:8px;}
-.partenaires-grid{display:flex;justify-content:center;gap:60px;flex-wrap:wrap;padding:24px 0;align-items:center;}
-.partenaires-grid span{font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,#E67E22,#F39C12);-webkit-background-clip:text;background-clip:text;color:transparent;transition:all 0.3s;cursor:pointer;}
-.partenaires-grid span:hover{transform:translateY(-5px) scale(1.1);}
-/* Boutons CTA uniformisés */
-.btn-primary{background:linear-gradient(135deg,#E67E22,#F39C12);border:none;padding:14px 32px;border-radius:40px;font-weight:700;color:#FFFFFF;cursor:pointer;display:inline-flex;align-items:center;gap:12px;font-size:1rem;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);box-shadow:0 6px 15px rgba(230,126,34,0.3);}
-.btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 15px 30px rgba(230,126,34,0.5);}
-.btn-secondary{background:transparent;border:2px solid #F39C12;padding:12px 28px;border-radius:40px;font-weight:700;color:#EAEAEA;cursor:pointer;display:inline-flex;align-items:center;gap:10px;font-size:0.95rem;transition:all 0.3s;}
+.floating-item{display:flex;align-items:center;gap:14px;padding:14px 20px;color:#EAEAEA;font-weight:600;cursor:pointer;border-radius:16px;transition:all 0.3s;}
+.floating-item:hover{background:linear-gradient(135deg,#E67E22,#F39C12);transform:translateX(6px);}
+.container{max-width:1400px;margin:0 auto;padding:120px 24px 60px 24px;}
+.hero{background:radial-gradient(ellipse at 50% 50%, rgba(230,126,34,0.15), transparent 70%);border-radius:48px;padding:80px 32px;text-align:center;margin-bottom:80px;border:1px solid rgba(255,255,255,0.05);}
+.hero p{font-size:1.3rem;line-height:1.6;max-width:800px;margin:0 auto;font-weight:600;}
+.hero-buttons{display:flex;gap:20px;justify-content:center;margin-top:40px;flex-wrap:wrap;}
+.btn-primary{background:linear-gradient(135deg,#E67E22,#F39C12);border:none;padding:14px 36px;border-radius:60px;font-weight:700;color:#FFFFFF;cursor:pointer;display:inline-flex;align-items:center;gap:12px;font-size:1rem;transition:all 0.3s;box-shadow:0 4px 15px rgba(230,126,34,0.3);}
+.btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 12px 30px rgba(230,126,34,0.5);}
+.btn-secondary{background:transparent;border:2px solid #F39C12;padding:12px 32px;border-radius:60px;font-weight:700;color:#EAEAEA;cursor:pointer;display:inline-flex;align-items:center;gap:10px;font-size:0.95rem;transition:all 0.3s;}
 .btn-secondary:hover{background:rgba(243,156,18,0.15);transform:translateY(-2px);}
-/* Footer premium */
-footer{background:#2E2F33;border-top:1px solid rgba(80,81,82,0.5);margin-top:60px;padding:60px 32px 32px 32px;}
-.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:40px;}
-.footer-col h4{background:linear-gradient(135deg,#E67E22,#F39C12);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:1.1rem;margin-bottom:20px;font-weight:800;}
-.footer-col p,.footer-col a{color:#B0B0B0;font-weight:500;font-size:0.85rem;display:block;margin-bottom:12px;text-decoration:none;cursor:pointer;transition:all 0.3s;}
+section{margin-bottom:100px;}
+.section-alternate{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+.section-alternate.reverse{direction:rtl;}
+.section-alternate.reverse .section-content{direction:ltr;}
+.section-icon{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#E67E22,#F39C12);display:flex;align-items:center;justify-content:center;margin-bottom:24px;box-shadow:0 8px 20px rgba(230,126,34,0.3);transition:all 0.4s;}
+.section-icon i{font-size:1.8rem;color:#fff;}
+.section-icon:hover{transform:rotateY(15deg) scale(1.05);}
+.section-title{font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#E67E22,#F39C12);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:20px;letter-spacing:-0.02em;}
+.section-text{color:#EAEAEA;font-weight:400;line-height:1.7;margin-bottom:24px;font-size:1rem;}
+.section-text strong{color:#F39C12;font-weight:700;}
+.section-text ul{margin-left:24px;margin-top:12px;list-style:none;}
+.section-text li{margin-bottom:12px;position:relative;padding-left:24px;}
+.section-text li:before{content:"▹";position:absolute;left:0;color:#F39C12;}
+.section-media{width:100%;border-radius:32px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,0.3);transition:all 0.5s;}
+.section-media img{width:100%;height:auto;display:block;transition:transform 0.6s;}
+.section-media:hover{transform:translateY(-8px);box-shadow:0 30px 50px rgba(0,0,0,0.4);}
+.section-media:hover img{transform:scale(1.03);}
+.stats-grid{display:flex;justify-content:space-around;padding:40px 0;flex-wrap:wrap;gap:32px;}
+.stat-item{text-align:center;background:rgba(255,255,255,0.03);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.05);border-radius:32px;padding:32px 40px;transition:all 0.4s;min-width:160px;}
+.stat-item:hover{transform:translateY(-10px) scale(1.03);background:rgba(255,255,255,0.06);box-shadow:0 25px 35px rgba(0,0,0,0.3);}
+.stat-number{font-size:3rem;font-weight:800;background:linear-gradient(135deg,#E67E22,#F39C12);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.stat-label{color:#B0B0B0;font-weight:500;margin-top:12px;}
+.partenaires-grid{display:flex;justify-content:center;gap:60px;flex-wrap:wrap;padding:32px 0;}
+.partenaires-grid span{font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,#E67E22,#F39C12);-webkit-background-clip:text;background-clip:text;color:transparent;transition:all 0.3s;cursor:pointer;padding:12px 24px;background:rgba(255,255,255,0.03);border-radius:60px;backdrop-filter:blur(8px);}
+.partenaires-grid span:hover{transform:translateY(-5px) scale(1.05);background:rgba(230,126,34,0.2);}
+.wave-separator{width:100%;height:80px;background:repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(230,126,34,0.1) 50px, rgba(230,126,34,0.1) 100px);margin:40px 0;}
+footer{background:rgba(10,10,10,0.95);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,0.08);margin-top:80px;padding:60px 32px 32px 32px;}
+.footer-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:48px;}
+.footer-col h4{background:linear-gradient(135deg,#E67E22,#F39C12);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:1rem;margin-bottom:24px;font-weight:800;letter-spacing:0.5px;}
+.footer-col p,.footer-col a{color:#A0A0A0;font-weight:400;font-size:0.85rem;display:block;margin-bottom:12px;text-decoration:none;cursor:pointer;transition:all 0.3s;}
 .footer-col a:hover{color:#F39C12;transform:translateX(5px);}
-.footer-description{color:#C0C0C0;font-size:0.85rem;line-height:1.6;margin-bottom:20px;}
+.footer-description{color:#C0C0C0;font-size:0.85rem;line-height:1.6;margin-bottom:24px;}
 .footer-social{display:flex;gap:16px;margin-top:20px;}
-.footer-social a{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:rgba(255,255,255,0.05);border-radius:50%;font-size:1.2rem;transition:all 0.3s;}
+.footer-social a{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.05);border-radius:50%;font-size:1.2rem;transition:all 0.3s;}
 .footer-social a:hover{background:linear-gradient(135deg,#E67E22,#F39C12);transform:translateY(-3px) scale(1.1);color:#fff;}
-.footer-copyright{text-align:center;padding-top:40px;margin-top:40px;border-top:1px solid rgba(80,81,82,0.5);font-size:0.8rem;color:#A0A0A0;font-weight:500;}
-/* FAB modernisé */
-.fab{position:fixed;bottom:28px;right:28px;background:linear-gradient(135deg,#E67E22,#F39C12);color:#FFFFFF;display:flex;align-items:center;justify-content:center;width:60px;height:60px;border-radius:50%;font-size:1.5rem;cursor:pointer;z-index:1000;border:none;box-shadow:0 8px 25px rgba(230,126,34,0.5);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);animation:pulse 2s infinite;}
+.footer-copyright{text-align:center;padding-top:48px;margin-top:48px;border-top:1px solid rgba(255,255,255,0.08);font-size:0.8rem;color:#808080;}
+.fab{position:fixed;bottom:28px;right:28px;background:linear-gradient(135deg,#E67E22,#F39C12);width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer;z-index:1000;border:none;box-shadow:0 8px 25px rgba(230,126,34,0.5);transition:all 0.3s;animation:pulse 2s infinite;}
 .fab:hover{transform:translateY(-5px) scale(1.1);box-shadow:0 15px 35px rgba(230,126,34,0.7);}
 .fab.hidden{opacity:0;transform:translateY(30px) scale(0.8);pointer-events:none;}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(230,126,34,0.6);}70%{box-shadow:0 0 0 18px rgba(230,126,34,0);}100%{box-shadow:0 0 0 0 rgba(230,126,34,0);}}
-/* Animations sections */
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(230,126,34,0.6);}70%{box-shadow:0 0 0 15px rgba(230,126,34,0);}100%{box-shadow:0 0 0 0 rgba(230,126,34,0);}}
 section{opacity:0;transform:translateY(40px);transition:all 0.7s cubic-bezier(0.4,0,0.2,1);}
 section.visible{opacity:1;transform:translateY(0);}
-/* Images cohérentes */
-img{transition:transform 0.4s,filter 0.4s;filter:brightness(0.98) contrast(1.05) saturate(1.02);}
-img:hover{transform:scale(1.02);filter:brightness(1.02) contrast(1.08);}
-@media (max-width:768px){.navbar{padding:12px 20px;}.logo-img{width:40px;height:40px;}.logo-text{font-size:1.3rem;}.nav-buttons{display:none;}.menu-toggle{display:block;}.container{padding:85px 16px 40px 16px;}.hero-description{padding:32px 20px;}.section-header{padding:20px 20px 8px 20px;}.section-icon{width:48px;height:48px;font-size:1.3rem;}.section-title{font-size:1.4rem;}.section-content{padding:0 20px 24px 20px;}.stat-number{font-size:1.8rem;}.stat-item{padding:16px 20px;min-width:100px;}.footer-inner{gap:30px;grid-template-columns:1fr 1fr;}.fab{width:52px;height:52px;font-size:1.3rem;}}
-@media (max-width:480px){.hero-description p{font-size:1rem;}.stats-grid{gap:16px;}.stat-item{padding:12px 16px;}.partenaires-grid{gap:25px;}.partenaires-grid span{font-size:0.9rem;}.btn-primary{padding:12px 24px;font-size:0.9rem;}.footer-inner{grid-template-columns:1fr;}}
+@media (max-width:1024px){.section-alternate{grid-template-columns:1fr;gap:32px;}.section-alternate.reverse{direction:ltr;}.section-title{font-size:1.8rem;}}
+@media (max-width:768px){.navbar{padding:8px 16px;gap:12px;}.nav-buttons{display:none;}.menu-toggle{display:block;}.container{padding:100px 16px 40px 16px;}.hero{padding:48px 20px;}.hero p{font-size:1rem;}.section-title{font-size:1.5rem;}.stat-number{font-size:2rem;}.stat-item{padding:20px 24px;}.footer-inner{gap:32px;grid-template-columns:1fr 1fr;}.fab{width:48px;height:48px;font-size:1.2rem;}}
+@media (max-width:480px){.hero-buttons{gap:12px;}.btn-primary,.btn-secondary{padding:10px 20px;font-size:0.85rem;}.partenaires-grid{gap:16px;}.partenaires-grid span{font-size:0.9rem;padding:8px 16px;}.footer-inner{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
-<div class="navbar">
+<div class="navbar" id="navbar">
 <div class="logo"><img src="favicon.png.png" alt="NeTubeX" class="logo-img"><span class="logo-text">NeTubeX</span></div>
 <div class="nav-buttons"><button class="btn-nav btn-nav-primary" id="rejoindreNavBtn"><i class="fas fa-user-plus"></i> Devenir membre</button><button class="btn-nav" id="connecterNavBtn"><i class="fas fa-sign-in-alt"></i> Espace membre</button></div>
 <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i> Menu</button>
@@ -104,39 +98,41 @@ img:hover{transform:scale(1.02);filter:brightness(1.02) contrast(1.08);}
 <div class="floating-item" data-action="contact"><i class="fas fa-envelope"></i> Nous contacter</div>
 </div>
 <div class="container">
-<div class="hero-description">
-<p><strong>NeTubeX est une organisation Digitale au service de l'innovation et de l'appui numérique. Nous combinons l'éducation, la technologie et l'inclusion.</strong></p>
-<div style="display:flex; gap:20px; justify-content:center; margin-top:32px; flex-wrap:wrap;">
-<button class="btn-primary" id="heroRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button>
-<button class="btn-secondary" id="heroConnecterBtn"><i class="fas fa-sign-in-alt"></i> Espace membre</button>
+<div class="hero glass-card">
+<p><strong>NeTubeX est une organisation digitale au service de l'innovation et de l'appui numérique. Nous combinons l'éducation, la technologie et l'inclusion.</strong></p>
+<div class="hero-buttons"><button class="btn-primary" id="heroRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button><button class="btn-secondary" id="heroConnecterBtn"><i class="fas fa-sign-in-alt"></i> Espace membre</button></div>
 </div>
-</div>
-<section id="missionSection"><div class="section-header"><div class="section-icon"><i class="fas fa-bullseye"></i></div><div class="section-title">Notre mission</div></div><div class="section-content"><div class="section-text">Rendre le numérique accessible à tous, partout en Afrique, à travers des formations et un accompagnement bienveillant. La technologie au service du développement numérique.</div><div class="stats-grid"><div class="stat-item"><div class="stat-number">100+</div><div class="stat-label">Membres actifs</div></div><div class="stat-item"><div class="stat-number">12</div><div class="stat-label">Projets solidaires</div></div><div class="stat-item"><div class="stat-number">3</div><div class="stat-label">Pays partenaires</div></div></div><button class="btn-primary" id="missionRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button></div></section>
-<section id="activitesSection"><div class="section-header"><div class="section-icon"><i class="fas fa-graduation-cap"></i></div><div class="section-title">Nos activités</div></div><div class="section-content"><div class="section-text">Formations numériques, quiz éducatifs, ateliers pratiques, accompagnement personnalisé. Nos programmes sont ouverts à tous.</div><div class="section-media"><img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1200&h=800&fit=crop" alt="Formation numérique"></div><button class="btn-primary" id="activitesRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button></div></section>
-<section id="missionsNumeriquesSection"><div class="section-header"><div class="section-icon"><i class="fas fa-network-wired"></i></div><div class="section-title">Missions numériques</div></div><div class="section-content"><div class="section-text">Les membres actifs de NeTubeX participent à différentes activités numériques organisées dans un cadre éducatif et communautaire :<ul><li>Missions guidées</li><li>Quiz partenaires et quiz d'entreprises</li><li>Découverte de services numériques</li><li>Jeux rémunérateurs encadrés</li><li>Activités interactives et campagnes digitales</li></ul>Ces activités permettent aux membres de développer leurs compétences numériques, leur autonomie digitale et leur expérience pratique dans l'univers technologique.<br><br>Selon les programmes disponibles et la participation des membres, une restitution des frais de mission peut être accordée en fin de période.</div><button class="btn-primary" id="missionsNumeriquesRejoindreBtn"><i class="fas fa-user-plus"></i> Participer aux missions</button></div></section>
-<section id="identiteSection"><div class="section-header"><div class="section-icon"><i class="fas fa-building"></i></div><div class="section-title">Notre identité</div></div><div class="section-content"><div class="section-text">NeTubeX est une ASBL créée pour favoriser l'accès au numérique pour tous. Nos actions sont portées par des bénévoles passionnés.</div><div class="section-media"><img src="netubex.png" alt="NeTubeX"></div><button class="btn-primary" id="identiteRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button></div></section>
-<section id="espaceNumeriqueSection"><div class="section-header"><div class="section-icon"><i class="fas fa-users"></i></div><div class="section-title">Espace numérique</div></div><div class="section-content"><div class="section-text">Un espace d'échange et de partage pour les membres. Rencontres mensuelles, ateliers collaboratifs, mentorat entre pairs et entraide.</div><div class="section-media"><img src="https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?w=1200&h=800&fit=crop" alt="Espace numérique"></div><button class="btn-primary" id="espaceNumeriqueRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button></div></section>
-<section id="motMembreSection"><div class="section-header"><div class="section-icon"><i class="fas fa-star"></i></div><div class="section-title">Mot du membre</div></div><div class="section-content"><div class="section-text">"Intégrer NeTubeX m'a permis de découvrir le numérique autrement. Ici, on apprend ensemble, on s'entraide." — Vicky</div><div class="section-media"><img src="vicky.jpg" alt="Vicky"></div><button class="btn-primary" id="motMembreRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button></div></section>
-<section id="transparenceSection"><div class="section-header"><div class="section-icon"><i class="fas fa-chart-line"></i></div><div class="section-title">Transparence</div></div><div class="section-content"><div class="section-text">Une association transparente sur ses objectifs et ses actions. Nous publions régulièrement nos rapports d'activité et respectons la vie privée de nos membres.</div><button class="btn-primary" id="transparenceRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button></div></section>
-<section id="partenairesSection"><div class="section-header"><div class="section-icon"><i class="fas fa-handshake"></i></div><div class="section-title">Nos partenaires</div></div><div class="section-content"><div class="partenaires-grid"><span><i class="fas fa-flag-usa"></i> États-Unis</span><span><i class="fas fa-flag-fr"></i> France</span><span><i class="fas fa-flag-gb"></i> Angleterre</span></div><button class="btn-primary" id="partenairesRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button></div></section>
-<section id="contactSection"><div class="section-header"><div class="section-icon"><i class="fas fa-envelope"></i></div><div class="section-title">Nous rejoindre</div></div><div class="section-content"><div class="section-text">Devenir membre de NeTubeX est simple. Rejoignez notre communauté pour apprendre, partager et contribuer à un numérique plus inclusif.</div><button class="btn-primary" id="contactRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button><button class="btn-secondary" id="contactConnecterBtn" style="margin-top:16px;"><i class="fas fa-sign-in-alt"></i> Espace membre</button></div></section>
+<section id="missionSection"><div class="section-alternate"><div class="section-content"><div class="section-icon"><i class="fas fa-bullseye"></i></div><div class="section-title">Notre mission</div><div class="section-text">Rendre le <strong>numérique accessible à tous</strong>, partout en Afrique, à travers des formations et un accompagnement bienveillant. La technologie au service du développement numérique.</div><div class="stats-grid"><div class="stat-item"><div class="stat-number">100+</div><div class="stat-label">Membres actifs</div></div><div class="stat-item"><div class="stat-number">12</div><div class="stat-label">Projets solidaires</div></div><div class="stat-item"><div class="stat-number">3</div><div class="stat-label">Pays partenaires</div></div></div><button class="btn-primary" id="missionRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button></div><div class="section-media"><img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop" alt="Mission"></div></div></section>
+<div class="wave-separator"></div>
+<section id="activitesSection"><div class="section-alternate reverse"><div class="section-content"><div class="section-icon"><i class="fas fa-graduation-cap"></i></div><div class="section-title">Nos activités</div><div class="section-text"><strong>Formations numériques</strong>, quiz éducatifs, ateliers pratiques, accompagnement personnalisé. Nos programmes sont ouverts à tous, sans exception.</div><button class="btn-primary" id="activitesRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button></div><div class="section-media"><img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&h=600&fit=crop" alt="Activités"></div></div></section>
+<div class="wave-separator"></div>
+<section id="missionsNumeriquesSection"><div class="section-alternate"><div class="section-content"><div class="section-icon"><i class="fas fa-network-wired"></i></div><div class="section-title">Missions numériques</div><div class="section-text">Les membres actifs participent à différentes activités numériques :<ul><li>Missions guidées</li><li>Quiz partenaires</li><li>Découverte de services numériques</li><li>Jeux rémunérateurs encadrés</li><li>Activités interactives</li></ul>Selon les programmes disponibles, une <strong>restitution des frais de mission</strong> peut être accordée.</div><button class="btn-primary" id="missionsNumeriquesRejoindreBtn"><i class="fas fa-user-plus"></i> Participer aux missions</button></div><div class="section-media"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop" alt="Missions"></div></div></section>
+<div class="wave-separator"></div>
+<section id="identiteSection"><div class="section-alternate reverse"><div class="section-content"><div class="section-icon"><i class="fas fa-building"></i></div><div class="section-title">Notre identité</div><div class="section-text">NeTubeX est une <strong>ASBL</strong> créée pour favoriser l'accès au numérique pour tous. Nos actions sont portées par des bénévoles passionnés et engagés.</div><button class="btn-primary" id="identiteRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button></div><div class="section-media"><img src="netubex.png" alt="NeTubeX"></div></div></section>
+<div class="wave-separator"></div>
+<section id="espaceNumeriqueSection"><div class="section-alternate"><div class="section-content"><div class="section-icon"><i class="fas fa-users"></i></div><div class="section-title">Espace numérique</div><div class="section-text">Un espace d'<strong>échange et de partage</strong> pour les membres. Rencontres mensuelles, ateliers collaboratifs, mentorat entre pairs et entraide.</div><button class="btn-primary" id="espaceNumeriqueRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button></div><div class="section-media"><img src="https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?w=800&h=600&fit=crop" alt="Espace numérique"></div></div></section>
+<div class="wave-separator"></div>
+<section id="transparenceSection"><div class="section-alternate reverse"><div class="section-content"><div class="section-icon"><i class="fas fa-chart-line"></i></div><div class="section-title">Transparence</div><div class="section-text">Une association <strong>transparente</strong> sur ses objectifs et ses actions. Nous publions régulièrement nos rapports d'activité et respectons la vie privée de nos membres.</div><button class="btn-primary" id="transparenceRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button></div><div class="section-media"><img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&h=600&fit=crop" alt="Transparence"></div></div></section>
+<div class="wave-separator"></div>
+<section id="partenairesSection"><div class="section-alternate"><div class="section-content"><div class="section-icon"><i class="fas fa-handshake"></i></div><div class="section-title">Nos partenaires</div><div class="partenaires-grid"><span><i class="fas fa-flag-usa"></i> États-Unis</span><span><i class="fas fa-flag-fr"></i> France</span><span><i class="fas fa-flag-gb"></i> Angleterre</span></div><button class="btn-primary" id="partenairesRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button></div><div class="section-media"><img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop" alt="Partenaires"></div></div></section>
+<div class="wave-separator"></div>
+<section id="contactSection"><div class="section-alternate reverse"><div class="section-content"><div class="section-icon"><i class="fas fa-envelope"></i></div><div class="section-title">Nous rejoindre</div><div class="section-text">Devenir membre de NeTubeX est simple. Rejoignez notre communauté pour <strong>apprendre, partager et contribuer</strong> à un numérique plus inclusif.</div><button class="btn-primary" id="contactRejoindreBtn"><i class="fas fa-user-plus"></i> Devenir membre</button><button class="btn-secondary" id="contactConnecterBtn" style="margin-top:16px;"><i class="fas fa-sign-in-alt"></i> Espace membre</button></div><div class="section-media"><img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&h=600&fit=crop" alt="Contact"></div></div></section>
 </div>
 <footer>
 <div class="footer-inner">
-<div class="footer-col"><h4><i class="fas fa-rocket"></i> NeTubeX</h4><div class="footer-description">Organisation Digitale au service de l'innovation et de l'appui numérique. Nous combinons l'éducation, la technologie et l'inclusion.</div><div class="footer-social"><a><i class="fab fa-facebook-f"></i></a><a><i class="fab fa-twitter"></i></a><a><i class="fab fa-linkedin-in"></i></a><a><i class="fab fa-instagram"></i></a></div></div>
+<div class="footer-col"><h4><i class="fas fa-rocket"></i> NeTubeX</h4><div class="footer-description">Organisation Digitale au service de l'innovation et de l'appui numérique. Éducation, technologie et inclusion.</div><div class="footer-social"><a><i class="fab fa-facebook-f"></i></a><a><i class="fab fa-twitter"></i></a><a><i class="fab fa-linkedin-in"></i></a><a><i class="fab fa-instagram"></i></a></div></div>
 <div class="footer-col"><h4>Découvrir</h4><a class="footer-link" data-action="mission">Notre mission</a><a class="footer-link" data-action="activites">Nos activités</a><a class="footer-link" data-action="missionsNumeriques">Missions numériques</a><a class="footer-link" data-action="espaceNumerique">Espace numérique</a><a class="footer-link" data-action="transparence">Transparence</a></div>
 <div class="footer-col"><h4>Légal</h4><a class="footer-link-legal" data-action="adhesion">Adhésion</a><a class="footer-link-legal" data-action="confidentialite">Confidentialité</a><a class="footer-link-legal" data-action="cgu">CGU</a><a class="footer-link-legal" data-action="cookies">Cookies</a></div>
 <div class="footer-col"><h4>Support</h4><a class="footer-link-legal" data-action="apropos">À propos</a><a class="footer-link-legal" data-action="contact">Contact</a><a class="footer-link-legal" data-action="faq">FAQ</a><a class="footer-link-legal" data-action="aide">Aide</a></div>
 <div class="footer-col"><h4>Contact</h4><p><i class="fas fa-envelope"></i> contact@netubex.com</p><p><i class="fas fa-phone"></i> +225 05 07 09 11 13</p><p><i class="fas fa-map-marker-alt"></i> Kinshasa, RD Congo</p></div>
 </div>
-<div class="footer-copyright"><p>© 2025 NeTubeX — ASBL | Organisation Digitale au service de l'innovation et de l'appui numérique</p></div>
+<div class="footer-copyright"><p>© 2026 NeTubeX — ASBL | Organisation Digitale au service de l'innovation et de l'appui numérique</p></div>
 </footer>
 <button class="fab" id="fabBtn"><i class="fas fa-user-plus"></i></button>
 <script>
 const OFFER_URL="https://viiukuhe.com/dc/?blockID=397846";
-const HOME_URL="https://www.netubex.com";
-const LOGIN_URL="https://www.netubex.com/login.html";
 const POSTULER_URL="https://netubex.com/postuler.html";
+const LOGIN_URL="https://www.netubex.com/login.html";
 const APROPOS_URL="https://www.netubex.com/about.html";
 const FAQ_URL="https://www.netubex.com/faq.html";
 const AIDE_URL="https://www.netubex.com/aide.html";
@@ -164,7 +160,7 @@ function redirectCookies(){redirectSmart(OFFER_URL,COOKIES_URL);}
 function redirectContact(){redirectSmart(OFFER_URL,CONTACT_URL);}
 function redirectMissions(){redirectSmart(OFFER_URL,MISSIONS_URL);}
 function redirectActivites(){redirectSmart(OFFER_URL,ACTIVITES_URL);}
-const allRejoindreBtns=['heroRejoindreBtn','rejoindreNavBtn','fabBtn','missionRejoindreBtn','activitesRejoindreBtn','missionsNumeriquesRejoindreBtn','identiteRejoindreBtn','espaceNumeriqueRejoindreBtn','motMembreRejoindreBtn','transparenceRejoindreBtn','partenairesRejoindreBtn','contactRejoindreBtn'];
+const allRejoindreBtns=['heroRejoindreBtn','rejoindreNavBtn','fabBtn','missionRejoindreBtn','activitesRejoindreBtn','missionsNumeriquesRejoindreBtn','identiteRejoindreBtn','espaceNumeriqueRejoindreBtn','transparenceRejoindreBtn','partenairesRejoindreBtn','contactRejoindreBtn'];
 allRejoindreBtns.forEach(id=>{document.getElementById(id)?.addEventListener('click',redirectPostuler);});
 document.getElementById('heroConnecterBtn')?.addEventListener('click',redirectConnecter);
 document.getElementById('connecterNavBtn')?.addEventListener('click',redirectConnecter);
@@ -181,7 +177,7 @@ window.addEventListener('scroll',checkFade);
 window.addEventListener('load',checkFade);
 setTimeout(checkFade,100);
 let lastY=window.scrollY;
-window.addEventListener('scroll',()=>{const nav=document.querySelector('.navbar');if(window.scrollY>lastY&&window.scrollY>100) nav.style.transform='translateY(-100%)';else nav.style.transform='translateY(0)';lastY=window.scrollY;});
+window.addEventListener('scroll',()=>{const nav=document.getElementById('navbar');if(window.scrollY>lastY&&window.scrollY>100) nav.classList.add('scrolled');else nav.classList.remove('scrolled');lastY=window.scrollY;});
 const fabBtn=document.getElementById('fabBtn');
 let scrollTimeout;
 function handleFabOnScroll(){if(fabBtn){fabBtn.classList.add('hidden');clearTimeout(scrollTimeout);scrollTimeout=setTimeout(()=>{fabBtn.classList.remove('hidden');},300);}}
